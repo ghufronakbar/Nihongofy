@@ -1,0 +1,19 @@
+{
+  "status": "resolved_by_repository_contract",
+  "mondaiType": "CHOUKAI_QUICK_RESPONSE",
+  "questionCount": 12,
+  "sourceChoiceCount": 3,
+  "repositoryChoiceCount": 4,
+  "modeling": {
+    "questionText": "",
+    "answerText": "",
+    "codeAnswers": [1, 2, 3, 4],
+    "fourthChoice": "empty schema padding"
+  },
+  "rationale": "The official listening format provides three spoken responses, while the repository seed contract requires exactly four choices for every question. The existing repository convention for audio-only choices is empty answerText. The fourth empty choice is therefore a schema adapter, not invented exam content, and all correct answers remain within 1-3.",
+  "validation": {
+    "allCorrectAnswersWithinSourceRange": true,
+    "allQuestionsHaveFourUniqueCodeAnswers": true,
+    "transcriptNotCopiedIntoQuestionText": true
+  }
+}
