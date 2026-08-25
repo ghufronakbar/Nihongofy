@@ -1,6 +1,6 @@
 # Project Overview
 
-Platform web pribadi (single-user) untuk latihan mock test JLPT menggunakan bank soal tahun-tahun sebelumnya.
+Platform web multi-user untuk belajar dan latihan mock test JLPT menggunakan bank soal tahun-tahun sebelumnya.
 Stack: Next.js (App Router) + Prisma + PostgreSQL (Supabase).
 
 Rules terkait: `database.md` (schema, markup teks, aturan query).
@@ -14,13 +14,20 @@ Rules terkait: `database.md` (schema, markup teks, aturan query).
 
 ## Routes
 
-### Route group `(auth)` — layout auth
+### Route group `(marketing)` - shell publik
 
 | Route | Deskripsi |
 |---|---|
-| `/` | Entry point, hanya redirect. Cek `count(User)`: jika 0 → redirect `/first-time-setup`. Jika ada user tapi tidak ada session → `/login`. Jika ada session → `/dashboard`. |
-| `/first-time-setup` | Registrasi user pertama (sekali saja). Jika `count(User) > 0`, route ini harus redirect keluar (registrasi tertutup). |
-| `/login` | Login. Jika sudah ada session, redirect ke `/dashboard`. |
+| `/` | Home publik dengan header/footer marketing dan CTA ke mock test, login, atau dashboard. |
+
+### Route group `(auth)` - layout auth
+
+| Route | Deskripsi |
+|---|---|
+| `/login` | Login akun existing. Mendukung query `next` yang divalidasi sebagai path internal. |
+| `/register` | Route registrasi publik. Pada Fase 1 masih berupa preview non-mutating sampai migrasi email/display name dan keamanan database selesai. |
+
+`/first-time-setup` sudah dihapus. URL lama diarahkan permanen ke `/register` agar bookmark lama tidak menjadi dead end.
 
 ### Route group `(dashboard)` — layout dashboard dengan sidebar
 
@@ -57,6 +64,6 @@ Aturan halaman exam:
 
 ## Catatan Teknis
 
-- Semua route `(dashboard)` (termasuk `/exam` dan `/result`, yang sekarang bagian dari group ini) memerlukan session; tanpa session redirect ke `/login`.
+- Semua route `(dashboard)` (termasuk `/exam` dan `/result`) memerlukan session; tanpa session redirect ke `/login?next=<path>`.
 - Global state jawaban exam sebaiknya di-persist (mis. sessionStorage/localStorage) agar refresh halaman tidak menghilangkan jawaban yang belum disubmit.
 - Submit sesi bersifat final untuk sesi tersebut — setelah submit, sesi tidak bisa dikerjakan ulang di attempt yang sama. Attempt menjadi `COMPLETED` setelah sesi terakhir disubmit.

@@ -70,8 +70,8 @@ enum AttemptStatus {
 // USER
 // ============================================================
 
-// Single-user app: registrasi hanya sekali saat first-time setup,
-// setelah ada 1 row maka endpoint register ditutup.
+// Bentuk credential legacy masih memakai username. Migrasi displayName/email
+// dilakukan sebelum public registration diaktifkan; data relasi tetap dipertahankan.
 model User {
   id       Int    @id @default(autoincrement())
   username String @unique

@@ -35,7 +35,7 @@ async function resolveResumeSession(
 
 // Per-user attempt list across all packages — not cached, same reasoning as
 // the per-package attempt history in features/test-package: changes every
-// time an attempt starts/finishes, low read volume for a single-user app.
+// time an attempt starts/finishes, with a low per-user read volume.
 export async function getAttemptHistory() {
   const session = await getSession();
   if (!session) redirect("/login");

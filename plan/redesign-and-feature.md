@@ -408,6 +408,10 @@ Acceptance criteria:
 
 Tujuan: menyediakan shell yang bisa dipakai fitur baru tanpa langsung merombak engine existing.
 
+Status eksekusi: selesai pada 26 Agustus 2026. Implementasi dan hasil verifikasi tersedia di
+`plan/phase-1-foundation.md`. Public registration mutation tetap ditahan sampai Fase 2 karena
+membutuhkan migrasi akun existing dan penutupan exposure Supabase Data API.
+
 Pekerjaan:
 
 - Tambah route group `(marketing)` dan ubah `/` menjadi home publik.

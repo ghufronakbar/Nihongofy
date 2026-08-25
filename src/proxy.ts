@@ -2,10 +2,9 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getSession } from "@/lib/auth";
 
-// Route group (auth): "/" handles its own redirect logic (checks count(User)),
-// "/first-time-setup" and "/login" guard themselves against an existing session.
-// Optimistic check only — every Server Action still verifies the session itself.
-const PUBLIC_ROUTES = ["/", "/first-time-setup", "/login"];
+// Optimistic check only. Every protected layout and Server Action still verifies
+// the session because Proxy must not be the only authorization boundary.
+const PUBLIC_ROUTES = ["/", "/login", "/register"];
 
 // Route handlers enforce a separate bearer secret and return 404 in production.
 const PUBLIC_PREFIXES = ["/api/seed/"];
@@ -22,12 +21,14 @@ export async function proxy(request: NextRequest) {
   const session = await getSession();
 
   if (!session) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("next", `${pathname}${request.nextUrl.search}`);
+    return NextResponse.redirect(loginUrl);
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)"],
 };

@@ -4,6 +4,8 @@ Rujukan: `project-overview.md` (routes & flow), `project-rules.md` (arsitektur/k
 
 Checklist ini dikerjakan berurutan per fase (fase belakang bergantung pada fase depan). Centang `[x]` saat selesai & terverifikasi (bukan sekadar ditulis).
 
+> Catatan 26 Agustus 2026: bagian auth awal di bawah adalah catatan implementasi historis. Model one-time setup telah dihentikan. Status dan rencana aktif ada di `plan/redesign-and-feature.md` serta `plan/phase-1-foundation.md`.
+
 ## Fase 0 — Setup & Konfigurasi Dasar
 
 - [x] Init Next.js (App Router) — `create-next-app`
@@ -17,7 +19,7 @@ Checklist ini dikerjakan berurutan per fase (fase belakang bergantung pada fase 
 - [x] `src/constants/cache-key.ts` — daftar cache key/tag terpusat untuk `unstable_cache`/`revalidateTag`
 - [x] `src/lib/prisma.ts` — Prisma Client singleton (guard hot-reload dev)
 
-## Fase 1 — Autentikasi & Session
+## Fase 1 - Autentikasi & Session (historis, telah digantikan)
 
 - [x] `src/lib/auth.ts` — `createSession()`, `getSession()` (cached per request), `destroySession()` (JWT `jose` HS256, cookie `session` httpOnly+secure+sameSite=lax, expiry 7 hari)
 - [x] `src/proxy.ts` — guard semua route kecuali `/`, `/first-time-setup`, `/login`; redirect ke `/login` jika tidak ada session. **Catatan breaking change:** di versi Next.js ini `middleware.ts` dideprecate → jadi `proxy.ts` (fungsi `proxy`), lihat `node_modules/next/dist/docs/01-app/03-api-reference/03-file-conventions/proxy.md`
@@ -27,7 +29,7 @@ Checklist ini dikerjakan berurutan per fase (fase belakang bergantung pada fase 
 - [x] Server action `logoutAction`: `destroySession()`
 - [x] `npm run build` sukses, `src/proxy.ts` terdeteksi sebagai "ƒ Proxy (Middleware)"
 
-## Fase 2 — Route Group `(auth)`
+## Fase 2 - Route Group `(auth)` (historis, telah digantikan)
 
 - [x] Layout `(auth)` — `src/app/(auth)/layout.tsx`, container center tanpa sidebar
 - [x] `/` — redirect logic: `count(User) === 0` → `/first-time-setup`; ada user tanpa session → `/login`; ada session → `/dashboard`

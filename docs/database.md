@@ -1,6 +1,6 @@
 # Database Rules
 
-Aturan dan konteks database untuk project JLPT practice platform (single-user).
+Aturan dan konteks database untuk project JLPT practice platform multi-user.
 Stack: Next.js + Prisma + PostgreSQL (Supabase).
 
 ## Prinsip Umum
@@ -8,7 +8,8 @@ Stack: Next.js + Prisma + PostgreSQL (Supabase).
 - Schema ada di `prisma/schema.prisma`. Jangan mengubah schema tanpa diminta eksplisit.
 - Semua perubahan schema HARUS lewat migration (`prisma migrate dev`), jangan `db push` kecuali diminta.
 - Supabase: `DATABASE_URL` = pooled connection (pgbouncer) untuk runtime, `DIRECT_URL` = direct connection untuk migration. Jangan menukar keduanya.
-- Ini aplikasi single-user. Jangan menambahkan fitur multi-tenant, role, atau permission tanpa diminta.
+- Semua data pribadi wajib di-scope dengan `userId` dari session. Jangan pernah menerima `userId` client sebagai sumber otorisasi.
+- Role dan permission bertingkat belum menjadi scope, tetapi isolation antar-user tetap wajib.
 - Jangan pernah menulis password plaintext — selalu hash (bcrypt/argon2) sebelum insert ke `User.password`.
 
 ## Struktur Data (hierarki)

@@ -42,7 +42,7 @@ function buildAttemptWhere(userId: number, filters: AnalyticsFilters): Prisma.At
 
 // Per-mondai stats can't be a Prisma `groupBy` since mondaiType lives on
 // TestPackageItem, two relations away from AttemptAnswer — fetch the flat rows
-// and aggregate in JS instead (data volume is tiny for a single-user app).
+// and aggregate in JS instead (the per-user result set remains small).
 // Grouped per JLPT level: mixing N2 and N5 answers in one aggregate would be
 // meaningless, so each level gets its own table.
 const getCachedAnalytics = (userId: number) =>
