@@ -119,17 +119,6 @@ const getCachedTestPackageQuestions = (testPackageId: number) =>
                       storyAudio: true,
                     },
                   },
-                  questionComments: {
-                    orderBy: { createdAt: "desc" },
-                    select: {
-                      id: true,
-                      commentText: true,
-                      commentImages: true,
-                      createdAt: true,
-                      updatedAt: true,
-                      user: { select: { username: true } },
-                    },
-                  },
                 },
               },
             },
@@ -150,7 +139,41 @@ export async function getTestPackageQuestions(testPackageId: number) {
   const testPackage = await getCachedTestPackageQuestions(testPackageId);
   if (!testPackage) notFound();
 
-  return testPackage;
+  // The question bank is shared and globally cacheable; private comments are not.
+  const comments = await prisma.questionComment.findMany({
+    where: {
+      userId: session.userId,
+      question: { testPackageItem: { testPackageId } },
+    },
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      questionId: true,
+      commentText: true,
+      commentImages: true,
+      createdAt: true,
+      updatedAt: true,
+      user: { select: { username: true } },
+    },
+  });
+
+  const commentsByQuestion = new Map<number, typeof comments>();
+  for (const comment of comments) {
+    const list = commentsByQuestion.get(comment.questionId) ?? [];
+    list.push(comment);
+    commentsByQuestion.set(comment.questionId, list);
+  }
+
+  return {
+    ...testPackage,
+    testPackageItems: testPackage.testPackageItems.map((item) => ({
+      ...item,
+      questions: item.questions.map((question) => ({
+        ...question,
+        questionComments: commentsByQuestion.get(question.id) ?? [],
+      })),
+    })),
+  };
 }
 
 export async function createAttemptAction(input: CreateAttemptInput) {

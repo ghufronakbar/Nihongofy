@@ -1,15 +1,19 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getSeedAccessError } from "@/lib/seed-auth";
 
 // Dev-only helper to get a minimal but representative TestPackage into the DB
 // so Exam Flow / Result / Analytics can be tested end-to-end before the real
-// bank-soal import tooling (Fase 8) exists. Intentionally unauthenticated —
-// not part of the build/deploy pipeline, call it manually when needed.
+// bank-soal import tooling (Fase 8) exists. Available only in development and
+// protected by the same dedicated bearer secret as the real seed route.
 export const dynamic = "force-dynamic";
 
 const DEMO_PACKAGE_NAME = "DEMO - Seed Testing";
 
-export async function GET() {
+export async function GET(request: Request) {
+  const accessError = getSeedAccessError(request);
+  if (accessError) return accessError;
+
   const existing = await prisma.testPackage.findFirst({
     where: { name: DEMO_PACKAGE_NAME },
     select: { id: true },

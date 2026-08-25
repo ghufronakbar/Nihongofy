@@ -16,6 +16,8 @@ export async function POST(request: Request) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  const allowedFolder = `jlpt-exam/comments/${session.userId}`;
+
   let body: unknown;
   try {
     body = await request.json();
@@ -31,7 +33,8 @@ export async function POST(request: Request) {
     typeof folder !== "string" ||
     folder.length === 0 ||
     folder.length > MAX_FOLDER_LENGTH ||
-    !FOLDER_PATTERN.test(folder)
+    !FOLDER_PATTERN.test(folder) ||
+    folder !== allowedFolder
   ) {
     return NextResponse.json({ error: "Invalid Cloudinary folder" }, { status: 400 });
   }

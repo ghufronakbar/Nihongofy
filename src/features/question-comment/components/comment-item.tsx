@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formatDistanceToNow } from "date-fns";
 import { id as idLocale } from "date-fns/locale";
@@ -43,7 +43,7 @@ export function CommentItem({ comment }: { comment: CommentData }) {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     setValue,
     formState: { errors },
   } = useForm<EditQuestionCommentInput>({
@@ -55,7 +55,7 @@ export function CommentItem({ comment }: { comment: CommentData }) {
     },
   });
 
-  const commentImages = watch("commentImages");
+  const commentImages = useWatch({ control, name: "commentImages" });
   const wasEdited = comment.updatedAt.getTime() !== comment.createdAt.getTime();
 
   function onSubmit(values: EditQuestionCommentInput) {

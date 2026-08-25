@@ -2,7 +2,7 @@
 
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AddQuestionCommentSchema, type AddQuestionCommentInput } from "../schemas";
 import { addQuestionCommentAction } from "../actions";
@@ -19,7 +19,7 @@ export function QuestionCommentForm({ questionId }: { questionId: number }) {
     register,
     handleSubmit,
     reset,
-    watch,
+    control,
     setValue,
     formState: { errors },
   } = useForm<AddQuestionCommentInput>({
@@ -27,7 +27,7 @@ export function QuestionCommentForm({ questionId }: { questionId: number }) {
     defaultValues: { questionId, commentText: "", commentImages: [] },
   });
 
-  const commentImages = watch("commentImages");
+  const commentImages = useWatch({ control, name: "commentImages" });
 
   function onSubmit(values: AddQuestionCommentInput) {
     startTransition(async () => {

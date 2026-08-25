@@ -28,11 +28,15 @@ Setiap paket tes JLPT ditulis sebagai **satu file JSON terpisah** di folder
 ## Cara Import
 
 ```
-GET /api/seed/test-package?auth=<SESSION_SECRET>
+GET /api/seed/test-package
+Authorization: Bearer <SEED_SECRET>
 ```
 
-- `SESSION_SECRET` = nilai env var `SESSION_SECRET` di `.env` project ini (bukan password user).
-- Endpoint ini sengaja **tidak** pakai session login — proteksinya cuma query param `auth` ini.
+- `SEED_SECRET` adalah secret khusus seed minimal 16 karakter dan harus berbeda dari
+  `SESSION_SECRET`.
+- Endpoint hanya tersedia di development. Pada production endpoint mengembalikan 404.
+- Secret dikirim melalui header `Authorization`, bukan query param, agar tidak masuk
+  URL/history/log proxy.
 - Import bersifat **idempotent per `TestPackage.name`** (field `name` di dalam JSON, bukan nama
   file): kalau paket dengan `name` yang sama sudah ada di database, seluruh paket itu di-skip
   (tidak dobel, tidak di-update). Jalankan ulang endpoint ini kapan saja aman — file/paket yang

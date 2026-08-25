@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Design reference is audited separately and is not part of the runtime app.
+    "reference_ui_web/**",
   ]),
 ]);
 

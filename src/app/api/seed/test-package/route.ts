@@ -1,16 +1,15 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { env } from "@/constants";
+import { getSeedAccessError } from "@/lib/seed-auth";
 import type { SeedTestPackage } from "./types";
 
 // Import route for real bank-soal data scraped by another tool. Each JSON
 // file in src/test-package-data/ is one SeedTestPackage (shape documented in
 // docs/seed.md) — one file per package because a single paket's JSON can get
 // very large. Unlike the Fase 5.1 demo seed route, this handles real (larger,
-// less trusted) data: protected by a shared-secret query param, and each
+// less trusted) data: development-only with a dedicated bearer secret, and each
 // Question is its own transaction so a single malformed record doesn't roll
 // back everything already imported.
 export const dynamic = "force-dynamic";
@@ -53,12 +52,9 @@ async function loadSeedFiles(): Promise<{ file: string; pkg: SeedTestPackage }[]
   return results;
 }
 
-export async function GET(request: NextRequest) {
-  const auth = request.nextUrl.searchParams.get("auth");
-
-  if (!auth || auth !== env.SESSION_SECRET) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+export async function GET(request: Request) {
+  const accessError = getSeedAccessError(request);
+  if (accessError) return accessError;
 
   const summary = {
     packagesSeeded: [] as string[],

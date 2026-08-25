@@ -1,11 +1,9 @@
 "use server";
 
 import { notFound, redirect } from "next/navigation";
-import { updateTag } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { createSignedUploadParams } from "@/lib/cloudinary";
-import { CACHE_TAGS } from "@/constants/cache-key";
 import {
   AddQuestionCommentSchema,
   EditQuestionCommentSchema,
@@ -15,16 +13,12 @@ import {
   type DeleteQuestionCommentInput,
 } from "./schemas";
 
-// Comments live on Question (not Attempt), so they're shared between mode-baca
-// (/test-package/[id]/questions) and attempt review (/result/[attemptId]/detail)
-// — invalidating by testPackageId refreshes both.
-async function resolveTestPackageIdForQuestion(questionId: number) {
+async function ensureQuestionExists(questionId: number) {
   const question = await prisma.question.findUnique({
     where: { id: questionId },
-    select: { testPackageItem: { select: { testPackageId: true } } },
+    select: { id: true },
   });
   if (!question) notFound();
-  return question.testPackageItem.testPackageId;
 }
 
 export async function addQuestionCommentAction(input: AddQuestionCommentInput) {
@@ -37,7 +31,7 @@ export async function addQuestionCommentAction(input: AddQuestionCommentInput) {
   }
 
   const { questionId, commentText, commentImages } = validated.data;
-  const testPackageId = await resolveTestPackageIdForQuestion(questionId);
+  await ensureQuestionExists(questionId);
 
   await prisma.questionComment.create({
     data: {
@@ -47,8 +41,6 @@ export async function addQuestionCommentAction(input: AddQuestionCommentInput) {
       commentImages,
     },
   });
-
-  updateTag(CACHE_TAGS.testPackageQuestions(testPackageId));
 }
 
 export async function updateQuestionCommentAction(input: EditQuestionCommentInput) {
@@ -64,19 +56,15 @@ export async function updateQuestionCommentAction(input: EditQuestionCommentInpu
 
   const comment = await prisma.questionComment.findUnique({
     where: { id: commentId },
-    select: { userId: true, questionId: true },
+    select: { userId: true },
   });
 
   if (!comment || comment.userId !== authSession.userId) notFound();
-
-  const testPackageId = await resolveTestPackageIdForQuestion(comment.questionId);
 
   await prisma.questionComment.update({
     where: { id: commentId },
     data: { commentText, commentImages },
   });
-
-  updateTag(CACHE_TAGS.testPackageQuestions(testPackageId));
 }
 
 export async function deleteQuestionCommentAction(input: DeleteQuestionCommentInput) {
@@ -92,16 +80,12 @@ export async function deleteQuestionCommentAction(input: DeleteQuestionCommentIn
 
   const comment = await prisma.questionComment.findUnique({
     where: { id: commentId },
-    select: { userId: true, questionId: true },
+    select: { userId: true },
   });
 
   if (!comment || comment.userId !== authSession.userId) notFound();
 
-  const testPackageId = await resolveTestPackageIdForQuestion(comment.questionId);
-
   await prisma.questionComment.delete({ where: { id: commentId } });
-
-  updateTag(CACHE_TAGS.testPackageQuestions(testPackageId));
 }
 
 // Client uploads straight to Cloudinary with these signed params — our server
