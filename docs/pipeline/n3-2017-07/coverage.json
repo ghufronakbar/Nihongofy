@@ -1,0 +1,12 @@
+{
+  "source": "ocr/questions-all.txt",
+  "package": "n3-2017-07-candidate.json",
+  "expectedCounts": {
+    "MOJI": 35,
+    "BUNPOU": 23,
+    "DOKKAI": 16,
+    "CHOUKAI": 28,
+    "total": 102
+  },
+  "notes": "User-stated 101 conflicts with supplied authoritative ranges: 35+23+16+28=102; package follows source ranges and mappings."
+}
