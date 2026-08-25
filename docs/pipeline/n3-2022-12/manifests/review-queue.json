@@ -1,0 +1,25 @@
+{
+  "status": "auto_pass_candidate",
+  "reviewNotes": [
+    "Source: questions-all.txt, questions-manifest.md, answers.md. Q23–38 answer mappings are 2,4,3,1 / 4,4,2,1,4,3 / 1,2,1,3 / 4,2.",
+    "Layout-sensitive copy notice and bus table are preserved as contexts; verify against rendered source pages before production import.",
+    "Answers are scoped by 聴解 問題: 問題1 = 3,2,1,2,4,2; 問題2 = 2,2,4,3,2,1; 問題3 = 3,2,3; 問題4 = 2,1,3,2; 問題5 = 1,1,2,1,2,3,2,1,3.",
+    "問題3 and 問題5 are audio-only on the printed sheet; questionText and all answerText values are intentionally empty pending audio integration.",
+    "storyAudio is null for all mondai contexts pending audio asset segmentation."
+  ],
+  "sourceArtifacts": [
+    "ocr/answers.md",
+    "ocr/questions-manifest.md",
+    "ocr/choukai-script.md",
+    "audio-segmentation-manifest.md"
+  ],
+  "counts": {
+    "contexts": 14,
+    "items": 17,
+    "questions": 101
+  },
+  "resolved": [
+    "Four Choukai Expression illustration crops were visually inspected, uploaded, and read back from Cloudinary.",
+    "The previous Question 4 type was corrected from CHOUKAI_QUICK_RESPONSE to CHOUKAI_EXPRESSION."
+  ]
+}
