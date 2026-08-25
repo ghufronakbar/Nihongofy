@@ -1,0 +1,274 @@
+{
+  "questionContexts": [
+    {
+      "id": "ctx-choukai-1",
+      "storyAudio": null,
+      "refs": [
+        "rendered/script/page-01.png#問題1",
+        "rendered/script/page-02.png#問題1",
+        "rendered/script/page-03.png#問題1",
+        "rendered/script/page-04.png#問題1",
+        "rendered/script/page-05.png#問題1",
+        "rendered/script/page-06.png#問題1",
+        "rendered/questions/page-14.png#問題1"
+      ]
+    },
+    {
+      "id": "ctx-choukai-2",
+      "storyAudio": null,
+      "refs": [
+        "rendered/script/page-07.png#問題2",
+        "rendered/script/page-08.png#問題2",
+        "rendered/script/page-09.png#問題2",
+        "rendered/script/page-10.png#問題2",
+        "rendered/script/page-11.png#問題2",
+        "rendered/script/page-12.png#問題2",
+        "rendered/questions/page-14.png#問題2",
+        "rendered/questions/page-15.png#問題2"
+      ]
+    },
+    {
+      "id": "ctx-choukai-3",
+      "storyAudio": null,
+      "refs": [
+        "rendered/script/page-13.png#問題3",
+        "rendered/script/page-14.png#問題3",
+        "rendered/questions/page-15.png#問題3"
+      ]
+    },
+    {
+      "id": "ctx-choukai-4",
+      "storyAudio": null,
+      "refs": [
+        "rendered/script/page-15.png#問題4",
+        "rendered/script/page-16.png#問題4",
+        "rendered/questions/page-15.png#問題4",
+        "rendered/questions/page-16.png#問題4"
+      ]
+    },
+    {
+      "id": "ctx-choukai-5",
+      "storyAudio": null,
+      "refs": [
+        "rendered/script/page-17.png#問題5",
+        "rendered/script/page-18.png#問題5",
+        "rendered/script/page-19.png#問題5",
+        "rendered/questions/page-15.png#問題5",
+        "rendered/questions/page-16.png#問題5"
+      ]
+    }
+  ],
+  "testPackageItems": [
+    {
+      "mondaiType": "CHOUKAI_TASK_BASED",
+      "section": "CHOUKAI",
+      "session": 3,
+      "order": 1,
+      "instruction": "問題1では、まず質問を聞いてください。それから話を聞いて、問題用紙の1から4の中から、最もよいものを一つえらんでください。",
+      "questions": [
+        {
+          "order": 1,
+          "questionText": "女の人はどうやってドアを開けますか。",
+          "questionAnswer": 4,
+          "questionContextRef": "ctx-choukai-1",
+          "questionChoices": [
+            {"codeAnswer": 1, "answerText": "社員に開けてもらう"},
+            {"codeAnswer": 2, "answerText": "あんしょうばんごうを押す"},
+            {"codeAnswer": 3, "answerText": "人さし指で機械にふれる"},
+            {"codeAnswer": 4, "answerText": "カードをきかいに入れる"}
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "女の子は何を買いますか。",
+          "questionAnswer": 4,
+          "questionContextRef": "ctx-choukai-1",
+          "questionChoices": [
+            {"codeAnswer": 1, "answerText": "キャベツとぶた"},
+            {"codeAnswer": 2, "answerText": "キャベツとたまご"},
+            {"codeAnswer": 3, "answerText": "ノートと白菜"},
+            {"codeAnswer": 4, "answerText": "ノートとたまご"}
+          ]
+        },
+        {
+          "order": 3,
+          "questionText": "男の学生は何を手伝いますか。",
+          "questionAnswer": 1,
+          "questionContextRef": "ctx-choukai-1",
+          "questionChoices": [
+            {"codeAnswer": 1, "answerText": "本だなを運ぶ"},
+            {"codeAnswer": 2, "answerText": "本だなをえらぶ"},
+            {"codeAnswer": 3, "answerText": "本だなをくみたてる"},
+            {"codeAnswer": 4, "answerText": "本だなにペンキをぬる"}
+          ]
+        },
+        {
+          "order": 4,
+          "questionText": "",
+          "questionAnswer": 2,
+          "questionContextRef": "ctx-choukai-1",
+          "questionChoices": [
+            {"codeAnswer": 1, "answerText": "", "answerImage": null},
+            {"codeAnswer": 2, "answerText": "", "answerImage": null},
+            {"codeAnswer": 3, "answerText": "", "answerImage": null},
+            {"codeAnswer": 4, "answerText": "", "answerImage": null}
+          ]
+        },
+        {
+          "order": 5,
+          "questionText": "男の人はこのあと、まず何をしますか。",
+          "questionAnswer": 1,
+          "questionContextRef": "ctx-choukai-1",
+          "questionChoices": [
+            {"codeAnswer": 1, "answerText": "しりょうを作りなおす"},
+            {"codeAnswer": 2, "answerText": "おきゃくさんの所に行く"},
+            {"codeAnswer": 3, "answerText": "しゅっちょうのほうこくを出す"},
+            {"codeAnswer": 4, "answerText": "もりかちょうにれんらくする"}
+          ]
+        },
+        {
+          "order": 6,
+          "questionText": "男の人は大学の卒業証明の書類をもらうために、このあと、何を送りますか。",
+          "questionAnswer": 2,
+          "questionContextRef": "ctx-choukai-1",
+          "questionChoices": [
+            {"codeAnswer": 1, "answerText": "200円の切手"},
+            {"codeAnswer": 2, "answerText": "自分の住所を書いたふうとう"},
+            {"codeAnswer": 3, "answerText": "もうしこみの用紙"},
+            {"codeAnswer": 4, "answerText": "めんきょしょうのコピー"}
+          ]
+        }
+      ]
+    },
+    {
+      "mondaiType": "CHOUKAI_MAIN_POINT",
+      "section": "CHOUKAI",
+      "session": 3,
+      "order": 2,
+      "instruction": "問題2では、まず質問を聞いてください。そのあと、問題用紙を見てください。読む時間があります。それから話を聞いて、問題用紙の1から4の中から、最もよいものを一つえらんでください。",
+      "questions": [
+        {
+          "order": 1,
+          "questionText": "子供の誕生日の日に何をすることにしましたか。",
+          "questionAnswer": 3,
+          "questionContextRef": "ctx-choukai-2",
+          "questionChoices": [
+            {"codeAnswer": 1, "answerText": "食事に行く"},
+            {"codeAnswer": 2, "answerText": "本を買いに行く"},
+            {"codeAnswer": 3, "answerText": "どうぶつえんに行く"},
+            {"codeAnswer": 4, "answerText": "サッカーを見に行く"}
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "男の人はどうして遅れましたか。",
+          "questionAnswer": 2,
+          "questionContextRef": "ctx-choukai-2",
+          "questionChoices": [
+            {"codeAnswer": 1, "answerText": "起きるのがおそかったから"},
+            {"codeAnswer": 2, "answerText": "乗る電車をまちがえたから"},
+            {"codeAnswer": 3, "answerText": "ほんとうは映画が見たくなかったから"},
+            {"codeAnswer": 4, "answerText": "やくそくをわすれていたから"}
+          ]
+        },
+        {
+          "order": 3,
+          "questionText": "女の人が散歩を始めた理由はなんですか。女の人です。",
+          "questionAnswer": 2,
+          "questionContextRef": "ctx-choukai-2",
+          "questionChoices": [
+            {"codeAnswer": 1, "answerText": "町のことを知りたかったから"},
+            {"codeAnswer": 2, "answerText": "好きな歌手に会いたかったから"},
+            {"codeAnswer": 3, "answerText": "しせいをよくしたかったから"},
+            {"codeAnswer": 4, "answerText": "きせつをかんじたかったから"}
+          ]
+        },
+        {
+          "order": 4,
+          "questionText": "女の人はこの町のへんかについてどう思っていますか。",
+          "questionAnswer": 4,
+          "questionContextRef": "ctx-choukai-2",
+          "questionChoices": [
+            {"codeAnswer": 1, "answerText": "おしゃれな店がふえて便利だ"},
+            {"codeAnswer": 2, "answerText": "わかい人がたくさん来るのでいやだ"},
+            {"codeAnswer": 3, "answerText": "古い店がなくなってさびしい"},
+            {"codeAnswer": 4, "answerText": "まちに元気が出てきてよい"}
+          ]
+        },
+        {
+          "order": 5,
+          "questionText": "女の人がペットに鳥を選んだ理由はなんですか。",
+          "questionAnswer": 1,
+          "questionContextRef": "ctx-choukai-2",
+          "questionChoices": [
+            {"codeAnswer": 1, "answerText": "世話が楽だから"},
+            {"codeAnswer": 2, "answerText": "色がきれいだから"},
+            {"codeAnswer": 3, "answerText": "手に乗るから"},
+            {"codeAnswer": 4, "answerText": "かわいい声でなくから"}
+          ]
+        },
+        {
+          "order": 6,
+          "questionText": "市長は今回の大会について一番知ってもらいたいことは何だと言っていますか。",
+          "questionAnswer": 3,
+          "questionContextRef": "ctx-choukai-2",
+          "questionChoices": [
+            {"codeAnswer": 1, "answerText": "子どももさんかできて楽しめる"},
+            {"codeAnswer": 2, "answerText": "さんかする外国人がふえている"},
+            {"codeAnswer": 3, "answerText": "しみんがこうりゅうする機会になっている"},
+            {"codeAnswer": 4, "answerText": "かんこうによいえいきょうをあたえている"}
+          ]
+        }
+      ]
+    },
+    {
+      "mondaiType": "CHOUKAI_OUTLINE",
+      "section": "CHOUKAI",
+      "session": 3,
+      "order": 3,
+      "instruction": "問題3では、問題用紙に何もいんさつされていません。",
+      "questions": [
+        {"order": 1, "questionText": "", "questionAnswer": 4, "questionContextRef": "ctx-choukai-3", "questionChoices": [{"codeAnswer": 1, "answerText": ""}, {"codeAnswer": 2, "answerText": ""}, {"codeAnswer": 3, "answerText": ""}, {"codeAnswer": 4, "answerText": ""}]},
+        {"order": 2, "questionText": "", "questionAnswer": 4, "questionContextRef": "ctx-choukai-3", "questionChoices": [{"codeAnswer": 1, "answerText": ""}, {"codeAnswer": 2, "answerText": ""}, {"codeAnswer": 3, "answerText": ""}, {"codeAnswer": 4, "answerText": ""}]},
+        {"order": 3, "questionText": "", "questionAnswer": 1, "questionContextRef": "ctx-choukai-3", "questionChoices": [{"codeAnswer": 1, "answerText": ""}, {"codeAnswer": 2, "answerText": ""}, {"codeAnswer": 3, "answerText": ""}, {"codeAnswer": 4, "answerText": ""}]}
+      ]
+    },
+    {
+      "mondaiType": "CHOUKAI_EXPRESSION",
+      "section": "CHOUKAI",
+      "session": 3,
+      "order": 4,
+      "instruction": "問題4では、えを見ながら質問を聞いてください。やじるし(→)の人は何と言いますか。1から3の中から、最もよいものを一つえらんでください。",
+      "questions": [
+        {"order": 1, "questionText": "", "questionAnswer": 3, "questionImage": null, "questionContextRef": "ctx-choukai-4", "questionChoices": [{"codeAnswer": 1, "answerText": ""}, {"codeAnswer": 2, "answerText": ""}, {"codeAnswer": 3, "answerText": ""}, {"codeAnswer": 4, "answerText": ""}]},
+        {"order": 2, "questionText": "", "questionAnswer": 1, "questionImage": null, "questionContextRef": "ctx-choukai-4", "questionChoices": [{"codeAnswer": 1, "answerText": ""}, {"codeAnswer": 2, "answerText": ""}, {"codeAnswer": 3, "answerText": ""}, {"codeAnswer": 4, "answerText": ""}]},
+        {"order": 3, "questionText": "", "questionAnswer": 1, "questionImage": null, "questionContextRef": "ctx-choukai-4", "questionChoices": [{"codeAnswer": 1, "answerText": ""}, {"codeAnswer": 2, "answerText": ""}, {"codeAnswer": 3, "answerText": ""}, {"codeAnswer": 4, "answerText": ""}]},
+        {"order": 4, "questionText": "", "questionAnswer": 3, "questionImage": null, "questionContextRef": "ctx-choukai-4", "questionChoices": [{"codeAnswer": 1, "answerText": ""}, {"codeAnswer": 2, "answerText": ""}, {"codeAnswer": 3, "answerText": ""}, {"codeAnswer": 4, "answerText": ""}]}
+      ]
+    },
+    {
+      "mondaiType": "CHOUKAI_QUICK_RESPONSE",
+      "section": "CHOUKAI",
+      "session": 3,
+      "order": 5,
+      "instruction": "問題5では、問題用紙に何もいんさつされていません。まず文を聞いてください。それから、そのへんじを聞いて、1から3の中から、最もよいものを一つえらんでください。",
+      "questions": [
+        {"order": 1, "questionText": "", "questionAnswer": 2, "questionContextRef": "ctx-choukai-5", "questionChoices": [{"codeAnswer": 1, "answerText": ""}, {"codeAnswer": 2, "answerText": ""}, {"codeAnswer": 3, "answerText": ""}, {"codeAnswer": 4, "answerText": ""}]},
+        {"order": 2, "questionText": "", "questionAnswer": 3, "questionContextRef": "ctx-choukai-5", "questionChoices": [{"codeAnswer": 1, "answerText": ""}, {"codeAnswer": 2, "answerText": ""}, {"codeAnswer": 3, "answerText": ""}, {"codeAnswer": 4, "answerText": ""}]},
+        {"order": 3, "questionText": "", "questionAnswer": 1, "questionContextRef": "ctx-choukai-5", "questionChoices": [{"codeAnswer": 1, "answerText": ""}, {"codeAnswer": 2, "answerText": ""}, {"codeAnswer": 3, "answerText": ""}, {"codeAnswer": 4, "answerText": ""}]},
+        {"order": 4, "questionText": "", "questionAnswer": 2, "questionContextRef": "ctx-choukai-5", "questionChoices": [{"codeAnswer": 1, "answerText": ""}, {"codeAnswer": 2, "answerText": ""}, {"codeAnswer": 3, "answerText": ""}, {"codeAnswer": 4, "answerText": ""}]},
+        {"order": 5, "questionText": "", "questionAnswer": 2, "questionContextRef": "ctx-choukai-5", "questionChoices": [{"codeAnswer": 1, "answerText": ""}, {"codeAnswer": 2, "answerText": ""}, {"codeAnswer": 3, "answerText": ""}, {"codeAnswer": 4, "answerText": ""}]},
+        {"order": 6, "questionText": "", "questionAnswer": 2, "questionContextRef": "ctx-choukai-5", "questionChoices": [{"codeAnswer": 1, "answerText": ""}, {"codeAnswer": 2, "answerText": ""}, {"codeAnswer": 3, "answerText": ""}, {"codeAnswer": 4, "answerText": ""}]},
+        {"order": 7, "questionText": "", "questionAnswer": 1, "questionContextRef": "ctx-choukai-5", "questionChoices": [{"codeAnswer": 1, "answerText": ""}, {"codeAnswer": 2, "answerText": ""}, {"codeAnswer": 3, "answerText": ""}, {"codeAnswer": 4, "answerText": ""}]},
+        {"order": 8, "questionText": "", "questionAnswer": 1, "questionContextRef": "ctx-choukai-5", "questionChoices": [{"codeAnswer": 1, "answerText": ""}, {"codeAnswer": 2, "answerText": ""}, {"codeAnswer": 3, "answerText": ""}, {"codeAnswer": 4, "answerText": ""}]},
+        {"order": 9, "questionText": "", "questionAnswer": 2, "questionContextRef": "ctx-choukai-5", "questionChoices": [{"codeAnswer": 1, "answerText": ""}, {"codeAnswer": 2, "answerText": ""}, {"codeAnswer": 3, "answerText": ""}, {"codeAnswer": 4, "answerText": ""}]}
+      ]
+    }
+  ],
+  "reviewNotes": [
+    "Answer values are transcribed from the red 正解 lines in rendered/script pages: 問題1 = 441212; 問題2 = 322413; 問題3 = 441; 問題4 = 3113; 問題5 = 231222112.",
+    "問題3 and 問題5 are audio-only sections; questionText and answerText are intentionally empty.",
+    "問題4 is picture-driven expression; questionImage is null because crops were not permitted. 問題1・4番 has four printed picture choices; answerImage is null for each choice because crops were not permitted.",
+    "storyAudio is null in all local-only contexts; segmented MP3s are package-local and not remote URLs."
+  ]
+}
