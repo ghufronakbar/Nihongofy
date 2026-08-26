@@ -1,0 +1,107 @@
+{
+  "source": "source/audio",
+  "source_duration": 2456.529002,
+  "clips": [
+    {
+      "clip": "n4-2013-12-01",
+      "source_start": 87.0,
+      "source_end": 868.778322,
+      "source_duration": 781.778322,
+      "boundary_evidence": "ASR 問題1 @ 87.000s; user playback approval; end silence before 問題2: 856.366–868.778s",
+      "asr_marker_evidence": "faster-whisper-small-ja.json",
+      "ffprobe_duration": 781.818776,
+      "bytes": 12509662,
+      "sha256": "faf07aa9272c57c5c9d56c4c5ec6f92d185286f0719e9d469303f6cb6b032fff",
+      "edge_samples": {
+        "first_half_second": {
+          "samples": 22050,
+          "peak": 0.605408,
+          "rms": 0.255239
+        },
+        "last_half_second": {
+          "samples": 20266,
+          "peak": 0.009491,
+          "rms": 0.000181
+        }
+      },
+      "status": "human_playback_approved",
+      "approved_review_source": "review-audio/per-mondai-v3/01-Mondai-1.mp3"
+    },
+    {
+      "clip": "n4-2013-12-02",
+      "source_start": 871.91,
+      "source_end": 1776.608866,
+      "source_duration": 904.6988660000001,
+      "boundary_evidence": "ASR 問題2 @ 871.910s; user playback approval; end silence before 問題3: 1764.061–1776.609s",
+      "asr_marker_evidence": "faster-whisper-small-ja.json",
+      "ffprobe_duration": 904.75102,
+      "bytes": 14476578,
+      "sha256": "c9b75a167e2515da0ab1dfd555d75180f5f440e473d9fba0a125e4afc7d9f7a0",
+      "edge_samples": {
+        "first_half_second": {
+          "samples": 22050,
+          "peak": 0.0,
+          "rms": 0.0
+        },
+        "last_half_second": {
+          "samples": 19793,
+          "peak": 0.008301,
+          "rms": 0.000167
+        }
+      },
+      "status": "human_playback_approved",
+      "approved_review_source": "review-audio/per-mondai-v3/02-Mondai-2.mp3"
+    },
+    {
+      "clip": "n4-2013-12-03",
+      "source_start": 1776.608866,
+      "source_end": 2093.025034,
+      "source_duration": 316.41616799999974,
+      "boundary_evidence": "ASR 問題3 @ 1779.080s; user playback approval; starts before marker after M2 break; end silence before 問題4: 2082.700–2093.025s",
+      "asr_marker_evidence": "faster-whisper-small-ja.json",
+      "ffprobe_duration": 316.447347,
+      "bytes": 5063719,
+      "sha256": "4b8480f2716ab33dd8ebd2fcbe8b0d6f4e69b085e5754db389e200130c8ba00c",
+      "edge_samples": {
+        "first_half_second": {
+          "samples": 22050,
+          "peak": 0.705902,
+          "rms": 0.220244
+        },
+        "last_half_second": {
+          "samples": 20675,
+          "peak": 0.007782,
+          "rms": 0.000131
+        }
+      },
+      "status": "human_playback_approved",
+      "approved_review_source": "review-audio/per-mondai-v3/03-Mondai-3.mp3"
+    },
+    {
+      "clip": "n4-2013-12-04",
+      "source_start": 2095.95,
+      "source_end": 2456.529002,
+      "source_duration": 360.5790020000004,
+      "boundary_evidence": "ASR 問題4 @ 2095.950s; user playback approval; source tail retained",
+      "asr_marker_evidence": "faster-whisper-small-ja.json",
+      "ffprobe_duration": 360.620408,
+      "bytes": 5770488,
+      "sha256": "a8cbe31d0d9add5ab09a4506543dad020635f4cdfb31e92401ee49fcfcda4518",
+      "edge_samples": {
+        "first_half_second": {
+          "samples": 22050,
+          "peak": 6.1e-05,
+          "rms": 5e-06
+        },
+        "last_half_second": {
+          "samples": 20224,
+          "peak": 0.0,
+          "rms": 0.0
+        }
+      },
+      "status": "human_playback_approved",
+      "approved_review_source": "review-audio/per-mondai-v3/04-Mondai-4.mp3"
+    }
+  ],
+  "policy": "Final clips match the user-approved per-Mondai review files exactly. Boundaries are supported by timestamped ASR markers and preceding/following silence evidence; user approved playback on Discord."
+}

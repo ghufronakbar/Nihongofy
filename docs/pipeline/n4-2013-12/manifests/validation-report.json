@@ -1,0 +1,38 @@
+{
+  "package": "n4-2013-12",
+  "status": "auto_pass_candidate",
+  "structural_validation": "PASS",
+  "total_questions": 98,
+  "item_counts": {
+    "MOJI_GOI_READ_KANJI": 9,
+    "MOJI_GOI_WRITE_KANJI": 6,
+    "MOJI_GOI_CONTEXT": 10,
+    "MOJI_GOI_SYNONYM": 5,
+    "MOJI_GOI_WORD_USAGE": 5,
+    "BUNPOU_GRAMMAR": 15,
+    "BUNPOU_SENTENCE_COMPOSITION": 5,
+    "BUNPOU_TEXT_GRAMMAR": 5,
+    "DOKKAI_SHORT_TEXT": 4,
+    "DOKKAI_MEDIUM_TEXT": 4,
+    "DOKKAI_INFORMATION_RETRIEVAL": 2,
+    "CHOUKAI_TASK_BASED": 8,
+    "CHOUKAI_MAIN_POINT": 7,
+    "CHOUKAI_EXPRESSION": 5,
+    "CHOUKAI_QUICK_RESPONSE": 8
+  },
+  "media": {
+    "audio_contexts": 4,
+    "question_images": 7,
+    "answer_images": 12,
+    "uploaded_assets": 23,
+    "admin_readback": true,
+    "independent_http_range_mime_readback": true
+  },
+  "listening_schema_adapter": {
+    "source_three_choice_mondai": ["CHOUKAI_EXPRESSION", "CHOUKAI_QUICK_RESPONSE"],
+    "repository_contract": "All questions retain four structural choice codes 1-4.",
+    "policy": "Choice code 4 is empty only as a structural adapter; every official answer remains in source codes 1-3."
+  },
+  "remaining_gate": null,
+  "audio_review": "User approved the four per-Mondai playback cuts on Discord; final Cloudinary audio assets were re-uploaded and re-verified afterward."
+}

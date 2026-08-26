@@ -1,0 +1,34 @@
+{
+  "package": "n4-2013-12",
+  "exam": {
+    "source_path": "/opt/data/jlpt-pipeline/sources/n4-2013-12/source/exam.pdf",
+    "sha256": "f5ec606d82a90525c966abd4dfd19d40cc655bd8482e68e6384c336f58c71e52",
+    "pages": 23,
+    "text_layer": "none",
+    "role_map": {
+      "1": "cover_or_front_matter",
+      "2-6": "original_written_question_pages",
+      "7-9": "original_dokkai_question_pages",
+      "10-13": "original_choukai_choice_pages",
+      "14": "compact_answer_key",
+      "15-19": "explanations_supporting_only_not_question_source",
+      "20-23": "choukai_transcript"
+    }
+  },
+  "audio": {
+    "source_path": "/opt/data/jlpt-pipeline/sources/n4-2013-12/source/audio",
+    "sha256": "5e91ce901767e882b1c9da2e9510dbcbccb49aec048f8ce2e3a3bec5ad22ea78",
+    "container": "M4A",
+    "codec": "AAC",
+    "sample_rate_hz": 44100,
+    "channels": 2,
+    "duration_seconds": 2456.529002
+  },
+  "source_derived_counts": {
+    "moji_goi": 35,
+    "bunpou": 25,
+    "dokkai": 10,
+    "choukai": 28,
+    "total": 98
+  }
+}
