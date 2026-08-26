@@ -34,7 +34,7 @@ const NAV_ITEMS = [
   { title: "Analytics", href: "/analytics", icon: ChartNoAxesCombined },
 ];
 
-export function AppSidebar({ username }: { username: string }) {
+export function AppSidebar({ displayName }: { displayName: string }) {
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
 
@@ -68,7 +68,7 @@ export function AppSidebar({ username }: { username: string }) {
           <SidebarMenuItem>
             <div className="flex items-center gap-2 px-2 py-1.5 text-sm text-sidebar-foreground/70">
               <UserRound className="size-4 shrink-0" />
-              <span className="truncate">{username}</span>
+              <span className="truncate">{displayName}</span>
             </div>
           </SidebarMenuItem>
           <SidebarMenuItem>

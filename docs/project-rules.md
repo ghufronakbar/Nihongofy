@@ -29,14 +29,16 @@ Do NOT introduce other libraries for these concerns (e.g., NextAuth/Auth.js, Red
 ## 4. Authentication & Session
 The product target is public multi-user registration. Auth remains intentionally minimal: no OAuth or role hierarchy unless approved separately.
 
-* **Transition state:** the current database still authenticates the existing account with `username`. `/register` remains non-mutating until the reviewed display-name/email migration and Supabase privilege fix land.
+* **Login identifier:** user baru login dengan normalized email. Akun legacy yang belum memiliki email tetap dapat login dengan `username` sampai flow pengisian email tersedia.
 * **Password hashing:** `bcryptjs` with cost factor 12. Hash on register and compare with `bcrypt.compare()` on login. NEVER store or log plaintext passwords.
 * **Session:** stateless JWT signed with `jose` (HS256, secret from `SESSION_SECRET` env var), stored in an **httpOnly, secure, sameSite=lax** cookie named `session`. Expiry: 7 days. No session table in the database.
 * **Session helpers location:** `./src/lib/auth.ts` — `createSession()`, `getSession()`, `destroySession()`. All session reads/writes go through these helpers; never read the cookie manually elsewhere.
 * **Route protection:** `src/proxy.ts` (the `middleware.ts` convention was renamed to `proxy.ts` in this Next.js version) guards protected routes. No valid session redirects to `/login?next=<internal-path>`. This is an optimistic check only; protected layouts and Server Actions MUST verify session and ownership again.
-* **Registration:** there is no first-time setup or `count(User)` lock. When public registration is implemented, normalized email uniqueness and database constraints become the final duplicate guard.
+* **Registration:** public registration aktif dengan display name, normalized email, password, dan konfirmasi password. Tidak ada first-time setup atau `count(User)` lock. Unique constraint email menjadi duplicate guard terakhir.
+* **Auth rate limit:** login dan register memakai bucket atomik di `AuthRateLimit`. Key disimpan sebagai HMAC-SHA256, bukan email atau alamat IP mentah.
 * **Data isolation:** every query for attempts, comments, history, progress, settings, and future user content MUST scope access to `session.userId`.
-* **Login safety:** on failed login, return a generic error message ("invalid credentials"), never reveal whether the username exists.
+* **Login safety:** on failed login, return a generic error message ("invalid credentials"), never reveal whether the email/username exists.
+* **Supabase Data API:** tabel aplikasi pada schema `public` tidak boleh diberi grant ke `anon`, `authenticated`, atau `service_role`. RLS aktif tanpa client policy karena akses aplikasi hanya melalui Prisma server-side.
 
 ## 5. Input Validation (zod)
 * Every Server Action MUST validate its input with a `zod` schema before touching the database. Never trust client data, including "internal" calls.

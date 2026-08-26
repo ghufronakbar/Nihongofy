@@ -11,6 +11,16 @@ Stack: Next.js + Prisma + PostgreSQL (Supabase).
 - Semua data pribadi wajib di-scope dengan `userId` dari session. Jangan pernah menerima `userId` client sebagai sumber otorisasi.
 - Role dan permission bertingkat belum menjadi scope, tetapi isolation antar-user tetap wajib.
 - Jangan pernah menulis password plaintext — selalu hash (bcrypt/argon2) sebelum insert ke `User.password`.
+- User baru wajib memiliki normalized email. `email` nullable hanya untuk akun legacy yang belum menjalani flow pengisian email.
+- `username` nullable dan unique untuk compatibility login akun legacy; jangan membuat username sintetis untuk user baru.
+- Semua tabel aplikasi pada schema `public` memakai RLS tanpa policy Data API. Runtime Prisma memakai koneksi server `postgres` dan tetap wajib melakukan ownership check di aplikasi.
+
+## User dan Auth Rate Limit
+
+- `User.displayName` wajib dan menjadi nama yang ditampilkan pada sidebar/catatan.
+- `User.email` unique bila terisi. PostgreSQL mengizinkan beberapa nilai `NULL`, sehingga akun legacy tetap dapat dipertahankan.
+- `AuthRateLimit.keyHash` menyimpan HMAC-SHA256 dari scope dan subject. Jangan simpan email atau alamat IP mentah pada tabel rate limit.
+- Update bucket rate limit harus atomik dengan `INSERT ... ON CONFLICT DO UPDATE`, bukan pola select lalu update.
 
 ## Struktur Data (hierarki)
 

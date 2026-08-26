@@ -70,18 +70,33 @@ enum AttemptStatus {
 // USER
 // ============================================================
 
-// Bentuk credential legacy masih memakai username. Migrasi displayName/email
-// dilakukan sebelum public registration diaktifkan; data relasi tetap dipertahankan.
+// Username tetap nullable sebagai bridge login akun legacy. User baru memakai
+// displayName + normalized email; seluruh relasi existing tetap dipertahankan.
 model User {
-  id       Int    @id @default(autoincrement())
-  username String @unique
-  password String // simpan hash (bcrypt/argon2), JANGAN plaintext
+  id          Int     @id @default(autoincrement())
+  username    String? @unique // bridge login akun legacy; user baru memakai email
+  displayName String
+  email       String? @unique // nullable hanya untuk akun legacy yang belum dibackfill
+  avatarUrl   String? @db.Text
+  password    String // simpan hash (bcrypt/argon2), JANGAN plaintext
 
   questionComments QuestionComment[]
   attempts         Attempt[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// Bucket rate limit auth hanya menyimpan hash, bukan email atau alamat IP mentah.
+model AuthRateLimit {
+  keyHash         String    @id
+  attemptCount    Int       @default(1)
+  windowStartedAt DateTime  @default(now())
+  blockedUntil    DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([updatedAt])
 }
 
 // ============================================================
@@ -151,6 +166,8 @@ model QuestionContext {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([testPackageId])
 }
 
 model Question {
@@ -189,6 +206,7 @@ model Question {
 
   // mencegah nomor soal dobel saat ekstraksi AI
   @@unique([testPackageItemId, order])
+  @@index([questionContextId])
 }
 
 model QuestionChoice {
@@ -230,6 +248,9 @@ model QuestionComment {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([questionId])
+  @@index([userId])
 }
 
 // ============================================================
@@ -259,6 +280,9 @@ model Attempt {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([testPackageId])
 }
 
 model AttemptAnswer {
@@ -284,4 +308,5 @@ model AttemptAnswer {
 
   // satu soal hanya boleh punya satu jawaban per attempt (jawaban di-update, bukan insert baru)
   @@unique([attemptId, questionId])
+  @@index([questionId])
 }

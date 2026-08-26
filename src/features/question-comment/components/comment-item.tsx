@@ -32,7 +32,7 @@ type CommentData = {
   commentImages: string[];
   createdAt: Date;
   updatedAt: Date;
-  user: { username: string };
+  user: { displayName: string };
 };
 
 export function CommentItem({ comment }: { comment: CommentData }) {
@@ -76,11 +76,11 @@ export function CommentItem({ comment }: { comment: CommentData }) {
   return (
     <div className="flex gap-2">
       <Avatar size="sm">
-        <AvatarFallback>{comment.user.username.slice(0, 1).toUpperCase()}</AvatarFallback>
+        <AvatarFallback>{comment.user.displayName.slice(0, 1).toUpperCase()}</AvatarFallback>
       </Avatar>
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium">{comment.user.username}</span>
+          <span className="text-sm font-medium">{comment.user.displayName}</span>
           <span className="text-xs text-muted-foreground">
             {formatDistanceToNow(comment.createdAt, { addSuffix: true, locale: idLocale })}
             {wasEdited && " · diedit"}

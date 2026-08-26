@@ -436,6 +436,9 @@ Acceptance criteria:
 
 ### Fase 2 - Home, login, dan register
 
+Status: selesai pada 26 Agustus 2026. Detail implementasi dan verifikasi ada di
+`plan/phase-2-home-auth.md`.
+
 Tujuan: memberi entry point dan identitas produk yang jelas.
 
 Home mengikuti narasi referensi, tetapi copy dan claim disesuaikan dengan fitur nyata:

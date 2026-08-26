@@ -146,7 +146,7 @@ export async function getAttemptDetail(attemptId: number) {
               commentImages: true,
               createdAt: true,
               updatedAt: true,
-              user: { select: { username: true } },
+              user: { select: { displayName: true } },
             },
           },
           attemptAnswers: {

@@ -24,7 +24,7 @@ export default function AuthLayout({
           />
           <BrandMark className="relative z-10" />
           <div className="relative z-10 max-w-lg">
-            <p className="font-mono text-sm font-bold tracking-[0.14em] uppercase">Focus. Review. Repeat.</p>
+            <p className="font-mono text-sm font-bold tracking-[0.14em] uppercase">Fokus. Tinjau. Ulangi.</p>
             <h2 className="mt-5 text-5xl leading-[0.9] font-black xl:text-6xl">
               LATIHAN YANG MENUNJUKKAN BAGIAN LEMAHMU.
             </h2>

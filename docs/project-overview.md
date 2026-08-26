@@ -18,16 +18,25 @@ Rules terkait: `database.md` (schema, markup teks, aturan query).
 
 | Route | Deskripsi |
 |---|---|
-| `/` | Home publik dengan header/footer marketing dan CTA ke mock test, login, atau dashboard. |
+| `/` | Home publik neo-brutalist dengan CTA kontekstual, preview kana/vocab/latihan cepat, mock JLPT existing, conversation/speaking preview, dan artikel empty-safe. |
 
 ### Route group `(auth)` - layout auth
 
 | Route | Deskripsi |
 |---|---|
-| `/login` | Login akun existing. Mendukung query `next` yang divalidasi sebagai path internal. |
-| `/register` | Route registrasi publik. Pada Fase 1 masih berupa preview non-mutating sampai migrasi email/display name dan keamanan database selesai. |
+| `/login` | Login utama memakai email. Username tetap diterima untuk akun legacy. Mendukung query `next` yang divalidasi sebagai path internal. |
+| `/register` | Registrasi publik dengan display name, email, password, dan konfirmasi password. Session langsung dibuat setelah registrasi sukses. |
 
 `/first-time-setup` sudah dihapus. URL lama diarahkan permanen ke `/register` agar bookmark lama tidak menjadi dead end.
+
+### Auth multi-user
+
+- Email user baru dinormalisasi ke lowercase dan dijaga unique oleh database.
+- `username` nullable dan hanya menjadi compatibility bridge untuk akun legacy.
+- Password di-hash dengan bcrypt cost 12.
+- Login/register memiliki rate limit identifier dan IP dengan bucket hash.
+- Nilai `next` hanya menerima internal relative path untuk mencegah open redirect.
+- Tabel aplikasi tidak dapat diakses langsung oleh role Supabase Data API; RLS aktif sebagai defense in depth.
 
 ### Route group `(dashboard)` — layout dashboard dengan sidebar
 

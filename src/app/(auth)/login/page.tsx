@@ -37,8 +37,11 @@ export default async function LoginPage({
       </div>
       <p className="mt-7 border-t-2 border-neo-ink pt-5 text-center text-sm text-foreground/70">
         Belum punya akun?{" "}
-        <Link href="/register" className="font-extrabold text-foreground underline decoration-2 decoration-neo-blue underline-offset-4">
-          Lihat halaman daftar
+        <Link
+          href={{ pathname: "/register", query: nextPath === "/dashboard" ? undefined : { next: nextPath } }}
+          className="font-extrabold text-foreground underline decoration-2 decoration-neo-blue underline-offset-4"
+        >
+          Daftar sekarang
         </Link>
       </p>
     </section>
