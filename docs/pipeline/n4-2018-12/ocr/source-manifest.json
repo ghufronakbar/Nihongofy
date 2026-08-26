@@ -1,0 +1,58 @@
+{
+  "package": "n4-2018-12",
+  "examIdentity": "2018-12 JLPT N4",
+  "sourceFiles": {
+    "combinedDocument": {
+      "driveId": "1oAYwzwV8AdoSUz7BBpgkf90jg9hB-jXm",
+      "path": "document.pdf",
+      "sha256": "694022621a697f32633c30d69680a00167607984af7f975c47e2e661b8426fc4",
+      "pages": 23,
+      "textLayerChars": 3928,
+      "textLayerUseful": false,
+      "role": "question booklet + answer key + explanations + listening transcript"
+    },
+    "audio": {
+      "driveId": "1JFH0CHJavkINaxJuAfytJ0erMEBQES6Y",
+      "path": "audio.m4a",
+      "sha256": "ba81cfbc6265384a0f8992367efbfaa4175bff17c965610bf1671ffc0dd9bed5",
+      "codec": "aac",
+      "sampleRate": 44100,
+      "channels": 2,
+      "durationSeconds": 2302.432993,
+      "size": 18639644
+    }
+  },
+  "pageRoleMap": [
+    {"scanRange": "1-9", "role": "written question booklet", "evidence": "contact sheet and focused scan inspection"},
+    {"scanRange": "10-13", "role": "listening question booklet; 問題1-4", "evidence": "visible 聴解 headings and item layouts"},
+    {"scanRange": "14", "role": "compact answer key for all written/listening mondai", "evidence": "参考答案 table"},
+    {"scanRange": "15-19", "role": "written-test explanations", "evidence": "試題解析; vocabulary/grammar/reading"},
+    {"scanRange": "20-23", "role": "listening transcript", "evidence": "聴解原文; transitions 問題1-4"}
+  ],
+  "audioSectionEvidence": [
+    {"mondai": 1, "markerAsr": 46.49, "selectedStart": 0.0, "selectedEnd": 761.162, "nextMarkerAsr": 777.21, "precedingSilence": [761.162, 773.504]},
+    {"mondai": 2, "markerAsr": 777.21, "selectedStart": 761.162, "selectedEnd": 1654.301, "nextMarkerAsr": 1670.36, "precedingSilence": [1654.301, 1666.634]},
+    {"mondai": 3, "markerAsr": 1670.36, "selectedStart": 1654.301, "selectedEnd": 1929.264, "nextMarkerAsr": 1943.26, "precedingSilence": [1929.264, 1939.618]},
+    {"mondai": 4, "markerAsr": 1943.26, "selectedStart": 1929.264, "selectedEnd": 2302.468875}
+  ],
+  "notes": [
+    "User described transcript as page 14 onward; verified actual structure is scan14 answer key, scans15-19 explanations, scans20-23 transcript.",
+    "PDF text layer is corrupt/garbled and must not be used as primary exact parser.",
+    "N4 uses four listening mondai, not the N3 five-mondai shape."
+  ],
+  "finalCounts": {
+    "MOJI_GOI": 35,
+    "BUNPOU": 25,
+    "DOKKAI": 10,
+    "CHOUKAI": 28,
+    "total": 98
+  },
+  "media": {
+    "audioClips": 4,
+    "expressionQuestionImages": 5,
+    "taskBasedQuestionImages": 5,
+    "taskBasedAnswerImages": 8,
+    "cloudinaryAssetsVerified": 22
+  },
+  "status": "auto_pass_candidate"
+}
