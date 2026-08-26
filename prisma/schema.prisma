@@ -66,6 +66,22 @@ enum AttemptStatus {
   ABANDONED // ditinggal / dibatalkan, tidak masuk analitik
 }
 
+enum FlashcardDeckKind {
+  VOCABULARY
+}
+
+enum FlashcardLearningState {
+  LEARNING
+  REVIEW
+}
+
+enum FlashcardRating {
+  AGAIN
+  HARD
+  GOOD
+  EASY
+}
+
 // ============================================================
 // USER
 // ============================================================
@@ -80,11 +96,172 @@ model User {
   avatarUrl   String? @db.Text
   password    String // simpan hash (bcrypt/argon2), JANGAN plaintext
 
-  questionComments QuestionComment[]
-  attempts         Attempt[]
+  questionComments    QuestionComment[]
+  attempts            Attempt[]
+  kanaProgresses      KanaProgress[]
+  flashcardProgresses FlashcardProgress[]
+  flashcardReviewLogs FlashcardReviewLog[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// ============================================================
+// KANA & VOCABULARY STUDY
+// ============================================================
+
+// Kana content remains a reviewed static fixture. This table stores only
+// per-user learning activity, keyed by the fixture's stable kana key.
+model KanaProgress {
+  id Int @id @default(autoincrement())
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+
+  kanaKey      String
+  viewCount    Int       @default(0)
+  correctCount Int       @default(0)
+  againCount   Int       @default(0)
+  lastViewedAt DateTime?
+  lastGradedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, kanaKey])
+  @@index([userId, updatedAt])
+}
+
+model FlashcardDeck {
+  id Int @id @default(autoincrement())
+
+  slug        String            @unique
+  title       String
+  description String            @db.Text
+  kind        FlashcardDeckKind @default(VOCABULARY)
+  jlptLevel   JlptLevel
+  isPublished Boolean           @default(false)
+  order       Int               @default(0)
+
+  items FlashcardDeckItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isPublished, order])
+}
+
+// Vocabulary content is normalized globally so one word can appear in
+// multiple decks without duplicating user progress.
+model Flashcard {
+  id Int @id @default(autoincrement())
+
+  key           String    @unique
+  word          String
+  reading       String
+  romaji        String
+  meaning       String    @db.Text
+  jlptLevel     JlptLevel
+  audioText     String?
+  audioUrl      String?   @db.Text
+  usageExamples Json      @db.JsonB
+
+  deckItems  FlashcardDeckItem[]
+  tagLinks   FlashcardTagLink[]
+  progresses FlashcardProgress[]
+  reviewLogs FlashcardReviewLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([jlptLevel])
+}
+
+model FlashcardDeckItem {
+  id Int @id @default(autoincrement())
+
+  deck   FlashcardDeck @relation(fields: [deckId], references: [id], onDelete: Cascade)
+  deckId Int
+
+  flashcard   Flashcard @relation(fields: [flashcardId], references: [id], onDelete: Cascade)
+  flashcardId Int
+
+  order Int @default(0)
+
+  @@unique([deckId, flashcardId])
+  @@unique([deckId, order])
+  @@index([flashcardId])
+}
+
+model FlashcardTag {
+  id Int @id @default(autoincrement())
+
+  slug  String @unique
+  label String
+
+  flashcards FlashcardTagLink[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model FlashcardTagLink {
+  id Int @id @default(autoincrement())
+
+  flashcard   Flashcard @relation(fields: [flashcardId], references: [id], onDelete: Cascade)
+  flashcardId Int
+
+  tag   FlashcardTag @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  tagId Int
+
+  @@unique([flashcardId, tagId])
+  @@index([tagId])
+}
+
+model FlashcardProgress {
+  id Int @id @default(autoincrement())
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+
+  flashcard   Flashcard @relation(fields: [flashcardId], references: [id], onDelete: Cascade)
+  flashcardId Int
+
+  state          FlashcardLearningState @default(LEARNING)
+  dueAt          DateTime
+  intervalDays   Int                    @default(0)
+  easeFactor     Float                  @default(2.5)
+  repetitions    Int                    @default(0)
+  lapses         Int                    @default(0)
+  lastReviewedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, flashcardId])
+  @@index([userId, dueAt])
+  @@index([flashcardId])
+}
+
+model FlashcardReviewLog {
+  id Int @id @default(autoincrement())
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+
+  flashcard   Flashcard @relation(fields: [flashcardId], references: [id], onDelete: Cascade)
+  flashcardId Int
+
+  rating             FlashcardRating
+  previousInterval   Int
+  scheduledInterval  Int
+  previousEaseFactor Float
+  nextEaseFactor     Float
+  reviewedAt         DateTime        @default(now())
+  dueAt              DateTime
+
+  @@index([userId, reviewedAt])
+  @@index([flashcardId])
 }
 
 // Bucket rate limit auth hanya menyimpan hash, bukan email atau alamat IP mentah.

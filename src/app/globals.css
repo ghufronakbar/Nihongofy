@@ -267,6 +267,28 @@
   .page-reveal-delay-2 {
     animation-delay: 160ms;
   }
+
+  .kana-flip-card {
+    perspective: 900px;
+  }
+
+  .kana-flip-card-inner {
+    @apply relative block h-full w-full transition-transform duration-500;
+    transform-style: preserve-3d;
+  }
+
+  .kana-flip-card.is-flipped .kana-flip-card-inner {
+    transform: rotateY(180deg);
+  }
+
+  .kana-flip-face {
+    @apply absolute inset-0 block overflow-hidden;
+    backface-visibility: hidden;
+  }
+
+  .kana-flip-back {
+    transform: rotateY(180deg);
+  }
 }
 
 @keyframes page-reveal {

@@ -475,6 +475,9 @@ Acceptance criteria:
 
 Tujuan: mengimplementasikan fitur baru yang paling mandiri lebih dahulu.
 
+Status: selesai pada 26 Agustus 2026. Detail implementasi, model scheduler, seed, dan hasil
+verifikasi tersedia di `plan/phase-3-kana-vocabulary.md`.
+
 Kana:
 
 - Route hiragana dan katakana.

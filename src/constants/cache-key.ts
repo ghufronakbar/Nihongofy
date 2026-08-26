@@ -8,6 +8,8 @@ export const CACHE_TAGS = {
   attemptSummary: (attemptId: number) => `attempt-${attemptId}`,
   dashboardSummary: (userId: number) => `dashboard-${userId}`,
   analytics: (userId: number) => `analytics-${userId}`,
+  vocabularyDeckList: "vocabulary-deck-list",
+  vocabularyDeck: (slug: string) => `vocabulary-deck-${slug}`,
 } as const;
 
 export const CACHE_KEYS = {
@@ -20,6 +22,8 @@ export const CACHE_KEYS = {
   attemptSummary: (attemptId: number) => ["attempt-summary", String(attemptId)],
   dashboardSummary: (userId: number) => ["dashboard-summary", String(userId)],
   analytics: (userId: number) => ["analytics", String(userId)],
+  vocabularyDeckList: ["vocabulary-deck-list"] as string[],
+  vocabularyDeck: (slug: string) => ["vocabulary-deck", slug],
   // Shares CACHE_TAGS.analytics for invalidation — both derive from the same
   // source (completed attempts), so one updateTag on submit refreshes both.
   progress: (userId: number) => ["progress", String(userId)],

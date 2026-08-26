@@ -5,10 +5,12 @@ import { usePathname } from "next/navigation";
 import { useTransition } from "react";
 import {
   BookOpen,
+  Brain,
   ChartNoAxesCombined,
   History,
   LayoutDashboard,
   LogOut,
+  Languages,
   TrendingUp,
   UserRound,
 } from "lucide-react";
@@ -28,6 +30,8 @@ import { logoutAction } from "@/features/auth/actions";
 
 const NAV_ITEMS = [
   { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { title: "Kana", href: "/kana/hiragana", icon: Languages },
+  { title: "Vocabulary", href: "/vocab", icon: Brain },
   { title: "Test Package", href: "/test-package", icon: BookOpen },
   { title: "History", href: "/history", icon: History },
   { title: "Progress", href: "/progress", icon: TrendingUp },

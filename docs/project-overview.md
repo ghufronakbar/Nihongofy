@@ -45,6 +45,10 @@ Mencakup juga `/exam` dan `/result` (awalnya direncanakan tanpa sidebar untuk mo
 | Route | Deskripsi |
 |---|---|
 | `/dashboard` | Ringkasan singkat (attempt terakhir, statistik ringkas) dan CTA ke test package. |
+| `/kana/hiragana` | Grid hiragana interaktif dengan pencarian, filter grup, romaji, variasi dakuten/handakuten, TTS fallback, dan review per akun. |
+| `/kana/katakana` | Grid katakana dengan flow dan persistence review yang sama seperti hiragana. |
+| `/vocab` | Daftar deck vocabulary terbit beserta jumlah kartu baru dan jatuh tempo milik user. |
+| `/vocab/[deckSlug]` | Browse previous/next atau review SRS `Again`, `Hard`, `Good`, `Easy`; progress dan review log disimpan ke database. |
 | `/analytics` | Rapor hasil belajar: skor per attempt, tren, kelemahan per `mondaiType`/section. Hanya menghitung attempt `COMPLETED`. |
 | `/test-package` | Daftar paket tes, dikelompokkan per level: N1 [paket-paket N1], N2 [paket-paket N2], dst. |
 | `/test-package/[id]` | Overview satu paket: berapa kali dikerjakan + hasilnya, informasi waktu resmi per sesi JLPT (acuan timer manual), tombol mulai **mock test** (full) atau **latihan per seksi** (pilih section, mis. choukai/dokkai saja). Menekan tombol = membuat `Attempt` baru lalu redirect ke `/exam/...`. |
@@ -76,3 +80,6 @@ Aturan halaman exam:
 - Semua route `(dashboard)` (termasuk `/exam` dan `/result`) memerlukan session; tanpa session redirect ke `/login?next=<path>`.
 - Global state jawaban exam sebaiknya di-persist (mis. sessionStorage/localStorage) agar refresh halaman tidak menghilangkan jawaban yang belum disubmit.
 - Submit sesi bersifat final untuk sesi tersebut — setelah submit, sesi tidak bisa dikerjakan ulang di attempt yang sama. Attempt menjadi `COMPLETED` setelah sesi terakhir disubmit.
+- Konten kana memakai fixture terkurasi dengan stable key. Hanya aktivitas per-user yang disimpan di `KanaProgress`.
+- Konten vocabulary disimpan dalam deck, kartu global, tag, dan join table. Satu kartu dapat muncul di beberapa deck tanpa menduplikasi `FlashcardProgress`.
+- Review vocabulary memakai antrean deterministik: kartu due diurutkan berdasarkan `dueAt`, kemudian kartu baru berdasarkan urutan deck.

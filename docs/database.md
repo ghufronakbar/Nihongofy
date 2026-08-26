@@ -34,6 +34,26 @@ QuestionContext (bacaan/audio/gambar yang dipakai >1 soal, terikat ke TestPackag
 Attempt (1 sesi pengerjaan) └── AttemptAnswer (jawaban per soal)
 ```
 
+### Kana dan vocabulary
+
+```text
+KanaProgress (aktivitas kana per user + stable fixture key)
+
+FlashcardDeck
+└── FlashcardDeckItem ── Flashcard
+                         ├── FlashcardTagLink ── FlashcardTag
+                         ├── FlashcardProgress (satu row per user + kartu)
+                         └── FlashcardReviewLog (riwayat setiap rating)
+```
+
+- `Flashcard.key`, `FlashcardDeck.slug`, dan `FlashcardTag.slug` adalah stable seed identity.
+- Progress vocabulary bersifat global per kartu, bukan per deck. Kartu yang sudah dipelajari dari satu deck tidak kembali dianggap baru di deck lain.
+- Queue review mengutamakan progress dengan `dueAt <= now()`, lalu kartu baru menurut `FlashcardDeckItem.order`.
+- Rating SRS hanya menerima `AGAIN`, `HARD`, `GOOD`, atau `EASY`. Mutation selalu membuat review log dan memperbarui progress dalam satu transaksi.
+- `KanaProgress` tidak menyimpan duplikat content kana; `kanaKey` harus cocok dengan fixture yang dikenal aplikasi.
+- Seluruh query progress/log wajib berawal dari `session.userId`. `userId` dari client tidak pernah diterima sebagai sumber otorisasi.
+- Seed vocabulary dijalankan melalui `npm run seed:learning` dan wajib tetap idempotent.
+
 ## Aturan Penempatan Konten
 
 - `Question.questionText` HANYA berisi stem soal (mis. 「筆者の考えに合うものはどれか」). JANGAN menaruh bacaan panjang di sini.
