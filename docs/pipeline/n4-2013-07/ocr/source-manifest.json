@@ -1,0 +1,47 @@
+{
+  "package": "n4-2013-07",
+  "level": "N4",
+  "exam": "2013-07",
+  "sourceFiles": {
+    "combinedDocument": {
+      "driveId": "1cGO7p5a-EhkSZomxQlBK9a_LDOkSnt2f",
+      "path": "document.pdf",
+      "sha256": "070ed98c44f5e2db88885e681cd6879b6b61a430cd8b4fbd96bab76df8fc0d53",
+      "pages": 23,
+      "textLayerChars": 3886,
+      "textLayerUseful": false,
+      "role": "question booklet + answer key + explanations + listening transcript"
+    },
+    "audio": {
+      "driveId": "1R1sPfcvoa2zK2AfuihrnSOWi--xNL72U",
+      "path": "audio.m4a",
+      "sha256": "e7e022baa2fdb50820c15bca39bee099b9834bc0f4daa7b6aa92556f4834fb86",
+      "codec": "aac",
+      "sampleRate": 44100,
+      "channels": 2,
+      "durationSeconds": 2316.957007,
+      "size": 18756930
+    }
+  },
+  "pageRoleMap": [
+    {"scanRange": "1", "role": "redistributed cover / front matter"},
+    {"scanRange": "2-4", "role": "written question booklet: MOJI_GOI Q1-40"},
+    {"scanRange": "5-9", "role": "written question booklet: BUNPOU Q1-25 + DOKKAI Q26-34"},
+    {"scanRange": "10-13", "role": "listening question booklet: 問題1-4"},
+    {"scanRange": "14", "role": "candidate compact answer key; user locator hint pending focused verification"},
+    {"scanRange": "15-19", "role": "written explanations / answer corroboration"},
+    {"scanRange": "20-23", "role": "listening transcript; 問題1-4"}
+  ],
+  "knownQuestionRanges": {
+    "MOJI_GOI": "1-35 (9/6/10/5/5)",
+    "BUNPOU": "1-25 (15/5/5)",
+    "DOKKAI": "26-35 (4/4/2)",
+    "CHOUKAI": "numbering resets: 8/7/5/8"
+  },
+  "notes": [
+    "Exam identity visually verified as July 2013 JLPT N4.",
+    "PDF text layer is corrupt/garbled and must not be used as the primary exact parser.",
+    "Scan 8 introduces DOKKAI information retrieval; scan 9 contains the required tables."
+  ],
+  "status": "preflight_in_progress"
+}
