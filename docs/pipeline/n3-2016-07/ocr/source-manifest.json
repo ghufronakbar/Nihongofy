@@ -1,0 +1,67 @@
+{
+  "package": "n3-2016-07",
+  "level": "N3",
+  "exam": "2016-07",
+  "sourceFiles": {
+    "questions": {
+      "path": "questions.pdf",
+      "sha256": "19403a2056f39303d08a9907871efbf0f9c2c3d7586b602276948a9951f6b26c",
+      "pages": 20,
+      "textLayerChars": 15440,
+      "role": "question booklet"
+    },
+    "answers": {
+      "path": "answers.pdf",
+      "sha256": "fbcf2d2501ada1350d52b247964828a95a2a9b54e58d5b9cd4f2ddff0284e75c",
+      "pages": 14,
+      "textLayerChars": 151,
+      "role": "answer key / script source; compact answer table is image-based"
+    },
+    "audio": {
+      "path": "audio.mp3",
+      "sha256": "6fdda21080241de66ad6ddc208e7ef2e290db31c876a70b2343aee8b84df4852",
+      "durationSeconds": 1999.307755,
+      "sampleRate": 44100,
+      "channels": 2,
+      "codec": "mp3",
+      "role": "listening source audio"
+    }
+  },
+  "pageRoleMap": [
+    {"scanIndex": "questions 1", "role": "cover / watermark"},
+    {"scanIndex": "questions 2-14", "role": "written questions; text layer available"},
+    {"scanIndex": "questions 15", "role": "question-side page with Q37-Q39; Q38-Q39 reference an external/facing notice"},
+    {"scanIndex": "supplemental image q38-39-stimulus.png", "role": "user-supplied notice/stimulus for Q38-Q39; content-verified, physical pagination not independently verified"},
+    {"scanIndex": "questions 16-19", "role": "listening question booklet; Q1-Q2 choices, Q3 audio-only, Q4 picture prompts, Q5 audio-only"},
+    {"scanIndex": "questions 20", "role": "cover / watermark"},
+    {"scanIndex": "answers 1", "role": "compact answer key; image-based"},
+    {"scanIndex": "answers 2-9", "role": "answer/script pages; image-based or sparse text layer"},
+    {"scanIndex": "answers 10-14", "role": "listening script / answer material; requires visual review"}
+  ],
+  "observedCounts": {
+    "MOJI_GOI": 35,
+    "BUNPOU": 18,
+    "DOKKAI": 16,
+    "CHOUKAI": 28,
+    "total": 97,
+    "evidence": "visible question ranges and answer-key vision readback; final counts must be reconciled against compact answer table"
+  },
+  "blockers": [
+    {
+      "id": "missing-dokkai-page-7-facing-notice",
+      "status": "resolved_with_supplement",
+      "detail": "User supplied q38-39-stimulus.png; the notice/table and application cautions were content-verified and recorded in ocr/q38-39-stimulus.md. Physical booklet pagination remains unverified." 
+    },
+    {
+      "id": "answer-key-image-ocr",
+      "status": "needs_review",
+      "detail": "answers.pdf has only 151 text-layer characters; compact answer rows require page-image OCR/visual transcription and independent reconciliation."
+    },
+    {
+      "id": "listening-asr-and-media",
+      "status": "needs_review",
+      "detail": "Timestamped ASR is now generated at generated/n3-2016-07-asr.json (428 segments), but mondai boundaries still need script/marker/acoustic reconciliation. Q4 picture crops also require question-specific extraction and visual QA."
+    }
+  ],
+  "status": "candidate_generated_needs_review"
+}
