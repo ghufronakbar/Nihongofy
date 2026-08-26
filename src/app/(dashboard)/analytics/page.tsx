@@ -19,6 +19,7 @@ const VALID_SECTIONS = Object.keys(JLPT_SECTION_LABELS) as JlptSection[];
 
 function resolveScope(value: string | undefined): AnalyticsScope {
   if (value === "MOCK") return "MOCK";
+  if (value === "PRACTICE") return "PRACTICE";
   if (value && (VALID_SECTIONS as string[]).includes(value)) return value as JlptSection;
   return "ALL";
 }
@@ -33,7 +34,7 @@ export default async function AnalyticsPage({
   const rangePreset = isDateRangePreset(params.range) ? params.range : "all";
   const { from, to } = resolveDateRangePreset(rangePreset, params.from, params.to);
 
-  const { trend, levelStats } = await getAnalytics({
+  const { trend, levelStats, practiceSummary } = await getAnalytics({
     scope,
     fromIso: from?.toISOString(),
     toIso: to?.toISOString(),
@@ -61,41 +62,92 @@ export default async function AnalyticsPage({
         <AnalyticsFilterBar />
       </Suspense>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Tren Skor</CardTitle>
-          <CardDescription>
-            Skor tiap attempt yang sudah diselesaikan, berurutan waktu, sesuai filter di atas.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {trendData.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
-              Belum ada attempt yang cocok dengan filter ini.
-            </p>
-          ) : (
-            <ScoreTrendChart data={trendData} />
-          )}
-        </CardContent>
-      </Card>
-
-      {levelStats.length === 0 ? (
+      {scope !== "PRACTICE" && (
         <Card>
           <CardHeader>
-            <CardTitle>Analisis per Level</CardTitle>
+            <CardTitle>Tren Skor</CardTitle>
+            <CardDescription>
+              Skor tiap attempt yang sudah diselesaikan, berurutan waktu, sesuai filter di atas.
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground">Belum ada data untuk filter ini.</p>
+            {trendData.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                Belum ada attempt yang cocok dengan filter ini.
+              </p>
+            ) : (
+              <ScoreTrendChart data={trendData} />
+            )}
           </CardContent>
         </Card>
-      ) : (
-        <AnalyticsTabs
-          levelStats={levelStats.map(({ level, mondaiStats }) => ({
-            level,
-            projection: computeJlptScoreProjection(mondaiStats),
-          }))}
-        />
       )}
+
+      {scope !== "MOCK" && (
+        <Card className="border-[3px] border-neo-ink shadow-neo">
+          <CardHeader>
+            <CardTitle>Latihan Cepat</CardTitle>
+            <CardDescription>
+              Akurasi latihan dengan feedback langsung. Angka ini tidak masuk ke proyeksi skor mock
+              JLPT.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {practiceSummary.sessions === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                Belum ada sesi latihan cepat yang selesai untuk filter ini.
+              </p>
+            ) : (
+              <div className="space-y-5">
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <div className="border-[3px] border-neo-ink bg-neo-yellow p-4 text-black shadow-neo-sm">
+                    <p className="text-xs font-bold uppercase">Sesi selesai</p>
+                    <p className="mt-1 text-3xl font-black">{practiceSummary.sessions}</p>
+                  </div>
+                  <div className="border-[3px] border-neo-ink bg-neo-blue p-4 text-black shadow-neo-sm">
+                    <p className="text-xs font-bold uppercase">Soal dijawab</p>
+                    <p className="mt-1 text-3xl font-black">{practiceSummary.questions}</p>
+                  </div>
+                  <div className="border-[3px] border-neo-ink bg-neo-green p-4 text-black shadow-neo-sm">
+                    <p className="text-xs font-bold uppercase">Akurasi</p>
+                    <p className="mt-1 text-3xl font-black">{practiceSummary.accuracy}%</p>
+                  </div>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  {practiceSummary.byLevel.map((row) => (
+                    <div key={row.level} className="border-[3px] border-neo-ink bg-card p-4">
+                      <p className="text-lg font-black">{row.level}</p>
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        {row.correct}/{row.questions} benar dari {row.sessions} sesi
+                      </p>
+                      <p className="mt-2 font-mono text-xl font-black">{row.accuracy}%</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {scope !== "PRACTICE" &&
+        (levelStats.length === 0 ? (
+          <Card>
+            <CardHeader>
+              <CardTitle>Analisis per Level</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">Belum ada data untuk filter ini.</p>
+            </CardContent>
+          </Card>
+        ) : (
+          <AnalyticsTabs
+            levelStats={levelStats.map(({ level, mondaiStats }) => ({
+              level,
+              projection: computeJlptScoreProjection(mondaiStats),
+            }))}
+          />
+        ))}
     </div>
   );
 }

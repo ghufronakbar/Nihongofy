@@ -82,6 +82,12 @@ enum FlashcardRating {
   EASY
 }
 
+enum PracticeSessionStatus {
+  IN_PROGRESS
+  COMPLETED
+  ABANDONED
+}
+
 // ============================================================
 // USER
 // ============================================================
@@ -101,6 +107,7 @@ model User {
   kanaProgresses      KanaProgress[]
   flashcardProgresses FlashcardProgress[]
   flashcardReviewLogs FlashcardReviewLog[]
+  practiceSessions    PracticeSession[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -377,6 +384,7 @@ model Question {
 
   questionComments QuestionComment[]
   attemptAnswers   AttemptAnswer[]
+  practiceAnswers  PracticeAnswer[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -485,5 +493,61 @@ model AttemptAnswer {
 
   // satu soal hanya boleh punya satu jawaban per attempt (jawaban di-update, bukan insert baru)
   @@unique([attemptId, questionId])
+  @@index([questionId])
+}
+
+// ============================================================
+// LATIHAN CEPAT
+// ============================================================
+
+// Latihan cepat memakai bank Question existing, tetapi session dan analitiknya
+// terpisah dari Attempt agar tidak masuk ke proyeksi skor mock JLPT.
+model PracticeSession {
+  id Int @id @default(autoincrement())
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+
+  jlptLevel     JlptLevel
+  section       JlptSection
+  mondaiType    MondaiType
+  questionCount Int
+
+  status     PracticeSessionStatus @default(IN_PROGRESS)
+  startedAt  DateTime              @default(now())
+  finishedAt DateTime?
+
+  answers PracticeAnswer[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, startedAt])
+  @@index([status])
+  @@index([jlptLevel, section, mondaiType])
+}
+
+// Baris dibuat saat session dimulai. selectedAnswer/isCorrect/answeredAt masih
+// null sampai user mengirim jawaban, sehingga urutan dan membership soal tetap
+// dapat diverifikasi server-side sebelum feedback diberikan.
+model PracticeAnswer {
+  id Int @id @default(autoincrement())
+
+  practiceSession   PracticeSession @relation(fields: [practiceSessionId], references: [id], onDelete: Cascade)
+  practiceSessionId Int
+
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId Int
+
+  order          Int
+  selectedAnswer Int?
+  isCorrect      Boolean?
+  answeredAt     DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([practiceSessionId, questionId])
+  @@unique([practiceSessionId, order])
   @@index([questionId])
 }

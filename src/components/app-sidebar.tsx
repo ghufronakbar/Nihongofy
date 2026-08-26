@@ -11,6 +11,7 @@ import {
   LayoutDashboard,
   LogOut,
   Languages,
+  Sparkles,
   TrendingUp,
   UserRound,
 } from "lucide-react";
@@ -32,6 +33,7 @@ const NAV_ITEMS = [
   { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { title: "Kana", href: "/kana/hiragana", icon: Languages },
   { title: "Vocabulary", href: "/vocab", icon: Brain },
+  { title: "Latihan Cepat", href: "/exercises", icon: Sparkles },
   { title: "Test Package", href: "/test-package", icon: BookOpen },
   { title: "History", href: "/history", icon: History },
   { title: "Progress", href: "/progress", icon: TrendingUp },

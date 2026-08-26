@@ -32,6 +32,9 @@ TestPackage (1 paket ujian, mis. "JLPT N2 - Juli 2025")
 
 QuestionContext (bacaan/audio/gambar yang dipakai >1 soal, terikat ke TestPackage)
 Attempt (1 sesi pengerjaan) └── AttemptAnswer (jawaban per soal)
+
+PracticeSession (latihan cepat per user)
+└── PracticeAnswer (assignment soal + jawaban dan feedback state)
 ```
 
 ### Kana dan vocabulary
@@ -53,6 +56,16 @@ FlashcardDeck
 - `KanaProgress` tidak menyimpan duplikat content kana; `kanaKey` harus cocok dengan fixture yang dikenal aplikasi.
 - Seluruh query progress/log wajib berawal dari `session.userId`. `userId` dari client tidak pernah diterima sebagai sumber otorisasi.
 - Seed vocabulary dijalankan melalui `npm run seed:learning` dan wajib tetap idempotent.
+
+### Latihan cepat
+
+- `PracticeSession` menyimpan satu konfigurasi level, section, mondai, jumlah soal, status, dan timestamp latihan milik user.
+- `PracticeAnswer` dibuat saat session dimulai sehingga membership dan urutan soal tetap stabil setelah refresh.
+- `selectedAnswer`, `isCorrect`, dan `answeredAt` tetap null sebelum soal dijawab, lalu diisi bersama saat feedback pertama diproses.
+- Unique `(practiceSessionId, questionId)` mencegah satu soal muncul dua kali dalam session. Unique `(practiceSessionId, order)` menjaga urutan assignment.
+- Kunci jawaban dan explanation hanya boleh diambil server-side untuk soal yang sedang disubmit atau sudah dijawab. Payload awal session tidak boleh memuat field tersebut.
+- Latihan cepat tidak memakai `Attempt`, sehingga akurasi practice tidak bercampur dengan proyeksi skor mock JLPT.
+- Seluruh query dan mutation practice wajib memverifikasi `PracticeSession.userId` terhadap `session.userId`.
 
 ## Aturan Penempatan Konten
 

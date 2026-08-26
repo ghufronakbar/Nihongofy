@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import { LoginForm } from "@/features/auth/components/login-form";
 import { getSafeRedirectPath } from "@/features/auth/lib/safe-redirect";
 
@@ -20,7 +21,11 @@ export default async function LoginPage({
   const session = await getSession();
 
   if (session) {
-    redirect(nextPath);
+    const userExists = await prisma.user.findUnique({
+      where: { id: session.userId },
+      select: { id: true },
+    });
+    if (userExists) redirect(nextPath);
   }
 
   return (

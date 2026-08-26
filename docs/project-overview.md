@@ -49,7 +49,9 @@ Mencakup juga `/exam` dan `/result` (awalnya direncanakan tanpa sidebar untuk mo
 | `/kana/katakana` | Grid katakana dengan flow dan persistence review yang sama seperti hiragana. |
 | `/vocab` | Daftar deck vocabulary terbit beserta jumlah kartu baru dan jatuh tempo milik user. |
 | `/vocab/[deckSlug]` | Browse previous/next atau review SRS `Again`, `Hard`, `Good`, `Easy`; progress dan review log disimpan ke database. |
-| `/analytics` | Rapor hasil belajar: skor per attempt, tren, kelemahan per `mondaiType`/section. Hanya menghitung attempt `COMPLETED`. |
+| `/exercises` | Configurator latihan cepat berdasarkan level, section, mondai type, dan jumlah soal yang tersedia pada bank existing. |
+| `/exercises/[sessionId]` | Runner satu soal per langkah dengan feedback langsung, persistence database, previous/next, restart, dan ringkasan. |
+| `/analytics` | Rapor hasil belajar: tren dan kelemahan attempt `COMPLETED`, ditambah akurasi `PracticeSession.COMPLETED` pada panel terpisah tanpa proyeksi skor mock. |
 | `/test-package` | Daftar paket tes, dikelompokkan per level: N1 [paket-paket N1], N2 [paket-paket N2], dst. |
 | `/test-package/[id]` | Overview satu paket: berapa kali dikerjakan + hasilnya, informasi waktu resmi per sesi JLPT (acuan timer manual), tombol mulai **mock test** (full) atau **latihan per seksi** (pilih section, mis. choukai/dokkai saja). Menekan tombol = membuat `Attempt` baru lalu redirect ke `/exam/...`. |
 | `/test-package/[id]/questions` | Mode baca: melihat semua soal paket secara langsung, furigana tampil, comment tampil. Bukan mode pengerjaan. |
@@ -83,3 +85,6 @@ Aturan halaman exam:
 - Konten kana memakai fixture terkurasi dengan stable key. Hanya aktivitas per-user yang disimpan di `KanaProgress`.
 - Konten vocabulary disimpan dalam deck, kartu global, tag, dan join table. Satu kartu dapat muncul di beberapa deck tanpa menduplikasi `FlashcardProgress`.
 - Review vocabulary memakai antrean deterministik: kartu due diurutkan berdasarkan `dueAt`, kemudian kartu baru berdasarkan urutan deck.
+- Latihan cepat membuat assignment `PracticeAnswer` di awal session. Refresh melanjutkan soal pertama yang belum dijawab.
+- Feedback practice hanya membuka kunci dan explanation soal yang sudah disubmit. Seluruh soal lain tetap tidak membawa answer key ke client.
+- Analytics latihan cepat tampil sebagai akurasi terpisah dan tidak memakai proyeksi skor resmi/mock JLPT.

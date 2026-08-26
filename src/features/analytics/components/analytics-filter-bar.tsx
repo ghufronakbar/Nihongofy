@@ -18,8 +18,9 @@ import { JLPT_SECTION_LABELS } from "@/constants/jlpt";
 import { DATE_RANGE_PRESETS, type DateRangePreset } from "@/lib/date-range-preset";
 
 const SCOPE_OPTIONS: { value: string; label: string }[] = [
-  { value: "ALL", label: "Semua Attempt" },
+  { value: "ALL", label: "Semua Aktivitas" },
   { value: "MOCK", label: "Mock Test" },
+  { value: "PRACTICE", label: "Latihan Cepat" },
   ...(Object.keys(JLPT_SECTION_LABELS) as JlptSection[]).map((section) => ({
     value: section,
     label: `Latihan ${JLPT_SECTION_LABELS[section]}`,
@@ -119,7 +120,7 @@ export function AnalyticsFilterBar() {
         <Popover>
           <PopoverTrigger render={<Button type="button" variant="outline" size="sm" />}>
             <CalendarIcon className="size-4" />
-            {from ? `${from} – ${to ?? "..."}` : "Pilih tanggal"}
+            {from ? `${from} - ${to ?? "..."}` : "Pilih tanggal"}
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
             <Calendar

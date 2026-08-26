@@ -511,6 +511,9 @@ Acceptance criteria:
 
 Tujuan: menambah pengalaman exercise referensi tanpa merusak exam security model.
 
+Status: selesai pada 26 Agustus 2026. Implementasi, migration, security audit, dan hasil
+verifikasi tersedia di `plan/phase-4-quick-exercises.md`.
+
 Pekerjaan:
 
 - `/exercises` menampilkan pilihan level, section, mondai type, dan jumlah soal.

@@ -9,9 +9,9 @@ import { CACHE_KEYS, CACHE_TAGS } from "@/constants/cache-key";
 import { JLPT_LEVEL_ORDER } from "@/constants/jlpt";
 import type { MondaiStatInput } from "@/lib/jlpt-score";
 
-// "ALL" = tidak difilter, "MOCK" = hanya full test (sectionScope null),
-// selebihnya = hanya latihan section tertentu.
-export type AnalyticsScope = "ALL" | "MOCK" | JlptSection;
+// Scope memisahkan attempt mock/section dan practice. "ALL" menggabungkan
+// keduanya di panel masing-masing tanpa mencampur perhitungan skor.
+export type AnalyticsScope = "ALL" | "MOCK" | "PRACTICE" | JlptSection;
 
 export type AnalyticsFilters = {
   scope: AnalyticsScope;
@@ -24,10 +24,34 @@ export type AnalyticsFilters = {
 function buildAttemptWhere(userId: number, filters: AnalyticsFilters): Prisma.AttemptWhereInput {
   const where: Prisma.AttemptWhereInput = { userId, status: "COMPLETED" };
 
-  if (filters.scope === "MOCK") {
+  if (filters.scope === "PRACTICE") {
+    where.id = -1;
+  } else if (filters.scope === "MOCK") {
     where.sectionScope = null;
   } else if (filters.scope !== "ALL") {
     where.sectionScope = filters.scope;
+  }
+
+  if (filters.fromIso || filters.toIso) {
+    where.finishedAt = {
+      ...(filters.fromIso ? { gte: new Date(filters.fromIso) } : {}),
+      ...(filters.toIso ? { lte: new Date(filters.toIso) } : {}),
+    };
+  }
+
+  return where;
+}
+
+function buildPracticeWhere(
+  userId: number,
+  filters: AnalyticsFilters,
+): Prisma.PracticeSessionWhereInput {
+  const where: Prisma.PracticeSessionWhereInput = { userId, status: "COMPLETED" };
+
+  if (filters.scope === "MOCK") {
+    where.id = -1;
+  } else if (filters.scope !== "ALL" && filters.scope !== "PRACTICE") {
+    where.section = filters.scope;
   }
 
   if (filters.fromIso || filters.toIso) {
@@ -51,8 +75,9 @@ const getCachedAnalytics = (userId: number) =>
     // a distinct cache key per filter combination automatically.
     async (id: number, filters: AnalyticsFilters) => {
       const attemptWhere = buildAttemptWhere(id, filters);
+      const practiceWhere = buildPracticeWhere(id, filters);
 
-      const [attempts, answers] = await Promise.all([
+      const [attempts, answers, practiceSessions] = await Promise.all([
         prisma.attempt.findMany({
           where: attemptWhere,
           orderBy: { finishedAt: "asc" },
@@ -73,6 +98,17 @@ const getCachedAnalytics = (userId: number) =>
             },
             attempt: {
               select: { testPackage: { select: { jlptLevel: true } } },
+            },
+          },
+        }),
+        prisma.practiceSession.findMany({
+          where: practiceWhere,
+          orderBy: { finishedAt: "desc" },
+          select: {
+            jlptLevel: true,
+            answers: {
+              where: { answeredAt: { not: null } },
+              select: { isCorrect: true },
             },
           },
         }),
@@ -115,7 +151,46 @@ const getCachedAnalytics = (userId: number) =>
         ),
       }));
 
-      return { trend, levelStats };
+      const practiceTotals = practiceSessions.reduce(
+        (total, practice) => {
+          total.questions += practice.answers.length;
+          total.correct += practice.answers.filter((answer) => answer.isCorrect === true).length;
+          return total;
+        },
+        { questions: 0, correct: 0 },
+      );
+
+      const practiceByLevel = JLPT_LEVEL_ORDER.map((level) => {
+        const sessions = practiceSessions.filter((practice) => practice.jlptLevel === level);
+        const questions = sessions.reduce((total, practice) => total + practice.answers.length, 0);
+        const correct = sessions.reduce(
+          (total, practice) =>
+            total + practice.answers.filter((answer) => answer.isCorrect === true).length,
+          0,
+        );
+        return {
+          level,
+          sessions: sessions.length,
+          questions,
+          correct,
+          accuracy: questions > 0 ? Math.round((correct / questions) * 100) : 0,
+        };
+      }).filter((row) => row.sessions > 0);
+
+      return {
+        trend,
+        levelStats,
+        practiceSummary: {
+          sessions: practiceSessions.length,
+          questions: practiceTotals.questions,
+          correct: practiceTotals.correct,
+          accuracy:
+            practiceTotals.questions > 0
+              ? Math.round((practiceTotals.correct / practiceTotals.questions) * 100)
+              : 0,
+          byLevel: practiceByLevel,
+        },
+      };
     },
     CACHE_KEYS.analytics(userId),
     { tags: [CACHE_TAGS.analytics(userId)] },
