@@ -59,8 +59,8 @@
     },
     {
       "id": "listening-asr-and-media",
-      "status": "needs_review",
-      "detail": "Timestamped ASR is now generated at generated/n3-2016-07-asr.json (428 segments), but mondai boundaries still need script/marker/acoustic reconciliation. Q4 picture crops also require question-specific extraction and visual QA."
+      "status": "audio_resolved_images_need_review",
+      "detail": "The five corrected per-Mondai audio clips were delivered to Discord and approved by the user (message 1542019786073047060), then uploaded to Cloudinary with Admin and HTTP byte-range readback and attached to ctx-choukai-1 through ctx-choukai-5. Q4 picture crops remain a separate question-specific extraction and visual-QA concern."
     }
   ],
   "status": "candidate_generated_needs_review"
