@@ -19,8 +19,10 @@ Stack: Next.js + Prisma + PostgreSQL (Supabase).
 
 - `User.displayName` wajib dan menjadi nama yang ditampilkan pada sidebar/catatan.
 - `User.email` unique bila terisi. PostgreSQL mengizinkan beberapa nilai `NULL`, sehingga akun legacy tetap dapat dipertahankan.
+- `User.avatarUrl` hanya menerima URL upload Cloudinary aplikasi pada action profile; file binary tidak disimpan di database.
 - `AuthRateLimit.keyHash` menyimpan HMAC-SHA256 dari scope dan subject. Jangan simpan email atau alamat IP mentah pada tabel rate limit.
 - Update bucket rate limit harus atomik dengan `INSERT ... ON CONFLICT DO UPDATE`, bukan pola select lalu update.
+- Update profile dan password selalu mengambil user dari `session.userId`. Ganti password wajib membandingkan current password, memakai bcrypt cost 12 untuk hash baru, lalu membuat ulang cookie session.
 
 ## Struktur Data (hierarki)
 
@@ -51,12 +53,20 @@ FlashcardDeck
                          ├── FlashcardTagLink ── FlashcardTag
                          ├── FlashcardProgress (satu row per user + kartu)
                          └── FlashcardReviewLog (riwayat setiap rating)
+
+User
+└── FlashcardSetting (satu row preference scheduler per user)
 ```
 
 - `Flashcard.key`, `FlashcardDeck.slug`, dan `FlashcardTag.slug` adalah stable seed identity.
 - Progress vocabulary bersifat global per kartu, bukan per deck. Kartu yang sudah dipelajari dari satu deck tidak kembali dianggap baru di deck lain.
 - Queue review mengutamakan progress dengan `dueAt <= now()`, lalu kartu baru menurut `FlashcardDeckItem.order`.
 - Rating SRS hanya menerima `AGAIN`, `HARD`, `GOOD`, atau `EASY`. Mutation selalu membuat review log dan memperbarui progress dalam satu transaksi.
+- `FlashcardProgress.learningStep` menyimpan posisi kartu pada learning/relearning steps. `FlashcardReviewLog.wasNew` membedakan konsumsi batas kartu baru dan review harian.
+- `FlashcardSetting` menyimpan batas harian, learning/relearning steps dalam menit, interval lulus/Easy, ease awal, lapse retention, interval minimum/maksimum, serta multiplier Hard/Easy/global.
+- Learning/relearning steps harus berisi 1-4 nilai positif yang meningkat, maksimal 30 hari per langkah. Form string seperti `1m 10m 1h` diparse server-side sebelum masuk database.
+- Batas harian dihitung sejak pukul 00.00 Asia/Jakarta. Action rating memeriksa ulang limit dan `dueAt`; UI queue bukan satu-satunya guard.
+- Semua range scheduler dijaga oleh Zod dan CHECK constraint database. Setting invalid tidak boleh diteruskan ke `scheduleFlashcard`.
 - `KanaProgress` tidak menyimpan duplikat content kana; `kanaKey` harus cocok dengan fixture yang dikenal aplikasi.
 - Seluruh query progress/log wajib berawal dari `session.userId`. `userId` dari client tidak pernah diterima sebagai sumber otorisasi.
 - Seed vocabulary dijalankan melalui `npm run seed:learning` dan wajib tetap idempotent.

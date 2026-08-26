@@ -45,6 +45,13 @@ type Deck = {
   reviewCardIds: number[];
   dueCount: number;
   newCount: number;
+  dailyQueue: {
+    remainingReviews: number;
+    remainingNew: number;
+    completedReviewsToday: number;
+    completedNewToday: number;
+    limitReached: boolean;
+  };
 };
 
 const RATING_OPTIONS: {
@@ -54,7 +61,7 @@ const RATING_OPTIONS: {
   className: string;
   icon: typeof RotateCcw;
 }[] = [
-  { rating: "AGAIN", label: "Again", hint: "10 menit", className: "bg-neo-coral", icon: RotateCcw },
+  { rating: "AGAIN", label: "Again", hint: "ulang cepat", className: "bg-neo-coral", icon: RotateCcw },
   { rating: "HARD", label: "Hard", hint: "lebih dekat", className: "bg-neo-yellow", icon: Clock3 },
   { rating: "GOOD", label: "Good", hint: "normal", className: "bg-neo-blue", icon: Check },
   { rating: "EASY", label: "Easy", hint: "lebih jauh", className: "bg-neo-green", icon: Zap },
@@ -143,10 +150,15 @@ export function VocabularyStudy({ deck, mode }: { deck: Deck; mode: "browse" | "
           <p className="mx-auto max-w-xl text-muted-foreground">
             {completedReviews > 0
               ? `${completedReviews} kartu sudah dijadwalkan ulang dan tersimpan pada akunmu.`
+              : deck.dailyQueue.limitReached
+                ? "Batas belajar hari ini sudah tercapai. Kamu tetap bisa menjelajahi deck atau mengubah batas harian."
               : "Tidak ada kartu baru atau jatuh tempo saat ini. Kembali lagi sesuai jadwal berikutnya."}
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Link href={`/vocab/${deck.slug}?mode=browse`} className="neo-button bg-white">Jelajahi deck</Link>
+            {deck.dailyQueue.limitReached ? (
+              <Link href="/profile/flashcard-settings" className="neo-button bg-neo-blue">Atur batas harian</Link>
+            ) : null}
             <Link href="/vocab" className="neo-button bg-neo-yellow">Pilih deck lain</Link>
           </div>
         </div>

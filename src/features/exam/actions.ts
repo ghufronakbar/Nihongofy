@@ -166,6 +166,7 @@ export async function submitExamSessionAction(input: SubmitExamSessionInput) {
     });
     updateTag(CACHE_TAGS.dashboardSummary(authSession.userId));
     updateTag(CACHE_TAGS.analytics(authSession.userId));
+    updateTag(CACHE_TAGS.profileOverview(authSession.userId));
     redirect(`/result/${attemptId}`);
   }
 

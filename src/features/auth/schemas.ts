@@ -7,7 +7,7 @@ export const EmailSchema = z
   .max(254, "Email terlalu panjang.")
   .email("Format email tidak valid.");
 
-const PasswordSchema = z
+export const PasswordSchema = z
   .string()
   .min(8, "Password minimal 8 karakter.")
   .max(72, "Password maksimal 72 karakter.")

@@ -350,6 +350,7 @@ export async function submitPracticeAnswerAction(input: SubmitPracticeAnswerInpu
   if (result.ok) {
     updateTag(CACHE_TAGS.analytics(authSession.userId));
     updateTag(CACHE_TAGS.dashboardSummary(authSession.userId));
+    updateTag(CACHE_TAGS.profileOverview(authSession.userId));
   }
 
   return result;

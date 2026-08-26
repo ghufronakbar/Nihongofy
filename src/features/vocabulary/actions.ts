@@ -1,11 +1,13 @@
 "use server";
 
-import { unstable_cache } from "next/cache";
+import { unstable_cache, updateTag } from "next/cache";
 import { notFound, redirect } from "next/navigation";
 import { CACHE_KEYS, CACHE_TAGS } from "@/constants/cache-key";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { scheduleFlashcard } from "./lib/scheduler";
+import { getFlashcardSettingsForUser } from "./lib/settings-data";
+import { getJakartaDayStart } from "./lib/settings";
 import {
   RateFlashcardSchema,
   UsageExamplesSchema,
@@ -110,17 +112,27 @@ export async function getVocabularyDeck(slug: string) {
   if (!deck?.isPublished) notFound();
 
   const flashcardIds = deck.items.map((item) => item.flashcard.id);
-  const progress = await prisma.flashcardProgress.findMany({
-    where: { userId: session.userId, flashcardId: { in: flashcardIds } },
-    select: {
-      flashcardId: true,
-      dueAt: true,
-      intervalDays: true,
-      repetitions: true,
-    },
-  });
-  const progressByCard = new Map(progress.map((item) => [item.flashcardId, item]));
   const now = new Date();
+  const dayStart = getJakartaDayStart(now);
+  const [progress, settings, completedNewToday, completedReviewsToday] = await Promise.all([
+    prisma.flashcardProgress.findMany({
+      where: { userId: session.userId, flashcardId: { in: flashcardIds } },
+      select: {
+        flashcardId: true,
+        dueAt: true,
+        intervalDays: true,
+        repetitions: true,
+      },
+    }),
+    getFlashcardSettingsForUser(session.userId),
+    prisma.flashcardReviewLog.count({
+      where: { userId: session.userId, wasNew: true, reviewedAt: { gte: dayStart } },
+    }),
+    prisma.flashcardReviewLog.count({
+      where: { userId: session.userId, wasNew: false, reviewedAt: { gte: dayStart } },
+    }),
+  ]);
+  const progressByCard = new Map(progress.map((item) => [item.flashcardId, item]));
 
   const cards = deck.items.map((item) => {
     const cardProgress = progressByCard.get(item.flashcard.id);
@@ -146,13 +158,18 @@ export async function getVocabularyDeck(slug: string) {
     };
   });
 
-  const reviewCards = cards
-    .filter((card) => card.isNew || card.isDue)
-    .sort((left, right) => {
-      if (left.isDue !== right.isDue) return left.isDue ? -1 : 1;
-      if (left.dueAt && right.dueAt) return left.dueAt.localeCompare(right.dueAt);
-      return left.order - right.order;
-    });
+  const dueCards = cards
+    .filter((card) => card.isDue)
+    .sort((left, right) => (left.dueAt ?? "").localeCompare(right.dueAt ?? ""));
+  const newCards = cards
+    .filter((card) => card.isNew)
+    .sort((left, right) => left.order - right.order);
+  const remainingReviews = Math.max(0, settings.maxReviewsPerDay - completedReviewsToday);
+  const remainingNew = Math.max(0, settings.newCardsPerDay - completedNewToday);
+  const reviewCards = [
+    ...dueCards.slice(0, remainingReviews),
+    ...newCards.slice(0, remainingNew),
+  ];
 
   return {
     id: deck.id,
@@ -164,6 +181,16 @@ export async function getVocabularyDeck(slug: string) {
     reviewCardIds: reviewCards.map((card) => card.id),
     dueCount: cards.filter((card) => card.isDue).length,
     newCount: cards.filter((card) => card.isNew).length,
+    dailyQueue: {
+      remainingReviews,
+      remainingNew,
+      completedReviewsToday,
+      completedNewToday,
+      limitReached:
+        reviewCards.length === 0 &&
+        ((dueCards.length > 0 && remainingReviews === 0) ||
+          (newCards.length > 0 && remainingNew === 0)),
+    },
   };
 }
 
@@ -186,18 +213,56 @@ export async function rateFlashcardAction(input: RateFlashcardInput) {
   });
   if (!membership) return { ok: false as const, message: "Kartu tidak ditemukan di deck ini." };
 
-  const previous = await prisma.flashcardProgress.findUnique({
-    where: { userId_flashcardId: { userId: session.userId, flashcardId } },
-    select: { intervalDays: true, easeFactor: true, repetitions: true, lapses: true },
-  });
+  const [previous, settings] = await Promise.all([
+    prisma.flashcardProgress.findUnique({
+      where: { userId_flashcardId: { userId: session.userId, flashcardId } },
+      select: {
+        state: true,
+        dueAt: true,
+        intervalDays: true,
+        easeFactor: true,
+        repetitions: true,
+        lapses: true,
+        learningStep: true,
+      },
+    }),
+    getFlashcardSettingsForUser(session.userId),
+  ]);
   const reviewedAt = new Date();
+  const dayStart = getJakartaDayStart(reviewedAt);
+
+  if (previous && previous.dueAt > reviewedAt) {
+    return { ok: false as const, message: "Kartu ini belum jatuh tempo." };
+  }
+
+  const completedInBucket = await prisma.flashcardReviewLog.count({
+    where: {
+      userId: session.userId,
+      wasNew: previous === null,
+      reviewedAt: { gte: dayStart },
+    },
+  });
+  const dailyLimit = previous ? settings.maxReviewsPerDay : settings.newCardsPerDay;
+
+  if (completedInBucket >= dailyLimit) {
+    return {
+      ok: false as const,
+      message: previous
+        ? "Batas review hari ini sudah tercapai."
+        : "Batas kartu baru hari ini sudah tercapai.",
+    };
+  }
+
   const scheduled = scheduleFlashcard({
     rating,
+    state: previous?.state ?? "LEARNING",
     intervalDays: previous?.intervalDays ?? 0,
-    easeFactor: previous?.easeFactor ?? 2.5,
+    easeFactor: previous?.easeFactor ?? settings.startingEaseFactor,
     repetitions: previous?.repetitions ?? 0,
     lapses: previous?.lapses ?? 0,
+    learningStep: previous?.learningStep ?? 0,
     reviewedAt,
+    settings,
   });
 
   await prisma.$transaction([
@@ -218,13 +283,16 @@ export async function rateFlashcardAction(input: RateFlashcardInput) {
         rating,
         previousInterval: previous?.intervalDays ?? 0,
         scheduledInterval: scheduled.intervalDays,
-        previousEaseFactor: previous?.easeFactor ?? 2.5,
+        previousEaseFactor: previous?.easeFactor ?? settings.startingEaseFactor,
         nextEaseFactor: scheduled.easeFactor,
+        wasNew: previous === null,
         reviewedAt,
         dueAt: scheduled.dueAt,
       },
     }),
   ]);
+
+  updateTag(CACHE_TAGS.profileOverview(session.userId));
 
   return {
     ok: true as const,

@@ -1,6 +1,8 @@
 "use server";
 
+import { updateTag } from "next/cache";
 import { redirect } from "next/navigation";
+import { CACHE_TAGS } from "@/constants/cache-key";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { isKnownKanaKey } from "./data/kana";
@@ -59,6 +61,8 @@ export async function recordKanaProgressAction(input: KanaProgressInput) {
       "lastGradedAt" = COALESCE(EXCLUDED."lastGradedAt", "KanaProgress"."lastGradedAt"),
       "updatedAt" = NOW()
   `;
+
+  updateTag(CACHE_TAGS.profileOverview(session.userId));
 
   return { ok: true as const };
 }

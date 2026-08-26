@@ -51,7 +51,7 @@ Mencakup juga `/exam` dan `/result` (awalnya direncanakan tanpa sidebar untuk mo
 | `/kana/hiragana` | Grid hiragana interaktif dengan pencarian, filter grup, romaji, variasi dakuten/handakuten, TTS fallback, dan review per akun. |
 | `/kana/katakana` | Grid katakana dengan flow dan persistence review yang sama seperti hiragana. |
 | `/vocab` | Daftar deck vocabulary terbit beserta jumlah kartu baru dan jatuh tempo milik user. |
-| `/vocab/[deckSlug]` | Browse previous/next atau review SRS `Again`, `Hard`, `Good`, `Easy`; progress dan review log disimpan ke database. |
+| `/vocab/[deckSlug]` | Browse previous/next atau review SRS `Again`, `Hard`, `Good`, `Easy`; queue memakai due date, batas harian, dan preference scheduler milik user. |
 | `/exercises` | Configurator latihan cepat berdasarkan level, section, mondai type, dan jumlah soal yang tersedia pada bank existing. |
 | `/exercises/[sessionId]` | Runner satu soal per langkah dengan feedback langsung, persistence database, previous/next, restart, dan ringkasan. |
 | `/analytics` | Rapor hasil belajar: tren dan kelemahan attempt `COMPLETED`, ditambah akurasi `PracticeSession.COMPLETED` pada panel terpisah tanpa proyeksi skor mock. |
@@ -59,6 +59,11 @@ Mencakup juga `/exam` dan `/result` (awalnya direncanakan tanpa sidebar untuk mo
 | `/test-package/[id]` | Overview satu paket: berapa kali dikerjakan + hasilnya, informasi waktu resmi per sesi JLPT (acuan timer manual), tombol mulai **mock test** (full) atau **latihan per seksi** (pilih section, mis. choukai/dokkai saja). Menekan tombol = membuat `Attempt` baru lalu redirect ke `/exam/...`. |
 | `/test-package/[id]/questions` | Mode baca: melihat semua soal paket secara langsung, furigana tampil, comment tampil. Bukan mode pengerjaan. |
 | `/history` | Daftar semua attempt milik user lintas paket (bukan cuma satu paket seperti di `/test-package/[id]`), dengan link ke `/result/[attemptId]` & `/result/[attemptId]/detail` untuk yang `COMPLETED`. Entry point utama untuk lihat attempt lama. |
+| `/profile` | Overview akun dengan statistik kana, vocabulary, latihan cepat, dan mock exam dari data user nyata. |
+| `/profile/info` | Edit display name, normalized email, dan avatar Cloudinary; username legacy tampil read-only. |
+| `/profile/security` | Ganti password dengan current password, policy Zod, bcrypt cost 12, dan rotasi cookie session. |
+| `/profile/flashcard-settings` | Preference SRS persisten dengan daily limits, learning/relearning steps, interval, dan reset default via Server Action. |
+| `/profile/auth` | Redirect kompatibilitas menuju `/profile/security`. |
 
 ### Pengerjaan
 
@@ -87,7 +92,9 @@ Aturan halaman exam:
 - Submit sesi bersifat final untuk sesi tersebut — setelah submit, sesi tidak bisa dikerjakan ulang di attempt yang sama. Attempt menjadi `COMPLETED` setelah sesi terakhir disubmit.
 - Konten kana memakai fixture terkurasi dengan stable key. Hanya aktivitas per-user yang disimpan di `KanaProgress`.
 - Konten vocabulary disimpan dalam deck, kartu global, tag, dan join table. Satu kartu dapat muncul di beberapa deck tanpa menduplikasi `FlashcardProgress`.
-- Review vocabulary memakai antrean deterministik: kartu due diurutkan berdasarkan `dueAt`, kemudian kartu baru berdasarkan urutan deck.
+- Review vocabulary memakai antrean deterministik: kartu due diurutkan berdasarkan `dueAt`, kemudian kartu baru berdasarkan urutan deck, masing-masing dibatasi preference harian user.
+- Scheduler vocabulary menyimpan learning step dan membaca seluruh preference dari `FlashcardSetting`; setting invalid ditahan oleh Zod dan CHECK constraint.
+- Profile overview dicache per user dan diinvalidasi saat progress kana, vocabulary, practice, atau mock exam berubah.
 - Latihan cepat membuat assignment `PracticeAnswer` di awal session. Refresh melanjutkan soal pertama yang belum dijawab.
 - Feedback practice hanya membuka kunci dan explanation soal yang sudah disubmit. Seluruh soal lain tetap tidak membawa answer key ke client.
 - Analytics latihan cepat tampil sebagai akurasi terpisah dan tidak memakai proyeksi skor resmi/mock JLPT.

@@ -22,7 +22,7 @@ export default async function DashboardLayout({
 
   const user = await prisma.user.findUnique({
     where: { id: session.userId },
-    select: { displayName: true },
+    select: { displayName: true, avatarUrl: true },
   });
 
   if (!user) {
@@ -31,7 +31,7 @@ export default async function DashboardLayout({
 
   return (
     <SidebarProvider>
-      <AppSidebar displayName={user.displayName} />
+      <AppSidebar displayName={user.displayName} avatarUrl={user.avatarUrl} />
       <SidebarInset>
         <header className="flex h-12 shrink-0 items-center gap-2 border-b px-4">
           <SidebarTrigger />

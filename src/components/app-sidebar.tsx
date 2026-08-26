@@ -12,9 +12,11 @@ import {
   LogOut,
   Languages,
   Sparkles,
+  ShieldCheck,
   TrendingUp,
   UserRound,
 } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Sidebar,
   SidebarContent,
@@ -40,9 +42,20 @@ const NAV_ITEMS = [
   { title: "Analytics", href: "/analytics", icon: ChartNoAxesCombined },
 ];
 
-export function AppSidebar({ displayName }: { displayName: string }) {
+export function AppSidebar({
+  displayName,
+  avatarUrl,
+}: {
+  displayName: string;
+  avatarUrl: string | null;
+}) {
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
+  const initials = displayName
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join("");
 
   return (
     <Sidebar collapsible="icon">
@@ -72,10 +85,27 @@ export function AppSidebar({ displayName }: { displayName: string }) {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <div className="flex items-center gap-2 px-2 py-1.5 text-sm text-sidebar-foreground/70">
-              <UserRound className="size-4 shrink-0" />
+            <SidebarMenuButton
+              isActive={pathname === "/profile" || pathname.startsWith("/profile/info") || pathname.startsWith("/profile/flashcard-settings")}
+              tooltip="Profil"
+              render={<Link href="/profile" />}
+            >
+              <Avatar className="size-5 rounded-sm border border-black">
+                {avatarUrl ? <AvatarImage src={avatarUrl} alt="" className="rounded-sm" /> : null}
+                <AvatarFallback className="rounded-sm bg-neo-blue text-[9px] font-black text-black">{initials || <UserRound className="size-3" />}</AvatarFallback>
+              </Avatar>
               <span className="truncate">{displayName}</span>
-            </div>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              isActive={pathname.startsWith("/profile/security")}
+              tooltip="Security"
+              render={<Link href="/profile/security" />}
+            >
+              <ShieldCheck />
+              <span>Security</span>
+            </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton

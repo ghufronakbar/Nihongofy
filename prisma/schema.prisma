@@ -113,6 +113,7 @@ model User {
   kanaProgresses      KanaProgress[]
   flashcardProgresses FlashcardProgress[]
   flashcardReviewLogs FlashcardReviewLog[]
+  flashcardSetting    FlashcardSetting?
   practiceSessions    PracticeSession[]
   articleInteractions ArticleInteraction[]
 
@@ -247,6 +248,7 @@ model FlashcardProgress {
   easeFactor     Float                  @default(2.5)
   repetitions    Int                    @default(0)
   lapses         Int                    @default(0)
+  learningStep   Int                    @default(0)
   lastReviewedAt DateTime?
 
   createdAt DateTime @default(now())
@@ -271,11 +273,38 @@ model FlashcardReviewLog {
   scheduledInterval  Int
   previousEaseFactor Float
   nextEaseFactor     Float
+  wasNew             Boolean         @default(false)
   reviewedAt         DateTime        @default(now())
   dueAt              DateTime
 
   @@index([userId, reviewedAt])
   @@index([flashcardId])
+}
+
+// Per-user scheduler preferences. Values are stored in the units consumed by
+// the scheduler so malformed display strings never reach scheduling logic.
+model FlashcardSetting {
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int  @id
+
+  newCardsPerDay         Int   @default(20)
+  maxReviewsPerDay       Int   @default(200)
+  learningStepsMinutes   Int[] @default([1, 10])
+  graduatingIntervalDays Int   @default(1)
+  easyIntervalDays       Int   @default(4)
+  startingEaseFactor     Float @default(2.5)
+
+  relearningStepsMinutes  Int[] @default([10])
+  lapseIntervalMultiplier Float @default(0)
+  minimumIntervalDays     Int   @default(1)
+
+  maximumIntervalDays Int   @default(36500)
+  intervalModifier    Float @default(1)
+  easyBonus           Float @default(1.3)
+  hardMultiplier      Float @default(1.2)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // Bucket rate limit auth hanya menyimpan hash, bukan email atau alamat IP mentah.

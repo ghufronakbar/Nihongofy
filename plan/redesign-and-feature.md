@@ -564,6 +564,10 @@ Acceptance criteria:
 
 Tujuan: mengganti profile mock referensi menjadi akun dan preferensi nyata.
 
+Status: selesai pada 26 Agustus 2026. Implementasi account profile, password rotation,
+scheduler preference, migration/security audit, dan hasil QA tersedia di
+`plan/phase-6-profile-security-settings.md`.
+
 Profile:
 
 - Display name, email, avatar, serta username read-only atau rename dengan validasi khusus.
