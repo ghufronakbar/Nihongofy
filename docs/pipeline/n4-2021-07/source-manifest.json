@@ -1,0 +1,32 @@
+{
+  "package": "n4-2021-07",
+  "status": "needs_review",
+  "source": {"pdf": "/opt/data/jlpt-pipeline/sources/n4-2021-07/questions.pdf", "sha256": "013be0c7c32574334a7da76236747466827e2e820e05956fccb429053009632b", "scan_page_count": 31, "rendered_dir": "/opt/data/jlpt-pipeline/sources/n4-2021-07/rendered/highres", "rendered_png_dimensions": "1683/1684 x 2381/2382 px", "text_layer": "image-only; 0 extracted text chars"},
+  "counts": {"written": 49, "written_by_block": {"moji_goi": 28, "bunpou": 13, "dokkai": 8}, "listening": 28, "listening_by_mondai": {"mondai1": 8, "mondai2": 7, "mondai3": 5, "mondai4": 8}, "total": 77},
+  "answer_key": {"scan_page": 31, "title": "2021年7月日本語能力試験 N4 答案", "written": {"moji_goi": {"問題1": {"questions": "1-7", "answers": "2132341"}, "問題2": {"questions": "8-12", "answers": "24321"}, "問題3": {"questions": "13-20", "answers": "33214241"}, "問題4": {"questions": "21-24", "answers": "4134"}, "問題5": {"questions": "25-28", "answers": "4123"}}, "bunpou": {"問題1": {"questions": "1-13", "answers": "2334314421241"}, "問題2": {"questions": "14-17", "answers": "2414"}, "問題3": {"questions": "18-21", "answers": "2143"}}, "dokkai": {"問題4": {"questions": "22-24", "answers": "324"}, "問題5": {"questions": "25-27", "answers": "314"}, "問題6": {"questions": "28-29", "answers": "22"}}}, "listening": {"問題1": {"questions": "1-8", "answers": "33232123"}, "問題2": {"questions": "1-7", "answers": "1231324"}, "問題3": {"questions": "1-5", "answers": "13212"}, "問題4": {"questions": "1-8", "answers": "33111221"}}},
+  "pages": [
+    {"scan_page": 1, "role": "cover", "section": "言語知識・読解", "mondai": null, "questions": null, "status": "verified"},
+    {"scan_page": 2, "role": "written", "section": "MOJI_GOI", "mondai": 1, "questions": "1-7", "status": "ocr_covered"},
+    {"scan_page": 3, "role": "written", "section": "MOJI_GOI", "mondai": 2, "questions": "8-12", "status": "ocr_covered"},
+    {"scan_page": 4, "role": "written", "section": "MOJI_GOI", "mondai": 3, "questions": "13-20", "status": "ocr_covered"},
+    {"scan_page": 5, "role": "written", "section": "MOJI_GOI", "mondai": 4, "questions": "21-24", "status": "ocr_covered"},
+    {"scan_page": 6, "role": "written", "section": "MOJI_GOI", "mondai": 5, "questions": "25-28", "status": "ocr_covered"},
+    {"scan_page": 7, "role": "written", "section": "MOJI_GOI", "mondai": null, "questions": "26-28", "status": "needs_review", "note": "Focused extraction unavailable; range retained from visible continuity."},
+    {"scan_page": 8, "role": "written", "section": "BUNPOU", "mondai": 1, "questions": "1-5", "status": "ocr_covered"},
+    {"scan_page": 9, "role": "written", "section": "BUNPOU", "mondai": 1, "questions": "6-13", "status": "needs_review"},
+    {"scan_page": 10, "role": "written", "section": "BUNPOU", "mondai": 2, "questions": "14-16", "status": "needs_review"},
+    {"scan_page": 11, "role": "written", "section": "BUNPOU", "mondai": 3, "questions": "18-21", "status": "needs_review"},
+    {"scan_page": 12, "role": "written", "section": "DOKKAI", "mondai": 4, "questions": "20-22", "status": "needs_review"},
+    {"scan_page": 13, "role": "written", "section": "DOKKAI", "mondai": 4, "questions": "23", "status": "needs_review"},
+    {"scan_page": 14, "role": "written", "section": "DOKKAI", "mondai": 4, "questions": "24", "status": "needs_review"},
+    {"scan_page": 15, "role": "written", "section": "DOKKAI", "mondai": 5, "questions": "25-26", "status": "needs_review"},
+    {"scan_page": 16, "role": "written", "section": "DOKKAI", "mondai": 6, "questions": "27-29", "status": "needs_review"},
+    {"scan_page": 17, "role": "listening", "section": "CHOUKAI", "mondai": null, "questions": null, "status": "verified"},
+    {"scan_page": "18-19", "role": "listening", "section": "CHOUKAI", "mondai": 1, "questions": "1-8", "status": "layout_verified"},
+    {"scan_page": "20-22", "role": "listening", "section": "CHOUKAI", "mondai": 2, "questions": "1-7", "status": "layout_verified"},
+    {"scan_page": "23-24", "role": "listening", "section": "CHOUKAI", "mondai": 3, "questions": "1-5", "status": "layout_verified"},
+    {"scan_page": "25-30", "role": "listening", "section": "CHOUKAI", "mondai": 4, "questions": "1-8", "status": "layout_verified", "note": "Audio-only/picture-choice blank text semantics preserved; no audio segmentation claimed."},
+    {"scan_page": 31, "role": "answer_key", "section": "MOJI_GOI/BUNPOU/DOKKAI/CHOUKAI", "mondai": null, "questions": "all rows", "status": "verified"}
+  ],
+  "blockers": ["Exact OCR incomplete for written pages 7 and 9-16; not import-ready.", "Supplied audio unavailable; no audio URLs or segmentation claimed.", "Printed page numbers generally not legible; scan_page is authoritative locator."]
+}
