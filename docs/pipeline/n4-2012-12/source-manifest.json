@@ -1,0 +1,109 @@
+{
+  "manifestVersion": "2.0",
+  "package": "n4-2012-12",
+  "exam": "JLPT N4 December 2012",
+  "status": "user_reviewed",
+  "sourceFiles": {
+    "questionsPdf": {
+      "path": "/opt/data/jlpt-pipeline/sources/n4-2012-12/questions.pdf",
+      "sha256": "6e15a1e181540bb0d79d1e72a0eb2458e7aec47d9482a2f4364c7d5792153a19",
+      "sizeBytes": 59620147,
+      "scanPageCount": 24,
+      "renderedHighresDirectory": "/opt/data/jlpt-pipeline/sources/n4-2012-12/rendered/highres",
+      "renderedHighresPattern": "page-01.png through page-24.png",
+      "renderedHighresDimensionsPx": "1191x1685",
+      "embeddedPageImageDimensionsPx": "4962x7017",
+      "contentType": "image-only scan"
+    },
+    "audio": {
+      "path": "/opt/data/jlpt-pipeline/sources/n4-2012-12/audio.mp3",
+      "sha256": "bea051f318f4cf532138a152bac32707b9c9e4298342545da80f9437a3d53d68",
+      "sizeBytes": 17455498,
+      "declaredExtension": ".mp3",
+      "actualContainer": "mov,mp4,m4a,3gp,3g2,mj2",
+      "actualCodec": "AAC (HE-AAC)",
+      "sampleRateHz": 44100,
+      "channels": 2,
+      "durationSeconds": 2156.137007,
+      "normalizedClipFormat": "MP3, libmp3lame, 64 kb/s"
+    }
+  },
+  "pageRoles": [
+    {"scan": 1, "role": "cover", "section": "overall exam", "ranges": [], "status": "layout_verified"},
+    {"scan": 2, "role": "insert", "section": "exam information / score criteria", "ranges": [], "status": "layout_verified"},
+    {"scan": 3, "role": "question", "section": "文字・語彙", "ranges": ["問題1 Q1-Q9", "問題2 Q10-Q15"], "status": "source_text_covered"},
+    {"scan": 4, "role": "question", "section": "文字・語彙", "ranges": ["問題3 Q16-Q24", "問題4 Q25-Q28"], "status": "source_text_covered"},
+    {"scan": 5, "role": "question", "section": "文字・語彙 / 文法", "ranges": ["文字・語彙 Q29-Q34", "文法 問題1 Q1-Q3"], "status": "source_text_covered"},
+    {"scan": 6, "role": "question", "section": "文法", "ranges": ["問題1 Q4-Q15", "問題2 Q16"], "status": "source_text_covered"},
+    {"scan": 7, "role": "question", "section": "文法 / 読解", "ranges": ["文法 問題2 Q17-Q20", "文法 問題3 Q21-Q25", "読解 問題4 Q26 partial context"], "status": "source_text_covered"},
+    {"scan": 8, "role": "question", "section": "読解", "ranges": ["問題4 Q26-Q29"], "status": "source_text_covered"},
+    {"scan": 9, "role": "question", "section": "読解", "ranges": ["問題5 Q30-Q33", "問題6 Q34-Q35"], "status": "source_text_covered"},
+    {"scan": 10, "role": "insert", "section": "読解 shared stimulus", "ranges": ["問題6 Q34-Q35 stimulus"], "status": "source_text_covered"},
+    {"scan": 11, "role": "question", "section": "聴解", "ranges": ["問題1 Q1-Q4", "問題1 Q5-Q8 continuation"], "status": "layout_verified"},
+    {"scan": 12, "role": "question", "section": "聴解", "ranges": ["問題2 Q1-Q3", "問題3 Q1-Q3"], "status": "layout_verified"},
+    {"scan": 13, "role": "question", "section": "聴解", "ranges": ["問題2 Q4-Q7", "問題3 Q4-Q5"], "status": "layout_verified"},
+    {"scan": 14, "role": "question", "section": "聴解", "ranges": ["問題4 Q1-Q8"], "status": "layout_verified"},
+    {"scan": 15, "role": "answer_key", "section": "参考答案", "ranges": ["文字・語彙 34", "文法 25", "読解 10", "聴解 28"], "status": "answer_rows_recovered"},
+    {"scan": 16, "role": "explanation", "section": "文字・語彙・文法", "ranges": [], "status": "not_question_source"},
+    {"scan": 17, "role": "explanation", "section": "文字・語彙・文法", "ranges": [], "status": "not_question_source"},
+    {"scan": 18, "role": "explanation", "section": "文法", "ranges": [], "status": "not_question_source"},
+    {"scan": 19, "role": "explanation", "section": "文法・読解", "ranges": [], "status": "not_question_source"},
+    {"scan": 20, "role": "explanation", "section": "読解", "ranges": [], "status": "not_question_source"},
+    {"scan": 21, "role": "explanation", "section": "読解", "ranges": [], "status": "not_question_source"},
+    {"scan": 22, "role": "transcript", "section": "聴解原文", "ranges": ["問題1"], "status": "transcript_support"},
+    {"scan": 23, "role": "transcript", "section": "聴解原文", "ranges": ["問題1 continuation", "問題2"], "status": "transcript_support"},
+    {"scan": 24, "role": "transcript", "section": "聴解原文", "ranges": ["問題3", "問題4"], "status": "transcript_support"}
+  ],
+  "answerKey": {
+    "scanPageIndex": 15,
+    "title": "参考答案",
+    "rowsComplete": 17,
+    "questionCounts": {"mojiGoi": 34, "bunpou": 25, "dokkai": 10, "choukai": 28, "total": 97},
+    "rows": {
+      "MOJI_GOI_READ_KANJI": "114223124",
+      "MOJI_GOI_WRITE_KANJI": "143441",
+      "MOJI_GOI_CONTEXT": "432243123",
+      "MOJI_GOI_SYNONYM": "32132",
+      "MOJI_GOI_WORD_USAGE": "43412",
+      "BUNPOU_GRAMMAR": "341242312411342",
+      "BUNPOU_SENTENCE_COMPOSITION": "32433",
+      "BUNPOU_TEXT_GRAMMAR": "23214",
+      "DOKKAI_SHORT_TEXT": "4323",
+      "DOKKAI_MEDIUM_TEXT": "2441",
+      "DOKKAI_INFORMATION_RETRIEVAL": "32",
+      "CHOUKAI_TASK_BASED": "14343221",
+      "CHOUKAI_MAIN_POINT": "4233123",
+      "CHOUKAI_EXPRESSION": "12121",
+      "CHOUKAI_QUICK_RESPONSE": "23212331"
+    }
+  },
+  "audioMarkers": {
+    "asrPath": "/opt/data/jlpt-pipeline/sources/n4-2012-12/generated/n4-2012-12-asr.json",
+    "segmentCount": 456,
+    "markerTimesSeconds": {"問題1": 40.68, "問題2": 731.53, "問題3": 1537.06, "問題4": 1812.88},
+    "clipSpansSeconds": {
+      "n4-2012-12-01.mp3": [0.0, 731.53],
+      "n4-2012-12-02.mp3": [731.53, 1537.06],
+      "n4-2012-12-03.mp3": [1537.06, 1812.88],
+      "n4-2012-12-04.mp3": [1812.88, 2156.14]
+    }
+  },
+  "artifactPaths": {
+    "packageCandidate": "/opt/data/jlpt-pipeline/sources/n4-2012-12/generated/n4-2012-12-candidate.json",
+    "answerKey": "/opt/data/jlpt-pipeline/sources/n4-2012-12/generated/answer-key.md",
+    "writtenOcr": "/opt/data/jlpt-pipeline/sources/n4-2012-12/generated/ocr-written-pages-03-10.md",
+    "listeningOcr": "/opt/data/jlpt-pipeline/sources/n4-2012-12/generated/ocr-listening-pages-11-14.md",
+    "listeningTranscript": "/opt/data/jlpt-pipeline/sources/n4-2012-12/generated/listening-transcript-22-24.md",
+    "mediaUploadResults": "/opt/data/jlpt-pipeline/sources/n4-2012-12/generated/media-upload-results.json",
+    "imageUploadResults": "/opt/data/jlpt-pipeline/sources/n4-2012-12/generated/image-upload-results.json",
+    "audioChecksums": "/opt/data/jlpt-pipeline/sources/n4-2012-12/generated/audio-checksums.sha256",
+    "imageChecksums": "/opt/data/jlpt-pipeline/sources/n4-2012-12/generated/image-checksums.sha256"
+  },
+  "reviewItems": [
+    "Q11 reviewed by user: option 4 is the correct 場所; option 2 is the wrong distractor 場炉; options 1 and 3 are 揚所.",
+    "Q13 reviewed by user: choices 便宜 / 便理 / 便立 / 便利 are safe.",
+    "Spot-check the 16 M1 answer-image panels, composite M1 q4 image, and five M3 scene images in the UI.",
+    "Spot-check the four audio boundaries; the clips are marker-anchored, non-overlapping, and FFprobe-verified.",
+    "M4 has three spoken response alternatives in the source; schema code 4 is intentionally an empty adapter choice."
+  ]
+}
