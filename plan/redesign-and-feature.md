@@ -539,6 +539,9 @@ Acceptance criteria:
 
 Tujuan: mengimplementasikan content area dari referensi dan mengisi home dengan content nyata.
 
+Status: selesai pada 26 Agustus 2026. Implementasi, model content, audit cache/security, dan hasil
+QA tersedia di `plan/phase-5-public-articles.md`.
+
 Pekerjaan:
 
 - Article index: featured story, category, tag, search CTA, dan list terbaru.

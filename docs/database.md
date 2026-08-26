@@ -35,6 +35,10 @@ Attempt (1 sesi pengerjaan) └── AttemptAnswer (jawaban per soal)
 
 PracticeSession (latihan cepat per user)
 └── PracticeAnswer (assignment soal + jawaban dan feedback state)
+
+Article
+├── ArticleTagLink ── ArticleTag
+└── ArticleInteraction (save, favorite, dan last-view per user)
 ```
 
 ### Kana dan vocabulary
@@ -66,6 +70,20 @@ FlashcardDeck
 - Kunci jawaban dan explanation hanya boleh diambil server-side untuk soal yang sedang disubmit atau sudah dijawab. Payload awal session tidak boleh memuat field tersebut.
 - Latihan cepat tidak memakai `Attempt`, sehingga akurasi practice tidak bercampur dengan proyeksi skor mock JLPT.
 - Seluruh query dan mutation practice wajib memverifikasi `PracticeSession.userId` terhadap `session.userId`.
+
+### Artikel publik
+
+- `Article.slug` dan `ArticleTag.slug` menjadi stable identity untuk route dan seed.
+- Artikel hanya tampil publik bila `status = PUBLISHED` dan `publishedAt <= now()`.
+- `Article.body` menyimpan array blok JSON terstruktur; HTML mentah tidak boleh disimpan atau dirender.
+- `Article.bodyText` adalah teks pencarian yang diturunkan dari body, bukan content source kedua.
+- `ArticleTagLink` unique pada `(articleId, tagId)` dan seluruh foreign key memiliki index.
+- `ArticleInteraction` unique pada `(userId, articleId)` serta selalu diakses dengan `session.userId`.
+- `viewCount` bertambah sekali pada first-view user login. `favoriteCount` berubah atomik saat
+  favorite ditambah/dihapus dan tidak boleh bernilai negatif.
+- Search publik hanya memakai field content published. State save/favorite user tidak boleh masuk
+  cache list/detail global.
+- Seed artikel dijalankan melalui `npm run seed:articles` dan wajib tetap idempotent berdasarkan slug.
 
 ## Aturan Penempatan Konten
 

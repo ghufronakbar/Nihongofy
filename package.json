@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "seed:learning": "node prisma/seed-learning.mjs",
+    "seed:articles": "node prisma/seed-articles.mjs",
     "postinstall": "prisma generate"
   },
   "dependencies": {

@@ -1,4 +1,20 @@
-# Seed: Import Bank Soal dari Scraping
+# Seed dan Import Data
+
+## Artikel publik
+
+Fixture artikel berada di `src/features/article/data/article-seed.json` dan diimpor dengan:
+
+```bash
+npm run seed:articles
+```
+
+- Seed melakukan upsert artikel dan tag berdasarkan stable slug.
+- Relasi tag artikel dibangun ulang agar sesuai fixture terbaru tanpa menduplikasi row.
+- `bodyText` dibuat otomatis dari blok body untuk search server-side.
+- Seed aman dijalankan ulang dan tidak mereset `viewCount`, `favoriteCount`, atau interaction user.
+- Baseline Fase 5 berisi 6 artikel terbit dan 16 tag terkurasi.
+
+## Import bank soal dari scraping
 
 Dokumen ini adalah kontrak data untuk tool/AI eksternal yang melakukan scraping soal JLPT
 asli, supaya hasilnya bisa langsung diimpor ke database lewat endpoint seed di bawah.

@@ -20,6 +20,7 @@ const NAV_ITEMS = [
   { label: "Beranda", href: "/" },
   { label: "Cara belajar", href: "/#cara-belajar" },
   { label: "Fitur", href: "/#fitur" },
+  { label: "Artikel", href: "/article" },
   { label: "Mock JLPT", href: "/test-package" },
 ];
 
@@ -38,7 +39,7 @@ export function PublicHeader({ isAuthenticated }: { isAuthenticated: boolean }) 
       <PageContainer className="flex h-[76px] items-center justify-between gap-6">
         <BrandMark />
 
-        <nav className="hidden items-center gap-6 md:flex" aria-label="Navigasi utama">
+        <nav className="hidden items-center gap-5 lg:flex" aria-label="Navigasi utama">
           {NAV_ITEMS.map((item) => (
             <Link
               key={item.label}
@@ -55,7 +56,7 @@ export function PublicHeader({ isAuthenticated }: { isAuthenticated: boolean }) 
           ))}
         </nav>
 
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="hidden items-center gap-3 lg:flex">
           <Link
             href={isAuthenticated ? "/dashboard" : "/login"}
             className={cn(
@@ -73,7 +74,7 @@ export function PublicHeader({ isAuthenticated }: { isAuthenticated: boolean }) 
             render={
               <button
                 type="button"
-                className="neo-button min-h-10 px-3 py-2 md:hidden"
+                className="neo-button min-h-10 px-3 py-2 lg:hidden"
                 aria-label="Buka navigasi"
               />
             }
@@ -100,13 +101,11 @@ export function PublicHeader({ isAuthenticated }: { isAuthenticated: boolean }) 
                     "neo-surface neo-interactive flex items-center justify-between px-4 py-3 font-extrabold",
                     index === 1 && "bg-neo-yellow",
                     index === 2 && "bg-neo-coral",
-                    index === 3 && "bg-neo-green",
+                    index === 3 && "bg-neo-blue",
+                    index === 4 && "bg-neo-green",
                   )}
                 >
                   {item.label}
-                  <span className="font-mono text-xs" aria-hidden="true">
-                    0{index + 1}
-                  </span>
                 </Link>
               ))}
               <Link

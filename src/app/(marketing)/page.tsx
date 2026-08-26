@@ -19,6 +19,8 @@ import {
 } from "lucide-react";
 import { PageContainer } from "@/components/marketing/page-container";
 import { SectionIntro } from "@/components/marketing/section-intro";
+import { ArticleCard } from "@/features/article/components/article-card";
+import { getArticleIndexData } from "@/features/article/queries";
 import { getSession } from "@/lib/auth";
 
 export const metadata: Metadata = {
@@ -66,7 +68,7 @@ function FeatureStatus({ children, available = false }: { children: React.ReactN
 }
 
 export default async function HomePage() {
-  const session = await getSession();
+  const [session, articleIndex] = await Promise.all([getSession(), getArticleIndexData()]);
   const isAuthenticated = Boolean(session);
 
   return (
@@ -191,7 +193,7 @@ export default async function HomePage() {
         <PageContainer>
           <SectionIntro title="SATU RUANG UNTUK EMPAT CARA BELAJAR.">
             <p>
-              Mock JLPT sudah aktif. Kana, kosakata, dan latihan cepat ditampilkan sebagai preview sambil fondasi fiturnya dibangun.
+              Kana, kosakata, latihan cepat, dan mock JLPT sudah aktif dengan progres yang tersimpan di akunmu.
             </p>
           </SectionIntro>
 
@@ -199,7 +201,7 @@ export default async function HomePage() {
             <article className="neo-surface overflow-hidden bg-neo-blue p-6 md:col-span-5 md:p-8">
               <div className="flex items-start justify-between gap-4">
                 <Languages className="size-10" strokeWidth={2.5} aria-hidden="true" />
-                <FeatureStatus>Preview</FeatureStatus>
+                <FeatureStatus available>Tersedia</FeatureStatus>
               </div>
               <h3 className="mt-8 text-3xl">Kana interaktif</h3>
               <p className="mt-3 max-w-[38ch] leading-7 text-neo-ink/75">
@@ -216,12 +218,16 @@ export default async function HomePage() {
                   </span>
                 ))}
               </div>
+              <Link href="/kana/hiragana" className="neo-button mt-7 bg-white px-5 py-3">
+                Buka hiragana
+                <ArrowRight className="size-5" aria-hidden="true" />
+              </Link>
             </article>
 
             <article className="neo-surface bg-neo-coral p-6 md:col-span-7 md:p-8">
               <div className="flex items-start justify-between gap-4">
                 <BookOpenText className="size-10" strokeWidth={2.5} aria-hidden="true" />
-                <FeatureStatus>Preview</FeatureStatus>
+                <FeatureStatus available>Tersedia</FeatureStatus>
               </div>
               <div className="mt-8 grid items-end gap-7 sm:grid-cols-[1fr_0.9fr]">
                 <div>
@@ -239,12 +245,16 @@ export default async function HomePage() {
                   </div>
                 </div>
               </div>
+              <Link href="/vocab" className="neo-button mt-7 bg-white px-5 py-3 sm:w-fit">
+                Buka vocabulary
+                <ArrowRight className="size-5" aria-hidden="true" />
+              </Link>
             </article>
 
             <article className="neo-surface bg-neo-yellow p-6 md:col-span-7 md:p-8">
               <div className="flex items-start justify-between gap-4">
                 <PenLine className="size-10" strokeWidth={2.5} aria-hidden="true" />
-                <FeatureStatus>Preview</FeatureStatus>
+                <FeatureStatus available>Tersedia</FeatureStatus>
               </div>
               <div className="mt-8 grid gap-7 sm:grid-cols-[0.9fr_1.1fr] sm:items-center">
                 <div>
@@ -262,6 +272,10 @@ export default async function HomePage() {
                   </div>
                 </div>
               </div>
+              <Link href="/exercises" className="neo-button mt-7 bg-white px-5 py-3 sm:w-fit">
+                Mulai latihan cepat
+                <ArrowRight className="size-5" aria-hidden="true" />
+              </Link>
             </article>
 
             <article className="neo-surface flex flex-col bg-neo-green p-6 md:col-span-5 md:p-8">
@@ -377,26 +391,36 @@ export default async function HomePage() {
 
       <section className="neo-grid-paper border-b-[3px] border-neo-ink py-18 md:py-24">
         <PageContainer>
-          <SectionIntro title="ARTIKEL AKAN HADIR SAAT KONTENNYA SIAP.">
+          <SectionIntro
+            title={articleIndex.featured ? "BACA SATU HAL. COBA HARI INI." : "ARTIKEL AKAN HADIR SAAT KONTENNYA SIAP."}
+          >
             <p>
-              Area artikel disiapkan empty-safe agar home tetap berguna tanpa mengarang penulis, statistik, atau artikel palsu.
+              {articleIndex.featured
+                ? "Panduan singkat menghubungkan konsep bahasa Jepang dengan latihan yang tersedia di akunmu."
+                : "Area artikel tetap empty-safe agar home berguna tanpa mengarang penulis atau konten."}
             </p>
           </SectionIntro>
 
-          <div className="neo-surface mt-12 grid items-center gap-7 bg-white p-6 sm:p-8 md:grid-cols-[auto_1fr_auto]">
-            <div className="grid size-16 place-items-center border-[3px] border-neo-ink bg-neo-yellow shadow-neo-sm">
-              <NotebookTabs className="size-8" strokeWidth={2.5} aria-hidden="true" />
+          {articleIndex.featured ? (
+            <div className="mt-12">
+              <ArticleCard article={articleIndex.featured} variant="featured" />
             </div>
-            <div>
-              <h3 className="text-2xl">Belum ada artikel yang diterbitkan</h3>
-              <p className="mt-2 max-w-[60ch] leading-7 text-foreground/70">
-                Panduan belajar, strategi JLPT, pencarian, dan detail artikel masuk pada fase konten.
-              </p>
+          ) : (
+            <div className="neo-surface mt-12 grid items-center gap-7 bg-white p-6 sm:p-8 md:grid-cols-[auto_1fr_auto]">
+              <div className="grid size-16 place-items-center border-[3px] border-neo-ink bg-neo-yellow shadow-neo-sm">
+                <NotebookTabs className="size-8" strokeWidth={2.5} aria-hidden="true" />
+              </div>
+              <div>
+                <h3 className="text-2xl">Belum ada artikel yang diterbitkan</h3>
+                <p className="mt-2 max-w-[60ch] leading-7 text-foreground/70">
+                  Mock test dan alat belajar lain tetap dapat dipakai sambil menunggu konten pertama.
+                </p>
+              </div>
+              <span className="border-[3px] border-neo-ink bg-background px-4 py-3 text-center font-mono text-sm font-bold shadow-neo-sm">
+                EMPTY STATE SIAP
+              </span>
             </div>
-            <span className="border-[3px] border-neo-ink bg-background px-4 py-3 text-center font-mono text-sm font-bold shadow-neo-sm">
-              EMPTY STATE SIAP
-            </span>
-          </div>
+          )}
         </PageContainer>
       </section>
 

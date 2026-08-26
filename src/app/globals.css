@@ -289,6 +289,87 @@
   .kana-flip-back {
     transform: rotateY(180deg);
   }
+
+  .article-body {
+    @apply text-[1.05rem] leading-8 text-card-foreground;
+  }
+
+  .article-body > * + * {
+    @apply mt-6;
+  }
+
+  .article-body h2 {
+    @apply mt-12 border-l-[6px] border-neo-blue pl-4 text-3xl leading-tight sm:text-4xl;
+  }
+
+  .article-body h3 {
+    @apply mt-9 text-2xl leading-tight;
+  }
+
+  .article-body > p {
+    @apply max-w-[68ch] text-card-foreground/80;
+  }
+
+  .article-body ul,
+  .article-body ol {
+    @apply grid max-w-[68ch] gap-3 pl-7 text-card-foreground/80;
+  }
+
+  .article-body ul {
+    list-style-type: square;
+  }
+
+  .article-body ol {
+    @apply list-decimal;
+  }
+
+  .article-body li::marker {
+    @apply font-black text-neo-blue;
+  }
+
+  .article-body blockquote {
+    @apply border-[3px] border-neo-ink bg-neo-yellow p-6 shadow-neo-sm;
+  }
+
+  .article-body blockquote p {
+    @apply text-xl leading-8 font-black text-neo-ink;
+  }
+
+  .article-body blockquote cite {
+    @apply mt-4 block font-mono text-sm font-bold not-italic text-neo-ink/70;
+  }
+
+  .article-example {
+    @apply overflow-hidden border-[3px] border-neo-ink bg-background shadow-neo-sm;
+  }
+
+  .article-example-japanese {
+    @apply border-b-[3px] border-neo-ink bg-neo-blue px-5 py-6 text-3xl leading-relaxed font-black text-neo-ink sm:text-4xl;
+  }
+
+  .article-example-reading {
+    @apply border-b-2 border-neo-ink bg-white px-5 py-3 text-base font-bold text-neo-ink;
+  }
+
+  .article-example figcaption {
+    @apply grid gap-2 bg-white px-5 py-5 text-neo-ink;
+  }
+
+  .article-example figcaption span {
+    @apply text-sm leading-6 text-neo-ink/70;
+  }
+
+  .article-callout {
+    @apply border-[3px] border-neo-ink p-6 text-neo-ink shadow-neo-sm;
+  }
+
+  .article-callout > strong {
+    @apply text-xl font-black;
+  }
+
+  .article-callout > p {
+    @apply mt-2 leading-7 font-semibold;
+  }
 }
 
 @keyframes page-reveal {

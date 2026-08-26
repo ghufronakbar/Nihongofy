@@ -18,7 +18,10 @@ Rules terkait: `database.md` (schema, markup teks, aturan query).
 
 | Route | Deskripsi |
 |---|---|
-| `/` | Home publik neo-brutalist dengan CTA kontekstual, preview kana/vocab/latihan cepat, mock JLPT existing, conversation/speaking preview, dan artikel empty-safe. |
+| `/` | Home publik neo-brutalist dengan CTA kontekstual, kana/vocab/latihan cepat/mock JLPT aktif, conversation/speaking preview, dan featured article nyata. |
+| `/article` | Index artikel publik dengan featured story, pencarian, tag, kategori, dan terbit terbaru. |
+| `/article/search` | Pencarian server-side berdasarkan query, kategori, multi-tag, sort, dan cursor pagination. |
+| `/article/[slug]` | Detail artikel dengan body terstruktur, related article, save/favorite, dan share/copy fallback. |
 
 ### Route group `(auth)` - layout auth
 
@@ -88,3 +91,9 @@ Aturan halaman exam:
 - Latihan cepat membuat assignment `PracticeAnswer` di awal session. Refresh melanjutkan soal pertama yang belum dijawab.
 - Feedback practice hanya membuka kunci dan explanation soal yang sudah disubmit. Seluruh soal lain tetap tidak membawa answer key ke client.
 - Analytics latihan cepat tampil sebagai akurasi terpisah dan tidak memakai proyeksi skor resmi/mock JLPT.
+- Artikel published dicache global, sedangkan save/favorite/last-view tetap query per-session tanpa
+  cache lintas user.
+- Body artikel memakai JSON tervalidasi dan tidak pernah dirender sebagai HTML mentah.
+- Metadata artikel mencakup canonical, Open Graph, Twitter card, generated cover, sitemap, dan robots.
+- `NEXT_PUBLIC_SITE_URL` menentukan origin canonical, sitemap, dan robots dengan fallback localhost
+  untuk development.

@@ -5,6 +5,7 @@ import { PageContainer } from "@/components/marketing/page-container";
 
 const FOOTER_LINKS = [
   { label: "Beranda", href: "/" },
+  { label: "Artikel", href: "/article" },
   { label: "Mock JLPT", href: "/test-package" },
   { label: "Masuk", href: "/login" },
   { label: "Daftar", href: "/register" },

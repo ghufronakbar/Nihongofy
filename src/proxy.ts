@@ -4,10 +4,10 @@ import { getSession } from "@/lib/auth";
 
 // Optimistic check only. Every protected layout and Server Action still verifies
 // the session because Proxy must not be the only authorization boundary.
-const PUBLIC_ROUTES = ["/", "/login", "/register"];
+const PUBLIC_ROUTES = ["/", "/login", "/register", "/article"];
 
 // Route handlers enforce a separate bearer secret and return 404 in production.
-const PUBLIC_PREFIXES = ["/api/seed/"];
+const PUBLIC_PREFIXES = ["/api/seed/", "/article/"];
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
