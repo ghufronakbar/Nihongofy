@@ -13,7 +13,7 @@ Dokumen penting:
 ```text
 docs/seed.md
 docs/text-parser.md
-src/app/api/seed/test-package/types.ts
+src/test-package-data/types.ts
 src/test-package-data/n2-2014-12.json
 data/audio/
 ```

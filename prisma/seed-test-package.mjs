@@ -1,36 +1,28 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-import { getSeedAccessError } from "@/lib/seed-auth";
-import type { SeedTestPackage } from "./types";
+import { fileURLToPath } from "node:url";
+import { PrismaClient } from "@prisma/client";
 
-// Import route for real bank-soal data scraped by another tool. Each JSON
-// file in src/test-package-data/ is one SeedTestPackage (shape documented in
-// docs/seed.md) — one file per package because a single paket's JSON can get
-// very large. Unlike the Fase 5.1 demo seed route, this handles real (larger,
-// less trusted) data: development-only with a dedicated bearer secret, and each
-// Question is its own transaction so a single malformed record doesn't roll
-// back everything already imported.
-export const dynamic = "force-dynamic";
+const prisma = new PrismaClient();
 
-const SEED_DATA_DIR = path.join(process.cwd(), "src/test-package-data");
+const SEED_DATA_DIR = fileURLToPath(new URL("../src/test-package-data/", import.meta.url));
 
-function log(message: string) {
+function log(message) {
   console.log(`[seed:test-package] ${message}`);
 }
 
-async function loadSeedFiles(): Promise<{ file: string; pkg: SeedTestPackage }[]> {
-  let entries: string[];
+async function loadSeedFiles() {
+  let entries;
   try {
     entries = await fs.readdir(SEED_DATA_DIR);
-  } catch {
-    log(`ERROR — folder tidak ditemukan: ${SEED_DATA_DIR}`);
-    return [];
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`folder tidak dapat dibaca: ${SEED_DATA_DIR} (${message})`);
   }
 
   const jsonFiles = entries.filter((name) => name.endsWith(".json")).sort();
-  const results: { file: string; pkg: SeedTestPackage }[] = [];
+  const seedFiles = [];
+  const fileErrors = [];
 
   for (const file of jsonFiles) {
     const raw = await fs.readFile(path.join(SEED_DATA_DIR, file), "utf-8");
@@ -41,30 +33,32 @@ async function loadSeedFiles(): Promise<{ file: string; pkg: SeedTestPackage }[]
     }
 
     try {
-      const pkg = JSON.parse(raw) as SeedTestPackage;
-      results.push({ file, pkg });
+      seedFiles.push({ file, pkg: JSON.parse(raw) });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       log(`ERROR file "${file}" — JSON tidak valid: ${message}`);
+      fileErrors.push({ file, message });
     }
   }
 
-  return results;
+  return { seedFiles, fileErrors };
 }
 
-export async function GET(request: Request) {
-  const accessError = getSeedAccessError(request);
-  if (accessError) return accessError;
-
+async function main() {
   const summary = {
-    packagesSeeded: [] as string[],
-    packagesSkipped: [] as string[],
-    filesWithErrors: [] as string[],
+    packagesSeeded: [],
+    packagesSkipped: [],
+    filesWithErrors: [],
     questionsSeeded: 0,
-    errors: [] as { context: string; message: string }[],
+    errors: [],
   };
 
-  const seedFiles = await loadSeedFiles();
+  const { seedFiles, fileErrors } = await loadSeedFiles();
+  for (const { file, message } of fileErrors) {
+    summary.filesWithErrors.push(file);
+    summary.errors.push({ context: file, message });
+  }
+
   log(`START — ${seedFiles.length} file(s) di ${SEED_DATA_DIR}`);
 
   for (const { file, pkg } of seedFiles) {
@@ -95,7 +89,7 @@ export async function GET(request: Request) {
 
     // Local ref id (from the JSON file) -> real DB id, so questions can point
     // at the right shared QuestionContext.
-    const contextIdMap = new Map<string, number>();
+    const contextIdMap = new Map();
 
     for (const ctx of pkg.questionContexts ?? []) {
       const created = await prisma.questionContext.create({
@@ -128,7 +122,7 @@ export async function GET(request: Request) {
       for (const question of item.questions) {
         const questionLabel = `${pkg.name} / ${item.mondaiType} / soal #${question.order}`;
 
-        let questionContextId: number | null = null;
+        let questionContextId = null;
         if (question.questionContextRef) {
           const resolved = contextIdMap.get(question.questionContextRef);
           if (!resolved) {
@@ -183,5 +177,18 @@ export async function GET(request: Request) {
     `DONE — seeded ${summary.packagesSeeded.length} package(s), skipped ${summary.packagesSkipped.length}, ${summary.questionsSeeded} soal, ${summary.errors.length} error`,
   );
 
-  return NextResponse.json(summary);
+  console.info(`[seed:test-package] summary ${JSON.stringify(summary)}`);
+
+  if (summary.errors.length > 0) {
+    process.exitCode = 1;
+  }
 }
+
+main()
+  .catch((error) => {
+    console.error("[seed:test-package] gagal", error);
+    process.exitCode = 1;
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

@@ -1,26 +1,20 @@
-import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-import { getSeedAccessError } from "@/lib/seed-auth";
+import { PrismaClient } from "@prisma/client";
 
-// Dev-only helper to get a minimal but representative TestPackage into the DB
-// so Exam Flow / Result / Analytics can be tested end-to-end before the real
-// bank-soal import tooling (Fase 8) exists. Available only in development and
-// protected by the same dedicated bearer secret as the real seed route.
-export const dynamic = "force-dynamic";
+const prisma = new PrismaClient();
 
 const DEMO_PACKAGE_NAME = "DEMO - Seed Testing";
 
-export async function GET(request: Request) {
-  const accessError = getSeedAccessError(request);
-  if (accessError) return accessError;
-
+async function main() {
   const existing = await prisma.testPackage.findFirst({
     where: { name: DEMO_PACKAGE_NAME },
     select: { id: true },
   });
 
   if (existing) {
-    return NextResponse.json({ status: "skipped", testPackageId: existing.id });
+    console.info(
+      `[seed:demo-test-package] skipped, package sudah ada (id=${existing.id}).`,
+    );
+    return;
   }
 
   const testPackageId = await prisma.$transaction(async (tx) => {
@@ -216,5 +210,14 @@ export async function GET(request: Request) {
     return testPackage.id;
   });
 
-  return NextResponse.json({ status: "seeded", testPackageId });
+  console.info(`[seed:demo-test-package] seeded (id=${testPackageId}).`);
 }
+
+main()
+  .catch((error) => {
+    console.error("[seed:demo-test-package] gagal", error);
+    process.exitCode = 1;
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

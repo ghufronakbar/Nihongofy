@@ -6,8 +6,7 @@ import { getSession } from "@/lib/auth";
 // the session because Proxy must not be the only authorization boundary.
 const PUBLIC_ROUTES = ["/", "/login", "/register", "/article"];
 
-// Route handlers enforce a separate bearer secret and return 404 in production.
-const PUBLIC_PREFIXES = ["/api/seed/", "/article/"];
+const PUBLIC_PREFIXES = ["/article/"];
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;

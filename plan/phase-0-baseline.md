@@ -43,9 +43,8 @@ tersebut; reference tetap tersedia untuk audit desain dan pemetaan behavior seca
 - Menghapus invalidasi cache question bank saat comment private berubah karena comment tidak lagi
   berada di cache global.
 - Membatasi signed Cloudinary folder ke `jlpt-exam/comments/<session.userId>`.
-- Membatasi seluruh endpoint seed ke development dan secret `SEED_SECRET` khusus melalui Bearer
-  header. Endpoint mengembalikan 404 di production dan tidak lagi memakai `SESSION_SECRET` pada
-  query string.
+- Memindahkan seed database ke script CLI di `prisma/` sehingga tidak ada endpoint seed yang
+  terekspos dari aplikasi.
 
 ## Hasil verifikasi akhir
 
@@ -62,7 +61,7 @@ HTTP smoke test tanpa session:
 - `/` mengarah ke `/login` karena database existing sudah memiliki user;
 - `/login` merender 200;
 - `/dashboard`, `/test-package`, dan `/api/ping` mengarah ke `/login`;
-- endpoint seed menolak request tanpa credential.
+- tidak ada endpoint seed yang terekspos dari aplikasi.
 
 HTTP smoke test dengan session valid:
 

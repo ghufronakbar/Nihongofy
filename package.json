@@ -7,8 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "seed:learning": "node prisma/seed-learning.mjs",
-    "seed:articles": "node prisma/seed-articles.mjs",
+    "seed:learning": "node --env-file-if-exists=.env prisma/seed-learning.mjs",
+    "seed:articles": "node --env-file-if-exists=.env prisma/seed-articles.mjs",
+    "seed:test-package": "node --env-file-if-exists=.env prisma/seed-test-package.mjs",
+    "seed:demo-test-package": "node --env-file-if-exists=.env prisma/seed-demo-test-package.mjs",
     "postinstall": "prisma generate"
   },
   "dependencies": {

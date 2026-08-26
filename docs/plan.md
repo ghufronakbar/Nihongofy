@@ -67,18 +67,18 @@ Checklist ini dikerjakan berurutan per fase (fase belakang bergantung pada fase 
 - [x] **Breaking change lain ketemu**: `revalidateTag(tag)` 1-argumen sudah deprecated di versi ini — sekarang butuh `revalidateTag(tag, profile)`, atau pakai `updateTag(tag)` (khusus Server Action, cocok untuk read-your-own-writes) — dipakai untuk invalidasi cache dashboard setelah attempt selesai. Lihat `node_modules/next/dist/docs/.../updateTag.md`
 - [x] Verifikasi: `npm run build` sukses (`/exam/[attemptId]/[session]` = `ƒ`), `npm run lint` bersih (1 error `react-hooks/set-state-in-effect` di-suppress sengaja untuk hidrasi `sessionStorage` — pola yang secara struktural butuh effect, bukan bug), guard tanpa cookie redirect ke `/login`
 
-## Fase 5.1 — Demo Seed API (untuk bantu testing Fase 5–7)
+## Fase 5.1 — Demo Seed Script (untuk bantu testing Fase 5–7)
 
 Bukan bagian dari bank soal produksi (itu tetap di Fase 8) — ini cuma jalan pintas dev-only supaya ada data `Attempt`-able saat testing Exam Flow, Result, dan Analytics, tanpa nunggu tooling import asli selesai.
 
-- [x] `src/app/api/seed/demo-test-package/route.ts` — Route Handler `GET`, **tanpa proteksi sesi/password dan tanpa query param** (sesuai permintaan eksplisit)
-- [x] Idempotent: cek `TestPackage` dengan `name` unik penanda `"DEMO - Seed Testing"` via `findFirst` — kalau sudah ada, skip seeding dan return status `"skipped"`; kalau belum, baru seed dan return `"seeded"`
+- [x] `prisma/seed-demo-test-package.mjs` — script CLI melalui `npm run seed:demo-test-package`
+- [x] Idempotent: cek `TestPackage` dengan `name` unik penanda `"DEMO - Seed Testing"` via `findFirst` — kalau sudah ada, skip seeding; kalau belum, baru seed
 - [x] Seed: 1 `TestPackage` (N5), 4 `TestPackageItem` lintas section (`MOJI_GOI_READ_KANJI`, `MOJI_GOI_CONTEXT` di sesi 1; `BUNPOU_GRAMMAR`, `DOKKAI_SHORT_TEXT` di sesi 2 — CHOUKAI di-skip, butuh asset audio), tiap item 2 `Question` + 4 `QuestionChoice`, `questionAnswer` terisi benar
 - [x] 2 soal pertama pakai markup furigana `{漢字|かんじ}` dalam underline `__teks__` (menguji aturan sembunyi-furigana `MOJI_GOI_READ_KANJI`)
 - [x] 1 `QuestionContext` (bacaan) dipakai bersama oleh 2 soal `DOKKAI_SHORT_TEXT`
-- [x] Response JSON ringkas: `{ status: "seeded" | "skipped", testPackageId }`
-- [x] **Fix**: route ini awalnya ikut ke-redirect ke `/login` oleh guard `src/proxy.ts` (semua route diproteksi kecuali daftar publik) — ditambahkan `PUBLIC_PREFIXES = ["/api/seed/"]` di `proxy.ts` supaya endpoint dev-only ini benar-benar tanpa proteksi sesuai permintaan
-- [x] Verifikasi: dipanggil manual via curl — call pertama `{"status":"seeded","testPackageId":1}`, call kedua `{"status":"skipped","testPackageId":1}`; isi data dicek query langsung ke DB, sesuai rencana (8 soal, 4 mondai, furigana/underline & context bacaan bersama)
+- [x] Log terminal ringkas menampilkan status `seeded` atau `skipped` beserta `testPackageId`
+- [x] Seed tidak lagi diekspos sebagai endpoint aplikasi dan tidak perlu pengecualian auth di `src/proxy.ts`
+- [x] Verifikasi: script bersifat idempotent; isi data sesuai rencana (8 soal, 4 mondai, furigana/underline & context bacaan bersama)
 
 ## Fase 6 — Hasil & Review
 
@@ -113,13 +113,13 @@ Perubahan dari feedback user setelah testing: `/exam` dan `/result` awalnya seng
 
 Bank soal asli/produksi (bukan data dummy testing — itu di [Fase 5.1](#fase-51--demo-seed-api-untuk-bantu-testing-fase-57)).
 
-- [x] `GET /api/seed/test-package?auth=<SESSION_SECRET>` — endpoint import, dilindungi query param `auth` (bukan session, karena dipanggil manual/tool eksternal) — sudah dikecualikan dari guard `proxy.ts` lewat `PUBLIC_PREFIXES = ["/api/seed/"]` yang sudah ada dari Fase 5.1
-- [x] **Satu file JSON = satu paket tes**, bukan satu `data.json` raksasa: setiap file di `src/test-package-data/*.json` (root langsung object `SeedTestPackage`, tanpa pembungkus array) di-scan otomatis pakai `fs.readdir` tiap request (bukan static import) — diubah dari desain awal (`data.json` tunggal) karena satu paket JLPT isinya bisa sangat panjang
+- [x] `prisma/seed-test-package.mjs` — script import melalui `npm run seed:test-package`; tidak diekspos sebagai endpoint aplikasi
+- [x] **Satu file JSON = satu paket tes**, bukan satu `data.json` raksasa: setiap file di `src/test-package-data/*.json` (root langsung object `SeedTestPackage`, tanpa pembungkus array) di-scan otomatis pakai `fs.readdir` tiap eksekusi (bukan static import) — diubah dari desain awal (`data.json` tunggal) karena satu paket JLPT isinya bisa sangat panjang
 - [x] Idempotent per `TestPackage.name` (field di dalam JSON, bukan nama file) — paket yang sudah ada di-skip, tidak dobel, aman dipanggil berkali-kali
 - [x] Resilient berlapis: file kosong di-skip diam-diam (aman, boleh nyicil isi belakangan); file JSON tidak valid/tidak sesuai schema dicatat di `filesWithErrors` lalu lanjut ke file lain; tiap `Question` transaksi sendiri-sendiri (bukan per paket) — satu soal gagal (mis. `questionContextRef` tidak ketemu) dicatat sebagai error di response & log, proses lanjut, tidak rollback seluruh paket. Sesuai `database.md`: pelanggaran constraint = sinyal error ekstraksi, dilaporkan (bukan di-skip diam-diam)
-- [x] `src/app/api/seed/test-package/types.ts` — kontrak TypeScript (`SeedTestPackage`/`SeedTestPackageItem`/`SeedQuestion`/`SeedQuestionChoice`/`SeedQuestionContext`)
+- [x] `src/test-package-data/types.ts` — kontrak TypeScript (`SeedTestPackage`/`SeedTestPackageItem`/`SeedQuestion`/`SeedQuestionChoice`/`SeedQuestionContext`)
 - [x] `docs/seed.md` — dokumentasi lengkap kontrak JSON untuk konteks tool/AI scraping eksternal: konvensi satu-file-satu-paket & penamaan file, field-by-field, daftar nilai enum (`jlptLevel`/`section`/`mondaiType`), **aturan penomoran `session` per level** (N1/N2 = 2 sesi, N3-N5 = 3 sesi — beda pembagian section per sesi), rekap markup teks, validasi umum, contoh JSON lengkap
-- [x] Logging aktif (`[seed:test-package] CREATE/SKIP/ERROR/DONE ...`) di setiap langkah — bisa ditrack dari log server, plus ringkasan terstruktur di response JSON (`packagesSeeded`/`packagesSkipped`/`filesWithErrors`/`questionsSeeded`/`errors`)
+- [x] Logging aktif (`[seed:test-package] CREATE/SKIP/ERROR/DONE ...`) di setiap langkah — tampil di terminal bersama ringkasan terstruktur (`packagesSeeded`/`packagesSkipped`/`filesWithErrors`/`questionsSeeded`/`errors`)
 - [x] Verifikasi: dites 2x — (1) payload single-file lama (1 paket, 2 mondai, 1 context, 1 soal `questionContextRef` sengaja rusak): seed 2/3 soal + 1 error tercatat rapi, run kedua skip; (2) setelah pindah ke struktur folder: file kosong (`n2-2019-12.json` milik user) ke-skip aman, file baru ke-seed, run kedua idempoten. Data test dibersihkan lagi dari DB & file temp dihapus tiap kali. `npm run build` & `npm run lint` bersih
 
 ## Fase 8.1 — Text Parser untuk Bacaan Panjang (Dokkai)

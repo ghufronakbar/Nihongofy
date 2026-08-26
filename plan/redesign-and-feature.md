@@ -394,7 +394,7 @@ Pekerjaan:
 - Audit `src/proxy.ts`, env validation, cache key, dan seluruh query yang mengirim data exam.
 - Selesaikan multi-user data isolation audit, terutama comment yang saat ini ikut global question cache.
 - Tambah skenario uji dengan dua user sebelum public register diaktifkan.
-- Audit endpoint seed yang saat ini public; batasi ke development atau proteksi dengan secret sebelum public launch.
+- Pastikan seed database hanya tersedia lewat script CLI dan tidak terekspos sebagai endpoint aplikasi.
 - Sebelum migration Supabase/Postgres, cek changelog dan dokumentasi Supabase terbaru yang relevan.
 - Buat screenshot baseline desktop/mobile untuk halaman utama existing jika browser automation tersedia.
 

@@ -17,12 +17,12 @@ npm run seed:articles
 ## Import bank soal dari scraping
 
 Dokumen ini adalah kontrak data untuk tool/AI eksternal yang melakukan scraping soal JLPT
-asli, supaya hasilnya bisa langsung diimpor ke database lewat endpoint seed di bawah.
+asli, supaya hasilnya bisa langsung diimpor ke database lewat script seed di bawah.
 
 Kalau kamu (AI/tool lain) yang membaca dokumen ini: tugasmu adalah menulis file JSON baru di
 folder `src/test-package-data/` (satu file = satu paket tes) yang valid sesuai schema di
-dokumen ini, lalu panggil endpoint importnya. Jangan mengubah `route.ts` atau `types.ts`
-kecuali memang diminta.
+dokumen ini, lalu jalankan script importnya. Jangan mengubah script seed kecuali memang
+diminta.
 
 ## Satu File = Satu Paket Tes
 
@@ -39,33 +39,30 @@ Setiap paket tes JLPT ditulis sebagai **satu file JSON terpisah** di folder
   TIDAK dibungkus array/`testPackages`.
 - File kosong (0 byte) otomatis di-skip dengan aman (tidak error) — jadi boleh nyicil, bikin
   file placeholder kosong dulu lalu isi belakangan.
-- Endpoint import otomatis scan **semua** file `*.json` di folder ini setiap kali dipanggil.
+- Script import otomatis scan **semua** file `*.json` di folder ini setiap kali dijalankan.
 
 ## Cara Import
 
-```
-GET /api/seed/test-package
-Authorization: Bearer <SEED_SECRET>
+```bash
+npm run seed:test-package
 ```
 
-- `SEED_SECRET` adalah secret khusus seed minimal 16 karakter dan harus berbeda dari
-  `SESSION_SECRET`.
-- Endpoint hanya tersedia di development. Pada production endpoint mengembalikan 404.
-- Secret dikirim melalui header `Authorization`, bukan query param, agar tidak masuk
-  URL/history/log proxy.
+- Script memakai `DATABASE_URL` dari environment atau file `.env` lokal.
+- Seed demo untuk testing internal dapat dijalankan dengan
+  `npm run seed:demo-test-package`.
 - Import bersifat **idempotent per `TestPackage.name`** (field `name` di dalam JSON, bukan nama
   file): kalau paket dengan `name` yang sama sudah ada di database, seluruh paket itu di-skip
-  (tidak dobel, tidak di-update). Jalankan ulang endpoint ini kapan saja aman — file/paket yang
+  (tidak dobel, tidak di-update). Jalankan ulang script ini kapan saja aman — file/paket yang
   sudah ada tidak akan diproses ulang, jadi bisa tambah file baru ke folder lalu panggil ulang
-  endpoint yang sama tanpa takut dobel.
+  script yang sama tanpa takut dobel.
 - Tiap `Question` diimpor dalam transaksi masing-masing. Kalau satu soal gagal (mis. rusak,
-  referensi context tidak ketemu), soal itu dicatat di response sebagai error dan proses
+  referensi context tidak ketemu), soal itu dicatat di ringkasan sebagai error dan proses
   **lanjut** ke soal berikutnya — bukan membatalkan seluruh paket. Kalau satu FILE gagal
   di-parse (JSON tidak valid) atau tidak sesuai schema, file itu dicatat di `filesWithErrors`
   dan proses lanjut ke file berikutnya.
-- Response JSON: `{ packagesSeeded, packagesSkipped, filesWithErrors, questionsSeeded, errors }`.
-  Log detail per langkah (`CREATE`/`SKIP`/`ERROR`/`DONE`) tercetak di stdout server dengan
-  prefix `[seed:test-package]` — cek log server kalau butuh detail lebih dari ringkasan response.
+- Ringkasan `{ packagesSeeded, packagesSkipped, filesWithErrors, questionsSeeded, errors }`
+  dan log detail per langkah (`CREATE`/`SKIP`/`ERROR`/`DONE`) tercetak di terminal dengan prefix
+  `[seed:test-package]`. Script keluar dengan status gagal jika ada error import.
 
 ## Struktur Isi Tiap File
 
@@ -241,7 +238,7 @@ dihilangkan dari data.
 - Field opsional (`instruction`, `explanation`, `questionContextRef`, gambar/audio) boleh
   dihilangkan dari JSON sepenuhnya atau diisi `null` — dua-duanya valid.
 - Cek ejaan key top-level `questionContexts` (bukan `qustionContexts` atau typo lain) —
-  kalau key-nya salah ketik, `route.ts` cuma menganggap array itu kosong (tidak error saat
+  kalau key-nya salah ketik, script cuma menganggap array itu kosong (tidak error saat
   parse JSON, karena key yang tidak dikenal memang diabaikan begitu saja), tapi SEMUA
   `questionContextRef` di paket itu akan gagal dengan pesan "tidak ditemukan di
   questionContexts" — kejadian nyata pas import salah satu paket.
@@ -351,8 +348,9 @@ Untuk soal yang ada image maupun audio, tetap tuliskan keynya, namun untuk value
 
 ## Referensi Lain
 
-- `src/app/api/seed/test-package/types.ts` — source of truth TypeScript untuk schema di atas.
+- `prisma/seed-test-package.mjs` — script import seluruh fixture JSON ke database.
+- `src/test-package-data/types.ts` — source of truth TypeScript untuk kontrak JSON di atas.
 - `docs/database.md` — aturan schema & markup lengkap (dokumen ini adalah ringkasannya,
   dikhususkan untuk konteks import).
-- `src/app/api/seed/demo-test-package/route.ts` — contoh seed sederhana (hardcoded, bukan dari
+- `prisma/seed-demo-test-package.mjs` — contoh seed sederhana (hardcoded, bukan dari
   JSON) untuk kebutuhan testing internal, bukan untuk data produksi.
