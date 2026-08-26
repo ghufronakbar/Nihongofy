@@ -44,25 +44,33 @@ Setiap paket tes JLPT ditulis sebagai **satu file JSON terpisah** di folder
 ## Cara Import
 
 ```bash
+npm run seed:test-package:check
 npm run seed:test-package
 ```
 
 - Script memakai `DATABASE_URL` dari environment atau file `.env` lokal.
+- `seed:test-package:check` memvalidasi seluruh fixture tanpa membuka transaksi write.
+- Seluruh file harus valid sebelum import dimulai. Satu package diimpor dalam satu transaksi:
+  bila context, item, question, atau choice gagal dibuat, seluruh package di-rollback.
+- Package existing hanya di-skip jika struktur dan jumlah datanya sesuai fixture. Package parsial
+  dilaporkan sebagai error, bukan di-skip diam-diam.
+- Untuk memvalidasi atau mengimpor satu file saja, tambahkan `-- --file <nama.json>`.
+- Untuk mengganti package existing, gunakan
+  `npm run seed:test-package -- --file <nama.json> --replace-existing`. Replacement ditolak jika
+  package sudah memiliki attempt, dan delete+create berada dalam transaksi yang sama.
 - Seed demo untuk testing internal dapat dijalankan dengan
   `npm run seed:demo-test-package`.
 - Import bersifat **idempotent per `TestPackage.name`** (field `name` di dalam JSON, bukan nama
-  file): kalau paket dengan `name` yang sama sudah ada di database, seluruh paket itu di-skip
-  (tidak dobel, tidak di-update). Jalankan ulang script ini kapan saja aman — file/paket yang
-  sudah ada tidak akan diproses ulang, jadi bisa tambah file baru ke folder lalu panggil ulang
-  script yang sama tanpa takut dobel.
-- Tiap `Question` diimpor dalam transaksi masing-masing. Kalau satu soal gagal (mis. rusak,
-  referensi context tidak ketemu), soal itu dicatat di ringkasan sebagai error dan proses
-  **lanjut** ke soal berikutnya — bukan membatalkan seluruh paket. Kalau satu FILE gagal
-  di-parse (JSON tidak valid) atau tidak sesuai schema, file itu dicatat di `filesWithErrors`
-  dan proses lanjut ke file berikutnya.
-- Ringkasan `{ packagesSeeded, packagesSkipped, filesWithErrors, questionsSeeded, errors }`
-  dan log detail per langkah (`CREATE`/`SKIP`/`ERROR`/`DONE`) tercetak di terminal dengan prefix
-  `[seed:test-package]`. Script keluar dengan status gagal jika ada error import.
+  file): package lengkap dengan struktur yang sama di-skip, sedangkan package parsial diblokir.
+  Fixture yang isinya berubah tetapi strukturnya tetap sama dapat diperbarui secara eksplisit
+  dengan `--replace-existing` setelah dipastikan belum memiliki attempt.
+- Validasi mencakup field wajib, enum, relasi `mondaiType`/`section`/`session`, duplikasi order,
+  pilihan jawaban, context kosong, context duplikat, dan `questionContextRef`. Error validasi
+  menghentikan proses sebelum database diubah.
+- Ringkasan `{ packagesSeeded, packagesReplaced, packagesSkipped, packagesBlocked,
+  questionsSeeded, errors }` dan log (`CREATE`/`REPLACE`/`SKIP`/`ERROR`/`DONE`) tercetak di
+  terminal dengan prefix `[seed:test-package]`. Script keluar dengan status gagal jika ada
+  error validasi, package parsial, atau kegagalan transaksi.
 
 ## Struktur Isi Tiap File
 

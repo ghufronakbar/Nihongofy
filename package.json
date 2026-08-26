@@ -10,6 +10,7 @@
     "seed:learning": "node --env-file-if-exists=.env prisma/seed-learning.mjs",
     "seed:articles": "node --env-file-if-exists=.env prisma/seed-articles.mjs",
     "seed:test-package": "node --env-file-if-exists=.env prisma/seed-test-package.mjs",
+    "seed:test-package:check": "node --env-file-if-exists=.env prisma/seed-test-package.mjs --validate-only",
     "seed:demo-test-package": "node --env-file-if-exists=.env prisma/seed-demo-test-package.mjs",
     "postinstall": "prisma generate"
   },
