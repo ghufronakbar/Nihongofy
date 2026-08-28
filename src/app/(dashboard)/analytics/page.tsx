@@ -8,12 +8,17 @@ import { computeJlptScoreProjection } from "@/lib/jlpt-score";
 import { resolveDateRangePreset, isDateRangePreset } from "@/lib/date-range-preset";
 import { JLPT_SECTION_LABELS } from "@/constants/jlpt";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  Activity,
+  BarChart3,
+  BookOpen,
+  CheckCircle2,
+  Flame,
+  Layers,
+  LineChart,
+  Sparkles,
+  Zap,
+} from "lucide-react";
+import Link from "next/link";
 
 const VALID_SECTIONS = Object.keys(JLPT_SECTION_LABELS) as JlptSection[];
 
@@ -50,96 +55,174 @@ export default async function AnalyticsPage({
   }));
 
   return (
-    <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-xl font-semibold">Analytics</h1>
-        <p className="text-sm text-muted-foreground">
-          Rapor hasil belajar dari attempt yang sudah selesai.
-        </p>
-      </div>
+    <div className="flex flex-col gap-8 pb-12">
+      {/* Hero Banner */}
+      <section className="neo-surface neo-grid-paper relative overflow-hidden bg-neo-coral p-6 sm:p-8 md:p-10 border-[3px] border-neo-ink shadow-neo-lg text-white">
+        <div
+          className="absolute -top-10 -right-8 hidden size-36 rotate-12 border-[3px] border-neo-ink bg-neo-yellow shadow-neo sm:block"
+          aria-hidden="true"
+        />
+        <div
+          className="absolute -bottom-8 right-24 hidden size-24 -rotate-12 border-[3px] border-neo-ink bg-neo-blue shadow-neo md:block"
+          aria-hidden="true"
+        />
 
+        <div className="relative z-10 max-w-3xl">
+          <div className="neo-kicker bg-white text-black -rotate-1">
+            <BarChart3 className="size-3.5" />
+            RAPOR & ANALITIK
+          </div>
+          <h1 className="mt-4 text-4xl sm:text-6xl font-black uppercase leading-[0.95] text-white [text-shadow:2px_2px_0_#111] tracking-tight">
+            Analitik Performa
+            <span className="block text-neo-yellow">Ujian & Latihan.</span>
+          </h1>
+          <p className="mt-4 max-w-xl text-base sm:text-lg font-semibold text-white/90">
+            Evaluasi akurasi jawaban, tren skor per attempt, dan identifikasi mondai yang perlu diperkuat sebelum hari ujian.
+          </p>
+
+          <div className="mt-6 flex flex-wrap gap-3 font-mono text-xs font-black">
+            <span className="border-2 border-neo-ink bg-white text-black px-3 py-1.5 shadow-neo-sm">
+              FILTER DINAMIS
+            </span>
+            <span className="border-2 border-neo-ink bg-neo-yellow text-black px-3 py-1.5 shadow-neo-sm">
+              TREN PER ATTEMPT
+            </span>
+            <span className="border-2 border-neo-ink bg-neo-green text-black px-3 py-1.5 shadow-neo-sm">
+              BREAKDOWN MONDAI
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* Filter Bar */}
       <Suspense>
         <AnalyticsFilterBar />
       </Suspense>
 
+      {/* Score Trend Chart Section */}
       {scope !== "PRACTICE" && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Tren Skor</CardTitle>
-            <CardDescription>
-              Skor tiap attempt yang sudah diselesaikan, berurutan waktu, sesuai filter di atas.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {trendData.length === 0 ? (
-              <p className="text-sm text-muted-foreground">
-                Belum ada attempt yang cocok dengan filter ini.
+        <section className="neo-surface bg-white p-6 sm:p-8 border-[3px] border-neo-ink shadow-neo">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b-[3px] border-neo-ink pb-4 mb-6">
+            <div className="flex items-center gap-3">
+              <div className="grid size-10 place-items-center rounded border-2 border-neo-ink bg-neo-blue text-white shadow-neo-sm shrink-0">
+                <LineChart className="size-5" strokeWidth={2.5} />
+              </div>
+              <div>
+                <h2 className="text-2xl font-black text-neo-ink uppercase">Tren Akurasi Skor</h2>
+                <p className="text-xs font-semibold text-foreground/70">
+                  Grafik riwayat akurasi skor (%) dari attempt yang selesai secara kronologis.
+                </p>
+              </div>
+            </div>
+
+            <span className="font-mono text-xs font-black border-2 border-neo-ink bg-neo-paper px-2.5 py-1 shadow-neo-sm">
+              {trendData.length} DATA POINT
+            </span>
+          </div>
+
+          {trendData.length === 0 ? (
+            <div className="rounded-lg border-2 border-dashed border-neo-ink/30 p-10 text-center bg-neo-paper/40">
+              <p className="font-bold text-sm text-foreground/70">
+                Belum ada data attempt yang cocok dengan filter rentang waktu atau lingkup ini.
               </p>
-            ) : (
-              <ScoreTrendChart data={trendData} />
-            )}
-          </CardContent>
-        </Card>
+            </div>
+          ) : (
+            <ScoreTrendChart data={trendData} />
+          )}
+        </section>
       )}
 
+      {/* Quick Practice Analytics */}
       {scope !== "MOCK" && (
-        <Card className="border-[3px] border-neo-ink shadow-neo">
-          <CardHeader>
-            <CardTitle>Latihan Cepat</CardTitle>
-            <CardDescription>
-              Akurasi latihan dengan feedback langsung. Angka ini tidak masuk ke proyeksi skor mock
-              JLPT.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {practiceSummary.sessions === 0 ? (
-              <p className="text-sm text-muted-foreground">
+        <section className="neo-surface bg-white p-6 sm:p-8 border-[3px] border-neo-ink shadow-neo">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b-[3px] border-neo-ink pb-4 mb-6">
+            <div className="flex items-center gap-3">
+              <div className="grid size-10 place-items-center rounded border-2 border-neo-ink bg-neo-yellow text-black shadow-neo-sm shrink-0">
+                <Zap className="size-5" strokeWidth={2.5} />
+              </div>
+              <div>
+                <h2 className="text-2xl font-black text-neo-ink uppercase">Ringkasan Latihan Cepat</h2>
+                <p className="text-xs font-semibold text-foreground/70">
+                  Latihan instan dengan umpan balik per soal (tidak mempengaruhi proyeksi 180 poin mock test).
+                </p>
+              </div>
+            </div>
+
+            <Link
+              href="/exercises"
+              className="neo-button !min-h-9 !px-3.5 !py-1.5 bg-neo-yellow text-black font-black text-xs"
+            >
+              Latihan Cepat Baru →
+            </Link>
+          </div>
+
+          {practiceSummary.sessions === 0 ? (
+            <div className="rounded-lg border-2 border-dashed border-neo-ink/30 p-10 text-center bg-neo-paper/40">
+              <p className="font-bold text-sm text-foreground/70">
                 Belum ada sesi latihan cepat yang selesai untuk filter ini.
               </p>
-            ) : (
-              <div className="space-y-5">
-                <div className="grid gap-3 sm:grid-cols-3">
-                  <div className="border-[3px] border-neo-ink bg-neo-yellow p-4 text-black shadow-neo-sm">
-                    <p className="text-xs font-bold uppercase">Sesi selesai</p>
-                    <p className="mt-1 text-3xl font-black">{practiceSummary.sessions}</p>
-                  </div>
-                  <div className="border-[3px] border-neo-ink bg-neo-blue p-4 text-black shadow-neo-sm">
-                    <p className="text-xs font-bold uppercase">Soal dijawab</p>
-                    <p className="mt-1 text-3xl font-black">{practiceSummary.questions}</p>
-                  </div>
-                  <div className="border-[3px] border-neo-ink bg-neo-green p-4 text-black shadow-neo-sm">
-                    <p className="text-xs font-bold uppercase">Akurasi</p>
-                    <p className="mt-1 text-3xl font-black">{practiceSummary.accuracy}%</p>
-                  </div>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {/* Stat KPIs */}
+              <div className="grid gap-4 sm:grid-cols-3">
+                <div className="border-[3px] border-neo-ink bg-neo-yellow p-5 text-black shadow-neo-sm rounded-lg">
+                  <p className="font-mono text-xs font-black uppercase text-black/70">Sesi Selesai</p>
+                  <p className="mt-2 text-4xl font-black tabular-nums">{practiceSummary.sessions}</p>
                 </div>
+                <div className="border-[3px] border-neo-ink bg-neo-blue p-5 text-white shadow-neo-sm rounded-lg">
+                  <p className="font-mono text-xs font-black uppercase text-white/70">Soal Dijawab</p>
+                  <p className="mt-2 text-4xl font-black tabular-nums">{practiceSummary.questions}</p>
+                </div>
+                <div className="border-[3px] border-neo-ink bg-neo-green p-5 text-black shadow-neo-sm rounded-lg">
+                  <p className="font-mono text-xs font-black uppercase text-black/70">Akurasi Rata-rata</p>
+                  <p className="mt-2 text-4xl font-black tabular-nums">{practiceSummary.accuracy}%</p>
+                </div>
+              </div>
 
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {/* By Level Breakdown */}
+              <div className="space-y-3">
+                <span className="font-mono text-xs font-black uppercase text-foreground/70 block">
+                  BREAKDOWN PER LEVEL JLPT
+                </span>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {practiceSummary.byLevel.map((row) => (
-                    <div key={row.level} className="border-[3px] border-neo-ink bg-card p-4">
-                      <p className="text-lg font-black">{row.level}</p>
-                      <p className="mt-1 text-sm text-muted-foreground">
-                        {row.correct}/{row.questions} benar dari {row.sessions} sesi
-                      </p>
-                      <p className="mt-2 font-mono text-xl font-black">{row.accuracy}%</p>
+                    <div
+                      key={row.level}
+                      className="border-[3px] border-neo-ink bg-neo-paper p-4 shadow-neo-sm rounded-lg flex items-center justify-between"
+                    >
+                      <div>
+                        <span className="border-2 border-neo-ink bg-white px-2.5 py-0.5 font-mono text-xs font-black shadow-neo-sm">
+                          JLPT {row.level}
+                        </span>
+                        <p className="mt-2 text-xs font-semibold text-foreground/70">
+                          {row.correct}/{row.questions} benar ({row.sessions} sesi)
+                        </p>
+                      </div>
+                      <span className="font-mono text-2xl font-black text-neo-ink">
+                        {row.accuracy}%
+                      </span>
                     </div>
                   ))}
                 </div>
               </div>
-            )}
-          </CardContent>
-        </Card>
+            </div>
+          )}
+        </section>
       )}
 
+      {/* Level Analytics Tabs (Mondai Breakdown & Score Projection) */}
       {scope !== "PRACTICE" &&
         (levelStats.length === 0 ? (
-          <Card>
-            <CardHeader>
-              <CardTitle>Analisis per Level</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">Belum ada data untuk filter ini.</p>
-            </CardContent>
-          </Card>
+          <section className="neo-surface bg-white p-8 sm:p-12 text-center border-[3px] border-neo-ink shadow-neo">
+            <div className="mx-auto grid size-14 place-items-center rounded-lg border-[3px] border-neo-ink bg-neo-yellow shadow-neo-sm">
+              <Layers className="size-6 text-black" strokeWidth={2.5} />
+            </div>
+            <h3 className="mt-4 text-2xl font-black">Belum Ada Proyeksi Level</h3>
+            <p className="mt-2 text-sm font-semibold text-muted-foreground max-w-md mx-auto">
+              Selesaikan mock test untuk menghasilkan rapor analisis per level JLPT.
+            </p>
+          </section>
         ) : (
           <AnalyticsTabs
             levelStats={levelStats.map(({ level, mondaiStats }) => ({

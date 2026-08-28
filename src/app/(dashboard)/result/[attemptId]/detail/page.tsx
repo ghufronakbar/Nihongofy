@@ -1,5 +1,15 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import {
+  ArrowLeft,
+  ArrowRight,
+  BookOpen,
+  CheckCircle2,
+  Eye,
+  HelpCircle,
+  Trophy,
+  XCircle,
+} from "lucide-react";
 import { getAttemptDetail } from "@/features/result/actions";
 import { QuestionCommentForm } from "@/features/question-comment/components/question-comment-form";
 import { CommentItem } from "@/features/question-comment/components/comment-item";
@@ -11,15 +21,6 @@ import { JapanesePassage } from "@/components/japanese-passage";
 import { FuriganaScope } from "@/components/furigana-scope";
 import { ImageWithLightbox } from "@/components/image-with-lightbox";
 import { mondaiTypeFullLabel } from "@/constants/jlpt";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export default async function ResultDetailPage({
@@ -41,10 +42,10 @@ export default async function ResultDetailPage({
 
   if (testPackageItems.length === 0) {
     return (
-      <div className="flex flex-col gap-2">
-        <p className="text-sm text-muted-foreground">{attempt.testPackage.jlptLevel}</p>
-        <h1 className="text-xl font-semibold">{attempt.testPackage.name} — Review</h1>
-        <p className="text-sm text-muted-foreground">Belum ada soal untuk attempt ini.</p>
+      <div className="neo-surface bg-white p-8 text-center border-[3px] border-neo-ink shadow-neo">
+        <p className="font-mono text-xs font-black uppercase text-foreground/60">{attempt.testPackage.jlptLevel}</p>
+        <h1 className="mt-2 text-2xl font-black">{attempt.testPackage.name} — Review</h1>
+        <p className="mt-2 text-sm font-semibold text-muted-foreground">Belum ada soal untuk attempt ini.</p>
       </div>
     );
   }
@@ -83,10 +84,31 @@ export default async function ResultDetailPage({
   ).rows;
 
   return (
-    <div className="flex flex-col gap-4">
-      <div>
-        <p className="text-sm text-muted-foreground">{attempt.testPackage.jlptLevel}</p>
-        <h1 className="text-xl font-semibold">{attempt.testPackage.name} — Review</h1>
+    <div className="flex flex-col gap-6 pb-12">
+      {/* Header Review Banner */}
+      <div className="neo-surface bg-white p-6 border-[3px] border-neo-ink shadow-neo relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="border-2 border-neo-ink bg-neo-yellow px-2.5 py-0.5 font-mono text-xs font-black uppercase shadow-neo-sm">
+              JLPT {attempt.testPackage.jlptLevel}
+            </span>
+            <span className="neo-kicker bg-white">REVIEW HASIL ATTEMPT</span>
+          </div>
+          <h1 className="mt-2 text-2xl sm:text-4xl font-black uppercase text-neo-ink">
+            {attempt.testPackage.name}
+          </h1>
+          <p className="mt-1 text-xs sm:text-sm font-semibold text-foreground/70">
+            Periksa kembali jawabanmu, perhatikan penjelasan tiap soal, dan simpan catatan belajar.
+          </p>
+        </div>
+
+        <Link
+          href={`/result/${attempt.id}`}
+          className="neo-button bg-white text-black font-extrabold text-xs shrink-0 self-start sm:self-auto"
+        >
+          <ArrowLeft className="size-4" />
+          Ringkasan Hasil
+        </Link>
       </div>
 
       <QuestionNavMobile
@@ -95,72 +117,81 @@ export default async function ResultDetailPage({
         buildHref={(itemId) => `/result/${attempt.id}/detail?mondai=${itemId}`}
       />
 
-      <div className="flex items-start gap-4">
+      <div className="flex items-start gap-6">
         <QuestionNavSidebar
           items={navItems}
           activeId={selectedItem.id}
           buildHref={(itemId) => `/result/${attempt.id}/detail?mondai=${itemId}`}
         />
 
-        <div className="min-w-0 flex-1 space-y-4">
+        <div className="min-w-0 flex-1 space-y-6">
           <FuriganaScope>
-            <Card>
-              <CardHeader>
-                <CardTitle>
-                  Sesi {selectedItem.session} · {mondaiTypeFullLabel(selectedItem.mondaiType)}
-                </CardTitle>
+            <div className="neo-surface bg-white p-6 sm:p-8 border-[3px] border-neo-ink shadow-neo space-y-6">
+              <div className="border-b-[3px] border-neo-ink pb-4">
+                <div className="flex items-center gap-2">
+                  <span className="border-2 border-neo-ink bg-neo-paper px-2 py-0.5 font-mono text-xs font-black uppercase shadow-neo-sm">
+                    SESI {selectedItem.session}
+                  </span>
+                  <span className="font-mono text-xs font-bold text-foreground/60">
+                    {selectedItem.questions.length} SOAL
+                  </span>
+                </div>
+                <h2 className="mt-2 text-2xl sm:text-3xl font-black text-neo-ink">
+                  {mondaiTypeFullLabel(selectedItem.mondaiType)}
+                </h2>
                 {selectedItem.instruction && (
-                  <CardDescription>
+                  <div className="mt-3 rounded-lg border-2 border-neo-ink bg-neo-paper p-3 text-sm font-bold text-neo-ink shadow-neo-sm">
                     <JapaneseText text={selectedItem.instruction} />
-                  </CardDescription>
+                  </div>
                 )}
-              </CardHeader>
-              <CardContent className="flex flex-col gap-6">
+              </div>
+
+              <div className="flex flex-col gap-8">
                 {questionRows.map(({ question, showContext }) => {
                   const userAnswer = question.attemptAnswers[0] ?? null;
 
                   return (
                     <div
                       key={question.id}
-                      className="flex flex-col gap-3 border-t pt-4 first:border-t-0 first:pt-0"
+                      className="flex flex-col gap-4 border-t-[3px] border-neo-ink/15 pt-6 first:border-t-0 first:pt-0"
                     >
                       {showContext && question.questionContext && (
-                        <div className="rounded-lg bg-muted/50 p-3 text-sm">
+                        <div className="rounded-lg border-[3px] border-neo-ink bg-neo-paper p-4 text-sm shadow-neo-sm">
+                          <span className="font-mono text-[10px] font-black uppercase text-foreground/60 block mb-2">
+                            WACANA / STIMULUS SOAL
+                          </span>
                           {question.questionContext.storyText && (
                             <JapanesePassage text={question.questionContext.storyText} />
                           )}
                           {question.questionContext.storyImage && (
                             <ImageWithLightbox
                               src={question.questionContext.storyImage}
-                              className="mt-2 max-w-full rounded-md"
+                              className="mt-3 max-w-full rounded-md border-2 border-neo-ink shadow-neo-sm"
                             />
                           )}
                           {question.questionContext.storyAudio && (
                             <audio
                               controls
                               src={question.questionContext.storyAudio}
-                              className="mt-2 w-full"
+                              className="mt-3 w-full"
                             />
                           )}
                         </div>
                       )}
 
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex gap-2 text-sm">
-                          <span className="font-medium text-muted-foreground">
-                            {question.order}.
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex gap-3 text-base">
+                          <span className="grid size-7 place-items-center rounded border-2 border-neo-ink bg-neo-yellow font-mono text-xs font-black shrink-0 shadow-neo-sm">
+                            {question.order}
                           </span>
-                          <div className="flex flex-col gap-2">
-                            {/* Review pasca-submit: jawaban benar sudah ditandai, jadi
-                                furigana jawaban kanji-yomi tidak disembunyikan — semua
-                                furigana dikontrol toggle FuriganaScope. */}
+                          <div className="flex flex-col gap-2 font-semibold">
                             {question.questionText && (
                               <JapaneseText text={question.questionText} />
                             )}
                             {question.questionImage && (
                               <ImageWithLightbox
                                 src={question.questionImage}
-                                className="max-w-full rounded-md"
+                                className="max-w-full rounded-md border-2 border-neo-ink shadow-neo-sm"
                               />
                             )}
                             {question.questionAudio && (
@@ -168,7 +199,8 @@ export default async function ResultDetailPage({
                             )}
                           </div>
                         </div>
-                        <div className="flex shrink-0 items-center gap-1">
+
+                        <div className="flex shrink-0 items-center gap-2">
                           <CopyQuestionButton
                             contextText={question.questionContext?.storyText}
                             questionOrder={question.order}
@@ -176,62 +208,90 @@ export default async function ResultDetailPage({
                             choices={question.questionChoices}
                           />
                           {userAnswer && (
-                            <Badge variant={userAnswer.isCorrect ? "default" : "destructive"}>
+                            <span
+                              className={cn(
+                                "border-2 border-neo-ink px-2.5 py-0.5 font-mono text-xs font-black uppercase shadow-neo-sm",
+                                userAnswer.isCorrect
+                                  ? "bg-neo-green text-black"
+                                  : userAnswer.selectedAnswer === null
+                                    ? "bg-neo-paper text-foreground/70"
+                                    : "bg-neo-coral text-white",
+                              )}
+                            >
                               {userAnswer.isCorrect
                                 ? "Benar"
                                 : userAnswer.selectedAnswer === null
-                                  ? "Tidak Dijawab"
+                                  ? "Kosong"
                                   : "Salah"}
-                            </Badge>
+                            </span>
                           )}
                         </div>
                       </div>
 
-                      <ul className="flex flex-col gap-1 text-sm">
+                      {/* Choice List */}
+                      <div className="grid gap-2 sm:grid-cols-2">
                         {question.questionChoices.map((choice) => {
                           const isCorrectChoice = choice.codeAnswer === question.questionAnswer;
                           const isUserChoice = choice.codeAnswer === userAnswer?.selectedAnswer;
 
                           return (
-                            <li
+                            <div
                               key={choice.id}
                               className={cn(
-                                "flex items-start gap-2 rounded-md px-2 py-1",
-                                isCorrectChoice && "bg-primary/10 font-medium text-primary",
-                                isUserChoice && !isCorrectChoice && "bg-destructive/10 text-destructive",
+                                "flex items-start gap-2.5 rounded-lg border-2 p-3 text-sm transition-all",
+                                isCorrectChoice
+                                  ? "border-neo-ink bg-neo-green text-black font-black shadow-neo-sm"
+                                  : isUserChoice && !isCorrectChoice
+                                    ? "border-neo-ink bg-neo-coral text-white font-bold shadow-neo-sm"
+                                    : "border-neo-ink/20 bg-background text-foreground/80 font-medium",
                               )}
                             >
-                              <span>{choice.codeAnswer}.</span>
-                              <span className="flex flex-col gap-1">
+                              <span className="font-mono font-black">{choice.codeAnswer}.</span>
+                              <div className="flex flex-col gap-1">
                                 {choice.answerText && <JapaneseText text={choice.answerText} />}
                                 {choice.answerImage && (
                                   <ImageWithLightbox
                                     src={choice.answerImage}
-                                    className="max-w-40 rounded-md"
+                                    className="max-w-40 rounded border border-neo-ink"
                                   />
                                 )}
-                              </span>
+                              </div>
                               {isUserChoice && (
-                                <span className="ml-auto text-xs text-muted-foreground">
-                                  jawabanmu
+                                <span
+                                  className={cn(
+                                    "ml-auto font-mono text-[10px] font-black border border-neo-ink px-1.5 py-0.5 rounded shadow-neo-sm",
+                                    isCorrectChoice
+                                      ? "bg-white text-black"
+                                      : "bg-white text-rose-700",
+                                  )}
+                                >
+                                  Jawabanmu
                                 </span>
                               )}
-                            </li>
+                              {isCorrectChoice && !isUserChoice && (
+                                <span className="ml-auto font-mono text-[10px] font-black border border-neo-ink bg-white px-1.5 py-0.5 rounded shadow-neo-sm text-black">
+                                  Kunci
+                                </span>
+                              )}
+                            </div>
                           );
                         })}
-                      </ul>
+                      </div>
 
                       {question.explanation && (
-                        <p className="rounded-md bg-muted/50 p-2 text-sm text-muted-foreground">
+                        <div className="rounded-lg border-2 border-neo-ink bg-neo-yellow/20 p-3.5 text-xs font-semibold text-neo-ink shadow-neo-sm">
+                          <span className="font-mono text-[10px] font-black uppercase text-foreground/70 block mb-1">
+                            PENJELASAN SOAL:
+                          </span>
                           <JapaneseText text={question.explanation} />
-                        </p>
+                        </div>
                       )}
 
-                      <div className="flex flex-col gap-3">
+                      <div className="flex flex-col gap-3 mt-2">
                         {question.questionComments.length > 0 && (
                           <div className="flex flex-col gap-3">
-                            <span className="text-xs font-medium text-muted-foreground">
-                              Catatan Belajar
+                            <span className="font-mono text-xs font-black uppercase text-foreground/70">
+                              Catatan Belajar ({question.questionComments.length})
                             </span>
                             {question.questionComments.map((comment) => (
                               <CommentItem key={comment.id} comment={comment} />
@@ -243,36 +303,39 @@ export default async function ResultDetailPage({
                     </div>
                   );
                 })}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </FuriganaScope>
 
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-3">
             {prevItem ? (
-              <Button
-                variant="outline"
-                nativeButton={false}
-                render={<Link href={`/result/${attempt.id}/detail?mondai=${prevItem.id}`} />}
+              <Link
+                href={`/result/${attempt.id}/detail?mondai=${prevItem.id}`}
+                className="neo-button bg-white text-black font-extrabold text-xs sm:text-sm"
               >
-                ← Mondai Sebelumnya
-              </Button>
+                <ArrowLeft className="size-4" />
+                Mondai Sebelumnya
+              </Link>
             ) : (
-              <Button variant="outline" disabled>
-                ← Mondai Sebelumnya
-              </Button>
+              <button disabled className="neo-button bg-white text-black opacity-40 font-bold text-xs sm:text-sm">
+                <ArrowLeft className="size-4" />
+                Mondai Sebelumnya
+              </button>
             )}
+
             {nextItem ? (
-              <Button
-                variant="outline"
-                nativeButton={false}
-                render={<Link href={`/result/${attempt.id}/detail?mondai=${nextItem.id}`} />}
+              <Link
+                href={`/result/${attempt.id}/detail?mondai=${nextItem.id}`}
+                className="neo-button bg-neo-yellow text-black font-black text-xs sm:text-sm"
               >
-                Mondai Selanjutnya →
-              </Button>
+                Mondai Selanjutnya
+                <ArrowRight className="size-4" />
+              </Link>
             ) : (
-              <Button variant="outline" disabled>
-                Mondai Selanjutnya →
-              </Button>
+              <button disabled className="neo-button bg-white text-black opacity-40 font-bold text-xs sm:text-sm">
+                Mondai Selanjutnya
+                <ArrowRight className="size-4" />
+              </button>
             )}
           </div>
         </div>

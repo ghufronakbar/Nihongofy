@@ -1,6 +1,6 @@
 "use client";
 
-import { Line, LineChart, CartesianGrid, XAxis, YAxis, Tooltip } from "recharts";
+import { Line, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { ChartContainer, type ChartConfig } from "@/components/ui/chart";
 
 type TrendPoint = {
@@ -11,7 +11,7 @@ type TrendPoint = {
 };
 
 const chartConfig = {
-  scorePercentage: { label: "Skor (%)", color: "var(--chart-2)" },
+  scorePercentage: { label: "Skor (%)", color: "#5294ff" },
 } satisfies ChartConfig;
 
 function TrendTooltip({
@@ -25,28 +25,32 @@ function TrendTooltip({
   const point = payload[0].payload;
 
   return (
-    <div className="rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl">
-      <div className="font-medium">{point.packageLabel}</div>
-      <div className="text-muted-foreground">{point.dateLabel}</div>
-      <div className="font-mono font-medium">{point.scorePercentage}%</div>
+    <div className="rounded-lg border-2 border-neo-ink bg-white p-3 text-xs shadow-neo-sm">
+      <div className="font-mono text-[10px] font-black uppercase text-foreground/60">{point.dateLabel}</div>
+      <div className="font-black text-sm text-neo-ink mt-0.5">{point.packageLabel}</div>
+      <div className="mt-2 inline-flex items-center gap-1.5 border border-neo-ink bg-neo-yellow px-2 py-0.5 font-mono text-xs font-black shadow-neo-sm">
+        <span>Akurasi:</span>
+        <span>{point.scorePercentage}%</span>
+      </div>
     </div>
   );
 }
 
 export function ScoreTrendChart({ data }: { data: TrendPoint[] }) {
   return (
-    <ChartContainer config={chartConfig} className="aspect-auto h-64 w-full">
-      <LineChart data={data} margin={{ left: 12, right: 12 }}>
-        <CartesianGrid vertical={false} />
-        <XAxis dataKey="dateLabel" tickLine={false} axisLine={false} />
-        <YAxis domain={[0, 100]} tickLine={false} axisLine={false} width={32} />
+    <ChartContainer config={chartConfig} className="aspect-auto h-72 w-full">
+      <LineChart data={data} margin={{ left: 12, right: 12, top: 12, bottom: 12 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="#111" strokeOpacity={0.15} vertical={false} />
+        <XAxis dataKey="dateLabel" tickLine={false} axisLine={{ stroke: "#111", strokeWidth: 2 }} tick={{ fill: "#111", fontWeight: 700, fontSize: 11 }} />
+        <YAxis domain={[0, 100]} tickLine={false} axisLine={{ stroke: "#111", strokeWidth: 2 }} tick={{ fill: "#111", fontWeight: 700, fontSize: 11 }} width={36} />
         <Tooltip content={<TrendTooltip />} />
         <Line
           dataKey="scorePercentage"
           type="monotone"
-          stroke="var(--color-scorePercentage)"
-          strokeWidth={2}
-          dot={{ r: 4 }}
+          stroke="#5294ff"
+          strokeWidth={3.5}
+          dot={{ r: 5, fill: "#facc00", stroke: "#111", strokeWidth: 2 }}
+          activeDot={{ r: 7, fill: "#ff5a5f", stroke: "#111", strokeWidth: 2.5 }}
         />
       </LineChart>
     </ChartContainer>

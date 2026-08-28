@@ -30,6 +30,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { logoutAction } from "@/features/auth/actions";
+import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
   { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -58,43 +59,76 @@ export function AppSidebar({
     .join("");
 
   return (
-    <Sidebar collapsible="icon">
-      <SidebarHeader>
-        <div className="px-2 py-1.5 text-sm font-semibold">JLPT Exam</div>
+    <Sidebar collapsible="icon" className="border-r-[3px] border-neo-ink bg-white">
+      <SidebarHeader className="border-b-[3px] border-neo-ink p-3">
+        <Link href="/dashboard" className="flex items-center gap-2.5 px-1 py-1">
+          <div className="grid size-9 place-items-center rounded-md border-2 border-neo-ink bg-neo-yellow text-base font-black text-black shadow-neo-sm shrink-0">
+            日
+          </div>
+          <div className="min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
+            <p className="font-mono text-sm leading-none font-black tracking-wider uppercase text-black">
+              JLPT EXAM
+            </p>
+            <p className="mt-1 font-mono text-[10px] font-bold text-foreground/60 uppercase">
+              Mock & Training
+            </p>
+          </div>
+        </Link>
       </SidebarHeader>
-      <SidebarContent>
-        <SidebarGroup>
+      <SidebarContent className="p-2">
+        <SidebarGroup className="p-0">
           <SidebarGroupContent>
-            <SidebarMenu>
-              {NAV_ITEMS.map((item) => (
-                <SidebarMenuItem key={item.href}>
-                  <SidebarMenuButton
-                    isActive={pathname.startsWith(item.href)}
-                    tooltip={item.title}
-                    render={<Link href={item.href} />}
-                  >
-                    <item.icon />
-                    <span>{item.title}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+            <SidebarMenu className="gap-1.5">
+              {NAV_ITEMS.map((item) => {
+                const isActive =
+                  item.href === "/dashboard"
+                    ? pathname === "/dashboard"
+                    : pathname.startsWith(item.href);
+                return (
+                  <SidebarMenuItem key={item.href}>
+                    <SidebarMenuButton
+                      isActive={isActive}
+                      tooltip={item.title}
+                      render={<Link href={item.href} />}
+                      className={cn(
+                        "h-10 rounded-md border-2 px-3 text-sm font-bold transition-all duration-150",
+                        isActive
+                          ? "border-neo-ink bg-neo-blue text-white shadow-neo-sm hover:bg-neo-blue hover:text-white"
+                          : "border-transparent text-foreground hover:border-neo-ink hover:bg-neo-paper hover:translate-x-1"
+                      )}
+                    >
+                      <item.icon className="size-4.5 shrink-0 stroke-[2.5]" />
+                      <span className="truncate">{item.title}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>
-        <SidebarMenu>
+      <SidebarFooter className="border-t-[3px] border-neo-ink p-2.5">
+        <SidebarMenu className="gap-1.5">
           <SidebarMenuItem>
             <SidebarMenuButton
               isActive={pathname === "/profile" || pathname.startsWith("/profile/info") || pathname.startsWith("/profile/flashcard-settings")}
               tooltip="Profil"
               render={<Link href="/profile" />}
+              className={cn(
+                "h-11 rounded-md border-2 p-2 transition-all duration-150",
+                pathname === "/profile" || pathname.startsWith("/profile/info") || pathname.startsWith("/profile/flashcard-settings")
+                  ? "border-neo-ink bg-neo-yellow text-black shadow-neo-sm font-black"
+                  : "border-neo-ink bg-neo-paper hover:bg-white hover:translate-x-0.5"
+              )}
             >
-              <Avatar className="size-5 rounded-sm border border-black">
-                {avatarUrl ? <AvatarImage src={avatarUrl} alt="" className="rounded-sm" /> : null}
-                <AvatarFallback className="rounded-sm bg-neo-blue text-[9px] font-black text-black">{initials || <UserRound className="size-3" />}</AvatarFallback>
+              <Avatar className="size-7 rounded-md border-2 border-neo-ink bg-neo-blue shadow-neo-sm shrink-0">
+                {avatarUrl ? <AvatarImage src={avatarUrl} alt="" className="rounded-md object-cover" /> : null}
+                <AvatarFallback className="rounded-md bg-neo-blue text-xs font-black text-black">{initials || <UserRound className="size-3.5" />}</AvatarFallback>
               </Avatar>
-              <span className="truncate">{displayName}</span>
+              <div className="flex min-w-0 flex-col group-data-[collapsible=icon]:hidden">
+                <span className="truncate text-xs font-black leading-tight">{displayName}</span>
+                <span className="truncate font-mono text-[10px] text-foreground/60">Lihat profil</span>
+              </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
@@ -102,9 +136,15 @@ export function AppSidebar({
               isActive={pathname.startsWith("/profile/security")}
               tooltip="Security"
               render={<Link href="/profile/security" />}
+              className={cn(
+                "h-9 rounded-md border-2 px-3 text-xs font-bold transition-all",
+                pathname.startsWith("/profile/security")
+                  ? "border-neo-ink bg-neo-blue text-white shadow-neo-sm"
+                  : "border-transparent text-foreground hover:border-neo-ink hover:bg-neo-paper"
+              )}
             >
-              <ShieldCheck />
-              <span>Security</span>
+              <ShieldCheck className="size-4 stroke-[2.5]" />
+              <span className="truncate">Keamanan Akun</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
@@ -112,9 +152,10 @@ export function AppSidebar({
               tooltip="Keluar"
               disabled={isPending}
               onClick={() => startTransition(() => logoutAction())}
+              className="h-9 rounded-md border-2 border-neo-ink bg-neo-coral text-white font-extrabold shadow-neo-sm transition-all hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-neo active:translate-x-[2px] active:translate-y-[2px]"
             >
-              <LogOut />
-              <span>Keluar</span>
+              <LogOut className="size-4 stroke-[2.5]" />
+              <span className="truncate">Keluar</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

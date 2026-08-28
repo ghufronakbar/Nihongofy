@@ -1,10 +1,9 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Filter } from "lucide-react";
 import type { DateRange } from "react-day-picker";
 import type { JlptSection } from "@prisma/client";
-import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
@@ -32,7 +31,7 @@ const RANGE_LABELS: Record<DateRangePreset, string> = {
   thisWeek: "Minggu Ini",
   thisMonth: "Bulan Ini",
   last30Days: "30 Hari Terakhir",
-  custom: "Custom",
+  custom: "Custom Range",
 };
 
 function toIsoDate(date: Date): string {
@@ -89,52 +88,66 @@ export function AnalyticsFilterBar() {
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
-      <Select value={scope} onValueChange={handleScopeChange}>
-        <SelectTrigger className="w-56">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          {SCOPE_OPTIONS.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+    <div className="neo-surface bg-white p-4 border-[3px] border-neo-ink shadow-neo flex flex-wrap items-center gap-3">
+      <div className="flex items-center gap-2 mr-2 font-mono text-xs font-black uppercase text-neo-ink">
+        <Filter className="size-4" strokeWidth={2.5} />
+        Filter Data:
+      </div>
 
-      <Select value={range} onValueChange={handleRangeChange}>
-        <SelectTrigger className="w-40">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          {DATE_RANGE_PRESETS.map((preset) => (
-            <SelectItem key={preset} value={preset}>
-              {RANGE_LABELS[preset]}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <div className="flex flex-wrap items-center gap-2.5">
+        <Select value={scope} onValueChange={handleScopeChange}>
+          <SelectTrigger className="h-10 w-56 rounded-md border-2 border-neo-ink bg-white px-3 font-bold text-xs shadow-neo-sm">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent className="border-2 border-neo-ink shadow-neo font-bold text-xs">
+            {SCOPE_OPTIONS.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-      {range === "custom" && (
-        <Popover>
-          <PopoverTrigger render={<Button type="button" variant="outline" size="sm" />}>
-            <CalendarIcon className="size-4" />
-            {from ? `${from} - ${to ?? "..."}` : "Pilih tanggal"}
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
-            <Calendar
-              mode="range"
-              numberOfMonths={2}
-              selected={{
-                from: from ? new Date(from) : undefined,
-                to: to ? new Date(to) : undefined,
-              }}
-              onSelect={handleCustomRangeSelect}
-            />
-          </PopoverContent>
-        </Popover>
-      )}
+        <Select value={range} onValueChange={handleRangeChange}>
+          <SelectTrigger className="h-10 w-44 rounded-md border-2 border-neo-ink bg-white px-3 font-bold text-xs shadow-neo-sm">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent className="border-2 border-neo-ink shadow-neo font-bold text-xs">
+            {DATE_RANGE_PRESETS.map((preset) => (
+              <SelectItem key={preset} value={preset}>
+                {RANGE_LABELS[preset]}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        {range === "custom" && (
+          <Popover>
+            <PopoverTrigger
+              render={
+                <button
+                  type="button"
+                  className="neo-button !min-h-10 !px-3.5 !py-1.5 bg-neo-yellow text-black text-xs font-black"
+                />
+              }
+            >
+              <CalendarIcon className="size-3.5" />
+              {from ? `${from} - ${to ?? "..."}` : "Pilih Rentang Tanggal"}
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0 border-2 border-neo-ink shadow-neo" align="start">
+              <Calendar
+                mode="range"
+                numberOfMonths={2}
+                selected={{
+                  from: from ? new Date(from) : undefined,
+                  to: to ? new Date(to) : undefined,
+                }}
+                onSelect={handleCustomRangeSelect}
+              />
+            </PopoverContent>
+          </Popover>
+        )}
+      </div>
     </div>
   );
 }

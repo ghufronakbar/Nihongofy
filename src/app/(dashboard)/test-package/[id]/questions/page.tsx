@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ArrowLeft, ArrowRight, BookOpen, Eye, HelpCircle } from "lucide-react";
 import { getTestPackageQuestions } from "@/features/test-package/actions";
 import { QuestionCommentForm } from "@/features/question-comment/components/question-comment-form";
 import { CommentItem } from "@/features/question-comment/components/comment-item";
@@ -10,14 +11,6 @@ import { JapaneseText } from "@/components/japanese-text";
 import { JapanesePassage } from "@/components/japanese-passage";
 import { FuriganaScope } from "@/components/furigana-scope";
 import { mondaiTypeFullLabel } from "@/constants/jlpt";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export default async function TestPackageQuestionsPage({
@@ -39,10 +32,10 @@ export default async function TestPackageQuestionsPage({
 
   if (testPackage.testPackageItems.length === 0) {
     return (
-      <div className="flex flex-col gap-2">
-        <p className="text-sm text-muted-foreground">{testPackage.jlptLevel}</p>
-        <h1 className="text-xl font-semibold">{testPackage.name}</h1>
-        <p className="text-sm text-muted-foreground">Belum ada soal untuk paket ini.</p>
+      <div className="neo-surface bg-white p-8 text-center border-[3px] border-neo-ink shadow-neo">
+        <p className="font-mono text-xs font-black uppercase text-foreground/60">{testPackage.jlptLevel}</p>
+        <h1 className="mt-2 text-2xl font-black">{testPackage.name}</h1>
+        <p className="mt-2 text-sm font-semibold text-muted-foreground">Belum ada soal untuk paket ini.</p>
       </div>
     );
   }
@@ -86,13 +79,31 @@ export default async function TestPackageQuestionsPage({
   ).rows;
 
   return (
-    <div className="flex flex-col gap-4">
-      <div>
-        <p className="text-sm text-muted-foreground">{testPackage.jlptLevel}</p>
-        <h1 className="text-xl font-semibold">{testPackage.name}</h1>
-        <p className="text-sm text-muted-foreground">
-          Mode baca — kunci jawaban dan penjelasan ditampilkan.
-        </p>
+    <div className="flex flex-col gap-6 pb-12">
+      {/* Header Banner */}
+      <div className="neo-surface bg-white p-6 border-[3px] border-neo-ink shadow-neo relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="border-2 border-neo-ink bg-neo-yellow px-2.5 py-0.5 font-mono text-xs font-black uppercase shadow-neo-sm">
+              JLPT {testPackage.jlptLevel}
+            </span>
+            <span className="neo-kicker bg-white">MODE BACA</span>
+          </div>
+          <h1 className="mt-2 text-2xl sm:text-4xl font-black uppercase text-neo-ink">
+            {testPackage.name}
+          </h1>
+          <p className="mt-1 text-xs sm:text-sm font-semibold text-foreground/70">
+            Kunci jawaban resmi dan pembahasan lengkap ditampilkan langsung untuk eksplorasi materi.
+          </p>
+        </div>
+
+        <Link
+          href={`/test-package/${testPackage.id}`}
+          className="neo-button bg-white text-black font-extrabold text-xs shrink-0 self-start sm:self-auto"
+        >
+          <ArrowLeft className="size-4" />
+          Detail Paket
+        </Link>
       </div>
 
       <QuestionNavMobile
@@ -101,38 +112,50 @@ export default async function TestPackageQuestionsPage({
         buildHref={(itemId) => `/test-package/${testPackage.id}/questions?mondai=${itemId}`}
       />
 
-      <div className="flex items-start gap-4">
+      <div className="flex items-start gap-6">
         <QuestionNavSidebar
           items={navItems}
           activeId={selectedItem.id}
           buildHref={(itemId) => `/test-package/${testPackage.id}/questions?mondai=${itemId}`}
         />
 
-        <div className="min-w-0 flex-1 space-y-4">
+        <div className="min-w-0 flex-1 space-y-6">
           <FuriganaScope>
-            <Card>
-              <CardHeader>
-                <CardTitle>
-                  Sesi {selectedItem.session} · {mondaiTypeFullLabel(selectedItem.mondaiType)}
-                </CardTitle>
+            <div className="neo-surface bg-white p-6 sm:p-8 border-[3px] border-neo-ink shadow-neo space-y-6">
+              <div className="border-b-[3px] border-neo-ink pb-4">
+                <div className="flex items-center gap-2">
+                  <span className="border-2 border-neo-ink bg-neo-paper px-2 py-0.5 font-mono text-xs font-black uppercase shadow-neo-sm">
+                    SESI {selectedItem.session}
+                  </span>
+                  <span className="font-mono text-xs font-bold text-foreground/60">
+                    {selectedItem.questions.length} SOAL
+                  </span>
+                </div>
+                <h2 className="mt-2 text-2xl sm:text-3xl font-black text-neo-ink">
+                  {mondaiTypeFullLabel(selectedItem.mondaiType)}
+                </h2>
                 {selectedItem.instruction && (
-                  <CardDescription>
+                  <div className="mt-3 rounded-lg border-2 border-neo-ink bg-neo-paper p-3 text-sm font-bold text-neo-ink shadow-neo-sm">
                     <JapaneseText text={selectedItem.instruction} />
-                  </CardDescription>
+                  </div>
                 )}
-              </CardHeader>
-              <CardContent className="flex flex-col gap-6">
+              </div>
+
+              <div className="flex flex-col gap-8">
                 {questionRows.length === 0 && (
-                  <p className="text-sm text-muted-foreground">Belum ada soal.</p>
+                  <p className="text-sm font-bold text-muted-foreground">Belum ada soal pada mondai ini.</p>
                 )}
 
                 {questionRows.map(({ question, showContext }) => (
                   <div
                     key={question.id}
-                    className="flex flex-col gap-3 border-t pt-4 first:border-t-0 first:pt-0"
+                    className="flex flex-col gap-4 border-t-[3px] border-neo-ink/15 pt-6 first:border-t-0 first:pt-0"
                   >
                     {showContext && question.questionContext && (
-                      <div className="rounded-lg bg-muted/50 p-3 text-sm">
+                      <div className="rounded-lg border-[3px] border-neo-ink bg-neo-paper p-4 text-sm shadow-neo-sm">
+                        <span className="font-mono text-[10px] font-black uppercase text-foreground/60 block mb-2">
+                          WACANA / STIMULUS SOAL
+                        </span>
                         {question.questionContext.storyText && (
                           <JapanesePassage text={question.questionContext.storyText} />
                         )}
@@ -141,25 +164,25 @@ export default async function TestPackageQuestionsPage({
                           <img
                             src={question.questionContext.storyImage}
                             alt=""
-                            className="mt-2 max-w-full rounded-md"
+                            className="mt-3 max-w-full rounded-md border-2 border-neo-ink shadow-neo-sm"
                           />
                         )}
                         {question.questionContext.storyAudio && (
                           <audio
                             controls
                             src={question.questionContext.storyAudio}
-                            className="mt-2 w-full"
+                            className="mt-3 w-full"
                           />
                         )}
                       </div>
                     )}
 
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex gap-2 text-sm">
-                        <span className="font-medium text-muted-foreground">
-                          {question.order}.
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex gap-3 text-base">
+                        <span className="grid size-7 place-items-center rounded border-2 border-neo-ink bg-neo-yellow font-mono text-xs font-black shrink-0 shadow-neo-sm">
+                          {question.order}
                         </span>
-                        <div className="flex flex-col gap-2">
+                        <div className="flex flex-col gap-2 font-semibold">
                           {question.questionText && (
                             <JapaneseText text={question.questionText} />
                           )}
@@ -168,7 +191,7 @@ export default async function TestPackageQuestionsPage({
                             <img
                               src={question.questionImage}
                               alt=""
-                              className="max-w-full rounded-md"
+                              className="max-w-full rounded-md border-2 border-neo-ink shadow-neo-sm"
                             />
                           )}
                           {question.questionAudio && (
@@ -186,43 +209,56 @@ export default async function TestPackageQuestionsPage({
                       </div>
                     </div>
 
-                    <ul className="flex flex-col gap-1 text-sm">
-                      {question.questionChoices.map((choice) => (
-                        <li
-                          key={choice.id}
-                          className={cn(
-                            "flex items-start gap-2 rounded-md px-2 py-1",
-                            choice.codeAnswer === question.questionAnswer &&
-                              "bg-primary/10 font-medium text-primary",
-                          )}
-                        >
-                          <span>{choice.codeAnswer}.</span>
-                          <span className="flex flex-col gap-1">
-                            {choice.answerText && <JapaneseText text={choice.answerText} />}
-                            {choice.answerImage && (
-                              // eslint-disable-next-line @next/next/no-img-element
-                              <img
-                                src={choice.answerImage}
-                                alt=""
-                                className="max-w-40 rounded-md"
-                              />
+                    {/* Choices */}
+                    <div className="grid gap-2 sm:grid-cols-2">
+                      {question.questionChoices.map((choice) => {
+                        const isCorrect = choice.codeAnswer === question.questionAnswer;
+                        return (
+                          <div
+                            key={choice.id}
+                            className={cn(
+                              "flex items-start gap-2.5 rounded-lg border-2 p-3 text-sm transition-all",
+                              isCorrect
+                                ? "border-neo-ink bg-neo-green text-black font-black shadow-neo-sm"
+                                : "border-neo-ink/20 bg-background text-foreground/80 font-medium",
                             )}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
+                          >
+                            <span className="font-mono font-black">{choice.codeAnswer}.</span>
+                            <div className="flex flex-col gap-1">
+                              {choice.answerText && <JapaneseText text={choice.answerText} />}
+                              {choice.answerImage && (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img
+                                  src={choice.answerImage}
+                                  alt=""
+                                  className="max-w-36 rounded border border-neo-ink"
+                                />
+                              )}
+                            </div>
+                            {isCorrect && (
+                              <span className="ml-auto font-mono text-[10px] font-black border border-neo-ink bg-white px-1.5 py-0.5 rounded shadow-neo-sm">
+                                KUNCI
+                              </span>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
 
                     {question.explanation && (
-                      <p className="rounded-md bg-muted/50 p-2 text-sm text-muted-foreground">
+                      <div className="rounded-lg border-2 border-neo-ink bg-neo-yellow/20 p-3.5 text-xs font-semibold text-neo-ink shadow-neo-sm">
+                        <span className="font-mono text-[10px] font-black uppercase text-foreground/70 block mb-1">
+                          PENJELASAN SOAL:
+                        </span>
                         <JapaneseText text={question.explanation} />
-                      </p>
+                      </div>
                     )}
 
-                    <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-3 mt-2">
                       {question.questionComments.length > 0 && (
                         <div className="flex flex-col gap-3">
-                          <span className="text-xs font-medium text-muted-foreground">
-                            Catatan Belajar
+                          <span className="font-mono text-xs font-black uppercase text-foreground/70">
+                            Catatan Belajar ({question.questionComments.length})
                           </span>
                           {question.questionComments.map((comment) => (
                             <CommentItem key={comment.id} comment={comment} />
@@ -233,40 +269,39 @@ export default async function TestPackageQuestionsPage({
                     </div>
                   </div>
                 ))}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </FuriganaScope>
 
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-3">
             {prevItem ? (
-              <Button
-                variant="outline"
-                nativeButton={false}
-                render={
-                  <Link href={`/test-package/${testPackage.id}/questions?mondai=${prevItem.id}`} />
-                }
+              <Link
+                href={`/test-package/${testPackage.id}/questions?mondai=${prevItem.id}`}
+                className="neo-button bg-white text-black font-extrabold text-xs sm:text-sm"
               >
-                ← Mondai Sebelumnya
-              </Button>
+                <ArrowLeft className="size-4" />
+                Mondai Sebelumnya
+              </Link>
             ) : (
-              <Button variant="outline" disabled>
-                ← Mondai Sebelumnya
-              </Button>
+              <button disabled className="neo-button bg-white text-black opacity-40 font-bold text-xs sm:text-sm">
+                <ArrowLeft className="size-4" />
+                Mondai Sebelumnya
+              </button>
             )}
+
             {nextItem ? (
-              <Button
-                variant="outline"
-                nativeButton={false}
-                render={
-                  <Link href={`/test-package/${testPackage.id}/questions?mondai=${nextItem.id}`} />
-                }
+              <Link
+                href={`/test-package/${testPackage.id}/questions?mondai=${nextItem.id}`}
+                className="neo-button bg-neo-yellow text-black font-black text-xs sm:text-sm"
               >
-                Mondai Selanjutnya →
-              </Button>
+                Mondai Selanjutnya
+                <ArrowRight className="size-4" />
+              </Link>
             ) : (
-              <Button variant="outline" disabled>
-                Mondai Selanjutnya →
-              </Button>
+              <button disabled className="neo-button bg-white text-black opacity-40 font-bold text-xs sm:text-sm">
+                Mondai Selanjutnya
+                <ArrowRight className="size-4" />
+              </button>
             )}
           </div>
         </div>

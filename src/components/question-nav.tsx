@@ -37,10 +37,10 @@ export function QuestionNavList({
     <nav className="flex flex-col gap-4">
       {Array.from(grouped.entries()).map(([section, sectionItems]) => (
         <div key={section}>
-          <p className="mb-1.5 px-2 text-xs font-semibold text-muted-foreground">
+          <p className="mb-2 px-1 font-mono text-[11px] font-black uppercase text-foreground/70">
             {JLPT_SECTION_LABELS[section]}
           </p>
-          <div className="flex flex-col gap-0.5">
+          <div className="flex flex-col gap-1">
             {sectionItems.map((item) => {
               const isActive = item.id === activeId;
               return (
@@ -49,15 +49,24 @@ export function QuestionNavList({
                   href={buildHref(item.id)}
                   title={mondaiTypeFullLabel(item.mondaiType)}
                   className={cn(
-                    "flex items-center justify-between gap-2 rounded-md px-2 py-1.5 text-sm transition-colors",
-                    isActive ? "bg-primary/10 font-medium text-primary" : "hover:bg-muted",
+                    "flex items-center justify-between gap-2 rounded-md border-2 px-2.5 py-1.5 text-xs font-bold transition-all",
+                    isActive
+                      ? "border-neo-ink bg-neo-blue text-white shadow-neo-sm"
+                      : "border-transparent text-foreground hover:border-neo-ink hover:bg-neo-paper",
                   )}
                 >
                   <span className="truncate">{MONDAI_TYPE_LABELS[item.mondaiType]}</span>
-                  <span className="shrink-0 text-xs text-muted-foreground">
+                  <span
+                    className={cn(
+                      "shrink-0 font-mono text-[10px] px-1.5 py-0.5 rounded border",
+                      isActive
+                        ? "border-white/40 bg-white/20 text-white font-black"
+                        : "border-neo-ink/20 bg-neo-paper text-foreground/70 font-semibold",
+                    )}
+                  >
                     {item.correctCount !== undefined
                       ? `${item.correctCount}/${item.totalCount}`
-                      : item.totalCount}
+                      : `${item.totalCount} Q`}
                   </span>
                 </Link>
               );
@@ -75,7 +84,12 @@ export function QuestionNavSidebar(props: {
   buildHref: (itemId: number) => string;
 }) {
   return (
-    <aside className="sticky top-4 hidden max-h-[calc(100vh-2rem)] w-56 shrink-0 self-start overflow-y-auto rounded-lg border p-3 lg:block">
+    <aside className="sticky top-20 hidden max-h-[calc(100vh-6rem)] w-60 shrink-0 self-start overflow-y-auto rounded-lg border-[3px] border-neo-ink bg-white p-3.5 shadow-neo lg:block">
+      <div className="border-b-2 border-neo-ink pb-2 mb-3">
+        <span className="font-mono text-xs font-black uppercase text-neo-ink">
+          DAFTAR MONDAI
+        </span>
+      </div>
       <QuestionNavList {...props} />
     </aside>
   );
