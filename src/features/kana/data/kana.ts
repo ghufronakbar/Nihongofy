@@ -11,24 +11,33 @@ export type KanaCard = {
   romaji: string;
   script: KanaScript;
   group: string;
+  columnIndex: number; // 0 for 'a', 1 for 'i', 2 for 'u', 3 for 'e', 4 for 'o'
+  rowIndex: number;
   variations: KanaVariation[];
 };
 
-const GROUPS = [
-  { group: "Vokal", romaji: ["a", "i", "u", "e", "o"] },
-  { group: "K", romaji: ["ka", "ki", "ku", "ke", "ko"] },
-  { group: "S", romaji: ["sa", "shi", "su", "se", "so"] },
-  { group: "T", romaji: ["ta", "chi", "tsu", "te", "to"] },
-  { group: "N", romaji: ["na", "ni", "nu", "ne", "no"] },
-  { group: "H", romaji: ["ha", "hi", "fu", "he", "ho"] },
-  { group: "M", romaji: ["ma", "mi", "mu", "me", "mo"] },
-  { group: "Y", romaji: ["ya", "yu", "yo"] },
-  { group: "R", romaji: ["ra", "ri", "ru", "re", "ro"] },
-  { group: "W", romaji: ["wa", "wo"] },
-  { group: "N akhir", romaji: ["n"] },
-] as const;
+export type KanaRowDefinition = {
+  group: string;
+  slots: (string | null)[];
+};
 
-const CHARACTERS: Record<KanaScript, string[][]> = {
+export const KANA_VOWELS = ["a", "i", "u", "e", "o"] as const;
+
+export const KANA_ROW_DEFINITIONS: KanaRowDefinition[] = [
+  { group: "Vokal", slots: ["a", "i", "u", "e", "o"] },
+  { group: "K", slots: ["ka", "ki", "ku", "ke", "ko"] },
+  { group: "S", slots: ["sa", "shi", "su", "se", "so"] },
+  { group: "T", slots: ["ta", "chi", "tsu", "te", "to"] },
+  { group: "N", slots: ["na", "ni", "nu", "ne", "no"] },
+  { group: "H", slots: ["ha", "hi", "fu", "he", "ho"] },
+  { group: "M", slots: ["ma", "mi", "mu", "me", "mo"] },
+  { group: "Y", slots: ["ya", null, "yu", null, "yo"] },
+  { group: "R", slots: ["ra", "ri", "ru", "re", "ro"] },
+  { group: "W", slots: ["wa", null, null, null, "wo"] },
+  { group: "N akhir", slots: ["n", null, null, null, null] },
+];
+
+const CHARACTERS: Record<KanaScript, (string | null)[][]> = {
   hiragana: [
     ["あ", "い", "う", "え", "お"],
     ["か", "き", "く", "け", "こ"],
@@ -37,10 +46,10 @@ const CHARACTERS: Record<KanaScript, string[][]> = {
     ["な", "に", "ぬ", "ね", "の"],
     ["は", "ひ", "ふ", "へ", "ほ"],
     ["ま", "み", "む", "め", "も"],
-    ["や", "ゆ", "よ"],
+    ["や", null, "ゆ", null, "よ"],
     ["ら", "り", "る", "れ", "ろ"],
-    ["わ", "を"],
-    ["ん"],
+    ["わ", null, null, null, "を"],
+    ["ん", null, null, null, null],
   ],
   katakana: [
     ["ア", "イ", "ウ", "エ", "オ"],
@@ -50,10 +59,10 @@ const CHARACTERS: Record<KanaScript, string[][]> = {
     ["ナ", "ニ", "ヌ", "ネ", "ノ"],
     ["ハ", "ヒ", "フ", "ヘ", "ホ"],
     ["マ", "ミ", "ム", "メ", "モ"],
-    ["ヤ", "ユ", "ヨ"],
+    ["ヤ", null, "ユ", null, "ヨ"],
     ["ラ", "リ", "ル", "レ", "ロ"],
-    ["ワ", "ヲ"],
-    ["ン"],
+    ["ワ", null, null, null, "ヲ"],
+    ["ン", null, null, null, null],
   ],
 };
 
@@ -83,29 +92,36 @@ const VARIATION_CHARACTERS: Record<KanaScript, Record<string, string[]>> = {
 };
 
 function buildKana(script: KanaScript): KanaCard[] {
-  return GROUPS.flatMap((row, rowIndex) =>
-    row.romaji.map((romaji, columnIndex) => {
+  const cards: KanaCard[] = [];
+  KANA_ROW_DEFINITIONS.forEach((row, rowIndex) => {
+    row.slots.forEach((romaji, columnIndex) => {
+      if (!romaji) return;
+      const char = CHARACTERS[script][rowIndex][columnIndex];
+      if (!char) return;
       const variationChars = VARIATION_CHARACTERS[script][romaji] ?? [];
       const variationRomaji = VOICED_VARIATIONS[romaji] ?? [];
 
-      return {
+      cards.push({
         key: `${script}-${romaji}`,
-        char: CHARACTERS[script][rowIndex][columnIndex],
+        char,
         romaji,
         script,
         group: row.group,
-        variations: variationChars.map((char, index) => ({
-          char,
+        columnIndex,
+        rowIndex,
+        variations: variationChars.map((vChar, index) => ({
+          char: vChar,
           romaji: variationRomaji[index],
         })),
-      };
-    }),
-  );
+      });
+    });
+  });
+  return cards;
 }
 
 export const HIRAGANA = buildKana("hiragana");
 export const KATAKANA = buildKana("katakana");
-export const KANA_GROUPS = GROUPS.map((group) => group.group);
+export const KANA_GROUPS = KANA_ROW_DEFINITIONS.map((group) => group.group);
 
 export function getKanaByScript(script: KanaScript) {
   return script === "hiragana" ? HIRAGANA : KATAKANA;
