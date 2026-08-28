@@ -10,10 +10,10 @@ export const metadata: Metadata = {
 
 export default function VocabularyPage() {
   return (
-    <main className="mx-auto w-full max-w-7xl pb-12">
+    <main className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
       <header className="relative mb-8 overflow-hidden border-[3px] border-black bg-neo-yellow p-6 shadow-neo-lg md:p-9">
         <div className="absolute -right-8 -bottom-12 font-japanese text-[11rem] leading-none font-black opacity-15" aria-hidden="true">語</div>
-        <Link href="/dashboard" className="neo-button relative z-10 mb-8 w-fit bg-white"><ArrowLeft className="size-5" /> Dashboard</Link>
+        <Link href="/" className="neo-button relative z-10 mb-8 w-fit bg-white"><ArrowLeft className="size-5" /> Beranda</Link>
         <span className="neo-kicker relative z-10 bg-neo-green">Vocabulary / 語彙</span>
         <h1 className="relative z-10 mt-5 max-w-5xl text-5xl leading-[0.9] uppercase sm:text-6xl lg:text-8xl">Pilih deck. Bangun ingatan.</h1>
         <p className="relative z-10 mt-5 max-w-2xl text-base font-semibold md:text-lg">

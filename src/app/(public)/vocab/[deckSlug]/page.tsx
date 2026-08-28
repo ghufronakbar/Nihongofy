@@ -21,7 +21,7 @@ export default async function VocabularyDeckPage({ params, searchParams }: PageP
   const mode = query.mode === "review" ? "review" : "browse";
 
   return (
-    <main className="mx-auto w-full max-w-5xl pb-12">
+    <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 py-8">
       <Link href="/vocab" className="neo-button mb-6 w-fit bg-white"><ArrowLeft className="size-5" /> Semua deck</Link>
 
       <header className="neo-surface mb-7 overflow-hidden bg-white">

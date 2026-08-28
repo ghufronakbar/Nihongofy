@@ -37,9 +37,21 @@ const getCachedDecks = unstable_cache(
 
 export async function getVocabularyDecks() {
   const session = await getSession();
-  if (!session) redirect("/login");
-
   const decks = await getCachedDecks();
+
+  if (!session) {
+    return decks.map((deck) => ({
+      id: deck.id,
+      slug: deck.slug,
+      title: deck.title,
+      description: deck.description,
+      jlptLevel: deck.jlptLevel,
+      cardCount: deck.items.length,
+      newCount: deck.items.length,
+      dueCount: 0,
+    }));
+  }
+
   const flashcardIds = [...new Set(decks.flatMap((deck) => deck.items.map((item) => item.flashcardId)))];
   const progress = await prisma.flashcardProgress.findMany({
     where: { userId: session.userId, flashcardId: { in: flashcardIds } },
@@ -106,10 +118,51 @@ const getCachedDeck = (slug: string) =>
 
 export async function getVocabularyDeck(slug: string) {
   const session = await getSession();
-  if (!session) redirect("/login");
-
   const deck = await getCachedDeck(slug);
   if (!deck?.isPublished) notFound();
+
+  if (!session) {
+    const cards = deck.items.map((item) => {
+      const parsedExamples = UsageExamplesSchema.safeParse(item.flashcard.usageExamples);
+      return {
+        id: item.flashcard.id,
+        order: item.order,
+        word: item.flashcard.word,
+        reading: item.flashcard.reading,
+        romaji: item.flashcard.romaji,
+        meaning: item.flashcard.meaning,
+        jlptLevel: item.flashcard.jlptLevel,
+        audioText: item.flashcard.audioText ?? item.flashcard.word,
+        audioUrl: item.flashcard.audioUrl,
+        usageExamples: parsedExamples.success ? parsedExamples.data : [],
+        tags: item.flashcard.tagLinks.map((link) => link.tag),
+        isNew: true,
+        isDue: false,
+        dueAt: null,
+        intervalDays: 0,
+        repetitions: 0,
+      };
+    });
+
+    return {
+      id: deck.id,
+      slug: deck.slug,
+      title: deck.title,
+      description: deck.description,
+      jlptLevel: deck.jlptLevel,
+      cards,
+      reviewCardIds: cards.map((card) => card.id),
+      dueCount: 0,
+      newCount: cards.length,
+      dailyQueue: {
+        remainingReviews: 0,
+        remainingNew: cards.length,
+        completedReviewsToday: 0,
+        completedNewToday: 0,
+        limitReached: false,
+      },
+    };
+  }
 
   const flashcardIds = deck.items.map((item) => item.flashcard.id);
   const now = new Date();
@@ -196,7 +249,14 @@ export async function getVocabularyDeck(slug: string) {
 
 export async function rateFlashcardAction(input: RateFlashcardInput) {
   const session = await getSession();
-  if (!session) return { ok: false as const, message: "Sesi berakhir. Silakan masuk lagi." };
+  if (!session) {
+    // Guest mode: do not record in database
+    return {
+      ok: true as const,
+      nextDueAt: new Date().toISOString(),
+      intervalDays: 1,
+    };
+  }
 
   const validated = RateFlashcardSchema.safeParse(input);
   if (!validated.success) {

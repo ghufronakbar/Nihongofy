@@ -48,7 +48,7 @@ export default async function TestPackageDetailPage({
     LEVEL_BADGE_STYLES[testPackage.jlptLevel] || "bg-neo-blue text-white";
 
   return (
-    <div className="flex flex-col gap-8 pb-12">
+    <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8">
       {/* Back link */}
       <div>
         <Link

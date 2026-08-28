@@ -84,7 +84,7 @@ export default async function ResultDetailPage({
   ).rows;
 
   return (
-    <div className="flex flex-col gap-6 pb-12">
+    <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-6">
       {/* Header Review Banner */}
       <div className="neo-surface bg-white p-6 border-[3px] border-neo-ink shadow-neo relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>

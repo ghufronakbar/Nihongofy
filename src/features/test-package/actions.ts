@@ -2,6 +2,7 @@
 
 import { notFound, redirect } from "next/navigation";
 import { unstable_cache } from "next/cache";
+import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { CACHE_KEYS, CACHE_TAGS } from "@/constants/cache-key";
@@ -19,9 +20,6 @@ const getCachedTestPackageList = unstable_cache(
 );
 
 export async function getTestPackages() {
-  const session = await getSession();
-  if (!session) redirect("/login");
-
   return getCachedTestPackageList();
 }
 
@@ -53,23 +51,23 @@ const getCachedTestPackage = (testPackageId: number) =>
 
 export async function getTestPackageDetail(testPackageId: number) {
   const session = await getSession();
-  if (!session) redirect("/login");
-
   const testPackage = await getCachedTestPackage(testPackageId);
   if (!testPackage) notFound();
 
-  // Per-user attempt history — not cached, changes every time an attempt starts/finishes.
-  const attempts = await prisma.attempt.findMany({
-    where: { testPackageId, userId: session.userId },
-    select: {
-      id: true,
-      status: true,
-      sectionScope: true,
-      startedAt: true,
-      finishedAt: true,
-    },
-    orderBy: { startedAt: "desc" },
-  });
+  // Per-user attempt history — only fetched when authenticated
+  const attempts = session
+    ? await prisma.attempt.findMany({
+        where: { testPackageId, userId: session.userId },
+        select: {
+          id: true,
+          status: true,
+          sectionScope: true,
+          startedAt: true,
+          finishedAt: true,
+        },
+        orderBy: { startedAt: "desc" },
+      })
+    : [];
 
   return { testPackage, attempts };
 }
@@ -134,28 +132,28 @@ const getCachedTestPackageQuestions = (testPackageId: number) =>
 // mode there's no restriction on sending questionAnswer/explanation here.
 export async function getTestPackageQuestions(testPackageId: number) {
   const session = await getSession();
-  if (!session) redirect("/login");
-
   const testPackage = await getCachedTestPackageQuestions(testPackageId);
   if (!testPackage) notFound();
 
   // The question bank is shared and globally cacheable; private comments are not.
-  const comments = await prisma.questionComment.findMany({
-    where: {
-      userId: session.userId,
-      question: { testPackageItem: { testPackageId } },
-    },
-    orderBy: { createdAt: "desc" },
-    select: {
-      id: true,
-      questionId: true,
-      commentText: true,
-      commentImages: true,
-      createdAt: true,
-      updatedAt: true,
-      user: { select: { displayName: true } },
-    },
-  });
+  const comments = session
+    ? await prisma.questionComment.findMany({
+        where: {
+          userId: session.userId,
+          question: { testPackageItem: { testPackageId } },
+        },
+        orderBy: { createdAt: "desc" },
+        select: {
+          id: true,
+          questionId: true,
+          commentText: true,
+          commentImages: true,
+          createdAt: true,
+          updatedAt: true,
+          user: { select: { displayName: true } },
+        },
+      })
+    : [];
 
   const commentsByQuestion = new Map<number, typeof comments>();
   for (const comment of comments) {
@@ -178,8 +176,6 @@ export async function getTestPackageQuestions(testPackageId: number) {
 
 export async function createAttemptAction(input: CreateAttemptInput) {
   const session = await getSession();
-  if (!session) redirect("/login");
-
   const validated = CreateAttemptSchema.safeParse(input);
   if (!validated.success) {
     throw new Error("Data tidak valid.");
@@ -194,6 +190,20 @@ export async function createAttemptAction(input: CreateAttemptInput) {
 
   if (!testPackage) {
     notFound();
+  }
+
+  if (!session) {
+    // Guest mode: do not create attempt in database, save guest exam cookie
+    const cookieStore = await cookies();
+    cookieStore.set(
+      "jlpt_guest_exam",
+      JSON.stringify({
+        testPackageId,
+        sectionScope: sectionScope ?? null,
+      }),
+      { httpOnly: true, secure: true, sameSite: "lax", path: "/" }
+    );
+    redirect(`/exam/guest/1`);
   }
 
   const attempt = await prisma.attempt.create({

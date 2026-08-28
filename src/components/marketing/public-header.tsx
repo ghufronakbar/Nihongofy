@@ -18,10 +18,11 @@ import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
   { label: "Beranda", href: "/" },
-  { label: "Cara belajar", href: "/#cara-belajar" },
-  { label: "Fitur", href: "/#fitur" },
-  { label: "Artikel", href: "/article" },
+  { label: "Kana", href: "/kana/hiragana" },
+  { label: "Kosakata", href: "/vocab" },
+  { label: "Latihan Cepat", href: "/exercises" },
   { label: "Mock JLPT", href: "/test-package" },
+  { label: "Artikel", href: "/article" },
 ];
 
 function isActivePath(pathname: string, href: string) {

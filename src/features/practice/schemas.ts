@@ -34,7 +34,7 @@ export const PracticeConfigurationSchema = z.object({
 });
 
 export const PracticeSessionIdSchema = z.object({
-  sessionId: z.number().int().positive(),
+  sessionId: z.number().int().min(0),
 });
 
 export const SubmitPracticeAnswerSchema = PracticeSessionIdSchema.extend({

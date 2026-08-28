@@ -2,6 +2,7 @@
 
 import { notFound, redirect } from "next/navigation";
 import { updateTag } from "next/cache";
+import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { CACHE_TAGS } from "@/constants/cache-key";
@@ -11,7 +12,70 @@ import { SubmitExamSessionSchema, type SubmitExamSessionInput } from "./schemas"
 // must never be selected here — only exposed post-submit via the result feature.
 export async function getExamQuestions(attemptId: number, urlSession: number) {
   const authSession = await getSession();
-  if (!authSession) redirect("/login");
+
+  if (attemptId === 0 || !authSession) {
+    const cookieStore = await cookies();
+    const guestCookie = cookieStore.get("jlpt_guest_exam")?.value;
+    if (!guestCookie) notFound();
+
+    try {
+      const guestData = JSON.parse(guestCookie) as {
+        testPackageId: number;
+        sectionScope: string | null;
+      };
+
+      const testPackage = await prisma.testPackage.findUnique({
+        where: { id: guestData.testPackageId },
+        select: { id: true, name: true, jlptLevel: true },
+      });
+      if (!testPackage) notFound();
+
+      const attempt = {
+        id: 0,
+        userId: 0,
+        testPackageId: guestData.testPackageId,
+        sectionScope: guestData.sectionScope as any,
+        status: "IN_PROGRESS" as const,
+        testPackage,
+      };
+
+      const testPackageItems = await prisma.testPackageItem.findMany({
+        where: attempt.sectionScope
+          ? { testPackageId: attempt.testPackageId, section: attempt.sectionScope }
+          : { testPackageId: attempt.testPackageId, session: urlSession },
+        orderBy: [{ session: "asc" }, { order: "asc" }],
+        select: {
+          id: true,
+          mondaiType: true,
+          section: true,
+          session: true,
+          order: true,
+          instruction: true,
+          questions: {
+            orderBy: { order: "asc" },
+            select: {
+              id: true,
+              order: true,
+              questionText: true,
+              questionImage: true,
+              questionAudio: true,
+              questionContext: {
+                select: { id: true, storyText: true, storyImage: true, storyAudio: true },
+              },
+              questionChoices: {
+                orderBy: { codeAnswer: "asc" },
+                select: { id: true, codeAnswer: true, answerText: true, answerImage: true },
+              },
+            },
+          },
+        },
+      });
+
+      return { attempt, testPackageItems };
+    } catch {
+      notFound();
+    }
+  }
 
   const attempt = await prisma.attempt.findUnique({
     where: { id: attemptId },
@@ -78,14 +142,42 @@ export async function getExamQuestions(attemptId: number, urlSession: number) {
 
 export async function submitExamSessionAction(input: SubmitExamSessionInput) {
   const authSession = await getSession();
-  if (!authSession) redirect("/login");
-
   const validated = SubmitExamSessionSchema.safeParse(input);
   if (!validated.success) {
     throw new Error("Data tidak valid.");
   }
 
   const { attemptId, session: urlSession, answers } = validated.data;
+
+  if (attemptId === 0 || !authSession) {
+    const cookieStore = await cookies();
+    const guestCookie = cookieStore.get("jlpt_guest_exam")?.value;
+    if (!guestCookie) notFound();
+
+    const guestData = JSON.parse(guestCookie) as {
+      testPackageId: number;
+      sectionScope: string | null;
+    };
+
+    const scopedWhere = guestData.sectionScope
+      ? { testPackageId: guestData.testPackageId, section: guestData.sectionScope as any }
+      : { testPackageId: guestData.testPackageId };
+
+    const sessionRows = await prisma.testPackageItem.findMany({
+      where: scopedWhere,
+      select: { session: true },
+      distinct: ["session"],
+    });
+    const sessionNumbers = sessionRows.map((row) => row.session).sort((a, b) => a - b);
+    const isLastSession = guestData.sectionScope ? true : sessionNumbers.at(-1) === urlSession;
+
+    if (isLastSession) {
+      redirect(`/test-package/${guestData.testPackageId}/questions`);
+    }
+
+    const nextSession = sessionNumbers[sessionNumbers.indexOf(urlSession) + 1];
+    redirect(`/exam/guest/${nextSession}`);
+  }
 
   const attempt = await prisma.attempt.findUnique({
     where: { id: attemptId },

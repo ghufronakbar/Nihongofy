@@ -7,7 +7,7 @@ export const ExamAnswerSchema = z.object({
 });
 
 export const SubmitExamSessionSchema = z.object({
-  attemptId: z.number().int().positive(),
+  attemptId: z.number().int().min(0),
   session: z.number().int().positive(),
   answers: z.array(ExamAnswerSchema),
 });

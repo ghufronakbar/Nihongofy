@@ -4,9 +4,28 @@ import { getSession } from "@/lib/auth";
 
 // Optimistic check only. Every protected layout and Server Action still verifies
 // the session because Proxy must not be the only authorization boundary.
-const PUBLIC_ROUTES = ["/", "/login", "/register", "/article"];
+const PUBLIC_ROUTES = [
+  "/",
+  "/login",
+  "/register",
+  "/article",
+  "/kana",
+  "/kana/hiragana",
+  "/kana/katakana",
+  "/vocab",
+  "/exercises",
+  "/test-package",
+];
 
-const PUBLIC_PREFIXES = ["/article/"];
+const PUBLIC_PREFIXES = [
+  "/article/",
+  "/kana/",
+  "/vocab/",
+  "/exercises/",
+  "/test-package/",
+  "/exam/",
+  "/result/",
+];
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;

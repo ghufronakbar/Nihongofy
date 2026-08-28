@@ -228,7 +228,7 @@ export function PracticeRunner({ practiceSession }: PracticeRunnerProps) {
   }
 
   return (
-    <main className="page-reveal mx-auto w-full max-w-6xl space-y-5 pb-10">
+    <main className="page-reveal mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8 py-8 space-y-5">
       <header className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <Link href="/exercises" className="inline-flex items-center gap-2 text-sm font-black underline underline-offset-4">

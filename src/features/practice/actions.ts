@@ -2,6 +2,7 @@
 
 import { unstable_cache, updateTag } from "next/cache";
 import { notFound, redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import type { JlptLevel, JlptSection, MondaiType, Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
@@ -60,9 +61,6 @@ const getCachedPracticeCatalog = unstable_cache(
 );
 
 export async function getPracticeCatalog() {
-  const authSession = await getSession();
-  if (!authSession) redirect("/login?next=/exercises");
-
   return getCachedPracticeCatalog();
 }
 
@@ -94,8 +92,6 @@ function practiceQuestionWhere(
 
 export async function createPracticeSessionAction(input: PracticeConfigurationInput) {
   const authSession = await getSession();
-  if (!authSession) redirect("/login?next=/exercises");
-
   const validated = PracticeConfigurationSchema.safeParse(input);
   if (!validated.success) {
     return { ok: false as const, message: "Konfigurasi latihan tidak valid." };
@@ -114,6 +110,27 @@ export async function createPracticeSessionAction(input: PracticeConfigurationIn
     };
   }
 
+  const selected = seededShuffle(
+    candidates,
+    Date.now(),
+  ).slice(0, validated.data.questionCount);
+
+  if (!authSession) {
+    // Guest mode: do not write to database, store in cookie
+    const cookieStore = await cookies();
+    cookieStore.set(
+      "jlpt_guest_practice",
+      JSON.stringify({
+        jlptLevel: validated.data.jlptLevel,
+        section: validated.data.section,
+        mondaiType: validated.data.mondaiType,
+        questionIds: selected.map((q) => q.id),
+      }),
+      { httpOnly: true, secure: true, sameSite: "lax", path: "/" }
+    );
+    redirect(`/exercises/guest`);
+  }
+
   const sessionId = await prisma.$transaction(async (tx) => {
     const practiceSession = await tx.practiceSession.create({
       data: {
@@ -125,11 +142,6 @@ export async function createPracticeSessionAction(input: PracticeConfigurationIn
       },
       select: { id: true },
     });
-
-    const selected = seededShuffle(
-      candidates,
-      practiceSession.id * 2654435761 + authSession.userId,
-    ).slice(0, validated.data.questionCount);
 
     await tx.practiceAnswer.createMany({
       data: selected.map((question, index) => ({
@@ -147,10 +159,93 @@ export async function createPracticeSessionAction(input: PracticeConfigurationIn
 
 export async function getPracticeSession(input: PracticeSessionIdInput) {
   const authSession = await getSession();
-  if (!authSession) redirect("/login");
-
   const validated = PracticeSessionIdSchema.safeParse(input);
   if (!validated.success) notFound();
+
+  if (validated.data.sessionId === 0 || !authSession) {
+    const cookieStore = await cookies();
+    const raw = cookieStore.get("jlpt_guest_practice")?.value;
+    if (!raw) notFound();
+
+    try {
+      const guestData = JSON.parse(raw) as {
+        jlptLevel: JlptLevel;
+        section: JlptSection;
+        mondaiType: MondaiType;
+        questionIds: number[];
+      };
+
+      const questions = await prisma.question.findMany({
+        where: { id: { in: guestData.questionIds } },
+        select: {
+          id: true,
+          order: true,
+          questionText: true,
+          questionImage: true,
+          questionAudio: true,
+          questionChoices: {
+            orderBy: { codeAnswer: "asc" },
+            select: {
+              id: true,
+              codeAnswer: true,
+              answerText: true,
+              answerImage: true,
+            },
+          },
+          questionContext: {
+            select: {
+              id: true,
+              storyText: true,
+              storyImage: true,
+              storyAudio: true,
+            },
+          },
+          testPackageItem: {
+            select: {
+              instruction: true,
+              mondaiType: true,
+            },
+          },
+        },
+      });
+
+      const questionMap = new Map(questions.map((q) => [q.id, q]));
+      const ordered = guestData.questionIds
+        .map((id, index) => {
+          const q = questionMap.get(id);
+          if (!q) return null;
+          return {
+            assignmentOrder: index + 1,
+            selectedAnswer: null,
+            isCorrect: null,
+            answeredAt: null,
+            feedback: null,
+            ...q,
+          };
+        })
+        .filter(Boolean) as (typeof questions[number] & {
+          assignmentOrder: number;
+          selectedAnswer: number | null;
+          isCorrect: boolean | null;
+          answeredAt: string | null;
+          feedback: null;
+        })[];
+
+      return {
+        id: 0,
+        jlptLevel: guestData.jlptLevel,
+        section: guestData.section,
+        mondaiType: guestData.mondaiType,
+        questionCount: guestData.questionIds.length,
+        status: "IN_PROGRESS",
+        startedAt: new Date().toISOString(),
+        finishedAt: null,
+        questions: ordered,
+      };
+    } catch {
+      notFound();
+    }
+  }
 
   const practiceSession = await prisma.practiceSession.findUnique({
     where: { id: validated.data.sessionId },
@@ -253,11 +348,36 @@ export async function getPracticeSession(input: PracticeSessionIdInput) {
 
 export async function submitPracticeAnswerAction(input: SubmitPracticeAnswerInput) {
   const authSession = await getSession();
-  if (!authSession) redirect("/login");
-
   const validated = SubmitPracticeAnswerSchema.safeParse(input);
   if (!validated.success) {
     return { ok: false as const, message: "Jawaban yang dikirim tidak valid." };
+  }
+
+  if (validated.data.sessionId === 0 || !authSession) {
+    const question = await prisma.question.findUnique({
+      where: { id: validated.data.questionId },
+      select: {
+        questionAnswer: true,
+        explanation: true,
+        questionChoices: { select: { codeAnswer: true } },
+      },
+    });
+
+    if (!question) notFound();
+    const isCorrect = validated.data.selectedAnswer === question.questionAnswer;
+
+    return {
+      ok: true as const,
+      questionId: validated.data.questionId,
+      selectedAnswer: validated.data.selectedAnswer,
+      isCorrect,
+      answeredAt: new Date().toISOString(),
+      correctAnswer: question.questionAnswer,
+      explanation: question.explanation,
+      answeredCount: 1,
+      correctCount: isCorrect ? 1 : 0,
+      isComplete: false,
+    };
   }
 
   const result = await prisma.$transaction(async (tx) => {
@@ -358,10 +478,12 @@ export async function submitPracticeAnswerAction(input: SubmitPracticeAnswerInpu
 
 export async function restartPracticeSessionAction(input: PracticeSessionIdInput) {
   const authSession = await getSession();
-  if (!authSession) redirect("/login");
-
   const validated = PracticeSessionIdSchema.safeParse(input);
   if (!validated.success) notFound();
+
+  if (validated.data.sessionId === 0 || !authSession) {
+    redirect("/exercises");
+  }
 
   const newSessionId = await prisma.$transaction(async (tx) => {
     const current = await tx.practiceSession.findUnique({

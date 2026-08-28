@@ -9,10 +9,11 @@ export default async function ExamPage({
   params: Promise<{ attemptId: string; session: string }>;
 }) {
   const { attemptId, session } = await params;
-  const attemptIdNum = Number(attemptId);
+  const isGuest = attemptId === "guest";
+  const attemptIdNum = isGuest ? 0 : Number(attemptId);
   const sessionNum = Number(session);
 
-  if (!Number.isInteger(attemptIdNum) || !Number.isInteger(sessionNum)) {
+  if ((!isGuest && (!Number.isInteger(attemptIdNum) || attemptIdNum <= 0)) || !Number.isInteger(sessionNum)) {
     notFound();
   }
 

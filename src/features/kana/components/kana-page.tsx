@@ -10,11 +10,11 @@ export async function KanaPage({ script }: { script: KanaScript }) {
   const isHiragana = script === "hiragana";
 
   return (
-    <main className="mx-auto w-full max-w-7xl pb-12">
+    <main className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
       <div className="relative mb-8 overflow-hidden border-[3px] border-black bg-neo-blue p-6 shadow-neo-lg md:p-9">
         <div className="absolute -top-10 -right-7 size-32 rotate-12 border-[3px] border-black bg-neo-coral shadow-neo" aria-hidden="true" />
-        <Link href="/dashboard" className="neo-button relative z-10 mb-8 w-fit bg-white">
-          <ArrowLeft className="size-5" aria-hidden="true" /> Dashboard
+        <Link href="/" className="neo-button relative z-10 mb-8 w-fit bg-white">
+          <ArrowLeft className="size-5" aria-hidden="true" /> Beranda
         </Link>
         <span className="neo-kicker relative z-10">Kana lab / 五十音</span>
         <div className="relative z-10 mt-5 grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">

@@ -10,7 +10,7 @@ import { KanaProgressSchema, type KanaProgressInput } from "./schemas";
 
 export async function getKanaProgress() {
   const session = await getSession();
-  if (!session) redirect("/login");
+  if (!session) return [];
 
   return prisma.kanaProgress.findMany({
     where: { userId: session.userId },
@@ -25,7 +25,10 @@ export async function getKanaProgress() {
 
 export async function recordKanaProgressAction(input: KanaProgressInput) {
   const session = await getSession();
-  if (!session) return { ok: false as const, message: "Sesi berakhir. Silakan masuk lagi." };
+  if (!session) {
+    // Public / guest user: do not record attempt/progress in database
+    return { ok: true as const };
+  }
 
   const validated = KanaProgressSchema.safeParse(input);
   if (!validated.success || !isKnownKanaKey(validated.data.kanaKey)) {

@@ -8,9 +8,12 @@ export default async function PracticeSessionPage({
   params: Promise<{ sessionId: string }>;
 }) {
   const { sessionId } = await params;
-  const sessionIdNumber = Number(sessionId);
+  const isGuest = sessionId === "guest";
+  const sessionIdNumber = isGuest ? 0 : Number(sessionId);
 
-  if (!Number.isInteger(sessionIdNumber) || sessionIdNumber <= 0) notFound();
+  if (!isGuest && (!Number.isInteger(sessionIdNumber) || sessionIdNumber <= 0)) {
+    notFound();
+  }
 
   const practiceSession = await getPracticeSession({ sessionId: sessionIdNumber });
 

@@ -2,7 +2,7 @@ import { PublicFooter } from "@/components/marketing/public-footer";
 import { PublicHeader } from "@/components/marketing/public-header";
 import { getSession } from "@/lib/auth";
 
-export default async function MarketingLayout({
+export default async function PublicLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

@@ -8,7 +8,7 @@ export default async function ExercisesPage() {
   const availableQuestions = catalog.reduce((total, entry) => total + entry.questionCount, 0);
 
   return (
-    <main className="page-reveal mx-auto w-full max-w-7xl space-y-10 pb-12">
+    <main className="page-reveal mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-10">
       <section className="neo-surface neo-grid-paper relative overflow-hidden p-6 sm:p-9">
         <div className="absolute -top-10 -right-8 size-40 rotate-12 border-[3px] border-neo-ink bg-neo-coral opacity-90" aria-hidden="true" />
         <div className="relative max-w-3xl">

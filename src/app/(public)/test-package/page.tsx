@@ -63,7 +63,7 @@ export default async function TestPackageListPage() {
   })).filter((group) => group.packages.length > 0);
 
   return (
-    <div className="flex flex-col gap-10 pb-12">
+    <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-10">
       {/* Hero Banner */}
       <section className="neo-surface neo-grid-paper relative overflow-hidden bg-neo-blue p-6 sm:p-8 md:p-10 border-[3px] border-neo-ink shadow-neo-lg text-black">
         <div
