@@ -1,0 +1,39 @@
+{
+  "source": "/Users/lanstheprodigy/Downloads/Choukai N5-2010.m4a",
+  "engine": "whisper-cli",
+  "model": "ggml-large-v3-turbo",
+  "language": "ja",
+  "sourceDurationSeconds": 1712.900998,
+  "markers": [
+    {
+      "label": "問題1",
+      "seconds": 57.0,
+      "timestamp": "00:00:57.000"
+    },
+    {
+      "label": "問題2",
+      "seconds": 635.46,
+      "timestamp": "00:10:35.460"
+    },
+    {
+      "label": "問題3",
+      "seconds": 1164.9,
+      "timestamp": "00:19:24.900"
+    },
+    {
+      "label": "問題4",
+      "seconds": 1430.0,
+      "timestamp": "00:23:50.000"
+    },
+    {
+      "label": "exam_end",
+      "seconds": 1700.72,
+      "timestamp": "00:28:20.720"
+    }
+  ],
+  "notes": [
+    "The full-file ASR became repetitive near the end of 問題3.",
+    "A second no-fallback ASR pass beginning at 1400 seconds recovered 問題4 and the exam ending cleanly.",
+    "Printed scripts on PDF pages 19-21 are the authoritative wording source for listening-transcript.txt."
+  ]
+}

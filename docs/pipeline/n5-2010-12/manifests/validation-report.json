@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "items": 14,
+  "questions": 89,
+  "contexts": 10,
+  "sections": {
+    "MOJI_GOI": 33,
+    "BUNPOU": 26,
+    "DOKKAI": 6,
+    "CHOUKAI": 24
+  },
+  "answerRows": {
+    "MOJI_GOI_READ_KANJI": [2, 4, 1, 2, 2, 3, 4, 2, 2, 3],
+    "MOJI_GOI_WRITE_KANJI": [1, 2, 3, 4, 4, 1, 3, 1],
+    "MOJI_GOI_CONTEXT": [4, 3, 1, 1, 3, 2, 1, 4, 2, 4],
+    "MOJI_GOI_SYNONYM": [3, 1, 2, 3, 4],
+    "BUNPOU_GRAMMAR": [2, 3, 2, 4, 3, 2, 3, 1, 3, 3, 1, 1, 4, 2, 4, 1],
+    "BUNPOU_SENTENCE_COMPOSITION": [4, 1, 4, 2, 2],
+    "BUNPOU_TEXT_GRAMMAR": [4, 2, 4, 3, 1],
+    "DOKKAI_SHORT_TEXT": [2, 3, 4],
+    "DOKKAI_MEDIUM_TEXT": [4, 1],
+    "DOKKAI_INFORMATION_RETRIEVAL": [2],
+    "CHOUKAI_TASK_BASED": [2, 2, 3, 3, 1, 4, 4],
+    "CHOUKAI_MAIN_POINT": [4, 3, 2, 4, 1, 3],
+    "CHOUKAI_EXPRESSION": [1, 3, 2, 3, 2],
+    "CHOUKAI_QUICK_RESPONSE": [1, 1, 2, 3, 3, 1]
+  },
+  "images": 11,
+  "audioContexts": 4,
+  "uploadedAssets": 15,
+  "recoveredMissingImages": [
+    "CHOUKAI_TASK_BASED.questions[4].questionImage",
+    "CHOUKAI_TASK_BASED.questions[5].questionImage"
+  ],
+  "errors": []
+}
