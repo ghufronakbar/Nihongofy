@@ -4,14 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTransition } from "react";
 import {
-  BookOpen,
-  Brain,
   ChartNoAxesCombined,
   History,
   LayoutDashboard,
   LogOut,
-  Languages,
-  Sparkles,
   ShieldCheck,
   TrendingUp,
   UserRound,
@@ -34,10 +30,6 @@ import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
   { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { title: "Kana", href: "/kana/hiragana", icon: Languages },
-  { title: "Vocabulary", href: "/vocab", icon: Brain },
-  { title: "Latihan Cepat", href: "/exercises", icon: Sparkles },
-  { title: "Test Package", href: "/test-package", icon: BookOpen },
   { title: "History", href: "/history", icon: History },
   { title: "Progress", href: "/progress", icon: TrendingUp },
   { title: "Analytics", href: "/analytics", icon: ChartNoAxesCombined },
