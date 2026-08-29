@@ -1,0 +1,44 @@
+{
+  "source": "/Users/lanstheprodigy/Downloads/Choukai N5-2012年12月.m4a",
+  "engine": "whisper-cli",
+  "model": "ggml-large-v3-turbo",
+  "language": "ja",
+  "sourceDurationSeconds": 1843.958005,
+  "markers": [
+    {
+      "label": "問題1",
+      "seconds": 92.16,
+      "timestamp": "00:01:32.160"
+    },
+    {
+      "label": "問題2",
+      "seconds": 629.46,
+      "timestamp": "00:10:29.460"
+    },
+    {
+      "label": "問題3",
+      "seconds": 1198.66,
+      "timestamp": "00:19:58.660"
+    },
+    {
+      "label": "問題4",
+      "seconds": 1467.76,
+      "timestamp": "00:24:27.760"
+    },
+    {
+      "label": "exam_end",
+      "seconds": 1741.4,
+      "timestamp": "00:29:01.400"
+    },
+    {
+      "label": "trailing_silence_start",
+      "seconds": 1741.498,
+      "timestamp": "00:29:01.498"
+    }
+  ],
+  "notes": [
+    "The full-file ASR became repetitive after expression question 2.",
+    "A second no-fallback ASR pass beginning at 1050 seconds recovered clean markers and transcript through the exam ending.",
+    "Printed scripts on PDF pages 20-22 are the authoritative wording source for listening-transcript.txt."
+  ]
+}
