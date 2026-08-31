@@ -1,0 +1,20 @@
+{
+  "package": "n1-2024-12.json",
+  "expected": {
+    "items": 18,
+    "questions": 96,
+    "writtenQuestions": 66,
+    "listeningQuestions": 30,
+    "choicesPerQuestion": 4
+  },
+  "checks": {
+    "seedValidation": "passed",
+    "deterministicStructure": "passed: 18 items, 96 questions, 30 listening, 4 choices each, all answers/context refs resolve",
+    "cloudinaryAdminApi": "passed for 5 audio clips",
+    "cloudinaryHttpsHash": "passed for 5 audio clips",
+    "build": "passed",
+    "lint": "failed on pre-existing baseline: 2 no-explicit-any errors and 28 warnings outside extraction files",
+    "gitDiffCheck": "passed",
+    "answerKey": "passed: all 96 answers match the reconciled written/listening key"
+  }
+}
