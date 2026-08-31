@@ -1,0 +1,19 @@
+{
+  "package": "n1-2023-12.json",
+  "expected": {
+    "items": 18,
+    "questions": 96,
+    "writtenQuestions": 66,
+    "listeningQuestions": 30,
+    "choicesPerQuestion": 4
+  },
+  "checks": {
+    "seedValidation": "passed",
+    "deterministicStructure": "passed: 18 items, 96 questions, 66 written, 30 listening, 18 contexts, 4 choices per question, all context references resolved",
+    "answerKey": "passed: all 18 item answer-key rows matched; listening 問題1 question 3 resolved from per-question script/audio",
+    "cloudinaryUpload": "passed for 5 audio clips; uploaded byte counts match local files and HTTPS URLs returned data",
+    "build": "passed",
+    "lint": "baseline failure outside extraction files: 2 no-explicit-any errors and 28 warnings",
+    "gitDiffCheck": "passed"
+  }
+}
