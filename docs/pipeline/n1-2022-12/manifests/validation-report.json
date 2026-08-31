@@ -1,0 +1,163 @@
+{
+  "status": "PASS",
+  "items": 18,
+  "questions": 96,
+  "contexts": 18,
+  "sections": {
+    "MOJI_GOI": 25,
+    "BUNPOU": 19,
+    "DOKKAI": 22,
+    "CHOUKAI": 30
+  },
+  "answerRows": {
+    "MOJI_GOI_READ_KANJI": [
+      3,
+      2,
+      4,
+      1,
+      4,
+      3
+    ],
+    "MOJI_GOI_CONTEXT": [
+      1,
+      3,
+      2,
+      4,
+      3,
+      2,
+      1
+    ],
+    "MOJI_GOI_SYNONYM": [
+      4,
+      2,
+      1,
+      2,
+      4,
+      3
+    ],
+    "MOJI_GOI_WORD_USAGE": [
+      3,
+      3,
+      2,
+      4,
+      1,
+      2
+    ],
+    "BUNPOU_GRAMMAR": [
+      1,
+      3,
+      3,
+      1,
+      4,
+      2,
+      3,
+      2,
+      4,
+      1
+    ],
+    "BUNPOU_SENTENCE_COMPOSITION": [
+      2,
+      4,
+      2,
+      1,
+      3
+    ],
+    "BUNPOU_TEXT_GRAMMAR": [
+      3,
+      4,
+      2,
+      1
+    ],
+    "DOKKAI_SHORT_TEXT": [
+      2,
+      1,
+      1,
+      2
+    ],
+    "DOKKAI_MEDIUM_TEXT": [
+      2,
+      3,
+      2,
+      4,
+      1,
+      2,
+      3,
+      3
+    ],
+    "DOKKAI_LONG_TEXT": [
+      4,
+      1,
+      3
+    ],
+    "DOKKAI_INTEGRATED": [
+      4,
+      4
+    ],
+    "DOKKAI_MAIN_IDEA": [
+      3,
+      4,
+      2
+    ],
+    "DOKKAI_INFORMATION_RETRIEVAL": [
+      3,
+      2
+    ],
+    "CHOUKAI_TASK_BASED": [
+      2,
+      4,
+      3,
+      2,
+      1
+    ],
+    "CHOUKAI_MAIN_POINT": [
+      2,
+      2,
+      3,
+      3,
+      2,
+      1
+    ],
+    "CHOUKAI_OUTLINE": [
+      3,
+      2,
+      4,
+      3,
+      2
+    ],
+    "CHOUKAI_QUICK_RESPONSE": [
+      3,
+      1,
+      1,
+      3,
+      2,
+      1,
+      3,
+      3,
+      2,
+      2,
+      1
+    ],
+    "CHOUKAI_INTEGRATED": [
+      4,
+      3,
+      1
+    ]
+  },
+  "audioContexts": 5,
+  "images": 0,
+  "checks": {
+    "seedFixture": "PASS",
+    "build": "PASS",
+    "gitDiffCheck": "PASS",
+    "cloudinaryReadback": "PASS",
+    "sourceVisualQA": "PASS",
+    "lint": "BASELINE_FAIL"
+  },
+  "lintBaseline": {
+    "errors": 2,
+    "warnings": 28,
+    "note": "Existing repository issues outside this extraction; no lint findings are in n1-2022-12 data."
+  },
+  "keyAuthority": "The supplied standalone answer-key PDF is authoritative. The answer summary embedded on question PDF page 44 conflicts for questions 45-48; the standalone key and the actual passage logic agree on 2,1,1,2.",
+  "errors": []
+}
