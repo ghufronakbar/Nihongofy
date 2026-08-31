@@ -1,0 +1,46 @@
+{
+  "status": "passed",
+  "contexts": 17,
+  "items": 18,
+  "questions": 105,
+  "sectionCounts": {
+    "MOJI_GOI": 25,
+    "BUNPOU": 20,
+    "DOKKAI": 25,
+    "CHOUKAI": 35
+  },
+  "answerRows": {
+    "MOJI_GOI_READ_KANJI": "241243",
+    "MOJI_GOI_CONTEXT": "4323122",
+    "MOJI_GOI_SYNONYM": "314312",
+    "MOJI_GOI_WORD_USAGE": "423141",
+    "BUNPOU_GRAMMAR": "4331221423",
+    "BUNPOU_SENTENCE_COMPOSITION": "13243",
+    "BUNPOU_TEXT_GRAMMAR": "31241",
+    "DOKKAI_SHORT_TEXT": "2311",
+    "DOKKAI_MEDIUM_TEXT": "443434211",
+    "DOKKAI_LONG_TEXT": "1321",
+    "DOKKAI_INTEGRATED": "34",
+    "DOKKAI_MAIN_IDEA": "2423",
+    "DOKKAI_INFORMATION_RETRIEVAL": "31",
+    "CHOUKAI_TASK_BASED": "243324",
+    "CHOUKAI_MAIN_POINT": "231221",
+    "CHOUKAI_OUTLINE": "332142",
+    "CHOUKAI_QUICK_RESPONSE": "3231232131321",
+    "CHOUKAI_INTEGRATED": "2334"
+  },
+  "checks": {
+    "answerKeyMatch": true,
+    "fourChoices": true,
+    "choiceCodes": true,
+    "contextReferences": true,
+    "compositionMarkup": true,
+    "quickResponseFourthChoiceEmpty": true,
+    "cloudinaryReadback": true,
+    "visualQa": true
+  },
+  "sourceAnomalies": [
+    "jawaban PDF and script-choukai PDF are byte-identical"
+  ],
+  "errors": []
+}
