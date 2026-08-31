@@ -1,0 +1,50 @@
+{
+  "status": "PASS",
+  "items": 18,
+  "questions": 103,
+  "contexts": 17,
+  "sections": {
+    "MOJI_GOI": 25,
+    "BUNPOU": 19,
+    "DOKKAI": 24,
+    "CHOUKAI": 35
+  },
+  "answerRows": {
+    "MOJI_GOI_READ_KANJI": [1, 3, 3, 4, 2, 4],
+    "MOJI_GOI_CONTEXT": [4, 2, 2, 1, 1, 3, 3],
+    "MOJI_GOI_SYNONYM": [4, 2, 4, 3, 3, 1],
+    "MOJI_GOI_WORD_USAGE": [2, 3, 1, 2, 1, 4],
+    "BUNPOU_GRAMMAR": [2, 3, 1, 4, 1, 2, 3, 4, 2, 2],
+    "BUNPOU_SENTENCE_COMPOSITION": [4, 1, 3, 2, 4],
+    "BUNPOU_TEXT_GRAMMAR": [3, 2, 1, 1],
+    "DOKKAI_SHORT_TEXT": [3, 1, 4, 3],
+    "DOKKAI_MEDIUM_TEXT": [3, 3, 1, 3, 2, 2, 1, 4, 4],
+    "DOKKAI_LONG_TEXT": [1, 4, 3],
+    "DOKKAI_INTEGRATED": [2, 3],
+    "DOKKAI_MAIN_IDEA": [4, 1, 2, 4],
+    "DOKKAI_INFORMATION_RETRIEVAL": [1, 2],
+    "CHOUKAI_TASK_BASED": [3, 2, 1, 2, 3, 2],
+    "CHOUKAI_MAIN_POINT": [2, 3, 2, 2, 3, 1, 3],
+    "CHOUKAI_OUTLINE": [4, 4, 1, 4, 1, 3],
+    "CHOUKAI_QUICK_RESPONSE": [3, 3, 1, 2, 2, 3, 3, 1, 1, 1, 3, 1, 2],
+    "CHOUKAI_INTEGRATED": [4, 2, 1]
+  },
+  "audioContexts": 5,
+  "images": 0,
+  "checks": {
+    "seedFixture": "PASS",
+    "structureAndOfficialKeys": "PASS",
+    "build": "PASS",
+    "gitDiffCheck": "PASS",
+    "cloudinaryReadback": "PASS",
+    "sourceVisualQA": "PASS",
+    "lint": "BASELINE_FAIL"
+  },
+  "lintBaseline": {
+    "errors": 2,
+    "warnings": 28,
+    "note": "Existing repository issues outside this extraction; no lint findings are in n1-2022-07 data."
+  },
+  "keyAuthority": "The supplied standalone answer-key PDF and the answer summary embedded on question PDF page 34 agree for every answer row.",
+  "errors": []
+}
