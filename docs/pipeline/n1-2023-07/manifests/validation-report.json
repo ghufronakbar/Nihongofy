@@ -1,0 +1,162 @@
+{
+  "status": "PASS",
+  "items": 18,
+  "questions": 96,
+  "contexts": 18,
+  "sections": {
+    "MOJI_GOI": 25,
+    "BUNPOU": 19,
+    "DOKKAI": 22,
+    "CHOUKAI": 30
+  },
+  "answerRows": {
+    "MOJI_GOI_READ_KANJI": [
+      4,
+      1,
+      3,
+      4,
+      2,
+      3
+    ],
+    "MOJI_GOI_CONTEXT": [
+      2,
+      2,
+      3,
+      4,
+      1,
+      1,
+      4
+    ],
+    "MOJI_GOI_SYNONYM": [
+      2,
+      3,
+      2,
+      3,
+      1,
+      4
+    ],
+    "MOJI_GOI_WORD_USAGE": [
+      4,
+      2,
+      3,
+      1,
+      3,
+      1
+    ],
+    "BUNPOU_GRAMMAR": [
+      4,
+      3,
+      1,
+      3,
+      2,
+      4,
+      2,
+      1,
+      3,
+      1
+    ],
+    "BUNPOU_SENTENCE_COMPOSITION": [
+      1,
+      3,
+      4,
+      2,
+      4
+    ],
+    "BUNPOU_TEXT_GRAMMAR": [
+      1,
+      1,
+      1,
+      4
+    ],
+    "DOKKAI_SHORT_TEXT": [
+      1,
+      3,
+      2,
+      2
+    ],
+    "DOKKAI_MEDIUM_TEXT": [
+      3,
+      4,
+      4,
+      2,
+      3,
+      1,
+      1,
+      4
+    ],
+    "DOKKAI_LONG_TEXT": [
+      3,
+      3,
+      4
+    ],
+    "DOKKAI_INTEGRATED": [
+      3,
+      1
+    ],
+    "DOKKAI_MAIN_IDEA": [
+      4,
+      3,
+      4
+    ],
+    "DOKKAI_INFORMATION_RETRIEVAL": [
+      2,
+      4
+    ],
+    "CHOUKAI_TASK_BASED": [
+      1,
+      3,
+      2,
+      1,
+      3
+    ],
+    "CHOUKAI_MAIN_POINT": [
+      2,
+      1,
+      4,
+      1,
+      3,
+      4
+    ],
+    "CHOUKAI_OUTLINE": [
+      1,
+      1,
+      4,
+      4,
+      2
+    ],
+    "CHOUKAI_QUICK_RESPONSE": [
+      2,
+      1,
+      2,
+      3,
+      3,
+      1,
+      1,
+      3,
+      2,
+      2,
+      1
+    ],
+    "CHOUKAI_INTEGRATED": [
+      1,
+      1,
+      3
+    ]
+  },
+  "audioContexts": 5,
+  "images": 0,
+  "checks": {
+    "seedFixture": "PASS",
+    "build": "PASS",
+    "gitDiffCheck": "PASS",
+    "cloudinaryReadback": "PASS",
+    "sourceVisualQA": "PASS",
+    "lint": "BASELINE_FAIL"
+  },
+  "lintBaseline": {
+    "errors": 2,
+    "warnings": 28,
+    "note": "Existing repository issues outside this extraction; no lint findings are in n1-2023-07 data."
+  },
+  "errors": []
+}
