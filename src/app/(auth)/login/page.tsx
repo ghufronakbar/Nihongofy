@@ -8,7 +8,7 @@ import { getSafeRedirectPath } from "@/features/auth/lib/safe-redirect";
 
 export const metadata: Metadata = {
   title: "Masuk",
-  description: "Masuk ke akun JLPT Exam untuk melanjutkan latihan dan review.",
+  description: "Masuk ke akun Tanoshii Japanese untuk melanjutkan latihan, review jawaban, dan melacak progres.",
 };
 
 export default async function LoginPage({

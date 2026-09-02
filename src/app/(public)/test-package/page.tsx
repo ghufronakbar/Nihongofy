@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -9,6 +10,13 @@ import {
 import { getTestPackages } from "@/features/test-package/actions";
 import { JLPT_LEVEL_ORDER } from "@/constants/jlpt";
 import type { JlptLevel } from "@prisma/client";
+
+export const metadata: Metadata = {
+  title: "Katalog Mock Test JLPT (N1 - N5)",
+  description:
+    "Pilih paket simulasi ujian JLPT N1 sampai N5 lengkap dengan mode ujian resmi, mode latihan per seksi, dan mode baca pembahasan.",
+  alternates: { canonical: "/test-package" },
+};
 
 const LEVEL_CONFIG: Record<
   JlptLevel,

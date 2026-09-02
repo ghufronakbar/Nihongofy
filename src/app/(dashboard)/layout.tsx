@@ -38,11 +38,11 @@ export default async function DashboardLayout({
             <SidebarTrigger className="h-9 w-9 rounded-md border-2 border-neo-ink bg-white p-0 text-black shadow-neo-sm transition-all hover:bg-neo-yellow hover:translate-x-[-1px] hover:translate-y-[-1px]" />
             <div className="flex items-center gap-2">
               <Link href="/dashboard" className="font-mono text-sm font-black tracking-wider uppercase text-black hover:text-neo-blue">
-                JLPT EXAM
+                TANOSHII JAPANESE
               </Link>
               <span className="hidden text-xs font-bold text-foreground/40 sm:inline">/</span>
               <span lang="ja" className="font-japanese hidden text-xs font-bold text-foreground/60 sm:inline">
-                日本語能力試験
+                楽しい日本語
               </span>
             </div>
           </div>

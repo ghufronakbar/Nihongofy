@@ -12,6 +12,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1,
     },
     {
+      url: new URL("/test-package", SITE_URL).toString(),
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+    {
+      url: new URL("/exercises", SITE_URL).toString(),
+      changeFrequency: "weekly",
+      priority: 0.85,
+    },
+    {
+      url: new URL("/kana/hiragana", SITE_URL).toString(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: new URL("/kana/katakana", SITE_URL).toString(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: new URL("/vocab", SITE_URL).toString(),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
       url: new URL("/article", SITE_URL).toString(),
       changeFrequency: "weekly",
       priority: 0.8,

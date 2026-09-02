@@ -127,7 +127,7 @@ export async function GET(
               fontWeight: 800,
             }}
           >
-            JLPT EXAM / ARTIKEL BELAJAR
+            TANOSHII JAPANESE / ARTIKEL BELAJAR
           </div>
         </div>
       </div>

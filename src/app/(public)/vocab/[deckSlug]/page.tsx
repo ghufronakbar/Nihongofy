@@ -12,7 +12,7 @@ type PageProps = {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { deckSlug } = await params;
   const deck = await getVocabularyDeck(deckSlug);
-  return { title: `${deck.title} | Vocabulary JLPT Exam`, description: deck.description };
+  return { title: `Deck ${deck.title} (${deck.jlptLevel})`, description: deck.description };
 }
 
 export default async function VocabularyDeckPage({ params, searchParams }: PageProps) {

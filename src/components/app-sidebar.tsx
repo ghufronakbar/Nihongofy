@@ -55,14 +55,14 @@ export function AppSidebar({
       <SidebarHeader className="border-b-[3px] border-neo-ink p-3">
         <Link href="/dashboard" className="flex items-center gap-2.5 px-1 py-1">
           <div className="grid size-9 place-items-center rounded-md border-2 border-neo-ink bg-neo-yellow text-base font-black text-black shadow-neo-sm shrink-0">
-            日
+            楽
           </div>
           <div className="min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
             <p className="font-mono text-sm leading-none font-black tracking-wider uppercase text-black">
-              JLPT EXAM
+              TANOSHII
             </p>
             <p className="mt-1 font-mono text-[10px] font-bold text-foreground/60 uppercase">
-              Mock & Training
+              Japanese Learning
             </p>
           </div>
         </Link>

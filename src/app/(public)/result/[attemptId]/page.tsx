@@ -23,9 +23,13 @@ const LEVEL_BADGE_STYLES: Record<JlptLevel, string> = {
   N1: "bg-purple-400 text-white",
 };
 
-function formatDuration(startedAt: Date, finishedAt: Date | null) {
+function formatDuration(startedAt: string, finishedAt: string | null) {
   if (!finishedAt) return "-";
-  const minutes = Math.round((finishedAt.getTime() - startedAt.getTime()) / 60000);
+  const startedAtMs = Date.parse(startedAt);
+  const finishedAtMs = Date.parse(finishedAt);
+  if (!Number.isFinite(startedAtMs) || !Number.isFinite(finishedAtMs)) return "-";
+
+  const minutes = Math.max(0, Math.round((finishedAtMs - startedAtMs) / 60000));
   return `${minutes} Menit`;
 }
 

@@ -5,7 +5,18 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
       userAgent: "*",
-      allow: ["/", "/article", "/article/"],
+      allow: [
+        "/",
+        "/article",
+        "/article/",
+        "/test-package",
+        "/test-package/",
+        "/exercises",
+        "/kana",
+        "/kana/",
+        "/vocab",
+        "/vocab/",
+      ],
       disallow: [
         "/api/",
         "/login",
@@ -15,13 +26,7 @@ export default function robots(): MetadataRoute.Robots {
         "/history",
         "/progress",
         "/result",
-        "/test-package",
         "/exam",
-        "/exercises",
-        "/kana",
-        "/vocab",
-        "/conversation",
-        "/speaking",
         "/profile",
       ],
     },

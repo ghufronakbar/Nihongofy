@@ -6,12 +6,12 @@ import { ArticleCard } from "@/features/article/components/article-card";
 import { getArticleFacets, getArticleIndexData } from "@/features/article/queries";
 
 export const metadata: Metadata = {
-  title: "Artikel belajar bahasa Jepang",
+  title: "Artikel Belajar Bahasa Jepang",
   description:
     "Panduan belajar, strategi JLPT, tata bahasa, kosakata, dan latihan bahasa Jepang yang bisa langsung dipraktikkan.",
   alternates: { canonical: "/article" },
   openGraph: {
-    title: "Artikel belajar bahasa Jepang | JLPT Exam",
+    title: "Artikel Belajar Bahasa Jepang | Tanoshii Japanese",
     description:
       "Panduan belajar, strategi JLPT, tata bahasa, kosakata, dan latihan bahasa Jepang.",
     url: "/article",
@@ -40,7 +40,7 @@ export default async function ArticleIndexPage() {
               <span className="block text-neo-blue [text-shadow:3px_3px_0_#111]">PAHAMI POLANYA.</span>
             </h1>
             <p className="page-reveal page-reveal-delay-2 mt-6 max-w-[58ch] text-lg leading-8 font-semibold text-foreground/70">
-              Panduan belajar bahasa Jepang yang singkat, konkret, dan terhubung dengan latihan di JLPT Exam.
+              Panduan belajar bahasa Jepang yang singkat, konkret, dan terhubung dengan latihan di Tanoshii Japanese.
             </p>
           </div>
 

@@ -4,8 +4,8 @@ import { ArrowLeft } from "lucide-react";
 import { VocabularyDeckList } from "@/features/vocabulary/components/vocabulary-deck-list";
 
 export const metadata: Metadata = {
-  title: "Vocabulary Deck | JLPT Exam",
-  description: "Pilih deck kosakata JLPT dan lanjutkan antrean review yang tersimpan.",
+  title: "Bank Kosakata JLPT",
+  description: "Pilih deck kosakata JLPT N5-N1 dan bangun ingatanmu dengan antrean review berkala di Tanoshii Japanese.",
 };
 
 export default function VocabularyPage() {

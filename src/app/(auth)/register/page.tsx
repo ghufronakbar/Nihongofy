@@ -8,7 +8,7 @@ import { getSafeRedirectPath } from "@/features/auth/lib/safe-redirect";
 
 export const metadata: Metadata = {
   title: "Daftar",
-  description: "Persiapkan akun JLPT Exam untuk menyimpan progres belajar pribadi.",
+  description: "Daftar akun Tanoshii Japanese untuk menyimpan progres belajar, antrean review, dan history latihan.",
 };
 
 export default async function RegisterPage({

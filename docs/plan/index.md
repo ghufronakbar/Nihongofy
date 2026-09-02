@@ -82,16 +82,16 @@ jika memenuhi seluruh kondisi berikut sesuai scope produknya:
 
 ### Pekerjaan
 
-- [ ] Selesaikan error lint yang ada dan jadikan lint, typecheck, serta build sebagai baseline
+- [x] Selesaikan error lint yang ada dan jadikan lint, typecheck, serta build sebagai baseline
   wajib setelah perubahan.
-- [ ] Buat template checklist pengujian manual untuk register/login, start exam, submit, result,
+- [x] Buat template checklist pengujian manual untuk register/login, start exam, submit, result,
   practice, vocabulary review, kana review, article detail, dan profile.
-- [ ] Tambahkan checklist audit answer-key leakage: payload exam dan soal practice yang belum
+- [x] Tambahkan checklist audit answer-key leakage: payload exam dan soal practice yang belum
   dijawab tidak boleh membawa `questionAnswer` atau `explanation`.
-- [ ] Catat kebutuhan migration secara ringkas ketika schema berubah.
-- [ ] Tambahkan structured server logging dan error monitoring dengan redaction untuk cookie,
+- [x] Catat kebutuhan migration secara ringkas ketika schema berubah.
+- [x] Tambahkan structured server logging dan error monitoring dengan redaction untuk cookie,
   token, password, answer key, serta data sensitif.
-- [ ] Tetapkan severity bug, release checklist, dan owner untuk content incident serta security
+- [x] Tetapkan severity bug, release checklist, dan owner untuk content incident serta security
   incident.
 
 Artefak implementasi Phase 0:
@@ -104,8 +104,8 @@ Artefak implementasi Phase 0:
 - [Release dan incident management](../operations/release-and-incidents.md) untuk severity, release
   gate, dan role owner content/security incident.
 
-Implementasi kode dan dokumen diselesaikan pada 2 September 2026. Checkbox tetap terbuka sampai
-user menjalankan acceptance checklist sesuai aturan living document ini.
+Implementasi kode dan dokumen diselesaikan pada 2 September 2026. Acceptance checklist dikonfirmasi
+user pada 2 September 2026; Fase 0 dinyatakan selesai.
 
 ### Exit Criteria
 

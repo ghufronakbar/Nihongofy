@@ -3,12 +3,13 @@ import { notFound } from "next/navigation";
 import {
   ArrowLeft,
   ArrowRight,
+  Flag,
 } from "lucide-react";
 import { getAttemptDetail } from "@/features/result/actions";
 import { QuestionCommentForm } from "@/features/question-comment/components/question-comment-form";
 import { CommentItem } from "@/features/question-comment/components/comment-item";
 import { CopyQuestionButton } from "@/components/copy-question-button";
-import { QuestionNavSidebar, type NavMondaiItem } from "@/components/question-nav";
+import { QuestionNavList, type NavMondaiItem } from "@/components/question-nav";
 import { QuestionNavMobile } from "@/components/question-nav-mobile";
 import { JapaneseText } from "@/components/japanese-text";
 import { JapanesePassage } from "@/components/japanese-passage";
@@ -58,6 +59,23 @@ export default async function ResultDetailPage({
   const currentIndex = testPackageItems.findIndex((item) => item.id === selectedItem.id);
   const prevItem = currentIndex > 0 ? testPackageItems[currentIndex - 1] : null;
   const nextItem = currentIndex < testPackageItems.length - 1 ? testPackageItems[currentIndex + 1] : null;
+  const selectedQuestions = selectedItem.questions.map((question) => {
+    const answer = question.attemptAnswers[0] ?? null;
+    return {
+      id: question.id,
+      order: question.order,
+      isCorrect: answer?.isCorrect === true,
+      isUnanswered: !answer || answer.selectedAnswer === null,
+      isWrong: answer ? !answer.isCorrect && answer.selectedAnswer !== null : false,
+      flagged: answer?.flagged ?? false,
+    };
+  });
+
+  const totalSelectedQuestions = selectedQuestions.length;
+  const totalCorrect = selectedQuestions.filter((question) => question.isCorrect).length;
+  const totalWrong = selectedQuestions.filter((question) => question.isWrong).length;
+  const totalUnanswered = selectedQuestions.filter((question) => question.isUnanswered).length;
+  const totalFlagged = selectedQuestions.filter((question) => question.flagged).length;
 
   // Precomputed (not mutated during render) so a shared QuestionContext only
   // shows once for a contiguous run of questions that reference it.
@@ -76,6 +94,76 @@ export default async function ResultDetailPage({
     },
     { rows: [], lastContextId: null },
   ).rows;
+
+  const lembarJawabanSection = (
+    <div>
+      <div className="border-b-2 border-neo-ink pb-3 mb-3 flex items-center justify-between">
+        <div>
+          <span className="font-mono text-xs font-black uppercase text-neo-ink tracking-wider block">
+            LEMBAR JAWABAN
+          </span>
+          <span className="font-mono text-[11px] font-bold text-foreground/60">
+            Klik nomor untuk melompat
+          </span>
+        </div>
+        <span className="border-2 border-neo-ink bg-neo-yellow px-2 py-0.5 font-mono text-xs font-black shadow-neo-sm text-black">
+          {totalCorrect}/{totalSelectedQuestions}
+        </span>
+      </div>
+
+      {/* Grid of question buttons with safe padding so no clipping occurs */}
+      <div className="max-h-56 overflow-y-auto overflow-x-hidden p-2 -mx-1.5">
+        <div className="grid grid-cols-5 gap-2">
+          {selectedQuestions.map((q) => {
+            return (
+              <Link
+                key={q.id}
+                href={`#q-${q.order}`}
+                title={`Soal ${q.order}: ${q.isCorrect ? "Benar" : q.isUnanswered ? "Kosong" : "Salah"}${q.flagged ? " (Ragu-ragu)" : ""}`}
+                className={cn(
+                  "relative flex aspect-square items-center justify-center border-2 border-neo-ink font-mono text-xs font-black transition-all hover:-translate-y-0.5",
+                  q.isCorrect && "bg-neo-green text-black",
+                  q.isWrong && "bg-neo-coral text-white",
+                  q.isUnanswered && "bg-neo-paper text-foreground/70",
+                )}
+              >
+                {q.order}
+                {q.flagged && (
+                  <span className="absolute -top-1.5 -right-1.5 z-20 grid size-3.5 place-items-center rounded-full border border-neo-ink bg-neo-coral shadow-sm">
+                    <Flag className="size-2 fill-white text-white" />
+                  </span>
+                )}
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Legend */}
+      <div className="mt-3 border-t-2 border-neo-ink pt-2.5 space-y-1.5 font-mono text-[11px] font-bold text-neo-ink">
+        <div className="flex items-center gap-2">
+          <span className="size-3 border-2 border-neo-ink bg-neo-green" />
+          <span>Benar ({totalCorrect})</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="size-3 border-2 border-neo-ink bg-neo-coral" />
+          <span>Salah ({totalWrong})</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="size-3 border-2 border-neo-ink bg-neo-paper" />
+          <span>Kosong ({totalUnanswered})</span>
+        </div>
+        {totalFlagged > 0 && (
+          <div className="flex items-center gap-2">
+            <span className="size-3 border-2 border-neo-ink bg-neo-coral flex items-center justify-center">
+              <Flag className="size-1.5 fill-white text-white" />
+            </span>
+            <span>Ragu-ragu ({totalFlagged})</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-6">
@@ -109,14 +197,27 @@ export default async function ResultDetailPage({
         items={navItems}
         activeId={selectedItem.id}
         buildHref={(itemId) => `/result/${attempt.id}/detail?mondai=${itemId}`}
-      />
+      >
+        {lembarJawabanSection}
+      </QuestionNavMobile>
 
       <div className="flex items-start gap-6">
-        <QuestionNavSidebar
-          items={navItems}
-          activeId={selectedItem.id}
-          buildHref={(itemId) => `/result/${attempt.id}/detail?mondai=${itemId}`}
-        />
+        <aside className="sticky top-20 hidden max-h-[calc(100vh-6rem)] w-72 shrink-0 self-start overflow-y-auto rounded-lg border-[3px] border-neo-ink bg-white p-4 shadow-neo lg:block space-y-5">
+          {lembarJawabanSection}
+
+          <div className="border-t-2 border-neo-ink pt-4">
+            <div className="border-b-2 border-neo-ink pb-2 mb-3">
+              <span className="font-mono text-xs font-black uppercase text-neo-ink">
+                DAFTAR MONDAI
+              </span>
+            </div>
+            <QuestionNavList
+              items={navItems}
+              activeId={selectedItem.id}
+              buildHref={(itemId) => `/result/${attempt.id}/detail?mondai=${itemId}`}
+            />
+          </div>
+        </aside>
 
         <div className="min-w-0 flex-1 space-y-6">
           <FuriganaScope>
@@ -147,7 +248,8 @@ export default async function ResultDetailPage({
                   return (
                     <div
                       key={question.id}
-                      className="flex flex-col gap-4 border-t-[3px] border-neo-ink/15 pt-6 first:border-t-0 first:pt-0"
+                      id={`q-${question.order}`}
+                      className="scroll-mt-24 flex flex-col gap-4 border-t-[3px] border-neo-ink/15 pt-6 first:border-t-0 first:pt-0"
                     >
                       {showContext && question.questionContext && (
                         <div className="rounded-lg border-[3px] border-neo-ink bg-neo-paper p-4 text-sm shadow-neo-sm">
@@ -217,6 +319,12 @@ export default async function ResultDetailPage({
                                 : userAnswer.selectedAnswer === null
                                   ? "Kosong"
                                   : "Salah"}
+                            </span>
+                          )}
+                          {userAnswer?.flagged && (
+                            <span className="inline-flex items-center gap-1 border-2 border-neo-ink bg-neo-yellow px-2.5 py-0.5 font-mono text-xs font-black uppercase text-black shadow-neo-sm">
+                              <Flag className="size-3 fill-current" aria-hidden="true" />
+                              Ragu-ragu
                             </span>
                           )}
                         </div>

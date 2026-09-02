@@ -3,9 +3,14 @@ import { z } from "zod";
 export const EmailSchema = z
   .string()
   .trim()
+  .toLowerCase()
   .min(1, "Email wajib diisi.")
   .max(254, "Email terlalu panjang.")
-  .email("Format email tidak valid.");
+  .email("Format email tidak valid.")
+  .refine(
+    (value) => !value.slice(0, value.lastIndexOf("@")).includes("+"),
+    "Alias email dengan tanda + tidak didukung.",
+  );
 
 export const PasswordSchema = z
   .string()

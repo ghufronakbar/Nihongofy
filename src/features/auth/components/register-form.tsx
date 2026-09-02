@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Mail, UserPlus, UserRound } from "lucide-react";
 import { registerAction } from "../actions";
@@ -17,6 +17,7 @@ export function RegisterForm({ nextPath }: { nextPath: string }) {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm<RegisterInput>({
     resolver: zodResolver(RegisterSchema),
@@ -66,15 +67,24 @@ export function RegisterForm({ nextPath }: { nextPath: string }) {
             </FieldLabel>
             <div className="relative">
               <Mail className="pointer-events-none absolute top-1/2 left-4 z-10 size-5 -translate-y-1/2 text-black/55" aria-hidden="true" />
-              <Input
-                id="email"
-                type="email"
-                inputMode="email"
-                autoComplete="email"
-                placeholder="nama@email.com"
-                className="neo-input h-12 pl-12"
-                aria-invalid={Boolean(errors.email)}
-                {...register("email")}
+              <Controller
+                name="email"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    id="email"
+                    type="email"
+                    inputMode="email"
+                    autoComplete="email"
+                    autoCapitalize="none"
+                    spellCheck={false}
+                    placeholder="nama@email.com"
+                    className="neo-input h-12 pl-12"
+                    aria-invalid={Boolean(errors.email)}
+                    onChange={(event) => field.onChange(event.currentTarget.value.toLowerCase())}
+                  />
+                )}
               />
             </div>
             <FieldError errors={[errors.email]} className="font-semibold" />

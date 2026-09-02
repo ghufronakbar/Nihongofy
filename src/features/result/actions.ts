@@ -37,7 +37,11 @@ const getCachedAttemptSummary = (attemptId: number, userId: number) =>
 
       if (!attempt || attempt.userId !== ownerId) return null;
 
-      return attempt;
+      return {
+        ...attempt,
+        startedAt: attempt.startedAt.toISOString(),
+        finishedAt: attempt.finishedAt?.toISOString() ?? null,
+      };
     },
     CACHE_KEYS.attemptSummary(attemptId),
     { tags: [CACHE_TAGS.attemptSummary(attemptId)] },

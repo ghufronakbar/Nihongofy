@@ -1,6 +1,14 @@
+import type { Metadata } from "next";
 import { BrainCircuit, ShieldCheck, Sparkles } from "lucide-react";
 import { getPracticeCatalog } from "@/features/practice/actions";
 import { PracticeConfigurator } from "@/features/practice/components/practice-configurator";
+
+export const metadata: Metadata = {
+  title: "Latihan Cepat JLPT",
+  description:
+    "Latihan soal JLPT per mondai dan level dengan feedback instan tanpa timer. Cocok untuk memperkuat tipe soal tertentu.",
+  alternates: { canonical: "/exercises" },
+};
 
 export default async function ExercisesPage() {
   const catalog = await getPracticeCatalog();

@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Mail, Save, UserRound } from "lucide-react";
-import { useForm, useWatch } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { updateProfileAction } from "../actions";
@@ -33,7 +33,7 @@ export function ProfileForm({
     resolver: zodResolver(UpdateProfileSchema),
     defaultValues: {
       displayName: account.displayName,
-      email: account.email ?? "",
+      email: account.email?.toLowerCase() ?? "",
       avatarUrl: account.avatarUrl,
     },
   });
@@ -74,9 +74,28 @@ export function ProfileForm({
             <FieldLabel htmlFor="email" className="font-extrabold">Email</FieldLabel>
             <div className="relative">
               <Mail className="pointer-events-none absolute top-1/2 left-4 z-10 size-5 -translate-y-1/2 text-black/55" aria-hidden="true" />
-              <Input id="email" type="email" autoComplete="email" className="neo-input pl-12" aria-invalid={Boolean(errors.email)} {...register("email")} />
+              <Controller
+                name="email"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    id="email"
+                    type="email"
+                    inputMode="email"
+                    autoComplete="email"
+                    autoCapitalize="none"
+                    spellCheck={false}
+                    className="neo-input pl-12"
+                    aria-invalid={Boolean(errors.email)}
+                    onChange={(event) => field.onChange(event.currentTarget.value.toLowerCase())}
+                  />
+                )}
+              />
             </div>
-            <FieldDescription>Email dinormalisasi ke huruf kecil dan dipakai untuk login.</FieldDescription>
+            <FieldDescription>
+              Email dinormalisasi ke huruf kecil; alias dengan tanda + tidak didukung.
+            </FieldDescription>
             <FieldError errors={[errors.email]} className="font-semibold" />
           </Field>
 

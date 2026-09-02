@@ -33,6 +33,8 @@ export default async function ExamPage({
         attemptId={attemptIdNum}
         session={sessionNum}
         testPackageName={attempt.testPackage.name}
+        jlptLevel={attempt.testPackage.jlptLevel}
+        sectionScope={attempt.sectionScope}
         questions={questions}
       />
     </ExamProvider>

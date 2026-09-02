@@ -24,13 +24,13 @@ import { getArticleIndexData } from "@/features/article/queries";
 import { getSession } from "@/lib/auth";
 
 export const metadata: Metadata = {
-  title: "Latihan JLPT yang serius dan tetap seru",
+  title: "Tanoshii Japanese | Belajar Bahasa Jepang & Simulasi JLPT",
   description:
-    "Kerjakan mock test JLPT, tinjau jawaban, dan pahami bagian yang perlu dilatih ulang.",
+    "Platform belajar bahasa Jepang dan persiapan JLPT (N5 - N1) yang interaktif, terarah, dan menyenangkan. Lengkap dengan latihan Kana, kosakata, latihan cepat, dan mock test resmi.",
   openGraph: {
-    title: "JLPT Exam | Latihan serius, tetap seru",
+    title: "Tanoshii Japanese | Belajar Bahasa Jepang & Latihan JLPT Seru",
     description:
-      "Kerjakan mock test JLPT, tinjau jawaban, dan pahami bagian yang perlu dilatih ulang.",
+      "Platform belajar bahasa Jepang dan persiapan JLPT (N5 - N1) lengkap dengan review mendalam dan analitik progres.",
     type: "website",
     locale: "id_ID",
   },
