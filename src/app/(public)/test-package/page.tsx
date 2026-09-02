@@ -2,8 +2,6 @@ import Link from "next/link";
 import {
   ArrowRight,
   BookOpen,
-  Clock,
-  FileQuestion,
   Layers,
   Sparkles,
   Trophy,

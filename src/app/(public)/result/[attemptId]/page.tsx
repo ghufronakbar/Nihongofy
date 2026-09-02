@@ -3,14 +3,10 @@ import { notFound } from "next/navigation";
 import {
   ArrowLeft,
   ArrowRight,
-  Award,
   CheckCircle2,
-  Clock,
   Eye,
   Flag,
   HelpCircle,
-  Sparkles,
-  Trophy,
   XCircle,
 } from "lucide-react";
 import { getAttemptSummary } from "@/features/result/actions";

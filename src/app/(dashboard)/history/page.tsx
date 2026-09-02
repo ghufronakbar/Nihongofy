@@ -1,7 +1,6 @@
 import Link from "next/link";
 import {
   ArrowRight,
-  BookOpen,
   Calendar,
   CheckCircle2,
   Clock3,

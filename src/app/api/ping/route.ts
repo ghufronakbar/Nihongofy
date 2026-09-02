@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-
+import { reportServerError } from "@/lib/server-logger";
 
 export const dynamic = "force-dynamic";
 
@@ -14,11 +14,19 @@ export async function GET() {
       data: testPackages,
     });
   } catch (error) {
-    console.error(error);
-
-    return NextResponse.json({
-      success: false,
-      data: error instanceof Error ? error.message : "Unknown Error",
+    const incidentId = crypto.randomUUID();
+    reportServerError("api.ping.database_error", error, {
+      incidentId,
+      route: "/api/ping",
     });
+
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Service unavailable",
+        incidentId,
+      },
+      { status: 503 },
+    );
   }
 }

@@ -73,5 +73,9 @@ The product target is public multi-user registration. Auth remains intentionally
 * Schema rules, Japanese text markup, and query rules are defined in `database.md` — read it before writing any database code.
 
 ## 11. Verification & General Guidelines
-* **TypeScript:** Use strict typing. Do not use `any`.
+* **TypeScript:** Keep strict typing enabled. The `any` type is prohibited, including explicit
+  annotations, `as any` casts, generic arguments, and implicit `any`. Data from cookies, request
+  bodies, external services, JSON, or other untrusted sources must start as `unknown` and be
+  validated or narrowed before use. Do not disable the related TypeScript/ESLint rule to bypass an
+  error; define the correct type or add runtime validation instead.
 * **Build Verification:** Always run `npm run build` after making structural changes or modifying server actions/caching logic to verify the build integrity and catch errors early.

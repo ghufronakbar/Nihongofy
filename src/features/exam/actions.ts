@@ -6,7 +6,20 @@ import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { CACHE_TAGS } from "@/constants/cache-key";
-import { SubmitExamSessionSchema, type SubmitExamSessionInput } from "./schemas";
+import {
+  GuestExamCookieSchema,
+  SubmitExamSessionSchema,
+  type SubmitExamSessionInput,
+} from "./schemas";
+
+function parseGuestExamCookie(rawCookie: string) {
+  try {
+    const parsed = GuestExamCookieSchema.safeParse(JSON.parse(rawCookie));
+    return parsed.success ? parsed.data : null;
+  } catch {
+    return null;
+  }
+}
 
 // Exam-mode data-leak guard (docs/database.md): questionAnswer & explanation
 // must never be selected here — only exposed post-submit via the result feature.
@@ -18,63 +31,57 @@ export async function getExamQuestions(attemptId: number, urlSession: number) {
     const guestCookie = cookieStore.get("jlpt_guest_exam")?.value;
     if (!guestCookie) notFound();
 
-    try {
-      const guestData = JSON.parse(guestCookie) as {
-        testPackageId: number;
-        sectionScope: string | null;
-      };
+    const guestData = parseGuestExamCookie(guestCookie);
+    if (!guestData) notFound();
 
-      const testPackage = await prisma.testPackage.findUnique({
-        where: { id: guestData.testPackageId },
-        select: { id: true, name: true, jlptLevel: true },
-      });
-      if (!testPackage) notFound();
+    const testPackage = await prisma.testPackage.findUnique({
+      where: { id: guestData.testPackageId },
+      select: { id: true, name: true, jlptLevel: true },
+    });
+    if (!testPackage) notFound();
 
-      const attempt = {
-        id: 0,
-        userId: 0,
-        testPackageId: guestData.testPackageId,
-        sectionScope: guestData.sectionScope as any,
-        status: "IN_PROGRESS" as const,
-        testPackage,
-      };
+    const attempt = {
+      id: 0,
+      userId: 0,
+      testPackageId: guestData.testPackageId,
+      sectionScope: guestData.sectionScope,
+      status: "IN_PROGRESS" as const,
+      testPackage,
+    };
 
-      const testPackageItems = await prisma.testPackageItem.findMany({
-        where: attempt.sectionScope
-          ? { testPackageId: attempt.testPackageId, section: attempt.sectionScope }
-          : { testPackageId: attempt.testPackageId, session: urlSession },
-        orderBy: [{ session: "asc" }, { order: "asc" }],
-        select: {
-          id: true,
-          mondaiType: true,
-          section: true,
-          session: true,
-          order: true,
-          instruction: true,
-          questions: {
-            orderBy: { order: "asc" },
-            select: {
-              id: true,
-              order: true,
-              questionText: true,
-              questionImage: true,
-              questionAudio: true,
-              questionContext: {
-                select: { id: true, storyText: true, storyImage: true, storyAudio: true },
-              },
-              questionChoices: {
-                orderBy: { codeAnswer: "asc" },
-                select: { id: true, codeAnswer: true, answerText: true, answerImage: true },
-              },
+    const testPackageItems = await prisma.testPackageItem.findMany({
+      where: attempt.sectionScope
+        ? { testPackageId: attempt.testPackageId, section: attempt.sectionScope }
+        : { testPackageId: attempt.testPackageId, session: urlSession },
+      orderBy: [{ session: "asc" }, { order: "asc" }],
+      select: {
+        id: true,
+        mondaiType: true,
+        section: true,
+        session: true,
+        order: true,
+        instruction: true,
+        questions: {
+          orderBy: { order: "asc" },
+          select: {
+            id: true,
+            order: true,
+            questionText: true,
+            questionImage: true,
+            questionAudio: true,
+            questionContext: {
+              select: { id: true, storyText: true, storyImage: true, storyAudio: true },
+            },
+            questionChoices: {
+              orderBy: { codeAnswer: "asc" },
+              select: { id: true, codeAnswer: true, answerText: true, answerImage: true },
             },
           },
         },
-      });
+      },
+    });
 
-      return { attempt, testPackageItems };
-    } catch {
-      notFound();
-    }
+    return { attempt, testPackageItems };
   }
 
   const attempt = await prisma.attempt.findUnique({
@@ -154,13 +161,11 @@ export async function submitExamSessionAction(input: SubmitExamSessionInput) {
     const guestCookie = cookieStore.get("jlpt_guest_exam")?.value;
     if (!guestCookie) notFound();
 
-    const guestData = JSON.parse(guestCookie) as {
-      testPackageId: number;
-      sectionScope: string | null;
-    };
+    const guestData = parseGuestExamCookie(guestCookie);
+    if (!guestData) notFound();
 
     const scopedWhere = guestData.sectionScope
-      ? { testPackageId: guestData.testPackageId, section: guestData.sectionScope as any }
+      ? { testPackageId: guestData.testPackageId, section: guestData.sectionScope }
       : { testPackageId: guestData.testPackageId };
 
     const sessionRows = await prisma.testPackageItem.findMany({

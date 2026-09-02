@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight, BookOpen, Eye, HelpCircle } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { getTestPackageQuestions } from "@/features/test-package/actions";
 import { QuestionCommentForm } from "@/features/question-comment/components/question-comment-form";
 import { CommentItem } from "@/features/question-comment/components/comment-item";

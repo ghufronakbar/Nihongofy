@@ -2,7 +2,6 @@ import type { JlptLevel } from "@prisma/client";
 import { JlptScoreTable } from "@/components/jlpt-score-table";
 import type { JlptScoreProjection } from "@/lib/jlpt-score";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Sparkles, Trophy } from "lucide-react";
 
 export function AnalyticsTabs({
   levelStats,

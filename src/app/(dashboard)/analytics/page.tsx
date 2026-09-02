@@ -8,14 +8,9 @@ import { computeJlptScoreProjection } from "@/lib/jlpt-score";
 import { resolveDateRangePreset, isDateRangePreset } from "@/lib/date-range-preset";
 import { JLPT_SECTION_LABELS } from "@/constants/jlpt";
 import {
-  Activity,
   BarChart3,
-  BookOpen,
-  CheckCircle2,
-  Flame,
   Layers,
   LineChart,
-  Sparkles,
   Zap,
 } from "lucide-react";
 import Link from "next/link";

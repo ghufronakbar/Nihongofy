@@ -3,12 +3,6 @@ import { notFound } from "next/navigation";
 import {
   ArrowLeft,
   ArrowRight,
-  BookOpen,
-  CheckCircle2,
-  Eye,
-  HelpCircle,
-  Trophy,
-  XCircle,
 } from "lucide-react";
 import { getAttemptDetail } from "@/features/result/actions";
 import { QuestionCommentForm } from "@/features/question-comment/components/question-comment-form";

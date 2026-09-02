@@ -11,7 +11,7 @@ import {
   type ScoringSectionKey,
 } from "@/lib/jlpt-score";
 import { MONDAI_TYPE_LABELS } from "@/constants/jlpt";
-import { BookOpen, Info, Sparkles, TrendingUp, Trophy } from "lucide-react";
+import { Info, TrendingUp, Trophy } from "lucide-react";
 import Link from "next/link";
 
 const MONDAI_ORDER = Object.keys(MONDAI_WEIGHTS) as MondaiType[];

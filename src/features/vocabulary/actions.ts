@@ -1,7 +1,7 @@
 "use server";
 
 import { unstable_cache, updateTag } from "next/cache";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { CACHE_KEYS, CACHE_TAGS } from "@/constants/cache-key";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";

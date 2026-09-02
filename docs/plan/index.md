@@ -94,6 +94,19 @@ jika memenuhi seluruh kondisi berikut sesuai scope produknya:
 - [ ] Tetapkan severity bug, release checklist, dan owner untuk content incident serta security
   incident.
 
+Artefak implementasi Phase 0:
+
+- [Engineering baseline](../operations/engineering-baseline.md) untuk gate `npm run verify`, format
+  handoff, serta kontrak structured logging/error monitoring.
+- [Checklist pengujian manual](../verification/manual-test-checklist.md) untuk seluruh critical flow
+  dan audit answer-key leakage.
+- [Catatan migration](../operations/migrations.md) untuk template serta ledger perubahan schema/data.
+- [Release dan incident management](../operations/release-and-incidents.md) untuk severity, release
+  gate, dan role owner content/security incident.
+
+Implementasi kode dan dokumen diselesaikan pada 2 September 2026. Checkbox tetap terbuka sampai
+user menjalankan acceptance checklist sesuai aturan living document ini.
+
 ### Exit Criteria
 
 - Lint, typecheck, dan build lulus.
