@@ -1,29 +1,14 @@
+import {
+  DEFAULT_TIME_ZONE,
+  getUtcDateBoundary,
+  getZonedCalendarDate,
+} from "@/lib/time-zone";
+
 export const DATE_RANGE_PRESETS = ["all", "thisWeek", "thisMonth", "last30Days", "custom"] as const;
 export type DateRangePreset = (typeof DATE_RANGE_PRESETS)[number];
 
 export function isDateRangePreset(value: string | undefined): value is DateRangePreset {
   return !!value && (DATE_RANGE_PRESETS as readonly string[]).includes(value);
-}
-
-function startOfDay(date: Date): Date {
-  const result = new Date(date);
-  result.setHours(0, 0, 0, 0);
-  return result;
-}
-
-function endOfDay(date: Date): Date {
-  const result = new Date(date);
-  result.setHours(23, 59, 59, 999);
-  return result;
-}
-
-function startOfWeek(date: Date): Date {
-  // Senin sebagai awal minggu.
-  const result = startOfDay(date);
-  const day = result.getDay();
-  const diff = (day + 6) % 7;
-  result.setDate(result.getDate() - diff);
-  return result;
 }
 
 // Resolusi preset -> rentang tanggal aktual, dipanggil di server (page.tsx)
@@ -33,24 +18,36 @@ export function resolveDateRangePreset(
   preset: DateRangePreset,
   customFrom?: string,
   customTo?: string,
+  timeZone = DEFAULT_TIME_ZONE,
 ): { from?: Date; to?: Date } {
   const now = new Date();
+  const { year, month, day } = getZonedCalendarDate(now, timeZone);
+  const calendarDate = new Date(Date.UTC(year, month - 1, day));
+  const toDateInput = (date: Date) => date.toISOString().slice(0, 10);
 
   switch (preset) {
     case "all":
       return {};
-    case "thisWeek":
-      return { from: startOfWeek(now) };
+    case "thisWeek": {
+      const mondayOffset = (calendarDate.getUTCDay() + 6) % 7;
+      calendarDate.setUTCDate(calendarDate.getUTCDate() - mondayOffset);
+      return { from: getUtcDateBoundary(toDateInput(calendarDate), timeZone, "start") };
+    }
     case "thisMonth":
-      return { from: new Date(now.getFullYear(), now.getMonth(), 1) };
+      return {
+        from: getUtcDateBoundary(
+          `${String(year).padStart(4, "0")}-${String(month).padStart(2, "0")}-01`,
+          timeZone,
+          "start",
+        ),
+      };
     case "last30Days": {
-      const from = startOfDay(now);
-      from.setDate(from.getDate() - 29);
-      return { from };
+      calendarDate.setUTCDate(calendarDate.getUTCDate() - 29);
+      return { from: getUtcDateBoundary(toDateInput(calendarDate), timeZone, "start") };
     }
     case "custom": {
-      const from = customFrom ? startOfDay(new Date(customFrom)) : undefined;
-      const to = customTo ? endOfDay(new Date(customTo)) : undefined;
+      const from = getUtcDateBoundary(customFrom, timeZone, "start");
+      const to = getUtcDateBoundary(customTo, timeZone, "end");
       return { from, to };
     }
   }

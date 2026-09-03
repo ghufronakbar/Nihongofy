@@ -72,16 +72,3 @@ export function formatReviewSteps(minutes: number[]) {
     })
     .join(" ");
 }
-
-export function getJakartaDayStart(date: Date) {
-  const jakartaOffsetMs = 7 * 60 * 60 * 1000;
-  const jakartaDate = new Date(date.getTime() + jakartaOffsetMs);
-
-  return new Date(
-    Date.UTC(
-      jakartaDate.getUTCFullYear(),
-      jakartaDate.getUTCMonth(),
-      jakartaDate.getUTCDate(),
-    ) - jakartaOffsetMs,
-  );
-}

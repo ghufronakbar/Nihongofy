@@ -13,14 +13,10 @@ export async function sendVerificationEmail({
   userId,
   email,
   displayName,
-  purpose = AuthTokenPurpose.EMAIL_VERIFICATION,
 }: {
   userId: number;
   email: string;
   displayName: string;
-  purpose?:
-    | typeof AuthTokenPurpose.EMAIL_VERIFICATION
-    | typeof AuthTokenPurpose.EMAIL_CHANGE;
 }) {
   const cooldown = await acquireEmailCooldown("verification", String(userId));
   if (!cooldown.allowed) return cooldown;
@@ -28,15 +24,13 @@ export async function sendVerificationEmail({
   try {
     const { token, expiresAt } = await issueAuthToken({
       userId,
-      purpose,
+      purpose: AuthTokenPurpose.EMAIL_VERIFICATION,
       durationSeconds: EMAIL_VERIFICATION_DURATION_SECONDS,
-      targetEmail: purpose === AuthTokenPurpose.EMAIL_CHANGE ? email : undefined,
     });
     await sendEmailVerificationMail({
       email,
       displayName,
       token,
-      isEmailChange: purpose === AuthTokenPurpose.EMAIL_CHANGE,
     });
     return { ...cooldown, expiresAt };
   } catch (error) {

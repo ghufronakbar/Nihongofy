@@ -10,10 +10,15 @@ import {
   Trophy,
 } from "lucide-react";
 import { getDashboardSummary } from "@/features/dashboard/actions";
+import { formatInTimeZone } from "@/lib/time-zone";
+import { getCurrentUserTimeZone } from "@/lib/user-time-zone";
 import { JLPT_SECTION_LABELS } from "@/constants/jlpt";
 
 export default async function DashboardPage() {
-  const { lastAttempt, completedCount } = await getDashboardSummary();
+  const [{ lastAttempt, completedCount }, timeZone] = await Promise.all([
+    getDashboardSummary(),
+    getCurrentUserTimeZone(),
+  ]);
 
   const QUICK_MODES = [
     {
@@ -138,7 +143,7 @@ export default async function DashboardPage() {
                       ? `Latihan ${JLPT_SECTION_LABELS[lastAttempt.sectionScope]}`
                       : "Mock Test Penuh"}
                     {lastAttempt.finishedAt
-                      ? ` · ${new Date(lastAttempt.finishedAt).toLocaleDateString("id-ID", {
+                      ? ` · ${formatInTimeZone(lastAttempt.finishedAt, timeZone, {
                           day: "numeric",
                           month: "short",
                           year: "numeric",

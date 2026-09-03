@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import {
   ArrowRight,
+  BookOpenCheck,
   Brain,
   CalendarDays,
   ChartNoAxesCombined,
@@ -14,6 +15,7 @@ import {
   getProfileAccountAction,
   getProfileOverviewAction,
 } from "@/features/profile/actions";
+import { formatInTimeZone } from "@/lib/time-zone";
 
 export const metadata: Metadata = {
   title: "Profil Belajar",
@@ -38,11 +40,10 @@ export default async function ProfilePage() {
     .slice(0, 2)
     .map((part) => part[0]?.toUpperCase())
     .join("");
-  const memberSince = new Intl.DateTimeFormat("id-ID", {
+  const memberSince = formatInTimeZone(account.createdAt, account.timeZone, {
     month: "long",
     year: "numeric",
-    timeZone: "Asia/Jakarta",
-  }).format(new Date(account.createdAt));
+  });
 
   return (
     <main className="grid gap-8">
@@ -85,14 +86,19 @@ export default async function ProfilePage() {
           </article>
           <article className="neo-surface bg-neo-yellow p-5 md:col-span-3">
             <Sparkles className="size-8" aria-hidden="true" />
-            <p className="mt-5 text-4xl font-black tabular-nums">{overview.practiceCompleted}</p>
-            <p className="font-bold text-black/65">Latihan selesai</p>
+            <p className="mt-5 text-4xl font-black tabular-nums">{overview.quickPracticeCompleted}</p>
+            <p className="font-bold text-black/65">Latihan cepat selesai</p>
           </article>
-          <article className="neo-surface bg-neo-green p-5 md:col-span-7">
+          <article className="neo-surface bg-white p-5 md:col-span-3">
+            <BookOpenCheck className="size-8 text-neo-blue" aria-hidden="true" />
+            <p className="mt-5 text-4xl font-black tabular-nums">{overview.sectionPracticeCompleted}</p>
+            <p className="font-bold text-muted-foreground">Latihan seksi selesai</p>
+          </article>
+          <article className="neo-surface bg-neo-green p-5 md:col-span-4">
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="font-mono text-xs font-black tracking-widest uppercase">Mock JLPT</p>
-                <p className="mt-2 text-5xl font-black tabular-nums">{overview.examCompleted}</p>
+                <p className="mt-2 text-5xl font-black tabular-nums">{overview.mockCompleted}</p>
                 <p className="font-bold text-black/65">Ujian selesai</p>
               </div>
               <Trophy className="size-14" aria-hidden="true" />

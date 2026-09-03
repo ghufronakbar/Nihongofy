@@ -9,7 +9,7 @@
 - `/vocab`
 - `/vocab/[deckSlug]?mode=browse`
 - `/vocab/[deckSlug]?mode=review`
-- `/profile/flashcard-settings`
+- `/flashcard-settings`
 
 ## Fitur Aktif
 
@@ -46,7 +46,7 @@
 - Queue dibuat saat server render. Kartu ber-rating `Again` yang due lagi beberapa menit kemudian tidak otomatis masuk kembali tanpa reload.
 - Daily limit berlaku global lintas deck karena review log tidak menyimpan/memfilter deck.
 - Pengecekan count limit dan write review berada pada langkah terpisah, sehingga submit serentak dari beberapa tab secara teori dapat melewati limit.
-- Zona waktu Asia/Jakarta masih hardcoded, belum menjadi preference user.
+- Batas hari mengikuti timezone IANA milik user.
 - Belum ada automated test untuk scheduler dan boundary settings.
 
 ## File Utama

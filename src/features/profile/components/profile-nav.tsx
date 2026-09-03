@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Brain, LayoutDashboard, ShieldCheck, UserRound } from "lucide-react";
+import { Database, LayoutDashboard, ShieldCheck, UserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const ITEMS = [
   { href: "/profile", label: "Overview", icon: LayoutDashboard, exact: true },
   { href: "/profile/info", label: "Akun", icon: UserRound },
   { href: "/profile/security", label: "Security", icon: ShieldCheck },
-  { href: "/profile/flashcard-settings", label: "Flashcards", icon: Brain },
+  { href: "/profile/privacy", label: "Privasi & Data", icon: Database },
 ];
 
 export function ProfileNav() {

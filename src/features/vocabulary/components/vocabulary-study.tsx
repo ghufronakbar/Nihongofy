@@ -157,7 +157,7 @@ export function VocabularyStudy({ deck, mode }: { deck: Deck; mode: "browse" | "
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Link href={`/vocab/${deck.slug}?mode=browse`} className="neo-button bg-white">Jelajahi deck</Link>
             {deck.dailyQueue.limitReached ? (
-              <Link href="/profile/flashcard-settings" className="neo-button bg-neo-blue">Atur batas harian</Link>
+              <Link href="/flashcard-settings" className="neo-button bg-neo-blue">Atur batas harian</Link>
             ) : null}
             <Link href="/vocab" className="neo-button bg-neo-yellow">Pilih deck lain</Link>
           </div>

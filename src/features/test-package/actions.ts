@@ -5,6 +5,8 @@ import { unstable_cache } from "next/cache";
 import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
+import { DEFAULT_TIME_ZONE } from "@/lib/time-zone";
+import { getUserTimeZone } from "@/lib/user-time-zone";
 import { CACHE_KEYS, CACHE_TAGS } from "@/constants/cache-key";
 import { CreateAttemptSchema, type CreateAttemptInput } from "./schemas";
 
@@ -69,7 +71,11 @@ export async function getTestPackageDetail(testPackageId: number) {
       })
     : [];
 
-  return { testPackage, attempts };
+  const timeZone = session
+    ? await getUserTimeZone(session.userId)
+    : DEFAULT_TIME_ZONE;
+
+  return { testPackage, attempts, timeZone };
 }
 
 const getCachedTestPackageQuestions = (testPackageId: number) =>

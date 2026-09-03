@@ -100,6 +100,10 @@ enum AuthTokenPurpose {
   PASSWORD_RESET
 }
 
+enum OAuthProvider {
+  GOOGLE
+}
+
 // ============================================================
 // USER
 // ============================================================
@@ -107,13 +111,21 @@ enum AuthTokenPurpose {
 // Username tetap nullable sebagai bridge login akun legacy. User baru memakai
 // displayName + normalized email; seluruh relasi existing tetap dipertahankan.
 model User {
-  id              Int       @id @default(autoincrement())
-  username        String?   @unique // bridge login akun legacy; user baru memakai email
-  displayName     String
-  email           String?   @unique // nullable hanya untuk akun legacy yang belum dibackfill
-  emailVerifiedAt DateTime?
-  avatarUrl       String?   @db.Text
-  password        String // simpan hash (bcrypt/argon2), JANGAN plaintext
+  id                       Int       @id @default(autoincrement())
+  username                 String?   @unique // bridge login akun legacy; user baru memakai email
+  displayName              String
+  email                    String?   @unique // nullable hanya untuk akun legacy yang belum dibackfill
+  emailVerifiedAt          DateTime?
+  avatarUrl                String?   @db.Text
+  avatarPublicId           String?   @unique @db.VarChar(255)
+  avatarFormat             String?   @db.VarChar(10)
+  avatarBytes              Int?
+  timeZone                 String    @default("Asia/Jakarta") @db.VarChar(100)
+  allowAudioStorage        Boolean   @default(false)
+  allowConversationStorage Boolean   @default(false)
+  deletionRequestedAt      DateTime?
+  deletionScheduledFor     DateTime?
+  password                 String? // null hanya untuk akun OAuth-only; jika terisi wajib berupa hash
 
   questionComments    QuestionComment[]
   attempts            Attempt[]
@@ -124,9 +136,26 @@ model User {
   practiceSessions    PracticeSession[]
   articleInteractions ArticleInteraction[]
   authTokens          AuthToken[]
+  oauthAccounts       OAuthAccount[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// Provider subject adalah identitas stabil. Email hanya snapshot untuk status
+// account linking dan tidak pernah dipakai menggantikan providerAccountId.
+model OAuthAccount {
+  id                String        @id @default(uuid())
+  user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId            Int
+  provider          OAuthProvider
+  providerAccountId String        @db.VarChar(255)
+  providerEmail     String        @db.VarChar(254)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  @@unique([provider, providerAccountId])
+  @@unique([userId, provider])
 }
 
 // Token plaintext hanya dikirim melalui email. Database menyimpan SHA-256 hash

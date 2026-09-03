@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTransition } from "react";
 import {
+  Brain,
   ChartNoAxesCombined,
   History,
   LayoutDashboard,
@@ -33,6 +34,7 @@ const NAV_ITEMS = [
   { title: "History", href: "/history", icon: History },
   { title: "Progress", href: "/progress", icon: TrendingUp },
   { title: "Analytics", href: "/analytics", icon: ChartNoAxesCombined },
+  { title: "Flashcard Settings", href: "/flashcard-settings", icon: Brain },
 ];
 
 export function AppSidebar({
@@ -103,12 +105,12 @@ export function AppSidebar({
         <SidebarMenu className="gap-1.5">
           <SidebarMenuItem>
             <SidebarMenuButton
-              isActive={pathname === "/profile" || pathname.startsWith("/profile/info") || pathname.startsWith("/profile/flashcard-settings")}
+              isActive={pathname === "/profile" || pathname.startsWith("/profile/info")}
               tooltip="Profil"
               render={<Link href="/profile" />}
               className={cn(
                 "h-11 rounded-md border-2 p-2 transition-all duration-150",
-                pathname === "/profile" || pathname.startsWith("/profile/info") || pathname.startsWith("/profile/flashcard-settings")
+                pathname === "/profile" || pathname.startsWith("/profile/info")
                   ? "border-neo-ink bg-neo-yellow text-black shadow-neo-sm font-black"
                   : "border-neo-ink bg-neo-paper hover:bg-white hover:translate-x-0.5"
               )}

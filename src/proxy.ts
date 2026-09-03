@@ -7,6 +7,7 @@ import { getSession } from "@/lib/auth";
 const PROTECTED_ROUTES = [
   "/analytics",
   "/dashboard",
+  "/flashcard-settings",
   "/history",
   "/profile",
   "/progress",
@@ -16,6 +17,7 @@ const PROTECTED_PREFIXES = [
   "/analytics/",
   "/api/",
   "/dashboard/",
+  "/flashcard-settings/",
   "/history/",
   "/profile/",
   "/progress/",
@@ -23,7 +25,10 @@ const PROTECTED_PREFIXES = [
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  if (pathname.startsWith("/api/cron/")) {
+  if (
+    pathname.startsWith("/api/cron/") ||
+    pathname.startsWith("/api/auth/google/")
+  ) {
     return NextResponse.next();
   }
 

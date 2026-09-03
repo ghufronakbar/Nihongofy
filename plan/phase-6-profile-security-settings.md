@@ -12,8 +12,8 @@ diganti dengan akun, statistik, password mutation, dan scheduler setting yang pe
 - `/profile/info`: edit display name, normalized email, dan avatar Cloudinary. Username legacy
   tetap read-only.
 - `/profile/security`: change password dengan current password dan tanpa Google/OAuth mock.
-- `/profile/flashcard-settings`: daily limits, learning/relearning steps, lapse, dan interval
-  lanjutan dalam kelompok progressive disclosure.
+- `/flashcard-settings`: daily limits, learning/relearning steps, lapse, dan interval lanjutan
+  dalam kelompok progressive disclosure. Route ini kini menjadi pengaturan belajar mandiri di sidebar.
 - `/profile/auth`: compatibility redirect ke `/profile/security`.
 - Footer sidebar sekarang menjadi entry point Profile, Security, dan Logout serta menampilkan
   avatar/display name terbaru.

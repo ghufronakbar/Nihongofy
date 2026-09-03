@@ -5,9 +5,10 @@ import { notFound } from "next/navigation";
 import { CACHE_KEYS, CACHE_TAGS } from "@/constants/cache-key";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getZonedDayRange } from "@/lib/time-zone";
+import { getUserTimeZone } from "@/lib/user-time-zone";
 import { scheduleFlashcard } from "./lib/scheduler";
 import { getFlashcardSettingsForUser } from "./lib/settings-data";
-import { getJakartaDayStart } from "./lib/settings";
 import {
   RateFlashcardSchema,
   UsageExamplesSchema,
@@ -166,7 +167,8 @@ export async function getVocabularyDeck(slug: string) {
 
   const flashcardIds = deck.items.map((item) => item.flashcard.id);
   const now = new Date();
-  const dayStart = getJakartaDayStart(now);
+  const timeZone = await getUserTimeZone(session.userId);
+  const dayStart = getZonedDayRange(now, timeZone).start;
   const [progress, settings, completedNewToday, completedReviewsToday] = await Promise.all([
     prisma.flashcardProgress.findMany({
       where: { userId: session.userId, flashcardId: { in: flashcardIds } },
@@ -273,7 +275,7 @@ export async function rateFlashcardAction(input: RateFlashcardInput) {
   });
   if (!membership) return { ok: false as const, message: "Kartu tidak ditemukan di deck ini." };
 
-  const [previous, settings] = await Promise.all([
+  const [previous, settings, timeZone] = await Promise.all([
     prisma.flashcardProgress.findUnique({
       where: { userId_flashcardId: { userId: session.userId, flashcardId } },
       select: {
@@ -287,9 +289,10 @@ export async function rateFlashcardAction(input: RateFlashcardInput) {
       },
     }),
     getFlashcardSettingsForUser(session.userId),
+    getUserTimeZone(session.userId),
   ]);
   const reviewedAt = new Date();
-  const dayStart = getJakartaDayStart(reviewedAt);
+  const dayStart = getZonedDayRange(reviewedAt, timeZone).start;
 
   if (previous && previous.dueAt > reviewedAt) {
     return { ok: false as const, message: "Kartu ini belum jatuh tempo." };

@@ -12,6 +12,7 @@ import {
   SESSION_DURATION_SECONDS,
 } from "@/constants";
 import { redis, redisKey } from "@/lib/redis";
+import { prisma } from "@/lib/prisma";
 
 const encodedSecret = new TextEncoder().encode(env.SESSION_SECRET);
 
@@ -74,12 +75,12 @@ function getDeviceName(userAgent: string | null) {
   return `${browser} di ${platform}`;
 }
 
-async function encrypt(payload: SessionPayload) {
+async function encrypt(payload: SessionPayload, durationSeconds: number) {
   return new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setJti(payload.sessionId)
     .setIssuedAt()
-    .setExpirationTime(`${SESSION_DURATION_SECONDS}s`)
+    .setExpirationTime(`${durationSeconds}s`)
     .sign(encodedSecret);
 }
 
@@ -109,7 +110,23 @@ async function deleteSessionEntries(userId: number, sessionIds: string[]) {
 export async function createSession(userId: number) {
   const requestHeaders = await headers();
   const now = new Date();
-  const expiresAt = new Date(now.getTime() + SESSION_DURATION_SECONDS * 1000);
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { deletionScheduledFor: true },
+  });
+  if (!user || (user.deletionScheduledFor && user.deletionScheduledFor <= now)) {
+    throw new Error("Account is not available for a new session.");
+  }
+
+  const defaultExpiresAt = new Date(now.getTime() + SESSION_DURATION_SECONDS * 1000);
+  const expiresAt =
+    user.deletionScheduledFor && user.deletionScheduledFor < defaultExpiresAt
+      ? user.deletionScheduledFor
+      : defaultExpiresAt;
+  const durationSeconds = Math.max(
+    1,
+    Math.ceil((expiresAt.getTime() - now.getTime()) / 1000),
+  );
   const sessionId = crypto.randomUUID();
   const metadata: SessionMetadata = {
     sessionId,
@@ -121,16 +138,16 @@ export async function createSession(userId: number) {
   };
 
   const transaction = redis.multi();
-  transaction.set(sessionKey(sessionId), metadata, { ex: SESSION_DURATION_SECONDS });
+  transaction.set(sessionKey(sessionId), metadata, { ex: durationSeconds });
   transaction.zadd(userSessionsKey(userId), { score: expiresAt.getTime(), member: sessionId });
-  transaction.expire(userSessionsKey(userId), SESSION_DURATION_SECONDS);
+  transaction.expire(userSessionsKey(userId), durationSeconds);
   await transaction.exec();
 
   const sessionIds = await redis.zrange<string[]>(userSessionsKey(userId), 0, -1);
   const overflow = sessionIds.slice(0, Math.max(0, sessionIds.length - MAX_ACTIVE_SESSIONS));
   await deleteSessionEntries(userId, overflow);
 
-  const token = await encrypt({ userId, sessionId });
+  const token = await encrypt({ userId, sessionId }, durationSeconds);
   const cookieStore = await cookies();
   cookieStore.set(SESSION_COOKIE_NAME, token, {
     httpOnly: true,

@@ -33,7 +33,7 @@ Prasyarat: satu email baru, satu akun aktif, dan satu akun kedua untuk uji isola
 
 | Skenario | Langkah ringkas | Expected result | Status/bukti |
 |---|---|---|---|
-| Register valid | Daftar dengan display name, email mixed-case, dan password valid | Akun dibuat sekali, email dinormalisasi, session aktif, redirect internal benar | |
+| Register valid | Daftar dengan display name, email mixed-case, dan password valid | Akun dibuat sekali, email dinormalisasi, belum ada session sampai email dikonfirmasi | |
 | Register invalid | Kirim field kosong, email invalid, password lemah, dan konfirmasi berbeda | Tidak ada user baru; pesan validasi tidak memuat secret | |
 | Register duplicate | Daftar lagi dengan email yang sama dalam casing berbeda | Ditolak dengan pesan generik yang tidak mengungkap detail database | |
 | Login valid | Login memakai email dan, bila tersedia, username legacy | Session httpOnly dibuat dan user masuk ke tujuan internal yang aman | |
@@ -41,6 +41,7 @@ Prasyarat: satu email baru, satu akun aktif, dan satu akun kedua untuk uji isola
 | Safe redirect | Isi `next` dengan path internal lalu URL eksternal/protocol-relative | Path internal diterima; tujuan eksternal jatuh ke default aman | |
 | Rate limit | Ulangi kegagalan sampai batas tercapai | Request dibatasi dengan retry time; email/IP mentah tidak disimpan atau dilog | |
 | Logout | Logout lalu buka route private | Cookie session hilang dan route private kembali ke login | |
+| Google OAuth | Jalankan checklist khusus Google OAuth | Auto-create email baru, explicit linking, reauthentication, dan boundary lulus sesuai `google-oauth-uat.md` | |
 
 ## Start Exam
 
@@ -122,9 +123,15 @@ sekarang, catat sebagai bug sesuai severity; jangan mengubah expected result men
 | Skenario | Langkah ringkas | Expected result | Status/bukti |
 |---|---|---|---|
 | Overview | Bandingkan statistik dengan aktivitas user | Count memakai data owner dan definisi aktivitas yang terdokumentasi | |
-| Update info | Ubah display name/email valid dan invalid | Nilai dinormalisasi; duplicate/invalid ditolak tanpa partial update | |
+| Update info | Ubah display name dan inspeksi field email | Nama dinormalisasi; email tampil read-only dan tidak diterima payload update | |
 | Avatar | Upload format/ukuran valid dan invalid | Hanya folder milik user disetujui; asset asing tidak dapat diklaim | |
+| Timezone | Ubah timezone lalu periksa SRS, Analytics, History, Progress, dan session | Boundary hari, filter tanggal, dan label waktu mengikuti timezone akun | |
+| Privacy | Aktif/nonaktifkan izin audio dan conversation secara terpisah | Nilai tersimpan sesuai pilihan dan default akun baru tetap nonaktif | |
+| Export | Unduh export JSON lalu inspeksi isinya | Data owner lengkap; password, token, cookie, session, dan rate-limit tidak ada | |
+| Delete/cancel | Pakai akun disposable untuk request, login recovery, dan cancel | Semua session logout; grace period tampil; cancel valid memulihkan akun | |
+| Delete final | Jadwalkan akun disposable melewati grace period lalu jalankan cron | User dan relasi user-owned terhapus; konten global tetap ada | |
 | Change password | Uji current password salah, password sama, dan password valid | Hanya kasus valid mengubah hash dan merotasi session | |
+| OAuth security | Uji connect/disconnect Google dan Buat Password pada akun OAuth-only | Email harus sama; akun tidak dapat kehilangan seluruh metode login | |
 | Isolation | Ubah ID/input dengan akun kedua | Profile, settings, dan statistik user lain tidak terbaca/berubah | |
 
 ## Audit Answer-Key Leakage
@@ -162,4 +169,3 @@ tanpa menyalin answer key ke kanal publik, dan ikuti prosedur incident.
 | Article detail | NOT RUN | | | |
 | Profile | NOT RUN | | | |
 | Answer-key leakage | NOT RUN | | | |
-

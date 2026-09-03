@@ -84,18 +84,15 @@ export async function sendEmailVerificationMail({
   email,
   displayName,
   token,
-  isEmailChange = false,
 }: {
   email: string;
   displayName: string;
   token: string;
-  isEmailChange?: boolean;
 }) {
   const url = new URL(`/verify-email/${encodeURIComponent(token)}`, SITE_URL).toString();
-  const title = isEmailChange ? "Konfirmasi email baru" : "Konfirmasi email Anda";
-  const description = isEmailChange
-    ? "Klik tombol berikut untuk menyelesaikan perubahan alamat email akun Anda."
-    : "Klik tombol berikut agar akun belajar Anda aktif dan dapat digunakan untuk masuk.";
+  const title = "Konfirmasi email Anda";
+  const description =
+    "Klik tombol berikut agar akun belajar Anda aktif dan dapat digunakan untuk masuk.";
   const expiryText = "Tautan ini berlaku selama 30 menit dan hanya dapat digunakan sekali.";
 
   await sendMail({
@@ -107,7 +104,7 @@ export async function sendEmailVerificationMail({
       title,
       greeting: `Halo ${displayName},`,
       description,
-      buttonLabel: isEmailChange ? "Konfirmasi email baru" : "Konfirmasi email",
+      buttonLabel: "Konfirmasi email",
       url,
       expiryText,
     }),

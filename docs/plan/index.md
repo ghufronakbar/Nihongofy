@@ -136,25 +136,31 @@ pada environment nyata tanggal 3 September 2026. Hasil UAT tercatat di
 - [x] Tambahkan `sessionVersion` atau mekanisme ekuivalen agar change password, logout-all, dan
   security incident dapat mencabut session lama tanpa wajib mengganti arsitektur menjadi session
   table.
-- [x] Minta re-authentication untuk perubahan email dan operasi account berisiko tinggi.
+- [x] Jadikan email immutable dan minta reauthentication untuk operasi account berisiko tinggi.
 - [x] Tambahkan cleanup untuk `AuthRateLimit` dan token expired.
 - [x] Siapkan skenario pengujian manual untuk normalization email, akun legacy, duplicate race,
   brute-force limit, expired token, safe redirect, dan logout-all.
-- [x] Pertahankan scope credential auth minimal. OAuth dan MFA bukan blocker kecuali target produk
-  berubah atau threat model mengharuskannya.
+- [x] Tambahkan Google OIDC dengan auto-create untuk email baru dan explicit linking dari profile
+  untuk akun credential existing, PKCE, nonce, state Redis sekali pakai, serta identity provider
+  terpisah. MFA dan provider lain tetap di luar scope.
+- [x] Verifikasi Google OAuth end-to-end setelah client ID/secret dan redirect URI dikonfigurasi,
+  berdasarkan [checklist UAT Google OAuth](../verification/google-oauth-uat.md).
 - [x] Lindungi seluruh form publik pada route group `(auth)` dengan Cloudflare Turnstile dan
   verifikasi Siteverify server-side yang fail-closed.
 
 ### 1.2 Profile dan Account Lifecycle
 
-- [ ] Tambahkan timezone user; gunakan preference ini untuk SRS, filter tanggal, dan format waktu.
-- [ ] Implementasikan export data akun dan delete account dengan grace period serta kebijakan
+**Status implementasi:** selesai dan diverifikasi user pada 3 September 2026 berdasarkan
+[checklist UAT Phase 1.2](../verification/phase-1-2-profile-account-lifecycle-uat.md).
+
+- [x] Tambahkan timezone user; gunakan preference ini untuk SRS, filter tanggal, dan format waktu.
+- [x] Implementasikan export data akun dan delete account dengan grace period serta kebijakan
   penghapusan relasi yang terdokumentasi.
-- [ ] Tambahkan privacy preference minimum untuk penyimpanan audio/conversation sebelum modul AI
+- [x] Tambahkan privacy preference minimum untuk penyimpanan audio/conversation sebelum modul AI
   dibuka.
-- [ ] Perbaiki lifecycle avatar: validasi resource milik aplikasi/user, batasi format/ukuran, dan
+- [x] Perbaiki lifecycle avatar: validasi resource milik aplikasi/user, batasi format/ukuran, dan
   hapus asset lama atau orphan secara aman.
-- [ ] Pastikan statistik profile memakai definisi aktivitas yang sama dengan reporting di Fase 6.
+- [x] Pastikan statistik profile memakai definisi aktivitas yang sama dengan reporting di Fase 6.
 
 ### 1.3 Question Comment dan Upload
 

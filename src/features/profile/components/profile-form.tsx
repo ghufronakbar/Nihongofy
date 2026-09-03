@@ -6,20 +6,25 @@ import { Mail, Save, UserRound } from "lucide-react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import type { TimeZoneOption } from "@/lib/time-zone";
 import { updateProfileAction } from "../actions";
 import { UpdateProfileSchema, type UpdateProfileInput } from "../schemas";
 import { AvatarUploader } from "./avatar-uploader";
-import { PasswordInput } from "@/features/auth/components/password-input";
+import { TimeZoneCombobox } from "./time-zone-combobox";
 
 export function ProfileForm({
   account,
+  timeZoneOptions,
 }: {
   account: {
     displayName: string;
     email: string | null;
     username: string | null;
     avatarUrl: string | null;
+    avatarPublicId: string | null;
+    timeZone: string;
   };
+  timeZoneOptions: TimeZoneOption[];
 }) {
   const [isPending, startTransition] = useTransition();
   const [notice, setNotice] = useState<{ ok: boolean; message: string } | null>(null);
@@ -34,13 +39,14 @@ export function ProfileForm({
     resolver: zodResolver(UpdateProfileSchema),
     defaultValues: {
       displayName: account.displayName,
-      email: account.email?.toLowerCase() ?? "",
       avatarUrl: account.avatarUrl,
-      currentPassword: "",
+      avatarPublicId: account.avatarPublicId,
+      timeZone: account.timeZone,
     },
   });
   const displayName = useWatch({ control, name: "displayName" });
   const avatarUrl = useWatch({ control, name: "avatarUrl" });
+  const avatarPublicId = useWatch({ control, name: "avatarPublicId" });
 
   function onSubmit(values: UpdateProfileInput) {
     setNotice(null);
@@ -55,11 +61,18 @@ export function ProfileForm({
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="grid gap-7">
       <fieldset disabled={isPending} className="contents">
         <AvatarUploader
-          value={avatarUrl}
+          value={avatarUrl ? { url: avatarUrl, publicId: avatarPublicId } : null}
           displayName={displayName}
-          onChange={(value) => setValue("avatarUrl", value, { shouldDirty: true, shouldValidate: true })}
+          onChange={(value) => {
+            setValue("avatarUrl", value?.url ?? null, { shouldDirty: true, shouldValidate: true });
+            setValue("avatarPublicId", value?.publicId ?? null, {
+              shouldDirty: true,
+              shouldValidate: true,
+            });
+          }}
         />
         <FieldError errors={[errors.avatarUrl]} className="font-semibold" />
+        <FieldError errors={[errors.avatarPublicId]} className="font-semibold" />
 
         <div className="grid gap-5 border-t-[3px] border-black pt-7">
           <Field>
@@ -76,45 +89,42 @@ export function ProfileForm({
             <FieldLabel htmlFor="email" className="font-extrabold">Email</FieldLabel>
             <div className="relative">
               <Mail className="pointer-events-none absolute top-1/2 left-4 z-10 size-5 -translate-y-1/2 text-black/55" aria-hidden="true" />
-              <Controller
-                name="email"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    id="email"
-                    type="email"
-                    inputMode="email"
-                    autoComplete="email"
-                    autoCapitalize="none"
-                    spellCheck={false}
-                    className="neo-input pl-12"
-                    aria-invalid={Boolean(errors.email)}
-                    onChange={(event) => field.onChange(event.currentTarget.value.toLowerCase())}
-                  />
-                )}
+              <Input
+                id="email"
+                type="email"
+                value={account.email ?? "Akun legacy tanpa email"}
+                readOnly
+                aria-readonly="true"
+                className="neo-input bg-muted pl-12"
               />
             </div>
             <FieldDescription>
-              Perubahan email baru berlaku setelah link pada alamat baru dikonfirmasi.
+              Email menjadi identitas tetap akun dan tidak dapat diubah dari profile.
             </FieldDescription>
-            <FieldError errors={[errors.email]} className="font-semibold" />
           </Field>
 
           <Field>
-            <FieldLabel htmlFor="currentPassword" className="font-extrabold">
-              Password saat ini untuk perubahan email
-            </FieldLabel>
-            <PasswordInput
-              id="currentPassword"
-              autoComplete="current-password"
-              aria-invalid={Boolean(errors.currentPassword)}
-              {...register("currentPassword")}
+            <FieldLabel htmlFor="timeZone" className="font-extrabold">Timezone</FieldLabel>
+            <Controller
+              name="timeZone"
+              control={control}
+              render={({ field }) => (
+                <TimeZoneCombobox
+                  id="timeZone"
+                  value={field.value}
+                  options={timeZoneOptions}
+                  invalid={Boolean(errors.timeZone)}
+                  disabled={isPending}
+                  inputRef={field.ref}
+                  onBlur={field.onBlur}
+                  onValueChange={field.onChange}
+                />
+              )}
             />
             <FieldDescription>
-              Boleh dikosongkan jika Anda hanya mengubah nama tampilan atau avatar.
+              Cari berdasarkan kota, nama IANA, atau offset UTC. Dipakai untuk batas harian SRS, filter tanggal, dan tampilan waktu.
             </FieldDescription>
-            <FieldError errors={[errors.currentPassword]} className="font-semibold" />
+            <FieldError errors={[errors.timeZone]} className="font-semibold" />
           </Field>
 
           {account.username ? (

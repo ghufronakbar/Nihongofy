@@ -66,7 +66,7 @@ Mencakup juga `/exam` dan `/result` (awalnya direncanakan tanpa sidebar untuk mo
 | `/profile` | Overview akun dengan statistik kana, vocabulary, latihan cepat, dan mock exam dari data user nyata. |
 | `/profile/info` | Edit display name, normalized email, dan avatar Cloudinary; username legacy tampil read-only. |
 | `/profile/security` | Ganti password, daftar perangkat aktif, revoke session, dan logout perangkat lain. |
-| `/profile/flashcard-settings` | Preference SRS persisten dengan daily limits, learning/relearning steps, interval, dan reset default via Server Action. |
+| `/flashcard-settings` | Preference SRS persisten dengan daily limits, learning/relearning steps, interval, dan reset default via Server Action; entry point tersedia langsung di sidebar. |
 | `/profile/auth` | Redirect kompatibilitas menuju `/profile/security`. |
 
 ### Pengerjaan

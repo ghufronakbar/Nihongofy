@@ -3,9 +3,7 @@
 import bcrypt from "bcryptjs";
 import { AuthTokenPurpose, Prisma } from "@prisma/client";
 import { redirect } from "next/navigation";
-import { updateTag } from "next/cache";
 import { BCRYPT_COST_FACTOR, EMAIL_SEND_COOLDOWN_SECONDS } from "@/constants";
-import { CACHE_TAGS } from "@/constants/cache-key";
 import {
   createSession,
   destroySession,
@@ -51,7 +49,8 @@ export type AuthActionResult =
   | { ok: boolean; message: string; retryAfterSeconds?: number }
   | undefined;
 
-const INVALID_CREDENTIALS_MESSAGE = "Email, username, atau password salah.";
+const INVALID_CREDENTIALS_MESSAGE =
+  "Tidak dapat masuk dengan password. Periksa kredensial atau gunakan Google jika akun Anda terhubung.";
 const REGISTER_FAILED_MESSAGE =
   "Pendaftaran tidak dapat diproses. Periksa data atau masuk jika sudah memiliki akun.";
 const FORGOT_PASSWORD_MESSAGE =
@@ -235,6 +234,7 @@ export async function loginAction(input: LoginInput): Promise<AuthActionResult> 
     displayName: true,
     password: true,
     emailVerifiedAt: true,
+    deletionScheduledFor: true,
   } satisfies Prisma.UserSelect;
   const user = isEmail
     ? await prisma.user.findUnique({ where: { email: normalizedEmail }, select })
@@ -261,6 +261,18 @@ export async function loginAction(input: LoginInput): Promise<AuthActionResult> 
       ipAddress,
     });
     verificationRedirect(delivery.status);
+  }
+
+  if (user.deletionScheduledFor) {
+    if (user.deletionScheduledFor.getTime() <= Date.now()) {
+      return {
+        ok: false,
+        message: "Akun ini sudah melewati masa pemulihan dan sedang menunggu penghapusan permanen.",
+      };
+    }
+
+    await createSession(user.id);
+    redirect("/profile/privacy?deletion=pending");
   }
 
   await createSession(user.id);
@@ -424,34 +436,22 @@ export async function confirmEmailAction(input: unknown): Promise<AuthActionResu
   if (activeSession && activeSession.userId !== inspectedToken.userId) {
     return { ok: false, message: "Tautan ini tidak sesuai dengan akun yang sedang aktif." };
   }
-  if (inspectedToken.purpose === AuthTokenPurpose.EMAIL_CHANGE) {
-    if (!activeSession) {
-      redirect(`/login?next=/verify-email/${encodeURIComponent(validated.data.token)}`);
-    }
-  }
-
   const result = await consumeEmailToken(validated.data.token);
   if (!result.ok) {
     return {
       ok: false,
-      message:
-        result.reason === "email-taken"
-          ? "Email tersebut sudah digunakan akun lain."
-          : "Tautan sudah digunakan, kedaluwarsa, atau tidak valid.",
+      message: "Tautan sudah digunakan, kedaluwarsa, atau tidak valid.",
     };
   }
 
   await revokeAllUserSessions(result.userId);
-  if (result.emailChanged) updateTag(CACHE_TAGS.profileAccount(result.userId));
   await createSession(result.userId);
   await clearPendingVerification();
 
   const nextPath =
     pending?.userId === result.userId
       ? getSafeRedirectPath(pending.next)
-      : result.emailChanged
-        ? "/profile/info"
-        : "/dashboard";
+      : "/dashboard";
   redirect(nextPath);
 }
 

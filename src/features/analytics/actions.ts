@@ -8,6 +8,10 @@ import { getSession } from "@/lib/auth";
 import { CACHE_KEYS, CACHE_TAGS } from "@/constants/cache-key";
 import { JLPT_LEVEL_ORDER } from "@/constants/jlpt";
 import type { MondaiStatInput } from "@/lib/jlpt-score";
+import {
+  completedMockAttemptWhere,
+  completedQuickPracticeWhere,
+} from "@/lib/activity-metrics";
 
 // Scope memisahkan attempt mock/section dan practice. "ALL" menggabungkan
 // keduanya di panel masing-masing tanpa mencampur perhitungan skor.
@@ -27,7 +31,7 @@ function buildAttemptWhere(userId: number, filters: AnalyticsFilters): Prisma.At
   if (filters.scope === "PRACTICE") {
     where.id = -1;
   } else if (filters.scope === "MOCK") {
-    where.sectionScope = null;
+    Object.assign(where, completedMockAttemptWhere(userId));
   } else if (filters.scope !== "ALL") {
     where.sectionScope = filters.scope;
   }
@@ -46,7 +50,7 @@ function buildPracticeWhere(
   userId: number,
   filters: AnalyticsFilters,
 ): Prisma.PracticeSessionWhereInput {
-  const where: Prisma.PracticeSessionWhereInput = { userId, status: "COMPLETED" };
+  const where: Prisma.PracticeSessionWhereInput = completedQuickPracticeWhere(userId);
 
   if (filters.scope === "MOCK") {
     where.id = -1;

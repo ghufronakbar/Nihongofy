@@ -9,14 +9,26 @@ const MAX_FILE_SIZE_BYTES = 3 * 1024 * 1024;
 const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 
 async function uploadAvatar(file: File) {
-  const { signature, timestamp, apiKey, cloudName, folder } =
+  const {
+    signature,
+    timestamp,
+    apiKey,
+    cloudName,
+    publicId,
+    allowedFormats,
+    transformation,
+    overwrite,
+  } =
     await getAvatarUploadSignatureAction();
   const formData = new FormData();
   formData.append("file", file);
   formData.append("api_key", apiKey);
   formData.append("timestamp", String(timestamp));
   formData.append("signature", signature);
-  formData.append("folder", folder);
+  formData.append("public_id", publicId);
+  formData.append("allowed_formats", allowedFormats);
+  formData.append("transformation", transformation);
+  formData.append("overwrite", String(overwrite));
 
   const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
     method: "POST",
@@ -25,12 +37,21 @@ async function uploadAvatar(file: File) {
 
   if (!response.ok) throw new Error("Upload avatar gagal.");
 
-  const data: { secure_url?: string } = await response.json();
-  if (!data.secure_url?.startsWith("https://res.cloudinary.com/")) {
+  const data: unknown = await response.json();
+  if (
+    typeof data !== "object" ||
+    data === null ||
+    !("secure_url" in data) ||
+    !("public_id" in data) ||
+    typeof data.secure_url !== "string" ||
+    typeof data.public_id !== "string" ||
+    data.public_id !== publicId ||
+    !data.secure_url.startsWith("https://res.cloudinary.com/")
+  ) {
     throw new Error("Respons upload avatar tidak valid.");
   }
 
-  return data.secure_url;
+  return { url: data.secure_url, publicId: data.public_id };
 }
 
 export function AvatarUploader({
@@ -38,9 +59,9 @@ export function AvatarUploader({
   displayName,
   onChange,
 }: {
-  value: string | null;
+  value: { url: string; publicId: string | null } | null;
   displayName: string;
-  onChange: (url: string | null) => void;
+  onChange: (avatar: { url: string; publicId: string } | null) => void;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -80,7 +101,7 @@ export function AvatarUploader({
     <div className="grid gap-4 sm:grid-cols-[auto_1fr] sm:items-center">
       <Avatar className="size-28 rounded-lg border-[3px] border-black bg-neo-blue shadow-neo">
         {value ? (
-          <AvatarImage src={value} alt={`Avatar ${displayName}`} className="rounded-md" />
+          <AvatarImage src={value.url} alt={`Avatar ${displayName}`} className="rounded-md" />
         ) : null}
         <AvatarFallback className="rounded-md bg-neo-blue text-3xl font-black text-black">
           {initials}

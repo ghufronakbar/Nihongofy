@@ -13,12 +13,17 @@ import {
 import { MONDAI_TYPE_LABELS } from "@/constants/jlpt";
 import { Info, TrendingUp, Trophy } from "lucide-react";
 import Link from "next/link";
+import { formatInTimeZone } from "@/lib/time-zone";
+import { getCurrentUserTimeZone } from "@/lib/user-time-zone";
 
 const MONDAI_ORDER = Object.keys(MONDAI_WEIGHTS) as MondaiType[];
 const SECTION_KEYS: ScoringSectionKey[] = ["GENGO_CHISHIKI", "DOKKAI", "CHOUKAI"];
 
 export default async function ProgressPage() {
-  const progressLevels = await getProgress();
+  const [progressLevels, timeZone] = await Promise.all([
+    getProgress(),
+    getCurrentUserTimeZone(),
+  ]);
 
   const levels: ProgressLevelView[] = progressLevels.map(({ level, attempts }) => {
     // Union of every mondai type seen in this level's attempts, in canonical
@@ -58,7 +63,7 @@ export default async function ProgressPage() {
         attemptId: attempt.id,
         packageName: attempt.packageName,
         dateLabel: attempt.finishedAt
-          ? new Date(attempt.finishedAt).toLocaleDateString("id-ID", {
+          ? formatInTimeZone(attempt.finishedAt, timeZone, {
               day: "2-digit",
               month: "short",
               year: "numeric",

@@ -9,7 +9,7 @@
 | File storage | Cloudinary (audio/images; DB stores URLs only) |
 | Styling | Tailwind CSS v4 + shadcn/ui |
 | State | React Context |
-| Auth | Custom credential auth: `bcryptjs` + `jose`, Redis session registry, dan token PostgreSQL |
+| Auth | Custom credential + Google OIDC: `bcryptjs` + `jose`, Redis session registry/state, dan token PostgreSQL |
 | Validation | `zod` (single source of truth for all input schemas) |
 | Forms | `react-hook-form` + `@hookform/resolvers/zod` |
 
@@ -27,17 +27,20 @@ Do NOT introduce other libraries for these concerns (e.g., NextAuth/Auth.js, Red
 * When extending or overriding shadcn component styles, always use the `cn()` utility to prevent Tailwind class conflicts.
 
 ## 4. Authentication & Session
-The product target is public multi-user registration. Auth remains intentionally minimal: no OAuth or role hierarchy unless approved separately.
+The product target is public multi-user registration. Credential auth dan Google OIDC aktif;
+provider OAuth lain, MFA, dan role hierarchy tetap memerlukan persetujuan terpisah.
 
 * **Login identifier:** user baru login dengan normalized email. Akun legacy yang belum memiliki email tetap dapat login dengan `username` sampai flow pengisian email tersedia.
-* **Password hashing:** `bcryptjs` with cost factor 12. Hash on register and compare with `bcrypt.compare()` on login. NEVER store or log plaintext passwords.
+* **Password hashing:** `bcryptjs` with cost factor 12. Hash on register and compare with `bcrypt.compare()` on login. `User.password` nullable hanya untuk akun OAuth-only yang belum membuat password. NEVER store or log plaintext passwords.
 * **Session:** JWT signed with `jose` (HS256, secret from `SESSION_SECRET`) menyimpan `userId` dan `sessionId` dalam cookie **httpOnly, secure, sameSite=lax** bernama `session`. Expiry tetap 7 hari. Metadata serta status revocation session disimpan di Redis; JWT tidak boleh diterima jika registry Redis tidak dapat mengonfirmasi session tersebut.
 * **Session helpers location:** `./src/lib/auth.ts` — seluruh pembuatan, pembacaan, daftar perangkat, dan revocation session wajib melalui helper di file ini. Jangan membaca cookie atau memanipulasi key session Redis secara manual dari feature lain.
 * **Session revocation:** password reset dan perubahan password mencabut semua session lama. Logout perangkat lain menghapus `sessionId` target dari Redis. `sessionVersion` tidak digunakan selama registry Redis menjadi sumber kebenaran revocation.
-* **Email lifecycle:** register baru tidak membuat session sebelum email dikonfirmasi. Token verifikasi, perubahan email, dan reset password disimpan sebagai SHA-256 hash di `AuthToken`, memiliki expiry, maksimal satu token aktif per user/purpose, dan dikonsumsi melalui Server Action POST; jangan mengonsumsi token melalui GET.
+* **Email lifecycle:** register credential baru tidak membuat session sebelum email dikonfirmasi. Token verifikasi dan reset password disimpan sebagai SHA-256 hash di `AuthToken`, memiliki expiry, maksimal satu token aktif per user/purpose, dan dikonsumsi melalui Server Action POST; jangan mengonsumsi token melalui GET. Email akun immutable; purpose/column email-change legacy tidak boleh dipakai runtime baru.
+* **Google OAuth:** gunakan Authorization Code + PKCE S256, state yang terikat cookie, nonce, verifikasi ID token melalui JWKS, dan Google `sub` sebagai identity stabil. Transaction serta proof reauthentication bersifat sekali pakai dan disimpan di Redis dengan TTL. Jangan menyimpan access token atau refresh token Google.
+* **OAuth linking:** login/register Google hanya membuat user baru bila normalized verified email belum terdaftar. Jika email sudah dimiliki akun credential tetapi identity Google belum terhubung, callback wajib menolak dan mengarahkan user untuk login dengan password lalu connect dari profile. Connect dari profile wajib memakai email yang sama persis. Akun OAuth-only wajib reauthenticate ke Google sebelum membuat password atau menjalankan account lifecycle sensitif.
 * **Email delivery:** semua email auth dikirim server-side melalui Nodemailer. Cooldown pengiriman disimpan di Redis dan selalu diverifikasi ulang di server; countdown client hanya representasi UI.
 * **Route protection:** `src/proxy.ts` (the `middleware.ts` convention was renamed to `proxy.ts` in this Next.js version) guards protected routes. No valid session redirects to `/login?next=<internal-path>`. This is an optimistic check only; protected layouts and Server Actions MUST verify session and ownership again.
-* **Registration:** public registration aktif dengan display name, normalized email, password, dan konfirmasi password. Tidak ada first-time setup atau `count(User)` lock. Unique constraint email menjadi duplicate guard terakhir.
+* **Registration:** public registration aktif melalui credential (display name, normalized email, password, dan konfirmasi password) atau Google. Tidak ada first-time setup atau `count(User)` lock. Unique constraint email dan OAuth identity menjadi duplicate guard terakhir.
 * **Auth rate limit:** login dan register memakai bucket atomik di `AuthRateLimit`. Key disimpan sebagai HMAC-SHA256, bukan email atau alamat IP mentah.
 * **Bot protection:** seluruh form publik di route group `(auth)` wajib memakai Cloudflare Turnstile. Token harus diverifikasi server-side melalui Siteverify sebelum query database, pengiriman email, atau konsumsi rate-limit; cocokkan `action` dan hostname, lalu tolak secara fail-closed jika layanan verifikasi gagal.
 * **Data isolation:** every query for attempts, comments, history, progress, settings, and future user content MUST scope access to `session.userId`.
@@ -59,7 +62,7 @@ The product target is public multi-user registration. Auth remains intentionally
 * **Location:** `./src/constants/index.ts`
 * NEVER access `process.env.YOUR_VARIABLE` directly inside UI components, hooks, or business logic.
 * All environment variables and global constants MUST be recalled, validated, and exported from `./src/constants/index.ts`.
-* Required env vars: `APP_URL`, `DATABASE_URL`, `DIRECT_URL`, `SESSION_SECRET`, konfigurasi Cloudinary, `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`, `REDIS_PREFIX`, konfigurasi SMTP, serta `CLOUDFLARE_TURNSTILE_SITEKEY` dan `CLOUDFLARE_TURNSTILE_SECRETKEY`. `CRON_SECRET` wajib di deployment yang menjalankan cleanup cron. Validate presence at startup (zod schema in the constants file); fail fast with a clear error if missing.
+* Required env vars: `APP_URL`, `DATABASE_URL`, `DIRECT_URL`, `SESSION_SECRET`, konfigurasi Cloudinary, `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`, `REDIS_PREFIX`, konfigurasi SMTP, serta `CLOUDFLARE_TURNSTILE_SITEKEY` dan `CLOUDFLARE_TURNSTILE_SECRETKEY`. `GOOGLE_CLIENT_ID` dan `GOOGLE_CLIENT_SECRET` harus diisi berpasangan untuk mengaktifkan Google OAuth. `CRON_SECRET` wajib di deployment yang menjalankan cleanup cron. Validate presence at startup (zod schema in the constants file); fail fast with a clear error if missing.
 * NEVER expose server-only secrets to the client (no `NEXT_PUBLIC_` prefix on secrets).
 
 ## 8. State Management

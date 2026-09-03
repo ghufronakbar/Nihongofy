@@ -12,6 +12,8 @@ import {
 import { getAttemptHistory } from "@/features/history/actions";
 import { JLPT_SECTION_LABELS } from "@/constants/jlpt";
 import type { JlptLevel } from "@prisma/client";
+import { formatInTimeZone } from "@/lib/time-zone";
+import { getCurrentUserTimeZone } from "@/lib/user-time-zone";
 
 const LEVEL_BADGE_STYLES: Record<JlptLevel, string> = {
   N5: "bg-neo-green text-black",
@@ -22,7 +24,10 @@ const LEVEL_BADGE_STYLES: Record<JlptLevel, string> = {
 };
 
 export default async function HistoryPage() {
-  const attempts = await getAttemptHistory();
+  const [attempts, timeZone] = await Promise.all([
+    getAttemptHistory(),
+    getCurrentUserTimeZone(),
+  ]);
 
   const completedAttempts = attempts.filter((a) => a.status === "COMPLETED").length;
   const inProgressAttempts = attempts.filter((a) => a.status === "IN_PROGRESS").length;
@@ -174,7 +179,7 @@ export default async function HistoryPage() {
                       <Calendar className="size-3.5" />
                       <span>
                         Dimulai:{" "}
-                        {new Date(attempt.startedAt).toLocaleString("id-ID", {
+                        {formatInTimeZone(attempt.startedAt, timeZone, {
                           day: "numeric",
                           month: "short",
                           year: "numeric",

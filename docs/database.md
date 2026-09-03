@@ -10,8 +10,11 @@ Stack: Next.js + Prisma + PostgreSQL (Supabase).
 - Supabase: `DATABASE_URL` = pooled connection (pgbouncer) untuk runtime, `DIRECT_URL` = direct connection untuk migration. Jangan menukar keduanya.
 - Semua data pribadi wajib di-scope dengan `userId` dari session. Jangan pernah menerima `userId` client sebagai sumber otorisasi.
 - Role dan permission bertingkat belum menjadi scope, tetapi isolation antar-user tetap wajib.
-- Jangan pernah menulis password plaintext — selalu hash (bcrypt/argon2) sebelum insert ke `User.password`.
+- Jangan pernah menulis password plaintext. `User.password` hanya boleh berisi hash bcrypt atau
+  `NULL` untuk akun OAuth-only yang belum membuat password.
 - User baru wajib memiliki normalized email. `email` nullable hanya untuk akun legacy yang belum menjalani flow pengisian email.
+- Email akun immutable setelah dibuat. Google account hanya boleh dihubungkan ke akun credential
+  dengan email normalized yang sama.
 - `username` nullable dan unique untuk compatibility login akun legacy; jangan membuat username sintetis untuk user baru.
 - Semua tabel aplikasi pada schema `public` memakai RLS tanpa policy Data API. Runtime Prisma memakai koneksi server `postgres` dan tetap wajib melakukan ownership check di aplikasi.
 
@@ -19,7 +22,17 @@ Stack: Next.js + Prisma + PostgreSQL (Supabase).
 
 - `User.displayName` wajib dan menjadi nama yang ditampilkan pada sidebar/catatan.
 - `User.email` unique bila terisi. PostgreSQL mengizinkan beberapa nilai `NULL`, sehingga akun legacy tetap dapat dipertahankan.
+- `OAuthAccount` menyimpan identitas provider berdasarkan `(provider, providerAccountId)`; Google
+  `sub` adalah identity stabil, sedangkan `providerEmail` hanya snapshot. Satu user hanya boleh
+  memiliki satu identity per provider dan row dihapus cascade bersama user.
+- `User.timeZone` menyimpan nama IANA valid dan menjadi sumber batas harian SRS, filter tanggal,
+  serta format timestamp user-specific. Existing user dibackfill `Asia/Jakarta`.
 - `User.avatarUrl` hanya menerima URL upload Cloudinary aplikasi pada action profile; file binary tidak disimpan di database.
+- Avatar baru menyimpan `avatarPublicId`, `avatarFormat`, dan `avatarBytes`. Public ID wajib berada
+  di `jlpt-exam/avatars/{userId}/`, unik, serta diverifikasi melalui Cloudinary Admin API sebelum update.
+- `allowAudioStorage` dan `allowConversationStorage` adalah opt-in terpisah dengan default `false`.
+- `deletionRequestedAt` dan `deletionScheduledFor` harus null bersama atau membentuk jadwal valid.
+  Hard-delete user dijalankan cron setelah 7 hari; seluruh relasi user-owned memakai cascade.
 - `AuthRateLimit.keyHash` menyimpan HMAC-SHA256 dari scope dan subject. Jangan simpan email atau alamat IP mentah pada tabel rate limit.
 - Update bucket rate limit harus atomik dengan `INSERT ... ON CONFLICT DO UPDATE`, bukan pola select lalu update.
 - Update profile dan password selalu mengambil user dari `session.userId`. Ganti password wajib membandingkan current password, memakai bcrypt cost 12 untuk hash baru, lalu membuat ulang cookie session.
@@ -65,7 +78,8 @@ User
 - `FlashcardProgress.learningStep` menyimpan posisi kartu pada learning/relearning steps. `FlashcardReviewLog.wasNew` membedakan konsumsi batas kartu baru dan review harian.
 - `FlashcardSetting` menyimpan batas harian, learning/relearning steps dalam menit, interval lulus/Easy, ease awal, lapse retention, interval minimum/maksimum, serta multiplier Hard/Easy/global.
 - Learning/relearning steps harus berisi 1-4 nilai positif yang meningkat, maksimal 30 hari per langkah. Form string seperti `1m 10m 1h` diparse server-side sebelum masuk database.
-- Batas harian dihitung sejak pukul 00.00 Asia/Jakarta. Action rating memeriksa ulang limit dan `dueAt`; UI queue bukan satu-satunya guard.
+- Batas harian dihitung sejak pukul 00.00 pada `User.timeZone`. Action rating memeriksa ulang limit
+  dan `dueAt`; UI queue bukan satu-satunya guard.
 - Semua range scheduler dijaga oleh Zod dan CHECK constraint database. Setting invalid tidak boleh diteruskan ke `scheduleFlashcard`.
 - `KanaProgress` tidak menyimpan duplikat content kana; `kanaKey` harus cocok dengan fixture yang dikenal aplikasi.
 - Seluruh query progress/log wajib berawal dari `session.userId`. `userId` dari client tidak pernah diterima sebagai sumber otorisasi.

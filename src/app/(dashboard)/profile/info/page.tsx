@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { UserRound } from "lucide-react";
 import { getProfileAccountAction } from "@/features/profile/actions";
 import { ProfileForm } from "@/features/profile/components/profile-form";
+import { getTimeZoneOptions } from "@/lib/time-zone";
 
 export const metadata: Metadata = {
   title: "Informasi Akun",
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
 
 export default async function ProfileInfoPage() {
   const account = await getProfileAccountAction();
+  const timeZoneOptions = getTimeZoneOptions(account.timeZone);
 
   return (
     <main className="grid max-w-4xl gap-6">
@@ -30,7 +32,7 @@ export default async function ProfileInfoPage() {
           </div>
         </div>
         <div className="p-5 sm:p-8">
-          <ProfileForm account={account} />
+          <ProfileForm account={account} timeZoneOptions={timeZoneOptions} />
         </div>
       </section>
     </main>

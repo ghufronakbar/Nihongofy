@@ -1,12 +1,18 @@
 "use server";
 
 import bcrypt from "bcryptjs";
-import { AuthTokenPurpose, Prisma } from "@prisma/client";
+import { OAuthProvider, Prisma } from "@prisma/client";
 import { revalidatePath, unstable_cache, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { BCRYPT_COST_FACTOR } from "@/constants";
 import { CACHE_KEYS, CACHE_TAGS } from "@/constants/cache-key";
-import { createSignedUploadParams } from "@/lib/cloudinary";
+import {
+  createSignedAvatarUploadParams,
+  destroyManagedAvatar,
+  scheduleAvatarCleanup,
+  unscheduleAvatarCleanup,
+  verifyManagedAvatar,
+} from "@/lib/cloudinary";
 import {
   createSession,
   getSession,
@@ -15,17 +21,22 @@ import {
   revokeUserSession,
 } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { sendVerificationEmail } from "@/features/auth/lib/send-auth-email";
-import {
-  consumeAuthRateLimits,
-  getRequestIpAddress,
-  type AuthRateLimitBucket,
-} from "@/features/auth/lib/rate-limit";
+import { consumeGoogleOAuthReauthProof } from "@/features/auth/lib/google-oauth-state";
 import { RevokeSessionSchema } from "@/features/auth/schemas";
+import { reportServerError } from "@/lib/server-logger";
+import {
+  completedMockAttemptWhere,
+  completedQuickPracticeWhere,
+  completedSectionAttemptWhere,
+} from "@/lib/activity-metrics";
 import {
   ChangePasswordSchema,
+  DisconnectGoogleSchema,
+  SetPasswordSchema,
   UpdateProfileSchema,
   type ChangePasswordInput,
+  type DisconnectGoogleInput,
+  type SetPasswordInput,
   type UpdateProfileInput,
 } from "./schemas";
 
@@ -47,6 +58,8 @@ const getCachedProfileAccount = (userId: number) =>
           email: true,
           username: true,
           avatarUrl: true,
+          avatarPublicId: true,
+          timeZone: true,
           createdAt: true,
         },
       });
@@ -62,15 +75,28 @@ const getCachedProfileAccount = (userId: number) =>
 const getCachedProfileOverview = (userId: number) =>
   unstable_cache(
     async (id: number) => {
-      const [kanaLearned, vocabularyStarted, practiceCompleted, examCompleted] =
+      const [
+        kanaLearned,
+        vocabularyStarted,
+        quickPracticeCompleted,
+        sectionPracticeCompleted,
+        mockCompleted,
+      ] =
         await Promise.all([
           prisma.kanaProgress.count({ where: { userId: id, correctCount: { gt: 0 } } }),
           prisma.flashcardProgress.count({ where: { userId: id } }),
-          prisma.practiceSession.count({ where: { userId: id, status: "COMPLETED" } }),
-          prisma.attempt.count({ where: { userId: id, status: "COMPLETED" } }),
+          prisma.practiceSession.count({ where: completedQuickPracticeWhere(id) }),
+          prisma.attempt.count({ where: completedSectionAttemptWhere(id) }),
+          prisma.attempt.count({ where: completedMockAttemptWhere(id) }),
         ]);
 
-      return { kanaLearned, vocabularyStarted, practiceCompleted, examCompleted };
+      return {
+        kanaLearned,
+        vocabularyStarted,
+        quickPracticeCompleted,
+        sectionPracticeCompleted,
+        mockCompleted,
+      };
     },
     CACHE_KEYS.profileOverview(userId),
     { tags: [CACHE_TAGS.profileOverview(userId)] },
@@ -93,6 +119,35 @@ export async function getProfileOverviewAction() {
   return getCachedProfileOverview(session.userId);
 }
 
+export async function getSecurityAccountAction() {
+  const session = await getSession();
+  if (!session) redirect("/login");
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.userId },
+    select: {
+      email: true,
+      username: true,
+      password: true,
+      timeZone: true,
+      oauthAccounts: {
+        where: { provider: OAuthProvider.GOOGLE },
+        select: { providerEmail: true },
+        take: 1,
+      },
+    },
+  });
+  if (!user) redirect("/login");
+
+  return {
+    email: user.email,
+    username: user.username,
+    hasPassword: Boolean(user.password),
+    timeZone: user.timeZone,
+    googleAccountEmail: user.oauthAccounts[0]?.providerEmail ?? null,
+  };
+}
+
 export async function updateProfileAction(
   input: UpdateProfileInput,
 ): Promise<ProfileActionResult> {
@@ -109,110 +164,112 @@ export async function updateProfileAction(
 
   const values: UpdateProfileInput = {
     displayName: validated.data.displayName.replace(/\s+/g, " "),
-    email: validated.data.email.toLowerCase(),
     avatarUrl: validated.data.avatarUrl,
-    currentPassword: "",
+    avatarPublicId: validated.data.avatarPublicId,
+    timeZone: validated.data.timeZone,
   };
 
   const currentUser = await prisma.user.findUnique({
     where: { id: session.userId },
-    select: { email: true, password: true, displayName: true },
+    select: {
+      avatarUrl: true,
+      avatarPublicId: true,
+      avatarFormat: true,
+      avatarBytes: true,
+    },
   });
   if (!currentUser) return { ok: false, message: "Sesi berakhir. Silakan masuk lagi." };
 
-  const emailChanged = currentUser.email !== values.email;
-  if (emailChanged) {
-    const passwordValid = validated.data.currentPassword
-      ? await bcrypt.compare(validated.data.currentPassword, currentUser.password)
-      : false;
-    if (!passwordValid) {
-      return { ok: false, message: "Masukkan password saat ini untuk mengganti email." };
-    }
+  const avatarChanged =
+    values.avatarUrl !== currentUser.avatarUrl ||
+    values.avatarPublicId !== currentUser.avatarPublicId;
+  let avatar = {
+    avatarUrl: currentUser.avatarUrl,
+    avatarPublicId: currentUser.avatarPublicId,
+    avatarFormat: currentUser.avatarFormat,
+    avatarBytes: currentUser.avatarBytes,
+  };
 
-    const emailOwner = await prisma.user.findUnique({
-      where: { email: values.email },
-      select: { id: true },
-    });
-    if (emailOwner && emailOwner.id !== session.userId) {
-      return { ok: false, message: "Email tersebut tidak dapat digunakan." };
+  if (avatarChanged) {
+    if (values.avatarUrl === null && values.avatarPublicId === null) {
+      avatar = {
+        avatarUrl: null,
+        avatarPublicId: null,
+        avatarFormat: null,
+        avatarBytes: null,
+      };
+    } else if (values.avatarUrl && values.avatarPublicId) {
+      try {
+        const verifiedAvatar = await verifyManagedAvatar({
+          userId: session.userId,
+          publicId: values.avatarPublicId,
+          secureUrl: values.avatarUrl,
+        });
+        if (!verifiedAvatar) {
+          return { ok: false, message: "Avatar tidak dapat diverifikasi sebagai upload akun ini." };
+        }
+        avatar = {
+          avatarUrl: verifiedAvatar.url,
+          avatarPublicId: verifiedAvatar.publicId,
+          avatarFormat: verifiedAvatar.format,
+          avatarBytes: verifiedAvatar.bytes,
+        };
+      } catch (error) {
+        reportServerError("profile.avatar_verification_failed", error);
+        return { ok: false, message: "Avatar belum dapat diverifikasi. Coba lagi." };
+      }
+    } else {
+      return { ok: false, message: "Metadata avatar tidak lengkap." };
     }
   }
 
   try {
     await prisma.user.update({
       where: { id: session.userId },
-      data: { displayName: values.displayName, avatarUrl: values.avatarUrl },
+      data: {
+        displayName: values.displayName,
+        ...avatar,
+        timeZone: values.timeZone,
+      },
       select: { id: true },
     });
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
       return {
         ok: false,
-        message: "Profil tidak dapat diperbarui. Periksa kembali email yang digunakan.",
+        message: "Avatar tersebut sudah digunakan atau profil tidak dapat diperbarui.",
       };
     }
 
     throw error;
   }
 
+  if (avatarChanged && avatar.avatarPublicId) {
+    try {
+      await unscheduleAvatarCleanup(avatar.avatarPublicId);
+    } catch (error) {
+      reportServerError("profile.avatar_cleanup_unschedule_failed", error);
+    }
+  }
+
+  if (
+    avatarChanged &&
+    currentUser.avatarPublicId &&
+    currentUser.avatarPublicId !== avatar.avatarPublicId
+  ) {
+    try {
+      await destroyManagedAvatar(currentUser.avatarPublicId);
+      await unscheduleAvatarCleanup(currentUser.avatarPublicId);
+    } catch (error) {
+      await scheduleAvatarCleanup(currentUser.avatarPublicId).catch((scheduleError: unknown) => {
+        reportServerError("profile.avatar_cleanup_schedule_failed", scheduleError);
+      });
+      reportServerError("profile.avatar_destroy_failed", error);
+    }
+  }
+
   updateTag(CACHE_TAGS.profileAccount(session.userId));
   revalidatePath("/(dashboard)", "layout");
-
-  if (emailChanged) {
-    const ipAddress = await getRequestIpAddress();
-    const buckets: AuthRateLimitBucket[] = [
-      {
-        scope: "email-change:user",
-        subject: String(session.userId),
-        maxAttempts: 5,
-        windowSeconds: 60 * 60,
-        blockSeconds: 60 * 60,
-      },
-    ];
-    if (ipAddress) {
-      buckets.push({
-        scope: "email-change:ip",
-        subject: ipAddress,
-        maxAttempts: 20,
-        windowSeconds: 60 * 60,
-        blockSeconds: 60 * 60,
-      });
-    }
-
-    const rateLimit = await consumeAuthRateLimits(buckets);
-    if (!rateLimit.allowed) {
-      return {
-        ok: false,
-        message: "Profil tersimpan, tetapi batas pengiriman email tercapai. Coba lagi nanti.",
-      };
-    }
-
-    try {
-      const delivery = await sendVerificationEmail({
-        userId: session.userId,
-        email: values.email,
-        displayName: values.displayName,
-        purpose: AuthTokenPurpose.EMAIL_CHANGE,
-      });
-      if (!delivery.allowed) {
-        return {
-          ok: false,
-          message: `Profil tersimpan. Tunggu ${delivery.retryAfterSeconds} detik sebelum meminta email perubahan lagi.`,
-        };
-      }
-    } catch {
-      return {
-        ok: false,
-        message: "Profil tersimpan, tetapi email konfirmasi belum dapat dikirim.",
-      };
-    }
-
-    return {
-      ok: true,
-      message: "Profil tersimpan. Konfirmasikan perubahan melalui email baru Anda.",
-      values: { ...values, email: currentUser.email ?? "" },
-    };
-  }
 
   return { ok: true, message: "Profil berhasil diperbarui.", values };
 }
@@ -221,7 +278,7 @@ export async function getAvatarUploadSignatureAction() {
   const session = await getSession();
   if (!session) throw new Error("Unauthorized");
 
-  return createSignedUploadParams(`jlpt-exam/avatars/${session.userId}`);
+  return createSignedAvatarUploadParams(session.userId);
 }
 
 export async function changePasswordAction(
@@ -242,7 +299,7 @@ export async function changePasswordAction(
     where: { id: session.userId },
     select: { password: true },
   });
-  const currentPasswordValid = user
+  const currentPasswordValid = user?.password
     ? await bcrypt.compare(validated.data.currentPassword, user.password)
     : false;
 
@@ -251,6 +308,10 @@ export async function changePasswordAction(
       ok: false,
       message: "Password tidak dapat diubah. Periksa password saat ini.",
     };
+  }
+
+  if (!user.password) {
+    return { ok: false, message: "Akun belum memiliki password." };
   }
 
   const newMatchesCurrent = await bcrypt.compare(validated.data.newPassword, user.password);
@@ -275,6 +336,98 @@ export async function changePasswordAction(
     ok: true,
     message: "Password diperbarui dan sesi aktif sudah dirotasi.",
   };
+}
+
+export async function setPasswordAction(
+  input: SetPasswordInput,
+): Promise<PasswordActionResult> {
+  const session = await getSession();
+  if (!session) return { ok: false, message: "Sesi berakhir. Silakan masuk lagi." };
+
+  const validated = SetPasswordSchema.safeParse(input);
+  if (!validated.success) {
+    return {
+      ok: false,
+      message: validated.error.issues[0]?.message ?? "Data password tidak valid.",
+    };
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.userId },
+    select: {
+      password: true,
+      oauthAccounts: {
+        where: { provider: OAuthProvider.GOOGLE },
+        select: { id: true },
+        take: 1,
+      },
+    },
+  });
+  if (!user) return { ok: false, message: "Sesi berakhir. Silakan masuk lagi." };
+  if (user.password) return { ok: false, message: "Akun sudah memiliki password." };
+  if (!user.oauthAccounts[0]) {
+    return { ok: false, message: "Google account belum terhubung." };
+  }
+
+  const reauthenticated = await consumeGoogleOAuthReauthProof({
+    userId: session.userId,
+    purpose: "set-password",
+  });
+  if (!reauthenticated) {
+    return { ok: false, message: "Verifikasi Google berakhir. Verifikasi ulang dahulu." };
+  }
+
+  const passwordHash = await bcrypt.hash(validated.data.newPassword, BCRYPT_COST_FACTOR);
+  await revokeAllUserSessions(session.userId);
+  await prisma.$transaction([
+    prisma.user.update({
+      where: { id: session.userId },
+      data: { password: passwordHash },
+      select: { id: true },
+    }),
+    prisma.authToken.deleteMany({ where: { userId: session.userId } }),
+  ]);
+  await createSession(session.userId);
+  revalidatePath("/profile/security");
+
+  return { ok: true, message: "Password berhasil dibuat dan sesi aktif sudah dirotasi." };
+}
+
+export async function disconnectGoogleAction(
+  input: DisconnectGoogleInput,
+): Promise<PasswordActionResult> {
+  const session = await getSession();
+  if (!session) return { ok: false, message: "Sesi berakhir. Silakan masuk lagi." };
+
+  const validated = DisconnectGoogleSchema.safeParse(input);
+  if (!validated.success) {
+    return {
+      ok: false,
+      message: validated.error.issues[0]?.message ?? "Password wajib diisi.",
+    };
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.userId },
+    select: { password: true },
+  });
+  const passwordValid = user?.password
+    ? await bcrypt.compare(validated.data.currentPassword, user.password)
+    : false;
+  if (!user?.password || !passwordValid) {
+    return { ok: false, message: "Password saat ini tidak cocok." };
+  }
+
+  const deleted = await prisma.oAuthAccount.deleteMany({
+    where: { userId: session.userId, provider: OAuthProvider.GOOGLE },
+  });
+  if (deleted.count === 0) {
+    return { ok: false, message: "Google account sudah tidak terhubung." };
+  }
+
+  await revokeAllUserSessions(session.userId, session.sessionId);
+  revalidatePath("/profile/security");
+  return { ok: true, message: "Google account berhasil diputuskan." };
 }
 
 export async function getActiveSessionsAction() {

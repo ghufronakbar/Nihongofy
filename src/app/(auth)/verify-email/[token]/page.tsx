@@ -50,7 +50,7 @@ export default async function ConfirmEmailPage({
     <section className="neo-surface bg-white p-6 sm:p-8" aria-labelledby="confirm-title">
       <p className="neo-kicker bg-neo-green">Link valid</p>
       <h1 id="confirm-title" className="mt-6 text-4xl leading-none font-black sm:text-5xl">
-        {data.isEmailChange ? "KONFIRMASI EMAIL BARU." : "AKTIFKAN AKUNMU."}
+        AKTIFKAN AKUNMU.
       </h1>
       <p className="mt-4 leading-7 text-foreground/70">
         Alamat yang akan dikonfirmasi: <strong>{data.email}</strong>.
@@ -61,10 +61,7 @@ export default async function ConfirmEmailPage({
         <p className="flex items-center gap-2 text-sm font-bold"><MailCheck className="size-5" aria-hidden="true" /> Email scanner tidak akan mengaktifkan akun secara otomatis.</p>
       </div>
       <div className="mt-8">
-        <ConfirmEmailForm
-          token={token}
-          label={data.isEmailChange ? "Konfirmasi email baru" : "Konfirmasi dan masuk"}
-        />
+        <ConfirmEmailForm token={token} label="Konfirmasi dan masuk" />
       </div>
     </section>
   );

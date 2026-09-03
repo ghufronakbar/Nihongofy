@@ -16,6 +16,7 @@ import { getTestPackageDetail } from "@/features/test-package/actions";
 import { StartAttemptActions } from "@/features/test-package/components/start-attempt-actions";
 import { JLPT_SESSION_TIMING, JLPT_SECTION_LABELS } from "@/constants/jlpt";
 import type { JlptLevel } from "@prisma/client";
+import { formatInTimeZone } from "@/lib/time-zone";
 
 const LEVEL_BADGE_STYLES: Record<JlptLevel, string> = {
   N5: "bg-neo-green text-black",
@@ -37,7 +38,7 @@ export default async function TestPackageDetailPage({
     notFound();
   }
 
-  const { testPackage, attempts } = await getTestPackageDetail(testPackageId);
+  const { testPackage, attempts, timeZone } = await getTestPackageDetail(testPackageId);
 
   const availableSections = Array.from(
     new Set(testPackage.testPackageItems.map((item) => item.section)),
@@ -217,7 +218,7 @@ export default async function TestPackageDetailPage({
                     <Calendar className="size-3.5" />
                     <span>
                       Mulai:{" "}
-                      {new Date(attempt.startedAt).toLocaleString("id-ID", {
+                      {formatInTimeZone(attempt.startedAt, timeZone, {
                         day: "numeric",
                         month: "short",
                         year: "numeric",

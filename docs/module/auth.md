@@ -2,9 +2,9 @@
 
 ## Status Aktual
 
-Credential auth, verifikasi email, pemulihan password, session revocation, daftar perangkat,
-safe redirect, rate limit, dan Cloudflare Turnstile sudah aktif. OAuth serta MFA tetap di luar
-scope.
+Credential auth, Google OIDC, verifikasi email, pemulihan password, session revocation, daftar
+perangkat, safe redirect, rate limit, dan Cloudflare Turnstile sudah aktif. MFA dan provider OAuth
+selain Google tetap di luar scope.
 
 ## Route
 
@@ -15,6 +15,8 @@ scope.
 - `/forget-password`
 - `/forget-password/[token]`
 - `/profile/security` untuk password dan perangkat aktif.
+- `/api/auth/google/start`
+- `/api/auth/google/callback`
 
 ## Register dan Verifikasi
 
@@ -34,6 +36,22 @@ scope.
 3. Penerbitan token baru mengganti token lama. Token yang kedaluwarsa atau sudah digunakan ditolak.
 4. Submit password baru mencabut seluruh session Redis sebelum password dipersist, mengonsumsi
    token secara atomik, membatalkan token auth lain milik user, kemudian mengarahkan user ke login.
+
+## Google OAuth
+
+1. Login dan register memakai Authorization Code flow, PKCE S256, nonce, serta state browser-bound.
+2. Transaction OAuth disimpan sekali pakai di Redis selama 10 menit; ID token diverifikasi dengan
+   Google JWKS, issuer, audience, nonce, dan schema claim sebelum digunakan.
+3. Google `sub` disimpan sebagai `providerAccountId`. Access token dan refresh token tidak disimpan.
+4. Email Google yang verified membuat user OAuth-only baru hanya bila email belum terdaftar. Bila
+   akun credential existing memakai email tersebut tetapi belum terhubung, login/register Google
+   ditolak dan user harus login dengan password dahulu.
+5. Connect eksplisit dari `/profile/security` hanya berhasil bila email Google sama persis dengan
+   email akun. Disconnect membuat login Google kembali ditolak sampai identity dihubungkan ulang.
+6. Akun OAuth-only memiliki `password = NULL`. Pembuatan password pertama, request deletion, dan
+   cancel deletion meminta reauthentication Google dengan proof Redis sekali pakai selama 5 menit.
+7. Setelah password dibuat, Google dapat diputus hanya dengan password saat ini agar akun tidak
+   kehilangan seluruh metode login.
 
 ## Session dan Perangkat
 
@@ -66,12 +84,12 @@ scope.
   sesuai. Kegagalan jaringan ditolak secara fail-closed.
 - Site key boleh dikirim ke browser, sedangkan secret key hanya dibaca melalui constants server.
 
-## Perubahan Email
+## Email Immutable
 
-- Perubahan email meminta password saat ini.
-- `User.email` tidak berubah sebelum link pada alamat baru dikonfirmasi.
-- Link perubahan email hanya dapat dikonsumsi ketika session user peminta masih aktif.
-- Setelah konfirmasi, seluruh session lama dicabut dan browser konfirmasi mendapat session baru.
+- Email tidak dapat diedit dari profile setelah akun dibuat.
+- Purpose `EMAIL_CHANGE` dan `AuthToken.targetEmail` dipertahankan sementara untuk kompatibilitas
+  migration, tetapi tidak lagi memiliki issuer atau consumer pada runtime.
+- Migration Google OAuth menghapus seluruh token email-change lama sebelum account linking aktif.
 
 ## File Utama
 
@@ -82,6 +100,11 @@ scope.
 - `src/features/auth/lib/mailer.ts`
 - `src/features/auth/lib/pending-verification.ts`
 - `src/features/auth/lib/rate-limit.ts`
+- `src/features/auth/lib/google-oauth.ts`
+- `src/features/auth/lib/google-oauth-state.ts`
+- `src/features/auth/lib/google-account.ts`
+- `src/app/api/auth/google/start/route.ts`
+- `src/app/api/auth/google/callback/route.ts`
 - `src/lib/auth.ts`
 - `src/lib/redis.ts`
 - `src/features/profile/actions.ts`
@@ -104,8 +127,21 @@ scope.
 - Setelah reset atau ganti password: seluruh browser lama ditolak pada request protected berikutnya.
 - Login pada dua browser: keduanya tampil di `/profile/security`; revoke satu perangkat tidak
   mencabut perangkat saat ini, logout-all-other menyisakan satu session.
-- Ubah email tanpa password atau dengan password salah: ditolak. Email akun tidak berubah sebelum
-  CTA pada alamat baru dikonfirmasi.
+- Pastikan email profile read-only dan payload update profile tidak menerima field email.
+- Login/register Google untuk email baru: user dibuat verified dengan nama/foto Google dan
+  `password = NULL`; redirect internal tetap aman.
+- Login/register Google dengan email akun credential existing yang belum terhubung: ditolak dengan
+  arahan login password dan tidak membuat user atau relasi baru.
+- Setelah connect eksplisit berhasil, login Google dan login password menuju user yang sama tanpa
+  membuat duplikat.
+- Connect Google dari security memakai email berbeda atau identity milik user lain: callback
+  ditolak dan relasi tidak berubah.
+- Akun Google-only melihat form Buat Password setelah reauthentication Google; proof expired atau
+  replay ditolak. Setelah password dibuat, session lama dicabut dan session saat ini dibuat ulang.
+- Disconnect Google dengan password salah ditolak. Akun tanpa password tidak dapat disconnect;
+  setelah disconnect, login Google ditolak sampai connect ulang dari profile.
+- Cancel OAuth, state/cookie mismatch, nonce invalid, callback replay, dan rate-limit: gagal aman
+  tanpa session atau relasi baru.
 - Akun legacy dengan email hasil backfill tetap dapat login. Akun legacy tanpa email tetap dapat
   login menggunakan username.
 - Login dengan `next` eksternal seperti `//evil.example`: redirect harus tetap menuju dashboard.

@@ -45,24 +45,16 @@ export async function getPendingVerificationPageData() {
 
 export async function getEmailTokenPageData(token: string) {
   const authToken = await inspectAuthToken(token);
-  if (
-    !authToken ||
-    (authToken.purpose !== AuthTokenPurpose.EMAIL_VERIFICATION &&
-      authToken.purpose !== AuthTokenPurpose.EMAIL_CHANGE)
-  ) {
+  if (!authToken || authToken.purpose !== AuthTokenPurpose.EMAIL_VERIFICATION) {
     return null;
   }
 
-  const email =
-    authToken.purpose === AuthTokenPurpose.EMAIL_CHANGE
-      ? authToken.targetEmail
-      : authToken.user.email;
+  const email = authToken.user.email;
   if (!email) return null;
 
   return {
     email: maskEmail(email),
     expiresAt: authToken.expiresAt.toISOString(),
-    isEmailChange: authToken.purpose === AuthTokenPurpose.EMAIL_CHANGE,
   };
 }
 

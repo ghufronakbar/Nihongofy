@@ -7,6 +7,8 @@ import { ScoreTrendChart } from "@/features/analytics/components/score-trend-cha
 import { computeJlptScoreProjection } from "@/lib/jlpt-score";
 import { resolveDateRangePreset, isDateRangePreset } from "@/lib/date-range-preset";
 import { JLPT_SECTION_LABELS } from "@/constants/jlpt";
+import { formatInTimeZone } from "@/lib/time-zone";
+import { getCurrentUserTimeZone } from "@/lib/user-time-zone";
 import {
   BarChart3,
   Layers,
@@ -32,7 +34,13 @@ export default async function AnalyticsPage({
   const params = await searchParams;
   const scope = resolveScope(params.scope);
   const rangePreset = isDateRangePreset(params.range) ? params.range : "all";
-  const { from, to } = resolveDateRangePreset(rangePreset, params.from, params.to);
+  const timeZone = await getCurrentUserTimeZone();
+  const { from, to } = resolveDateRangePreset(
+    rangePreset,
+    params.from,
+    params.to,
+    timeZone,
+  );
 
   const { trend, levelStats, practiceSummary } = await getAnalytics({
     scope,
@@ -43,7 +51,7 @@ export default async function AnalyticsPage({
   const trendData = trend.map((point) => ({
     id: point.id,
     dateLabel: point.finishedAt
-      ? new Date(point.finishedAt).toLocaleDateString("id-ID", { day: "2-digit", month: "short" })
+      ? formatInTimeZone(point.finishedAt, timeZone, { day: "2-digit", month: "short" })
       : "-",
     packageLabel: point.packageName,
     scorePercentage: point.scorePercentage,
