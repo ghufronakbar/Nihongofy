@@ -4,10 +4,15 @@ import { getSession } from "@/lib/auth";
 
 // Optimistic check only. Every protected layout and Server Action still verifies
 // the session because Proxy must not be the only authorization boundary.
+//
+// `/flashcard` dan `/flashcard/try/*` sengaja publik: guest boleh mencoba deck
+// bawaan tanpa akun (progres tidak disimpan). Yang dilindungi hanya koleksi
+// milik user: /flashcard/deck/*, /flashcard/add, /flashcard/import.
 const PROTECTED_ROUTES = [
   "/analytics",
   "/dashboard",
-  "/flashcard-settings",
+  "/flashcard/add",
+  "/flashcard/import",
   "/history",
   "/profile",
   "/progress",
@@ -17,7 +22,9 @@ const PROTECTED_PREFIXES = [
   "/analytics/",
   "/api/",
   "/dashboard/",
-  "/flashcard-settings/",
+  "/flashcard/add/",
+  "/flashcard/deck/",
+  "/flashcard/import/",
   "/history/",
   "/profile/",
   "/progress/",

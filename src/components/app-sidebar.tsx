@@ -34,7 +34,7 @@ const NAV_ITEMS = [
   { title: "History", href: "/history", icon: History },
   { title: "Progress", href: "/progress", icon: TrendingUp },
   { title: "Analytics", href: "/analytics", icon: ChartNoAxesCombined },
-  { title: "Flashcard Settings", href: "/flashcard-settings", icon: Brain },
+  { title: "Flashcard", href: "/flashcard", icon: Brain },
 ];
 
 export function AppSidebar({

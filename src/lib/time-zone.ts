@@ -182,19 +182,38 @@ export function getTimeZoneOptions(
     );
 }
 
-export function getZonedDayRange(date: Date, timeZone: string) {
+/**
+ * Rentang "hari" yang dimulai pada `startHour` lokal, bukan tengah malam.
+ *
+ * Anki memakai jam rollover (default 04:00) supaya sesi belajar lewat tengah
+ * malam tetap dihitung sebagai hari yang sama. `getZonedDayRange` adalah kasus
+ * khusus dengan `startHour = 0`.
+ */
+export function getZonedDayRangeFromHour(
+  date: Date,
+  timeZone: string,
+  startHour: number,
+) {
+  const hour = Math.min(23, Math.max(0, Math.trunc(startHour)));
   const local = getZonedParts(date, timeZone);
+
+  // Sebelum jam rollover berarti masih hari sebelumnya.
+  const startDay = local.hour < hour ? addCalendarDays(local, -1) : local;
   const start = zonedDateTimeToUtc(
-    { ...local, hour: 0, minute: 0, second: 0, millisecond: 0 },
+    { ...startDay, hour, minute: 0, second: 0, millisecond: 0 },
     timeZone,
   );
-  const nextDay = addCalendarDays(local, 1);
+  const nextDay = addCalendarDays(startDay, 1);
   const endExclusive = zonedDateTimeToUtc(
-    { ...nextDay, hour: 0, minute: 0, second: 0, millisecond: 0 },
+    { ...nextDay, hour, minute: 0, second: 0, millisecond: 0 },
     timeZone,
   );
 
   return { start, endExclusive };
+}
+
+export function getZonedDayRange(date: Date, timeZone: string) {
+  return getZonedDayRangeFromHour(date, timeZone, 0);
 }
 
 export function getZonedCalendarDate(date: Date, timeZone: string) {

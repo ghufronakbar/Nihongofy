@@ -77,14 +77,14 @@ const getCachedProfileOverview = (userId: number) =>
     async (id: number) => {
       const [
         kanaLearned,
-        vocabularyStarted,
+        flashcardStudied,
         quickPracticeCompleted,
         sectionPracticeCompleted,
         mockCompleted,
       ] =
         await Promise.all([
           prisma.kanaProgress.count({ where: { userId: id, correctCount: { gt: 0 } } }),
-          prisma.flashcardProgress.count({ where: { userId: id } }),
+          prisma.flashcardCard.count({ where: { userId: id, reps: { gt: 0 } } }),
           prisma.practiceSession.count({ where: completedQuickPracticeWhere(id) }),
           prisma.attempt.count({ where: completedSectionAttemptWhere(id) }),
           prisma.attempt.count({ where: completedMockAttemptWhere(id) }),
@@ -92,7 +92,7 @@ const getCachedProfileOverview = (userId: number) =>
 
       return {
         kanaLearned,
-        vocabularyStarted,
+        flashcardStudied,
         quickPracticeCompleted,
         sectionPracticeCompleted,
         mockCompleted,

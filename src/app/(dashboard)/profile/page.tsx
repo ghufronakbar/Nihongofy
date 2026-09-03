@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 
 const QUICK_ACTIONS = [
   { href: "/kana/hiragana", label: "Latih kana", note: "Hiragana dan Katakana", icon: Languages, color: "bg-neo-blue" },
-  { href: "/vocab", label: "Buka vocabulary", note: "Lanjutkan antrean SRS", icon: Brain, color: "bg-neo-coral" },
+  { href: "/flashcard", label: "Buka flashcard", note: "Lanjutkan antrean SRS", icon: Brain, color: "bg-neo-coral" },
   { href: "/exercises", label: "Latihan cepat", note: "Feedback per soal", icon: Sparkles, color: "bg-neo-yellow" },
   { href: "/analytics", label: "Lihat analytics", note: "Pola hasil mock test", icon: ChartNoAxesCombined, color: "bg-neo-green" },
 ];
@@ -81,8 +81,8 @@ export default async function ProfilePage() {
           </article>
           <article className="neo-surface bg-white p-5 md:col-span-4">
             <Brain className="size-8 text-neo-coral" aria-hidden="true" />
-            <p className="mt-5 text-4xl font-black tabular-nums">{overview.vocabularyStarted}</p>
-            <p className="font-bold text-muted-foreground">Vocabulary dimulai</p>
+            <p className="mt-5 text-4xl font-black tabular-nums">{overview.flashcardStudied}</p>
+            <p className="font-bold text-muted-foreground">Kartu dipelajari</p>
           </article>
           <article className="neo-surface bg-neo-yellow p-5 md:col-span-3">
             <Sparkles className="size-8" aria-hidden="true" />

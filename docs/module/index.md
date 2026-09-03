@@ -10,7 +10,7 @@ Folder ini mendokumentasikan kondisi aplikasi berdasarkan kode, fixture, dan dat
 | [Authentication](auth.md) | Selesai | Login, register, verifikasi email, reset password, Redis session registry, revoke perangkat, rate limit, dan Turnstile aktif. |
 | [Dashboard](dashboard.md) | Selesai sederhana | Menampilkan attempt selesai dan attempt terakhir; kartu modul lain masih berupa shortcut statis. |
 | [Kana](kana.md) | Selesai dengan scope terbatas | Fixture kana terkurasi dan progress akun aktif; audio memakai Web Speech API, bukan rekaman. |
-| [Vocabulary](vocabulary.md) | Fungsional, konten terbatas | SRS dan settings aktif; database hanya memiliki 32 kartu, 6 deck, dan belum ada audio rekaman. |
+| [Flashcard](flashcard.md) | Fungsional | Paritas Anki: FSRS-6, queue v3, deck options, deck bawaan, impor/export teks, card browser, statistik, dan mode coba guest (186 unit test). Impor `.apkg` dan konten N4-N1 belum ada. |
 | [Latihan cepat](practice.md) | Fungsional dengan gap guest | Session akun persisten dan feedback langsung aktif; guest hanya state sementara. |
 | [Paket tes](test-package.md) | Fungsional, database belum selengkap fixture | Source memiliki 50 paket; database aktif baru memuat 31 paket N2-N4. |
 | [Exam runner](exam.md) | Fungsional dengan hardening tersisa | State sesi dan submit aktif; belum ada timer, marker submit per sesi, dan validasi kelengkapan payload. |
@@ -22,7 +22,7 @@ Folder ini mendokumentasikan kondisi aplikasi berdasarkan kode, fixture, dan dat
 | [Article](article.md) | Selesai, dikelola lewat seed | Listing, search, detail, SEO, save/favorite, dan view aktif; belum ada CMS atau halaman koleksi tersimpan. |
 | [Question comments](question-comment.md) | Selesai untuk catatan pribadi | CRUD dan lampiran Cloudinary aktif; bukan komentar publik/kolaboratif. |
 | [Japanese content rendering](japanese-content-rendering.md) | Fungsional dengan gap format | Furigana, underline, slot, tabel, dan multi-passage aktif; newline dan Markdown fixture belum selalu dirender dengan benar. |
-| [Shared study utilities](study.md) | Selesai sederhana | Saat ini hanya menyediakan TTS browser bersama untuk kana dan vocabulary. |
+| [Shared study utilities](study.md) | Selesai sederhana | Saat ini hanya menyediakan TTS browser bersama untuk kana dan flashcard. |
 | [Conversation dan speaking](conversation-speaking.md) | Preview saja | Belum ada route, provider AI, persistence chat, microphone capture, transcription, atau feedback. |
 | [Content data dan seeding](content-data.md) | Infrastruktur aktif | Import tervalidasi tersedia; source fixture dan isi database development belum sinkron penuh. |
 
@@ -36,7 +36,7 @@ Snapshot ini bersifat lokal dan dapat berubah setelah seed/import berikutnya.
 | Database paket tes | 31 paket, 3.159 soal: N2 13, N3 10, N4 8. N1 dan N5 belum diimpor. |
 | Pembahasan soal | 20 dari 3.159 soal database memiliki `explanation`. |
 | Media bank soal | 147 context audio, 83 question image, 1 context image, dan 0 question audio pada database aktif. |
-| Vocabulary | 32 kartu, 6 deck published, 7 tag, dan 0 `audioUrl`. |
+| Flashcard | Katalog deck bawaan: 4 deck, 335 note (kana lengkap, N5 kosakata, N5 kanji). Koleksi user masih kosong. |
 | Artikel | 6 artikel published, 16 tag, 1 featured, dan 2 interaction row. |
 | Aktivitas user | 1 user; belum ada attempt, practice session, flashcard review, atau question comment. Hanya ada 2 kana progress dan 2 article interaction, sehingga banyak halaman masih berada pada empty state saat audit. |
 
@@ -49,7 +49,7 @@ Snapshot ini bersifat lokal dan dapat berubah setelah seed/import berikutnya.
 
 ## Catatan Verifikasi
 
-- Tidak ada test suite aplikasi yang terdeteksi di repository.
+- Test suite: 186 unit test flashcard — scheduler, queue, deck tree, note type, sanitasi, deck options, parser impor/export, dan statistik (`npm run test`, vitest). Modul lain belum punya test.
 - `npm run build` lulus pada Next.js 16.2.10.
 - `npm run lint` gagal karena 2 error `no-explicit-any` pada guest exam dan menghasilkan 28 warning unused import.
 - `npm run seed:test-package:check` lulus untuk seluruh 50 fixture.

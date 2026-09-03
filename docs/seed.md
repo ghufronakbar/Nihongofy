@@ -14,6 +14,19 @@ npm run seed:articles
 - Seed aman dijalankan ulang dan tidak mereset `viewCount`, `favoriteCount`, atau interaction user.
 - Baseline Fase 5 berisi 6 artikel terbit dan 16 tag terkurasi.
 
+## Deck flashcard bawaan
+
+Kontrak lengkapnya ada di [`seed-flashcard.md`](seed-flashcard.md). Ringkasnya: satu file JSON
+per deck di `src/flashcard-deck-data/`, diimpor dengan:
+
+```bash
+npm run seed:flashcard-deck
+```
+
+- Idempoten by `slug`; note yang dihapus dari file ikut hilang dari katalog.
+- Tidak menyentuh koleksi user, karena deck bawaan **disalin** saat user menambahkannya.
+- `npm run seed:flashcard-deck:check` memvalidasi tanpa menulis ke database.
+
 ## Import bank soal dari scraping
 
 Dokumen ini adalah kontrak data untuk tool/AI eksternal yang melakukan scraping soal JLPT

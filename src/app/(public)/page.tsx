@@ -245,8 +245,8 @@ export default async function HomePage() {
                   </div>
                 </div>
               </div>
-              <Link href="/vocab" className="neo-button mt-7 bg-white px-5 py-3 sm:w-fit">
-                Buka vocabulary
+              <Link href="/flashcard" className="neo-button mt-7 bg-white px-5 py-3 sm:w-fit">
+                Buka flashcard
                 <ArrowRight className="size-5" aria-hidden="true" />
               </Link>
             </article>

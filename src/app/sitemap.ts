@@ -32,7 +32,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
     {
-      url: new URL("/vocab", SITE_URL).toString(),
+      url: new URL("/flashcard", SITE_URL).toString(),
       changeFrequency: "weekly",
       priority: 0.8,
     },

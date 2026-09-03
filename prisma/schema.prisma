@@ -66,13 +66,43 @@ enum AttemptStatus {
   ABANDONED // ditinggal / dibatalkan, tidak masuk analitik
 }
 
-enum FlashcardDeckKind {
-  VOCABULARY
+// ---- Flashcard (paritas Anki) ----
+
+// Note type didefinisikan aplikasi, bukan user. Jumlah kartu per note ditentukan
+// oleh kind ini (lihat src/features/flashcard/note-types.ts) — dari sinilah
+// konsep sibling (dan burying) di Anki berasal.
+enum FlashcardNoteTypeKind {
+  BASIC
+  BASIC_REVERSED
+  VOCAB_JP
+  KANJI
+  KANA
+  CLOZE
 }
 
-enum FlashcardLearningState {
+enum FlashcardDeckSource {
+  SYSTEM
+  IMPORTED
+  MANUAL
+}
+
+enum FlashcardCardType {
+  NEW
   LEARNING
   REVIEW
+  RELEARNING
+}
+
+// Nilai negatif di Anki (suspended/buried) dimodelkan sebagai varian eksplisit
+// supaya query queue tidak perlu tahu konvensi angka Anki.
+enum FlashcardCardQueue {
+  NEW
+  LEARNING
+  REVIEW
+  DAY_LEARN
+  SUSPENDED
+  BURIED_USER
+  BURIED_SIBLING
 }
 
 enum FlashcardRating {
@@ -80,6 +110,22 @@ enum FlashcardRating {
   HARD
   GOOD
   EASY
+}
+
+enum FlashcardRevlogKind {
+  LEARN
+  REVIEW
+  RELEARN
+  MANUAL
+  RESCHEDULED
+}
+
+enum FlashcardImportStatus {
+  PENDING
+  PARSING
+  IMPORTING
+  DONE
+  FAILED
 }
 
 enum PracticeSessionStatus {
@@ -130,9 +176,13 @@ model User {
   questionComments    QuestionComment[]
   attempts            Attempt[]
   kanaProgresses      KanaProgress[]
-  flashcardProgresses FlashcardProgress[]
-  flashcardReviewLogs FlashcardReviewLog[]
-  flashcardSetting    FlashcardSetting?
+  flashcardCollection FlashcardCollection?
+  flashcardDecks      FlashcardDeck[]
+  flashcardPresets    FlashcardPreset[]
+  flashcardNotes      FlashcardNote[]
+  flashcardCards      FlashcardCard[]
+  flashcardRevlogs    FlashcardRevlog[]
+  flashcardImportJobs FlashcardImportJob[]
   practiceSessions    PracticeSession[]
   articleInteractions ArticleInteraction[]
   authTokens          AuthToken[]
@@ -201,18 +251,205 @@ model KanaProgress {
   @@index([userId, updatedAt])
 }
 
+// Satu koleksi per user, meniru `col` di Anki. `createdAtDay` adalah anchor
+// perhitungan hari dan `rolloverHour` menggantikan asumsi "hari mulai 00:00":
+// di Anki hari baru dimulai jam 04:00 lokal, bukan tengah malam.
+model FlashcardCollection {
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int  @id
+
+  createdAtDay DateTime
+  rolloverHour Int      @default(4)
+  timeZone     String   @default("Asia/Jakarta") @db.VarChar(100)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Deck options Anki adalah preset yang dipakai bersama banyak deck, bukan
+// setting global per user. `config` disimpan sebagai JSONB dan divalidasi zod
+// (src/features/flashcard/schemas.ts) karena tidak ada satu pun setting yang
+// perlu di-query atau di-index, sementara daftarnya akan terus bertambah.
+model FlashcardPreset {
+  id Int @id @default(autoincrement())
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+
+  name   String @db.VarChar(120)
+  config Json   @db.JsonB
+
+  decks FlashcardDeck[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, name])
+}
+
+// `name` hierarkis dengan pemisah "::" persis seperti Anki ("Core::N3::Verbs").
+// Deck bawaan di-copy penuh ke koleksi user saat ditambahkan, jadi setelah
+// import deck sepenuhnya milik user; `sourceRef` hanya jejak asal.
 model FlashcardDeck {
   id Int @id @default(autoincrement())
 
-  slug        String            @unique
-  title       String
-  description String            @db.Text
-  kind        FlashcardDeckKind @default(VOCABULARY)
-  jlptLevel   JlptLevel
-  isPublished Boolean           @default(false)
-  order       Int               @default(0)
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
 
-  items FlashcardDeckItem[]
+  name        String  @db.VarChar(500)
+  description String  @default("") @db.Text
+  collapsed   Boolean @default(false)
+
+  preset   FlashcardPreset @relation(fields: [presetId], references: [id])
+  presetId Int
+
+  sourceKind FlashcardDeckSource @default(MANUAL)
+  sourceRef  String?             @db.VarChar(200)
+
+  cards FlashcardCard[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, name])
+  @@index([userId])
+  @@index([presetId])
+}
+
+// `fields` menggantikan string ber-separator 0x1F milik Anki; konversi hanya
+// terjadi di boundary import/export. `guid` + `checksum` adalah kunci dedup:
+// re-import deck yang sama memperbarui note tanpa mereset jadwal kartunya.
+model FlashcardNote {
+  id BigInt @id
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+
+  noteType FlashcardNoteTypeKind
+  guid     String                @db.VarChar(64)
+  fields   String[]
+  tags     String[]
+  checksum Int
+
+  cards FlashcardCard[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, guid])
+  @@index([userId, noteType, checksum])
+}
+
+// Satu note menghasilkan beberapa card (ord = index template note type), dan
+// card bersaudara inilah dasar fitur burying.
+//
+// `due` sengaja disimpan sebagai timestamp absolut, berbeda dari Anki yang
+// memakai integer relatif `col.crt` dengan satuan berbeda per queue (posisi
+// untuk new, epoch detik untuk learning, nomor hari untuk review). Timestamp
+// membuat satu query melayani semua queue: `WHERE due <= now()`.
+model FlashcardCard {
+  id BigInt @id
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+
+  note   FlashcardNote @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  noteId BigInt
+
+  deck   FlashcardDeck @relation(fields: [deckId], references: [id], onDelete: Cascade)
+  deckId Int
+
+  ord Int
+
+  type     FlashcardCardType  @default(NEW)
+  queue    FlashcardCardQueue @default(NEW)
+  due      DateTime
+  position Int                @default(0)
+
+  intervalDays Int @default(0)
+  reps         Int @default(0)
+  lapses       Int @default(0)
+  learningStep Int @default(0)
+  flags        Int @default(0)
+
+  // Memory state FSRS. Null selama kartu belum pernah dijadwalkan FSRS.
+  stability        Float?
+  difficulty       Float?
+  desiredRetention Float?
+
+  // Dipakai hanya saat FSRS dimatikan di preset (fallback SM-2).
+  easeFactor Float?
+
+  lastReviewedAt DateTime?
+
+  revlogs FlashcardRevlog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([noteId, ord])
+  @@index([userId, deckId, queue, due])
+  @@index([userId, queue, due])
+  @@index([deckId])
+}
+
+// `id` adalah epoch ms review, mengikuti Anki. Idempotency TIDAK memakai `id`
+// melainkan `clientToken`: kalau client yang menentukan primary key global, satu
+// user bisa memblokir review user lain dengan mengklaim id lebih dulu.
+// `@@unique([userId, clientToken])` membuat tabrakan hanya mungkin dalam satu
+// akun, yang justru perilaku yang diinginkan — submit ganda dari dua tab menjadi
+// no-op alih-alih menggandakan review dan menembus daily limit.
+//
+// `deckId` disimpan agar daily limit bisa dihitung per deck.
+model FlashcardRevlog {
+  id BigInt @id
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+
+  card   FlashcardCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  cardId BigInt
+
+  deckId Int
+
+  clientToken String? @db.VarChar(64)
+
+  reviewedAt DateTime            @default(now())
+  rating     FlashcardRating
+  kind       FlashcardRevlogKind
+
+  intervalDays     Int
+  lastIntervalDays Int
+  stability        Float?
+  difficulty       Float?
+  easeFactor       Float?
+  takenMs          Int    @default(0)
+
+  @@unique([userId, clientToken])
+  @@index([userId, reviewedAt])
+  @@index([cardId, reviewedAt])
+  @@index([userId, deckId, reviewedAt])
+}
+
+// Katalog deck bawaan. Ini konten milik aplikasi, bukan koleksi user — karena
+// itu tidak punya `userId` dan tidak pernah dijadwalkan. Saat user menambahkan
+// deck bawaan, isinya di-COPY penuh ke koleksinya sehingga setelah itu deck
+// sepenuhnya miliknya: boleh di-rename, ganti preset, atau hapus kartu tanpa
+// memengaruhi user lain maupun katalog.
+model FlashcardSystemDeck {
+  id Int @id @default(autoincrement())
+
+  slug        String                @unique @db.VarChar(120)
+  name        String                @db.VarChar(500)
+  description String                @default("") @db.Text
+  jlptLevel   JlptLevel?
+  noteType    FlashcardNoteTypeKind
+  /// Wajib diisi dan ditampilkan di UI: sumber CC BY-SA mengikat atribusi.
+  license     String                @db.VarChar(300)
+  order       Int                   @default(0)
+  isPublished Boolean               @default(true)
+
+  notes FlashcardSystemNote[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -220,145 +457,40 @@ model FlashcardDeck {
   @@index([isPublished, order])
 }
 
-// Vocabulary content is normalized globally so one word can appear in
-// multiple decks without duplicating user progress.
-model Flashcard {
+model FlashcardSystemNote {
   id Int @id @default(autoincrement())
 
-  key           String    @unique
-  word          String
-  reading       String
-  romaji        String
-  meaning       String    @db.Text
-  jlptLevel     JlptLevel
-  audioText     String?
-  audioUrl      String?   @db.Text
-  usageExamples Json      @db.JsonB
-
-  deckItems  FlashcardDeckItem[]
-  tagLinks   FlashcardTagLink[]
-  progresses FlashcardProgress[]
-  reviewLogs FlashcardReviewLog[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([jlptLevel])
-}
-
-model FlashcardDeckItem {
-  id Int @id @default(autoincrement())
-
-  deck   FlashcardDeck @relation(fields: [deckId], references: [id], onDelete: Cascade)
+  deck   FlashcardSystemDeck @relation(fields: [deckId], references: [id], onDelete: Cascade)
   deckId Int
 
-  flashcard   Flashcard @relation(fields: [flashcardId], references: [id], onDelete: Cascade)
-  flashcardId Int
+  guid   String   @db.VarChar(64)
+  fields String[]
+  tags   String[]
+  order  Int      @default(0)
 
-  order Int @default(0)
-
-  @@unique([deckId, flashcardId])
-  @@unique([deckId, order])
-  @@index([flashcardId])
+  @@unique([deckId, guid])
+  @@index([deckId, order])
 }
 
-model FlashcardTag {
-  id Int @id @default(autoincrement())
-
-  slug  String @unique
-  label String
-
-  flashcards FlashcardTagLink[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model FlashcardTagLink {
-  id Int @id @default(autoincrement())
-
-  flashcard   Flashcard @relation(fields: [flashcardId], references: [id], onDelete: Cascade)
-  flashcardId Int
-
-  tag   FlashcardTag @relation(fields: [tagId], references: [id], onDelete: Cascade)
-  tagId Int
-
-  @@unique([flashcardId, tagId])
-  @@index([tagId])
-}
-
-model FlashcardProgress {
-  id Int @id @default(autoincrement())
+// Import CSV/TXT dikirim per batch dari browser, jadi job ini yang memegang
+// progres lintas request (tidak ada satu pun request yang memproses file utuh).
+model FlashcardImportJob {
+  id String @id @default(uuid())
 
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int
 
-  flashcard   Flashcard @relation(fields: [flashcardId], references: [id], onDelete: Cascade)
-  flashcardId Int
-
-  state          FlashcardLearningState @default(LEARNING)
-  dueAt          DateTime
-  intervalDays   Int                    @default(0)
-  easeFactor     Float                  @default(2.5)
-  repetitions    Int                    @default(0)
-  lapses         Int                    @default(0)
-  learningStep   Int                    @default(0)
-  lastReviewedAt DateTime?
+  status    FlashcardImportStatus @default(PENDING)
+  fileName  String                @db.VarChar(255)
+  totalRows Int                   @default(0)
+  doneRows  Int                   @default(0)
+  stats     Json?                 @db.JsonB
+  error     String?               @db.Text
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([userId, flashcardId])
-  @@index([userId, dueAt])
-  @@index([flashcardId])
-}
-
-model FlashcardReviewLog {
-  id Int @id @default(autoincrement())
-
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId Int
-
-  flashcard   Flashcard @relation(fields: [flashcardId], references: [id], onDelete: Cascade)
-  flashcardId Int
-
-  rating             FlashcardRating
-  previousInterval   Int
-  scheduledInterval  Int
-  previousEaseFactor Float
-  nextEaseFactor     Float
-  wasNew             Boolean         @default(false)
-  reviewedAt         DateTime        @default(now())
-  dueAt              DateTime
-
-  @@index([userId, reviewedAt])
-  @@index([flashcardId])
-}
-
-// Per-user scheduler preferences. Values are stored in the units consumed by
-// the scheduler so malformed display strings never reach scheduling logic.
-model FlashcardSetting {
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId Int  @id
-
-  newCardsPerDay         Int   @default(20)
-  maxReviewsPerDay       Int   @default(200)
-  learningStepsMinutes   Int[] @default([1, 10])
-  graduatingIntervalDays Int   @default(1)
-  easyIntervalDays       Int   @default(4)
-  startingEaseFactor     Float @default(2.5)
-
-  relearningStepsMinutes  Int[] @default([10])
-  lapseIntervalMultiplier Float @default(0)
-  minimumIntervalDays     Int   @default(1)
-
-  maximumIntervalDays Int   @default(36500)
-  intervalModifier    Float @default(1)
-  easyBonus           Float @default(1.3)
-  hardMultiplier      Float @default(1.2)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  @@index([userId, status])
 }
 
 // Bucket rate limit auth hanya menyimpan hash, bukan email atau alamat IP mentah.

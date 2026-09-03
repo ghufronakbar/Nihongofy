@@ -31,10 +31,10 @@ export default async function DashboardPage() {
       badge: "KANA",
     },
     {
-      title: "Vocabulary Deck",
+      title: "Flashcard Deck",
       subtitle: "N5 - N1 Decks",
       desc: "Kuasai ribuan kosakata dengan reading kanji, arti, dan antrean SRS.",
-      href: "/vocab",
+      href: "/flashcard",
       icon: Brain,
       color: "bg-neo-coral",
       badge: "KOSAKATA",
@@ -81,7 +81,7 @@ export default async function DashboardPage() {
             </span>
           </h1>
           <p className="mt-4 max-w-xl text-base sm:text-lg font-semibold text-foreground/75">
-            Mulai dari paket ujian baru, tuntaskan antrean vocabulary, atau bedah kelemahan dari attempt sebelumnya.
+            Mulai dari paket ujian baru, tuntaskan antrean flashcard, atau bedah kelemahan dari attempt sebelumnya.
           </p>
 
           <div className="mt-6 flex flex-wrap items-center gap-3">

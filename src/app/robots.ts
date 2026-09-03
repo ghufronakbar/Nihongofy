@@ -14,8 +14,8 @@ export default function robots(): MetadataRoute.Robots {
         "/exercises",
         "/kana",
         "/kana/",
-        "/vocab",
-        "/vocab/",
+        "/flashcard",
+        "/flashcard/try/",
       ],
       disallow: [
         "/api/",

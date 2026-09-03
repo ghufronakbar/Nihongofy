@@ -19,7 +19,7 @@ import { cn } from "@/lib/utils";
 const NAV_ITEMS = [
   { label: "Beranda", href: "/" },
   { label: "Kana", href: "/kana/hiragana" },
-  { label: "Kosakata", href: "/vocab" },
+  { label: "Flashcard", href: "/flashcard" },
   { label: "Latihan Cepat", href: "/exercises" },
   { label: "Mock JLPT", href: "/test-package" },
   { label: "Artikel", href: "/article" },
