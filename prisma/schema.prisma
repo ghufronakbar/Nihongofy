@@ -94,6 +94,12 @@ enum ArticleStatus {
   ARCHIVED
 }
 
+enum AuthTokenPurpose {
+  EMAIL_VERIFICATION
+  EMAIL_CHANGE
+  PASSWORD_RESET
+}
+
 // ============================================================
 // USER
 // ============================================================
@@ -101,12 +107,13 @@ enum ArticleStatus {
 // Username tetap nullable sebagai bridge login akun legacy. User baru memakai
 // displayName + normalized email; seluruh relasi existing tetap dipertahankan.
 model User {
-  id          Int     @id @default(autoincrement())
-  username    String? @unique // bridge login akun legacy; user baru memakai email
-  displayName String
-  email       String? @unique // nullable hanya untuk akun legacy yang belum dibackfill
-  avatarUrl   String? @db.Text
-  password    String // simpan hash (bcrypt/argon2), JANGAN plaintext
+  id              Int       @id @default(autoincrement())
+  username        String?   @unique // bridge login akun legacy; user baru memakai email
+  displayName     String
+  email           String?   @unique // nullable hanya untuk akun legacy yang belum dibackfill
+  emailVerifiedAt DateTime?
+  avatarUrl       String?   @db.Text
+  password        String // simpan hash (bcrypt/argon2), JANGAN plaintext
 
   questionComments    QuestionComment[]
   attempts            Attempt[]
@@ -116,9 +123,27 @@ model User {
   flashcardSetting    FlashcardSetting?
   practiceSessions    PracticeSession[]
   articleInteractions ArticleInteraction[]
+  authTokens          AuthToken[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// Token plaintext hanya dikirim melalui email. Database menyimpan SHA-256 hash
+// dan maksimal satu token aktif untuk setiap user serta tujuan.
+model AuthToken {
+  id          String           @id @default(uuid())
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      Int
+  purpose     AuthTokenPurpose
+  tokenHash   String           @unique
+  targetEmail String?
+  expiresAt   DateTime
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@unique([userId, purpose])
+  @@index([expiresAt])
 }
 
 // ============================================================

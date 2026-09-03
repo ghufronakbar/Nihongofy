@@ -14,9 +14,12 @@ export const metadata: Metadata = {
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string | string[] }>;
+  searchParams: Promise<{
+    next?: string | string[];
+    passwordReset?: string | string[];
+  }>;
 }) {
-  const { next } = await searchParams;
+  const { next, passwordReset } = await searchParams;
   const nextPath = getSafeRedirectPath(next);
   const session = await getSession();
 
@@ -37,6 +40,11 @@ export default async function LoginPage({
       <p className="mt-4 leading-7 text-foreground/70">
         Akses paket ujian, history, review jawaban, dan progres belajarmu.
       </p>
+      {passwordReset === "success" ? (
+        <p role="status" className="mt-5 border-[3px] border-black bg-neo-green p-3 font-bold text-black shadow-neo-sm">
+          Password berhasil diperbarui. Semua session lama sudah dicabut.
+        </p>
+      ) : null}
       <div className="mt-8">
         <LoginForm nextPath={nextPath} />
       </div>

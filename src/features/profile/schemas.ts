@@ -20,6 +20,7 @@ export const UpdateProfileSchema = z.object({
   displayName: DisplayNameSchema,
   email: EmailSchema,
   avatarUrl: AvatarUrlSchema.nullable(),
+  currentPassword: z.string().max(72, "Password maksimal 72 karakter.").optional(),
 });
 
 export const ChangePasswordSchema = z

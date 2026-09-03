@@ -22,10 +22,14 @@ export type AuthRateLimitResult = {
   retryAfterSeconds: number;
 };
 
-function hashBucket({ scope, subject }: Pick<AuthRateLimitBucket, "scope" | "subject">) {
+export function hashAuthSubject(scope: string, subject: string) {
   return createHmac("sha256", env.SESSION_SECRET)
     .update(`${scope}:${subject}`)
     .digest("hex");
+}
+
+function hashBucket({ scope, subject }: Pick<AuthRateLimitBucket, "scope" | "subject">) {
+  return hashAuthSubject(scope, subject);
 }
 
 async function consumeBucket(bucket: AuthRateLimitBucket): Promise<AuthRateLimitResult> {

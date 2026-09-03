@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fingerprint, ShieldCheck } from "lucide-react";
-import { getProfileAccountAction } from "@/features/profile/actions";
+import { getActiveSessionsAction, getProfileAccountAction } from "@/features/profile/actions";
+import { ActiveSessions } from "@/features/profile/components/active-sessions";
 import { ChangePasswordForm } from "@/features/profile/components/change-password-form";
 
 export const metadata: Metadata = {
@@ -9,7 +10,23 @@ export const metadata: Metadata = {
 };
 
 export default async function SecurityPage() {
-  const account = await getProfileAccountAction();
+  const [account, activeSessions] = await Promise.all([
+    getProfileAccountAction(),
+    getActiveSessionsAction(),
+  ]);
+  const formatter = new Intl.DateTimeFormat("id-ID", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone: "Asia/Jakarta",
+  });
+  const sessions = activeSessions.map((session) => ({
+    sessionId: session.sessionId,
+    deviceName: session.deviceName,
+    createdAtLabel: formatter.format(new Date(session.createdAt)),
+    lastSeenAtLabel: formatter.format(new Date(session.lastSeenAt)),
+    expiresAtLabel: formatter.format(new Date(session.expiresAt)),
+    current: session.current,
+  }));
 
   return (
     <main className="grid max-w-4xl gap-6">
@@ -32,6 +49,10 @@ export default async function SecurityPage() {
         <div className="p-5 sm:p-8">
           <ChangePasswordForm />
         </div>
+      </section>
+
+      <section className="neo-surface bg-white p-5 sm:p-8" aria-label="Daftar perangkat aktif">
+        <ActiveSessions sessions={sessions} />
       </section>
     </main>
   );

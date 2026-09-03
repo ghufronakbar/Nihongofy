@@ -126,18 +126,24 @@ bertambah banyak.
 
 ### 1.1 Authentication
 
-- [ ] Implementasikan verifikasi email dan resend dengan token sekali pakai, expiry, rate limit,
+**Status implementasi:** selesai dan seluruh alur email serta multi-device telah diverifikasi user
+pada environment nyata tanggal 3 September 2026. Hasil UAT tercatat di
+[catatan verifikasi Phase 1.1](../verification/phase-1-1-auth-uat-2026-09-03.md).
+
+- [x] Implementasikan verifikasi email dan resend dengan token sekali pakai, expiry, rate limit,
   serta pesan yang tidak membocorkan keberadaan akun.
-- [ ] Implementasikan forgot/reset password dengan revocation strategy untuk JWT lama.
-- [ ] Tambahkan `sessionVersion` atau mekanisme ekuivalen agar change password, logout-all, dan
+- [x] Implementasikan forgot/reset password dengan revocation strategy untuk JWT lama.
+- [x] Tambahkan `sessionVersion` atau mekanisme ekuivalen agar change password, logout-all, dan
   security incident dapat mencabut session lama tanpa wajib mengganti arsitektur menjadi session
   table.
-- [ ] Minta re-authentication untuk perubahan email dan operasi account berisiko tinggi.
-- [ ] Tambahkan cleanup untuk `AuthRateLimit` dan token expired.
-- [ ] Siapkan skenario pengujian manual untuk normalization email, akun legacy, duplicate race,
+- [x] Minta re-authentication untuk perubahan email dan operasi account berisiko tinggi.
+- [x] Tambahkan cleanup untuk `AuthRateLimit` dan token expired.
+- [x] Siapkan skenario pengujian manual untuk normalization email, akun legacy, duplicate race,
   brute-force limit, expired token, safe redirect, dan logout-all.
-- [ ] Pertahankan scope credential auth minimal. OAuth dan MFA bukan blocker kecuali target produk
+- [x] Pertahankan scope credential auth minimal. OAuth dan MFA bukan blocker kecuali target produk
   berubah atau threat model mengharuskannya.
+- [x] Lindungi seluruh form publik pada route group `(auth)` dengan Cloudflare Turnstile dan
+  verifikasi Siteverify server-side yang fail-closed.
 
 ### 1.2 Profile dan Account Lifecycle
 

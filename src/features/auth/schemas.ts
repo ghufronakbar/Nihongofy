@@ -21,6 +21,12 @@ export const PasswordSchema = z
     "Password maksimal 72 byte.",
   );
 
+export const TurnstileTokenSchema = z
+  .string()
+  .trim()
+  .min(1, "Selesaikan verifikasi keamanan.")
+  .max(2048, "Token verifikasi keamanan tidak valid.");
+
 export const LoginSchema = z.object({
   identifier: z
     .string()
@@ -29,6 +35,7 @@ export const LoginSchema = z.object({
     .max(254, "Email atau username terlalu panjang."),
   password: z.string().min(1, "Password wajib diisi."),
   next: z.string().max(2048).optional(),
+  turnstileToken: TurnstileTokenSchema,
 });
 
 export const RegisterSchema = z
@@ -42,11 +49,46 @@ export const RegisterSchema = z
     password: PasswordSchema,
     confirmPassword: z.string().min(1, "Konfirmasi password wajib diisi."),
     next: z.string().max(2048).optional(),
+    turnstileToken: TurnstileTokenSchema,
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Konfirmasi password belum sama.",
     path: ["confirmPassword"],
   });
 
+export const ConfirmEmailSchema = z.object({
+  token: z.string().min(32).max(128),
+  turnstileToken: TurnstileTokenSchema,
+});
+
+export const ForgotPasswordSchema = z.object({
+  email: EmailSchema,
+  turnstileToken: TurnstileTokenSchema,
+});
+
+export const ResetPasswordSchema = z
+  .object({
+    token: z.string().min(32).max(128),
+    password: PasswordSchema,
+    confirmPassword: z.string().min(1, "Konfirmasi password wajib diisi."),
+    turnstileToken: TurnstileTokenSchema,
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Konfirmasi password belum sama.",
+    path: ["confirmPassword"],
+  });
+
+export const RevokeSessionSchema = z.object({
+  sessionId: z.uuid(),
+});
+
+export const TurnstileOnlySchema = z.object({
+  turnstileToken: TurnstileTokenSchema,
+});
+
 export type LoginInput = z.infer<typeof LoginSchema>;
 export type RegisterInput = z.infer<typeof RegisterSchema>;
+export type ConfirmEmailInput = z.infer<typeof ConfirmEmailSchema>;
+export type ForgotPasswordInput = z.infer<typeof ForgotPasswordSchema>;
+export type ResetPasswordInput = z.infer<typeof ResetPasswordSchema>;
+export type TurnstileOnlyInput = z.infer<typeof TurnstileOnlySchema>;

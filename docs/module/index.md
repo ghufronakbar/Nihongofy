@@ -1,13 +1,13 @@
 # Dokumentasi Modul
 
-Folder ini mendokumentasikan kondisi aplikasi berdasarkan kode, fixture, dan database development yang diperiksa pada **2 September 2026 (WIB)**. Status di sini menjelaskan implementasi aktual, bukan hanya rencana di `docs/plan.md`.
+Folder ini mendokumentasikan kondisi aplikasi berdasarkan kode, fixture, dan database development yang diperiksa mulai **2 September 2026 (WIB)** dan diperbarui sesuai hasil verifikasi berikutnya. Status di sini menjelaskan implementasi aktual, bukan hanya rencana di `docs/plan.md`.
 
 ## Ringkasan Status
 
 | Modul | Status aktual | Catatan singkat |
 |---|---|---|
 | [Public shell dan home](public-shell.md) | Selesai | Landing page, header/footer, dan CTA aktif; conversation/speaking masih preview statis. |
-| [Authentication](auth.md) | Selesai dengan gap produk | Login, register, logout, JWT cookie, dan rate limit aktif; belum ada reset password atau verifikasi email. |
+| [Authentication](auth.md) | Selesai | Login, register, verifikasi email, reset password, Redis session registry, revoke perangkat, rate limit, dan Turnstile aktif. |
 | [Dashboard](dashboard.md) | Selesai sederhana | Menampilkan attempt selesai dan attempt terakhir; kartu modul lain masih berupa shortcut statis. |
 | [Kana](kana.md) | Selesai dengan scope terbatas | Fixture kana terkurasi dan progress akun aktif; audio memakai Web Speech API, bukan rekaman. |
 | [Vocabulary](vocabulary.md) | Fungsional, konten terbatas | SRS dan settings aktif; database hanya memiliki 32 kartu, 6 deck, dan belum ada audio rekaman. |

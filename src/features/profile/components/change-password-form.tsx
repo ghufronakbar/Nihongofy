@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { KeyRound } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
 import { PasswordInput } from "@/features/auth/components/password-input";
 import { changePasswordAction } from "../actions";
@@ -16,6 +17,7 @@ const DEFAULT_VALUES: ChangePasswordInput = {
 };
 
 export function ChangePasswordForm() {
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [notice, setNotice] = useState<{ ok: boolean; message: string } | null>(null);
   const {
@@ -33,7 +35,10 @@ export function ChangePasswordForm() {
     startTransition(async () => {
       const result = await changePasswordAction(values);
       setNotice(result);
-      if (result.ok) reset(DEFAULT_VALUES);
+      if (result.ok) {
+        reset(DEFAULT_VALUES);
+        router.refresh();
+      }
     });
   }
 

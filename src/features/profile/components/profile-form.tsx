@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { updateProfileAction } from "../actions";
 import { UpdateProfileSchema, type UpdateProfileInput } from "../schemas";
 import { AvatarUploader } from "./avatar-uploader";
+import { PasswordInput } from "@/features/auth/components/password-input";
 
 export function ProfileForm({
   account,
@@ -35,6 +36,7 @@ export function ProfileForm({
       displayName: account.displayName,
       email: account.email?.toLowerCase() ?? "",
       avatarUrl: account.avatarUrl,
+      currentPassword: "",
     },
   });
   const displayName = useWatch({ control, name: "displayName" });
@@ -94,9 +96,25 @@ export function ProfileForm({
               />
             </div>
             <FieldDescription>
-              Email dinormalisasi ke huruf kecil; alias dengan tanda + tidak didukung.
+              Perubahan email baru berlaku setelah link pada alamat baru dikonfirmasi.
             </FieldDescription>
             <FieldError errors={[errors.email]} className="font-semibold" />
+          </Field>
+
+          <Field>
+            <FieldLabel htmlFor="currentPassword" className="font-extrabold">
+              Password saat ini untuk perubahan email
+            </FieldLabel>
+            <PasswordInput
+              id="currentPassword"
+              autoComplete="current-password"
+              aria-invalid={Boolean(errors.currentPassword)}
+              {...register("currentPassword")}
+            />
+            <FieldDescription>
+              Boleh dikosongkan jika Anda hanya mengubah nama tampilan atau avatar.
+            </FieldDescription>
+            <FieldError errors={[errors.currentPassword]} className="font-semibold" />
           </Field>
 
           {account.username ? (

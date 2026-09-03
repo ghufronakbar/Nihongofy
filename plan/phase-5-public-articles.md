@@ -67,7 +67,7 @@ Constraint dan index:
 - `sitemap.xml` mencakup home, article index, dan seluruh artikel published.
 - `robots.txt` mengizinkan content publik dan menutup auth, dashboard, exam, serta tool belajar
   protected.
-- URL publik berasal dari `NEXT_PUBLIC_SITE_URL` yang divalidasi di constants.
+- URL publik berasal dari `APP_URL` yang divalidasi di constants.
 
 ## Verifikasi
 
@@ -81,4 +81,3 @@ Constraint dan index:
 - Console browser bersih setelah perbaikan dan warning style `ImageResponse` dihapus.
 - `npx tsc --noEmit`, `npm run lint`, `npm run build`, `npx prisma migrate status`, dan
   `git diff --check` menjadi final gate.
-

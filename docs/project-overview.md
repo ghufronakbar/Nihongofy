@@ -28,7 +28,11 @@ Rules terkait: `database.md` (schema, markup teks, aturan query).
 | Route | Deskripsi |
 |---|---|
 | `/login` | Login utama memakai email. Username tetap diterima untuk akun legacy. Mendukung query `next` yang divalidasi sebagai path internal. |
-| `/register` | Registrasi publik dengan display name, email, password, dan konfirmasi password. Session langsung dibuat setelah registrasi sukses. |
+| `/register` | Registrasi publik dengan display name, email, password, dan konfirmasi password. Akun harus memverifikasi email sebelum session dibuat. |
+| `/verify-email` | Status verifikasi dan resend dengan countdown cooldown dari Redis. |
+| `/verify-email/[token]` | CTA konfirmasi token sekali pakai; GET tidak mengonsumsi token. |
+| `/forget-password` | Request reset password dengan respons generik dan rate limit. |
+| `/forget-password/[token]` | Form password baru untuk token reset yang masih aktif. |
 
 `/first-time-setup` sudah dihapus. URL lama diarahkan permanen ke `/register` agar bookmark lama tidak menjadi dead end.
 
@@ -61,7 +65,7 @@ Mencakup juga `/exam` dan `/result` (awalnya direncanakan tanpa sidebar untuk mo
 | `/history` | Daftar semua attempt milik user lintas paket (bukan cuma satu paket seperti di `/test-package/[id]`), dengan link ke `/result/[attemptId]` & `/result/[attemptId]/detail` untuk yang `COMPLETED`. Entry point utama untuk lihat attempt lama. |
 | `/profile` | Overview akun dengan statistik kana, vocabulary, latihan cepat, dan mock exam dari data user nyata. |
 | `/profile/info` | Edit display name, normalized email, dan avatar Cloudinary; username legacy tampil read-only. |
-| `/profile/security` | Ganti password dengan current password, policy Zod, bcrypt cost 12, dan rotasi cookie session. |
+| `/profile/security` | Ganti password, daftar perangkat aktif, revoke session, dan logout perangkat lain. |
 | `/profile/flashcard-settings` | Preference SRS persisten dengan daily limits, learning/relearning steps, interval, dan reset default via Server Action. |
 | `/profile/auth` | Redirect kompatibilitas menuju `/profile/security`. |
 
@@ -102,5 +106,5 @@ Aturan halaman exam:
   cache lintas user.
 - Body artikel memakai JSON tervalidasi dan tidak pernah dirender sebagai HTML mentah.
 - Metadata artikel mencakup canonical, Open Graph, Twitter card, generated cover, sitemap, dan robots.
-- `NEXT_PUBLIC_SITE_URL` menentukan origin canonical, sitemap, dan robots dengan fallback localhost
-  untuk development.
+- `APP_URL` menentukan origin canonical, sitemap, robots, dan link email auth; nilainya harus URL
+  absolut untuk environment aktif.

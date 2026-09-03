@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Mail, UserPlus, UserRound } from "lucide-react";
 import { registerAction } from "../actions";
@@ -9,15 +9,19 @@ import { RegisterSchema, type RegisterInput } from "../schemas";
 import { PasswordInput } from "./password-input";
 import { Input } from "@/components/ui/input";
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { TurnstileWidget } from "./turnstile";
+import { TURNSTILE_ACTIONS } from "../lib/turnstile-config";
 
 export function RegisterForm({ nextPath }: { nextPath: string }) {
   const [isPending, startTransition] = useTransition();
   const [formError, setFormError] = useState<string | null>(null);
+  const [turnstileResetSignal, setTurnstileResetSignal] = useState(0);
 
   const {
     register,
     handleSubmit,
     control,
+    setValue,
     formState: { errors },
   } = useForm<RegisterInput>({
     resolver: zodResolver(RegisterSchema),
@@ -27,14 +31,21 @@ export function RegisterForm({ nextPath }: { nextPath: string }) {
       password: "",
       confirmPassword: "",
       next: nextPath,
+      turnstileToken: "",
     },
   });
+  const turnstileToken = useWatch({ control, name: "turnstileToken" });
 
   function onSubmit(values: RegisterInput) {
     setFormError(null);
     startTransition(async () => {
-      const result = await registerAction(values);
-      if (result?.message) setFormError(result.message);
+      try {
+        const result = await registerAction(values);
+        if (result?.message) setFormError(result.message);
+      } finally {
+        setValue("turnstileToken", "");
+        setTurnstileResetSignal((current) => current + 1);
+      }
     });
   }
 
@@ -43,6 +54,7 @@ export function RegisterForm({ nextPath }: { nextPath: string }) {
       <fieldset disabled={isPending}>
         <FieldGroup>
           <input type="hidden" defaultValue={nextPath} {...register("next")} />
+          <input type="hidden" {...register("turnstileToken")} />
           <Field className="gap-2.5">
             <FieldLabel htmlFor="displayName" className="text-sm font-extrabold">
               Nama tampilan
@@ -121,13 +133,22 @@ export function RegisterForm({ nextPath }: { nextPath: string }) {
             <FieldError errors={[errors.confirmPassword]} className="font-semibold" />
           </Field>
 
+          <TurnstileWidget
+            action={TURNSTILE_ACTIONS.register}
+            resetSignal={turnstileResetSignal}
+            onTokenChange={(token) =>
+              setValue("turnstileToken", token ?? "", { shouldValidate: true })
+            }
+          />
+          <FieldError errors={[errors.turnstileToken]} className="font-semibold" />
+
           {formError && (
             <FieldError className="border-[3px] border-neo-ink bg-neo-coral p-3 font-bold text-black shadow-neo-sm" aria-live="polite">
               {formError}
             </FieldError>
           )}
 
-          <button type="submit" disabled={isPending} className="neo-button w-full bg-neo-green py-3 text-base">
+          <button type="submit" disabled={isPending || !turnstileToken} className="neo-button w-full bg-neo-green py-3 text-base">
             <UserPlus className="size-5" aria-hidden="true" />
             {isPending ? "Membuat akun..." : "Buat akun"}
           </button>

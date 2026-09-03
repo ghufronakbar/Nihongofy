@@ -23,6 +23,10 @@ const PROTECTED_PREFIXES = [
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  if (pathname.startsWith("/api/cron/")) {
+    return NextResponse.next();
+  }
+
   const isProtectedRoute =
     PROTECTED_ROUTES.includes(pathname) ||
     PROTECTED_PREFIXES.some((prefix) => pathname.startsWith(prefix));

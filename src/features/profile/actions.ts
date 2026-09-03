@@ -1,14 +1,27 @@
 "use server";
 
 import bcrypt from "bcryptjs";
-import { Prisma } from "@prisma/client";
+import { AuthTokenPurpose, Prisma } from "@prisma/client";
 import { revalidatePath, unstable_cache, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { BCRYPT_COST_FACTOR } from "@/constants";
 import { CACHE_KEYS, CACHE_TAGS } from "@/constants/cache-key";
 import { createSignedUploadParams } from "@/lib/cloudinary";
-import { createSession, getSession } from "@/lib/auth";
+import {
+  createSession,
+  getSession,
+  listUserSessions,
+  revokeAllUserSessions,
+  revokeUserSession,
+} from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { sendVerificationEmail } from "@/features/auth/lib/send-auth-email";
+import {
+  consumeAuthRateLimits,
+  getRequestIpAddress,
+  type AuthRateLimitBucket,
+} from "@/features/auth/lib/rate-limit";
+import { RevokeSessionSchema } from "@/features/auth/schemas";
 import {
   ChangePasswordSchema,
   UpdateProfileSchema,
@@ -94,16 +107,41 @@ export async function updateProfileAction(
     };
   }
 
-  const values = {
+  const values: UpdateProfileInput = {
     displayName: validated.data.displayName.replace(/\s+/g, " "),
     email: validated.data.email.toLowerCase(),
     avatarUrl: validated.data.avatarUrl,
+    currentPassword: "",
   };
+
+  const currentUser = await prisma.user.findUnique({
+    where: { id: session.userId },
+    select: { email: true, password: true, displayName: true },
+  });
+  if (!currentUser) return { ok: false, message: "Sesi berakhir. Silakan masuk lagi." };
+
+  const emailChanged = currentUser.email !== values.email;
+  if (emailChanged) {
+    const passwordValid = validated.data.currentPassword
+      ? await bcrypt.compare(validated.data.currentPassword, currentUser.password)
+      : false;
+    if (!passwordValid) {
+      return { ok: false, message: "Masukkan password saat ini untuk mengganti email." };
+    }
+
+    const emailOwner = await prisma.user.findUnique({
+      where: { email: values.email },
+      select: { id: true },
+    });
+    if (emailOwner && emailOwner.id !== session.userId) {
+      return { ok: false, message: "Email tersebut tidak dapat digunakan." };
+    }
+  }
 
   try {
     await prisma.user.update({
       where: { id: session.userId },
-      data: values,
+      data: { displayName: values.displayName, avatarUrl: values.avatarUrl },
       select: { id: true },
     });
   } catch (error) {
@@ -119,6 +157,62 @@ export async function updateProfileAction(
 
   updateTag(CACHE_TAGS.profileAccount(session.userId));
   revalidatePath("/(dashboard)", "layout");
+
+  if (emailChanged) {
+    const ipAddress = await getRequestIpAddress();
+    const buckets: AuthRateLimitBucket[] = [
+      {
+        scope: "email-change:user",
+        subject: String(session.userId),
+        maxAttempts: 5,
+        windowSeconds: 60 * 60,
+        blockSeconds: 60 * 60,
+      },
+    ];
+    if (ipAddress) {
+      buckets.push({
+        scope: "email-change:ip",
+        subject: ipAddress,
+        maxAttempts: 20,
+        windowSeconds: 60 * 60,
+        blockSeconds: 60 * 60,
+      });
+    }
+
+    const rateLimit = await consumeAuthRateLimits(buckets);
+    if (!rateLimit.allowed) {
+      return {
+        ok: false,
+        message: "Profil tersimpan, tetapi batas pengiriman email tercapai. Coba lagi nanti.",
+      };
+    }
+
+    try {
+      const delivery = await sendVerificationEmail({
+        userId: session.userId,
+        email: values.email,
+        displayName: values.displayName,
+        purpose: AuthTokenPurpose.EMAIL_CHANGE,
+      });
+      if (!delivery.allowed) {
+        return {
+          ok: false,
+          message: `Profil tersimpan. Tunggu ${delivery.retryAfterSeconds} detik sebelum meminta email perubahan lagi.`,
+        };
+      }
+    } catch {
+      return {
+        ok: false,
+        message: "Profil tersimpan, tetapi email konfirmasi belum dapat dikirim.",
+      };
+    }
+
+    return {
+      ok: true,
+      message: "Profil tersimpan. Konfirmasikan perubahan melalui email baru Anda.",
+      values: { ...values, email: currentUser.email ?? "" },
+    };
+  }
 
   return { ok: true, message: "Profil berhasil diperbarui.", values };
 }
@@ -165,16 +259,62 @@ export async function changePasswordAction(
   }
 
   const passwordHash = await bcrypt.hash(validated.data.newPassword, BCRYPT_COST_FACTOR);
-  await prisma.user.update({
-    where: { id: session.userId },
-    data: { password: passwordHash },
-    select: { id: true },
-  });
+  await revokeAllUserSessions(session.userId);
+  await prisma.$transaction([
+    prisma.user.update({
+      where: { id: session.userId },
+      data: { password: passwordHash },
+      select: { id: true },
+    }),
+    prisma.authToken.deleteMany({ where: { userId: session.userId } }),
+  ]);
 
   await createSession(session.userId);
 
   return {
     ok: true,
     message: "Password diperbarui dan sesi aktif sudah dirotasi.",
+  };
+}
+
+export async function getActiveSessionsAction() {
+  const session = await getSession();
+  if (!session) redirect("/login");
+
+  const sessions = await listUserSessions(session.userId);
+  return sessions.map((item) => ({
+    ...item,
+    current: item.sessionId === session.sessionId,
+  }));
+}
+
+export async function revokeSessionAction(input: unknown) {
+  const session = await getSession();
+  if (!session) return { ok: false as const, message: "Sesi berakhir. Silakan masuk lagi." };
+
+  const validated = RevokeSessionSchema.safeParse(input);
+  if (!validated.success || validated.data.sessionId === session.sessionId) {
+    return { ok: false as const, message: "Session tidak dapat dicabut dari aksi ini." };
+  }
+
+  const revoked = await revokeUserSession(session.userId, validated.data.sessionId);
+  if (!revoked) return { ok: false as const, message: "Session sudah tidak aktif." };
+
+  revalidatePath("/profile/security");
+  return { ok: true as const, message: "Perangkat berhasil dikeluarkan." };
+}
+
+export async function logoutOtherSessionsAction() {
+  const session = await getSession();
+  if (!session) return { ok: false as const, message: "Sesi berakhir. Silakan masuk lagi." };
+
+  const revokedCount = await revokeAllUserSessions(session.userId, session.sessionId);
+  revalidatePath("/profile/security");
+  return {
+    ok: true as const,
+    message:
+      revokedCount > 0
+        ? `${revokedCount} perangkat lain berhasil dikeluarkan.`
+        : "Tidak ada perangkat lain yang aktif.",
   };
 }
