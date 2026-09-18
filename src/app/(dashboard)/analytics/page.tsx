@@ -6,6 +6,7 @@ import { AnalyticsTabs } from "@/features/analytics/components/analytics-tabs";
 import { ScoreTrendChart } from "@/features/analytics/components/score-trend-chart";
 import { computeJlptScoreProjection } from "@/lib/jlpt-score";
 import { resolveDateRangePreset, isDateRangePreset } from "@/lib/date-range-preset";
+import { FEATURES } from "@/constants";
 import { JLPT_SECTION_LABELS } from "@/constants/jlpt";
 import { formatInTimeZone } from "@/lib/time-zone";
 import { getCurrentUserTimeZone } from "@/lib/user-time-zone";
@@ -20,8 +21,11 @@ import Link from "next/link";
 const VALID_SECTIONS = Object.keys(JLPT_SECTION_LABELS) as JlptSection[];
 
 function resolveScope(value: string | undefined): AnalyticsScope {
+  // Tanpa test package, satu-satunya data yang masih ditampilkan adalah
+  // latihan cepat, jadi scope dikunci ke sana.
+  if (!FEATURES.testPackage) return "PRACTICE";
   if (value === "MOCK") return "MOCK";
-  if (value === "PRACTICE") return "PRACTICE";
+  if (value === "PRACTICE" && FEATURES.practice) return "PRACTICE";
   if (value && (VALID_SECTIONS as string[]).includes(value)) return value as JlptSection;
   return "ALL";
 }
@@ -80,30 +84,47 @@ export default async function AnalyticsPage({
             <span className="block text-neo-yellow">Ujian & Latihan.</span>
           </h1>
           <p className="mt-4 max-w-xl text-base sm:text-lg font-semibold text-white/90">
-            Evaluasi akurasi jawaban, tren skor per attempt, dan identifikasi mondai yang perlu diperkuat sebelum hari ujian.
+            {FEATURES.testPackage
+              ? "Evaluasi akurasi jawaban, tren skor per attempt, dan identifikasi mondai yang perlu diperkuat sebelum hari ujian."
+              : "Evaluasi akurasi latihan cepat per level JLPT dan temukan bagian yang perlu diperkuat."}
           </p>
 
           <div className="mt-6 flex flex-wrap gap-3 font-mono text-xs font-black">
             <span className="border-2 border-neo-ink bg-white text-black px-3 py-1.5 shadow-neo-sm">
               FILTER DINAMIS
             </span>
-            <span className="border-2 border-neo-ink bg-neo-yellow text-black px-3 py-1.5 shadow-neo-sm">
-              TREN PER ATTEMPT
-            </span>
-            <span className="border-2 border-neo-ink bg-neo-green text-black px-3 py-1.5 shadow-neo-sm">
-              BREAKDOWN MONDAI
-            </span>
+            {FEATURES.testPackage && (
+              <span className="border-2 border-neo-ink bg-neo-yellow text-black px-3 py-1.5 shadow-neo-sm">
+                TREN PER ATTEMPT
+              </span>
+            )}
+            {FEATURES.testPackage && (
+              <span className="border-2 border-neo-ink bg-neo-green text-black px-3 py-1.5 shadow-neo-sm">
+                BREAKDOWN MONDAI
+              </span>
+            )}
           </div>
         </div>
       </section>
 
       {/* Filter Bar */}
-      <Suspense>
-        <AnalyticsFilterBar />
-      </Suspense>
+      {(FEATURES.testPackage || FEATURES.practice) && (
+        <Suspense>
+          <AnalyticsFilterBar practiceEnabled={FEATURES.practice} mockEnabled={FEATURES.testPackage} />
+        </Suspense>
+      )}
+
+      {!FEATURES.testPackage && !FEATURES.practice && (
+        <section className="neo-surface bg-white p-8 sm:p-12 text-center border-[3px] border-neo-ink shadow-neo">
+          <h2 className="text-2xl font-black">Belum Ada Data untuk Dianalisis</h2>
+          <p className="mt-2 text-sm font-semibold text-muted-foreground max-w-md mx-auto">
+            Analitik membaca hasil mock test dan latihan cepat, dan keduanya sedang tidak tersedia.
+          </p>
+        </section>
+      )}
 
       {/* Score Trend Chart Section */}
-      {scope !== "PRACTICE" && (
+      {FEATURES.testPackage && scope !== "PRACTICE" && (
         <section className="neo-surface bg-white p-6 sm:p-8 border-[3px] border-neo-ink shadow-neo">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b-[3px] border-neo-ink pb-4 mb-6">
             <div className="flex items-center gap-3">
@@ -136,7 +157,7 @@ export default async function AnalyticsPage({
       )}
 
       {/* Quick Practice Analytics */}
-      {scope !== "MOCK" && (
+      {FEATURES.practice && scope !== "MOCK" && (
         <section className="neo-surface bg-white p-6 sm:p-8 border-[3px] border-neo-ink shadow-neo">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b-[3px] border-neo-ink pb-4 mb-6">
             <div className="flex items-center gap-3">
@@ -215,7 +236,8 @@ export default async function AnalyticsPage({
       )}
 
       {/* Level Analytics Tabs (Mondai Breakdown & Score Projection) */}
-      {scope !== "PRACTICE" &&
+      {FEATURES.testPackage &&
+        scope !== "PRACTICE" &&
         (levelStats.length === 0 ? (
           <section className="neo-surface bg-white p-8 sm:p-12 text-center border-[3px] border-neo-ink shadow-neo">
             <div className="mx-auto grid size-14 place-items-center rounded-lg border-[3px] border-neo-ink bg-neo-yellow shadow-neo-sm">

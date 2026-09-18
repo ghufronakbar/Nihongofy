@@ -8,6 +8,11 @@ import { getSession } from "@/lib/auth";
 // `/flashcard` dan `/flashcard/try/*` sengaja publik: guest boleh mencoba deck
 // bawaan tanpa akun (progres tidak disimpan). Yang dilindungi hanya koleksi
 // milik user: /flashcard/deck/*, /flashcard/add, /flashcard/import.
+//
+// `/conversation/*` juga sengaja tidak di sini: halamannya boleh dibuka tanpa
+// akun supaya guest melihat penjelasan dan CTA masuk, bukan langsung dilempar
+// ke /login. Aksesnya tetap hanya untuk user login — dijaga di halaman dan di
+// Server Action, bukan oleh proxy.
 const PROTECTED_ROUTES = [
   "/analytics",
   "/dashboard",

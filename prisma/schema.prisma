@@ -140,6 +140,27 @@ enum ArticleStatus {
   ARCHIVED
 }
 
+enum ConversationMode {
+  TEXT
+  VOICE
+}
+
+enum ConversationSessionStatus {
+  ACTIVE
+  COMPLETED
+  ABANDONED
+}
+
+enum ConversationTurnRole {
+  USER
+  ASSISTANT
+}
+
+enum ConversationInputSource {
+  TYPED
+  SPEECH
+}
+
 enum AuthTokenPurpose {
   EMAIL_VERIFICATION
   EMAIL_CHANGE
@@ -173,20 +194,22 @@ model User {
   deletionScheduledFor     DateTime?
   password                 String? // null hanya untuk akun OAuth-only; jika terisi wajib berupa hash
 
-  questionComments    QuestionComment[]
-  attempts            Attempt[]
-  kanaProgresses      KanaProgress[]
-  flashcardCollection FlashcardCollection?
-  flashcardDecks      FlashcardDeck[]
-  flashcardPresets    FlashcardPreset[]
-  flashcardNotes      FlashcardNote[]
-  flashcardCards      FlashcardCard[]
-  flashcardRevlogs    FlashcardRevlog[]
-  flashcardImportJobs FlashcardImportJob[]
-  practiceSessions    PracticeSession[]
-  articleInteractions ArticleInteraction[]
-  authTokens          AuthToken[]
-  oauthAccounts       OAuthAccount[]
+  questionComments     QuestionComment[]
+  attempts             Attempt[]
+  kanaProgresses       KanaProgress[]
+  flashcardCollection  FlashcardCollection?
+  flashcardDecks       FlashcardDeck[]
+  flashcardPresets     FlashcardPreset[]
+  flashcardNotes       FlashcardNote[]
+  flashcardCards       FlashcardCard[]
+  flashcardRevlogs     FlashcardRevlog[]
+  flashcardImportJobs  FlashcardImportJob[]
+  practiceSessions     PracticeSession[]
+  articleInteractions  ArticleInteraction[]
+  authTokens           AuthToken[]
+  oauthAccounts        OAuthAccount[]
+  conversationSessions ConversationSession[]
+  conversationQuotas   ConversationQuota[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -861,4 +884,133 @@ model ArticleInteraction {
   @@index([articleId])
   @@index([userId, saved, updatedAt])
   @@index([userId, favorited, updatedAt])
+}
+
+// ============================================================
+// CONVERSATION & SPEAKING
+// ============================================================
+
+// Persona dan topik adalah fixture aplikasi, bukan konten database. Yang
+// disimpan di sini hanya aktivitas milik user, dengan personaKey/topicKeys
+// sebagai stable key yang harus cocok dengan fixture yang dikenal aplikasi.
+model ConversationSession {
+  id Int @id @default(autoincrement())
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+
+  mode       ConversationMode
+  personaKey String           @db.VarChar(64)
+  topicKeys  String[]
+  jlptLevel  JlptLevel
+
+  status     ConversationSessionStatus @default(ACTIVE)
+  startedAt  DateTime                  @default(now())
+  finishedAt DateTime?
+
+  // Audit: hasil lama harus tetap dapat dijelaskan setelah prompt atau model
+  // berubah.
+  promptVersion String  @db.VarChar(32)
+  chatModel     String  @db.VarChar(64)
+  sttModel      String? @db.VarChar(64)
+  ttsModel      String? @db.VarChar(64)
+
+  // Snapshot consent saat session dibuat. Mencabut consent memicu penghapusan,
+  // bukan penafsiran ulang data lama.
+  transcriptRetained Boolean   @default(false)
+  audioRetained      Boolean   @default(false)
+  retentionExpiresAt DateTime?
+
+  // Preferensi tampilan ikut disimpan supaya sesi dapat dilanjutkan di
+  // perangkat lain persis seperti ditinggalkan.
+  showTranslation Boolean @default(true)
+  showRomaji      Boolean @default(true)
+  showFurigana    Boolean @default(true)
+
+  turnCount         Int @default(0)
+  totalInputTokens  Int @default(0)
+  totalOutputTokens Int @default(0)
+
+  turns ConversationTurn[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, startedAt])
+  @@index([status])
+  @@index([retentionExpiresAt])
+}
+
+// Baris hanya dibuat bila session menyimpan transcript. Bila consent mati,
+// agregat pada ConversationSession dan ConversationQuota tetap terisi sehingga
+// pemakaian tetap terhitung tanpa menyimpan isi percakapan.
+model ConversationTurn {
+  id Int @id @default(autoincrement())
+
+  session   ConversationSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sessionId Int
+
+  order Int
+  role  ConversationTurnRole
+
+  contentJa          String  @db.Text
+  contentTranslation String? @db.Text
+  contentRomaji      String? @db.Text
+
+  inputSource     ConversationInputSource?
+  audioUrl        String?                  @db.Text
+  audioPublicId   String?                  @unique @db.VarChar(255)
+  audioDurationMs Int?
+  sttConfidence   Float?
+
+  moderationFlagged Boolean @default(false)
+  latencyMs         Int?
+  inputTokens       Int?
+  outputTokens      Int?
+
+  feedback ConversationTurnFeedback?
+
+  createdAt DateTime @default(now())
+
+  @@unique([sessionId, order])
+  @@index([sessionId])
+}
+
+// Koreksi terstruktur untuk satu giliran user. Bentuknya blok JSON tervalidasi
+// Zod, mengikuti pola Article.body — bukan HTML dan bukan teks bebas.
+model ConversationTurnFeedback {
+  id Int @id @default(autoincrement())
+
+  turn   ConversationTurn @relation(fields: [turnId], references: [id], onDelete: Cascade)
+  turnId Int              @unique
+
+  rubricVersion      String @db.VarChar(32)
+  corrections        Json   @db.JsonB
+  summary            String @db.Text
+  pronunciationScore Float?
+
+  createdAt DateTime @default(now())
+}
+
+// Counter harian per user. Diperbarui atomik seperti AuthRateLimit dan menjadi
+// sumber kebenaran pemakaian serta audit biaya, walau transcript tidak disimpan.
+// Penegakan batasnya menyusul dari modul plan/pricing; tahap sekarang hanya
+// mencatat.
+model ConversationQuota {
+  id Int @id @default(autoincrement())
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+
+  quotaDate    DateTime @db.Date
+  turnCount    Int      @default(0)
+  audioSeconds Int      @default(0)
+  inputTokens  Int      @default(0)
+  outputTokens Int      @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, quotaDate])
+  @@index([quotaDate])
 }

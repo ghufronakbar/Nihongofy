@@ -10,6 +10,7 @@ import {
   Trophy,
 } from "lucide-react";
 import { getAttemptHistory } from "@/features/history/actions";
+import { FEATURES } from "@/constants";
 import { JLPT_SECTION_LABELS } from "@/constants/jlpt";
 import type { JlptLevel } from "@prisma/client";
 import { formatInTimeZone } from "@/lib/time-zone";
@@ -117,12 +118,14 @@ export default async function HistoryPage() {
           <p className="mt-2 text-sm font-semibold text-muted-foreground max-w-md mx-auto">
             Kamu belum pernah mengerjakan paket tes. Pilih paket ujian untuk mulai latihan atau simulasi JLPT.
           </p>
-          <div className="mt-6">
-            <Link href="/test-package" className="neo-button bg-neo-blue text-white font-black">
-              Pilih Paket Tes Sekarang
-              <ArrowRight className="size-4" />
-            </Link>
-          </div>
+          {FEATURES.testPackage && (
+            <div className="mt-6">
+              <Link href="/test-package" className="neo-button bg-neo-blue text-white font-black">
+                Pilih Paket Tes Sekarang
+                <ArrowRight className="size-4" />
+              </Link>
+            </div>
+          )}
         </section>
       ) : (
         <section className="space-y-4">
@@ -130,12 +133,14 @@ export default async function HistoryPage() {
             <span className="font-mono text-xs font-black uppercase text-foreground/70">
               DAFTAR ATTEMPT ({attempts.length})
             </span>
-            <Link
-              href="/test-package"
-              className="font-mono text-xs font-bold text-neo-blue underline decoration-2 underline-offset-4 hover:text-neo-ink"
-            >
-              + Tambah Attempt Baru
-            </Link>
+            {FEATURES.testPackage && (
+              <Link
+                href="/test-package"
+                className="font-mono text-xs font-bold text-neo-blue underline decoration-2 underline-offset-4 hover:text-neo-ink"
+              >
+                + Tambah Attempt Baru
+              </Link>
+            )}
           </div>
 
           <div className="space-y-4">
@@ -190,36 +195,38 @@ export default async function HistoryPage() {
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-2.5 shrink-0 pt-3 md:pt-0 border-t-2 md:border-t-0 border-neo-ink/10">
-                    {attempt.status === "COMPLETED" && (
-                      <>
-                        <Link
-                          href={`/result/${attempt.id}`}
-                          className="neo-button !min-h-9 !px-4 !py-1.5 bg-neo-blue text-white text-xs font-black"
-                        >
-                          <CheckCircle2 className="size-3.5" />
-                          Lihat Hasil
-                        </Link>
-                        <Link
-                          href={`/result/${attempt.id}/detail`}
-                          className="neo-button !min-h-9 !px-4 !py-1.5 bg-white text-black text-xs font-black"
-                        >
-                          Review Jawaban
-                        </Link>
-                      </>
-                    )}
+                  {FEATURES.testPackage && (
+                    <div className="flex flex-wrap items-center gap-2.5 shrink-0 pt-3 md:pt-0 border-t-2 md:border-t-0 border-neo-ink/10">
+                      {attempt.status === "COMPLETED" && (
+                        <>
+                          <Link
+                            href={`/result/${attempt.id}`}
+                            className="neo-button !min-h-9 !px-4 !py-1.5 bg-neo-blue text-white text-xs font-black"
+                          >
+                            <CheckCircle2 className="size-3.5" />
+                            Lihat Hasil
+                          </Link>
+                          <Link
+                            href={`/result/${attempt.id}/detail`}
+                            className="neo-button !min-h-9 !px-4 !py-1.5 bg-white text-black text-xs font-black"
+                          >
+                            Review Jawaban
+                          </Link>
+                        </>
+                      )}
 
-                    {attempt.status === "IN_PROGRESS" && (
-                      <Link
-                        href={`/exam/${attempt.id}/${attempt.resumeSession}`}
-                        className="neo-button !min-h-9 !px-5 !py-1.5 bg-neo-yellow text-black text-xs font-black"
-                      >
-                        <PlayCircle className="size-3.5" />
-                        Lanjutkan Ujian
-                        <ArrowRight className="size-3.5" />
-                      </Link>
-                    )}
-                  </div>
+                      {attempt.status === "IN_PROGRESS" && (
+                        <Link
+                          href={`/exam/${attempt.id}/${attempt.resumeSession}`}
+                          className="neo-button !min-h-9 !px-5 !py-1.5 bg-neo-yellow text-black text-xs font-black"
+                        >
+                          <PlayCircle className="size-3.5" />
+                          Lanjutkan Ujian
+                          <ArrowRight className="size-3.5" />
+                        </Link>
+                      )}
+                    </div>
+                  )}
                 </div>
               );
             })}

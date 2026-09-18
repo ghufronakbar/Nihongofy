@@ -5,6 +5,16 @@ const optionalEnvString = z.preprocess(
   z.string().trim().min(1).optional(),
 );
 
+// String kosong diperlakukan sama dengan tidak diisi, supaya baris `KEY=` di
+// .env tetap memakai default.
+const featureFlag = z.preprocess(
+  (value) => (value === "" ? undefined : value),
+  z
+    .enum(["true", "false"])
+    .default("true")
+    .transform((value) => value === "true"),
+);
+
 const envSchema = z
   .object({
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
@@ -33,8 +43,47 @@ const envSchema = z
       (value) => (value === "" ? undefined : value),
       z.string().min(16).optional(),
     ),
+    // Feature flags. Default aktif; set "false" untuk menyembunyikan modul.
+    FEATURES_KANA: featureFlag,
+    FEATURES_FLASHCARD: featureFlag,
+    FEATURES_PRACTICE: featureFlag,
+    FEATURES_TEST_PACKAGE: featureFlag,
+    FEATURES_HISTORY: featureFlag,
+    FEATURES_PROGRESS: featureFlag,
+    FEATURES_ANALYTICS: featureFlag,
+    FEATURES_ARTICLE: featureFlag,
+    FEATURES_QUESTION_COMMENT: featureFlag,
+    FEATURES_CONVERSATION: featureFlag,
+    FEATURES_SPEAKING: featureFlag,
+    CONVERSATION_PROVIDER: z.enum(["mock", "openai"]).default("mock"),
+    CONVERSATION_CHAT_MODEL: optionalEnvString,
+    OPENAI_API_KEY: optionalEnvString,
+    OPENAI_BASE_URL: optionalEnvString,
+    VERCEL_ENV: optionalEnvString,
   })
   .superRefine((value, context) => {
+    // O-6: provider mock tidak boleh melayani deployment produksi. Dicek lewat
+    // VERCEL_ENV, bukan NODE_ENV, supaya `next build` lokal tetap bisa jalan.
+    if (
+      value.FEATURES_CONVERSATION &&
+      value.CONVERSATION_PROVIDER === "mock" &&
+      value.VERCEL_ENV === "production"
+    ) {
+      context.addIssue({
+        code: "custom",
+        path: ["CONVERSATION_PROVIDER"],
+        message: "Provider mock tidak boleh aktif pada deployment produksi.",
+      });
+    }
+
+    if (value.FEATURES_CONVERSATION && value.CONVERSATION_PROVIDER === "openai" && !value.OPENAI_API_KEY) {
+      context.addIssue({
+        code: "custom",
+        path: ["OPENAI_API_KEY"],
+        message: "OPENAI_API_KEY wajib diisi saat CONVERSATION_PROVIDER=openai.",
+      });
+    }
+
     if (Boolean(value.GOOGLE_CLIENT_ID) === Boolean(value.GOOGLE_CLIENT_SECRET)) return;
 
     context.addIssue({
@@ -82,3 +131,39 @@ export const SITE_URL = new URL(env.APP_URL);
 export const GOOGLE_OAUTH_ENABLED = Boolean(
   env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET,
 );
+
+// ============================================================
+// FEATURE FLAGS
+// ============================================================
+
+// Satu-satunya sumber status modul. Komponen client menerima objek ini lewat
+// props (tipe `FeatureFlags`), bukan mengimpor nilainya langsung.
+export const FEATURES = {
+  kana: env.FEATURES_KANA,
+  flashcard: env.FEATURES_FLASHCARD,
+  practice: env.FEATURES_PRACTICE,
+  testPackage: env.FEATURES_TEST_PACKAGE,
+  history: env.FEATURES_HISTORY,
+  progress: env.FEATURES_PROGRESS,
+  analytics: env.FEATURES_ANALYTICS,
+  article: env.FEATURES_ARTICLE,
+  questionComment: env.FEATURES_QUESTION_COMMENT,
+  conversation: env.FEATURES_CONVERSATION,
+  // Speaking menumpang seluruh jalur turn milik conversation, jadi ikut mati
+  // bila conversation mati.
+  speaking: env.FEATURES_SPEAKING && env.FEATURES_CONVERSATION,
+};
+
+export type FeatureFlags = typeof FEATURES;
+export type FeatureName = keyof FeatureFlags;
+
+// ============================================================
+// CONVERSATION & SPEAKING
+// ============================================================
+
+export const CONVERSATION_PROVIDER = env.CONVERSATION_PROVIDER;
+export const CONVERSATION_CHAT_MODEL = env.CONVERSATION_CHAT_MODEL ?? "gpt-5.6-luna";
+
+// Konstanta conversation yang tidak berasal dari env ada di
+// `src/constants/conversation.ts` supaya dapat diimpor komponen client tanpa
+// ikut menarik validasi env server ke bundle browser.

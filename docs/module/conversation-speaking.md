@@ -4,6 +4,9 @@
 
 **Preview saja; belum ada modul aplikasi yang dapat digunakan.** Repository hanya menampilkan dua section konsep pada landing page.
 
+Rancangan implementasi (schema, route, kontrak action, dan requirement) ada di
+[`conversation-speaking-design.md`](conversation-speaking-design.md).
+
 ## Yang Sudah Ada
 
 - Preview percakapan dengan partner, topik, contoh dialog, terjemahan, dan label TTS.
@@ -24,7 +27,8 @@
 
 ## Catatan Arsitektur
 
-- `robots.ts` sudah memblokir path `/conversation` dan `/speaking`, tetapi path tersebut belum diimplementasikan.
+- `src/app/robots.ts` **belum** memblokir `/conversation` maupun `/speaking`; keduanya tidak ada di daftar `allow` maupun `disallow`. Saat route dibuat, keduanya harus ditambahkan ke `disallow` dan ke `PROTECTED_ROUTES`/`PROTECTED_PREFIXES` di `src/proxy.ts`.
+- `User.allowAudioStorage` dan `User.allowConversationStorage` sudah ada di schema, dapat diubah di `/profile/privacy`, dan sudah ikut pada `/api/account/export` — jadi consent tidak perlu kolom baru.
 - `src/features/study/lib/tts.ts` hanya menyediakan speech synthesis browser untuk kana/vocabulary dan belum menjadi conversation engine.
 - Preview tidak membuat data palsu di database; semua tampilannya statis.
 

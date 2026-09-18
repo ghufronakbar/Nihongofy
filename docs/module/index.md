@@ -23,7 +23,7 @@ Folder ini mendokumentasikan kondisi aplikasi berdasarkan kode, fixture, dan dat
 | [Question comments](question-comment.md) | Selesai untuk catatan pribadi | CRUD dan lampiran Cloudinary aktif; bukan komentar publik/kolaboratif. |
 | [Japanese content rendering](japanese-content-rendering.md) | Fungsional dengan gap format | Furigana, underline, slot, tabel, dan multi-passage aktif; newline dan Markdown fixture belum selalu dirender dengan benar. |
 | [Shared study utilities](study.md) | Selesai sederhana | Saat ini hanya menyediakan TTS browser bersama untuk kana dan flashcard. |
-| [Conversation dan speaking](conversation-speaking.md) | Preview saja | Belum ada route, provider AI, persistence chat, microphone capture, transcription, atau feedback. |
+| [Conversation dan speaking](conversation-speaking.md) | Preview saja | Belum ada route, provider AI, persistence chat, microphone capture, transcription, atau feedback. Rancangan dan requirement: [conversation-speaking-design.md](conversation-speaking-design.md); spesifikasi aset karakter: [conversation-persona-assets.md](conversation-persona-assets.md). |
 | [Content data dan seeding](content-data.md) | Infrastruktur aktif | Import tervalidasi tersedia; source fixture dan isi database development belum sinkron penuh. |
 
 ## Snapshot Data Development

@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { SITE_URL } from "@/constants";
+import { FEATURES, SITE_URL } from "@/constants";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -7,18 +7,16 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: [
         "/",
-        "/article",
-        "/article/",
-        "/test-package",
-        "/test-package/",
-        "/exercises",
-        "/kana",
-        "/kana/",
-        "/flashcard",
-        "/flashcard/try/",
+        ...(FEATURES.article ? ["/article", "/article/"] : []),
+        ...(FEATURES.testPackage ? ["/test-package", "/test-package/"] : []),
+        ...(FEATURES.practice ? ["/exercises"] : []),
+        ...(FEATURES.kana ? ["/kana", "/kana/"] : []),
+        ...(FEATURES.flashcard ? ["/flashcard", "/flashcard/try/"] : []),
       ],
       disallow: [
         "/api/",
+        "/conversation",
+        "/speaking",
         "/login",
         "/register",
         "/verify-email",

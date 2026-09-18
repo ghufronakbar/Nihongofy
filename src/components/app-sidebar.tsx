@@ -8,10 +8,13 @@ import {
   ChartNoAxesCombined,
   History,
   LayoutDashboard,
+  MessageSquareText,
+  Mic2,
   LogOut,
   ShieldCheck,
   TrendingUp,
   UserRound,
+  type LucideIcon,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -26,25 +29,38 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import type { FeatureFlags, FeatureName } from "@/constants";
 import { logoutAction } from "@/features/auth/actions";
 import { cn } from "@/lib/utils";
 
-const NAV_ITEMS = [
+const NAV_ITEMS: {
+  title: string;
+  href: string;
+  icon: LucideIcon;
+  feature?: FeatureName;
+}[] = [
   { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { title: "History", href: "/history", icon: History },
-  { title: "Progress", href: "/progress", icon: TrendingUp },
-  { title: "Analytics", href: "/analytics", icon: ChartNoAxesCombined },
-  { title: "Flashcard", href: "/flashcard", icon: Brain },
+  { title: "History", href: "/history", icon: History, feature: "history" },
+  { title: "Progress", href: "/progress", icon: TrendingUp, feature: "progress" },
+  { title: "Analytics", href: "/analytics", icon: ChartNoAxesCombined, feature: "analytics" },
+  { title: "Flashcard", href: "/flashcard", icon: Brain, feature: "flashcard" },
+  { title: "Percakapan", href: "/conversation", icon: MessageSquareText, feature: "conversation" },
+  { title: "Bicara", href: "/speaking", icon: Mic2, feature: "speaking" },
 ];
 
 export function AppSidebar({
   displayName,
   avatarUrl,
+  features,
 }: {
   displayName: string;
   avatarUrl: string | null;
+  features: FeatureFlags;
 }) {
   const pathname = usePathname();
+  // Menu hanya memuat modul yang aktif, supaya sidebar tidak menjanjikan
+  // halaman yang di-notFound() oleh route-nya.
+  const navItems = NAV_ITEMS.filter((item) => !item.feature || features[item.feature]);
   const [isPending, startTransition] = useTransition();
   const initials = displayName
     .split(/\s+/)
@@ -73,7 +89,7 @@ export function AppSidebar({
         <SidebarGroup className="p-0">
           <SidebarGroupContent>
             <SidebarMenu className="gap-1.5">
-              {NAV_ITEMS.map((item) => {
+              {navItems.map((item) => {
                 const isActive =
                   item.href === "/dashboard"
                     ? pathname === "/dashboard"

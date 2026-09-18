@@ -511,6 +511,9 @@ data aktual.
 ## Fase 8 — Conversation dan Speaking
 
 **Modul utama:** [Conversation dan Speaking](../module/conversation-speaking.md).
+**Rancangan teknis dan requirement:** [conversation-speaking-design.md](../module/conversation-speaking-design.md).
+**Pendekatan:** UI dibangun lebih dulu di atas provider mock agar dapat dinilai sebagai end user;
+migration, quota, dan provider nyata menyusul. Urutan tahap A-H ada di §11 dokumen rancangan.
 
 **Alasan ditempatkan terakhir:** modul ini bukan sekadar UI baru. Ia membutuhkan account security,
 audio abstraction, privacy/retention policy, quota, moderation, cost control, observability, dan
@@ -571,6 +574,11 @@ evaluation yang belum dibutuhkan modul lain.
   tidak tersedia.
 - [ ] Perbarui seluruh `docs/module/*.md` dari "kondisi aktual" terbaru dan tutup known issue yang
   sudah selesai.
+- [x] Feature flag per modul lewat env `FEATURES_*` (default `true`): route segmen `notFound()`,
+  nav/CTA/shortcut/sitemap/robots menyembunyikan modul yang mati. Menggantikan
+  `CONVERSATION_ENABLED`/`SPEAKING_ENABLED`. Status 404 terverifikasi lewat dev server.
+- [ ] Uji manual tampilan home, dashboard, profile, history, progress, dan analytics dengan
+  kombinasi flag mati (mis. `FEATURES_TEST_PACKAGE=false`, `FEATURES_PRACTICE=false`).
 
 ### Final Exit Criteria
 

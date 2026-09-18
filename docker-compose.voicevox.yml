@@ -1,0 +1,53 @@
+# VOICEVOX ENGINE untuk development lokal.
+#
+# Bukan bagian dari runtime aplikasi. Aplikasi ini deploy ke Vercel dan tidak
+# pernah menjalankan container; berkas ini hanya menyediakan engine TTS di mesin
+# pengembang selama mengevaluasi suara karakter.
+#
+#   docker compose -f docker-compose.voicevox.yml up -d
+#   open http://localhost:50021/docs      # Swagger seluruh endpoint
+#   docker compose -f docker-compose.voicevox.yml down
+#
+# Produksi memerlukan engine yang di-host sendiri; `localhost` tidak terjangkau
+# dari fungsi serverless Vercel.
+
+name: tanoshii-voicevox
+
+services:
+  voicevox:
+    # Tag multi-arch (amd64 + arm64): berkas yang sama bekerja di Apple Silicon
+    # maupun VPS amd64 nanti, tanpa emulasi di keduanya.
+    #
+    # Versi dipatok, bukan `latest`, supaya suara yang Anda dengarkan saat
+    # evaluasi tetap sama dengan yang berjalan nanti — pembaruan engine dapat
+    # mengubah hasil sintesis. Ukuran unduhannya sekitar 2 GB.
+    image: voicevox/voicevox_engine:cpu-ubuntu24.04-0.25.2
+    container_name: tanoshii-voicevox
+    restart: unless-stopped
+
+    ports:
+      # Sengaja diikat ke 127.0.0.1. Engine ini TIDAK punya autentikasi sama
+      # sekali — siapa pun yang dapat menjangkau portnya dapat memakainya.
+      # Jangan pernah dipetakan ke 0.0.0.0 tanpa proxy berautentikasi di depan.
+      - "127.0.0.1:50021:50021"
+
+    healthcheck:
+      # Image berbasis Python, jadi pemeriksaan memakai urllib alih-alih curl
+      # yang belum tentu terpasang.
+      test:
+        - CMD-SHELL
+        - python3 -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:50021/version')"
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      # Pemuatan model pertama kali memakan waktu; jangan dinyatakan gagal
+      # sebelum sempat siap.
+      start_period: 90s
+
+    volumes:
+      # Kamus pengguna dan pengaturan engine bertahan antar restart. Berguna
+      # untuk memperbaiki bacaan nama atau istilah yang salah dilafalkan.
+      - voicevox-data:/home/user/.local/share/voicevox-engine
+
+volumes:
+  voicevox-data:

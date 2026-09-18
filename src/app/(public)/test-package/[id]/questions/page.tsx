@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { getTestPackageQuestions } from "@/features/test-package/actions";
+import { FEATURES } from "@/constants";
 import { QuestionCommentForm } from "@/features/question-comment/components/question-comment-form";
 import { CommentItem } from "@/features/question-comment/components/comment-item";
 import { CopyQuestionButton } from "@/components/copy-question-button";
@@ -254,19 +255,21 @@ export default async function TestPackageQuestionsPage({
                       </div>
                     )}
 
-                    <div className="flex flex-col gap-3 mt-2">
-                      {question.questionComments.length > 0 && (
-                        <div className="flex flex-col gap-3">
-                          <span className="font-mono text-xs font-black uppercase text-foreground/70">
-                            Catatan Belajar ({question.questionComments.length})
-                          </span>
-                          {question.questionComments.map((comment) => (
-                            <CommentItem key={comment.id} comment={comment} />
-                          ))}
-                        </div>
-                      )}
-                      <QuestionCommentForm questionId={question.id} />
-                    </div>
+                    {FEATURES.questionComment && (
+                      <div className="flex flex-col gap-3 mt-2">
+                        {question.questionComments.length > 0 && (
+                          <div className="flex flex-col gap-3">
+                            <span className="font-mono text-xs font-black uppercase text-foreground/70">
+                              Catatan Belajar ({question.questionComments.length})
+                            </span>
+                            {question.questionComments.map((comment) => (
+                              <CommentItem key={comment.id} comment={comment} />
+                            ))}
+                          </div>
+                        )}
+                        <QuestionCommentForm questionId={question.id} />
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

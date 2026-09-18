@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { FEATURES } from "@/constants";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { AppSidebar } from "@/components/app-sidebar";
@@ -31,7 +32,11 @@ export default async function DashboardLayout({
 
   return (
     <SidebarProvider>
-      <AppSidebar displayName={user.displayName} avatarUrl={user.avatarUrl} />
+      <AppSidebar
+        displayName={user.displayName}
+        avatarUrl={user.avatarUrl}
+        features={FEATURES}
+      />
       <SidebarInset className="bg-background">
         <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center justify-between border-b-[3px] border-neo-ink bg-white px-4 shadow-neo-sm md:px-6">
           <div className="flex items-center gap-3">

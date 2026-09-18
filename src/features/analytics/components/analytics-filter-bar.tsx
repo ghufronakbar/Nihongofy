@@ -38,12 +38,23 @@ function toIsoDate(date: Date): string {
   return date.toISOString().slice(0, 10);
 }
 
-export function AnalyticsFilterBar() {
+export function AnalyticsFilterBar({
+  practiceEnabled,
+  mockEnabled,
+}: {
+  practiceEnabled: boolean;
+  mockEnabled: boolean;
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const scope = searchParams.get("scope") ?? "ALL";
+  // Opsi scope mengikuti modul yang aktif. Tanpa test package, scope dikunci
+  // ke latihan cepat oleh server, jadi pilihan scope tidak ditampilkan.
+  const scopeOptions = SCOPE_OPTIONS.filter((option) =>
+    option.value === "PRACTICE" ? practiceEnabled : mockEnabled,
+  );
   const range = searchParams.get("range") ?? "all";
   const from = searchParams.get("from") ?? undefined;
   const to = searchParams.get("to") ?? undefined;
@@ -95,18 +106,20 @@ export function AnalyticsFilterBar() {
       </div>
 
       <div className="flex flex-wrap items-center gap-2.5">
-        <Select value={scope} onValueChange={handleScopeChange}>
-          <SelectTrigger className="h-10 w-56 rounded-md border-2 border-neo-ink bg-white px-3 font-bold text-xs shadow-neo-sm">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent className="border-2 border-neo-ink shadow-neo font-bold text-xs">
-            {SCOPE_OPTIONS.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        {mockEnabled && (
+          <Select value={scope} onValueChange={handleScopeChange}>
+            <SelectTrigger className="h-10 w-56 rounded-md border-2 border-neo-ink bg-white px-3 font-bold text-xs shadow-neo-sm">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="border-2 border-neo-ink shadow-neo font-bold text-xs">
+              {scopeOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
 
         <Select value={range} onValueChange={handleRangeChange}>
           <SelectTrigger className="h-10 w-44 rounded-md border-2 border-neo-ink bg-white px-3 font-bold text-xs shadow-neo-sm">

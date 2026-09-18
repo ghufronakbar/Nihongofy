@@ -2,11 +2,12 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { BrandMark } from "@/components/marketing/brand-mark";
 import { PageContainer } from "@/components/marketing/page-container";
+import { FEATURES, type FeatureName } from "@/constants";
 
-const FOOTER_LINKS = [
+const FOOTER_LINKS: { label: string; href: string; feature?: FeatureName }[] = [
   { label: "Beranda", href: "/" },
-  { label: "Artikel", href: "/article" },
-  { label: "Mock JLPT", href: "/test-package" },
+  { label: "Artikel", href: "/article", feature: "article" },
+  { label: "Mock JLPT", href: "/test-package", feature: "testPackage" },
   { label: "Masuk", href: "/login" },
   { label: "Daftar", href: "/register" },
 ];
@@ -24,7 +25,7 @@ export function PublicFooter() {
         </div>
 
         <nav className="grid grid-cols-2 gap-x-8 gap-y-3 md:justify-self-end" aria-label="Navigasi footer">
-          {FOOTER_LINKS.map((item) => (
+          {FOOTER_LINKS.filter((item) => !item.feature || FEATURES[item.feature]).map((item) => (
             <Link
               key={item.href}
               href={item.href}

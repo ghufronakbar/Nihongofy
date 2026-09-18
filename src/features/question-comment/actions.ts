@@ -1,6 +1,7 @@
 "use server";
 
 import { notFound, redirect } from "next/navigation";
+import { FEATURES } from "@/constants";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { createSignedUploadParams } from "@/lib/cloudinary";
@@ -22,6 +23,8 @@ async function ensureQuestionExists(questionId: number) {
 }
 
 export async function addQuestionCommentAction(input: AddQuestionCommentInput) {
+  if (!FEATURES.questionComment) notFound();
+
   const authSession = await getSession();
   if (!authSession) redirect("/login");
 
@@ -44,6 +47,8 @@ export async function addQuestionCommentAction(input: AddQuestionCommentInput) {
 }
 
 export async function updateQuestionCommentAction(input: EditQuestionCommentInput) {
+  if (!FEATURES.questionComment) notFound();
+
   const authSession = await getSession();
   if (!authSession) redirect("/login");
 
@@ -68,6 +73,8 @@ export async function updateQuestionCommentAction(input: EditQuestionCommentInpu
 }
 
 export async function deleteQuestionCommentAction(input: DeleteQuestionCommentInput) {
+  if (!FEATURES.questionComment) notFound();
+
   const authSession = await getSession();
   if (!authSession) redirect("/login");
 
@@ -91,6 +98,8 @@ export async function deleteQuestionCommentAction(input: DeleteQuestionCommentIn
 // Client uploads straight to Cloudinary with these signed params — our server
 // never proxies the file itself, and CLOUDINARY_API_SECRET never reaches the client.
 export async function getCommentImageUploadSignatureAction() {
+  if (!FEATURES.questionComment) notFound();
+
   const authSession = await getSession();
   if (!authSession) redirect("/login");
 

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { FlashcardNoteTypeKind } from "@prisma/client";
+import { FEATURES } from "@/constants";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import {
@@ -14,6 +15,10 @@ import {
  * beberapa note type dalam satu tabel akan menghasilkan kolom yang tidak konsisten.
  */
 export async function GET(request: Request) {
+  if (!FEATURES.flashcard) {
+    return NextResponse.json({ message: "Fitur tidak tersedia." }, { status: 404 });
+  }
+
   const session = await getSession();
   if (!session) return NextResponse.json({ message: "Tidak diizinkan." }, { status: 401 });
 

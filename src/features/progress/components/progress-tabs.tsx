@@ -52,7 +52,13 @@ function accuracyClass(accuracy: number) {
   return "font-medium text-foreground";
 }
 
-function LevelTable({ view }: { view: ProgressLevelView }) {
+function LevelTable({
+  view,
+  resultLinksEnabled,
+}: {
+  view: ProgressLevelView;
+  resultLinksEnabled: boolean;
+}) {
   return (
     <div className="neo-surface overflow-hidden border-[3px] border-neo-ink shadow-neo bg-white">
       <Table>
@@ -111,12 +117,16 @@ function LevelTable({ view }: { view: ProgressLevelView }) {
           {view.rows.map((row) => (
             <TableRow key={row.attemptId} className="border-b border-neo-ink/10 hover:bg-neo-paper/60 transition-colors">
               <TableCell className="whitespace-normal">
-                <Link
-                  href={`/result/${row.attemptId}`}
-                  className="font-black text-neo-ink underline decoration-2 underline-offset-4 hover:text-neo-blue transition-colors"
-                >
-                  {row.packageName}
-                </Link>
+                {resultLinksEnabled ? (
+                  <Link
+                    href={`/result/${row.attemptId}`}
+                    className="font-black text-neo-ink underline decoration-2 underline-offset-4 hover:text-neo-blue transition-colors"
+                  >
+                    {row.packageName}
+                  </Link>
+                ) : (
+                  <span className="font-black text-neo-ink">{row.packageName}</span>
+                )}
               </TableCell>
               <TableCell className="font-mono text-xs text-muted-foreground">{row.dateLabel}</TableCell>
               {view.mondaiColumns.map((column, index) => {
@@ -182,7 +192,13 @@ function LevelTable({ view }: { view: ProgressLevelView }) {
   );
 }
 
-export function ProgressTabs({ levels }: { levels: ProgressLevelView[] }) {
+export function ProgressTabs({
+  levels,
+  resultLinksEnabled,
+}: {
+  levels: ProgressLevelView[];
+  resultLinksEnabled: boolean;
+}) {
   return (
     <Tabs defaultValue={levels[0].level} className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -213,7 +229,7 @@ export function ProgressTabs({ levels }: { levels: ProgressLevelView[] }) {
             <ProgressExportButtons view={view} />
           </div>
 
-          <LevelTable view={view} />
+          <LevelTable view={view} resultLinksEnabled={resultLinksEnabled} />
         </TabsContent>
       ))}
     </Tabs>

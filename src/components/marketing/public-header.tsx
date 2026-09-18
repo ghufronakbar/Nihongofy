@@ -14,15 +14,18 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import type { FeatureFlags, FeatureName } from "@/constants";
 import { cn } from "@/lib/utils";
 
-const NAV_ITEMS = [
+const NAV_ITEMS: { label: string; href: string; feature?: FeatureName }[] = [
   { label: "Beranda", href: "/" },
-  { label: "Kana", href: "/kana/hiragana" },
-  { label: "Flashcard", href: "/flashcard" },
-  { label: "Latihan Cepat", href: "/exercises" },
-  { label: "Mock JLPT", href: "/test-package" },
-  { label: "Artikel", href: "/article" },
+  { label: "Kana", href: "/kana/hiragana", feature: "kana" },
+  { label: "Flashcard", href: "/flashcard", feature: "flashcard" },
+  { label: "Latihan Cepat", href: "/exercises", feature: "practice" },
+  { label: "Mock JLPT", href: "/test-package", feature: "testPackage" },
+  { label: "Artikel", href: "/article", feature: "article" },
+  { label: "Percakapan", href: "/conversation", feature: "conversation" },
+  { label: "Bicara", href: "/speaking", feature: "speaking" },
 ];
 
 function isActivePath(pathname: string, href: string) {
@@ -31,9 +34,18 @@ function isActivePath(pathname: string, href: string) {
   return pathname.startsWith(href.split("#")[0]);
 }
 
-export function PublicHeader({ isAuthenticated }: { isAuthenticated: boolean }) {
+export function PublicHeader({
+  isAuthenticated,
+  features,
+}: {
+  isAuthenticated: boolean;
+  features: FeatureFlags;
+}) {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  // Menu hanya memuat modul yang aktif, supaya nav tidak menjanjikan halaman
+  // yang di-notFound() oleh route-nya.
+  const navItems = NAV_ITEMS.filter((item) => !item.feature || features[item.feature]);
 
   return (
     <header className="sticky top-0 z-40 border-b-[3px] border-neo-ink bg-background/95 backdrop-blur-sm">
@@ -41,7 +53,7 @@ export function PublicHeader({ isAuthenticated }: { isAuthenticated: boolean }) 
         <BrandMark />
 
         <nav className="hidden items-center gap-5 lg:flex" aria-label="Navigasi utama">
-          {NAV_ITEMS.map((item) => (
+          {navItems.map((item) => (
             <Link
               key={item.label}
               href={item.href}
@@ -93,7 +105,7 @@ export function PublicHeader({ isAuthenticated }: { isAuthenticated: boolean }) 
               </SheetDescription>
             </SheetHeader>
             <nav className="flex flex-col gap-3 p-5" aria-label="Navigasi mobile">
-              {NAV_ITEMS.map((item, index) => (
+              {navItems.map((item, index) => (
                 <Link
                   key={item.label}
                   href={item.href}

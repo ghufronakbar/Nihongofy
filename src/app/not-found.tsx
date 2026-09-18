@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft, FileQuestion, Search } from "lucide-react";
 import { PageContainer } from "@/components/marketing/page-container";
+import { FEATURES } from "@/constants";
 
 export default function NotFound() {
   return (
@@ -35,10 +36,12 @@ export default function NotFound() {
               <ArrowLeft className="size-5" aria-hidden="true" />
               Kembali ke beranda
             </Link>
-            <Link href="/test-package" className="neo-button bg-neo-yellow text-black">
-              <Search className="size-5" aria-hidden="true" />
-              Cari paket JLPT
-            </Link>
+            {FEATURES.testPackage && (
+              <Link href="/test-package" className="neo-button bg-neo-yellow text-black">
+                <Search className="size-5" aria-hidden="true" />
+                Cari paket JLPT
+              </Link>
+            )}
           </div>
         </div>
       </PageContainer>

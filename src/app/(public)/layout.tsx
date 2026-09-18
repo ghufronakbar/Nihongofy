@@ -1,5 +1,6 @@
 import { PublicFooter } from "@/components/marketing/public-footer";
 import { PublicHeader } from "@/components/marketing/public-header";
+import { FEATURES } from "@/constants";
 import { getSession } from "@/lib/auth";
 
 export default async function PublicLayout({
@@ -14,7 +15,10 @@ export default async function PublicLayout({
       <a href="#main-content" className="skip-link">
         Lewati ke konten
       </a>
-      <PublicHeader isAuthenticated={Boolean(session)} />
+      <PublicHeader
+        isAuthenticated={Boolean(session)}
+        features={FEATURES}
+      />
       <main id="main-content" className="flex-1">
         {children}
       </main>

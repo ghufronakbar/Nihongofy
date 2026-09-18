@@ -10,6 +10,7 @@ import {
   MONDAI_WEIGHTS,
   type ScoringSectionKey,
 } from "@/lib/jlpt-score";
+import { FEATURES } from "@/constants";
 import { MONDAI_TYPE_LABELS } from "@/constants/jlpt";
 import { Info, TrendingUp, Trophy } from "lucide-react";
 import Link from "next/link";
@@ -151,14 +152,16 @@ export default async function ProgressPage() {
           <p className="mt-2 text-sm font-semibold text-muted-foreground max-w-md mx-auto">
             Selesaikan setidaknya satu mock test atau latihan per seksi untuk melihat grafik perkembangan skormu di sini.
           </p>
-          <div className="mt-6">
-            <Link href="/test-package" className="neo-button bg-neo-blue text-white font-black">
-              Mulai Ujian Pertama
-            </Link>
-          </div>
+          {FEATURES.testPackage && (
+            <div className="mt-6">
+              <Link href="/test-package" className="neo-button bg-neo-blue text-white font-black">
+                Mulai Ujian Pertama
+              </Link>
+            </div>
+          )}
         </section>
       ) : (
-        <ProgressTabs levels={levels} />
+        <ProgressTabs levels={levels} resultLinksEnabled={FEATURES.testPackage} />
       )}
     </div>
   );
