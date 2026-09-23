@@ -4,6 +4,14 @@
 
 **Selesai untuk catatan belajar pribadi.** User login dapat menambah, mengedit, menghapus, dan melampirkan gambar pada soal di mode baca dan result detail.
 
+## Feature Flag
+
+`FEATURES_QUESTION_COMMENT` (default `true`). Saat `false`:
+
+- Daftar "Catatan Belajar" dan form tambah catatan tidak dirender di `/test-package/[id]/questions` maupun `/result/[attemptId]/detail`.
+- Keempat Server Action (`add`, `update`, `delete`, dan signature upload gambar) memanggil `notFound()` sebelum memeriksa session.
+- Catatan yang sudah tersimpan tidak dihapus.
+
 ## Scope
 
 - Comment hanya ditampilkan kepada pemiliknya sendiri.

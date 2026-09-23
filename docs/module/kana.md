@@ -4,6 +4,16 @@
 
 **Selesai untuk pengenalan dan self-review dasar.** Hiragana dan katakana berasal dari fixture terkurasi; aktivitas user disimpan sebagai counter per kartu.
 
+## Feature Flag
+
+`FEATURES_KANA` (default `true`). Saat `false`:
+
+- `/kana/hiragana` dan `/kana/katakana` mengembalikan 404 lewat guard `src/app/(public)/kana/layout.tsx`.
+- Menu Kana di header, kartu Kana di home, kartu Kana Lab di dashboard, quick action "Latih kana" dan statistik "Kana pernah benar" di profile tidak dirender.
+- `/kana/*` keluar dari `sitemap.xml` dan daftar `allow` di `robots.txt`.
+- Data `KanaProgress` tidak dihapus dan tampil kembali saat flag diaktifkan.
+- `kana/actions.ts` tidak mengecek flag; hanya halaman yang tertutup.
+
 ## Route
 
 - `/kana/hiragana`

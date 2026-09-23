@@ -6,7 +6,7 @@ Folder ini mendokumentasikan kondisi aplikasi berdasarkan kode, fixture, dan dat
 
 | Modul | Status aktual | Catatan singkat |
 |---|---|---|
-| [Public shell dan home](public-shell.md) | Selesai | Landing page, header/footer, dan CTA aktif; conversation/speaking masih preview statis. |
+| [Public shell dan home](public-shell.md) | Selesai | Landing page, header/footer, dan CTA aktif; menu, kartu, dan section mengikuti feature flag modul. |
 | [Authentication](auth.md) | Selesai | Login, register, verifikasi email, reset password, Redis session registry, revoke perangkat, rate limit, dan Turnstile aktif. |
 | [Dashboard](dashboard.md) | Selesai sederhana | Menampilkan attempt selesai dan attempt terakhir; kartu modul lain masih berupa shortcut statis. |
 | [Kana](kana.md) | Selesai dengan scope terbatas | Fixture kana terkurasi dan progress akun aktif; audio memakai Web Speech API, bukan rekaman. |
@@ -23,8 +23,45 @@ Folder ini mendokumentasikan kondisi aplikasi berdasarkan kode, fixture, dan dat
 | [Question comments](question-comment.md) | Selesai untuk catatan pribadi | CRUD dan lampiran Cloudinary aktif; bukan komentar publik/kolaboratif. |
 | [Japanese content rendering](japanese-content-rendering.md) | Fungsional dengan gap format | Furigana, underline, slot, tabel, dan multi-passage aktif; newline dan Markdown fixture belum selalu dirender dengan benar. |
 | [Shared study utilities](study.md) | Selesai sederhana | Saat ini hanya menyediakan TTS browser bersama untuk kana dan flashcard. |
-| [Conversation dan speaking](conversation-speaking.md) | Preview saja | Belum ada route, provider AI, persistence chat, microphone capture, transcription, atau feedback. Rancangan dan requirement: [conversation-speaking-design.md](conversation-speaking-design.md); spesifikasi aset karakter: [conversation-persona-assets.md](conversation-persona-assets.md). |
+| [Conversation dan speaking](conversation-speaking.md) | Versi awal fungsional | Teks dan suara berjalan end-to-end dengan session tersimpan dan provider mock/OpenAI; quota belum ditegakkan, moderation dan retention belum ada. Rancangan: [conversation-speaking-design.md](conversation-speaking-design.md); aset karakter: [conversation-persona-assets.md](conversation-persona-assets.md). |
 | [Content data dan seeding](content-data.md) | Infrastruktur aktif | Import tervalidasi tersedia; source fixture dan isi database development belum sinkron penuh. |
+
+## Feature Flag
+
+Setiap modul dapat dimatikan lewat env `FEATURES_<NAMA>` bernilai `"true"`/`"false"`. Kosong atau
+tidak diisi berarti `true`. Nilai dibaca sekali saat server start melalui objek `FEATURES` di
+`src/constants/index.ts`; ubah env lalu restart atau redeploy. `robots.txt` dan `sitemap.xml`
+di-prerender saat build, jadi keduanya baru berubah setelah redeploy.
+
+| Key | Modul | Route yang menjadi 404 |
+|---|---|---|
+| `FEATURES_KANA` | [Kana](kana.md#feature-flag) | `/kana/*` |
+| `FEATURES_FLASHCARD` | [Flashcard](flashcard.md#feature-flag) | `/flashcard/*`, `/api/flashcard/export` |
+| `FEATURES_PRACTICE` | [Latihan cepat](practice.md#feature-flag) | `/exercises/*` |
+| `FEATURES_TEST_PACKAGE` | [Paket tes](test-package.md#feature-flag), [Exam](exam.md#feature-flag), [Result](result.md#feature-flag) | `/test-package/*`, `/exam/*`, `/result/*` |
+| `FEATURES_HISTORY` | [History](history.md#feature-flag) | `/history` |
+| `FEATURES_PROGRESS` | [Progress](progress.md#feature-flag) | `/progress` |
+| `FEATURES_ANALYTICS` | [Analytics](analytics.md#feature-flag) | `/analytics` |
+| `FEATURES_ARTICLE` | [Article](article.md#feature-flag) | `/article/*` |
+| `FEATURES_QUESTION_COMMENT` | [Question comments](question-comment.md#feature-flag) | Tidak ada route; section catatan dan action-nya dinonaktifkan |
+| `FEATURES_CONVERSATION` | [Conversation](conversation-speaking.md#feature-flag) | `/conversation/*`, `/api/conversation/*` |
+| `FEATURES_SPEAKING` | [Speaking](conversation-speaking.md#feature-flag) | `/speaking/*` |
+
+Aturan umum:
+
+- Route dijaga oleh `layout.tsx` di segmen modul yang memanggil `notFound()`; conversation dan
+  speaking memakai guard di tiap page. `src/proxy.ts` tidak memeriksa flag.
+- Menu, CTA, kartu shortcut, statistik, section analytics, sitemap, dan robots tidak dirender
+  untuk modul yang mati — bukan sekadar disembunyikan dengan CSS. Rincian per halaman ada di
+  [Public shell](public-shell.md#feature-flag), [Dashboard](dashboard.md#feature-flag), dan
+  [Profile](profile.md#feature-flag).
+- Flag tidak saling mewajibkan; halaman yang menautkan modul lain menyembunyikan link tersebut.
+  Satu-satunya ketergantungan: `FEATURES_SPEAKING` ikut mati bila conversation mati.
+- Data milik modul yang mati tidak dihapus.
+- Hanya conversation, question comment, dan API export flashcard yang memeriksa flag di sisi
+  server action/API. Server Action modul lain belum dijaga, sehingga tab lama yang masih terbuka
+  tetap dapat memanggilnya.
+- Auth, dashboard, profile, dan shared utilities tidak punya flag.
 
 ## Snapshot Data Development
 

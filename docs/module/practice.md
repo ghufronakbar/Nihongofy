@@ -4,6 +4,17 @@
 
 **Fungsional untuk user login, dengan guest mode sementara.** Modul mengambil soal dari bank paket yang sama, tetapi menyimpan session dan analitik secara terpisah dari mock exam.
 
+## Feature Flag
+
+`FEATURES_PRACTICE` (default `true`). Saat `false`:
+
+- `/exercises` dan `/exercises/[sessionId]` mengembalikan 404 lewat guard `src/app/(public)/exercises/layout.tsx`.
+- Menu Latihan Cepat di header, kartu di home dan dashboard, quick action serta statistik "Latihan cepat selesai" di profile tidak dirender.
+- Analytics menyembunyikan section "Ringkasan Latihan Cepat" dan opsi scope "Latihan Cepat"; `?scope=PRACTICE` di URL diabaikan.
+- `/exercises` keluar dari `sitemap.xml` dan `robots.txt`.
+- Practice membaca bank soal secara langsung, sehingga tetap berfungsi walau `FEATURES_TEST_PACKAGE=false`.
+- `practice/actions.ts` tidak mengecek flag.
+
 ## Route
 
 - `/exercises`

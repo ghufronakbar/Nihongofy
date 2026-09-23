@@ -4,6 +4,19 @@
 
 **Fungsional, tetapi isi database development belum selengkap fixture repository.** Listing, detail, mode baca, riwayat per paket, guest start, dan pembuatan attempt sudah aktif.
 
+## Feature Flag
+
+`FEATURES_TEST_PACKAGE` (default `true`) mengendalikan seluruh alur Mock JLPT: modul ini, [Exam runner](exam.md), dan [Result](result.md). Saat `false`:
+
+- `/test-package/*`, `/exam/*`, dan `/result/*` mengembalikan 404 lewat guard `layout.tsx` di masing-masing segmen.
+- Menu Mock JLPT di header dan footer, tombol "Cari paket JLPT" di halaman 404, serta entri sitemap/robots tidak dirender.
+- Home: kartu Mock JLPT dan section "Cara belajar" tidak dirender; kicker hero, subjudul, dan CTA penutup memakai copy tanpa mock test; tombol "Pilih mock test" hilang untuk user login.
+- Dashboard: kartu "Total Selesai", "Attempt Terakhir", kartu Mock Test Penuh, dan tombol ke paket ujian tidak dirender.
+- Profile: statistik "Latihan seksi selesai" dan "Mock JLPT" tidak dirender.
+- History dan Progress tetap tampil (flag masing-masing), tetapi tombol hasil/lanjutkan ujian dan link ke paket tes disembunyikan.
+- Analytics menyembunyikan tren skor, analisis per level, badge mock, dan pilihan scope; halaman hanya menampilkan latihan cepat.
+- Data `Attempt` tidak dihapus. Server Action test package, exam, dan result tidak mengecek flag.
+
 ## Route
 
 - `/test-package`

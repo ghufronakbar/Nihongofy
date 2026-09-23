@@ -4,6 +4,15 @@
 
 **Selesai sebagai modul artikel publik berbasis seed.** Index, search, detail, related content, structured body, generated cover, SEO, save/favorite, dan view tracking tersedia.
 
+## Feature Flag
+
+`FEATURES_ARTICLE` (default `true`). Saat `false`:
+
+- `/article`, `/article/search`, dan `/article/[slug]` mengembalikan 404 lewat guard `src/app/(public)/article/layout.tsx`.
+- Menu Artikel di header dan footer, serta section artikel di home, tidak dirender. Query artikel di home dan sitemap juga dilewati.
+- Seluruh URL artikel keluar dari `sitemap.xml` dan `robots.txt`.
+- `article/actions.ts` (save/favorite dan view) tidak mengecek flag.
+
 ## Route
 
 - `/article`

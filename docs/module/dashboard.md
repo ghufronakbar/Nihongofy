@@ -4,6 +4,15 @@
 
 **Selesai dalam bentuk ringkasan sederhana.** Dashboard memakai data attempt user nyata untuk dua KPI, sedangkan empat kartu learning hub adalah shortcut statis ke modul lain.
 
+## Feature Flag
+
+Dashboard tidak punya flag sendiri dan selalu tersedia bagi user login. Isinya mengikuti flag modul lain:
+
+- Kartu learning hub (Kana Lab, Flashcard Deck, Latihan Cepat, Mock Test Penuh) hanya dirender untuk modul yang aktif; section "Pusat Latihan" hilang bila keempatnya mati.
+- `FEATURES_TEST_PACKAGE=false`: kartu "Total Selesai" dan "Attempt Terakhir", tombol "Pilih Paket Ujian", dan link "Lihat Semua Paket" tidak dirender; subjudul hero memakai copy tanpa paket ujian.
+- `FEATURES_HISTORY=false`: tombol "Lihat Riwayat" tidak dirender.
+- Menu sidebar History, Progress, Analytics, Flashcard, Percakapan, dan Bicara mengikuti flag masing-masing.
+
 ## Route
 
 - `/dashboard`

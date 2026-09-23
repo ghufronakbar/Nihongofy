@@ -6,6 +6,15 @@
 kode dan menunggu UAT provider setelah credential Google dikonfigurasi. Semua route profile
 dilindungi session dan data di-scope ke user aktif.
 
+## Feature Flag
+
+Profile tidak punya flag sendiri. Section "Aktivitas belajar" dan "Lanjut belajar" mengikuti flag modul:
+
+- Statistik: "Kana pernah benar" (`FEATURES_KANA`), "Kartu dipelajari" (`FEATURES_FLASHCARD`), "Latihan cepat selesai" (`FEATURES_PRACTICE`), serta "Latihan seksi selesai" dan "Mock JLPT" (`FEATURES_TEST_PACKAGE`). Susunan grid menyesuaikan jumlah kartu yang tampil, dan section hilang bila tidak ada kartu.
+- Quick action: Latih kana, Buka flashcard, Latihan cepat, dan Lihat analytics mengikuti flag modul tujuannya; section hilang bila semuanya mati.
+- Link "Edit akun" berada di section aktivitas, sehingga ikut hilang bila section itu tidak dirender. Halaman `/profile/info` tetap dapat dibuka lewat navigasi profile.
+- Query overview tetap menghitung semua statistik walau sebagian tidak ditampilkan.
+
 ## Route
 
 - `/profile`

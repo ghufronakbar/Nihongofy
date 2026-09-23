@@ -4,6 +4,19 @@
 
 **Selesai untuk analisis attempt dan latihan cepat.** Modul memakai data completed milik user, mendukung filter scope/tanggal, menampilkan tren, ringkasan practice, breakdown mondai, dan proyeksi per level.
 
+## Feature Flag
+
+`FEATURES_ANALYTICS` (default `true`). Saat `false`, `/analytics` mengembalikan 404 lewat guard `src/app/(dashboard)/analytics/layout.tsx`, dan menu Analytics di sidebar serta quick action "Lihat analytics" di profile tidak dirender.
+
+Isi halaman menyesuaikan flag modul sumber datanya:
+
+| `FEATURES_TEST_PACKAGE` | `FEATURES_PRACTICE` | Yang dirender |
+|---|---|---|
+| `true` | `true` | Semua section dan seluruh opsi scope |
+| `true` | `false` | Tren skor dan analisis per level; section dan opsi scope latihan cepat hilang |
+| `false` | `true` | Hanya ringkasan latihan cepat; scope dikunci ke `PRACTICE` dan pilihan scope disembunyikan |
+| `false` | `false` | Filter hilang, diganti pesan "Belum Ada Data untuk Dianalisis" |
+
 ## Route
 
 - `/analytics`

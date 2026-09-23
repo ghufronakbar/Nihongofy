@@ -4,6 +4,10 @@
 
 **Fungsional, tetapi masih membutuhkan hardening submit/session.** Exam runner mendukung full mock dan latihan per section, menyembunyikan answer key, menyimpan state browser per session, serta mempersist jawaban akun saat submit.
 
+## Feature Flag
+
+Tidak punya flag sendiri; ikut `FEATURES_TEST_PACKAGE` (lihat [Paket tes](test-package.md#feature-flag)). Saat `false`, `/exam/*` mengembalikan 404 lewat guard `src/app/(public)/exam/layout.tsx`, termasuk exam guest. Server Action submit tidak mengecek flag, sehingga tab exam yang sudah terbuka masih dapat submit.
+
 ## Route
 
 - `/exam/[attemptId]/[session]`
