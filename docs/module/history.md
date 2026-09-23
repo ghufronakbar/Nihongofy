@@ -4,6 +4,12 @@
 
 **Selesai untuk riwayat mock/section attempt.** Halaman membaca seluruh attempt milik user lintas paket dan menghitung session resume untuk attempt yang belum selesai.
 
+## Feature Flag
+
+`FEATURES_HISTORY` (default `true`). Saat `false`, `/history` mengembalikan 404 lewat guard `src/app/(dashboard)/history/layout.tsx`, dan menu History di sidebar serta tombol "Lihat Riwayat" di dashboard tidak dirender.
+
+Flag ini tidak bergantung pada `FEATURES_TEST_PACKAGE`. Bila test package mati, daftar attempt tetap tampil tetapi tombol "Lihat Hasil", "Review Jawaban", "Lanjutkan Ujian", dan link "Tambah Attempt Baru" tidak dirender.
+
 ## Route
 
 - `/history`

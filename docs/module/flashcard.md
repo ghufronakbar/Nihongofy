@@ -8,6 +8,16 @@ yang ada baru skema database dan definisi tipe.
 
 Desain lengkap dan alasan tiap keputusan ada di [`docs/plan/anki-parity-flashcard.md`](../plan/anki-parity-flashcard.md).
 
+## Feature Flag
+
+`FEATURES_FLASHCARD` (default `true`). Saat `false`:
+
+- Seluruh `/flashcard/*`, termasuk mode coba guest `/flashcard/try/*`, mengembalikan 404 lewat guard `src/app/(public)/flashcard/layout.tsx`.
+- `GET /api/flashcard/export` mengembalikan 404 sebelum memeriksa session.
+- Menu Flashcard di header dan sidebar, kartu di home dan dashboard, quick action serta statistik "Kartu dipelajari" di profile tidak dirender.
+- `/flashcard` keluar dari `sitemap.xml` dan `robots.txt`.
+- Server Action flashcard (`actions.ts`, `import-actions.ts`, dan lainnya) tidak mengecek flag; tab lama yang masih terbuka tetap dapat memanggilnya.
+
 ## Yang Sudah Ada (Fase A)
 
 - Skema database `Flashcard*` baru: `FlashcardCollection`, `FlashcardPreset`, `FlashcardDeck`,

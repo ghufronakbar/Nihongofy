@@ -4,6 +4,10 @@
 
 **Selesai untuk attempt user login, dengan skor aproksimasi.** Summary dan review per soal memakai data database, ownership check, serta hanya menerima attempt `COMPLETED`.
 
+## Feature Flag
+
+Tidak punya flag sendiri; ikut `FEATURES_TEST_PACKAGE` (lihat [Paket tes](test-package.md#feature-flag)). Saat `false`, `/result/*` mengembalikan 404 lewat guard `src/app/(public)/result/layout.tsx`. Catatan pribadi di result detail diatur terpisah oleh `FEATURES_QUESTION_COMMENT`.
+
 ## Route
 
 - `/result/[attemptId]`

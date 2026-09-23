@@ -4,6 +4,12 @@
 
 **Selesai untuk pelacakan skor attempt.** Progress mempertahankan satu row per attempt agar perubahan hasil dari waktu ke waktu dapat dibandingkan, lalu menyediakan export XLSX dan PDF di browser.
 
+## Feature Flag
+
+`FEATURES_PROGRESS` (default `true`). Saat `false`, `/progress` mengembalikan 404 lewat guard `src/app/(dashboard)/progress/layout.tsx` dan menu Progress di sidebar tidak dirender.
+
+Flag ini tidak bergantung pada `FEATURES_TEST_PACKAGE`. Bila test package mati, tabel dan export tetap tersedia, tetapi nama paket tampil sebagai teks biasa (bukan link ke result) dan CTA "Mulai Ujian Pertama" pada empty state tidak dirender.
+
 ## Route
 
 - `/progress`
