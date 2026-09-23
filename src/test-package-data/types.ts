@@ -6,13 +6,39 @@ export type SeedQuestionChoice = {
   answerImage?: string | null;
 };
 
+// Pembahasan soal. Satu soal punya paling banyak satu pembahasan (relasi 1:1 ke
+// tabel QuestionExplanation), dan alasan tiap pilihan disimpan sebagai baris
+// tersendiri, bukan sebagai blok JSON.
+export type SeedQuestionExplanationChoice = {
+  codeAnswer: number; // 1-4, harus cocok dengan codeAnswer pilihan soal
+  reason: string; // kenapa pilihan ini benar/salah
+};
+
+export type SeedQuestionExplanation = {
+  summary: string; // inti: kenapa kunci jawaban benar
+  detail?: string | null; // pembahasan menyeluruh
+  translation?: string | null; // terjemahan kalimat kunci ke bahasa Indonesia
+  keyPoints?: string[]; // kosakata/grammar yang diuji
+  choices?: SeedQuestionExplanationChoice[]; // 4 item bila diisi, satu per pilihan
+  // Sinyal QA: diisi generator saat kunci jawaban fixture tampak keliru.
+  answerKeyDoubt?: boolean;
+  answerKeyDoubtNote?: string | null;
+  meta?: {
+    source?: "AI" | "HUMAN" | "IMPORTED";
+    aiModel?: string | null;
+    promptVersion?: string | null;
+    generatedAt?: string | null; // ISO-8601
+  };
+};
+
 export type SeedQuestion = {
   order: number; // nomor soal di dalam mondai, mulai dari 1
   questionText: string; // boleh string kosong; markup ringan, lihat docs/seed.md
   questionImage?: string | null;
   questionAudio?: string | null;
   questionAnswer: number; // codeAnswer yang benar (1-4), BUKAN id pilihan
-  explanation?: string | null;
+  // String tunggal masih diterima (bentuk lama) dan dipetakan ke `summary`.
+  explanation?: string | SeedQuestionExplanation | null;
   // Local reference ke `id` di SeedTestPackage.questionContexts — HANYA dipakai
   // di dalam file JSON ini untuk menghubungkan soal ke bacaan/audio bersama,
   // tidak pernah disimpan langsung ke database (di-resolve jadi questionContextId asli).

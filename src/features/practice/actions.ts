@@ -5,6 +5,7 @@ import { notFound, redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import type { JlptLevel, JlptSection, MondaiType, Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { QUESTION_EXPLANATION_SELECT } from "@/lib/question-explanation";
 import { getSession } from "@/lib/auth";
 import { CACHE_KEYS, CACHE_TAGS } from "@/constants/cache-key";
 import {
@@ -313,7 +314,11 @@ export async function getPracticeSession(input: PracticeSessionIdInput) {
   const answeredKeys = answeredQuestionIds.length
     ? await prisma.question.findMany({
         where: { id: { in: answeredQuestionIds } },
-        select: { id: true, questionAnswer: true, explanation: true },
+        select: {
+          id: true,
+          questionAnswer: true,
+          explanation: { select: QUESTION_EXPLANATION_SELECT },
+        },
       })
     : [];
   const feedbackByQuestion = new Map(answeredKeys.map((question) => [question.id, question]));
@@ -358,7 +363,7 @@ export async function submitPracticeAnswerAction(input: SubmitPracticeAnswerInpu
       where: { id: validated.data.questionId },
       select: {
         questionAnswer: true,
-        explanation: true,
+        explanation: { select: QUESTION_EXPLANATION_SELECT },
         questionChoices: { select: { codeAnswer: true } },
       },
     });
@@ -399,7 +404,7 @@ export async function submitPracticeAnswerAction(input: SubmitPracticeAnswerInpu
         question: {
           select: {
             questionAnswer: true,
-            explanation: true,
+            explanation: { select: QUESTION_EXPLANATION_SELECT },
             questionChoices: { select: { codeAnswer: true } },
           },
         },

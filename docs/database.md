@@ -91,7 +91,7 @@ User
 - `PracticeAnswer` dibuat saat session dimulai sehingga membership dan urutan soal tetap stabil setelah refresh.
 - `selectedAnswer`, `isCorrect`, dan `answeredAt` tetap null sebelum soal dijawab, lalu diisi bersama saat feedback pertama diproses.
 - Unique `(practiceSessionId, questionId)` mencegah satu soal muncul dua kali dalam session. Unique `(practiceSessionId, order)` menjaga urutan assignment.
-- Kunci jawaban dan explanation hanya boleh diambil server-side untuk soal yang sedang disubmit atau sudah dijawab. Payload awal session tidak boleh memuat field tersebut.
+- Kunci jawaban dan pembahasan hanya boleh diambil server-side untuk soal yang sedang disubmit atau sudah dijawab. Payload awal session tidak boleh memuat field tersebut.
 - Latihan cepat tidak memakai `Attempt`, sehingga akurasi practice tidak bercampur dengan proyeksi skor mock JLPT.
 - Seluruh query dan mutation practice wajib memverifikasi `PracticeSession.userId` terhadap `session.userId`.
 
@@ -116,11 +116,20 @@ User
 - **Khusus audio CHOUKAI**: default-nya SATU `QuestionContext.storyAudio` per `TestPackageItem` (mondai), dipakai bersama oleh SEMUA soal dalam mondai itu — walaupun tiap soal secara narasi independen (mis. 課題理解 yang isinya 5 dialog terpisah). Ini karena audio JLPT diputar tanpa jeda per mondai (tidak bisa diulang), dan sumber file audio biasanya memang dipotong per mondai (問題1.mp3, 問題2.mp3, dst.), bukan per butir soal. Jangan pakai `Question.questionAudio` individual untuk choukai kecuali memang ada file terpisah per soal. Gambar (`questionImage`) tetap per soal seperti biasa kalau memang cuma 1 soal yang butuh gambar (mis. 発話表現, atau soal visual-matching di 課題理解).
 - `QuestionContext` harus terikat ke `TestPackage` yang sama dengan soal yang memakainya. Jangan membuat context lintas paket.
 - `questionText` dan `answerText` boleh string kosong (bukan null) untuk soal/pilihan yang hanya berupa audio (mis. 即時応答).
-- `Question.explanation` = penjelasan "resmi" (hasil AI, dikurasi). `QuestionComment` = catatan belajar pribadi user. Jangan mencampur keduanya.
+- `QuestionExplanation` = pembahasan "resmi" (hasil generator AI, dikurasi). `QuestionComment` = catatan belajar pribadi user. Jangan mencampur keduanya.
+
+### Pembahasan soal (`QuestionExplanation`)
+
+- Relasi 1:1 ke `Question` lewat `questionId` unique. Satu soal paling banyak punya satu pembahasan.
+- Hanya `summary` yang wajib. `detail`, `translation`, `keyPoints`, dan alasan per pilihan boleh kosong untuk pembahasan lama hasil ekstraksi atau catatan tulisan tangan.
+- Alasan tiap pilihan disimpan sebagai baris `QuestionExplanationChoice`, unique pada `(explanationId, codeAnswer)`, bukan sebagai blok JSON. `isCorrect` didenormalisasi dari `Question.questionAnswer` saat import.
+- `source`, `aiModel`, `promptVersion`, dan `generatedAt` adalah jejak audit: hasil lama harus tetap dapat dijelaskan setelah prompt atau model berubah. `aiModel`/`promptVersion` hanya terisi untuk `source = AI`.
+- `answerKeyDoubt` diisi generator saat model menilai kunci jawaban fixture keliru. Baris bertanda ini wajib ditinjau manusia sebelum ditampilkan sebagai pembahasan final.
+- Pembahasan diisi lewat `npm run seed:question-explanation`, bukan lewat `npm run seed:test-package`. Script paket hanya melewati (skip) paket yang strukturnya sudah cocok, jadi perubahan isi pembahasan tidak akan tersimpan dari sana.
 
 ## Markup Teks Jepang
 
-Semua kolom teks soal (`questionText`, `answerText`, `storyText`, `instruction`, `explanation`) memakai markup ringan berikut. JANGAN menyimpan HTML mentah di database.
+Semua kolom teks soal (`questionText`, `answerText`, `storyText`, `instruction`, dan seluruh kolom teks `QuestionExplanation`) memakai markup ringan berikut. JANGAN menyimpan HTML mentah di database.
 
 | Markup | Arti | Render frontend |
 |---|---|---|
@@ -159,7 +168,7 @@ Saat import data soal, tangani pelanggaran constraint sebagai sinyal error ekstr
 ## Aturan Query
 
 - Analitik kelemahan per tipe mondai: `AttemptAnswer → Question → TestPackageItem`, group by `mondaiType`. Filter `Attempt.status = COMPLETED`.
-- Saat mengambil soal untuk mode attempt, JANGAN mengirim `questionAnswer` dan `explanation` ke client sebelum attempt disubmit.
+- Saat mengambil soal untuk mode attempt, JANGAN mengirim `questionAnswer` dan relasi `explanation` ke client sebelum attempt disubmit. Relasi 1:1 lebih mudah bocor daripada kolom teks: satu `include: { explanation: true }` yang lolos review sudah cukup membocorkan kunci jawaban.
 - Gunakan `include`/`select` eksplisit di Prisma — jangan fetch semua relasi tanpa perlu (bacaan `storyText` bisa panjang).
 - Urutan render soal: `TestPackageItem.session` → `TestPackageItem.order` → `Question.order`.
 

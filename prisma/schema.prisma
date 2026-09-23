@@ -161,6 +161,12 @@ enum ConversationInputSource {
   SPEECH
 }
 
+enum QuestionExplanationSource {
+  AI // hasil generate model bahasa, belum tentu dikurasi
+  HUMAN // ditulis/diperbaiki manusia
+  IMPORTED // berasal dari buku pembahasan resmi
+}
+
 enum AuthTokenPurpose {
   EMAIL_VERIFICATION
   EMAIL_CHANGE
@@ -621,8 +627,9 @@ model Question {
   // Untuk 文の組み立て: pilihan yang jatuh di posisi ★ (sesuai format JLPT asli).
   questionAnswer Int
 
-  // Penjelasan soal (hasil koreksi AI ditempel di sini). Markup sama berlaku.
-  explanation String? @db.Text
+  // Pembahasan soal. Isinya terstruktur dan punya metadata audit sendiri,
+  // jadi ditaruh di tabel terpisah (1:1) alih-alih satu kolom teks di sini.
+  explanation QuestionExplanation?
 
   questionContext   QuestionContext? @relation(fields: [questionContextId], references: [id], onDelete: Cascade)
   questionContextId Int?
@@ -656,6 +663,68 @@ model QuestionChoice {
 
   // mencegah pilihan dengan kode sama dobel dalam satu soal
   @@unique([questionId, codeAnswer])
+}
+
+// Pembahasan resmi satu soal, dipakai di mode baca, hasil attempt, dan latihan
+// cepat. Dipisah dari Question karena isinya diproduksi pipeline sendiri
+// (`prisma/generate-question-explanation.mjs`) dan membawa metadata audit yang
+// tidak ada hubungannya dengan soal: model apa yang menulis, versi prompt
+// berapa, dan apakah sudah ditinjau manusia.
+//
+// Relasi ini WAJIB tidak pernah ikut terkirim saat mode ujian berjalan — sama
+// seperti questionAnswer. Lihat aturan data-leak di docs/database.md.
+model QuestionExplanation {
+  id Int @id @default(autoincrement())
+
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId Int      @unique
+
+  // Markup teks Jepang yang berlaku sama dengan kolom soal lain. Hanya `summary`
+  // yang wajib: pembahasan lama hasil ekstraksi dan catatan tulisan manusia
+  // kerap hanya sebaris, tanpa analisis panjang maupun alasan per pilihan.
+  summary     String   @db.Text // inti: kenapa kunci jawaban benar
+  detail      String?  @db.Text // pembahasan menyeluruh: maksud soal, analisis kalimat
+  translation String?  @db.Text // terjemahan kalimat kunci ke bahasa Indonesia
+  keyPoints   String[] // kosakata/grammar yang diuji soal ini
+
+  // Sinyal QA gratis dari generator: data soal berasal dari OCR, jadi kunci
+  // jawaban bisa saja salah ketik. Model diminta menandainya alih-alih
+  // memaksakan pembahasan untuk kunci yang tidak masuk akal.
+  answerKeyDoubt     Boolean @default(false)
+  answerKeyDoubtNote String? @db.Text
+
+  // aiModel/promptVersion hanya terisi untuk source AI; baris HUMAN/IMPORTED
+  // tidak punya keduanya.
+  source        QuestionExplanationSource @default(AI)
+  aiModel       String?                   @db.VarChar(64)
+  promptVersion String?                   @db.VarChar(32)
+  generatedAt   DateTime                  @default(now())
+  reviewedAt    DateTime? // diisi saat pembahasan sudah dikurasi manusia
+
+  choices QuestionExplanationChoice[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([answerKeyDoubt])
+}
+
+// Alasan per pilihan jawaban (4 baris per pembahasan, termasuk kunci yang benar
+// supaya UI bisa merender sejajar dengan 4 opsi soal).
+model QuestionExplanationChoice {
+  id Int @id @default(autoincrement())
+
+  explanation   QuestionExplanation @relation(fields: [explanationId], references: [id], onDelete: Cascade)
+  explanationId Int
+
+  codeAnswer Int // 1-4, mengacu ke QuestionChoice.codeAnswer pada soal yang sama
+  isCorrect  Boolean // denormalisasi dari Question.questionAnswer saat seed
+  reason     String  @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([explanationId, codeAnswer])
 }
 
 // ============================================================

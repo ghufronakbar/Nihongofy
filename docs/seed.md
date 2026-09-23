@@ -152,7 +152,7 @@ type SeedQuestion = {
   questionImage?: string | null;
   questionAudio?: string | null;
   questionAnswer: number; // codeAnswer (1-4) pilihan yang BENAR — bukan index/id pilihan
-  explanation?: string | null; // penjelasan resmi (hasil ekstraksi/AI), markup ringan sama
+  explanation?: SeedQuestionExplanation | string | null; // pembahasan soal, lihat di bawah
   questionContextRef?: string | null; // isi dengan `id` dari questionContexts kalau soal ini
                                        // pakai bacaan/audio bersama; null/kosongkan kalau tidak
   questionChoices: SeedQuestionChoice[]; // WAJIB tepat 4 pilihan
@@ -168,6 +168,39 @@ type SeedQuestionChoice = {
   answerImage?: string | null;
 };
 ```
+
+### `SeedQuestionExplanation`
+
+Pembahasan soal. Disimpan di database sebagai relasi 1:1 (`QuestionExplanation`) dengan alasan
+tiap pilihan sebagai baris tersendiri, bukan sebagai blok JSON.
+
+```ts
+type SeedQuestionExplanation = {
+  summary: string;              // WAJIB. Inti: kenapa kunci jawaban benar
+  detail?: string | null;       // pembahasan menyeluruh
+  translation?: string | null;  // terjemahan kalimat kunci ke bahasa Indonesia
+  keyPoints?: string[];         // kosakata/pola grammar yang diuji
+  choices?: {                   // bila diisi, WAJIB tepat 4 item (codeAnswer 1-4, unik)
+    codeAnswer: number;
+    reason: string;             // kenapa pilihan ini benar/salah
+  }[];
+  answerKeyDoubt?: boolean;         // true bila kunci fixture dinilai keliru
+  answerKeyDoubtNote?: string | null;
+  meta?: {
+    source?: "AI" | "HUMAN" | "IMPORTED"; // default AI
+    aiModel?: string | null;
+    promptVersion?: string | null;
+    generatedAt?: string | null;          // ISO-8601
+  };
+};
+```
+
+Bentuk lama `explanation` berupa satu string masih diterima dan dipetakan ke `summary` dengan
+`source: "IMPORTED"` — fixture lama tidak perlu ditulis ulang. Seluruh kolom teks di sini memakai
+markup ringan yang sama dengan kolom soal (lihat "Markup Teks").
+
+Isi pembahasan **tidak** diimpor oleh `npm run seed:test-package`. Lihat "Generate dan Import
+Pembahasan" di bawah.
 
 ## Daftar Nilai Enum
 
@@ -294,7 +327,18 @@ pembungkus `testPackages`):
           "order": 1,
           "questionText": "明日、__{学校|がっこう}__に 行きます。",
           "questionAnswer": 1,
-          "explanation": "「学校」は「がっこう」と読みます。",
+          "explanation": {
+            "summary": "Yang ditanyakan cara baca __{学校|がっこう}__ (sekolah), yaitu がっこう.",
+            "detail": "Kalimat 明日、__{学校|がっこう}__に 行きます。 berarti \"Besok saya pergi ke sekolah.\" Bacaan {学校|がっこう} memakai sokuon っ.",
+            "translation": "Besok saya pergi ke sekolah.",
+            "keyPoints": ["bacaan {学校|がっこう}", "sokuon っ"],
+            "choices": [
+              { "codeAnswer": 1, "reason": "Bacaan yang tepat untuk {学校|がっこう}." },
+              { "codeAnswer": 2, "reason": "Kehilangan sokuon っ, bukan bacaan yang benar." },
+              { "codeAnswer": 3, "reason": "Vokal panjang こう hilang." },
+              { "codeAnswer": 4, "reason": "Bacaan がいこう dipakai untuk {外交|がいこう} (diplomasi)." }
+            ]
+          },
           "questionChoices": [
             { "codeAnswer": 1, "answerText": "がっこう" },
             { "codeAnswer": 2, "answerText": "がこう" },
@@ -367,9 +411,63 @@ atas):
 
 Untuk soal yang ada image maupun audio, tetap tuliskan keynya, namun untuk valuenya isi dengan `"TODO: url audio xxx"` agar memudahkan.
 
+## Generate dan Import Pembahasan
+
+Pembahasan soal punya jalur sendiri, terpisah dari import struktur soal.
+
+```bash
+npm run gen:explanation -- --file n5-2018-07.json --limit 5   # tulis pembahasan ke file JSON
+npm run seed:question-explanation:check                        # validasi tanpa menulis database
+npm run seed:question-explanation                              # impor pembahasan ke database
+```
+
+**Kenapa terpisah dari `seed:test-package`.** Script paket hanya membandingkan *struktur*
+(jumlah item, section, session, order, jumlah soal). Fixture yang isinya berubah tetapi
+strukturnya tetap sama akan di-`SKIP`, jadi pembahasan yang baru ditulis tidak akan pernah masuk
+dari sana. Satu-satunya jalur di script itu adalah `--replace-existing`, yang menghapus lalu
+membuat ulang seluruh paket sehingga `Question.id` berubah dan comment/attempt/practice milik
+user ikut terhapus. `seed:question-explanation` hanya menyentuh tabel pembahasan, dicocokkan
+lewat (nama paket → `mondaiType` → `order` soal), sehingga aman dijalankan pada paket yang sudah
+dikerjakan user dan idempotent bila dijalankan ulang.
+
+### Generator (`prisma/generate-question-explanation.mjs`)
+
+- Tidak menyentuh database sama sekali: ia hanya membaca dan menulis file di
+  `src/test-package-data/`.
+- Satu soal = satu permintaan ke model, lengkap dengan konteks bacaan bila soal memakainya.
+- Soal yang sudah punya `explanation` dilewati kecuali dipakai `--overwrite`, jadi proses boleh
+  dihentikan kapan saja dan dilanjutkan lagi. File ditulis setiap satu mondai selesai.
+- Soal `CHOUKAI` dilewati secara bawaan: fixture hanya menyimpan URL audio tanpa transkrip,
+  sehingga model tidak punya bahan dan hanya akan mengarang. Pakai `--include-choukai` bila
+  transkrip sudah tersedia di `storyText`.
+- Keluaran model divalidasi sebelum ditulis (label lengkap, markup furigana/underline seimbang,
+  tanpa HTML/markdown, tepat satu pilihan ditandai benar). Keluaran yang melanggar diminta ulang
+  sekali, lalu dilaporkan sebagai gagal tanpa merusak file.
+- Model wajib menandai `KUNCI_MERAGUKAN` bila menilai kunci jawaban fixture keliru, alih-alih
+  mengarang pembenaran. Soal bertanda ini dicetak di log dan tersimpan sebagai `answerKeyDoubt`.
+
+Flag yang tersedia: `--file`, `--level`, `--mondai`, `--limit`, `--concurrency`, `--overwrite`,
+`--include-choukai`, `--reasoning-effort minimal|low|medium|high`, dan `--dry-run` (mencetak
+prompt tanpa memanggil model).
+
+`--reasoning-effort low` sangat menentukan pada model reasoning: pada uji coba,
+satu soal turun dari 119-213 detik (5.000-6.500 token reasoning) menjadi 19-37 detik. Tanpa itu,
+permintaan untuk soal panjang kerap diputus gateway dengan HTTP 524. Flag ini hanya dikirim bila
+diisi, karena model non-reasoning menolak permintaan yang memuat parameter tak dikenal.
+
+Environment yang dibutuhkan (lihat `.env.example`): `EXPLANATION_BASE_URL`,
+`EXPLANATION_API_KEY`, `EXPLANATION_MODEL`. Ketiganya hanya dibaca script offline ini dan tidak
+pernah dipakai aplikasi saat runtime.
+
 ## Referensi Lain
 
-- `prisma/seed-test-package.mjs` — script import seluruh fixture JSON ke database.
+- `prisma/seed-test-package.mjs` — script import struktur soal dari fixture JSON ke database.
+- `prisma/test-package-fixture.mjs` — kontrak fixture (schema zod + loader) yang dipakai bersama
+  oleh seluruh script di atas.
+- `prisma/seed-question-explanation.mjs` — import pembahasan saja, aman untuk paket yang sudah
+  dipakai user.
+- `prisma/generate-question-explanation.mjs` + `prisma/explanation-prompt.mjs` — generator
+  pembahasan dan prompt-nya.
 - `src/test-package-data/types.ts` — source of truth TypeScript untuk kontrak JSON di atas.
 - `docs/database.md` — aturan schema & markup lengkap (dokumen ini adalah ringkasannya,
   dikhususkan untuk konteks import).
