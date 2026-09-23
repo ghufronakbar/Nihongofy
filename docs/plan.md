@@ -450,6 +450,25 @@ Batch permintaan user lanjutan dari Fase 8.5.
   persis sama dengan `window.innerWidth` (sebelumnya lebih besar ~256px), diukur di viewport
   1280px lewat Chrome headless dengan CSS asli hasil kompilasi (bukan estimasi)
 
+## Pembahasan Soal (QuestionExplanation)
+
+- [x] Schema: tabel `QuestionExplanation` (1:1 ke `Question`) + `QuestionExplanationChoice`
+  (alasan per pilihan, tanpa JSONB), enum `QuestionExplanationSource`, dan kolom lama
+  `Question.explanation` dihapus — migration `20260923100000_question_explanation`
+- [x] Kontrak fixture: `explanation` boleh objek terstruktur, bentuk string lama tetap diterima
+  dan dipetakan ke `summary` (`src/test-package-data/types.ts`, `docs/seed.md`)
+- [x] `prisma/test-package-fixture.mjs` — kontrak fixture dipakai bersama oleh seluruh script
+- [x] `npm run seed:question-explanation` — import pembahasan saja, idempotent, aman untuk paket
+  yang sudah punya attempt (21 pembahasan lama hasil ekstraksi sudah masuk)
+- [x] `npm run gen:explanation` — generator pembahasan via gateway OpenAI-compatible, menulis ke
+  fixture JSON, melewati CHOUKAI, memvalidasi markup, dan menandai kunci jawaban yang meragukan
+- [x] UI: `QuestionExplanationBody` dipakai di hasil ujian, mode baca paket, dan latihan cepat
+- [ ] Review kualitas pembahasan hasil pilot sebelum generate massal (user)
+- [ ] Tentukan model produksi di `EXPLANATION_MODEL` — model reasoning lambat (1 soal = 2-4 menit)
+- [ ] Generate pembahasan seluruh level non-CHOUKAI (3.534 soal), lalu
+  `npm run seed:question-explanation`
+- [ ] Transkrip audio CHOUKAI (1.494 soal) — prasyarat sebelum pembahasan choukai bisa dibuat
+
 ## Fase 9 — Verifikasi & Polish
 
 - [ ] `npm run build` setelah tiap perubahan struktural/server action/caching

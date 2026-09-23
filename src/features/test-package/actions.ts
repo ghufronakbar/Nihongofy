@@ -4,6 +4,7 @@ import { notFound, redirect } from "next/navigation";
 import { unstable_cache } from "next/cache";
 import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
+import { QUESTION_EXPLANATION_SELECT } from "@/lib/question-explanation";
 import { getSession } from "@/lib/auth";
 import { DEFAULT_TIME_ZONE } from "@/lib/time-zone";
 import { getUserTimeZone } from "@/lib/user-time-zone";
@@ -105,7 +106,7 @@ const getCachedTestPackageQuestions = (testPackageId: number) =>
                   questionImage: true,
                   questionAudio: true,
                   questionAnswer: true,
-                  explanation: true,
+                  explanation: { select: QUESTION_EXPLANATION_SELECT },
                   questionChoices: {
                     orderBy: { codeAnswer: "asc" },
                     select: {

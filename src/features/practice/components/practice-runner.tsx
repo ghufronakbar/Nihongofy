@@ -17,6 +17,8 @@ import { JapanesePassage } from "@/components/japanese-passage";
 import { JapaneseText } from "@/components/japanese-text";
 import { ImageWithLightbox } from "@/components/image-with-lightbox";
 import { JLPT_SECTION_LABELS, mondaiTypeFullLabel } from "@/constants/jlpt";
+import { QuestionExplanationBody } from "@/components/question-explanation";
+import type { QuestionExplanationView } from "@/lib/question-explanation";
 import { cn } from "@/lib/utils";
 import {
   restartPracticeSessionAction,
@@ -25,7 +27,7 @@ import {
 
 type Feedback = {
   correctAnswer: number;
-  explanation: string | null;
+  explanation: QuestionExplanationView | null;
 };
 
 type PracticeQuestion = {
@@ -401,7 +403,7 @@ export function PracticeRunner({ practiceSession }: PracticeRunnerProps) {
               </h2>
               <div className="mt-3 font-japanese leading-7">
                 {currentQuestion.feedback?.explanation ? (
-                  <JapanesePassage text={currentQuestion.feedback.explanation} />
+                  <QuestionExplanationBody explanation={currentQuestion.feedback.explanation} />
                 ) : (
                   <p>Kunci jawaban sudah ditandai. Penjelasan untuk soal ini belum tersedia.</p>
                 )}

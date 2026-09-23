@@ -4,6 +4,7 @@ import { notFound, redirect } from "next/navigation";
 import { unstable_cache } from "next/cache";
 import type { MondaiType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { QUESTION_EXPLANATION_SELECT } from "@/lib/question-explanation";
 import { getSession } from "@/lib/auth";
 import { CACHE_KEYS, CACHE_TAGS } from "@/constants/cache-key";
 import type { MondaiStatInput } from "@/lib/jlpt-score";
@@ -133,7 +134,7 @@ export async function getAttemptDetail(attemptId: number) {
           questionImage: true,
           questionAudio: true,
           questionAnswer: true,
-          explanation: true,
+          explanation: { select: QUESTION_EXPLANATION_SELECT },
           questionContext: {
             select: { id: true, storyText: true, storyImage: true, storyAudio: true },
           },

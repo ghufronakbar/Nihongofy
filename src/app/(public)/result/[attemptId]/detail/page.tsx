@@ -13,6 +13,7 @@ import { CopyQuestionButton } from "@/components/copy-question-button";
 import { QuestionNavList, type NavMondaiItem } from "@/components/question-nav";
 import { QuestionNavMobile } from "@/components/question-nav-mobile";
 import { JapaneseText } from "@/components/japanese-text";
+import { QuestionExplanationBody } from "@/components/question-explanation";
 import { JapanesePassage } from "@/components/japanese-passage";
 import { FuriganaScope } from "@/components/furigana-scope";
 import { ImageWithLightbox } from "@/components/image-with-lightbox";
@@ -386,7 +387,7 @@ export default async function ResultDetailPage({
                           <span className="font-mono text-[10px] font-black uppercase text-foreground/70 block mb-1">
                             PENJELASAN SOAL:
                           </span>
-                          <JapaneseText text={question.explanation} />
+                          <QuestionExplanationBody explanation={question.explanation} />
                         </div>
                       )}
 
