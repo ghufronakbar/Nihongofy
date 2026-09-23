@@ -8,7 +8,7 @@
 // (status 200 tetapi isinya teks biasa); label tetap bisa di-parse apa pun yang
 // terjadi. Catatan yang sama ada di src/features/conversation/lib/provider/openai.ts.
 
-export const PROMPT_VERSION = "explanation-v1";
+export const PROMPT_VERSION = "explanation-v2";
 
 const MONDAI_LABELS = {
   MOJI_GOI_READ_KANJI: "漢字読み — cara baca kanji yang digarisbawahi",
@@ -52,6 +52,7 @@ ATURAN ISI:
 - Isi POIN hanya dengan nama kosakata atau pola gramatikalnya, tanpa penanda __garis bawah__.
 - Alasan tiap pilihan ditulis langsung setelah BENAR/SALAH, tanpa diawali tanda hubung atau penomoran.
 - Bahas keempat pilihan satu per satu. Untuk pilihan yang salah, sebutkan kenapa ia menggoda dan apa yang membuatnya tidak tepat.
+- Mulai pembahasan tiap pilihan dengan mengutip teks Jepang pilihan itu (lengkap dengan furigana) diikuti terjemahannya dalam kurung, baru alasannya. Bila teks pilihan sangat panjang, cukup kutip bagian yang menentukan benar/salahnya. Bila pilihan tidak punya teks sama sekali, langsung tulis alasannya tanpa kutipan.
 - Jangan mengarang isi audio, gambar, atau bagian bacaan yang tidak diberikan kepada Anda. Kalau datanya memang tidak cukup, katakan terus terang di RINGKASAN.
 - Kunci jawaban resmi diberikan kepada Anda. Bila menurut Anda kunci itu keliru, jangan memaksakan pembenaran: tulis KUNCI_MERAGUKAN: ya beserta alasannya.
 
@@ -60,7 +61,7 @@ RINGKASAN: <1-2 kalimat, kenapa kunci jawaban benar>
 PEMBAHASAN: <penjelasan menyeluruh, boleh beberapa baris>
 TERJEMAHAN: <terjemahan kalimat kunci soal ke bahasa Indonesia, atau - bila tidak relevan>
 POIN: <kosakata/pola grammar yang diuji, dipisah tanda titik koma>
-PILIHAN 1: <BENAR atau SALAH> - <alasan>
+PILIHAN 1: <BENAR atau SALAH> - <kutipan teks pilihan + terjemahannya, lalu alasan>
 PILIHAN 2: <BENAR atau SALAH> - <alasan>
 PILIHAN 3: <BENAR atau SALAH> - <alasan>
 PILIHAN 4: <BENAR atau SALAH> - <alasan>
