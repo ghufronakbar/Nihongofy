@@ -92,7 +92,42 @@
               "codeAnswer": 4,
               "answerText": "うで"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Soal ini menguji pengetahuan cara baca {訓読み|くんよみ} dari kanji tunggal {指|ゆび} yang berarti jari. Cara baca yang tepat adalah pilihan 3.",
+            "detail": "Soal menanyakan cara baca kanji __{指|ゆび}__ yang berdiri sendiri sebagai kata benda anggota tubuh. Kanji ini memiliki {訓読み|くんよみ} yaitu ゆび yang berarti jari tangan atau jari kaki, seperti terlihat juga dalam gabungan kata {親指|おやゆび} (ibu jari) atau {指輪|ゆびわ} (cincin). Pilihan-pilihan lain berupa nama anggota tubuh dasar level N5/N4 yang sering mengecoh bila pembelajar hanya menghafal kelompok kata anggota tubuh tanpa mengingat bentuk kanjinya masing-masing dengan saksama.",
+            "translation": "Jari saya terluka.",
+            "keyPoints": [
+              "{指|ゆび}",
+              "anggota tubuh"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "はな (hidung atau bunga) adalah bacaan untuk kanji {鼻|はな} (hidung) atau {花|はな} (bunga). Pilihan ini mengecoh karena sesama anggota tubuh, tetapi bentuk kanjinya sangat berbeda dari {指|ゆび}."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "あたま (kepala) adalah bacaan untuk kanji {頭|あたま}. Pilihan ini juga merupakan anggota tubuh umum, namun tidak cocok untuk kanji pada soal."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "ゆび (jari) adalah {訓読み|くんよみ} yang tepat untuk kanji {指|ゆび}."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "うで (lengan) adalah cara baca untuk kanji {腕|うで}. Pilihan ini mengecoh karena sama-sama bagian tangan, tetapi bukan cara baca untuk kanji {指|ゆび}."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:12:27.108Z"
+            }
+          }
         },
         {
           "order": 2,
@@ -115,7 +150,41 @@
               "codeAnswer": 4,
               "answerText": "りょうこう"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Pilihan 2 benar karena kanji {旅|りょ} dibaca pendek dan kanji {行|こう} dibaca panjang, sehingga cara baca yang tepat untuk {旅行|りょこう} adalah りょこう.",
+            "detail": "Soal ini menguji ketepatan peserta dalam membedakan vokal pendek dan vokal panjang pada gabungan kanji dua huruf. Kanji {旅|たび} memiliki {音読み|おんよみ} yaitu りょ tanpa perpanjangan bunyi, seperti pada kata {旅館|りょかん} (penginapan tradisional Jepang). Sementara itu, kanji {行|い}く memiliki {音読み|おんよみ} yaitu こう dengan vokal panjang berupa huruf う, seperti pada kata {急行|きゅうこう} (kereta ekspres) dan {行動|こうどう} (tindakan). Jika digabungkan, kata {旅行|りょこう} dibaca りょこう. Jebakan pada soal ini terletak pada variasi pemanjangan vokal, di mana pembelajar sering keliru memperpanjang suku kata pertama atau memendekkan suku kata kedua.",
+            "translation": "Bulan lalu saya bepergian bersama teman.",
+            "keyPoints": [
+              "{旅行|りょこう}"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "りょこ (tidak ada arti yang tepat) salah karena kanji {行|こう} kehilangan vokal panjang う. Pilihan ini menggoda bagi pemelajar yang lupa bahwa kanji tersebut memerlukan perpanjangan bunyi."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{旅行|りょこう} (bepergian) merupakan cara baca yang benar karena kanji {旅|りょ} dibaca dengan vokal pendek dan kanji {行|こう} dibaca dengan vokal panjang."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "りょうこ (tidak ada arti yang tepat) salah karena kanji {旅|りょ} keliru dibaca panjang menjadi りょう, sedangkan kanji {行|こう} justru keliru dipendekkan menjadi こ."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "{良好|りょうこう} (baik/memuaskan) salah karena kanji {旅|りょ} keliru dibaca panjang menjadi りょう. Pilihan ini terdengar meyakinkan karena りょうこう memang ada sebagai kosakata bahasa Jepang, tetapi kanji yang digunakan sama sekali berbeda."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:12:30.257Z"
+            }
+          }
         },
         {
           "order": 3,
@@ -138,7 +207,42 @@
               "codeAnswer": 4,
               "answerText": "ぬがなくても"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Soal ini menguji pembacaan kanji {急|いそ}ぐ (bergegas), yang dalam bentuk negatif menjadi {急|いそ}がなくても, sehingga pilihan 2 adalah jawaban yang benar.",
+            "detail": "Soal ini meminta peserta menentukan cara baca kanji yang digarisbawahi dalam kalimat. Kanji {急|きゅう} memiliki makna cepat atau mendesak. Dalam bentuk kata kerja, kanji ini dibaca dengan {訓読み|くんよみ}-nya yaitu __いそ__ pada kata kerja {急|いそ}ぐ. Pada kalimat di atas, kata kerja tersebut diubah menjadi bentuk pola 〜なくてもいい (boleh tidak / tidak perlu) sehingga menjadi __{急|いそ}がなくても いいですよ__ (tidak perlu terburu-buru pun tidak apa-apa kok). Seluruh pilihan jawaban menampilkan kata kerja berakhiran ぐ yang dikonjugasikan ke bentuk negatif te-mo ii, sehingga peserta harus mengenali kanji yang tepat untuk masing-masing kata kerja tersebut.",
+            "translation": "Tidak perlu terburu-buru pun tidak apa-apa kok.",
+            "keyPoints": [
+              "{急|いそ}ぐ",
+              "〜なくてもいい"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "{騒|さわ}がなくても (walaupun tidak membuat keributan/berisik). Bentuk ini berasal dari kata kerja {騒|さわ}ぐ (membuat keributan/berisik), ditulis dengan kanji yang sama sekali berbeda yaitu {騒|さわ}ぐ."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{急|いそ}がなくても (walaupun tidak terburu-buru). Ini adalah pembacaan {訓読み|くんよみ} yang tepat untuk kanji {急|いそ} pada kata kerja {急|いそ}ぐ."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "{泳|およ}がなくても (walaupun tidak berenang). Bentuk ini berasal dari kata kerja {泳|およ}ぐ (berenang), yang menggunakan kanji {泳|およ}ぐ."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "{脱|ぬ}がなくても (walaupun tidak melepas). Bentuk ini berasal dari kata kerja {脱|ぬ}ぐ (menanggalkan/melepas pakaian atau sepatu), yang ditulis menggunakan kanji {脱|ぬ}ぐ."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:12:27.416Z"
+            }
+          }
         },
         {
           "order": 4,
@@ -161,7 +265,43 @@
               "codeAnswer": 4,
               "answerText": "こうじょう"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Kunci jawaban nomor 4 benar karena kata {工場|こうじょう} (pabrik) dibaca dengan dua vokal panjang, yaitu {工|こう} dan {場|じょう}.",
+            "detail": "Soal ini menguji pengetahuan tentang cara baca {音読み|おんよみ} (cara baca Cina) dari kata gabungan {工場|こうじょう}. Kanji {工|こう} memiliki {音読み|おんよみ} yaitu こう, seperti pada kata {工事|こうじ} (konstruksi). Kanji {場|じょう} memiliki {音読み|おんよみ} yaitu じょう, seperti pada kata {会場|かいじょう} (tempat acara). Bila digabungkan, kata ini dibaca {工場|こうじょう} dengan bunyi vokal panjang pada kedua bagian suku katanya. Jebakan utama pada soal ini adalah pengabaian vokal panjang pada suku kata terakhir serta kemiripan bunyi dengan kata lain.",
+            "translation": "Tidak ada siapa-siapa di pabrik.",
+            "keyPoints": [
+              "{工場|こうじょう}",
+              "{音読み|おんよみ}",
+              "{長音|ちょうおん} (vokal panjang)"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "おうじょ (putri kerajaan), pilihan ini menggoda karena bunyi akhirnya mirip, tetapi kanji {工|こう} tidak pernah dibaca おう dan kanji {場|じょう} dibaca panjang, bukan pendek seperti じょ."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "おくじょう (atap gedung), pilihan ini menggoda karena merupakan kosakata N4 yang berakhiran じょう seperti pada {屋上|おくじょう}, namun kanji pertamanya sama sekali bukan {工|こう}."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "こうじょ (bantuan publik/putri raja), pilihan ini sangat menggoda karena bagian pertamanya sudah benar こう, namun bagian akhirnya sengaja dihilangkan vokal panjangnya sehingga menjadi じょ, padahal bacaan kanji {場|じょう} harus panjang yaitu じょう."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "{工場|こうじょう} (pabrik), cara baca kedua kanji tepat dengan vokal panjang pada masing-masing kanji, yaitu こう dan じょう."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:12:30.122Z"
+            }
+          }
         },
         {
           "order": 5,
@@ -184,7 +324,41 @@
               "codeAnswer": 4,
               "answerText": "あに"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Soal ini menguji kemampuan membaca kanji sebutan anggota keluarga. Kanji __{妹|いもうと}__ dibaca いもうと yang berarti adik perempuan.",
+            "detail": "Soal ini meminta peserta menentukan cara baca {訓読み|くんよみ} dari kanji __{妹|いもうと}__. Kanji ini terdiri dari radikal {女|おんな} (perempuan) di sebelah kiri dan {未|いま・だ} (belum) di sebelah kanan, melambangkan anak perempuan yang masih muda, yaitu adik perempuan, dengan {訓読み|くんよみ} いもうと. Seluruh pilihan jawaban pada soal ini adalah sebutan untuk saudara kandung sendiri, sehingga peserta harus teliti membedakan kanji dan cara baca antara kakak laki-laki, kakak perempuan, adik laki-laki, dan adik perempuan.",
+            "translation": "Adik perempuan saya tinggal di Jepang.",
+            "keyPoints": [
+              "{妹|いもうと}"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "いもうと (adik perempuan) adalah cara baca {訓読み|くんよみ} yang tepat untuk kanji __{妹|いもうと}__."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{姉|あね} (kakak perempuan) menggoda karena sama-sama saudara kandung perempuan dengan radikal {女|おんな}, tetapi kanjinya adalah {姉|あね}."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "{弟|おとうと} (adik laki-laki) menggoda karena sama-sama berposisi sebagai adik dengan vokal panjang おとうと mirip dengan いもうと, tetapi kanjinya adalah {弟|おとうと}."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "{兄|あに} (kakak laki-laki) menggoda karena merupakan sebutan saudara kandung, tetapi kanjinya adalah {兄|あに}."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:12:32.259Z"
+            }
+          }
         },
         {
           "order": 6,
@@ -207,7 +381,42 @@
               "codeAnswer": 4,
               "answerText": "たって"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Kanji {待|ま} memiliki {訓読み|くんよみ} yaitu ま, sehingga bentuk {促音便|そくおんびん} (perubahan bunyi konsonan ganda) pada kalimat ini dibaca まって.",
+            "detail": "Soal ini menguji pengetahuan mengenai cara membaca kanji kata kerja {待|ま}つ (menunggu) dalam bentuk て. Kanji {待|ま} memiliki {訓読み|くんよみ} yaitu ま seperti pada {待|ま}つ atau {待|ま}ち{合|あ}わせ (janji temu), serta {音読み|おんよみ} yaitu たい seperti pada {招待|しょうたい} (undangan) dan {期待|きたい} (harapan). Karena kata kerja {待|ま}つ berakhiran つ, saat berubah ke bentuk て kata ini mengalami perubahan bunyi menjadi __{待|ま}__って. Bentuk ungkapan ちょっと __{待|ま}__ってください (tolong tunggu sebentar) adalah frasa umum sehari-hari yang sangat sering dipakai. Pilihan lain merupakan bentuk て dari kata kerja lain yang berima sama sehingga berpotensi mengecoh pembelajar.",
+            "translation": "Tolong tunggu sebentar.",
+            "keyPoints": [
+              "{待|ま}つ",
+              "{促音便|そくおんびん}"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "まって (tunggu), merupakan cara baca {訓読み|くんよみ} yang tepat untuk kanji {待|ま} dalam bentuk konjugasi ini."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "もって (bawa), merupakan bentuk て dari kata kerja {持|も}つ (membawa/mempunyai), yang kanjinya memiliki bagian kanan yang sama yaitu {寺|てら} (kuil) sehingga sering tertukar bagi pemula."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "とって (ambil), merupakan bentuk て dari kata kerja {取|と}る (mengambil) atau {撮|と}る (memotret), bukan bacaan untuk kanji {待|ま}."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "たって (berdiri), merupakan bentuk て dari kata kerja {立|た}つ (berdiri) atau {経|た}つ (berlalu), bukan bacaan untuk kanji {待|ま}."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:12:32.091Z"
+            }
+          }
         },
         {
           "order": 7,
@@ -230,7 +439,42 @@
               "codeAnswer": 4,
               "answerText": "つめたく"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Kunci jawaban benar karena kanji {強|つよ} dalam bentuk kata sifat dibaca {強|つよ}い, sehingga bentuk perubahannya sebelum kata kerja adalah {強|つよ}く.",
+            "detail": "Soal ini menguji penguasaan cara baca {訓読み|くんよみ} dari kanji {強|つよ} yang memiliki arti kuat atau kencang. Kanji ini berfungsi sebagai kata sifat-i yaitu {強|つよ}い (kuat/kencang). Ketika menerangkan kata kerja {成|な}る (menjadi), akhiran い berubah menjadi く sehingga dibaca {強|つよ}く. Kanji ini juga memiliki cara baca {音読み|おんよみ} yaitu きょう seperti pada kata {勉強|べんきょう} (belajar) atau {強力|きょうりょく} (bertenaga kuat), tetapi jika berdiri sendiri sebagai kata sifat dengan {送|おく}り{仮名|がな} く, bacaan yang benar adalah {強|つよ}く.",
+            "translation": "Angin menjadi sedikit lebih kencang.",
+            "keyPoints": [
+              "{強|つよ}い",
+              "{強|つよ}く"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "あたたかく (dengan hangat), merupakan bentuk perubahan dari kata sifat {暖|あたた}かい atau {温|あたた}かい (hangat). Pilihan ini mengecoh karena lazim dipakai untuk mendeskripsikan angin atau cuaca, tetapi kanjinya berbeda."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "よわく (dengan lemah), merupakan bentuk perubahan dari kata sifat {弱|よわ}い (lemah). Pilihan ini adalah lawan kata dari {強|つよ}i dan sering muncul dalam konteks hembusan angin, namun kanji yang tepat untuk bacaan ini adalah {弱|よわ}."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "つよく (dengan kencang/kuat), merupakan cara baca yang tepat untuk kanji {強|つよ} dalam kalimat ini."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "つめたく (dengan dingin), merupakan bentuk perubahan dari kata sifat {冷|つめ}たい (dingin). Pilihan ini mengecoh karena dapat digunakan untuk menyifati rasa dingin pada angin, tetapi bukan cara baca untuk kanji {強|つよ}."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:12:34.401Z"
+            }
+          }
         },
         {
           "order": 8,
@@ -253,7 +497,41 @@
               "codeAnswer": 4,
               "answerText": "えきいん"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Soal ini menguji cara membaca kanji {駅員|えきいん} (petugas stasiun) yang dibentuk dari {音読み|おんよみ} (cara baca Cina) kanji {駅|えき} (stasiun) dan kanji {員|いん} (anggota). Pilihan 4 benar karena menggabungkan bacaan kedua kanji tersebut secara tepat.",
+            "detail": "Soal menanyakan cara membaca kata __{駅員|えきいん}__ yang terdapat pada kalimat. Kanji pertama adalah {駅|えき} yang dibaca えき. Kanji kedua adalah {員|いん} yang dibaca いん, seperti yang dapat ditemukan pada kata {会社員|かいしゃいん} (karyawan perusahaan) dan {銀行員|ぎんこういん} (pegawai bank). Gabungan kedua kanji ini dibaca えきいん. Pilihan lain memuat jebakan bunyi dari kanji {店|みせ} (toko) yang dibaca てん pada kata {店員|てんいん} (pelayan toko), serta jebakan mengubah akhiran いん menjadi にn seperti bacaan pada kanji {人|ひと} (orang).",
+            "translation": "Saya menanyakan jalan kepada petugas stasiun.",
+            "keyPoints": [
+              "{駅員|えきいん}"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "てんにん (bukan kata baku) memadukan bunyi てん dari kanji {店|みせ} dengan akhiran keliru にん. Pilihan ini salah karena kanji pada soal bukan {店|みせ} dan kanji {員|いん} tidak dibaca にん."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "えきにん (bukan kata baku) membaca kanji pertama dengan benar sebagai えき, namun keliru pada kanji kedua. Pembelajar kerap terkecoh mengira kanji {員|いん} dibaca にん karena merujuk pada manusia seperti kanji {人|ひと}."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "てんいん (pelayan toko) adalah bacaan untuk kata {店員|てんいん}. Pilihan ini mengecoh pembelajar yang tertukar antara bentuk kanji {駅|えき} dan {店|みせ}."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "えきいん (petugas stasiun) adalah cara baca yang tepat untuk gabungan kanji {駅|えき} dan {員|いん}."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:12:48.199Z"
+            }
+          }
         },
         {
           "order": 9,
@@ -276,7 +554,42 @@
               "codeAnswer": 4,
               "answerText": "いいしゃ"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Soal ini menguji cara baca kanji __{医者|いしゃ}__, yang dibaca tepat tanpa vokal panjang maupun perubahan bunyi bersuara, yaitu {医者|いしゃ}. Pilihan 2 adalah jawaban yang benar.",
+            "detail": "Soal ini menanyakan cara baca kanji dari kata __{医者|いしゃ}__. Kanji pertama adalah {医|い} yang memiliki {音読み|おんよみ} yaitu い, seperti yang juga terdapat pada kata {医学|いがく} (ilmu kedokteran). Huruf ini dibaca pendek, bukan vokal panjang いい. Kanji kedua adalah {者|しゃ} yang memiliki {音読み|おんよみ} yaitu しゃ, seperti pada kata {学者|がくしゃ} (sarjana/ilmuwan). Pada kata ini, tidak terjadi {連濁|れんだく} (perubahan bunyi bersuara) menjadi じゃ. Oleh karena itu, penggabungan kedua kanji ini menghasilkan bacaan {医者|いしゃ}. Pengecoh pada soal ini memanfaatkan keraguan peserta mengenai ada tidaknya vokal panjang pada huruf pertama dan ada tidaknya bunyi bersuara pada huruf kedua.",
+            "translation": "Saya di masa depan ingin menjadi dokter.",
+            "keyPoints": [
+              "{医者|いしゃ}",
+              "cara baca kanji {医|い} dan {者|しゃ}"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "いじゃ menggoda karena sebagian kata majemuk mengalami penambahan tanda dakuten pada huruf kedua, namun kanji {者|しゃ} pada kata ini tidak mengalami perubahan bunyi menjadi じゃ."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{医者|いしゃ} (dokter) adalah cara baca yang tepat sesuai {音読み|おんよみ} kedua kanjinya tanpa pemanjangan vokal maupun bunyi bersuara."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "いいじゃ menggoda karena kanji {医|い} sering dikira berbunyi panjang akibat asosiasi dengan kata seperti {医院|いいん} (klinik), ditambah adanya jebakan bunyi bersuara じゃ pada huruf kedua."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "いいしゃ menggoda karena kanji {医|い} disangka memiliki vokal panjang いい, padahal bacaannya adalah vokal pendek い."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:12:30.767Z"
+            }
+          }
         }
       ]
     },
@@ -308,7 +621,41 @@
               "codeAnswer": 4,
               "answerText": "半体"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Soal menanyakan penulisan kanji yang tepat untuk __はんたい__ ({反対|はんたい}, menentang/tidak setuju). Jawaban yang benar adalah pilihan 1 karena ditulis dengan {反|はん} dan {対|たい}.",
+            "detail": "Yang ditanyakan adalah bentuk kanji dari kata hiragana yang digarisbawahi, yaitu __はんたい__. Dalam kalimat ini, __{反対|はんたい}です__ berarti “tidak setuju/berlawanan terhadap”. Kata {反対|はんたい} tersusun dari {反|はん} yang bermakna “melawan” atau “berlawanan”, serta {対|たい} yang bermakna “berhadapan” atau “terhadap”. Pilihan lain tampak menggoda karena menggunakan kanji dengan bunyi yang sama, khususnya {半|はん}, atau kanji yang bentuknya mirip, tetapi bukan ejaan baku kata ini.",
+            "translation": "Saya tidak setuju dengan pendapat itu.",
+            "keyPoints": [
+              "反対"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "{反対|はんたい} (menentang/tidak setuju). Ini adalah penulisan kanji yang benar untuk __はんたい__ dalam konteks menyatakan ketidaksetujuan terhadap pendapat."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{半対|はんたい} (setengah; berhadapan). Pilihan ini menggoda karena {半|はん} memiliki bunyi yang sama dengan {反|はん}, tetapi {半|はん} berarti “setengah” dan tidak digunakan untuk menulis {反対|はんたい}."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "{反体|はんたい} (melawan; tubuh). Pilihan ini menggoda karena kanji pertama, {反|はん}, sudah benar. Namun, bagian __たい__ pada kata ini harus ditulis {対|たい}, bukan {体|たい}, yang berarti “tubuh”."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "{半体|はんたい} (setengah; tubuh). Pilihan ini dapat tampak mungkin karena kedua kanji memiliki bacaan yang mendekati __はんたい__, tetapi {半|はん} dan {体|たい} tidak membentuk kata yang berarti “menentang”."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "cx/gpt-5.6-terra",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T07:54:17.458Z"
+            }
+          }
         },
         {
           "order": 2,
@@ -331,7 +678,42 @@
               "codeAnswer": 4,
               "answerText": "開いて"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Soal ini menguji penulisan kanji yang tepat untuk kata kerja __{開|ひら}いて__ (membuka).",
+            "detail": "Soal meminta peserta memilih kanji yang benar untuk kata kerja hiragana __ひらいて__. Kata kerja dasar bentuk ini adalah {開|ひら}く (membuka). Dalam kalimat ini konteksnya adalah membuka buku atau teks pada halaman 10. Kanji yang memiliki {訓読み|くんよみ} (cara baca Jepang) ひらく atau あく adalah {開|かい}, sehingga bentuk te-nya ditulis __{開|ひら}いて__. Pilihan-pilihan lain menyajikan kanji yang memiliki komponen gerbang {門|もん} yang serupa sehingga sering mengecoh pembelajar.",
+            "translation": "Tolong buka halaman 10 dari buku teks.",
+            "keyPoints": [
+              "{開|ひら}く",
+              "kanji penulisan {開|かい}"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "{間|あいだ}いて ({間|あいだ} / antara, ruang). Kanji ini memiliki bacaan あいだ atau ま, dan bukan kanji untuk kata kerja ひらく. Pilihan ini mengecoh karena sama-sama memakai radikal {門|もん} dengan elemen {日|ひ} di dalamnya."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{閉|と}いて ({閉|と}じる / menutup). Kanji ini merupakan lawan kata dari {開|ひら}く, yaitu memiliki arti menutup seperti pada {閉|し}める (menutup) atau {閉|と}じる (menutup buku/mata). Bentuk __{閉|と}いて__ bukanlah penulisan untuk kata kerja ひらく."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "{閑|かん}いて ({閑|かん} / sepi, senggang). Kanji ini dibaca カン dan digunakan pada kosakata seperti {閑静|かんせい} (tenang, sunyi). Kanji ini tidak dibaca ひらく dan jarang muncul di level N4."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "__{開|ひら}いて__ (membuka). Kanji {開|かい} tepat dipakai untuk kata kerja {開|ひら}く (membuka buku, acara, dsb.) dan {開|あ}く (terbuka). Dalam bentuk te menjadi {開|ひら}いて."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:12:59.135Z"
+            }
+          }
         },
         {
           "order": 3,
@@ -354,7 +736,42 @@
               "codeAnswer": 4,
               "answerText": "白い"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Pilihan 3 benar karena kanji untuk kata sifat {赤|あか}い (merah) ditulis dengan kanji {赤|あか}.",
+            "detail": "Soal ini menguji kemampuan mengenali penulisan kanji yang tepat untuk kata sifat warna dalam bahasa Jepang. Kata yang digarisbawahi pada kalimat soal adalah __あかい__, yang berarti merah. Keempat pilihan jawaban menyajikan kanji untuk kata sifat warna dasar berakhiran い yang dipelajari pada tingkat dasar. Untuk menjawab dengan tepat, pembelajar perlu mengenali bentuk kanji untuk warna merah, yaitu {赤|あか}, yang digabungkan dengan {送|おく}り{仮名|がな} (huruf hiragana pengiring) い menjadi __{赤|あか}い__.",
+            "translation": "Sepeda merah ini milik siapa?",
+            "keyPoints": [
+              "{赤|あか}い",
+              "kanji warna dasar"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "{黒|くろ}い (hitam) mengecoh karena merupakan kata sifat warna dasar berakhiran い, tetapi kanji ini dibaca くろい dan bermakna hitam, bukan merah."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{青|あお}い (biru) mengecoh karena merupakan kata sifat warna dasar berakhiran い, tetapi kanji ini dibaca あおい dan bermakna biru, bukan merah."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "__{赤|あか}い__ (merah) adalah penulisan kanji yang tepat untuk kata sifat __あかい__."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "{白|しろ}い (putih) mengecoh karena merupakan kata sifat warna dasar berakhiran い, tetapi kanji ini dibaca しろい dan bermakna putih, bukan merah."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:13:15.715Z"
+            }
+          }
         },
         {
           "order": 4,
@@ -377,7 +794,41 @@
               "codeAnswer": 4,
               "answerText": "定って"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Kunci jawaban nomor 2 benar karena kanji yang tepat untuk kata kerja __{走|はし}る__ (berlari) adalah {走|はし}.",
+            "detail": "Soal ini menguji kemampuan pembelajar dalam memilih kanji yang tepat untuk kata kerja __{走|はし}って__ yang berasal dari bentuk kamus __{走|はし}る__. Kalimat tersebut membicarakan kebiasaan berlari selama 30 menit setiap hari. Pilihan lain menggunakan kanji yang memiliki bagian visual mirip atau berhubungan dengan kaki ({足|あし}), tetapi bukan kanji untuk kata kerja berlari. Oleh karena itu, pilihan yang benar adalah pilihan 2.",
+            "translation": "Setiap hari saya berlari selama 30 menit.",
+            "keyPoints": [
+              "{走|はし}る"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "{足|あし}って (kaki). Pilihan ini mengecoh karena kanji {足|あし} berhubungan erat dengan berjalan atau berlari, serta memiliki cara baca {訓読み|くんよみ} yaitu {足|あし} atau {足|た}りる (cukup), bukan {走|はし}る."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{走|はし}って (berlari). Kanji {走|はし} memiliki cara baca {訓読み|くんよみ} yaitu {走|はし}る dan cara baca {音読み|おんよみ} yaitu {走|そう}, sehingga bentuk penyambung dari kata kerja ini adalah {走|はし}って."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "{是|ぜ}って (kebenaran). Pilihan ini mengecoh karena bentuk kanjinya sekilas menyerupai bagian bawah kanji {走|はし}, tetapi artinya adalah kebenaran atau kepastian seperti pada kata {是非|ぜひ} (tentu saja) dan tidak dibaca {走|はし}."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "{定|てい}って (menentukan). Pilihan ini mengecoh karena bentuk coretannya memiliki kemiripan struktur, tetapi kanji ini memiliki cara baca {音読み|おんよみ} yaitu {定|てい} atau {定|じょう} dan {訓読み|くんよみ} yaitu {定|さだ}める (menentukan)."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:13:07.986Z"
+            }
+          }
         },
         {
           "order": 5,
@@ -400,7 +851,41 @@
               "codeAnswer": 4,
               "answerText": "寒い"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Kunci jawaban benar karena kanji yang tepat untuk kata sifat __くらい__ (gelap) adalah {暗|くら}い.",
+            "detail": "Soal ini menguji kemampuan peserta dalam mengenali kanji yang tepat untuk kosakata bahasa Jepang dasar tingkat N4 atau N5. Kalimat pada soal menyatakan kondisi sebuah ruangan ({部屋|へや}) yang gelap, ditandai dengan kata sifat __くらい__. Kata sifat __くらい__ ditulis dengan kanji {暗|くら}い yang memiliki makna gelap atau redup. Pilihan lain mengecoh karena memuat kanji yang berkaitan dengan nuansa suasana atau suhu ruangan, seperti terang, panas, atau dingin.",
+            "translation": "Kamar ini gelap, ya.",
+            "keyPoints": [
+              "{暗|くら}い"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "{暗|くら}い (gelap) adalah penulisan kanji yang benar untuk kata __くらい__."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{明|あか}い (salah penulisan) merupakan bentuk yang keliru; lawan kata dari {暗|くら}い adalah terang, yang ditulis {明|あか}るい dengan {送|おく}り{仮名|がな} る. Pilihan ini menggoda karena menyajikan antonim dari kata pada soal namun dengan penulisan kanji yang salah."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "{暑|あつ}い (panas) digunakan untuk suhu udara atau cuaca yang panas, bukan untuk menerangkan tingkat kegelapan ruangan. Pilihan ini mengecoh bagi yang salah mengingat konteks deskripsi ruangan."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "{寒|さむ}い (dingin) digunakan untuk suhu udara atau cuaca yang dingin, bukan untuk menunjukkan keadaan ruangan yang gelap."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:12:56.747Z"
+            }
+          }
         },
         {
           "order": 6,
@@ -423,7 +908,41 @@
               "codeAnswer": 4,
               "answerText": "野菜"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Pilihan 4 benar karena penulisan kanji yang tepat untuk kata {野菜|やさい} (sayur) adalah gabungan kanji {野|や} dan {菜|さい}.",
+            "detail": "Soal ini menguji kemampuan peserta dalam mengenali bentuk penulisan kanji yang benar untuk kosakata {野菜|やさい}. Kata ini terdiri atas dua huruf kanji, yaitu {野|や} yang memiliki arti padang atau ladang, dan {菜|さい} yang memiliki arti sayuran atau lauk nabati. Jebakan pada soal ini menggunakan kanji {理|り} yang sepintas memiliki guratan menyerupai kanji {野|や}, serta kanji {薬|くすり} (obat) yang memiliki radikal rumput di bagian atasnya mirip dengan kanji {菜|さい}. Oleh karena itu, peserta harus jeli membedakan bentuk kanji tersebut.",
+            "translation": "Saya selalu membeli sayur di supermarket itu.",
+            "keyPoints": [
+              "{野菜|やさい}"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "{理薬|りやく} menggoda karena kanji {理|り} tampak mirip secara sepintas dan kanji {薬|くすり} sama-sama memiliki radikal rumput, tetapi ini bukan gabungan kanji untuk {野菜|やさい} dan bahkan bukan kata standar dalam bahasa Jepang."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{野薬|ややく} menggoda karena menggunakan kanji depan yang benar yaitu {野|や}, tetapi kanji belakangnya adalah {薬|くすり} yang artinya obat, bukan {菜|さい}."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "{理菜|りさい} menggoda karena kanji belakangnya sudah tepat yaitu {菜|さい}, tetapi kanji depannya keliru memakai {理|り} bukan {野|や}."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "{野菜|やさい} (sayuran) adalah penulisan kanji yang tepat dan baku untuk kata {野菜|やさい}."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:12:56.373Z"
+            }
+          }
         }
       ]
     },
@@ -455,7 +974,42 @@
               "codeAnswer": 4,
               "answerText": "かよいましたか"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Verba yang tepat berpasangan dengan partikel に untuk menyatakan kondisi penyesuaian diri terhadap hal baru adalah __{慣|な}れましたか__ (apakah sudah terbiasa).",
+            "detail": "Soal ini menguji pemahaman kosakata verba yang lazim digunakan bersama partikel に dalam konteks memulai pekerjaan baru. Kalimat ini bermaksud menanyakan apakah lawan bicara sudah terbiasa atau beradaptasi dengan pekerjaan barunya tersebut. Pola ungkapan yang sangat lazim digunakan dalam bahasa Jepang adalah ~に{慣|な}れる (terbiasa dengan ~). Oleh karena itu, bentuk lampau tanya __{慣|な}れましたか__ adalah pasangan yang paling alami dan tepat untuk melengkapi kalimat tersebut.",
+            "translation": "Apakah kamu sudah terbiasa dengan pekerjaan barumu?",
+            "keyPoints": [
+              "{慣|な}れる",
+              "kolokasi partikel に"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "__{慣|な}れましたか__ (apakah sudah terbiasa) tepat karena verba {慣|な}れる berpasangan dengan partikel に untuk menyatakan terbiasa atau menyesuaikan diri dengan suatu hal atau lingkungan baru seperti pekerjaan."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "がんばりましたか (apakah sudah berusaha keras) menggoda karena berkaitan dengan pekerjaan, tetapi verba ini tidak berpasangan dengan partikel に dalam konteks ini dan maknanya janggal untuk ditanyakan bersama kata もう (sudah)."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "{勤|つと}めましたか (apakah sudah bekerja/mengabdi) menggoda karena maknanya bekerja dan bisa menggunakan partikel に, tetapi nomina di depannya harus berupa tempat atau instansi bekerja seperti {会社|かいしゃ} (perusahaan), bukan {仕事|しごと} (pekerjaan)."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "{通|かよ}いましたか (apakah sudah pulang-pergi/menghadiri secara rutin) menggoda karena dapat menggunakan partikel に, namun ditujukan untuk tempat tujuan rutin seperti {学校|がっこう} (sekolah) atau kantor, bukan untuk {仕事|しごと}."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:13:25.551Z"
+            }
+          }
         },
         {
           "order": 2,
@@ -478,7 +1032,42 @@
               "codeAnswer": 4,
               "answerText": "きえて"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Kunci jawaban benar karena kata kerja yang tepat untuk menyatakan hujan reda atau berhenti adalah __{止|や}む__.",
+            "detail": "Soal ini menguji pemahaman kolokasi kata kerja yang berpasangan dengan fenomena alam, khususnya {雨|あめ} (hujan). Di dalam bahasa Indonesia, kita bisa mengatakan hujan selesai atau hujan berhenti, sehingga pembelajar sering terkecoh memilih kata yang bermakna berhenti atau selesai secara umum. Namun, dalam bahasa Jepang, kata kerja standar yang berpasangan dengan {雨|あめ} dan {風|かぜ} (angin) ketika berhenti adalah {止|や}む (reda/berhenti). Bentuk {連用形|れんようけい} ditambah て dari {止|や}む adalah {止|や}んで. Kalimat ini menjelaskan bahwa setelah hujan reda, cuaca menjadi bagus (いい{天気|てんき}になりました).",
+            "translation": "Setelah hujan reda, cuacanya menjadi cerah.",
+            "keyPoints": [
+              "{雨|あめ}が{止|や}む",
+              "kolokasi kata kerja fenomena alam"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "おわって (selesai/berakhir) berasal dari kata {終|お}わる, yang digunakan untuk kegiatan, acara, atau jangka waktu seperti rapat, film, atau semester. Kata ini tidak bisa digunakan untuk hujan meskipun dalam bahasa Indonesia ada ungkapan hujan selesai."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "とまって (berhenti) berasal dari kata {止|と}まる, yang dipakai untuk benda bergerak yang berhenti seperti kendaraan, jam, atau aliran air keran. Kanji yang digunakan sama dengan {止|や}む, yaitu {止|と}まる, sehingga pilihan ini sangat mengecoh. Namun untuk hujan, kata ini dibaca dan difungsikan sebagai {止|や}む, bukan {止|と}まる."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "やんで (reda/berhenti) adalah bentuk て dari {止|や}む, yang merupakan pasangan kolokasi alami untuk {雨|あめ} (hujan) ketika berhenti turun."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "きえて (padam/hilang) berasal dari kata {消|き}える, yang digunakan untuk sesuatu yang lenyap seperti api, lampu, atau jejak kaki. Kata ini tidak digunakan untuk menyatakan hujan yang berhenti."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:13:23.848Z"
+            }
+          }
         },
         {
           "order": 3,
@@ -501,7 +1090,42 @@
               "codeAnswer": 4,
               "answerText": "うつくしい"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Kata yang paling tepat untuk melengkapi kalimat adalah __おとなしい__ karena menggambarkan sifat anak yang pendiam dan tenang sehingga jarang berbicara dengan orang lain.",
+            "detail": "Soal ini menguji pemahaman makna kata sifat yang mendeskripsikan sifat seseorang sesuai konteks kalimat. Kalimat pada soal menyebutkan bahwa anak tersebut jarang berbicara dengan orang lain karena suatu alasan, ditandai oleh partikel {理由|りゆう} (alasan) yaitu ので (karena). Kata sifat yang paling logis menjadi alasan seseorang jarang mengobrol adalah sifat pendiam atau pemalu, yaitu __おとなしい__. Pilihan lain berkaitan dengan rupa atau usia, sehingga tidak memiliki hubungan sebab akibat yang masuk akal dengan kebiasaan jarang berbicara.",
+            "translation": "Karena anak ini pendiam, ia tidak banyak berbicara dengan orang lain.",
+            "keyPoints": [
+              "おとなしい",
+              "kata sifat pembawaan karakter"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "かわいい (lucu/imut) sering digunakan untuk mendeskripsikan anak-anak, tetapi memiliki penampilan atau tingkah yang lucu bukanlah alasan seseorang menjadi jarang berbicara dengan orang lain."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "おとなしい (pendiam/tenang) adalah kata sifat yang tepat untuk menerangkan sifat atau watak seseorang yang tidak banyak tingkah dan cenderung sedikit berbicara."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "わかい (muda) tidak cocok karena subjek kalimat sudah dinyatakan sebagai {子|こ} (anak/anak-anak), dan usia muda tidak secara logis menyebabkan seseorang jarang berbicara."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "うつくしい (cantik/indah) digunakan untuk keindahan rupa atau pemandangan, bukan untuk menerangkan sifat kepribadian yang jarang mengobrol."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:13:28.461Z"
+            }
+          }
         },
         {
           "order": 4,
@@ -524,7 +1148,43 @@
               "codeAnswer": 4,
               "answerText": "けんぶつ"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Kata yang tepat adalah おみまい ({お見舞い|おみまい} / menjenguk orang sakit) karena konteks kalimat berbicara tentang teman yang datang ketika pembicara sedang dirawat di rumah sakit.",
+            "detail": "Soal ini menguji pemahaman kosakata yang berkaitan dengan situasi medis atau musibah. Petunjuk utama pada kalimat adalah frasa にゅういんした とき ({入院|にゅういん}した とき / saat masuk rumah sakit). Tindakan mengunjungi seseorang yang sedang sakit atau dirawat di rumah sakit disebut {お見舞い|おみまい}. Pola [kata benda tujuan] + に {来|く}る digunakan untuk menyatakan datang demi suatu tujuan. Oleh karena itu, {お見舞い|おみまい}に {来|き}てくれました berarti datang untuk menjenguk saya.",
+            "translation": "Saat saya dirawat di rumah sakit, teman saya datang untuk menjenguk.",
+            "keyPoints": [
+              "{お見舞い|おみまい}",
+              "{入院|にゅういん}",
+              "{目的|もくてき}の「に」"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "おみまい ({お見舞い|おみまい} / menjenguk orang sakit atau terkena musibah) sangat tepat digunakan karena orang yang dikunjungi sedang dirawat di rumah sakit."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "おねがい ({お願|おねが}い / permohonan atau permintaan) tampak masuk akal karena memakai awalan sopan お, tetapi artinya datang untuk meminta tolong, bukan untuk menjenguk orang yang sedang sakit."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "けんがく ({見学|けんがく} / kunjungan belajar atau studi tiru) sering mengecoh karena berkaitan dengan mengunjungi suatu tempat, tetapi kata ini digunakan untuk melihat fasilitas atau pabrik dengan tujuan belajar, bukan menjenguk orang sakit."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "けんぶつ ({見物|けんぶつ} / berwisata atau menonton pemandangan) juga berhubungan dengan melihat-lihat tempat tertentu, tetapi ditujukan untuk rekreasi atau tamasya, sehingga tidak pantas untuk situasi orang yang sedang dirawat di rumah sakit."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:13:23.133Z"
+            }
+          }
         },
         {
           "order": 5,
@@ -547,7 +1207,43 @@
               "codeAnswer": 4,
               "answerText": "やくそく"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Pilihan 2 benar karena kata kerja yang berpasangan secara alami dengan pemesanan tiket pesawat adalah __{予約|よやく}する__ (memesan/mereservasi).",
+            "detail": "Soal ini menguji pemahaman kolokasi kosakata mengenai aktivitas sebelum bepergian. Kalimat menyatakan bahwa pembicara akan pulang ke negara asalnya bulan depan, sehingga ia melakukan suatu tindakan terhadap tiket pesawat ({飛行機|ひこうき}の チケット). Dalam bahasa Jepang, tindakan mengamankan atau memesan tiket, kamar hotel, atau tempat duduk disebut dengan __{予約|よやく}__ (reservasi/pemesanan). Oleh karena itu, bentuk frasa yang tepat adalah {飛行機|ひこうき}の チケットを __{予約|よやく}__しました.",
+            "translation": "Karena bulan depan akan pulang ke negara asal, saya sudah memesan tiket pesawat.",
+            "keyPoints": [
+              "{予約|よやく}",
+              "{約束|やくそく}",
+              "{計画|けいかく}"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "{計画|けいかく} (rencana/merencanakan) memang berkaitan dengan kegiatan di masa depan, tetapi kata ini digunakan untuk menyusun rencana kegiatan atau jadwal secara umum, bukan memesan tiket pesawat."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{予約|よやく} (reservasi/pemesanan) adalah pasangan kata yang lazim dan tepat digunakan bersama tiket ({飛行機|ひこうき}の チケットを {予約|よやく}する berarti memesan tiket pesawat)."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "{受付|うけつけ} (bagian penerima tamu/pendaftaran) adalah kata benda yang merujuk pada meja informasi, resepsionis, atau loket pendaftaran di fasilitas umum seperti rumah sakit atau kantor, sehingga tidak cocok disandingkan dengan tiket pesawat dalam konteks ini."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "{約束|やくそく} (janji) sering mengecoh pembelajar karena sama-sama bermakna janji dalam bahasa Indonesia, namun kata ini khusus digunakan untuk janji temu atau kesepakatan dengan orang lain, bukan untuk pemesanan barang, tiket, atau fasilitas."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:13:22.362Z"
+            }
+          }
         },
         {
           "order": 6,
@@ -570,7 +1266,42 @@
               "codeAnswer": 4,
               "answerText": "だいじに"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Kata yang tepat untuk menerangkan cara belajar dengan sungguh-sungguh atau tekun menghadapi ujian adalah __まじめに__.",
+            "detail": "Soal ini meminta Anda memilih kata sifat-na dalam bentuk adverbia (berakhiran に) yang paling pas untuk menerangkan kata kerja {勉強|べんきょう}します (belajar). Konteks kalimat menyebutkan alasan bahwa ada ujian pada minggu depan, sehingga pada minggu ini pembicara berniat untuk belajar dengan sungguh-sungguh atau rajin. Bentuk adverbia dari {真面目|まじめ} (rajin, sungguh-sungguh) yaitu __まじめに__ sering dipasangkan dengan kata kerja {勉強|べんきょう}する untuk menyatakan belajar dengan tekun atau serius.",
+            "translation": "Karena minggu depan ada ujian, minggu ini saya akan belajar dengan sungguh-sungguh.",
+            "keyPoints": [
+              "{真面目|まじめ}に",
+              "{形容動詞|けいようどうし}"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "じょうぶに (dengan kuat atau kokoh), bentuk adverbia dari {丈夫|じょうぶ} yang dipakai untuk menggambarkan kondisi fisik yang sehat dan kuat atau benda yang tahan lama dan tidak mudah rusak, sehingga tidak bisa digunakan untuk menerangkan aktivitas belajar."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "しんせつに (dengan ramah atau baik hati), bentuk adverbia dari {親切|しんせつ} yang digunakan untuk menggambarkan sikap ramah dan suka menolong terhadap orang lain, bukan untuk cara belajar menghadapi ujian."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "まじめに (dengan sungguh-sungguh atau tekun), sangat tepat bersanding dengan {勉強|べんきょう}します untuk menyatakan sikap belajar dengan serius dan giat demi mempersiapkan ujian."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "だいじに (dengan berharga atau hati-hati), bentuk adverbia dari {大事|だいじ} yang umumnya berpasangan dengan {使|つか}う (menggunakan) atau {好|す}きな{物|もの}を{大事|だいじ}にする (menjaga barang yang disukai baik-baik), sehingga terdengar janggal bila dipasangkan dengan {勉強|べんきょう}します."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:13:27.505Z"
+            }
+          }
         },
         {
           "order": 7,
@@ -593,7 +1324,43 @@
               "codeAnswer": 4,
               "answerText": "おとして"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Kunci jawaban benar karena kata kerja __{落|お}として__ (menjatuhkan) adalah satu-satunya tindakan fisik dari atas meja yang menjadi penyebab gelas pecah.",
+            "detail": "Soal ini meminta Anda memilih kata kerja yang paling masuk akal menghubungkan tempat asal benda yaitu テーブルから (dari meja) dan akibat yang terjadi yaitu {割|わ}ってしまいました (telanjur memecahkannya). Objek yang dibicarakan adalah コップ (gelas). Urutan kejadian yang logis ketika gelas berada di meja lalu pecah adalah gelas tersebut tidak sengaja dijatuhkan ke lantai. Oleh karena itu, kata kerja transitif __{落|お}とす__ (menjatuhkan) adalah pilihan yang paling tepat untuk mengisi bagian rumpang.",
+            "translation": "Saya menjatuhkan gelas dari meja dan memecahkannya.",
+            "keyPoints": [
+              "{落|お}とす",
+              "{割|わ}る",
+              "bentuk ~てしまう"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "{渡|わた}して (menyerahkan) biasanya digunakan saat memberikan suatu barang kepada orang lain dengan tangan atau menyeberangkan sesuatu. Kata ini tidak cocok digabungkan dengan partikel から yang menunjukkan titik jatuh meja dan tidak ada hubungannya dengan pecahnya gelas."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{無|な}くして (menghilangkan) sering mengecoh pembelajar karena sama-sama bernuansa keteledoran atau ketidaksengajaan. Namun, menghilangkan barang berarti barang itu tidak diketahui keberadaannya, sehingga kontradiktif jika dilanjutkan dengan tindakan memecahkannya di tempat."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "{壊|こわ}して (merusak) tampak menggoda karena berkaitan dengan kerusakan benda. Akan tetapi, kata ini tidak cocok dipadukan dengan テーブルから dan maknanya menjadi janggal atau berulang jika digabung dengan {割|わ}ってしまいました (merusak gelas lalu memecahkannya)."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "{落|お}として (menjatuhkan) sangat tepat secara konteks, karena menunjukkan aksi menjatuhkan benda dari tempat yang lebih tinggi yaitu meja, yang mengakibatkan gelas tersebut pecah di lantai."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:13:28.767Z"
+            }
+          }
         },
         {
           "order": 8,
@@ -616,7 +1383,41 @@
               "codeAnswer": 4,
               "answerText": "きょうみ"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Soal ini menanyakan kata benda yang tepat untuk menyatakan adat atau tradisi di suatu negara. Kata __{習慣|しゅうかん}__ (kebiasaan atau adat) paling tepat karena membicarakan kebiasaan masyarakat suatu negara saat merayakan ulang tahun.",
+            "detail": "Kalimat soal membicarakan hal yang dilakukan di suatu negara, yaitu menyantap makanan istimewa pada hari ulang tahun. Konteks ini menunjukkan tradisi atau norma sosial yang berlaku di tengah masyarakat setempat. Di antara pilihan yang ada, kata benda yang bermakna tradisi, adat istiadat, atau kebiasaan umum masyarakat adalah __{習慣|しゅうかん}__. Bila digabungkan, frasa tersebut menjadi {食|た}べる{習慣|しゅうかん}があります (ada kebiasaan menyantap...).",
+            "translation": "Di negara ini, ada kebiasaan memakan makanan istimewa pada hari ulang tahun.",
+            "keyPoints": [
+              "{習慣|しゅうかん}"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "よてい ({予定|よてい} / rencana). Pilihan ini menggoda karena memakan sesuatu bisa menjadi rencana kegiatan, namun kata ini hanya dipakai untuk rencana atau jadwal acara pribadi/tertentu, bukan untuk tradisi yang berlangsung di suatu negara."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "しゅうかん ({習慣|しゅうかん} / kebiasaan atau adat). Kata ini sangat tepat karena digunakan untuk menyatakan kebiasaan individu maupun adat istiadat yang ada di suatu masyarakat atau negara."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "けいけん ({経験|けいけん} / pengalaman). Pilihan ini menggoda bagi pembelajar yang mengingat pola kalimat pengalaman, namun pengalaman menyatakan hal yang pernah dialami oleh seseorang di masa lalu dan tidak logis jika dikatakan dimiliki oleh suatu negara dalam konteks ini."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "きょうみ ({興味|きょうみ} / minat). Pilihan ini tidak cocok karena biasanya berpasangan dengan partikel に dalam pola ...に{興味|きょうみ}がある (memiliki minat pada...) dan tidak masuk akal untuk menjelaskan tradisi perayaan di sebuah negara."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:13:29.496Z"
+            }
+          }
         },
         {
           "order": 9,
@@ -639,7 +1440,42 @@
               "codeAnswer": 4,
               "answerText": "スイッチ"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Pilihan 4 benar karena kata serapan katakana yang tepat untuk tombol yang ditekan agar lampu kamar menyala adalah sakelar.",
+            "detail": "Soal ini menguji pemahaman kosakata kata serapan katakana dalam konteks kehidupan sehari-hari. Bagian kalimat menyebutkan bahwa jika menekan sesuatu di sebelah pintu, maka {電気|でんき} (lampu) di dalam {部屋|へや} (kamar) akan menyala. Benda yang ditekan untuk menyalakan lampu adalah sakelar, sehingga kata yang paling tepat untuk mengisi bagian rumpang adalah __スイッチ__.",
+            "translation": "Kalau menekan sakelar di samping pintu, lampu kamar akan menyala.",
+            "keyPoints": [
+              "スイッチ",
+              "{電気|でんき}がつく"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "チェック (pemeriksaan/tanda centang) biasa digunakan dalam konteks memeriksa sesuatu atau memberi tanda centang, sehingga tidak masuk akal dipasangkan dengan kata kerja menekan untuk menyalakan lampu."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "スタート (memulai/awal) sering digunakan untuk perlombaan atau tombol mulai pada mesin tertentu, tetapi bukan sebutan lazim untuk tombol penyala lampu ruangan di samping pintu."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "チャンス (peluang/kesempatan) merupakan kata benda abstrak yang bermakna kesempatan baik, sehingga sama sekali tidak cocok diletakkan sebagai benda fisik di sebelah pintu yang bisa ditekan."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "スイッチ (sakelar) merupakan kata yang paling tepat karena merujuk pada peranti mekanis pemutus dan penghubung arus listrik yang ditekan untuk menyalakan lampu."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:13:32.528Z"
+            }
+          }
         },
         {
           "order": 10,
@@ -662,7 +1498,42 @@
               "codeAnswer": 4,
               "answerText": "さそいましょう"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Kalimat ini membutuhkan kata kerja yang dapat berpasangan dengan anak kalimat tanya berpartikel か, sehingga __{決|き}めましょう__ adalah pilihan yang tepat untuk menyatakan ajakan memutuskan suatu hal.",
+            "detail": "Soal ini menguji pemahaman kosakata kata kerja dan kecocokan maknanya dengan pola kalimat pertanyaan tidak langsung. Kalimat di atas memiliki bagian {今晩|こんばん}、どこで {食事|しょくじ}を するか (apakah atau di mana akan makan malam nanti), yaitu bentuk pertanyaan yang disematkan dengan partikel か (apakah). Kata kerja yang secara alami mengikuti pola klausa tanya semacam ini adalah kata kerja yang berkaitan dengan pertimbangan, penetapan, atau pencarian tahu. Dari semua pilihan yang tersedia, hanya kata {決|き}める (memutuskan) yang masuk akal digabungkan menjadi {決|き}めましょう (mari kita putuskan) agar maknanya menjadi ajakan untuk menentukan tempat makan bersama.",
+            "translation": "Malam ini, mari kita putuskan di mana kita akan makan.",
+            "keyPoints": [
+              "{決|き}める",
+              "klausa tanya tidak langsung dengan partikel か"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "__{決|き}めましょう__ (mari memutuskan) sangat tepat karena berpasangan sempurna dengan anak kalimat tanya どこで{食事|しょくじ}をするか sehingga membentuk arti mari kita tentukan tempat makan untuk malam ini."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{入|はい}りましょう (mari masuk) menggoda karena biasa diasosiasikan dengan memasuki restoran saat makan di luar, tetapi kata kerja ini memerlukan partikel {目的|もくてき} tempat seperti に dan tidak dapat dipadukan langsung dengan klausa tanya berpartikel か."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "{払|はら}いましょう (mari membayar) tampak masuk akal karena sering berkaitan dengan topik santap makan saat melunasi tagihan, tetapi kata kerja ini membutuhkan objek biaya atau uang berpartikel を, bukan klausul tanya di mana akan makan."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "{誘|さそ}いましょう (mari mengajak) terdengar berkaitan dengan rencana pergi makan bersama teman, namun kata kerja ini menuntut sasaran orang yang diajak dengan partikel を dan tidak nyambung maknanya dengan pertanyaan tempat makan."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:13:34.058Z"
+            }
+          }
         }
       ]
     },
@@ -694,7 +1565,42 @@
               "codeAnswer": 4,
               "answerText": "きのうの 話は ゆうめいじゃありませんよ。"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Kata __うそ__ berarti bohong, sehingga kalimat ini semakna dengan menyatakan bahwa ceritanya tidak benar atau __{本当|ほんとう}じゃありません__.",
+            "detail": "Soal ini menguji pemahaman kosakata tentang kata sifat atau nomina yang menyatakan kebenaran suatu informasi. Kalimat soal berbunyi __{昨日|きのう}の {話|はなし}は うそですよ__ (cerita kemarin itu bohong lho). Kata __うそ__ bermakna kabar bohong, dusta, atau tidak benar. Lawan katanya adalah __{本当|ほんとう}__ (benar/nyata). Oleh karena itu, mengatakan suatu hal adalah __うそ__ sama maknanya dengan bentuk negatif dari __{本当|ほんとう}__, yaitu __{本当|ほんとう}じゃありません__ (tidak benar).",
+            "translation": "Cerita kemarin itu bohong lho.",
+            "keyPoints": [
+              "うそ",
+              "{本当|ほんとう}"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "__{昨日|きのう}の {話|はなし}は ほんとうですよ__ (cerita kemarin itu benar lho) menyatakan kebalikannya, karena __{本当|ほんとう}__ adalah lawan kata dari __うそ__, bukan padanan maknanya."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "__{昨日|きのう}の {話|はなし}は ほんとうじゃありませんよ__ (cerita kemarin itu tidak benar lho) memiliki arti yang sama persis dengan menyatakan cerita tersebut bohong (__うそ__)."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "__{昨日|きのう}の {話|はなし}は ゆうめいですよ__ (cerita kemarin itu terkenal lho) keliru karena __{有名|ゆうめい}__ berarti terkenal, tidak berhubungan dengan kebenaran suatu cerita."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "__{昨日|きのう}の {話|はなし}は ゆうめいじゃありませんよ__ (cerita kemarin itu tidak terkenal lho) juga keliru karena tidak membicarakan sifat benar atau dustanya sebuah cerita."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:13:41.222Z"
+            }
+          }
         },
         {
           "order": 2,
@@ -717,7 +1623,42 @@
               "codeAnswer": 4,
               "answerText": "やまださんは 何時ごろ おきますか。"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Kata __{戻|もど}ります__ berarti kembali ke tempat semula, yang maknanya sama persis dengan {帰|かえ}って きます (akan kembali atau pulang ke sini).",
+            "detail": "Soal ini menguji pemahaman sinonim dari kata kerja __{戻|もど}る__ (kembali). Pada kalimat soal, penutur menanyakan perkiraan waktu kembalinya {山田|やまだ}さん (Saudara Yamada) ke tempat pembicara berada sekarang, misalnya kantor. Kata kerja {帰|かえ}って くる merupakan kombinasi dari {帰|かえ}る (pulang/kembali) dan {来|く}る (datang), yang menyatakan tindakan kembali ke tempat si penutur. Oleh karena itu, makna kedua kalimat tersebut setara.",
+            "translation": "Kira-kira jam berapa Saudara Yamada akan kembali?",
+            "keyPoints": [
+              "{戻|もど}る",
+              "{帰|かえ}って くる"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "{山田|やまだ}さんは {何時|なんじ}ごろ かえって きますか (Kira-kira jam berapa Saudara Yamada akan pulang kembali ke sini?). Frasa {帰|かえ}って きます memiliki arti yang sama dengan __{戻|もど}ります__, yaitu kembali ke tempat asal atau tempat semula."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{山田|やまだ}さんは {何時|なんじ}ごろ でかけますか (Kira-kira jam berapa Saudara Yamada akan pergi keluar?). Kata {出|で}かける berarti pergi ke luar untuk suatu keperluan, yang merupakan lawan arah dari __{戻|もど}る__, sehingga pilihan ini salah."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "{山田|やまだ}さんは {何時|なんじ}ごろ ねますか (Kira-kira jam berapa Saudara Yamada akan tidur?). Kata {寝|ね}る berarti tidur, konteksnya sama sekali berbeda dengan kembali ke tempat semula."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "{山田|やまだ}さんは {何時|なんじ}ごろ おきますか (Kira-kira jam berapa Saudara Yamada akan bangun?). Kata {起|お}きる berarti bangun tidur, tidak memiliki kaitan makna dengan kata pada soal."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:13:42.651Z"
+            }
+          }
         },
         {
           "order": 3,
@@ -740,7 +1681,42 @@
               "codeAnswer": 4,
               "answerText": "この 国は こめを ほかの 国に うって いますか。"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Kata __{輸出|ゆしゅつ}する__ bermakna mengekspor barang dagangan ke luar negeri, yang sama artinya dengan menjual beras ke negara lain seperti pada pilihan 4.",
+            "detail": "Soal ini menguji pemahaman kosakata tingkat N4 mengenai istilah perdagangan internasional, khususnya kata __{輸出|ゆしゅつ}する__ (mengekspor). Kata ini tersusun dari kanji yang bermakna mengangkut keluar, yaitu kegiatan mengirimkan dan menjual produk dalam negeri ke negara lain secara komersial. Oleh karena itu, parafrase yang paling tepat adalah menjual beras kepada negara lain, yaitu ほかの {国|くに}に {売|う}って います.",
+            "translation": "Apakah negara ini mengekspor beras?",
+            "keyPoints": [
+              "{輸出|ゆしゅつ}する",
+              "{売|う}る"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "この {国|くに}は こめを ほかの {国|くに}から もらって いますか (Apakah negara ini menerima beras dari negara lain?). Pilihan ini salah karena __{輸出|ゆしゅつ}する__ adalah transaksi perdagangan keluar, bukan menerima barang sebagai pemberian secara pasif dari negara lain."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "この {国|くに}は こめを ほかの {国|くに}から かって いますか (Apakah negara ini membeli beras dari negara lain?). Pilihan ini sangat menggoda karena sama-sama menyangkut jual beli antarnegara, namun membeli barang dari luar negeri adalah padanan untuk {輸入|ゆにゅう}する (mengimpor), yang merupakan lawan kata dari __{輸出|ゆしゅつ}する__."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "この {国|くに}は こめを ほかの {国|くに}に あげて いますか (Apakah negara ini memberikan beras kepada negara lain?). Pilihan ini menggoda karena arah tindakannya sama-sama menuju ke negara lain, tetapi {上|あ}げる bermakna memberikan secara cuma-cuma tanpa transaksi komersial, sehingga tidak sesuai dengan konsep ekspor."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "この {国|くに}は こめを ほかの {国|くに}に うって いますか (Apakah negara ini menjual beras ke negara lain?). Menjual barang ke negara lain adalah penjelasan tepat dari kata __{輸出|ゆしゅつ}する__."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:13:45.017Z"
+            }
+          }
         },
         {
           "order": 4,
@@ -763,7 +1739,42 @@
               "codeAnswer": 4,
               "answerText": "たなかさんは あそんで いました。"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Kata __にこにこして__ merupakan kata tiruan keadaan yang menggambarkan seseorang sedang tersenyum ramah atau tersenyum senang, sehingga bersinonim dengan {笑|わら}っていました (sedang tersenyum atau tertawa).",
+            "detail": "Soal ini menguji pemahaman kosakata {擬態語|ぎたいご} (kata tiruan keadaan), khususnya kata にこにこ yang menggambarkan raut wajah seseorang yang sedang tersenyum dengan gembira dan ramah tanpa mengeluarkan suara tawa yang keras. Makna ini sepadan dengan kata kerja {笑|わら}う (tersenyum/tertawa). Bentuk lampau sedang berlangsung __にこにこして__いました dapat diparafrasakan secara tepat menjadi {笑|わら}っていました.",
+            "translation": "Tanaka sedang tersenyum.",
+            "keyPoints": [
+              "にこにこ",
+              "{笑|わら}う"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "たなかさんは こまって いました (Tanaka sedang bingung/kesulitan). Pilihan ini mengecoh bagi yang belum hafal arti kata tiruan keadaan, padahal {困|こま}る (berada dalam kesulitan) maknanya bertolak belakang dengan ekspresi senang dari にこにこ."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "たなかさんは やすんで いました (Tanaka sedang beristirahat). Pilihan ini memakai kata kerja {休|やす}む (beristirahat) yang suasananya santai, tetapi tidak menjelaskan ekspresi wajah tersenyum."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "たなかさんは わらって いました (Tanaka sedang tersenyum/tertawa). Kata kerja {笑|わら}う (tersenyum/tertawa) paling tepat mewakili makna にこにこする (tersenyum)."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "たなかさんは あそんで いました (Tanaka sedang bermain). Pilihan ini menggoda karena bermain biasanya menimbulkan senyum gembira, namun kata kerja {遊|あそ}ぶ (bermain) berfokus pada aktivitasnya, bukan perubahan ekspresi wajah tersenyum."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:13:41.847Z"
+            }
+          }
         },
         {
           "order": 5,
@@ -786,7 +1797,43 @@
               "codeAnswer": 4,
               "answerText": "新しい ノートや ペンが ほしいです。"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Kata __かぐ__ ({家具|かぐ}) berarti perabot atau furnitur, sehingga kalimat yang menyebutkan {机|つくえ} (meja) dan ベッド (tempat tidur) memiliki makna yang paling sepadan.",
+            "detail": "Soal ini menguji pemahaman kosakata kategori benda dalam bahasa Jepang. Kata yang digarisbawahi adalah __かぐ__, yang merujuk pada perabot rumah tangga atau mebel. Pada soal parafrase jenis ini, kata umum sering kali digantikan dengan contoh-contoh benda yang termasuk ke dalam kategori tersebut. Dari keempat pilihan, hanya pilihan 2 yang menyebutkan contoh furnitur, yaitu meja dan tempat tidur. Pilihan lainnya menggoda karena sama-sama menyebutkan barang-barang kebutuhan sehari-hari, namun kelompok kategorinya berbeda.",
+            "translation": "Saya ingin perabot baru.",
+            "keyPoints": [
+              "{家具|かぐ}",
+              "{机|つくえ}",
+              "ベッド"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "{新|あたら}しい かばんや さいふが ほしいです (Saya ingin tas atau dompet baru). Kata かばん (tas) dan {財布|さいふ} (dompet) termasuk barang bawaan pribadi atau aksesoris, bukan perabot rumah tangga."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{新|あたら}しい つくえや ベッドが ほしいです (Saya ingin meja atau tempat tidur baru). Meja dan tempat tidur adalah contoh nyata dari perabot atau furnitur rumah."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "{新|あたら}しい カメラや ビデオが ほしいです (Saya ingin kamera atau perekam video baru). Kamera dan perekam video adalah barang elektronik, bukan furnitur."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "{新|あたら}しい ノートや ペンが ほしいです (Saya ingin buku catatan atau pena baru). Buku catatan dan pena termasuk ke dalam kategori alat tulis, bukan perabot."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:13:43.635Z"
+            }
+          }
         }
       ]
     },
@@ -818,7 +1865,41 @@
               "codeAnswer": 4,
               "answerText": "シャツと パンツを __せんたく__しました。"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Kata __{洗濯|せんたく}__ (mencuci pakaian) hanya digunakan khusus untuk mencuci pakaian atau kain, sehingga penggunaannya pada kemeja dan celana di pilihan 4 adalah yang paling tepat.",
+            "detail": "Soal ini menguji pemahaman penggunaan kata kerja bentuk kata benda suru yaitu __{洗濯|せんたく}する__ (mencuci pakaian). Dalam bahasa Indonesia, kata mencuci bisa dipakai untuk berbagai benda seperti mencuci rambut, mencuci piring, atau mencuci baju. Namun dalam bahasa Jepang, __{洗濯|せんたく}__ secara spesifik ditujukan untuk pakaian, kain, seprai, dan sejenisnya. Untuk rambut atau badan menggunakan kata {洗|あら}う (mencuci), untuk membersihkan kamar menggunakan {掃除|そうじ}する (membersihkan), dan untuk gigi menggunakan {磨|みが}く (menggosok/menyikat). Oleh karena itu, kalimat yang tepat memasangkan __{洗濯|せんたく}__ dengan pakaian adalah pilihan 4.",
+            "translation": "Saya telah mencuci kemeja dan celana.",
+            "keyPoints": [
+              "{洗濯|せんたく}"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "シャンプーで かみを __{洗濯|せんたく}__しました (saya mencuci rambut dengan sampo). Pilihan ini menggoda karena sampo digunakan untuk mencuci, tetapi untuk rambut kata yang tepat adalah {洗|あら}いました (mencuci), bukan __{洗濯|せんたく}__."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{日曜日|にちようび}に {部屋|へや}を __{洗濯|せんたく}__します (pada hari Minggu saya mencuci kamar). Pilihan ini tidak tepat karena kamar tidak dicuci seperti pakaian; kata yang benar untuk membersihkan ruangan adalah {掃除|そうじ}します (membersihkan)."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "{食事|しょくじ}の あとで、{歯|は}を __{洗濯|せんたく}__します (setelah makan, saya mencuci gigi). Pilihan ini keliru karena untuk membersihkan gigi digunakan ungkapan {歯|は}を {磨|みが}きます (menggosok gigi)."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "シャツと パンツを __{洗濯|せんたく}__しました (saya telah mencuci kemeja dan celana). Penggunaan __{洗濯|せんたく}__ sangat tepat di sini karena objek yang dicuci adalah pakaian, yaitu kemeja dan celana."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:13:51.526Z"
+            }
+          }
         },
         {
           "order": 2,
@@ -841,7 +1922,42 @@
               "codeAnswer": 4,
               "answerText": "あさの 電車は __こんで__いて、すわれません。"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Kata {混|こ}む digunakan untuk menyatakan kondisi tempat atau kendaraan umum yang padat dan penuh sesak oleh orang atau kendaraan, sehingga penggunaannya pada kereta di pilihan 4 paling tepat.",
+            "detail": "Soal ini menguji pemahaman penggunaan kata kerja {混|こ}む (padat, macet, atau penuh sesak). Dalam bahasa Jepang, kata ini khusus dipakai untuk menggambarkan jalanan, toko, kereta, stasiun, atau tempat umum lainnya yang dipadati oleh banyak orang atau kendaraan. Pembelajar sering keliru menggunakannya untuk menyatakan benda atau wadah yang penuh, atau perut yang kenyang karena dalam bahasa Indonesia semuanya bisa diterjemahkan sebagai penuh. Untuk wadah seperti koper atau kondisi perut yang terisi makanan sampai kenyang, kata yang tepat adalah {一杯|いっぱい} (penuh).",
+            "translation": "Kereta pagi hari padat dan penuh sesak, sehingga tidak bisa duduk.",
+            "keyPoints": [
+              "{混|こ}む",
+              "{一杯|いっぱい}"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "ごはんを {食|た}べすぎて、おなかが __こんで__います (terlalu banyak makan nasi, perut saya padat/penuh sesak). Pilihan ini menggoda karena pembelajar sering mengartikan {混|こ}む sebagai penuh, padahal untuk menyatakan perut kenyang atau penuh karena makanan, ungkapan yang benar adalah おなかが {一杯|いっぱい}です."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "この じしょは じが __こんで__いて、{読|よ}みにくいです (kamus ini hurufnya padat/sesak, sehingga sulit dibaca). Pilihan ini tampak masuk akal jika membayangkan huruf yang berdesakan, tetapi bahasa Jepang tidak menggunakan kata {混|こ}む untuk teks atau huruf; kata yang tepat untuk huruf yang kecil dan rapat adalah {細|こま}かい (kecil atau rapat)."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "もりさんの スーツケースは ようふくで __こんで__います (koper milik Tuan Mori padat/sesak dengan pakaian). Pilihan ini menggoda karena koper terisi banyak pakaian sampai penuh, namun {混|こ}む tidak dapat digunakan untuk benda yang diisi ke dalam wadah; ungkapan yang tepat adalah ようふくで {一杯|いっぱい}です."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "あさの {電車|でんしゃ}は __こんで__いて、すわれません (kereta pagi hari padat dan penuh sesak, sehingga tidak bisa duduk). Kata {混|こ}む sangat lazim dan tepat digunakan untuk {電車|でんしゃ} (kereta) yang dijejali banyak penumpang."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:14:12.054Z"
+            }
+          }
         },
         {
           "order": 3,
@@ -864,7 +1980,44 @@
               "codeAnswer": 4,
               "answerText": "この 会社の しごとは わたしに __にあって__います。"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Kata __{似合|にあ}う__ (cocok/pantas) digunakan untuk pakaian atau aksesoris yang serasi dan tampak bagus saat dikenakan seseorang, sehingga kalimat nomor 2 adalah penggunaan yang paling tepat.",
+            "detail": "Soal ini menguji pemahaman penggunaan kata kerja __{似合|にあ}う__. Kata ini secara khusus dipakai ketika pakaian, warna, gaya rambut, atau aksesoris terlihat serasi, pantas, atau tampak bagus pada seseorang. Pelajar sering terkecoh karena dalam bahasa Indonesia kata \"mirip\", \"cocok\", dan \"pas\" sering saling tumpang tindih. Untuk kemiripan wajah seseorang dengan orang lain, kata yang benar adalah {似|に}る (mirip). Untuk kecocokan hobi, minat, atau sifat antarorang, kata yang tepat adalah {合|あ}う (cocok/selaras). Sementara untuk kecocokan pekerjaan dengan bakat atau kemampuan diri, kata yang alami adalah {向|む}いている (cocok/berbakat) atau {合|あ}っている.",
+            "translation": "Topi hijau itu sangat cocok untukmu.",
+            "keyPoints": [
+              "{似合|にあ}う",
+              "{似|に}る",
+              "{合|あ}う",
+              "{向|む}いている"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "あの {兄弟|きょうだい}は {顔|かお}が よく __にあって__いますね (saudara itu wajahnya sangat mirip ya). Kalimat ini menggoda karena kata dasarnya sama-sama mengandung kanji {似|に}る, tetapi untuk menyatakan dua orang yang memiliki kemiripan wajah, kata yang tepat adalah {似|に}ている, bukan __{似合|にあ}う__."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "その {緑|みどり}の {帽子|ぼうし}は よく __にあって__いますよ (topi hijau itu sangat cocok untukmu). Penggunaan kata __{似合|にあ}う__ di sini sangat tepat karena topi sebagai aksesoris tampak serasi dan pantas dipakai oleh lawan bicara."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "{私|わたし}と {田中|たなか}さんは {趣味|しゅみ}が __にあって__います (saya dan Tanaka hobinya cocok). Kalimat ini menggoda karena menerjemahkan kata cocok secara harfiah, padahal untuk kesamaan atau keselarasan hobi antardua orang, kata kerja yang digunakan adalah {合|あ}う ({趣味|しゅみ}が{合|あ}う), bukan __{似合|にあ}う__."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "この {会社|かいしゃ}の {仕事|しごと}は {私|わたし}に __にあって__います (pekerjaan di perusahaan ini cocok untuk saya). Kalimat ini menggoda karena pekerjaan bisa terasa cocok untuk seseorang, namun __{似合|にあ}う__ tidak dipakai untuk pekerjaan. Kata yang lazim untuk pekerjaan yang pas dengan sifat atau kemampuan seseorang adalah {向|む}いている atau {合|あ}っている."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:13:54.638Z"
+            }
+          }
         },
         {
           "order": 4,
@@ -887,7 +2040,41 @@
               "codeAnswer": 4,
               "answerText": "おいしく なるまで、ゆっくりと りょうりを __そだてます__。"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Kata {育|そだ}てる digunakan untuk merawat atau membesarkan makhluk hidup seperti anak, hewan, dan tanaman, sehingga tepat dipakai bersama objek {桜|さくら}の{木|き} (pohon sakura).",
+            "detail": "Soal ini menguji pemahaman penggunaan kata kerja {育|そだ}てる (merawat/membesarkan/menumbuhkan). Kata ini hanya dapat digunakan untuk objek yang berupa makhluk hidup, seperti membesarkan anak, memelihara hewan, atau menumbuhkan tanaman. Selain itu, secara kiasan kata ini bisa digunakan untuk mengembangkan bakat atau mendidik sumber daya manusia. Kata ini tidak bisa digunakan untuk benda mati seperti laporan, bangunan, atau masakan.",
+            "translation": "Kami bersama-sama merawat pohon sakura dengan penuh perhatian.",
+            "keyPoints": [
+              "{育|そだ}てる"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "みんなで {桜|さくら}の{木|き}を {大切|たいせつ}に __そだてて__います (Kami bersama-sama merawat pohon sakura dengan penuh perhatian). Objeknya adalah {木|き} (pohon) yang merupakan makhluk hidup (tanaman), sehingga penggunaan {育|そだ}てる di sini tepat."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "いろいろな {資料|しりょう}を {調|しら}べて、レポートを __そだてました__ (Saya mencari berbagai data dan menumbuhkan laporan). Untuk dokumen atau laporan tertulis, kata kerja yang tepat adalah {書|か}きました (menulis) atau {作成|さくせい}しました (menyusun), bukan {育|そだ}てる. Pilihan ini menggoda karena laporan memang dikembangkan tahap demi tahap, tetapi bahasa Jepang tidak menggunakan kata ini untuk karya tulis."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "{先月|せんげつ}から ここで {新|あたら}しい ビルを __そだてて__います (Sejak bulan lalu di sini sedang menumbuhkan gedung baru). Untuk konstruksi bangunan, kata kerja yang benar adalah {建|た}てています (membangun) atau {建設|けんせつ}しています (mengonstruksi). Pilihan ini menggoda karena gedung yang makin tinggi bisa terasa mirip dengan proses tumbuh, tetapi gedung adalah benda mati."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "おいしく なるまで、ゆっくりと {料理|りょうり}を __そだてます__ (Saya menumbuhkan masakan perlahan-lahan sampai menjadi lezat). Untuk memasak makanan, kata kerja yang lazim dipakai adalah {作|つく}ります (membuat), {煮|に}ます (merebus/merebus perlahan), atau {火|ひ}を{通|とお}します (mematangkan di atas api). Makanan yang sedang dimasak bukanlah makhluk hidup, sehingga tidak bisa memakai {育|そだ}てる."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:13:57.094Z"
+            }
+          }
         },
         {
           "order": 5,
@@ -910,7 +2097,43 @@
               "codeAnswer": 4,
               "answerText": "かりた お金は __ぜひ__ かえします。"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Kata __ぜひ__ digunakan untuk mengekspresikan harapan atau permohonan yang kuat, sehingga berpasangan tepat dengan ungkapan permohonan positif seperti ~てください pada pilihan 1.",
+            "detail": "Soal ini menguji pemahaman penggunaan kata keterangan __ぜひ__ (pasti / sangat berharap). Kata ini digunakan bersama bentuk keinginan pembicara (~たい / ingin, ~てほしい / ingin orang lain melakukan) atau ajakan dan permohonan bernada positif (~てください / tolong, ~ましょう / ayo). Kata __ぜひ__ tidak bisa dipakai untuk dugaan cuaca, kalimat larangan, ataupun tekad kewajiban pribadi yang seharusnya memakai kata keterangan lain seperti {必|かなら}ず (pasti/tentu) atau {決|けっ}して (sama sekali tidak).",
+            "translation": "Tolong cobalah baca sekali saja.",
+            "keyPoints": [
+              "ぜひ",
+              "~てみる",
+              "~てください"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "__ぜひ__ いちど {読|よ}んで みて ください (tolong cobalah baca sekali saja). Kata __ぜひ__ sangat tepat dipasangkan dengan ungkapan permohonan positif ~て みて ください untuk menganjurkan sesuatu dengan hangat dan penuh harap."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{明日|あした}も __ぜひ__ {晴|は}れるでしょう (besok pun pasti akan cerah). Kalimat ini menyatakan dugaan cuaca dengan {晴|は}れるでしょう, sehingga kata keterangan yang tepat adalah きっと (pasti) atau たぶん (mungkin), bukan __ぜひ__. Pilihan ini menggoda karena pembicara mungkin berharap cuaca cerah, tetapi __ぜひ__ tidak bisa langsung berpasangan dengan akhiran dugaan ~でしょう seperti ini."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "{危|あぶ}ないので、__ぜひ__ {触|さわ}らないで ください (karena berbahaya, tolong jangan sentuh). Kalimat ini merupakan larangan dengan pola ~ないで ください, sedangkan __ぜひ__ hanya dipakai untuk permohonan atau ajakan melakukan sesuatu, bukan larangan. Untuk larangan keras, kata yang tepat adalah {決|けっ}して atau ぜったいに (sama sekali/jangan sekali-kali)."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "{借|か}りた お{金|かね}は __ぜひ__ {返|かえ}します (uang yang dipinjam pasti akan saya kembalikan). Kalimat ini menunjukkan janji atau kewajiban diri sendiri untuk mengembalikan uang, sehingga kata keterangan yang benar adalah {必|かなら}ず atau ぜったいに. Pilihan ini menggoda karena keduanya bermakna pasti dalam bahasa Indonesia, tetapi __ぜひ__ tidak digunakan untuk menyatakan janji atau kepastian perbuatan diri sendiri."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:13:56.275Z"
+            }
+          }
         }
       ]
     },
@@ -942,7 +2165,42 @@
               "codeAnswer": 4,
               "answerText": "を"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Soal ini menguji pemahaman penggunaan partikel yang menunjukkan batas waktu atau durasi yang dibutuhkan untuk melakukan suatu kegiatan. Partikel __で__ (dalam / butuh waktu) adalah pilihan yang tepat untuk menyatakan batas durasi tersebut.",
+            "detail": "Soal ini menanyakan partikel yang tepat setelah kata yang menunjukkan durasi waktu, yaitu 10{分|ぷん} (sepuluh menit), yang diikuti oleh bentuk kemampuan {行|い}けます (bisa pergi). Dalam tata bahasa Jepang, partikel __で__ digunakan setelah kata jumlah atau rentang waktu untuk menunjukkan batas kuantitas atau batas waktu penyelesaian suatu aktivitas, dengan makna dalam kurun waktu tersebut. Kalimat ini bermaksud menyatakan bahwa dari sini sampai stasiun, jika menggunakan mobil, seseorang bisa sampai dalam waktu sepuluh menit.",
+            "translation": "Dari sini sampai stasiun, kalau naik mobil bisa sampai dalam 10 menit.",
+            "keyPoints": [
+              "{助詞|じょし}「で」",
+              "batas durasi waktu"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "が (partikel penanda subjek) sering dipakai untuk menandai objek dari kata kerja potensial {行|い}けます, sehingga pembelajar mungkin terkecoh mengiranya sebagai penanda objek kemampuan. Namun, 10{分|ぷん} adalah keterangan durasi waktu, bukan objek yang dituju, sehingga partikel が tidak dapat digunakan di sini."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "に (pada / di) biasa digunakan untuk menunjukkan titik waktu yang spesifik, misalnya jam tertentu atau hari tertentu. Partikel に menggoda karena sering berpasangan dengan waktu, tetapi partikel ini tidak digunakan untuk menunjukkan total rentang durasi yang dibutuhkan untuk menyelesaikan sesuatu."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "で (dalam batas waktu / dengan) merupakan partikel yang tepat untuk menunjukkan batas durasi atau kuantitas yang dibutuhkan dalam mencapai suatu hal, seperti pada 10{分|ぷん}で (dalam 10 menit)."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "を (partikel penanda objek langsung) biasanya dipakai untuk menandai objek langsung atau jalur yang dilewati pada kata kerja perpindahan. Meskipun {行|い}けます adalah kata kerja perpindahan, 10{分|ぷん} bukanlah jalan atau rute yang dilewati, melainkan keterangan waktu, sehingga pemakaian partikel を salah."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:14:22.820Z"
+            }
+          }
         },
         {
           "order": 2,
@@ -965,7 +2223,42 @@
               "codeAnswer": 4,
               "answerText": "に"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Partikel __と__ digunakan untuk mengutip isi pesan yang hendak disampaikan kepada orang lain bersama kata kerja __{伝|つた}える__ (menyampaikan).",
+            "detail": "Soal ini menguji pemahaman partikel penanda kutipan atau isi tuturan. Kalimat pada soal berisi pesan melalui telepon yang berbunyi __{後|あと}で {電話|でんわ}する__ (nanti akan menelepon lagi). Ketika kita meminta seseorang menyampaikan suatu pesan atau ucapan, isi pesan tersebut dihubungkan dengan kata kerja __{伝|つた}えて ください__ (tolong sampaikan) menggunakan partikel kutipan __と__. Polanya adalah kalimat + __と{伝|つた}える__ (menyampaikan bahwa...). Oleh karena itu, pilihan 1 adalah jawaban yang paling tepat.",
+            "translation": "(Di telepon) \"Kalau begitu, tolong sampaikan bahwa saya akan menelepon lagi nanti.\"",
+            "keyPoints": [
+              "と (partikel kutipan)",
+              "と伝える"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "__と__ (bahwa/kutipan) adalah partikel yang tepat untuk menandai isi perkataan atau pesan yang ingin disampaikan sebelum __{伝|つた}えて ください__."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "__は__ (partikel penanda topik) tidak tepat karena berfungsi menandai topik pembicaraan, bukan untuk mengutip kalimat atau klausa isi pesan."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "__を__ (partikel penanda objek) menggoda pembelajar karena isi pesan sering dianggap sebagai objek dari kata kerja menyampaikan, namun klausa berbentuk kalimat utuh tidak bisa langsung dipasangkan dengan __を__ tanpa diubah menjadi kata benda, dan isi tuturan wajib memakai __と__."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "__に__ (kepada/pada) menggoda karena kata kerja ini memang sering membutuhkan pihak penerima pesan, tetapi __に__ dipakai untuk menandai orang yang dituju seperti __{田中|たなか}さんに__ (kepada Tanaka), bukan untuk menandai isi pesannya."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:14:23.719Z"
+            }
+          }
         },
         {
           "order": 3,
@@ -988,7 +2281,42 @@
               "codeAnswer": 4,
               "answerText": "も／も"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Pola partikel __も／も__ dipadukan dengan bentuk negatif berfungsi menyatakan penyangkalan untuk kedua hal sekaligus, yaitu baik gula maupun susu sama-sama tidak dimasukkan.",
+            "detail": "Soal ini menguji pemahaman penggunaan partikel ganda untuk menyatakan pendaftaran elemen dalam kalimat. Kalimat pada soal menyatakan kebiasaan minum kopi tanpa menambahkan dua bahan tertentu, yaitu さとう (gula) dan ミルク (susu), yang ditunjukkan oleh kata kerja bentuk negatif {入|い}れないで (tanpa memasukkan). Pola kata benda + も + kata benda + も yang diikuti predikat negatif memiliki arti baik A maupun B tidak dilakukan. Oleh karena itu, pasangan partikel yang tepat untuk mengisi kedua kurung tersebut adalah __も／も__.",
+            "translation": "Saya minum kopi tanpa memasukkan baik gula maupun susu.",
+            "keyPoints": [
+              "Partikel も",
+              "pola も...も bentuk negatif"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "は／は (partikel penanda topik/kontras). Partikel は dapat dipakai untuk kontras atau penekanan negatif, namun mengulang は secara berturut-turut untuk dua objek langsung dari sebuah kata kerja seperti ini tidak terdengar alami dalam bahasa Jepang standar."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "に／に (di/ke/kepada). Partikel に berfungsi menandai tempat tujuan, waktu, atau sasaran. Gula dan susu berkedudukan sebagai objek yang dimasukkan, bukan tempat atau tujuan memasukkan, sehingga penggunaan に keliru."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "で／で (dengan/di). Partikel で menandai sarana, alat, atau tempat terjadinya suatu tindakan. Gula dan susu di sini adalah bahan yang menjadi objek langsung tindakan memasukkan, bukan sarana atau alat."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "も／も (pun/juga/baik... maupun...). Ketika digunakan berulang bersama predikat negatif, pola ini secara alami menyatakan bahwa kedua hal tersebut sama-sama ditiadakan atau tidak dimasukkan."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:14:24.640Z"
+            }
+          }
         },
         {
           "order": 4,
@@ -1011,7 +2339,42 @@
               "codeAnswer": 4,
               "answerText": "で"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Soal ini menguji partikel penanda objek pelaku dalam kalimat kausatif, di mana orang yang dibuat menunggu ditandai dengan partikel を.",
+            "detail": "Kalimat ini menggunakan bentuk kausatif ({使役形|しえきけい}) dari kata kerja {待|ま}つ (menunggu), yaitu {待|ま}たせる (membuat menunggu atau membiarkan menunggu). Dalam tata bahasa Jepang, ketika kata kerja kausatif dibentuk tanpa menghadirkan objek penderita lain di depannya, pihak yang disuruh atau dibuat melakukan suatu perbuatan (dalam hal ini teman) ditandai dengan {助詞|じょし} (partikel) を. Oleh karena itu, frasa yang benar adalah ともだち__を__{待|ま}たせている (sedang membuat teman menunggu).",
+            "translation": "Maaf, karena saya sedang membuat teman saya menunggu, tolong ajak saya lagi lain kali.",
+            "keyPoints": [
+              "{使役形|しえきけい}",
+              "{助詞|じょし} を"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "を (partikel penanda objek), karena pada kalimat kausatif dengan kata kerja seperti {待|ま}たせる, orang yang dibuat menunggu ditandai dengan partikel を."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "の (partikel kepemilikan/penghubung kata benda), karena kata benda ともだち tidak berfungsi memodifikasi kata benda lain melainkan menjadi target yang dikenai tindakan kausatif, sehingga tidak bisa dihubungkan langsung ke kata kerja dengan の. Pilihan ini menggoda bagi pembelajar yang mengira frasa ini membutuhkan pola penerang kata benda."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "へ (ke/kepada), karena へ menunjukkan arah tujuan gerak fisik, bukan penanda orang yang dikenai perbuatan dalam bentuk kausatif. Pilihan ini mungkin menggoda bagi yang mengira kata kerja ini berhubungan dengan mengarahkan sesuatu kepada orang lain."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "で (di/dengan), karena で biasanya menunjukkan alat, sarana, atau tempat dilakukannya kegiatan. Menggunakan で di sini akan mengubah makna secara keliru menjadi menunggu dengan menggunakan teman."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:14:22.285Z"
+            }
+          }
         },
         {
           "order": 5,
@@ -1034,7 +2397,43 @@
               "codeAnswer": 4,
               "answerText": "だけ"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Partikel __だけ__ (hanya) tepat untuk menyatakan pembatasan yang berpasangan dengan predikat positif {月曜日|げつようび}だけです (hanya hari Senin saja).",
+            "detail": "Soal ini menguji pemahaman penggunaan partikel pembatas yang tepat berdasarkan konteks percakapan dan bentuk predikatnya. Pembicara A menanyakan apakah B bekerja paruh waktu setiap hari. B menyangkalnya dengan いいえ (tidak), lalu ingin menyatakan bahwa ia bekerja hanya pada hari Senin. Karena kalimat diakhiri dengan bentuk positif です, partikel yang menyatakan pembatasan \"hanya\" adalah __だけ__. Partikel pembatas lain yang serupa maknanya sering mengecoh, namun membutuhkan bentuk kalimat negatif.",
+            "translation": "A: Apakah kamu bekerja paruh waktu setiap hari? B: Tidak, hanya hari Senin saja.",
+            "keyPoints": [
+              "だけ",
+              "しか～ない",
+              "partikel pembatas"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "も (juga). Pilihan ini menggoda jika pembelajar mengira ini kalimat penambahan, namun tidak logis karena B menjawab いいえ untuk menyangkal {毎日|まいにち} (setiap hari), sehingga yang dibutuhkan adalah penegasan pembatasan hari, bukan penambahan."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "しか (hanya). Pilihan ini sangat mengecoh karena artinya sama-sama pembatasan, tetapi partikel ini wajib berpasangan dengan predikat berbentuk negatif. Jika ingin memakai partikel ini, kalimatnya harus berbunyi {月曜日|げつようび}しかしていません (hanya bekerja di hari Senin saja)."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "の (partikel kepemilikan atau penghubung nomina). Pilihan ini tidak memiliki fungsi membatasi hari kerja untuk menjawab pertanyaan frekuensi kerja paruh waktu tersebut."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "だけ (hanya). Partikel ini dapat menempel pada nomina waktu dan berpasangan langsung dengan kopula positif です untuk menyatakan batas atau cakupan tunggal."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:14:21.197Z"
+            }
+          }
         },
         {
           "order": 6,
@@ -1057,7 +2456,42 @@
               "codeAnswer": 4,
               "answerText": "のは"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Kunci jawaban nomor 4 benar karena klausa kata kerja perlu diubah menjadi kata benda dengan {名詞化|めいしか} (nominalisasi) menggunakan の sebelum dilekatkan partikel penanda topik は.",
+            "detail": "Soal ini menguji pemahaman tentang cara mengangkat suatu perbuatan atau peristiwa sebagai topik kalimat. Frasa {大阪|おおさか}に {来|き}た (datang ke Osaka) berkedudukan sebagai kata kerja. Dalam tata bahasa Jepang, kata kerja tidak dapat langsung ditempeli partikel topik は tanpa diubah menjadi kata benda terlebih dahulu. Oleh karena itu, kita membutuhkan partikel の untuk menominalisasi klausa tersebut menjadi {大阪|おおさか}に {来|き}たの (hal datang ke Osaka). Setelah menjadi frasa benda, partikel topik は digabungkan sehingga menjadi __のは__. Kalimat ini menyatakan bahwa peristiwa datang ke Osaka tersebut, hari inilah untuk pertama kalinya.",
+            "translation": "Mengenai datang ke Osaka, hari ini adalah yang pertama kalinya.",
+            "keyPoints": [
+              "{名詞化|めいしか} の",
+              "{助詞|じょし} は"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "を (partikel penanda objek langsung) menggoda bagi pemelajar yang mengira klausa depan adalah objek, tetapi partikel ini tidak dapat langsung menempel pada kata kerja lampau {来|き}た, serta predikat di akhir kalimat bukan kata kerja transitif."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "は (partikel penanda topik) sekilas terasa wajar karena bagian depan memang merupakan topik pembicaraan, namun salah secara gramatikal karena partikel は tidak boleh ditempelkan langsung setelah bentuk biasa dari kata kerja tanpa nominalisasi."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "のを (nominalisasi + partikel objek) menggoda karena sudah mengandung nominalisasi の, tetapi tidak tepat karena bagian kelanjutannya adalah {今日|きょう}が {初|はじ}めてです (hari ini adalah pertama kalinya) yang membutuhkan penanda topik, bukan objek penderita dari kata kerja transitif."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "のは (nominalisasi + partikel topik) tepat secara gramatikal untuk menominalkan kata kerja {来|き}た sekaligus menjadikannya topik yang diterangkan oleh klausa berikutnya."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:14:20.000Z"
+            }
+          }
         },
         {
           "order": 7,
@@ -1080,7 +2514,42 @@
               "codeAnswer": 4,
               "answerText": "の前に"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Pilihan 2 benar karena akhiran __{中|ちゅう}に__ yang digabungkan langsung setelah kata keterangan waktu seperti {今週|こんしゅう} menyatakan tenggat waktu sebelum periode tersebut berakhir.",
+            "detail": "Soal ini menguji pemahaman tentang ungkapan batas waktu dalam bahasa Jepang. Kalimat soal meminta pembicara atau lawan bicara untuk mengumpulkan laporan dalam kurun waktu minggu ini. Ketika ingin menyatakan bahwa suatu tindakan harus diselesaikan sebelum berakhirnya suatu rentang waktu tertentu seperti hari ini, minggu ini, atau bulan ini, pola yang lazim digunakan adalah menempelkan akhiran {中|ちゅう} atau {中|じゅう} pada kata keterangan waktu tersebut, lalu diikuti partikel に. Bentuk __{今週中|こんしゅうちゅう}に__ berarti dalam minggu ini atau selambat-lambatnya sebelum minggu ini berakhir.",
+            "translation": "Tolong kumpulkan laporannya dalam minggu ini.",
+            "keyPoints": [
+              "{中|ちゅう}に",
+              "batas waktu"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "の{間|あいだ} (selama). Pilihan ini menggoda karena memiliki arti yang mirip dengan durasi waktu. Namun, untuk menyatakan suatu tindakan selesai sebelum batas waktu berakhir diperlukan partikel に menjadi の{間|あいだ}に, dan kata {今週|こんしゅう} (minggu ini) secara alami tidak dipasangkan dengan の{間|あいだ} melainkan langsung dengan {中|ちゅう}に."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{中|ちゅう}に (dalam kurun waktu). Akhiran ini tepat ditempelkan langsung setelah {今週|こんしゅう} menjadi {今週中|こんしゅうちゅう}に untuk menyatakan batas waktu penyelesaian tindakan sebelum minggu ini selesai."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "とき (ketika). Pilihan ini menggoda bagi pemelajar yang mengira {今週|こんしゅう} bisa langsung dipadukan dengan kata benda penunjuk waktu, namun gabungan {今週|こんしゅう}とき secara tata bahasa tidak tepat dan maknanya menjadi tidak masuk akal untuk pengumpulan tugas."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "の{前|まえ}に (sebelum). Pilihan ini menggoda karena menunjukkan batas waktu sebelum suatu titik. Akan tetapi, {今週|こんしゅう}の{前|まえ}に berarti sebelum minggu ini dimulai, padahal pembicara sedang berada di minggu ini dan bermaksud meminta laporan dikumpulkan sebelum minggu ini berakhir."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:14:20.172Z"
+            }
+          }
         },
         {
           "order": 8,
@@ -1103,7 +2572,41 @@
               "codeAnswer": 4,
               "answerText": "について"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Pola __について__ tepat digunakan setelah kata benda untuk menunjukkan topik bahasan atau bahan penyelidikan yang berhubungan erat dengan kata kerja {調|しら}べる (menyelidiki/mencari tahu).",
+            "detail": "Soal ini menguji pemahaman tentang partikel majemuk penanda topik penyelidikan atau pembicaraan. Kalimat pada soal menyebutkan kegiatan {調|しら}べて います (sedang mencari tahu/menyelidiki) yang dilakukan di dalam {授業|じゅぎょう} (pelajaran/kelas). Topik yang diselidiki adalah {町|まち}の {歴史|れきし} (sejarah kota). Pola gramatikal yang berpasangan dengan kata kerja penyelidikan, pemikiran, atau pembicaraan seperti {調|しら}べる, {考|かんが}える (memikirkan), atau {話|はな}す (berbicara) untuk menyatakan makna tentang atau mengenai topik tersebut adalah kata benda ditambah __について__.",
+            "translation": "Sekarang, di kelas kami sedang mencari tahu tentang sejarah kota.",
+            "keyPoints": [
+              "について"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "のことが (hal tentang) tampak menggoda karena sering dipakai untuk menyatakan hal mengenai sesuatu, tetapi partikel {助詞|じょし} (partikel) が di sini salah karena kata kerja {調|しら}べる adalah {他動詞|たどうし} (kata kerja transitif) yang membutuhkan partikel を bila menandai objek langsung."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "によって (oleh / tergantung pada / dengan cara) menggoda karena merupakan partikel majemuk tingkat N4, tetapi pola ini dipakai untuk menunjukkan pembuat karya, penyebab, sarana, atau variasi kondisi, bukan objek yang sedang diselidiki."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "のほうが (bagian yang lebih) digunakan dalam kalimat perbandingan untuk memilih salah satu opsi yang lebih unggul, padahal kalimat soal sama sekali tidak membandingkan dua hal."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "について (tentang/mengenai) adalah ungkapan yang tepat setelah {町|まち}の {歴史|れきし} untuk menunjukkan topik yang sedang diselidiki bersama kata kerja {調|しら}べる."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:14:25.049Z"
+            }
+          }
         },
         {
           "order": 9,
@@ -1126,7 +2629,42 @@
               "codeAnswer": 4,
               "answerText": "かならず"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Pilihan 2 benar karena kata keterangan __ずっと__ digunakan untuk menyatakan suatu tindakan yang berlangsung terus-menerus atau sepanjang waktu tanpa henti.",
+            "detail": "Soal ini menguji pemahaman penggunaan {副詞|ふくし} (kata keterangan) dalam bahasa Jepang yang sesuai dengan konteks kalimat. Pada percakapan, pembicara A menanyakan alasan mengapa lawan bicaranya tidak datang kemarin dengan kalimat A「{昨日|きのう}は どうして {来|こ}なかったんですか。(Kemarin kenapa tidak datang?)」. Kalimat berikutnya menyatakan keluhan bahwa pembicara A telah menunggu: __（　）{待|ま}っていたんですよ__ (Saya sudah menunggu lho). Di sini dibutuhkan kata keterangan yang dapat menjelaskan proses tindakan {待|ま}つ (menunggu) yang dilakukan sepanjang waktu atau terus-menerus selama periode tersebut. Kata yang tepat untuk fungsi tersebut adalah __ずっと__ (terus-menerus).",
+            "translation": "A: \"Kemarin kenapa kamu tidak datang? Padahal saya sudah menunggu terus lho.\" B: \"Maafkan saya.\"",
+            "keyPoints": [
+              "{副詞|ふくし}",
+              "ずっと"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "よく (sering/dengan baik) biasanya menggoda karena merupakan kata keterangan yang sangat umum untuk menyatakan frekuensi, namun kata ini tidak tepat dipasangkan dengan {待|ま}っていた untuk menggambarkan penantian terus-menerus pada satu kejadian di masa lalu."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "ずっと (terus-menerus/sepanjang waktu) tepat digunakan bersama bentuk {動詞|どうし} (kata kerja) yang menyatakan durasi atau kontinuitas seperti {待|ま}っていた untuk menunjukkan bahwa tindakan tersebut berjalan tanpa jeda."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "いつか (suatu saat/kapan-kapan) menggoda karena berkaitan dengan waktu, tetapi kata ini merujuk pada titik waktu yang belum pasti atau tidak ditentukan, bukan untuk menyatakan rentang durasi menunggu."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "かならず (pasti) menggoda karena bernuansa penegasan, tetapi kata ini digunakan untuk menyatakan kepastian mutlak, keharusan, atau janji, sehingga tidak cocok menerangkan cara seseorang menunggu kemarin."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:14:21.598Z"
+            }
+          }
         },
         {
           "order": 10,
@@ -1149,7 +2687,43 @@
               "codeAnswer": 4,
               "answerText": "どの"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Kunci jawaban benar karena kata tunjuk seri ア dipakai ketika merujuk pada sesuatu yang sudah sama-sama diketahui oleh pembicara dan lawan bicara.",
+            "detail": "Soal ini menguji penggunaan kata tunjuk untuk merujuk hal dalam percakapan ({文脈指示|ぶんみゃくしじ}). Pada dialog, A mengajak pergi ke restoran yang mereka berdua kunjungi minggu lalu. Ini berarti keberadaan restoran tersebut telah diketahui oleh kedua belah pihak, baik A maupun B. Dalam tata bahasa Jepang, ketika membicarakan hal di luar pandangan langsung yang sama-sama telah diketahui oleh pembicara dan pendengar, kata tunjuk yang digunakan adalah seri ア, yaitu __あの__ (itu). Oleh karena itu, B memastikan dengan mengatakan {駅前|えきまえ}の__あの__{店|みせ}ですか (apakah restoran yang di depan stasiun itu?).",
+            "translation": "A: Mau pergi ke restoran yang kita kunjungi bersama minggu lalu malam ini? B: Apakah restoran yang di depan stasiun itu? Boleh juga ya.",
+            "keyPoints": [
+              "文脈指示",
+              "あの",
+              "指示詞"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "こんな (yang seperti ini) menggoda karena juga merupakan kata tunjuk sebelum kata benda, tetapi kata ini berarti seperti ini dan merujuk pada sifat atau jenis yang dekat dengan pembicara, bukan untuk menunjuk tempat spesifik yang sudah diketahui bersama dari percakapan sebelumnya."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "あの (itu) tepat karena merujuk pada benda atau tempat spesifik di dalam ingatan yang telah diketahui oleh pembicara dan lawan bicara."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "そんな (yang seperti itu) menggoda karena sering digunakan untuk merespons topik yang baru saja diangkat lawan bicara, tetapi kata ini menyatakan jenis atau sifat seperti itu, bukan kata tunjuk untuk entitas tertentu. Selain itu, jika merujuk benda yang diketahui bersama, seri ア yang digunakan, bukan seri ソ."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "どの (yang mana) menggoda karena berbentuk tanya, tetapi B di sini tidak sedang menanyakan pilihan dari banyak tempat yang belum ia ketahui, melainkan sedang memastikan restoran spesifik yang lokasinya sudah ia sebutkan di awal yaitu di depan stasiun."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:14:23.719Z"
+            }
+          }
         },
         {
           "order": 11,
@@ -1172,7 +2746,42 @@
               "codeAnswer": 4,
               "answerText": "ひけること"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Pola tata bahasa untuk menyatakan kemampuan melakukan sesuatu adalah kata kerja bentuk kamus ditambah __こと__ sebelum partikel {助詞|じょし} が dan {動詞|どうし} できる. Oleh karena itu, pilihan yang tepat adalah ひくこと (hal memainkan alat musik petik/tuts).",
+            "detail": "Soal ini menguji pemahaman tentang pola gramatikal untuk mengungkapkan kemampuan atau kebisaan ({可能|かのう}). Pola standar yang dipelajari pada tingkat dasar adalah kata kerja {辞書形|じしょけい} (bentuk kamus) + ことができる.\n\nPada kalimat soal, bagian setelah tanda kurung adalah が できる. Supaya kata kerja dapat disambungkan dengan partikel が, kata kerja tersebut harus diubah menjadi bentuk {名詞|めいし} (kata benda) terlebih dahulu dengan menambahkan {名詞化|めいしか} (pembenda kata kerja) yaitu こと. Kata kerja dasar yang digunakan adalah ひく (memainkan alat musik petik/tuts). Dengan demikian, bentuk yang benar untuk melengkapi kalimat tersebut adalah __ひくこと__.",
+            "translation": "Saya bisa bermain piano dan gitar.",
+            "keyPoints": [
+              "〜ことができる",
+              "{動詞|どうし}の{名詞化|めいしか}"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "ひく (memainkan) adalah bentuk kamus biasa tanpa こと. Pilihan ini menggoda karena merupakan bentuk dasar kata kerja, tetapi tidak bisa langsung diikuti oleh partikel が tanpa dinominalisasi dengan こと terlebih dahulu."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "ひける (bisa memainkan) adalah {可能形|かのうけい} (bentuk potensial). Pilihan ini menggoda karena bermakna bisa, tetapi bentuk potensial tidak dapat langsung diikuti oleh が できる karena akan menyebabkan makna ganda yang salah secara gramatikal."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "ひくこと (hal memainkan) adalah bentuk kamus yang telah dinominalisasi dengan こと, sehingga tepat berpasangan dengan が できる menjadi pola 〜ことができる."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "ひけること (hal bisa memainkan) menggabungkan bentuk potensial dengan こと. Pilihan ini salah karena jika digabungkan dengan できる, akan terjadi pengulangan makna kemampuan yang berlebihan ({二重|にじゅう}{可能|かのう})."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:14:31.248Z"
+            }
+          }
         },
         {
           "order": 12,
@@ -1195,7 +2804,42 @@
               "codeAnswer": 4,
               "answerText": "着きます"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Pilihan 2 benar karena kata __ぐらい__ digunakan setelah jumlah durasi waktu seperti {五分|ごふん} (lima menit) untuk menyatakan perkiraan lamanya waktu tempuh.",
+            "detail": "Soal ini menanyakan partikel atau ungkapan perkiraan yang tepat untuk mendampingi durasi waktu. Pada percakapan tersebut, B menjelaskan bahwa stasiun tidak jauh, melainkan dekat, dengan perkiraan waktu tempuh {五分|ごふん}. Di awal kalimat sudah ada kata だいたい (kira-kira/kurang lebih). Kata bantu yang berpasangan dengan satuan durasi waktu untuk menyatakan kira-kira adalah __ぐらい__. Pasangan yang sering mengecoh adalah ごろ, namun ごろ hanya dipakai untuk titik waktu, bukan durasi. Karena itu, bentuk yang tepat untuk melengkapi kalimat adalah __ぐらいです__.",
+            "translation": "B: Tidak, dekat kok. Kira-kira sekitar 5 menit.",
+            "keyPoints": [
+              "ぐらい",
+              "ごろ"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "ごろです (sekitar / kira-kira). Pilihan ini menggoda karena memiliki arti perkiraan yang mirip dengan __ぐらい__, namun ごろ hanya boleh menempel pada titik waktu spesifik seperti {五時|ごじ}ごろ (sekitar jam 5), bukan durasi waktu seperti {五分|ごふん}."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "ぐらいです (sekitar / kira-kira). Kata __ぐらい__ tepat dilekatkan di belakang durasi waktu {五分|ごふん} untuk menyatakan perkiraan jarak tempuh sekitar 5 menit."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "{遠|とお}いです (jauh). Pilihan ini kontradiktif karena sebelumnya pembicara B sudah menegaskan bahwa tempatnya {近|ちか}い (dekat), serta tidak lazim disambung langsung setelah {五分|ごふん}."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "{着|つ}きます (sampai / tiba). Pilihan ini tidak tepat secara tata bahasa karena untuk menyatakan tiba dalam waktu 5 menit dibutuhkan partikel で menjadi {五分|ごふん}で{着|つ}きます, serta ada kata だいたい di depannya yang secara alami berpasangan dengan kata perkiraan jumlah."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:14:30.728Z"
+            }
+          }
         },
         {
           "order": 13,
@@ -1218,7 +2862,41 @@
               "codeAnswer": 4,
               "answerText": "生まれたから／生まれたから"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Pilihan 1 benar karena pola pengandaian ~たら (kalau/jika) adalah ungkapan yang tepat untuk menyatakan syarat atau pengandaian atas situasi di masa depan yang belum tentu terjadi, seperti jenis kelamin anak yang akan lahir.",
+            "detail": "Soal ini menguji pemahaman tentang pemakaian bentuk pengandaian dalam bahasa Jepang. Pada percakapan tersebut, sepasang suami istri sedang mendiskusikan usulan nama untuk calon anak mereka yang belum lahir. Karena jenis kelamin sang anak belum diketahui, sang istri membuat dua pengandaian bersyarat: bagaimana bila yang lahir anak perempuan, dan bagaimana bila yang lahir anak laki-laki. Bentuk syarat yang lazim dan tepat digunakan untuk mengandaikan kejadian di masa depan dengan pengandaian \"jika terjadi A, maka B\" adalah bentuk lampau kata kerja ditambah ら, yaitu ~たら. Oleh karena itu, kata kerja __{生|う}まれる__ (lahir) diubah menjadi __{生|う}まれたら__ (kalau lahir).",
+            "translation": "Istri: \"Mengenai nama anak, bagaimana kalau 'Eri' jika lahir anak perempuan, dan 'Ken' jika lahir anak laki-laki?\" Suami: \"Bagus ya. Aku sih inginnya anak perempuan.\"",
+            "keyPoints": [
+              "~たら"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "__{生|う}まれたら／{生|う}まれたら__ (kalau lahir / kalau lahir) secara tepat membentuk kalimat kondisional untuk mengandaikan kemungkinan jenis kelamin bayi yang akan dilahirkan."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "__{生|う}まれても／{生|う}まれても__ (meskipun lahir / meskipun lahir) menggunakan pola perlawanan atau konsesif ~ても (meskipun/walaupun). Pilihan ini mengecoh bagi pembelajar yang tertukar antara bentuk syarat pengandaian dan syarat pertentangan, tetapi maknanya menjadi janggal karena berarti \"walaupun lahir anak perempuan, bagaimana kalau Eri\"."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "__{生|う}まれるけど／{生|う}まれるけど__ (lahir tetapi / lahir tetapi) memakai partikel konjungsi ~けど yang menyatakan pertentangan atau awalan kalimat. Pilihan ini menggoda karena terdengar santai dalam percakapan akrab, namun sama sekali tidak menyatakan fungsi pengandaian bersyarat yang dibutuhkan kalimat."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "__{生|う}まれたから／{生|う}まれたから__ (karena sudah lahir / karena sudah lahir) memakai pola ~から yang menyatakan alasan atau sebab. Bentuk ini mengindikasikan bahwa anak tersebut sudah terlahir, padahal faktanya anak mereka belum lahir sehingga hubungan sebab-akibat menjadi tidak logis."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:14:30.842Z"
+            }
+          }
         },
         {
           "order": 14,
@@ -1241,7 +2919,42 @@
               "codeAnswer": 4,
               "answerText": "に なりません"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Soal ini menguji pemahaman penggunaan ungkapan keberadaan waktu serta fungsi kata keterangan もう yang dipadukan dengan bentuk negatif untuk menyatakan kondisi sudah tidak ada waktu lagi. Karena penumpang meminta sopir bergegas, pilihan yang tepat adalah {時間|じかん}が ありません.",
+            "detail": "Soal ini menanyakan bentuk predikat yang tepat untuk melengkapi situasi di dalam taksi ketika penumpang sedang mengejar jadwal kereta. Penumpang berkata: 「{新幹線|しんかんせん} (shinkansen) の {出発|しゅっぱつ} (keberangkatan) まで もう {時間|じかん} (waktu)（　）。{運転手|うんてんしゅ}さん (sopir)、{急|いそ}いで ください (tolong bergegas)。」 Kalimat kedua yaitu {急|いそ}いで ください menjadi petunjuk utama bahwa pembicara sedang berada dalam situasi mendesak dan terburu-buru. Kata keterangan もう jika diikuti bentuk negatif mengandung arti sudah tidak ... lagi. Dengan demikian, ungkapan もう {時間|じかん}__が ありません__ (sudah tidak ada waktu lagi) sangat tepat untuk menyatakan alasan pembicara meminta sopir melajukan kendaraan dengan cepat.",
+            "translation": "Sampai shinkansen berangkat sudah tidak ada waktu lagi. Pak sopir, tolong bergegas.",
+            "keyPoints": [
+              "{時間|じかん}が ありません",
+              "もう + bentuk negatif"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "が あります (ada). Bentuk ini menggoda karena secara tata bahasa lazim dipakai untuk menyatakan ketersediaan waktu. Namun maknanya menjadi sudah ada waktu, yang bertolak belakang dengan permintaan penumpang agar sopir bergegas. Jika ingin menyatakan masih ada waktu, kata keterangan yang digunakan adalah まだ (masih), bukan もう."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "に なります (menjadi / tiba waktunya). Bentuk {時間|じかん}に なります bisa bermakna waktunya tiba. Pilihan ini menggoda bagi yang mengira maksudnya sudah waktunya berangkat, tetapi partikel に tidak tepat disandingkan dengan {出発|しゅっぱつ}まで (sampai keberangkatan), serta tidak selaras dengan desakan kepada sopir pada kalimat berikutnya."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "が ありません (tidak ada). Pilihan ini melengkapi pola もう yang berpasangan dengan bentuk negatif bermakna sudah tidak ada lagi. Makna kalimat secara utuh menjadi sudah tidak ada waktu lagi menjelang keberangkatan shinkansen, sehingga sangat padu dengan desakan agar sopir mempercepat laju mobil."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "に なりません (tidak menjadi / belum tiba waktunya). Ungkapan ini tidak alami dipakai bersama kata {時間|じかん} untuk menyatakan keterbatasan sisa waktu sebelum keberangkatan, dan maknanya bertentangan dengan konteks penumpang yang sedang terburu-buru."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:14:54.161Z"
+            }
+          }
         },
         {
           "order": 15,
@@ -1264,7 +2977,42 @@
               "codeAnswer": 4,
               "answerText": "書いて ください"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Kata {何|なに}も (apa pun) membutuhkan kelanjutan berupa bentuk negatif atau larangan, sehingga pola larangan __{書|か}いては いけません__ (tidak boleh menulis) adalah satu-satunya pilihan yang tepat.",
+            "detail": "Soal ini menguji pemahaman tentang kesesuaian antara kata tanya yang diikuti partikel {副助詞|ふくじょし} (partikel pendamping) も, yaitu {何|なに}も, dengan bentuk predikat kalimat. Frasa {何|なに}も biasanya berpasangan dengan bentuk kalimat negatif atau larangan untuk menyatakan penolakan atau larangan total (tidak ... apa pun). Kalimat soal berbunyi この ページには {何|なに}も（　） (Di halaman ini, apa pun ...). Oleh karena itu, bagian rumpang harus diisi dengan ungkapan larangan atau penolakan. Pola ~てはいけません menyatakan larangan keras (tidak boleh), sehingga cocok dipasangkan dengan {何|なに}も untuk membentuk arti tidak boleh menulis apa pun. Pilihan-pilihan lain mengandung makna positif atau keharusan bertindak yang bertentangan dengan penggunaan {何|なに}も.",
+            "translation": "Di halaman ini tidak boleh menulis apa pun.",
+            "keyPoints": [
+              "~てはいけません",
+              "何も + predikat negatif/larangan"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "__{書|か}いては いけません__ (tidak boleh menulis) adalah bentuk larangan yang berpasangan secara alami dengan {何|なに}も untuk menyatakan larangan menulis apa pun pada halaman tersebut."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "__{書|か}いたほうが いいです__ (sebaiknya menulis) adalah pola saran positif. Pilihan ini menggoda karena merupakan pola kalimat N4 yang umum, tetapi tidak cocok dipasangkan dengan {何|なに}も; jika ingin memberi saran untuk menulis sesuatu, kata yang digunakan adalah {何|なに}か (sesuatu)."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "__{書|か}かなければ なりません__ (harus menulis) menyatakan keharusan melakukan suatu perbuatan (makna positif). Pilihan ini mengecoh karena berakhiran bentuk negatif ~なければ, namun secara makna berarti harus menulis, sehingga tidak selaras dengan {何|なに}も."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "__{書|か}いて ください__ (tolong tulis / silakan tulis) adalah bentuk permohonan positif, sehingga bertentangan dengan keberadaan kata {何|なに}も yang memerlukan kelanjutan bernuansa negatif."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:14:33.066Z"
+            }
+          }
         }
       ]
     },
@@ -1296,7 +3044,43 @@
               "codeAnswer": 4,
               "answerText": "どなた"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Pilihan 2 benar karena urutan kalimat yang tepat adalah 1-4-2-3, sehingga partikel __でも__ menempati posisi bintang ketiga.",
+            "detail": "Soal ini menguji pemahaman penggabungan dua kata benda subjek dengan partikel __と__ (dan), serta pola ungkapan __{疑問詞|ぎもんし}__ (kata tanya) ditambah __でも__ untuk menyatakan siapa saja atau apa saja. Kalimat dimulai dengan ABC__{大学|だいがく}__ (Universitas ABC) __の__ __{図書館|としょかん}__ (perpustakaan) __と__, yang secara alami berpasangan dengan fasilitas kampus lainnya yaitu pilihan 1 __{食堂|しょくどう}は__ (kantin). Selanjutnya, bagian predikat diakhiri oleh __できます__ (bisa/dapat), yang dipasangkan dengan kata benda verbal pada pilihan 3 __{利用|りよう}__ (penggunaan) membentuk __{利用|りよう}できます__ (dapat digunakan/bisa memakai). Sebelum kata tersebut, ada kata tanya sopan pilihan 4 __どなた__ (siapa) yang jika digabungkan dengan pilihan 2 __でも__ membentuk frasa __どなたでも__ (siapa pun). Jadi, susunan kalimat yang utuh adalah ABC__{大学|だいがく}の__ __{図書館|としょかん}と__ __{食堂|しょくどう}は__ __どなたでも__ __{利用|りよう}できます__ (Perpustakaan dan kantin Universitas ABC bisa digunakan oleh siapa pun). Dengan susunan 1-4-2-3, pilihan yang menempati posisi [★] adalah pilihan 2.",
+            "translation": "Perpustakaan dan kantin Universitas ABC dapat digunakan oleh siapa pun.",
+            "keyPoints": [
+              "と",
+              "どなたでも",
+              "利用できる"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "__{食堂|しょくどう}は__ (kantin). Pilihan ini berada di slot pertama setelah __{図書館|としょかん}と__, berfungsi melengkapi subjek gabungan bersama partikel penanda topik. Meletakkannya di posisi bintang akan merusak struktur kalimat karena kata tanya atau kata kerja tidak bisa menyambung secara alami di depannya."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "__でも__ (pun). Pilihan ini berada tepat di slot ketiga [★] setelah __どなた__, membentuk pola tata bahasa __どなたでも__ sebelum predikat __{利用|りよう}できます__."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "__{利用|りよう}__ (penggunaan). Pilihan ini berada di slot keempat, langsung melekat pada __できます__ untuk membentuk predikat verbal. Pembelajar mungkin tergoda menempatkannya lebih awal, tetapi secara tata bahasa nomina ini harus berdampingan dengan __できます__."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "__どなた__ (siapa). Pilihan ini berada di slot kedua setelah subjek __{食堂|しょくどう}は__. Bentuk ini harus diikuti oleh partikel __でも__, sehingga tidak menempati posisi bintang ketiga."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:15:05.230Z"
+            }
+          }
         },
         {
           "order": 2,
@@ -1319,7 +3103,42 @@
               "codeAnswer": 4,
               "answerText": "生活"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Urutan yang tepat adalah 4-3-1-2, sehingga pilihan 1 menempati posisi [★] untuk melengkapi pola kalimat yang menyatakan baru saja terbiasa dengan kehidupan di Jepang.",
+            "detail": "Soal ini meminta kita menyusun kalimat yang runtut untuk mengisi empat slot kosong [_] [_] [★] [_]. Bagian sebelum slot kosong berakhir dengan frasa {日本|にほん}の (di Jepang / milik Jepang) yang membutuhkan kata benda sesudahnya, sehingga pilihan 4 {生活|せいかつ} (kehidupan) masuk ke slot pertama membentuk {日本|にほん}の{生活|せいかつ}. Kata kerja {慣れる|なれる} (terbiasa) memerlukan partikel に (pada/terhadap) untuk menandai hal yang dibiasakan, sehingga pilihan 3 に menempati slot kedua. Selanjutnya, bentuk lampau pilihan 1 なれた (sudah terbiasa) menempati slot ketiga [★] dan langsung bersambung dengan pilihan 2 ところ (baru saja) di slot keempat untuk membentuk pola gramatikal ~たところです (baru saja selesai melakukan sesuatu). Urutan lengkapnya adalah 4-3-1-2, yaitu {日本|にほん}の {生活|せいかつ} に __なれた__ ところ です. Dengan demikian, kata yang berada pada posisi [★] adalah pilihan 1.",
+            "translation": "Tanaka: Ken, sudah satu bulan ya sejak datang ke Jepang. Ken: Ya. Akhirnya saya baru saja terbiasa dengan kehidupan di Jepang.",
+            "keyPoints": [
+              "~に{慣れる|なれる}",
+              "~たところです"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "なれた (sudah terbiasa) menempati posisi ketiga [★] setelah partikel に dan sebelum kata benda penjelas ところ untuk melengkapi pola ~たところです."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "ところ (baru saja) berada di posisi keempat tepat sebelum です, sehingga salah jika ditaruh pada posisi [★]. Pilihan ini mungkin menggoda jika pembelajar belum mengenali bahwa bentuk lampau verba harus berada tepat di depan pola ini."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "に (pada/terhadap) berada di posisi kedua sebagai partikel yang mengikuti {生活|せいかつ}, bukan di posisi [★]. Pilihan ini bisa mengecoh bila pembelajar terbalik memasangkan urutan partikel dan verba."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "{生活|せいかつ} (kehidupan) berada di posisi pertama tepat setelah partikel の, bukan di posisi [★]. Pilihan ini menggoda jika pembelajar salah menghubungkan struktur kepemilikan atau modifikasi kata benda."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:15:39.398Z"
+            }
+          }
         },
         {
           "order": 3,
@@ -1342,7 +3161,42 @@
               "codeAnswer": 4,
               "answerText": "やった"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Urutan kalimat yang tepat adalah 4 - 1 - 3 - 2, sehingga pilihan 3 menempati posisi [★].",
+            "detail": "Soal ini menguji kemampuan menyusun kalimat pertentangan dan penggunaan ungkapan ketinggalan barang. Pada konteks soal, pembicara B bertanya apakah pembicara A lupa membawa {宿題|しゅくだい} (pekerjaan rumah/PR). Pembicara A menjawab bahwa ia sebenarnya sudah bersusah payah mengerjakan PR tersebut, tetapi PR-nya tertinggal di rumah. Pertama, kata __{宿題|しゅくだい}を__ membutuhkan {動詞|どうし} (kata kerja) transitif, yaitu pilihan 4 __やった__ (mengerjakan). Selanjutnya, untuk menyatakan situasi yang kontras antara sudah mengerjakan namun tertinggal, digunakan partikel {接続|せつぞく} (konjungsi) pada pilihan 1 __のに__ (padahal). Kemudian, sisa kalimat sebelum __{来|き}て しまいました__ (terlanjur datang) harus menyatakan tempat barang itu tertinggal, yaitu pilihan 3 __{家|いえ}に__ (di rumah) yang diikuti oleh pilihan 2 __{忘|わす}れて__ (lupa/meninggalkan) untuk membentuk ungkapan __{忘|わす}れて くる__ (ketinggalan). Dengan demikian, susunan lengkapnya menjadi: {宿題|しゅくだい}を __[やった]__ __[のに]__ __[{家|いえ}に]__ __{忘|わす}れて__ {来|き}て しまいました. Urutan nomornya adalah 4 - 1 - 3 - 2. Pilihan yang berada di posisi [★] (urutan ketiga) adalah pilihan 3.",
+            "translation": "Iya. Padahal saya sudah bersusah payah mengerjakan PR, tetapi malah ketinggalan di rumah.",
+            "keyPoints": [
+              "のに",
+              "〜てくる"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "__のに__ (padahal) menggoda karena bisa langsung menyambung setelah kata kerja bentuk lampau kasual, tetapi pilihan ini berada pada urutan kedua setelah __やった__, bukan di posisi [★]."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "__{忘|わす}れて__ (lupa/tertinggal) menggoda untuk diletakkan setelah partikel penanda tempat, namun pilihan ini harus menempati posisi keempat tepat sebelum __{来|き}て しまいました__ untuk melengkapi frasa {忘|わす}れてくる, bukan di posisi [★]."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "__{家|いえ}に__ (di rumah) tepat mengisi posisi urutan ketiga ([★]) sebagai keterangan tempat tertinggalnya PR sebelum kata __{忘|わす}れて__."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "__やった__ (mengerjakan) menggoda karena merupakan predikat untuk objek PR, tetapi posisinya harus di urutan pertama langsung setelah partikel __を__, bukan di posisi [★]."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:15:09.033Z"
+            }
+          }
         },
         {
           "order": 4,
@@ -1365,30 +3219,106 @@
               "codeAnswer": 4,
               "answerText": "あぶないから"
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Pilihan 3 benar karena urutan kalimat yang tepat adalah 2-4-3-1, sehingga pilihan 3 jatuh tepat pada posisi bintang.",
+            "detail": "Soal ini menguji pemahaman penggabungan kata kerja dengan pola ~{易|やす}い (mudah untuk), penggunaan kata sambung alasan ~から (karena), serta pembentukan kalimat permohonan menggunakan bentuk ~てください (tolong). Di depan rumpang terdapat kata すべり yang merupakan bentuk {連用形|れんようけい} (akar kata kerja) dari すべる (licin/tergelincir). Kata ini harus disambung dengan pola ~やすい, yang diubah ke bentuk て menjadi __やすくて__ (pilihan 2) untuk menyambungkan dua sifat negatif: すべりやすくて (mudah licin dan) dilanjutkan dengan __あぶないから__ (berbahaya, maka/karena) pada pilihan 4. Setelah alasan selesai, bagian akhir adalah kalimat instruksi yang berujung pada ください (tolong). Ungkapan yang tepat untuk mengisi bagian ini adalah ___{気|き}を つけて__ (berhati-hati) pada pilihan 3, lalu disambung dengan __{通|とお}って__ (lewat) pada pilihan 1, membentuk {気|き}を つけて {通|とお}って ください (tolong lewatlah dengan berhati-hati). Dengan demikian, susunan lengkapnya menjadi 2-4-3-1: この {道|みち}は、{雨|あめ}の {日|ひ}は すべりやすくて あぶないから {気|き}を つけて {通|とお}って ください. Posisi ketiga yang bertanda bintang ditempati oleh pilihan 3.",
+            "translation": "Jalan ini, pada saat hari hujan licin dan berbahaya, jadi tolong lewatlah dengan berhati-hati.",
+            "keyPoints": [
+              "~やすい",
+              "~から",
+              "~てください"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "__{通|とお}って__ (lewat) berada di posisi keempat, tepat sebelum ください untuk membentuk {通|とお}って ください, sehingga bukan pengisi posisi bintang."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "__やすくて__ (mudah/gampang dan) berada di posisi pertama setelah すべり membentuk すべりやすくて, bukan di posisi bintang."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "___{気|き}を つけて__ (berhati-hati) berada di posisi ketiga [★] sebelum {通|とお}って untuk menerangkan cara lewat yang diminta pembicara."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "__あぶないから__ (karena berbahaya) berada di posisi kedua sebagai pelengkap alasan setelah すべりやすくて, bukan di posisi bintang."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:15:03.393Z"
+            }
+          }
         },
         {
           "order": 5,
-          "questionText": "今日は、一年で [_] [★] [_] [_] です。",
+          "questionText": "今日は、一年で [_] [_] [★] [_] です。",
           "questionAnswer": 4,
           "questionChoices": [
             {
               "codeAnswer": 1,
-              "answerText": "日"
+              "answerText": "日",
+              "answerImage": null
             },
             {
               "codeAnswer": 2,
-              "answerText": "が"
+              "answerText": "が",
+              "answerImage": null
             },
             {
               "codeAnswer": 3,
-              "answerText": "夜"
+              "answerText": "夜",
+              "answerImage": null
             },
             {
               "codeAnswer": 4,
-              "answerText": "最も 長い"
+              "answerText": "最も 長い",
+              "answerImage": null
             }
-          ]
+          ],
+          "explanation": {
+            "summary": "Kunci jawaban benar karena urutan kalimat yang tepat adalah {夜|よる} (malam) + が (partikel subjek) + {最|もっと}も {長|なが}い (paling panjang) + {日|ひ} (hari), sehingga pilihan 4 berada di posisi bintang [★].",
+            "detail": "Soal ini menguji kemampuan menyusun anak kalimat yang memodifikasi nomina serta penggunaan adverbia pembanding derajat superlatif {最|もっと}も (paling). Di awal kalimat terdapat keterangan {今日|きょう}は、{一年|いちねん}で (hari ini, dalam setahun). Bagian akhir kalimat berujung pada kopula です (adalah). Sebelum です, kita membutuhkan kata benda yang menjadi predikat nominal utama, yaitu {日|ひ}. Kata benda {日|ひ} ini diterangkan oleh klausa pewatas yang menjelaskan hari seperti apa hari ini, yaitu hari dengan malam yang paling panjang. Klausa pewatas tersebut dibentuk dari subjek klausa {夜|よる} yang diikuti partikel subjek __が__, lalu predikat kata sifat ___{最|もっと}も {長|なが}い___ yang langsung menerangkan {日|ひ}. Jadi urutan lengkapnya adalah 3-2-4-1, yaitu {夜|よる} (3) + が (2) + {最|もっと}も {長|なが}い (4) + {日|ひ} (1). Pilihan yang jatuh tepat pada posisi bintang [★] adalah pilihan 4.",
+            "translation": "Hari ini adalah hari dengan malam yang paling panjang dalam setahun.",
+            "keyPoints": [
+              "最も",
+              "anak kalimat pewatas nomina",
+              "partikel が"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "_{日|ひ}_ (hari) menggoda ditaruh di awal, misalnya setelah {一年|いちねん}で, tetapi {日|ひ} harus diletakkan tepat sebelum です pada slot keempat sebagai kata benda yang diterangkan oleh klausa sebelumnya."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "_が_ menggoda dipasangkan dengan kata sifat di slot ketiga, tetapi partikel penanda subjek ini harus mengikuti kata benda {夜|よる} di slot kedua untuk membentuk klausa {夜|よる}が."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "_{夜|よる}_ menggoda diletakkan dekat dengan kata sifat, namun posisinya yang benar adalah di slot pertama sebagai topik subjek dari klausa pewatas di dalam kalimat ini."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "__{最|もっと}も {長|なが}い__ menempati posisi bintang [★] pada slot ketiga untuk menerangkan kata benda {日|ひ} yang berada tepat di belakangnya."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-24T08:00:59.157Z"
+            }
+          }
         }
       ]
     },
@@ -1421,7 +3351,42 @@
               "answerText": "かざられることに なりました"
             }
           ],
-          "questionContextRef": "ctx-bunpou-3"
+          "questionContextRef": "ctx-bunpou-3",
+          "explanation": {
+            "summary": "Soal ini menguji pemahaman pola ~{事|こと}になる (ことになる / telah diputuskan bahwa) untuk mengabarkan jadwal atau keputusan yang telah ditetapkan oleh pihak luar untuk kejadian di masa depan.",
+            "detail": "Soal ini menanyakan bentuk kalimat yang paling tepat untuk menyampaikan kabar bahwa foto milik {私|わたし} (saya / Tom) akan dipajang di toserba G mulai tanggal 3 Mei selama tiga hari. Pada surat tersebut disebutkan bahwa saat ini masih menjelang bulan Mei, dan pameran diadakan pada liburan pekan depan, sehingga peristiwa pemajangan fotonya belum terjadi ({未来|みらい} / masa depan). Selain itu, pemajangan ini terjadi bukan semata-mata kehendak Tom sendiri, melainkan hasil seleksi klub fotografi, sehingga tepat diungkapkan dengan bentuk ~{事|こと}になる yang diubah ke bentuk lampau ~{事|こと}になりました (ことになりました / telah diputuskan bahwa...) untuk menyatakan bahwa keputusannya sudah resmi diambil. Oleh karena itu, bentuk pasif yang digabung dengan pola tersebut, yaitu __{飾|かざ}られることに なりました__, adalah pilihan yang paling tepat.",
+            "translation": "Mulai hari Jumat tanggal 3 Mei selama tiga hari, telah diputuskan bahwa foto saya akan dipajang di toserba G.",
+            "keyPoints": [
+              "~{事|こと}になる",
+              "bentuk pasif {受身形|うけみけい}"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "__{飾|かざ}られました__ (telah dipajang). Bentuk lampau ini menggoda karena Tom membicarakan seleksi yang sudah selesai, tetapi pemajangan foto di toserba baru akan berlangsung minggu depan, sehingga tidak tepat menggunakan bentuk lampau langsung untuk peristiwa yang belum terlaksana."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "__{飾|かざ}られたでしょう__ (mungkin sudah dipajang). Bentuk dugaan lampau ini menggoda karena menggunakan akhiran sopan, tetapi maknanya menebak kejadian masa lalu sendiri, padahal Tom tahu pasti jadwal pameran fotonya yang berada di masa depan."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "__{飾|かざ}られることでした__ (seharusnya dipajang / tadinya dijadwalkan dipajang). Bentuk ini menggoda karena memiliki elemen ~{事|こと}, tetapi akhiran lampau でした biasanya menyiratkan rencana masa lalu yang tidak terwujud atau sekadar mengenang rencana lama, bukan mengabarkan rencana pasti yang akan datang."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "__{飾|かざ}られることに なりました__ (telah diputuskan bahwa akan dipajang). Pola ini menggabungkan bentuk pasif __{飾|かざ}られる__ (dipajang) dengan ~{事|こと}になる untuk menyatakan bahwa sebuah keputusan resmi atau kesepakatan telah tercapai mengenai hal yang akan terjadi nanti."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:15:57.434Z"
+            }
+          }
         },
         {
           "order": 2,
@@ -1445,7 +3410,42 @@
               "answerText": "たとえば"
             }
           ],
-          "questionContextRef": "ctx-bunpou-3"
+          "questionContextRef": "ctx-bunpou-3",
+          "explanation": {
+            "summary": "Kata sambung __それで__ paling tepat karena menghubungkan alasan fotonya terpilih untuk dipajang dengan keinginannya mengajak {森|もり} datang melihat.",
+            "detail": "Soal ini menguji pemahaman kata sambung ({接続詞|せつぞくし}) yang menghubungkan dua kalimat dalam wacana. Kalimat sebelumnya menjelaskan alasan atau latar belakang yang membanggakan, yaitu foto buatan Tom terpilih untuk dipajang di {展示|てんじ} (pameran) toserba G. Kalimat berikutnya menyatakan keinginan Tom agar {森|もり} mau datang melihat fotonya, yaitu {森|もり}さんにも ぜひ {見|み}て もらいたい (saya sangat ingin {森|もり} juga melihatnya). Hubungan antara kedua kalimat ini adalah hubungan sebab-akibat logis: karena fotonya dipajang, oleh sebab itu ia ingin temannya datang melihat. Kata sambung yang menyatakan hubungan oleh karena itu atau makanya adalah __それで__.",
+            "translation": "Oleh karena itu, saya sangat ingin Mori juga melihatnya, apakah Anda ada waktu?",
+            "keyPoints": [
+              "それで",
+              "接続詞"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "__それで__ (oleh karena itu) tepat karena menghubungkan latar belakang terpilihnya foto dengan akibat logis berupa ajakan Tom kepada {森|もり} untuk melihatnya."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "__しかし__ (tetapi) digunakan untuk menghubungkan dua hal yang berlawanan atau bertentangan. Pilihan ini menggoda jika pembaca salah mengira partikel が pada kalimat sebelumnya ({選|えら}ばれたのです__が__) sebagai pertentangan, padahal di sana が hanya pengantar topik ({前置|まえお}き). Isi kedua kalimat tidak bertentangan."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "__それから__ (setelah itu / kemudian) digunakan untuk menyambung urutan waktu atau menambahkan informasi baru. Kata ini kurang tepat karena hubungan kedua kalimat bukan sekadar urutan kegiatan atau penambahan daftar, melainkan dorongan ajakan yang lahir dari alasan sebelumnya."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "__{例|たと}えば__ (misalnya / contohnya) digunakan untuk memberikan contoh konkret dari hal umum yang disebut sebelumnya, sedangkan kalimat setelah rumpang bukan merupakan sebuah contoh."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:15:48.104Z"
+            }
+          }
         },
         {
           "order": 3,
@@ -1469,7 +3469,42 @@
               "answerText": "選ばれたようですよ"
             }
           ],
-          "questionContextRef": "ctx-bunpou-3"
+          "questionContextRef": "ctx-bunpou-3",
+          "explanation": {
+            "summary": "Ungkapan __{選|えら}ばれたんですか__ tepat digunakan untuk menanggapi kabar baru dari lawan bicara sebagai bentuk konfirmasi bernada antusias sebelum memberikan ucapan selamat.",
+            "detail": "Soal ini menguji pemahaman penggunaan ungkapan respons terhadap informasi yang baru saja diterima dalam percakapan atau surat-menyurat. Pada surel sebelumnya, Tom menceritakan kabar gembira bahwa fotonya terpilih untuk dipajang. Pada surel balasan ini, {森|もり} menanggapi kabar tersebut. Dalam bahasa Jepang, akhiran ~んですか digunakan untuk mengonfirmasi kembali hal yang baru saja diceritakan {相手|あいて} (lawan bicara) dengan nada tertarik dan takjub. Respons semacam ini lazim diucapkan sebelum menyambungnya dengan pujian serta ucapan selamat.",
+            "translation": "Foto Tom terpilih ya? Hebat sekali. Selamat ya.",
+            "keyPoints": [
+              "~んですか",
+              "reaksi terhadap informasi baru"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "__{選|えら}ばれたんですか__ (apakah terpilih / terpilih ya?). Bentuk ini tepat untuk memastikan kembali kabar yang baru didengar dari Tom dengan nada antusias sebelum mengucapkan selamat."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "__{選|えら}ばれたからですか__ (apakah karena terpilih?). Bentuk ini menanyakan sebab atau alasan, sehingga maknanya rancu dan tidak menyambung dengan pujian setelahnya."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "__{選|えら}ばれたそうですよ__ (katanya terpilih lho). Bentuk ini menyatakan {伝聞|でんぶん} (kabar yang didengar dari pihak lain) yang diinfokan balik ke Tom, padahal Tom sendiri yang mengalami dan memberitahukannya."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "__{選|えら}ばれたようですよ__ (sepertinya terpilih lho). Bentuk ini menyatakan {推量|すいりょう} (dugaan) pembicara, sehingga tidak wajar dikatakan kepada Tom yang jelas-jelas sudah tahu pasti status fotonya."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:15:53.450Z"
+            }
+          }
         },
         {
           "order": 4,
@@ -1493,7 +3528,42 @@
               "answerText": "は"
             }
           ],
-          "questionContextRef": "ctx-bunpou-3"
+          "questionContextRef": "ctx-bunpou-3",
+          "explanation": {
+            "summary": "Kunci jawaban benar adalah pilihan 3 karena partikel __が__ berfungsi menandai subjek pelaku di dalam anak kalimat yang menerangkan kata benda.",
+            "detail": "Soal ini menguji pemahaman penggunaan partikel dalam anak kalimat pewatas ({連体修飾節|れんたいしゅうしょくせつ} - anak kalimat yang menerangkan kata benda). Bagian yang perlu diisi berada di dalam frasa トムさん __24__ とった {写真|しゃしん} (foto yang diambil Tom). Kata {写真|しゃしん} (foto) diterangkan oleh klausa トムさん __24__ とった (diambil Tom).\n\nDalam tata bahasa Jepang, pelaku atau subjek tindakan di dalam anak kalimat pewatas harus ditandai dengan partikel __が__ (penanda subjek) atau bisa juga digantikan dengan __の__. Partikel __は__ (penanda topik) umumnya tidak digunakan untuk menandai subjek di dalam anak kalimat semacam ini. Karena pelaku yang mengambil foto adalah Tom ({撮|と}る - mengambil foto), partikel yang tepat untuk mengisi rumpang tersebut adalah __が__.",
+            "translation": "Karena saya belum pernah melihat foto yang diambil oleh Tom, saya ingin melihatnya.",
+            "keyPoints": [
+              "{連体修飾節|れんたいしゅうしょくせつ}における{主語|しゅご}の「が」",
+              "{格助詞|かくじょし}「が」"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "に (pada/kepada). Partikel ini menggoda karena sering digunakan untuk menandai agen pada kalimat pasif, tetapi predikat di sini adalah kata kerja aktif {撮|と}った (telah mengambil/memotret), bukan bentuk pasif, sehingga tidak tepat menandai pelaku tindakan aktif."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "を (partikel penanda objek). Partikel ini menggoda karena kata kerja {撮|と}る membutuhkan objek berupa {写真|しゃしん}, tetapi posisi yang rumpang berada di depan pelaku tindakan yaitu Tom, bukan objek yang diambil."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "が (partikel penanda subjek). Partikel ini tepat karena berfungsi menandai Tom sebagai subjek atau pelaku tindakan {撮|と}った di dalam anak kalimat yang menerangkan {写真|しゃしん}."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "は (partikel penanda topik). Partikel ini menggoda karena dalam kalimat tunggal biasa subjek sering ditandai dengan penanda topik, tetapi di dalam anak kalimat yang menerangkan nomina, subjek tidak ditandai dengan penanda topik melainkan partikel penanda subjek."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:15:48.103Z"
+            }
+          }
         },
         {
           "order": 5,
@@ -1517,7 +3587,42 @@
               "answerText": "来ようと 思います"
             }
           ],
-          "questionContextRef": "ctx-bunpou-3"
+          "questionContextRef": "ctx-bunpou-3",
+          "explanation": {
+            "summary": "Kunci jawaban benar karena Mori menyatakan rencananya sendiri untuk pergi menonton pameran foto dengan pola maksud __{行|い}こうと {思|おも}います__ (saya berniat untuk pergi).",
+            "detail": "Soal ini menguji pemahaman terhadap arah perpindahan ({行|い}く melawan {来|く}る) serta ungkapan maksud atau niat pembicara. Dalam surel balasan ini, Mori menanggapi ajakan Tom untuk melihat foto Tom yang dipajang di toserba G. Mori menyatakan bahwa ia sendiri yang berencana pergi ke toserba G pada tanggal 4 Mei siang. Karena subjek yang melakukan tindakan adalah Mori (penulis surel) dan tujuannya adalah tempat lain di luar lokasi penulis saat menulis, verba yang tepat adalah {行|い}く (pergi), bukan {来|く}る (datang). Selain itu, untuk menyatakan rencana pribadi penulis kepada lawan bicara, bentuk yang tepat adalah pola niat atau kehendak, yaitu bentuk ajakan ditambah と {思|おも}います (berpikir/berniat untuk). Oleh sebab itu, bentuk yang paling tepat adalah {行|い}こうと {思|おも}います.",
+            "translation": "Pada tanggal 4 Mei siang, saya berniat pergi ke toserba G untuk melihatnya.",
+            "keyPoints": [
+              "{意向形|いこうけい} + と{思|おも}います",
+              "{行|い}く dan {来|く}る"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "__{行|い}って ください__ (silakan pergi) merupakan kalimat permohonan atau perintah sopan kepada lawan bicara. Mori tidak sedang meminta Tom pergi, melainkan menyatakan rencana dirinya sendiri."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "__{行|い}こうと {思|おも}います__ (saya berniat untuk pergi) menggunakan arah verba yang tepat bagi penulis yang akan menuju ke toserba G, serta menggunakan bentuk maksud untuk menyampaikan rencana kegiatannya kepada Tom."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "__{来|き}て ください__ (silakan datang) adalah permohonan yang meminta orang lain datang. Pilihan ini salah karena subjek kalimat ini adalah Mori sendiri yang hendak mendatangi pameran foto Tom, bukan mengundang Tom."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "__{来|こ}ようと {思|おも}います__ (saya berniat untuk datang) menggunakan verba {来|く}る yang arah perpindahannya menuju tempat pembicara berada sekarang atau tempat lawan bicara berada. Karena Tom maupun Mori saat ini tidak berada di toserba G, perpindahan menuju toserba G harus menggunakan {行|い}く, bukan {来|く}る."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:15:50.439Z"
+            }
+          }
         }
       ]
     },
@@ -1550,7 +3655,43 @@
               "answerText": "受付に行って、部屋の鍵をかけてもらいます。"
             }
           ],
-          "questionContextRef": "ctx-dokkai-4-1"
+          "questionContextRef": "ctx-dokkai-4-1",
+          "explanation": {
+            "summary": "Pilihan 2 benar karena merupakan parafrasa dari aturan nomor dua pada poster, yaitu mengembalikan meja dan kursi yang telah dipakai ke posisi semula.",
+            "detail": "Soal ini menanyakan hal yang wajib dilakukan oleh pengguna ruang rapat setelah selesai menggunakannya ({使|つか}った{後|あと}にどうしなければなりませんか). Pada poster, aturan nomor dua berbunyi __{使|つか}った{机|つくえ}といすは、{最初|さいしょ}に{並|なら}べられていた{所|ところ}に{置|お}いてください__ (taruhlah meja dan kursi yang sudah digunakan di tempat semula meja dan kursi tersebut ditata). Pilihan 2 menyampaikan maksud yang sama persis dengan menggunakan padanan kata __{初|はじ}めにあった{場所|ばしょ}__ (tempat semula berada).",
+            "translation": "Meletakkan meja dan kursi yang telah dipakai di tempat semula berada.",
+            "keyPoints": [
+              "~てください",
+              "~た{所|ところ}",
+              "{最初|さいしょ} dan {初|はじ}め"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "{予約|よやく}の{終|お}わりの{時間|じかん}になったら、3{分以内|ぷんいない}に{部屋|へや}を{出|で}ます (keluar dari kamar dalam waktu tiga menit setelah waktu pemesanan berakhir). Pilihan ini mengecoh karena sama-sama menyebut angka tiga menit, tetapi aturannya meminta pengguna keluar paling lambat tiga menit SEBELUM waktu berakhir ({予約|よやく}{時間|じかん}が{終|お}わる3{分前|ぷんまえ}までに), bukan tiga menit sesudah waktu habis."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{使|つか}った{机|つくえ}といすを{初|はじ}めにあった{場所|ばしょ}に{並|なら}べます (menata meja dan kursi yang telah digunakan ke tempat semula). Isi ini sesuai persis dengan aturan nomor dua pada poster."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "ごみを{集|あつ}めて、{部屋|へや}に{置|お}いてあるごみ{箱|ばこ}に{捨|す}てます (mengumpulkan sampah lalu membuangnya ke tempat sampah yang ada di ruangan). Pilihan ini salah karena aturan nomor tiga dengan tegas melarang meninggalkan sampah dan mewajibkan pengguna membawanya pulang ({持|も}って{帰|かえ}ってください)."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "{受付|うけつけ}に{行|い}って、{部屋|へや}の{鍵|かぎ}をかけてもらいます (pergi ke bagian resepsionis lalu meminta mereka menguncikan kamarnya). Pilihan ini keliru karena aturan nomor lima mewajibkan pemakai untuk mengunci sendiri kamarnya lalu mengembalikan kuncinya ke resepsionis ({鍵|かぎ}をかけて、{受付|うけつけ}に{鍵|かぎ}を{返|かえ}してください)."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:16:06.804Z"
+            }
+          }
         },
         {
           "order": 2,
@@ -1574,7 +3715,43 @@
               "answerText": "いつも乗る電車に乗れなかったから"
             }
           ],
-          "questionContextRef": "ctx-dokkai-4-2"
+          "questionContextRef": "ctx-dokkai-4-2",
+          "explanation": {
+            "summary": "Kunci jawaban benar karena tangga menjadi sempit akibat dimulainya proyek pembuatan eskalator sejak kemarin, sehingga padat oleh penumpang dan membutuhkan waktu lebih lama.",
+            "detail": "Pertanyaan ini menanyakan alasan mengapa kemarin penulis membutuhkan waktu lebih lama dari biasanya untuk naik kereta. Pada paragraf kedua dijelaskan penyebabnya secara langsung, yaitu sejak kemarin proyek pembuatan eskalator di sisi kanan tangga pintu selatan dimulai, sehingga tangga menjadi sempit ({階段|かいだん}が{狭|せま}くなっていました). Karena tangga menyempit, tangga menjadi penuh sesak oleh orang-orang yang hendak naik kereta pada pagi hari ({朝|あさ}は{電車|でんしゃ}に{乗|の}る{人|ひと}で{階段|かいだん}が{込|こ}んでいて), yang akhirnya memakan waktu lebih lama. Oleh karena itu, alasan utamanya adalah tangga menjadi sempit sejak kemarin, sesuai dengan pernyataan pada pilihan 1.",
+            "translation": "Sejak kemarin proyek pembuatan eskalator di sisi kanan tangga pintu selatan telah dimulai, sehingga tangga menjadi sempit; pada pagi hari tangga padat oleh orang-orang yang naik kereta, sehingga membutuhkan waktu lebih lama.",
+            "keyPoints": [
+              "{理由|りゆう}の「から」",
+              "～くなる",
+              "{読解|どっかい}・{原因|げんいん}{理由|りゆう}の{把握|はあく}"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "__{昨日|きのう}から{階段|かいだん}が{狭|せま}くなっていたから__ (karena sejak kemarin tangga menjadi sempit). Paragraf kedua secara eksplisit menyebutkan bahwa sejak kemarin tangga menyempit karena adanya proyek pengerjaan eskalator, yang menyebabkan tangga padat dan memakan waktu lebih lama untuk menuju kereta."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "__{南口|みなみぐち}にはエスカレーターがないから__ (karena di pintu selatan tidak ada eskalator). Kalimat ini memang ada di teks, tetapi ketiadaan eskalator adalah kondisi yang sudah ada sebelumnya, bukan penyebab baru yang membuat perjalanan kemarin membutuhkan waktu lebih lama daripada hari-hari biasa."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "__エスカレーターを{使|つか}う{人|ひと}が{多|おお}かったから__ (karena orang yang menggunakan eskalator banyak). Pilihan ini mengecoh karena menyebut kata eskalator, padahal eskalatornya sendiri belum ada dan baru sedang dibuat ({作|つく}る{工事|こうじ}が{始|はじ}まって), sehingga belum ada orang yang menggunakannya."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "__いつも{乗|の}る{電車|でんしゃ}に{乗|の}れなかったから__ (karena tidak bisa naik kereta yang biasa dinaiki). Fakta tidak bisa naik kereta biasa adalah akibat dari keterlambatan karena tangga yang padat dan memakan waktu, bukan penyebab mengapa penulis membutuhkan waktu lebih lama untuk mencapai kereta."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:16:07.676Z"
+            }
+          }
         },
         {
           "order": 3,
@@ -1598,7 +3775,43 @@
               "answerText": "7時15分"
             }
           ],
-          "questionContextRef": "ctx-dokkai-4-2"
+          "questionContextRef": "ctx-dokkai-4-2",
+          "explanation": {
+            "summary": "Kunci jawaban benar karena teks menyebutkan bahwa hari ini penulis bisa naik kereta seperti biasanya, dan pada paragraf pertama dijelaskan bahwa kereta biasa yang ia naiki adalah kereta pukul 7.05.",
+            "detail": "Soal ini menanyakan jam berapa kereta yang dinaiki oleh penulis pada hari ini. Di kalimat terakhir disebutkan bahwa hari ini penulis berangkat lebih pagi dari rumah dan tiba di stasiun pukul 6.55 sehingga bisa naik __{何時|なんじ}もの{電車|でんしゃ}__ (kereta seperti biasanya). Untuk mengetahui jam berapa kereta biasa tersebut, kita perlu merujuk ke paragraf pertama yang menyatakan bahwa biasanya penulis tiba di stasiun pukul 7.00 dan naik kereta pukul 7.05. Oleh karena itu, kereta yang dinaiki hari ini adalah kereta pukul 7.05.",
+            "translation": "Namun, hari ini saya keluar rumah lebih awal dan tiba di stasiun pada pukul 6.55, sehingga bisa naik kereta seperti biasanya.",
+            "keyPoints": [
+              "いつもの",
+              "{乗|の}れる",
+              "{遅刻|ちこく}する"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "{6時55分|ろくじごじゅうごふん} (pukul 6.55) adalah jam saat penulis tiba di stasiun pada hari ini, bukan jam keberangkatan kereta yang dinaikinya."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{7時|しちじ} (pukul 7.00) adalah jam saat penulis biasanya tiba di stasiun setiap pagi, bukan jam kereta yang dinaiki."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "{7時5分|しちじごふん} (pukul 7.05) adalah jadwal kereta yang biasa dinaiki penulis setiap pagi, yang hari ini berhasil ia naiki kembali karena berangkat lebih pagi."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "{7時15分|しちじじゅうごふん} (pukul 7.15) adalah jam kereta yang terpaksa dinaiki kemarin karena tangga stasiun sedang menyempit akibat proyek pembangunan eskalator."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:16:05.367Z"
+            }
+          }
         },
         {
           "order": 4,
@@ -1622,7 +3835,43 @@
               "answerText": "手帳が見つかりました。手帳をどうするか返事をください。"
             }
           ],
-          "questionContextRef": "ctx-dokkai-4-3"
+          "questionContextRef": "ctx-dokkai-4-3",
+          "explanation": {
+            "summary": "{林|はやし}さん memberitahukan bahwa buku catatan milik Mauer telah ditemukan, lalu meminta balasan mengenai apakah Mauer akan datang mengambilnya sendiri atau ingin dikirimkan.",
+            "detail": "Soal ini menanyakan maksud yang ingin disampaikan oleh {林|はやし}さん kepada Mauer melalui surel. Pada bagian awal surel disebutkan bahwa {手帳|てちょう} (buku catatan) milik Mauer telah {見|み}つかりました (ditemukan). Selanjutnya, {林|はやし}さん memberikan dua pilihan penanganan, yaitu apakah Mauer bisa datang mengambilnya ke sana (こちらまで{取|と}りに{来|く}ることができますか) atau sebaiknya dikirimkan (それとも、{送|おく}ったほうがいいでしょうか). Pada bagian akhir, terdapat kalimat penutup __お{返事|へんじ}、よろしくお{願|ねが}いします__ (mohon balasannya). Hal ini menunjukkan bahwa inti pesan surel tersebut adalah memberi kabar bahwa buku catatan telah ditemukan, sekaligus meminta balasan atas pilihan cara penyerahannya. Oleh karena itu, pernyataan yang merangkum kedua hal ini secara tepat adalah pilihan 4.",
+            "translation": "Mohon balasannya.",
+            "keyPoints": [
+              "{手帳|てちょう}が{見|み}つかりました",
+              "それとも",
+              "お{返事|へんじ}、よろしくお{願|ねが}いします"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "{手帳|てちょう}が{見|み}つかりました。{手帳|てちょう}を{取|と}りに{来|き}てください。 (Buku catatannya sudah ditemukan. Silakan datang untuk mengambil buku catatan.) Pilihan ini salah karena {林|はやし}さん tidak langsung meminta Mauer datang mengambilnya, melainkan menanyakan apakah Mauer bisa datang mengambil atau ingin dikirimkan. Pilihan ini mengecoh karena kata mengambil memang ada di dalam surel."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{手帳|てちょう}が{見|み}つかりました。{手帳|てちょう}を{送|おく}ります。 (Buku catatannya sudah ditemukan. Saya akan mengirimkan buku catatannya.) Pilihan ini salah karena {林|はやし}さん belum memutuskan untuk mengirimkannya, melainkan baru menawarkan opsi pengiriman."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "{手帳|てちょう}が{見|み}つかりました。{手帳|てちょう}を{送|おく}るので、{料金|りょうきん}を{払|はら}ってください。 (Buku catatannya sudah ditemukan. Karena akan dikirimkan, tolong bayar biayanya.) Pilihan ini salah karena pembayaran biaya hanya diwajibkan bila Mauer memilih barangnya dikirimkan, sedangkan keputusan cara penyerahan belum ditentukan."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "{手帳|てちょう}が{見|み}つかりました。{手帳|てちょう}をどうするか{返事|へんじ}をください。 (Buku catatannya sudah ditemukan. Tolong beri balasan mengenai apa yang ingin dilakukan terhadap buku catatan tersebut.) Pilihan ini benar karena merangkum keseluruhan isi pesan, yaitu mengabarkan bahwa buku catatan telah ditemukan dan meminta kepastian balasan tentang tindakan yang diinginkan."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:16:25.839Z"
+            }
+          }
         }
       ]
     },
@@ -1655,7 +3904,43 @@
               "answerText": "75歳以上の人が、南小学校を一か月後に訪ねることが決まったこと"
             }
           ],
-          "questionContextRef": "ctx-dokkai-5"
+          "questionContextRef": "ctx-dokkai-5",
+          "explanation": {
+            "summary": "Surat pemberitahuan tersebut mengabarkan rencana kedatangan anak-anak SD Minami ke rumah Akiyama satu bulan kemudian, sehingga Akiyama menantikannya selama sebulan penuh.",
+            "detail": "Soal ini menanyakan isi dari surat pemberitahuan yang diterima oleh {秋山|あきやま} (Akiyama). Pada paragraf kedua wacana, Akiyama menuliskan bahwa setelah menerima __{私|わたし}は、__①お{知|し}らせのお{手紙|てがみ}__をもらってから、みなさんが{来|く}るのを{一か月間|いっかげつかん}ずっと{楽|たの}しみにしていました__ (setelah menerima surat pemberitahuan, saya terus menantikan kedatangan kalian selama satu bulan penuh). Hal ini menunjukkan bahwa surat itu berisi pemberitahuan bahwa anak-anak SD Minami akan berkunjung ke rumahnya satu bulan setelah surat itu dikirimkan, bukan lansia yang pergi ke sekolah. Oleh karena itu, pilihan yang menyatakan kunjungan anak-anak SD Minami ke rumah Akiyama satu bulan kemudian adalah jawaban yang paling tepat.",
+            "translation": "Setelah menerima surat pemberitahuan, saya terus menantikan kedatangan kalian selama satu bulan penuh.",
+            "keyPoints": [
+              "〜てから",
+              "{楽|たの}しみにする",
+              "pemahaman alur waktu {前|まえ} dan {後|ご}"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "{南小学校|みなみしょうがっこう}の{子|こ}どもたちが、{秋山|あきやま}さんの{家|いえ}を{一か月前|いっかげつまえ}に{訪|たず}ねたこと (bahwa anak-anak SD Minami telah mengunjungi rumah Nyonya Akiyama satu bulan yang lalu). Pilihan ini mengecoh karena memakai keterangan waktu satu bulan, tetapi salah karena surat pemberitahuan berisi rencana kunjungan di masa depan saat surat diterima, bukan laporan tentang kunjungan yang sudah lewat sebulan lalu."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{南小学校|みなみしょうがっこう}の{子|こ}どもたちが、{秋山|あきやま}さんの{家|いえ}を{一か月後|いっかげつご}に{訪|たず}ねること (bahwa anak-anak SD Minami akan mengunjungi rumah Nyonya Akiyama satu bulan kemudian). Ini sesuai dengan isi teks bahwa setelah menerima surat tersebut, Akiyama menunggu kedatangan mereka selama sebulan penuh sebelum mereka akhirnya datang berkunjung."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "75{歳|さい}{以上|いじょう}の{人|ひと}が{南小学校|みなみしょうがっこう}を{訪|たず}ねることが、{一か月前|いっかげつまえ}に{決|き}まったこと (bahwa orang-orang berusia 75 tahun ke atas mengunjungi SD Minami telah diputuskan satu bulan yang lalu). Pilihan ini salah dua kali: pertama, pelakunya terbalik karena siswa yang mengunjungi rumah lansia, bukan lansia yang mengunjungi sekolah; kedua, fokus isi surat bukan pengumuman keputusan satu bulan lalu."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "75{歳|さい}{以上|いじょう}の{人|ひと}が、{南小学校|みなみしょうがっこう}を{一か月後|いっかげつご}に{訪|たず}ねることが{決|き}まったこと (bahwa telah diputuskan bahwa orang-orang berusia 75 tahun ke atas akan mengunjungi SD Minami satu bulan kemudian). Pilihan ini juga salah arah kunjungan, karena yang berkunjung adalah anak-anak sekolah ke rumah warga lansia, bukan sebaliknya."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:16:37.023Z"
+            }
+          }
         },
         {
           "order": 2,
@@ -1679,7 +3964,42 @@
               "answerText": "お菓子や料理を自分がたくさん用意できるかどうか"
             }
           ],
-          "questionContextRef": "ctx-dokkai-5"
+          "questionContextRef": "ctx-dokkai-5",
+          "explanation": {
+            "summary": "{秋山|あきやま} merasa cemas apakah kue dan masakan yang ia siapkan sendiri akan disukai dan dimakan oleh anak-anak sekolah dasar.",
+            "detail": "Soal ini menanyakan hal apa yang dicemaskan oleh penulis pada bagian __{心配|しんぱい}でした__ (merasa cemas). Kalimat tepat sebelum bagian tersebut menyatakan, __{用意|ようい}したお{菓子|かし}や{料理|りょうり}を、みなさんが{食|た}べてくれるかどうか、ちょっと{心配|しんぱい}でした__ (apakah semuanya mau memakan kue dan masakan yang telah disiapkan atau tidak, saya merasa agak cemas). Selain itu, kalimat sesudahnya berbunyi, __{喜|よろこ}んでたくさん{食|た}べてくれましたね__ (ternyata kalian memakannya banyak-banyak dengan senang hati ya). Dari konteks ini, subjek yang menyiapkan makanan adalah penulis ({自分|じぶん}), sedangkan yang memakannya adalah anak-anak ({小学生|しょうがくせい}), dan kecemasan penulis adalah apakah anak-anak akan menyukai serta mau memakan hidangan tersebut. Oleh karena itu, pilihan 1 adalah jawaban yang paling tepat.",
+            "translation": "Oleh karena itu, saya merasa agak cemas apakah semuanya mau memakan kue dan masakan yang telah saya siapkan atau tidak.",
+            "keyPoints": [
+              "〜かどうか",
+              "〜てくれる"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "_{自分|じぶん}が{用意|ようい}したお{菓子|かし}や{料理|りょうり}を{小学生|しょうがくせい}が{喜|よろこ}んでくれるかどうか_ (apakah anak-anak sekolah dasar akan menyukai kue dan masakan yang disiapkan sendiri olehnya atau tidak). Pilihan ini sesuai persis dengan isi surat bahwa penulis cemas apakah hidangan buatannya akan disantap dengan senang hati oleh anak-anak."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "_{若|わか}い{人|ひと}たちが{用意|ようい}したお{菓子|かし}や{料理|りょうり}を{小学生|しょうがくせい}が{食|た}べてくれるかどうか_ (apakah anak-anak sekolah dasar mau memakan kue dan masakan yang disiapkan oleh orang-orang muda atau tidak). Pilihan ini mengecoh karena ada kata _{若|わか}い{人|ひと}たち_ (orang-orang muda) di teks, tetapi yang menyiapkan makanan bukan orang muda, melainkan penulis sendiri."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "_{子|こ}どもの{好|す}きなお{菓子|かし}や{料理|りょうり}を{自分|じぶん}が{食|た}べられるかどうか_ (apakah dirinya sendiri bisa memakan kue dan masakan yang disukai anak-anak atau tidak). Pilihan ini membalik pelaku; yang diharapkan makan adalah anak-anak, bukan penulis sendiri."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "お{菓子|かし}や{料理|りょうり}を{自分|じぶん}がたくさん{用意|ようい}できるかどうか_ (apakah dirinya sendiri bisa menyiapkan banyak kue dan masakan atau tidak). Kekhawatiran penulis bukan tentang kemampuannya menyiapkan banyak makanan, melainkan apakah makanan yang sudah disiapkannya itu akan dimakan dan disukai oleh anak-anak."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:16:36.349Z"
+            }
+          }
         },
         {
           "order": 3,
@@ -1703,7 +4023,43 @@
               "answerText": "子どもたちが帰るとき、泣かないで「さようなら。」と言えたこと"
             }
           ],
-          "questionContextRef": "ctx-dokkai-5"
+          "questionContextRef": "ctx-dokkai-5",
+          "explanation": {
+            "summary": "Penulis merasa senang karena anak-anak SD datang ke rumahnya, mengobrol seru bersamanya, dan membantunya membersihkan jendela.",
+            "detail": "Soal ini menanyakan hal apa yang membuat {秋山|あきやま} merasa senang sesuai dengan kalimat __{嬉|うれ}しかったのです__ (sungguh merasa senang). Di dalam surat, {秋山|あきやま} menceritakan bahwa anak-anak mendengarkan dan menceritakan kisah-kisah lucu sehingga ia bisa tertawa lepas, serta membersihkan jendela di tempat yang tinggi sehingga rumahnya menjadi terang. Kegiatan berinteraksi mengobrol dan dibantu bersih-bersih inilah yang membuatnya sangat gembira, sehingga pilihan 2 adalah jawaban yang paling tepat.",
+            "translation": "Namun, saya sungguh merasa senang.",
+            "keyPoints": [
+              "{読解|どっかい}",
+              "{理由|りゆう}{理解|りかい}",
+              "～たり～たりする"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "{子|こ}どもたちと{料理|りょうり}を{作|つく}ったり、{子|こ}どもたちから{楽|たの}しい{話|はなし}を{聞|き}いたりしたこと (membuat masakan bersama anak-anak, dan mendengarkan cerita menyenangkan dari anak-anak). Bagian mendengarkan cerita memang benar, tetapi kue dan masakannya disiapkan sendiri oleh {秋山|あきやま} sebelumnya ({用意|ようい}したお{菓子|かし}や{料理|りょうり}), bukan dimasak bersama anak-anak."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{子|こ}どもたちと{話|はなし}ができたり、{子|こ}どもたちが{掃除|そうじ}をしてくれたりしたこと (bisa mengobrol bersama anak-anak, dan anak-anak membersihkan rumah untuknya). Di dalam surat tertulis jelas bahwa mereka mengobrol seru ({楽|たの}しい{話|はなし}もいろいろ{聞|き}けました) dan anak-anak membersihkan jendela ({掃除|そうじ}もしてくれました), yang sesuai dengan isi pilihan ini."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "{外国|がいこく}に{住|す}んでいる{娘|むすめ}と{二|ふた}りのお{子|こ}さんが、{家|いえ}に{遊|あそ}びに{来|き}てくれたこと (anak perempuan dan dua anak laki-laki yang tinggal di luar negeri datang bermain ke rumah). Anak dan cucunya tinggal di luar negeri dan jarang bisa bertemu, bukan mereka yang datang ke rumahnya pada hari itu."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "{子|こ}どもたちが{帰|かえ}るとき、{泣|な}かないで「さようなら。」と{言|い}えたこと (bisa mengucapkan \"sampai jumpa\" tanpa menangis saat anak-anak pulang). Pilihan ini bertentangan dengan isi bacaan yang menyebutkan bahwa {秋山|あきやま} hampir menangis ({泣|な}きそうになってしまって)."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:16:36.012Z"
+            }
+          }
         },
         {
           "order": 4,
@@ -1727,7 +4083,42 @@
               "answerText": "家に来てくれて、本当にありがとうございました。"
             }
           ],
-          "questionContextRef": "ctx-dokkai-5"
+          "questionContextRef": "ctx-dokkai-5",
+          "explanation": {
+            "summary": "Kunci jawaban benar karena surat ini pada dasarnya adalah surat ucapan terima kasih kepada anak-anak sekolah yang telah berkunjung, mengobrol, dan membantu membersihkan rumah penulis.",
+            "detail": "Soal menanyakan tujuan utama atau hal yang paling ingin disampaikan oleh {秋山|あきやま}さん (Akiyama-san) melalui surat tersebut ({秋山|あきやま}さんがこの{手紙|てがみ}で{一番|いちばん}{言|い}いたいことは{何|なん}ですか [Apa hal yang paling ingin disampaikan oleh Akiyama-san dalam surat ini?]). Dari awal surat, ia langsung membuka dengan kalimat __{先週|せんしゅう}の{金曜日|きんようび}は{家|いえ}に{来|き}てくれて、ありがとうございました__ (Terima kasih sudah datang ke rumah saya pada hari Jumat minggu lalu). Seluruh isi surat kemudian menceritakan betapa gembiranya ia saat anak-anak berkunjung, menyantap makanan yang disiapkan, bercerita hingga membuatnya tertawa, dan membersihkan jendela rumahnya. Oleh karena itu, pesan terpenting dari surat tersebut adalah ungkapan terima kasih yang tulus atas kunjungan mereka.",
+            "translation": "Apa hal yang paling ingin disampaikan oleh Akiyama-san dalam surat ini?",
+            "keyPoints": [
+              "{内容理解|ないようりかい}",
+              "~てくれてありがとう"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "みんなが{帰|かえ}るとき、{泣|な}きそうになってしまってごめんなさい (Maaf karena saya hampir menangis saat kalian pulang). Kalimat ini memang ada di dalam surat, sehingga bisa menggoda pembaca yang hanya mengingat kejadian emosional di akhir kunjungan, namun ini hanyalah ungkapan perasaan sesaat dan bukan maksud utama penulisan surat."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{家族|かぞく}が{近|ちか}くにいないので、ぜひまた{手伝|てつだ}いに{来|き}てください (Karena keluarga tidak ada di dekat sini, silakan datang membantu lagi). Penulis memang menyebutkan bahwa anaknya tinggal di luar negeri, tetapi di akhir surat ia hanya mengajak mereka untuk datang bermain ({遊|あそ}びに{来|き}てください [silakan datang bermain]), bukan meminta mereka datang lagi untuk membantunya ({手伝|てつだ}いに{来|き}てください)."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "ぜひ{一度|いちど}、みんなで{私|わたし}の{家|いえ}へ{遊|あそ}びに{来|き}てみてください (Silakan coba datang bermain sekali ke rumah saya bersama-sama). Pilihan ini tidak tepat karena kata {一度|いちど} (sekali) mengisyaratkan ajakan kepada orang yang belum pernah datang, padahal anak-anak tersebut sudah datang ke rumahnya minggu lalu."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "__{家|いえ}に{来|き}てくれて、{本当|ほんとう}にありがとうございました__ (Terima kasih banyak sudah datang ke rumah saya). Pilihan ini merangkum maksud utama surat tersebut, yaitu menyampaikan rasa terima kasih dan kebahagiaan atas kunjungan anak-anak SD tersebut ke rumahnya."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:16:35.853Z"
+            }
+          }
         }
       ]
     },
@@ -1760,7 +4151,43 @@
               "answerText": "10,500円"
             }
           ],
-          "questionContextRef": "ctx-dokkai-6"
+          "questionContextRef": "ctx-dokkai-6",
+          "explanation": {
+            "summary": "Pilihan 3 benar karena biaya pemesanan kamar {単身|シングル} (kamar untuk satu orang) lewat internet pada hari Jumat adalah 10.000 yen.",
+            "detail": "Soal ini menanyakan tarif menginap yang harus dibayar oleh Mai berdasarkan tiga kondisi penting, yaitu memesan lewat internet (インターネットで{予約|よやく}するとき = saat memesan lewat internet), memesan kamar {単身|シングル}, dan menginap pada hari {金曜日|きんようび} (Jumat). Pada tabel pemesanan lewat internet, carilah baris {単身|シングル} lalu lihat kolom {金曜日|きんようび}・{土曜日|どようび} (Jumat dan Sabtu). Di pertemuan baris dan kolom tersebut tertera angka 10.000 yen ({１万|いちまん}{円|えん}). Dengan demikian, jawaban yang tepat adalah 10.000 yen.",
+            "translation": "Mai bermaksud menginap sendirian di Hotel Yamano Mori pada hari Jumat minggu ini. Jika memesan kamar single lewat internet, berapakah biayanya?",
+            "keyPoints": [
+              "{情報検索|じょうほうけんさく}",
+              "{予約|よやく}",
+              "{曜日|ようび}"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "{８千|はっせん}{円|えん} (8.000 yen) adalah tarif kamar {単身|シングル} lewat internet untuk hari {日曜日|にちようび} (Minggu) sampai {木曜日|もくようび} (Kamis), bukan hari {金曜日|きんようび}. Angka ini menggoda jika pembaca salah melihat kolom hari."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{８千５百|はっせんごひゃく}{円|えん} (8.500 yen) adalah tarif kamar {単身|シングル} lewat {電話|でんわ} (telepon) untuk hari {日曜日|にちようび} sampai {木曜日|もくようび}. Pilihan ini menggoda jika pembaca salah melihat tabel metode pemesanan dan kolom hari."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "__１{万|まん}{円|えん}__ (10.000 yen) sesuai persis dengan informasi pada tabel pemesanan via internet untuk kamar {単身|シングル} pada hari {金曜日|きんようび}."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "１{万|まん}５{百|ひゃく}{円|えん} (10.500 yen) adalah tarif kamar {単身|シングル} untuk hari {金曜日|きんようび} dan {土曜日|どようび} bila memesan lewat {電話|でんわ}. Angka ini menggoda jika pembaca keliru melihat tabel pemesanan via telepon alih-alih via internet."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:16:44.852Z"
+            }
+          }
         },
         {
           "order": 2,
@@ -1784,7 +4211,42 @@
               "answerText": "ホテルのプールで泳ぐこと"
             }
           ],
-          "questionContextRef": "ctx-dokkai-6"
+          "questionContextRef": "ctx-dokkai-6",
+          "explanation": {
+            "summary": "Teks menyatakan bahwa orang yang menginap di hotel dapat menggunakan kolam renang secara gratis, sehingga berenang di kolam renang hotel tidak memerlukan biaya tambahan.",
+            "detail": "Pertanyaan ini menanyakan hal apa yang dapat dilakukan oleh tamu yang menginap di hotel tanpa membayar uang alias gratis. Ungkapan yang perlu dicari persamaannya di dalam teks adalah makna dari お{金|かね}を{払|はら}わないで (tanpa membayar uang), yaitu {無料|むりょう} (gratis). Dalam teks disebutkan bahwa fasilitas yang berstatus {無料|むりょう} untuk tamu menginap ada dua, yaitu menggunakan internet di kamar dan memakai kolam renang. Di antara empat pilihan yang tersedia, fasilitas kolam renang tercantum pada pilihan 4.",
+            "translation": "Di antara hal-hal berikut, manakah yang dapat dilakukan tanpa membayar uang oleh orang yang menginap di Hotel Yamanomori?",
+            "keyPoints": [
+              "{無料|むりょう}",
+              "〜ないで"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "ツインの{部屋|へや}でもう{一|ひと}つベッドを{借|か}りること (meminjam satu tempat tidur lagi di kamar twin). Dalam wacana tertulis bahwa menambah satu tempat tidur dikenakan biaya 3.000 yen per malam ({一泊|いっぱく} 3,000{円|えん}), jadi tidak gratis."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "ホテルの{食堂|しょくどう}で{朝|あさ}ご{飯|はん}を{食|た}べること (makan sarapan di ruang makan hotel). Dalam wacana disebutkan bahwa sarapan di ruang makan dikenakan biaya 1.000 yen per orang ({一人|ひとり} 1,000{円|えん})."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "ホテルでパソコンを{借|か}りること (menyewa laptop di hotel). Penggunaan internetnya memang gratis, tetapi menyewa laptop di resepsionis dikenakan biaya 1.000 yen per 12 jam (12{時間|じかん} 1,000{円|えん})."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "ホテルのプールで{泳|およ}ぐこと (berenang di kolam renang hotel). Bagian akhir wacana menyatakan bahwa orang yang menginap di hotel dapat menggunakan kolam renang secara gratis (ホテルに{泊|と}まる{人|ひと}は{無料|むりょう}で{使|つか}うことができます)."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "explanation-v2",
+              "generatedAt": "2026-09-23T06:16:48.390Z"
+            }
+          }
         }
       ]
     },

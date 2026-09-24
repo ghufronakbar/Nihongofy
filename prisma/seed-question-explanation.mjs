@@ -77,7 +77,8 @@ function isSameExplanation(stored, incoming) {
     (stored.answerKeyDoubtNote ?? null) === incoming.answerKeyDoubtNote &&
     stored.source === incoming.source &&
     (stored.aiModel ?? null) === incoming.aiModel &&
-    (stored.promptVersion ?? null) === incoming.promptVersion;
+    (stored.promptVersion ?? null) === incoming.promptVersion &&
+    (stored.reviewedAt?.getTime() ?? null) === (incoming.reviewedAt?.getTime() ?? null);
 
   if (!sameScalar) return false;
 
@@ -132,6 +133,7 @@ async function importExplanations({ pkg }) {
                       source: true,
                       aiModel: true,
                       promptVersion: true,
+                      reviewedAt: true,
                       choices: {
                         select: { codeAnswer: true, isCorrect: true, reason: true },
                       },

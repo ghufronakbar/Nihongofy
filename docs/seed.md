@@ -191,6 +191,7 @@ type SeedQuestionExplanation = {
     aiModel?: string | null;
     promptVersion?: string | null;
     generatedAt?: string | null;          // ISO-8601
+    reviewedAt?: string | null;           // ISO-8601, diisi saat kunci sudah diverifikasi ulang
   };
 };
 ```
@@ -447,8 +448,10 @@ dikerjakan user dan idempotent bila dijalankan ulang.
   mengarang pembenaran. Soal bertanda ini dicetak di log dan tersimpan sebagai `answerKeyDoubt`.
 
 Flag yang tersedia: `--file`, `--level`, `--mondai`, `--limit`, `--concurrency`, `--overwrite`,
-`--include-choukai`, `--reasoning-effort minimal|low|medium|high`, dan `--dry-run` (mencetak
-prompt tanpa memanggil model).
+`--only-doubts`, `--only-images`, `--include-choukai`,
+`--reasoning-effort minimal|low|medium|high`, dan `--dry-run` (mencetak prompt tanpa memanggil
+model). `--only-doubts` menyasar ulang soal bertanda `answerKeyDoubt` setelah datanya diperbaiki,
+dan `--only-images` menyasar soal bergambar.
 
 `--reasoning-effort low` sangat menentukan pada model reasoning: pada uji coba,
 satu soal turun dari 119-213 detik (5.000-6.500 token reasoning) menjadi 19-37 detik. Tanpa itu,
@@ -456,8 +459,106 @@ permintaan untuk soal panjang kerap diputus gateway dengan HTTP 524. Flag ini ha
 diisi, karena model non-reasoning menolak permintaan yang memuat parameter tak dikenal.
 
 Environment yang dibutuhkan (lihat `.env.example`): `EXPLANATION_BASE_URL`,
-`EXPLANATION_API_KEY`, `EXPLANATION_MODEL`. Ketiganya hanya dibaca script offline ini dan tidak
-pernah dipakai aplikasi saat runtime.
+`EXPLANATION_API_KEY`, `EXPLANATION_MODEL`, dan `EXPLANATION_VISION_MODEL` (opsional). Semuanya
+hanya dibaca script offline ini dan tidak pernah dipakai aplikasi saat runtime.
+
+### Soal bergambar
+
+Sebagian soal menaruh isinya di gambar: 文脈規定 yang menanyakan jumlah benda, 内容理解 yang
+keempat pilihannya berupa gambar, atau 情報検索 yang bacaannya berupa brosur. Prompt teks biasa
+tidak dapat membacanya, dan tanpa penanganan khusus model akan menulis pembahasan yang
+menyimpulkan dari kunci jawaban — persis kesalahan yang paling sulit terdeteksi karena
+kalimatnya terdengar meyakinkan.
+
+Karena itu gambar kini ikut dikirim sebagai pesan multimodal bila `EXPLANATION_VISION_MODEL`
+diisi. Bila kosong, soal bergambar **dilewati** dan dilaporkan, bukan dijelaskan tanpa melihat
+gambarnya. Prompt juga selalu memberi tahu model bahwa gambar itu ada, supaya ia tidak
+menyimpulkan "tidak ada gambar" padahal gambarnya hanya tidak terkirim.
+
+Catatan: soal 内容理解 yang keempat pilihannya berupa gambar memang menyimpan `answerText`
+kosong dan meletakkan keempat opsinya di dalam satu `questionImage`. Itu format naskah asli,
+bukan data yang hilang, dan `fixture:lint` tidak menandainya selama `questionImage` ada.
+
+## Memeriksa dan Memperbaiki Data Soal
+
+```bash
+npm run fixture:lint                                   # cacat data, deterministik, tanpa model
+npm run explanation:doubts -- --level N5                # kunci yang ditandai meragukan generator
+npm run fixture:repair -- --level N5 --reasoning-effort low
+```
+
+`fixture:lint` hanya melaporkan cacat yang pasti: stem hilang, pilihan kembar, slot 文の組み立て
+tidak utuh, markup rusak, aset yang masih placeholder. Penilaian yang butuh pertimbangan ada di
+`explanation:doubts`, yang membaca penanda `answerKeyDoubt` hasil generator pembahasan.
+
+`fixture:repair` mengerjakan keduanya dalam tiga tahap:
+
+1. **Deterministik** — pembersihan sisa OCR (baris pemisah halaman `--- PAGE 9 ---` /
+   `===== PAGE 10 =====` beserta header naskah ujian yang mengikutinya) dan normalisasi penanda
+   slot 文の組み立て (deretan `＿`, `★` telanjang, dan artefak `[_] [_] [★] [_]` yang terlempar ke
+   ujung kalimat). Tidak memanggil model. Sisa OCR kerap jatuh di tengah kalimat, jadi kedua sisi
+   disambung langsung bila kalimatnya belum selesai dan jeda paragraf dipertahankan bila sudah.
+2. **Perbaikan dengan model** — hanya bagian yang cacat yang diubah; data asli dan kunci resmi
+   dipertahankan. Stem yang hilang ditulis ulang agar kunci yang ada tetap benar, dan soal yang
+   bergantung pada gambar yang tidak tersedia diubah menjadi dapat dijawab dari teks.
+3. **Verifikasi independen** — model mengerjakan soal hasil perbaikan tanpa diberi kunci.
+   Perbaikan hanya ditulis bila jawabannya cocok.
+
+Soal yang cacatnya hanya berupa penanda ragu diperiksa apa adanya lebih dulu. Bila verifikasi
+setuju dengan kunci resmi, datanya tidak disentuh dan penanda ragunya dicabut (`meta.reviewedAt`
+diisi) — tuduhan yang salah tidak akan terus muncul di daftar.
+
+Pembahasan pada soal yang datanya diperbaiki ikut dihapus, karena ditulis di atas data yang
+rusak. Jalankan `npm run gen:explanation` lagi setelah perbaikan selesai.
+
+Flag: `--file`, `--level`, `--limit`, `--dry-run`, `--deterministic-only`, `--reasoning-effort`,
+dan `--keep-explanation`.
+
+## Menyinkronkan Perbaikan Isi Soal ke Database
+
+```bash
+npm run seed:question-content:check   # validasi fixture tanpa menulis
+npm run seed:question-content         # sinkronkan teks soal, pilihan, dan kunci
+```
+
+`seed:test-package` bersifat create-only: paket yang strukturnya sudah cocok di-SKIP, sehingga
+perbaikan teks soal atau kunci jawaban tidak pernah mendarat di database. `--replace-existing`
+bukan jalan keluar — ia menghapus lalu membuat ulang paket sehingga `Question.id` berubah dan
+comment/attempt/practice milik user ikut hilang, dan tetap ditolak bila paket sudah punya attempt.
+
+Script ini hanya melakukan UPDATE pada baris yang sudah ada: `questionText`, `questionImage`,
+`questionAudio`, `questionAnswer`, teks/gambar pilihan, `instruction`, isi `QuestionContext`,
+serta tautan soal ke bacaan (`questionContextRef`). Pasangan context dicari lewat soal yang
+merujuknya, sehingga tidak bergantung pada id database. Struktur paket tidak
+pernah disentuh — bila jumlah item, soal, atau pilihan tidak cocok, paket itu dilaporkan sebagai
+error alih-alih diperbaiki diam-diam.
+
+Bila kunci jawaban berubah, `AttemptAnswer.isCorrect` dan `PracticeAnswer.isCorrect` milik
+jawaban lama ikut dihitung ulang terhadap kunci baru, supaya riwayat dan analitik tidak memakai
+penilaian berdasarkan kunci yang sudah tidak berlaku. Jumlahnya dilaporkan di ringkasan.
+
+Urutan setelah `fixture:repair`:
+
+```bash
+npm run seed:question-content                       # isi soal yang diperbaiki
+npm run gen:explanation -- --level N3                # pembahasan untuk soal yang dihapus pembahasannya
+npm run seed:question-explanation -- --level N3      # pembahasan ke database
+```
+
+## Menghapus Paket
+
+```bash
+npm run test-package:delete -- --file n3-2020-12.json            # dry-run, hanya melaporkan
+npm run test-package:delete -- --file n3-2020-12.json --confirm  # benar-benar menghapus
+```
+
+Menghapus file JSON saja tidak mengeluarkan paketnya dari database — seluruh script seed hanya
+membuat atau memperbarui, tidak pernah menghapus. Tanpa perintah ini, paket yang sudah
+ditinggalkan tetap tampil di aplikasi.
+
+Penghapusan permanen dan merambat ke mondai, soal, pilihan, bacaan, komentar, attempt, serta
+jawaban latihan milik paket itu. Tanpa `--confirm` script hanya melaporkan isi paket. Paket yang
+sudah punya attempt ditolak kecuali ditambah `--force`.
 
 ## Referensi Lain
 
@@ -466,8 +567,14 @@ pernah dipakai aplikasi saat runtime.
   oleh seluruh script di atas.
 - `prisma/seed-question-explanation.mjs` — import pembahasan saja, aman untuk paket yang sudah
   dipakai user.
+- `prisma/seed-question-content.mjs` — sinkronisasi isi soal di tempat, tanpa menghapus baris.
+- `prisma/delete-test-package.mjs` — menghapus satu paket beserta seluruh isinya.
 - `prisma/generate-question-explanation.mjs` + `prisma/explanation-prompt.mjs` — generator
   pembahasan dan prompt-nya.
+- `prisma/fixture-checks.mjs` — definisi cacat data, dipakai bersama lint dan repair.
+- `prisma/lint-test-package-data.mjs`, `prisma/report-explanation-doubts.mjs`,
+  `prisma/repair-test-package-data.mjs` + `prisma/repair-prompt.mjs` — pemeriksaan dan perbaikan
+  data soal.
 - `src/test-package-data/types.ts` — source of truth TypeScript untuk kontrak JSON di atas.
 - `docs/database.md` — aturan schema & markup lengkap (dokumen ini adalah ringkasannya,
   dikhususkan untuk konteks import).
