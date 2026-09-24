@@ -19,7 +19,12 @@ import {
   SEED_DATA_DIR,
   seedTestPackageSchema,
 } from "./test-package-fixture.mjs";
-import { buildUserPrompt, PROMPT_VERSION, SYSTEM_PROMPT } from "./explanation-prompt.mjs";
+import {
+  buildUserPrompt,
+  collectQuestionImages,
+  PROMPT_VERSION,
+  SYSTEM_PROMPT,
+} from "./explanation-prompt.mjs";
 
 const REQUEST_TIMEOUT_MS = 300_000;
 const SDK_MAX_RETRIES = 2;
@@ -32,6 +37,12 @@ const envSchema = z.object({
   EXPLANATION_BASE_URL: z.url(),
   EXPLANATION_API_KEY: z.string().trim().min(1),
   EXPLANATION_MODEL: z.string().trim().min(1),
+  // Opsional. Soal bergambar hanya diproses bila model ini diisi; tanpa itu
+  // soal tersebut dilewati, bukan dijelaskan tanpa melihat gambarnya.
+  EXPLANATION_VISION_MODEL: z.preprocess(
+    (value) => (value === "" ? undefined : value),
+    z.string().trim().min(1).optional(),
+  ),
 });
 
 function log(message) {
@@ -46,6 +57,8 @@ function parseArguments(argv) {
     limit: Infinity,
     concurrency: 1,
     overwrite: false,
+    onlyDoubts: false,
+    onlyImages: false,
     includeChoukai: false,
     dryRun: false,
     reasoningEffort: null,
@@ -60,6 +73,14 @@ function parseArguments(argv) {
 
     if (argument === "--overwrite") {
       options.overwrite = true;
+      continue;
+    }
+    if (argument === "--only-doubts") {
+      options.onlyDoubts = true;
+      continue;
+    }
+    if (argument === "--only-images") {
+      options.onlyImages = true;
       continue;
     }
     if (argument === "--include-choukai") {
@@ -189,11 +210,29 @@ function markupProblems(text) {
   const closeBraces = (text.match(/\}/g) ?? []).length;
   const validFurigana = (text.match(/\{[^{}|]+\|[^{}|]+\}/g) ?? []).length;
   if (openBraces !== closeBraces || openBraces !== validFurigana) {
-    problems.push("format furigana {漢字|かんじ} tidak lengkap");
+    // Pesan yang menunjuk potongan bermasalah, bukan sekadar menyatakan formatnya
+    // salah: tanpa itu percobaan ulang kerap mengulangi kesalahan yang sama.
+    const broken = (text.match(/\{[^{}]*\}/g) ?? []).filter(
+      (group) => !/^\{[^{}|]+\|[^{}|]+\}$/.test(group),
+    );
+    const detail =
+      broken.length > 0
+        ? `perbaiki menjadi {漢字|かんじ}: ${broken.slice(0, 3).join(", ")}`
+        : `kurung kurawal tidak berpasangan (${openBraces} buka, ${closeBraces} tutup)`;
+    problems.push(`format furigana salah — ${detail}`);
   }
 
   // Kanji di luar blok furigana tidak terbaca pelajar level bawah. Aturan ini
   // yang paling sering dilanggar model saat menyebut istilah seperti 訓読み.
+  const redundant = [...text.matchAll(/\{([^{}|]+)\|[^{}|]+\}/g)]
+    .filter((m) => !/[\u4E00-\u9FFF]/.test(m[1]))
+    .map((m) => m[0]);
+  if (redundant.length > 0) {
+    problems.push(
+      `furigana hanya untuk kanji, hapus dari: ${[...new Set(redundant)].slice(0, 4).join(", ")}`,
+    );
+  }
+
   const bareKanji = [
     ...new Set(text.replace(/\{[^{}|]+\|[^{}|]+\}/g, "").match(/[\u4E00-\u9FFF]/g) ?? []),
   ];
@@ -305,11 +344,24 @@ async function generateExplanation({
   item,
   question,
   context,
+  images = [],
+  hasVision = false,
 }) {
-  const userPrompt = buildUserPrompt({ pkg, item, question, context });
+  const userPrompt = buildUserPrompt({ pkg, item, question, context, images, hasVision });
+
+  // Gambar dikirim sebagai bagian pesan multimodal; tanpa vision, prompt tetap
+  // teks biasa dan sudah memuat peringatan bahwa gambarnya tidak terlihat.
+  const userContent =
+    hasVision && images.length > 0
+      ? [
+          { type: "text", text: userPrompt },
+          ...images.map((image) => ({ type: "image_url", image_url: { url: image.url } })),
+        ]
+      : userPrompt;
+
   const messages = [
     { role: "system", content: SYSTEM_PROMPT },
-    { role: "user", content: userPrompt },
+    { role: "user", content: userContent },
   ];
 
   let lastProblems = [];
@@ -369,22 +421,46 @@ async function listFixtureFiles(selectedFile) {
 function selectQuestions(pkg, options) {
   const contexts = new Map((pkg.questionContexts ?? []).map((context) => [context.id, context]));
   const tasks = [];
+  const withoutContent = [];
 
   for (const item of pkg.testPackageItems) {
     if (!options.includeChoukai && item.section === "CHOUKAI") continue;
     if (options.mondai && item.mondaiType !== options.mondai) continue;
 
     for (const question of item.questions) {
-      if (question.explanation && !options.overwrite) continue;
-      tasks.push({
-        item,
-        question,
-        context: question.questionContextRef ? contexts.get(question.questionContextRef) : null,
-      });
+      // Menyasar ulang soal yang kuncinya ditandai meragukan: berguna setelah
+      // data soalnya diperbaiki, karena --limit menghitung dari soal pertama
+      // sehingga tidak bisa menunjuk satu nomor di tengah mondai.
+      if (options.onlyImages) {
+        // penyaringan gambar sudah dilakukan di atas; abaikan status pembahasan
+      } else if (options.onlyDoubts) {
+        const explanation = question.explanation;
+        if (!explanation || typeof explanation === "string" || !explanation.answerKeyDoubt) continue;
+      } else if (question.explanation && !options.overwrite) {
+        continue;
+      }
+      const context = question.questionContextRef
+        ? contexts.get(question.questionContextRef)
+        : null;
+
+      // Menyasar ulang soal bergambar saja: berguna setelah model vision
+      // tersedia, karena pembahasan lama ditulis tanpa melihat gambarnya.
+      if (options.onlyImages && collectQuestionImages({ question, context }).length === 0) continue;
+
+      // Tanpa stem maupun bacaan, model tidak punya bahan apa pun: yang keluar
+      // hanyalah terkaan dari empat pilihan. Gambar tidak dihitung sebagai
+      // bahan karena model ini hanya membaca teks. Soal seperti ini dilewati
+      // dan dilaporkan sebagai cacat data, bukan dibuatkan pembahasan karangan.
+      if (!(question.questionText ?? "").trim() && !(context?.storyText ?? "").trim()) {
+        withoutContent.push(`${item.mondaiType}#${question.order}`);
+        continue;
+      }
+
+      tasks.push({ item, question, context });
     }
   }
 
-  return tasks;
+  return { tasks, withoutContent };
 }
 
 async function writeFixture(file, pkg) {
@@ -396,7 +472,13 @@ async function writeFixture(file, pkg) {
     throw new Error(`fixture tidak valid setelah generate, file tidak ditulis: ${issues}`);
   }
 
-  await fs.writeFile(path.join(SEED_DATA_DIR, file), `${JSON.stringify(pkg, null, 2)}\n`, "utf-8");
+  // Tulis ke file sementara lalu rename: rename dalam satu direktori bersifat
+  // atomik, sehingga proses yang dihentikan di tengah penulisan tidak pernah
+  // meninggalkan fixture yang terpotong.
+  const target = path.join(SEED_DATA_DIR, file);
+  const temporary = `${target}.tmp`;
+  await fs.writeFile(temporary, `${JSON.stringify(pkg, null, 2)}\n`, "utf-8");
+  await fs.rename(temporary, target);
 }
 
 // Pool sederhana: beberapa permintaan berjalan bersamaan, tetapi penulisan file
@@ -416,8 +498,11 @@ async function main() {
   const options = parseArguments(process.argv.slice(2));
   const files = await listFixtureFiles(options.selectedFile);
 
+  // Saat dry-run environment tetap dibaca bila tersedia, supaya prompt yang
+  // dicetak sama persis dengan yang akan dikirim — termasuk soal bergambar yang
+  // perlakuannya bergantung pada ada tidaknya model vision.
   const env = options.dryRun
-    ? null
+    ? (envSchema.safeParse(process.env).data ?? null)
     : (() => {
         const parsed = envSchema.safeParse(process.env);
         if (!parsed.success) {
@@ -432,6 +517,8 @@ async function main() {
     generated: 0,
     failed: 0,
     skipped: 0,
+    withoutContent: 0,
+    needVision: 0,
     answerKeyDoubts: [],
     inputTokens: 0,
     outputTokens: 0,
@@ -447,10 +534,26 @@ async function main() {
     const pkg = JSON.parse(raw);
     if (options.level && pkg.jlptLevel !== options.level) continue;
 
-    const tasks = selectQuestions(pkg, options);
+    const { tasks, withoutContent } = selectQuestions(pkg, options);
+
+    if (withoutContent.length > 0) {
+      summary.withoutContent += withoutContent.length;
+      log(
+        `SKIP ${file} - ${withoutContent.length} soal tanpa stem dan tanpa bacaan: ` +
+          `${withoutContent.join(", ")}`,
+      );
+    }
+
     if (tasks.length === 0) continue;
 
-    log(`FILE ${file} (${pkg.name}) - ${tasks.length} soal tanpa pembahasan`);
+    const scope = options.onlyImages
+      ? "soal bergambar"
+      : options.onlyDoubts
+        ? "soal bertanda kunci meragukan"
+        : options.overwrite
+          ? "soal akan ditulis ulang"
+          : "soal tanpa pembahasan";
+    log(`FILE ${file} (${pkg.name}) - ${tasks.length} ${scope}`);
 
     // Dikelompokkan per mondai supaya file ditulis di batas yang rapi dan
     // proses bisa dihentikan kapan saja tanpa kehilangan hasil.
@@ -469,23 +572,43 @@ async function main() {
 
       await runPool(batch, options.concurrency, async ({ item, question, context }) => {
         const label = `${file.replace(".json", "")} ${mondaiType}#${question.order}`;
+        const images = collectQuestionImages({ question, context });
+        const visionModel = env?.EXPLANATION_VISION_MODEL;
+        const hasVision = images.length > 0 && Boolean(visionModel);
 
         if (options.dryRun) {
-          log(`DRY-RUN ${label}\n--- prompt ---\n${buildUserPrompt({ pkg, item, question, context })}\n---`);
+          log(
+            `DRY-RUN ${label}\n--- prompt ---\n` +
+              `${buildUserPrompt({ pkg, item, question, context, images, hasVision })}\n---`,
+          );
           summary.skipped += 1;
           return;
         }
 
+        // Tanpa model vision, soal bergambar dilewati: pembahasannya hanya akan
+        // menyimpulkan dari kunci jawaban, persis kesalahan yang ingin dihindari.
+        if (images.length > 0 && !visionModel) {
+          summary.needVision += 1;
+          log(
+            `SKIP ${label} - punya ${images.length} gambar (${images.map((i) => i.label).join(", ")}); ` +
+              "isi EXPLANATION_VISION_MODEL untuk memprosesnya",
+          );
+          return;
+        }
+
+        const model = hasVision ? visionModel : env.EXPLANATION_MODEL;
         const startedAt = Date.now();
         try {
           const result = await generateExplanation({
             client,
-            model: env.EXPLANATION_MODEL,
+            model,
             reasoningEffort: options.reasoningEffort,
             pkg,
             item,
             question,
             context,
+            images,
+            hasVision,
           });
 
           summary.inputTokens += result.usage.input;
@@ -501,7 +624,7 @@ async function main() {
             ...result.explanation,
             meta: {
               source: "AI",
-              aiModel: env.EXPLANATION_MODEL,
+              aiModel: model,
               promptVersion: PROMPT_VERSION,
               generatedAt: new Date().toISOString(),
             },
@@ -517,7 +640,8 @@ async function main() {
           const seconds = ((Date.now() - startedAt) / 1000).toFixed(1);
           log(
             `OK ${label} - ${seconds}s, ${result.attempts} percobaan, ` +
-              `${result.usage.input}/${result.usage.output} token`,
+              `${result.usage.input}/${result.usage.output} token` +
+              (hasVision ? ` [vision: ${images.length} gambar]` : ""),
           );
         } catch (error) {
           summary.failed += 1;
@@ -535,6 +659,8 @@ async function main() {
 
   log(
     `DONE - ${summary.generated} pembahasan dibuat, ${summary.failed} gagal, ` +
+      `${summary.withoutContent} dilewati karena datanya tidak lengkap, ` +
+      `${summary.needVision} menunggu model vision, ` +
       `${summary.answerKeyDoubts.length} kunci diragukan, ` +
       `${summary.inputTokens}/${summary.outputTokens} token`,
   );

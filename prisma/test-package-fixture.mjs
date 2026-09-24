@@ -69,6 +69,7 @@ const explanationObjectSchema = z
         aiModel: optionalNullableString,
         promptVersion: optionalNullableString,
         generatedAt: z.iso.datetime({ offset: true }).nullable().optional(),
+        reviewedAt: z.iso.datetime({ offset: true }).nullable().optional(),
       })
       .strict()
       .optional(),
@@ -401,6 +402,7 @@ export function normalizeExplanation(question) {
       aiModel: null,
       promptVersion: null,
       generatedAt: null,
+      reviewedAt: null,
       choices: null,
     };
   }
@@ -417,6 +419,7 @@ export function normalizeExplanation(question) {
     aiModel: meta.aiModel ?? null,
     promptVersion: meta.promptVersion ?? null,
     generatedAt: meta.generatedAt ? new Date(meta.generatedAt) : null,
+    reviewedAt: meta.reviewedAt ? new Date(meta.reviewedAt) : null,
     choices: explanation.choices
       ? explanation.choices.map((choice) => ({
           codeAnswer: choice.codeAnswer,

@@ -28,6 +28,8 @@ export type SeedQuestionExplanation = {
     aiModel?: string | null;
     promptVersion?: string | null;
     generatedAt?: string | null; // ISO-8601
+    // Diisi saat kunci jawaban sudah diverifikasi ulang dan penanda ragu dicabut.
+    reviewedAt?: string | null; // ISO-8601
   };
 };
 

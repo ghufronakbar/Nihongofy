@@ -40,7 +40,7 @@ export const SYSTEM_PROMPT = `Anda pengajar JLPT berpengalaman yang menulis pemb
 Tulis pembahasan dalam BAHASA INDONESIA. Setiap kali mengutip kata atau kalimat Jepang, tulis teks Jepangnya lalu terjemahannya dalam kurung.
 
 ATURAN PENULISAN TEKS JEPANG (wajib, tidak boleh dilanggar):
-- Semua kanji yang Anda tulis harus memakai furigana dengan format {漢字|かんじ}. Contoh: {勉強|べんきょう}する, {会社|かいしゃ}. Ini berlaku juga untuk istilah teknis: tulis {訓読み|くんよみ}, {音読み|おんよみ}, {促音|そくおん}, {連濁|れんだく} — bukan 訓読み atau 音読み tanpa furigana. Tidak boleh ada satu pun kanji di luar format {漢字|かんじ}.
+- Semua kanji yang Anda tulis harus memakai furigana dengan format {漢字|かんじ}. Contoh: {勉強|べんきょう}する, {会社|かいしゃ}. Ini berlaku juga untuk istilah teknis: tulis {訓読み|くんよみ}, {音読み|おんよみ}, {促音|そくおん}, {連濁|れんだく} — bukan 訓読み atau 音読み tanpa furigana. Tidak boleh ada satu pun kanji di luar format {漢字|かんじ}. Sebaliknya, JANGAN memasang furigana pada teks yang tidak mengandung kanji: tulis がある bukan {が|が}ある, エサ bukan {エサ|えさ}, dan jangan pernah membungkus kata bahasa Indonesia atau huruf Latin dengan furigana.
 - Untuk menandai bagian yang sedang dibahas, bungkus dengan garis bawah: __teks__. Boleh berisi furigana: __{勉強|べんきょう}する__.
 - [_] dan [★] adalah slot soal 文の組み立て. Tulis apa adanya bila perlu dirujuk, jangan diisi.
 - DILARANG memakai HTML, markdown (**tebal**, # judul, - daftar), emoji, tabel, atau kutipan berblok. Karakter __ dan { | } hanya boleh dipakai untuk markup di atas.
@@ -68,7 +68,25 @@ PILIHAN 4: <BENAR atau SALAH> - <alasan>
 KUNCI_MERAGUKAN: <ya atau tidak>
 CATATAN_KUNCI: <alasan bila ya, atau - bila tidak>`;
 
-export function buildUserPrompt({ pkg, item, question, context }) {
+// Gambar yang menempel pada satu soal. Dikumpulkan terpisah karena model teks
+// tidak dapat membacanya: keberadaannya tetap harus diberitahukan supaya model
+// tidak menyimpulkan "tidak ada gambar" lalu berargumen dari kunci jawaban.
+export function collectQuestionImages({ question, context }) {
+  const images = [];
+
+  if (context?.storyImage) images.push({ label: "bacaan", url: context.storyImage });
+  if (question.questionImage) images.push({ label: "soal", url: question.questionImage });
+  for (const choice of [...question.questionChoices].sort((a, b) => a.codeAnswer - b.codeAnswer)) {
+    if (choice.answerImage) {
+      images.push({ label: `pilihan ${choice.codeAnswer}`, url: choice.answerImage });
+    }
+  }
+
+  // Placeholder dari pipeline ekstraksi bukan gambar sungguhan.
+  return images.filter(({ url }) => !url.startsWith("TODO"));
+}
+
+export function buildUserPrompt({ pkg, item, question, context, images = [], hasVision = false }) {
   const lines = [
     `Level: JLPT ${pkg.jlptLevel}`,
     `Paket: ${pkg.name}`,
@@ -89,6 +107,16 @@ export function buildUserPrompt({ pkg, item, question, context }) {
   }
 
   lines.push("", `Kunci jawaban resmi: ${question.questionAnswer}`);
+
+  if (images.length > 0) {
+    const daftar = images.map((image) => image.label).join(", ");
+    lines.push(
+      "",
+      hasVision
+        ? `Soal ini disertai gambar (${daftar}), dilampirkan bersama pesan ini. Baca gambarnya dan jadikan isinya dasar pembahasan.`
+        : `Soal ini disertai gambar (${daftar}), tetapi gambar itu TIDAK dapat Anda lihat. Jangan menyimpulkan isinya dan jangan berargumen dari kunci jawaban seolah-olah Anda melihatnya. Katakan terus terang di RINGKASAN bahwa pembahasan bergantung pada gambar yang tidak tersedia.`,
+    );
+  }
 
   if (item.mondaiType === "MOJI_GOI_READ_KANJI") {
     lines.push(
