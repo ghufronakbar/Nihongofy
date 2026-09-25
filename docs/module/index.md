@@ -25,7 +25,7 @@ Folder ini mendokumentasikan kondisi aplikasi berdasarkan kode, fixture, dan dat
 | [Shared study utilities](study.md) | Selesai sederhana | Saat ini hanya menyediakan TTS browser bersama untuk kana dan flashcard. |
 | [Conversation dan speaking](conversation-speaking.md) | Versi awal fungsional | Teks dan suara berjalan end-to-end dengan session tersimpan dan provider mock/OpenAI; quota belum ditegakkan, moderation dan retention belum ada. Rancangan: [conversation-speaking-design.md](conversation-speaking-design.md); aset karakter: [conversation-persona-assets.md](conversation-persona-assets.md). |
 | [Content data dan seeding](content-data.md) | Infrastruktur aktif, sebagian punya UI | Import tervalidasi tersedia lewat CLI maupun `/admin`; bank soal dan artikel berbagi jalur kode antara keduanya. Pembahasan dan deck bawaan masih CLI saja. |
-| [Admin dashboard](admin.md) | Fondasi, bank soal, artikel, dan moderasi selesai | Role statis `USER`/`ADMIN`, guard, overview, pengelolaan bank soal (import fixture + editor soal), CMS artikel, dan moderasi diskusi publik aktif; pembahasan, deck, user, dan conversation masih placeholder. |
+| [Admin dashboard](admin.md) | Fondasi, bank soal, pembahasan, artikel, dan moderasi selesai | Role statis `USER`/`ADMIN`, guard, overview, pengelolaan bank soal, antrean + editor + approval pembahasan, CMS artikel, dan moderasi diskusi publik aktif; deck, user, dan conversation masih placeholder. |
 
 ## Feature Flag
 

@@ -2,15 +2,16 @@
 
 ## Status Aktual
 
-**Fondasi, bank soal, CMS artikel, dan moderasi diskusi selesai (Tahap 1, 2, 4-artikel, dan 5).**
-Yang sudah berjalan: role statis `USER`/`ADMIN`, `requireAdmin()`, shell `/admin` dengan sidebar
-sendiri, overview yang membaca kondisi database secara langsung, pengelolaan bank soal termasuk
-import fixture dan editor soal, CRUD artikel dengan workflow draft/published/archived, dan
-antrean moderasi diskusi publik dengan takedown.
+**Fondasi, bank soal, pembahasan, CMS artikel, dan moderasi diskusi selesai (Tahap 1, 2, 3,
+4-artikel, dan 5).** Yang sudah berjalan: role statis `USER`/`ADMIN`, `requireAdmin()`, shell
+`/admin` dengan sidebar sendiri, overview yang membaca kondisi database secara langsung,
+pengelolaan bank soal termasuk import fixture dan editor soal, antrean dan editor pembahasan
+dengan alur persetujuan, CRUD artikel dengan workflow draft/published/archived, dan antrean
+moderasi diskusi publik dengan takedown.
 
-Yang belum: pembahasan, deck bawaan, user, conversation, dan operasional — masih berupa halaman
-placeholder yang menyebut tahapnya. Di dalam bank soal, yang belum ada adalah uploader media dan
-editor `QuestionContext`.
+Yang belum: deck bawaan, user, conversation, dan operasional — masih berupa halaman placeholder
+yang menyebut tahapnya. Di dalam bank soal, yang belum ada adalah uploader media dan editor
+`QuestionContext`.
 
 Operasi konten yang belum punya layar (pembahasan, deck bawaan) **masih dijalankan lewat script
 CLI** di `prisma/`. Untuk bank soal dan artikel, UI dan CLI kini berbagi jalur kode yang sama
@@ -53,6 +54,7 @@ dapat mengimpor TypeScript. Kedua salinannya diberi komentar silang.
 | Moderasi diskusi | `src/features/admin/moderation/`, `src/app/admin/moderation/` |
 | `QuestionComment.deletedById` | migration `20260925180000_comment_deleted_by` |
 | Bank soal | `src/features/admin/test-package/`, `src/app/admin/test-package/`, `src/app/admin/question/` |
+| Pembahasan | `src/features/admin/explanation/`, `src/app/admin/explanation/` |
 | Kontrak fixture dan jalur import bersama | `prisma/test-package-contract.mjs`, `prisma/import-test-package.mjs` |
 
 ## Prasyarat: Role Statis
@@ -129,8 +131,8 @@ area user.
 | `/admin/test-package/[id]` | Detail paket: mondai, soal, context | selesai |
 | `/admin/test-package/import` | Import fixture JSON | selesai |
 | `/admin/question/[id]` | Editor satu soal | selesai |
-| `/admin/explanation` | Antrean pembahasan: belum ada, belum direview, `answerKeyDoubt` | Tahap 3 |
-| `/admin/explanation/[questionId]` | Editor dan approval pembahasan | Tahap 3 |
+| `/admin/explanation` | Antrean pembahasan: belum ada, belum direview, `answerKeyDoubt` | selesai |
+| `/admin/explanation/[questionId]` | Editor dan approval pembahasan | selesai |
 | `/admin/article` | Daftar artikel | selesai |
 | `/admin/article/[id]` | Editor artikel | selesai |
 | `/admin/article/new` | Artikel baru | selesai |
@@ -192,15 +194,22 @@ massal — jauh membaik dari 20 soal saat audit awal. Yang belum ada justru sisi
 **3.380 pembahasan bersumber AI dan belum satu pun direview manusia** (`reviewedAt` kosong),
 sementara copy di `/test-package` sudah menjanjikan "pembahasan lengkap".
 
-- **Trigger generate** per paket atau per mondai (`npm run gen:explanation`) dengan progress.
-  Catatan operasional: model reasoning butuh 2–4 menit per soal, jadi ini pekerjaan background,
-  bukan request-response.
+- **Pembuatan pembahasan tetap di CLI, dan itu bukan kekurangan yang akan ditutup.**
+  `gen:explanation` membaca dan menulis file fixture di `src/test-package-data/` dan tidak
+  menyentuh database sama sekali, sehingga hasilnya harus ikut masuk repository. Menjalankannya
+  dari aplikasi ter-deploy mustahil: filesystem Vercel read-only dan ephemeral. Layar antrean
+  karena itu menampilkan perintah yang perlu dijalankan beserta paket mana yang paling
+  menyisakan pekerjaan, bukan tombol yang tidak mungkin bekerja.
 - **Editor dan approval** — `summary`, `detail`, `translation`, `keyPoints`, dan alasan per
   pilihan. Approval mengisi `reviewedAt` dan mengubah `source` dari `AI` ke `HUMAN`. Kedua
   kolom itu sudah ada di schema dan sampai sekarang tidak pernah terisi.
-- **Antrean `answerKeyDoubt`** — layar khusus soal yang ditandai generator sebagai kunci
-  jawaban meragukan, beserta `answerKeyDoubtNote`. Kolomnya sudah ada dan sudah di-index
-  (`@@index([answerKeyDoubt])`); yang belum ada hanya UI-nya.
+- **Antrean `answerKeyDoubt`** — soal yang ditandai generator sebagai kunci jawaban meragukan,
+  beserta `answerKeyDoubtNote`. Persetujuan ditolak selama penanda ini aktif. Mengubah kunci
+  jawabannya sendiri tetap dilakukan di editor soal, supaya perubahan data soal tidak
+  tersembunyi di dalam layar pembahasan.
+- **Antrean `missing` menyebut komposisinya.** Per 25 September 2026 seluruh 1.417 soal tanpa
+  pembahasan adalah CHOUKAI: generator melewatinya karena fixture hanya menyimpan URL audio
+  tanpa transkrip. Sisa itu tertahan transkripsi, bukan kapasitas review.
 
 ### 4. Artikel
 

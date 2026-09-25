@@ -567,16 +567,31 @@ tahap lain, dan tahap 2–3 menutup gap konten yang paling menyakitkan bila scop
 
 ### Tahap 3 — Pembahasan Soal
 
-- [ ] `/admin/explanation` — antrean: belum ada pembahasan, `source = AI` dengan `reviewedAt`
-  null, dan `answerKeyDoubt = true`
-- [ ] Trigger `npm run gen:explanation` per paket/mondai dari UI sebagai job background
-  (model reasoning 2–4 menit per soal — tidak boleh request-response)
-- [ ] `/admin/explanation/[questionId]` — editor `summary`, `detail`, `translation`, `keyPoints`,
-  dan alasan per pilihan
-- [ ] Approval mengisi `reviewedAt` dan mengubah `source` `AI` → `HUMAN` (dua kolom yang sudah ada
-  di schema dan belum pernah terisi)
-- [ ] Layar `answerKeyDoubt` menampilkan `answerKeyDoubtNote` dan menautkan ke editor soal supaya
-  kunci jawaban yang salah ketik bisa langsung diperbaiki
+- [x] `/admin/explanation` — empat antrean: `missing`, `unreviewed` (`source = AI` dan
+  `reviewedAt` null), `doubt` (`answerKeyDoubt`), dan `reviewed`. Ada ringkasan cakupan per paket
+  supaya operator tahu file fixture mana yang perlu digarap
+- [x] **Dibatalkan — tidak bisa dibangun seperti yang direncanakan.** `gen:explanation` membaca
+  dan menulis file fixture di `src/test-package-data/` dan tidak menyentuh database sama sekali,
+  jadi hasilnya harus ikut masuk repository. Menjalankannya dari aplikasi ter-deploy mustahil:
+  filesystem Vercel read-only dan ephemeral. Layar antrean menampilkan perintah CLI yang perlu
+  dijalankan, bukan tombol yang tidak mungkin bekerja
+- [x] `/admin/explanation/[questionId]` — editor `summary`, `detail`, `translation`, `keyPoints`,
+  dan alasan per pilihan, dengan soal + pilihan + kunci ditampilkan sebagai konteks dan tombol
+  "Berikutnya" untuk bergerak di dalam antrean yang sama
+- [x] Alasan per pilihan wajib empat atau nol, mengikuti aturan fixture. `isCorrect`
+  didenormalisasi dari kunci jawaban saat menulis, sama seperti seed
+- [x] Approval mengisi `reviewedAt` dan menaikkan `source` `AI` → `HUMAN`. `IMPORTED` dibiarkan
+  karena itu provenance. Menyimpan tidak sama dengan menyetujui, dan UI menyatakannya
+- [x] Approval ditolak selama `answerKeyDoubt` masih aktif — menyetujui pembahasan atas kunci yang
+  belum diperiksa berarti mengesahkan yang belum ditinjau
+- [x] "Batalkan persetujuan" mengosongkan `reviewedAt` tetapi tidak mengembalikan `source` ke AI:
+  teksnya sudah pernah dilihat dan mungkin disunting manusia
+- [x] Layar `answerKeyDoubt` menampilkan `answerKeyDoubtNote` dan menautkan ke editor soal. Aksi
+  "kunci sudah diperiksa" menutup penandanya; mengubah kunci jawabannya sendiri tetap di editor
+  soal, supaya perubahan data soal tidak tersembunyi di layar pembahasan
+- [x] Antrean `missing` memberi tahu berapa banyak sisanya CHOUKAI. Per 25 September 2026
+  **seluruh 1.417 soal tanpa pembahasan adalah CHOUKAI** — tertahan transkripsi audio, bukan
+  kapasitas review, jadi mengejarnya lewat layar ini tidak akan menggerakkan angkanya
 
 ### Tahap 4 — Konten Lain
 
