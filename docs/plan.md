@@ -707,6 +707,56 @@ satu-satunya konten buatan user yang terlihat publik, termasuk oleh guest.
 - [ ] Unit test minimal untuk aksi destruktif: import paket, hapus paket, takedown komentar
 - [ ] `npm run verify` lulus
 
+## Migrasi Storage — Cloudinary → Cloudflare R2 (S3-compatible)
+
+Ruang lingkup: **uploader user saja** (avatar profil dan lampiran gambar komentar). Media bank soal
+di `src/test-package-data/` tetap memakai URL Cloudinary read-only; migrasi aset tersebut belum
+dikerjakan. Detail operasional ada di `docs/operations/storage.md`.
+
+- [x] Install `@aws-sdk/client-s3` + `@aws-sdk/s3-request-presigner`, copot package `cloudinary`
+- [x] Env `CLOUDINARY_*` diganti `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`,
+  `R2_BUCKET`, `R2_PUBLIC_BASE_URL` di `src/constants/index.ts`, `.env.example`, dan
+  `.github/workflows/quality.yml`
+- [x] `src/constants/storage.ts` — batas ukuran, dimensi, dan content-type yang dipakai bersama
+  client dan server (tidak boleh dari `@/constants` yang mem-parse `process.env`)
+- [x] `src/lib/r2.ts` menggantikan `src/lib/cloudinary.ts`: presign PUT, HeadObject, DeleteObject
+- [x] `src/lib/storage-keys.ts` — pola object key dan parser header WebP, bebas env agar bisa diuji
+- [x] Presigned PUT mengikat `content-type` **dan** `content-length` lewat `signableHeaders`
+  (presigner S3 menandai content-type unsignable secara default), sehingga R2 sendiri yang menolak
+  tipe/ukuran di luar batas — batas tidak lagi bergantung pada validasi client
+- [x] Avatar di-crop tengah dan di-resize ke 512x512 WebP di browser via Canvas, pengganti
+  `c_fill,g_auto,h_512,w_512` milik Cloudinary yang tidak ada padanannya di R2
+- [x] Verifikasi avatar server-side tanpa Admin API: HeadObject untuk tipe dan ukuran, lalu 64 byte
+  pertama dibaca untuk memastikan dimensi benar-benar 512x512
+- [x] Action `getAvatarUploadSignatureAction` → `createAvatarUploadAction`, dan
+  `getCommentImageUploadSignatureAction` → `createCommentImageUploadAction`, keduanya divalidasi zod
+- [x] `src/app/api/cloudinary/signature/route.ts` dihapus — duplikat server action dan tidak punya
+  pemanggil
+- [x] Redis sorted set pending avatar pindah key ke `{REDIS_PREFIX}:r2:pending-avatars`
+- [x] Aset lama tetap dibaca: URL Cloudinary diterima saat komentar disunting, dan `avatarPublicId`
+  warisan dilewati saat penghapusan (`destroyManagedAvatar` → `"skipped"`)
+
+### Bug yang ikut diperbaiki
+
+- [x] `isManagedAvatarPublicId(publicId)` tanpa `userId` selalu `false` karena sisa string masih
+  memuat segmen `{userId}/`. Akibatnya `destroyManagedAvatar` selalu melempar dan
+  `scheduleAvatarCleanup` selalu keluar lebih awal — penghapusan avatar lama dan cleanup orphan
+  tidak pernah benar-benar jalan. Diganti pola regex penuh yang mencocokkan segmen user
+- [x] Server menolak `commentImages` yang bukan hasil upload user tersebut; sebelumnya schema hanya
+  memeriksa bentuk URL sehingga host mana pun bisa disimpan ke komentar
+- [x] Uploader multi-file memakai snapshot `value` lama di dalam loop sehingga upload berurutan
+  saling menimpa; hasil kini diakumulasi ke daftar lokal
+
+### Verifikasi
+
+- [x] `npm run lint`, `npm run typecheck`, `npm run test` (236 test, termasuk 12 test baru untuk
+  parser header WebP dan pola object key)
+- [ ] `npm run build` — butuh kredensial R2 asli di `.env`
+- [ ] Uji manual di browser: upload avatar, ganti avatar (file lama terhapus dari bucket), upload
+  beberapa lampiran komentar sekaligus, dan sunting komentar lama yang gambarnya masih di Cloudinary
+- [ ] CORS bucket R2 dipasang untuk origin produksi dan `http://localhost:3000`
+- [ ] Env R2 diisi di Vercel (production/preview/development)
+
 ## Fase 9 — Verifikasi & Polish
 
 - [ ] `npm run build` setelah tiap perubahan struktural/server action/caching

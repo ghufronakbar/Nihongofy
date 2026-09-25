@@ -7,12 +7,12 @@ import { redirect } from "next/navigation";
 import { BCRYPT_COST_FACTOR } from "@/constants";
 import { CACHE_KEYS, CACHE_TAGS } from "@/constants/cache-key";
 import {
-  createSignedAvatarUploadParams,
+  createAvatarUpload,
   destroyManagedAvatar,
   scheduleAvatarCleanup,
   unscheduleAvatarCleanup,
   verifyManagedAvatar,
-} from "@/lib/cloudinary";
+} from "@/lib/r2";
 import {
   createSession,
   getSession,
@@ -31,10 +31,12 @@ import {
 } from "@/lib/activity-metrics";
 import {
   ChangePasswordSchema,
+  CreateAvatarUploadSchema,
   DisconnectGoogleSchema,
   SetPasswordSchema,
   UpdateProfileSchema,
   type ChangePasswordInput,
+  type CreateAvatarUploadInput,
   type DisconnectGoogleInput,
   type SetPasswordInput,
   type UpdateProfileInput,
@@ -202,15 +204,15 @@ export async function updateProfileAction(
       try {
         const verifiedAvatar = await verifyManagedAvatar({
           userId: session.userId,
-          publicId: values.avatarPublicId,
-          secureUrl: values.avatarUrl,
+          key: values.avatarPublicId,
+          url: values.avatarUrl,
         });
         if (!verifiedAvatar) {
           return { ok: false, message: "Avatar tidak dapat diverifikasi sebagai upload akun ini." };
         }
         avatar = {
           avatarUrl: verifiedAvatar.url,
-          avatarPublicId: verifiedAvatar.publicId,
+          avatarPublicId: verifiedAvatar.key,
           avatarFormat: verifiedAvatar.format,
           avatarBytes: verifiedAvatar.bytes,
         };
@@ -274,11 +276,25 @@ export async function updateProfileAction(
   return { ok: true, message: "Profil berhasil diperbarui.", values };
 }
 
-export async function getAvatarUploadSignatureAction() {
+/**
+ * Mengembalikan presigned PUT URL berumur pendek. Browser mengunggah avatar
+ * langsung ke R2; file tidak pernah melewati server dan kredensial R2 tidak
+ * pernah sampai ke client. Ukuran ikut ditandatangani sehingga R2 menolak body
+ * yang lebih besar dari yang dideklarasikan.
+ */
+export async function createAvatarUploadAction(input: CreateAvatarUploadInput) {
   const session = await getSession();
   if (!session) throw new Error("Unauthorized");
 
-  return createSignedAvatarUploadParams(session.userId);
+  const validated = CreateAvatarUploadSchema.safeParse(input);
+  if (!validated.success) {
+    throw new Error(validated.error.issues[0]?.message ?? "Permintaan upload tidak valid.");
+  }
+
+  return createAvatarUpload({
+    userId: session.userId,
+    byteLength: validated.data.byteLength,
+  });
 }
 
 export async function changePasswordAction(

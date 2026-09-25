@@ -64,7 +64,7 @@ Mencakup juga `/exam` dan `/result` (awalnya direncanakan tanpa sidebar untuk mo
 | `/test-package/[id]/questions` | Mode baca: melihat semua soal paket secara langsung, furigana tampil, comment tampil. Bukan mode pengerjaan. |
 | `/history` | Daftar semua attempt milik user lintas paket (bukan cuma satu paket seperti di `/test-package/[id]`), dengan link ke `/result/[attemptId]` & `/result/[attemptId]/detail` untuk yang `COMPLETED`. Entry point utama untuk lihat attempt lama. |
 | `/profile` | Overview akun dengan statistik kana, vocabulary, latihan cepat, dan mock exam dari data user nyata. |
-| `/profile/info` | Edit display name, normalized email, dan avatar Cloudinary; username legacy tampil read-only. |
+| `/profile/info` | Edit display name, normalized email, dan avatar R2; username legacy tampil read-only. |
 | `/profile/security` | Ganti password, daftar perangkat aktif, revoke session, dan logout perangkat lain. |
 | `/flashcard-settings` | Preference SRS persisten dengan daily limits, learning/relearning steps, interval, dan reset default via Server Action; entry point tersedia langsung di sidebar. |
 | `/profile/auth` | Redirect kompatibilitas menuju `/profile/security`. |

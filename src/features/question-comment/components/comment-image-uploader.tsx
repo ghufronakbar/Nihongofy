@@ -2,34 +2,40 @@
 
 import { useRef, useState } from "react";
 import { ImagePlus, Loader2, X } from "lucide-react";
-import { getCommentImageUploadSignatureAction } from "../actions";
+import {
+  COMMENT_IMAGE_ACCEPT,
+  COMMENT_IMAGE_MAX_COUNT,
+  COMMENT_IMAGE_MAX_FILE_SIZE_BYTES,
+  isCommentImageContentType,
+} from "@/constants/storage";
+import { createCommentImageUploadAction } from "../actions";
 
-const MAX_IMAGES = 4;
-const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024;
+const MAX_IMAGES = COMMENT_IMAGE_MAX_COUNT;
+const MAX_FILE_SIZE_BYTES = COMMENT_IMAGE_MAX_FILE_SIZE_BYTES;
 
-async function uploadToCloudinary(file: File): Promise<string> {
-  const { signature, timestamp, apiKey, cloudName, folder } =
-    await getCommentImageUploadSignatureAction();
+async function uploadToR2(file: File): Promise<string> {
+  if (!isCommentImageContentType(file.type)) {
+    throw new Error("Tipe gambar tidak didukung.");
+  }
 
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("api_key", apiKey);
-  formData.append("timestamp", String(timestamp));
-  formData.append("signature", signature);
-  formData.append("folder", folder);
+  const { uploadUrl, url, contentType } = await createCommentImageUploadAction({
+    contentType: file.type,
+    byteLength: file.size,
+  });
 
-  // Uploads straight to Cloudinary from the browser — never through our server.
-  const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-    method: "POST",
-    body: formData,
+  // Upload langsung dari browser ke R2 — file tidak pernah lewat server kita.
+  // Content-Type harus sama persis dengan yang ditandatangani server.
+  const response = await fetch(uploadUrl, {
+    method: "PUT",
+    headers: { "Content-Type": contentType },
+    body: file,
   });
 
   if (!response.ok) {
     throw new Error("Upload gambar gagal.");
   }
 
-  const data: { secure_url: string } = await response.json();
-  return data.secure_url;
+  return url;
 }
 
 export function CommentImageUploader({
@@ -56,9 +62,13 @@ export function CommentImageUploader({
     const selected = Array.from(files).slice(0, remainingSlots);
     setIsUploading(true);
 
+    // `value` adalah snapshot dari render ini, jadi hasil upload diakumulasi ke
+    // daftar lokal. Tanpa ini, upload kedua dan seterusnya menimpa yang sebelumnya
+    // dan hanya URL terakhir yang tersisa.
+    let uploaded = value;
     for (const file of selected) {
-      if (!file.type.startsWith("image/")) {
-        setError("File harus berupa gambar.");
+      if (!isCommentImageContentType(file.type)) {
+        setError("Gunakan gambar JPG, PNG, WebP, atau GIF.");
         continue;
       }
       if (file.size > MAX_FILE_SIZE_BYTES) {
@@ -67,8 +77,8 @@ export function CommentImageUploader({
       }
 
       try {
-        const url = await uploadToCloudinary(file);
-        onChange([...value, url]);
+        uploaded = [...uploaded, await uploadToR2(file)];
+        onChange(uploaded);
       } catch {
         setError("Upload gambar gagal, coba lagi.");
       }
@@ -118,7 +128,7 @@ export function CommentImageUploader({
       <input
         ref={inputRef}
         type="file"
-        accept="image/*"
+        accept={COMMENT_IMAGE_ACCEPT}
         multiple
         className="hidden"
         onChange={(event) => {

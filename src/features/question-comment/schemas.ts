@@ -1,6 +1,16 @@
 import { z } from "zod";
+import {
+  COMMENT_IMAGE_CONTENT_TYPE_LIST,
+  COMMENT_IMAGE_MAX_COUNT,
+  COMMENT_IMAGE_MAX_FILE_SIZE_BYTES,
+} from "@/constants/storage";
 
-const commentImagesSchema = z.array(z.string().url()).max(4, "Maksimal 4 gambar.");
+// Bentuk URL divalidasi di sini; kepemilikan object (harus hasil upload user ini
+// ke bucket kita, atau aset Cloudinary lama) dicek server lewat
+// `isAllowedCommentImageUrl` karena butuh session dan env server.
+const commentImagesSchema = z
+  .array(z.url().max(2048, "URL gambar terlalu panjang."))
+  .max(COMMENT_IMAGE_MAX_COUNT, `Maksimal ${COMMENT_IMAGE_MAX_COUNT} gambar.`);
 const commentTextSchema = z
   .string()
   .trim()
@@ -46,6 +56,15 @@ export const GetQuestionDiscussionSchema = z.object({
   questionId: z.number().int().positive(),
 });
 
+export const CreateCommentImageUploadSchema = z.object({
+  contentType: z.enum(COMMENT_IMAGE_CONTENT_TYPE_LIST, "Tipe gambar tidak didukung."),
+  byteLength: z
+    .number()
+    .int()
+    .positive()
+    .max(COMMENT_IMAGE_MAX_FILE_SIZE_BYTES, "Ukuran gambar maksimal 5MB."),
+});
+
 export type CommentVisibilityInput = z.infer<typeof CommentVisibilitySchema>;
 export type AddQuestionCommentInput = z.infer<typeof AddQuestionCommentSchema>;
 export type EditQuestionCommentInput = z.infer<typeof EditQuestionCommentSchema>;
@@ -55,3 +74,4 @@ export type SetQuestionCommentVisibilityInput = z.infer<
   typeof SetQuestionCommentVisibilitySchema
 >;
 export type GetQuestionDiscussionInput = z.infer<typeof GetQuestionDiscussionSchema>;
+export type CreateCommentImageUploadInput = z.infer<typeof CreateCommentImageUploadSchema>;

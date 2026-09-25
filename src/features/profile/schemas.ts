@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { AVATAR_MAX_FILE_SIZE_BYTES } from "@/constants/storage";
 import { PasswordSchema } from "@/features/auth/schemas";
 import { isValidTimeZone } from "@/lib/time-zone";
 
@@ -13,12 +14,22 @@ const AvatarUrlSchema = z
   .url("URL avatar tidak valid.")
   .max(2048, "URL avatar terlalu panjang.");
 
+// Menyimpan object key R2 (mis. `jlpt-exam/avatars/42/<uuid>.webp`). Titik
+// diizinkan untuk ekstensi; kepemilikan diverifikasi ulang di server.
 const AvatarPublicIdSchema = z
   .string()
   .trim()
   .min(1)
   .max(255)
-  .regex(/^[A-Za-z0-9/_-]+$/, "Public ID avatar tidak valid.");
+  .regex(/^[A-Za-z0-9/._-]+$/, "Public ID avatar tidak valid.");
+
+export const CreateAvatarUploadSchema = z.object({
+  byteLength: z
+    .number()
+    .int()
+    .positive()
+    .max(AVATAR_MAX_FILE_SIZE_BYTES, "Ukuran avatar maksimal 3MB."),
+});
 
 export const TimeZoneSchema = z
   .string()
@@ -83,6 +94,7 @@ export const CancelAccountDeletionSchema = z.object({
   currentPassword: z.string().max(72).optional(),
 });
 
+export type CreateAvatarUploadInput = z.infer<typeof CreateAvatarUploadSchema>;
 export type UpdateProfileInput = z.infer<typeof UpdateProfileSchema>;
 export type ChangePasswordInput = z.infer<typeof ChangePasswordSchema>;
 export type SetPasswordInput = z.infer<typeof SetPasswordSchema>;

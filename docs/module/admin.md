@@ -2,15 +2,15 @@
 
 ## Status Aktual
 
-**Fondasi, bank soal, pembahasan, CMS artikel, dan moderasi diskusi selesai (Tahap 1, 2, 3,
-4-artikel, dan 5).** Yang sudah berjalan: role statis `USER`/`ADMIN`, `requireAdmin()`, shell
-`/admin` dengan sidebar sendiri, overview yang membaca kondisi database secara langsung,
-pengelolaan bank soal termasuk import fixture dan editor soal, antrean dan editor pembahasan
-dengan alur persetujuan, CRUD artikel dengan workflow draft/published/archived, dan antrean
-moderasi diskusi publik dengan takedown.
+**Tahap 1, 2, 3, 4-artikel, 5, dan 6 selesai.** Yang sudah berjalan: role statis
+`USER`/`ADMIN`, `requireAdmin()`, shell `/admin` dengan sidebar sendiri, overview yang membaca
+kondisi database secara langsung, pengelolaan bank soal termasuk import fixture dan editor soal,
+antrean dan editor pembahasan dengan alur persetujuan, CRUD artikel dengan workflow
+draft/published/archived, antrean moderasi diskusi publik dengan takedown, dan pengelolaan akun
+user.
 
-Yang belum: deck bawaan, user, conversation, dan operasional — masih berupa halaman placeholder
-yang menyebut tahapnya. Di dalam bank soal, yang belum ada adalah uploader media dan editor
+Yang belum: deck bawaan, conversation, dan operasional — masih berupa halaman placeholder yang
+menyebut tahapnya. Di dalam bank soal, yang belum ada adalah uploader media dan editor
 `QuestionContext`.
 
 Operasi konten yang belum punya layar (pembahasan, deck bawaan) **masih dijalankan lewat script
@@ -55,6 +55,7 @@ dapat mengimpor TypeScript. Kedua salinannya diberi komentar silang.
 | `QuestionComment.deletedById` | migration `20260925180000_comment_deleted_by` |
 | Bank soal | `src/features/admin/test-package/`, `src/app/admin/test-package/`, `src/app/admin/question/` |
 | Pembahasan | `src/features/admin/explanation/`, `src/app/admin/explanation/` |
+| User dan akun | `src/features/admin/user/`, `src/app/admin/user/` |
 | Kontrak fixture dan jalur import bersama | `prisma/test-package-contract.mjs`, `prisma/import-test-package.mjs` |
 
 ## Prasyarat: Role Statis
@@ -137,8 +138,8 @@ area user.
 | `/admin/article/[id]` | Editor artikel | selesai |
 | `/admin/article/new` | Artikel baru | selesai |
 | `/admin/flashcard-deck` | Deck bawaan sistem | Tahap 4 |
-| `/admin/user` | Daftar user | Tahap 6 |
-| `/admin/user/[id]` | Detail dan aksi akun | Tahap 6 |
+| `/admin/user` | Daftar user | selesai |
+| `/admin/user/[id]` | Detail dan aksi akun | selesai |
 | `/admin/moderation` | Antrean diskusi publik dan catatan belajar | selesai |
 | `/admin/conversation` | Pemakaian dan kuota conversation | Tahap 7 |
 | `/admin/ops` | Feature flag (read-only), cache, audit log | Tahap 7 |
@@ -181,7 +182,7 @@ Prioritas tertinggi karena inilah satu-satunya jalur konten yang sekarang sepenu
 - **Editor soal** — memperbaiki hasil OCR tanpa mengedit JSON lalu re-seed: `questionText`,
   markup furigana `{漢字|かんじ}`, underline `__teks__`, slot `[_]`/`[★]`, teks pilihan,
   `questionAnswer`, dan `instruction` mondai.
-- **Media** — upload dan ganti audio/gambar soal ke Cloudinary. Per 25 September 2026 database
+- **Media** — upload dan ganti audio/gambar soal ke Cloudflare R2. Per 25 September 2026 database
   punya 227 context audio, 144 question image, 1 context image, tetapi **0** question audio, dan
   tidak ada jalur upload selain fixture.
 - **Hapus paket** — porting `npm run test-package:delete` dengan konfirmasi dan pengecekan
@@ -239,8 +240,8 @@ terlihat publik, termasuk oleh guest**, lengkap dengan halaman permalink
 `/discussion/[commentId]`.
 
 Checklist Fase 8.7 di `docs/plan.md` menutup dirinya dengan menyerahkan empat hal ke tahap ini:
-moderasi, notifikasi balasan, rate limit posting, dan pembersihan asset Cloudinary. Tiga yang
-pertama ada di bawah; pembersihan asset **tidak** masuk scope admin (lihat catatan Cloudinary).
+moderasi, notifikasi balasan, rate limit posting, dan pembersihan asset storage. Tiga yang
+pertama ada di bawah; pembersihan asset **tidak** masuk scope admin (lihat catatan storage).
 
 Bentuk data yang relevan untuk admin:
 
@@ -270,7 +271,7 @@ Fitur admin yang dibutuhkan:
   memerlukan action tersendiri — jangan longgarkan guard kepemilikan yang ada.
 - **Sembunyikan lampiran, jangan hapus filenya.** Takedown menghentikan gambar tampil di
   aplikasi lewat `visibility`/`deletedAt`. File asli di `jlpt-exam/comments/{userId}` **tidak
-  dihapus** dari Cloudinary — lihat catatan Cloudinary di bawah.
+  dihapus** dari object storage — lihat catatan storage di bawah.
 - **Riwayat per user** — semua kontribusi publik satu user dalam satu layar, untuk menilai pola
   penyalahgunaan sebelum mengambil tindakan akun.
 - **Rate limit posting.** Saat ini pembuatan catatan dan balasan tidak punya rate limit sama
@@ -289,7 +290,10 @@ penyalahgunaan hanya ketahuan bila admin memeriksa antrean secara aktif.
 
 ### 7. User dan Akun
 
-- Daftar user dengan search dan filter: status verifikasi email, punya OAuth, terakhir aktif.
+- Daftar user dengan search dan filter: admin, status verifikasi email, punya OAuth, menunggu
+  dihapus. Filter "terakhir aktif" tidak ada — tidak ada kolom `lastActiveAt`, dan aktivitas
+  session hidup di Redis sehingga tidak dapat di-query massal. Detail user menampilkan attempt
+  terakhir sebagai gantinya, karena itu memang tersimpan di database.
 - **Tidak pernah** menampilkan `password` (hash sekalipun) atau token apa pun.
 - Promote/demote `role`.
 - Revoke session — registry Redis dan helper-nya sudah ada di `src/lib/auth.ts`; admin cukup
@@ -340,10 +344,10 @@ Aturan project yang existing tetap berlaku penuh di area admin:
   `QUESTION_EXPLANATION_SELECT` demi admin.
 - **Isolasi data user tetap berlaku untuk non-admin.** Membuka akses lintas user hanya di
   belakang `requireAdmin()`, tidak pernah dengan menghapus filter `userId` pada action existing.
-- **Cloudinary: jangan hapus asset.** Admin tidak pernah memanggil Admin API untuk menghapus
+- **Object storage: jangan hapus asset.** Admin tidak pernah memanggil API storage untuk menghapus
   file yang sudah diunggah. Takedown bekerja di level record database saja, sehingga gambar
   berhenti tampil tanpa menyentuh storage. Pembersihan asset fisik adalah urusan bagian lain,
-  bukan modul ini. Pembuatan signature tetap server-side dengan folder dibatasi per user.
+  bukan modul ini. Presigned URL tetap dibuat server-side dengan object key dibatasi per user.
 
 ## Perubahan Schema yang Dibutuhkan
 

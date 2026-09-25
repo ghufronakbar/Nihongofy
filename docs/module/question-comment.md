@@ -77,19 +77,18 @@ Thread dan hitungannya sengaja **tidak** di-`unstable_cache`. Isinya berubah set
 
 - Comment tersimpan di PostgreSQL dengan relasi user dan question.
 - Page query catatan pribadi selalu memfilter `userId` session, `parentId: null`, dan `deletedAt: null`.
-- Signature Cloudinary dibuat server-side; API secret tidak dikirim ke browser.
-- Folder upload signature dibatasi per user.
+- Presigned PUT URL R2 dibuat server-side; `R2_SECRET_ACCESS_KEY` tidak dikirim ke browser.
+- Object key upload dibatasi per user (`jlpt-exam/comments/{userId}/<uuid>.<ext>`).
+- Content-type dan content-length ikut ditandatangani, jadi R2 sendiri menolak tipe atau ukuran di luar batas.
+- Server menolak `commentImages` yang bukan object milik user ini; URL Cloudinary lama tetap diterima agar komentar sebelum migrasi masih bisa disunting.
 - Membagikan catatan memublikasikan nama tampilan dan avatar pemiliknya.
 
 ## Keterbatasan dan Bug Aktual
 
 - **Belum ada laporan dari user.** Moderasi admin sudah ada (`/admin/moderation`: antrean, sembunyikan root, takedown, pulihkan takedown admin, filter per user), tetapi penyalahgunaan hanya ketahuan bila admin memeriksa antrean secara aktif. Rem darurat `FEATURES_QUESTION_DISCUSSION=false` tetap tersedia.
 - **Tidak ada notifikasi** saat catatan dibalas — aplikasi belum punya sistem notifikasi sama sekali.
-- **Lampiran Cloudinary tidak pernah terhapus**, termasuk saat takedown admin. Ini keputusan eksplisit: takedown bekerja di level record database saja, dan pembersihan asset fisik berada di luar scope modul admin.
+- **Lampiran di object storage tidak pernah terhapus**, termasuk saat takedown admin. Ini keputusan eksplisit: takedown bekerja di level record database saja, dan pembersihan asset fisik berada di luar scope modul admin.
 - Tidak ada rate limit khusus pada pembuatan comment/balasan; yang ada hanya batas 2.000 karakter dan 4 gambar.
-- Multi-file uploader memakai closure `value` lama di dalam loop; beberapa upload berurutan dapat saling menimpa sehingga hanya URL terakhir yang tertinggal.
-- Schema menerima URL valid dari host mana pun dan belum memastikan URL berasal dari folder Cloudinary user.
-- Batas tipe/ukuran file utama dilakukan di client; signature tidak membawa transform/policy upload yang membatasi format/ukuran.
 - Tidak ada pencarian, tag, pin, export, atau halaman agregat semua catatan.
 - Guest melihat form catatan pribadi, tetapi submit diarahkan ke login.
 
@@ -108,5 +107,4 @@ Thread dan hitungannya sengaja **tidak** di-`unstable_cache`. Isinya berubah set
 - `src/features/question-comment/components/reply-form.tsx`
 - `src/app/(public)/discussion/layout.tsx`
 - `src/app/(public)/discussion/[commentId]/page.tsx`
-- `src/app/api/cloudinary/signature/route.ts`
 - `src/features/admin/moderation/` — antrean dan action takedown milik admin, terpisah dari action user di atas yang tetap menolak non-pemilik

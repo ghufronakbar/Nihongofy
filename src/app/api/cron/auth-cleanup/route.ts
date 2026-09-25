@@ -3,10 +3,10 @@ import { ACCOUNT_DELETION_CRON_BATCH_SIZE, env } from "@/constants";
 import { revokeAllUserSessions } from "@/lib/auth";
 import {
   destroyManagedAvatar,
-  getDueAvatarCleanupPublicIds,
+  getDueAvatarCleanupKeys,
   scheduleAvatarCleanup,
   unscheduleAvatarCleanup,
-} from "@/lib/cloudinary";
+} from "@/lib/r2";
 import { reportServerError } from "@/lib/server-logger";
 import { prisma } from "@/lib/prisma";
 
@@ -29,21 +29,21 @@ export async function GET(request: Request) {
 
   let orphanAvatarsDeleted = 0;
   let orphanAvatarFailures = 0;
-  const dueAvatarPublicIds = await getDueAvatarCleanupPublicIds();
-  for (const publicId of dueAvatarPublicIds) {
+  const dueAvatarKeys = await getDueAvatarCleanupKeys();
+  for (const key of dueAvatarKeys) {
     const owner = await prisma.user.findUnique({
-      where: { avatarPublicId: publicId },
+      where: { avatarPublicId: key },
       select: { id: true },
     });
     if (owner) {
-      await unscheduleAvatarCleanup(publicId);
+      await unscheduleAvatarCleanup(key);
       continue;
     }
 
     try {
-      await destroyManagedAvatar(publicId);
-      await unscheduleAvatarCleanup(publicId);
-      orphanAvatarsDeleted += 1;
+      const result = await destroyManagedAvatar(key);
+      await unscheduleAvatarCleanup(key);
+      if (result === "ok") orphanAvatarsDeleted += 1;
     } catch (error) {
       orphanAvatarFailures += 1;
       reportServerError("cron.avatar_orphan_cleanup_failed", error);
