@@ -53,6 +53,7 @@ const envSchema = z
     FEATURES_ANALYTICS: featureFlag,
     FEATURES_ARTICLE: featureFlag,
     FEATURES_QUESTION_COMMENT: featureFlag,
+    FEATURES_QUESTION_DISCUSSION: featureFlag,
     FEATURES_CONVERSATION: featureFlag,
     FEATURES_SPEAKING: featureFlag,
     CONVERSATION_PROVIDER: z.enum(["mock", "openai"]).default("mock"),
@@ -148,6 +149,10 @@ export const FEATURES = {
   analytics: env.FEATURES_ANALYTICS,
   article: env.FEATURES_ARTICLE,
   questionComment: env.FEATURES_QUESTION_COMMENT,
+  // Diskusi publik menumpang record QuestionComment, jadi ikut mati bila catatan
+  // belajar mati. Dipisah supaya konten publik bisa dimatikan sendiri saat ada
+  // penyalahgunaan tanpa ikut mematikan catatan pribadi.
+  questionDiscussion: env.FEATURES_QUESTION_DISCUSSION && env.FEATURES_QUESTION_COMMENT,
   conversation: env.FEATURES_CONVERSATION,
   // Speaking menumpang seluruh jalur turn milik conversation, jadi ikut mati
   // bila conversation mati.

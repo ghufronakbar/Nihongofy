@@ -9,6 +9,8 @@ import { getAttemptDetail } from "@/features/result/actions";
 import { FEATURES } from "@/constants";
 import { QuestionCommentForm } from "@/features/question-comment/components/question-comment-form";
 import { CommentItem } from "@/features/question-comment/components/comment-item";
+import { DiscussionSheet } from "@/features/question-comment/components/discussion-sheet";
+import { getSession } from "@/lib/auth";
 import { CopyQuestionButton } from "@/components/copy-question-button";
 import { QuestionNavList, type NavMondaiItem } from "@/components/question-nav";
 import { QuestionNavMobile } from "@/components/question-nav-mobile";
@@ -35,7 +37,11 @@ export default async function ResultDetailPage({
     notFound();
   }
 
-  const { attempt, testPackageItems } = await getAttemptDetail(attemptIdNum);
+  const [{ attempt, testPackageItems }, authSession] = await Promise.all([
+    getAttemptDetail(attemptIdNum),
+    getSession(),
+  ]);
+  const currentUserId = authSession?.userId ?? null;
 
   if (testPackageItems.length === 0) {
     return (
@@ -299,6 +305,13 @@ export default async function ResultDetailPage({
                         </div>
 
                         <div className="flex shrink-0 items-center gap-2">
+                          {FEATURES.questionDiscussion && (
+                            <DiscussionSheet
+                              questionId={question.id}
+                              initialCount={question.discussionCount}
+                              currentUserId={currentUserId}
+                            />
+                          )}
                           <CopyQuestionButton
                             contextText={question.questionContext?.storyText}
                             questionOrder={question.order}
@@ -399,7 +412,11 @@ export default async function ResultDetailPage({
                                 Catatan Belajar ({question.questionComments.length})
                               </span>
                               {question.questionComments.map((comment) => (
-                                <CommentItem key={comment.id} comment={comment} />
+                                <CommentItem
+                                  key={comment.id}
+                                  comment={comment}
+                                  canShare={FEATURES.questionDiscussion}
+                                />
                               ))}
                             </div>
                           )}

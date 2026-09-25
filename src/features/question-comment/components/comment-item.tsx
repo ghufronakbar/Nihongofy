@@ -1,16 +1,19 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { formatDistanceToNow } from "date-fns";
-import { id as idLocale } from "date-fns/locale";
+import { Globe, Lock } from "lucide-react";
 import { EditQuestionCommentSchema, type EditQuestionCommentInput } from "../schemas";
-import { updateQuestionCommentAction, deleteQuestionCommentAction } from "../actions";
+import {
+  updateQuestionCommentAction,
+  deleteQuestionCommentAction,
+  setQuestionCommentVisibilityAction,
+} from "../actions";
 import { CommentImageUploader } from "./comment-image-uploader";
-import { ImageWithLightbox } from "@/components/image-with-lightbox";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { CommentAuthorLine, CommentAvatar, CommentImages } from "./comment-body";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Field, FieldError } from "@/components/ui/field";
@@ -30,15 +33,26 @@ type CommentData = {
   id: number;
   commentText: string;
   commentImages: string[];
+  visibility: "PRIVATE" | "PUBLIC";
   createdAt: Date;
   updatedAt: Date;
   user: { displayName: string };
 };
 
-export function CommentItem({ comment }: { comment: CommentData }) {
+export function CommentItem({
+  comment,
+  canShare = false,
+}: {
+  comment: CommentData;
+  // Mati saat FEATURES_QUESTION_DISCUSSION off: catatan tetap bisa ditulis dan
+  // diedit, hanya tombol bagikannya yang hilang.
+  canShare?: boolean;
+}) {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const [isPending, startTransition] = useTransition();
+
+  const isPublic = comment.visibility === "PUBLIC";
 
   const {
     register,
@@ -56,7 +70,6 @@ export function CommentItem({ comment }: { comment: CommentData }) {
   });
 
   const commentImages = useWatch({ control, name: "commentImages" });
-  const wasEdited = comment.updatedAt.getTime() !== comment.createdAt.getTime();
 
   function onSubmit(values: EditQuestionCommentInput) {
     startTransition(async () => {
@@ -73,19 +86,37 @@ export function CommentItem({ comment }: { comment: CommentData }) {
     });
   }
 
+  function handleToggleVisibility() {
+    startTransition(async () => {
+      await setQuestionCommentVisibilityAction({
+        commentId: comment.id,
+        visibility: isPublic ? "PRIVATE" : "PUBLIC",
+      });
+      router.refresh();
+    });
+  }
+
   return (
     <div className="flex gap-2">
-      <Avatar size="sm">
-        <AvatarFallback>{comment.user.displayName.slice(0, 1).toUpperCase()}</AvatarFallback>
-      </Avatar>
+      <CommentAvatar author={{ displayName: comment.user.displayName, avatarUrl: null }} />
       <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-medium">{comment.user.displayName}</span>
-          <span className="text-xs text-muted-foreground">
-            {formatDistanceToNow(comment.createdAt, { addSuffix: true, locale: idLocale })}
-            {wasEdited && " · diedit"}
-          </span>
-        </div>
+        <CommentAuthorLine
+          displayName={comment.user.displayName}
+          createdAt={comment.createdAt}
+          updatedAt={comment.updatedAt}
+          badge={
+            <span
+              className={
+                isPublic
+                  ? "inline-flex items-center gap-1 rounded border-2 border-neo-ink bg-neo-green px-1.5 py-0.5 font-mono text-[10px] font-black uppercase"
+                  : "inline-flex items-center gap-1 rounded border border-neo-ink/30 px-1.5 py-0.5 font-mono text-[10px] font-black uppercase text-foreground/60"
+              }
+            >
+              {isPublic ? <Globe className="size-3" /> : <Lock className="size-3" />}
+              {isPublic ? "Publik" : "Privat"}
+            </span>
+          }
+        />
 
         {isEditing ? (
           <form onSubmit={handleSubmit(onSubmit)} className="mt-1 flex flex-col gap-2" noValidate>
@@ -114,19 +145,9 @@ export function CommentItem({ comment }: { comment: CommentData }) {
           </form>
         ) : (
           <>
-            <p className="mt-1 text-sm break-words">{comment.commentText}</p>
-            {comment.commentImages.length > 0 && (
-              <div className="mt-2 flex flex-wrap gap-2">
-                {comment.commentImages.map((url) => (
-                  <ImageWithLightbox
-                    key={url}
-                    src={url}
-                    className="size-16 rounded-md border object-cover"
-                  />
-                ))}
-              </div>
-            )}
-            <div className="mt-1 flex gap-3">
+            <p className="mt-1 text-sm break-words whitespace-pre-wrap">{comment.commentText}</p>
+            <CommentImages images={comment.commentImages} />
+            <div className="mt-1 flex flex-wrap gap-3">
               <button
                 type="button"
                 onClick={() => setIsEditing(true)}
@@ -134,6 +155,27 @@ export function CommentItem({ comment }: { comment: CommentData }) {
               >
                 Edit
               </button>
+
+              {canShare && (
+                <button
+                  type="button"
+                  disabled={isPending}
+                  onClick={handleToggleVisibility}
+                  className="text-xs text-muted-foreground hover:underline disabled:opacity-50"
+                >
+                  {isPublic ? "Jadikan privat" : "Bagikan ke diskusi"}
+                </button>
+              )}
+
+              {canShare && isPublic && (
+                <Link
+                  href={`/discussion/${comment.id}`}
+                  className="text-xs text-muted-foreground hover:underline"
+                >
+                  Buka diskusi
+                </Link>
+              )}
+
               <AlertDialog>
                 <AlertDialogTrigger className="text-xs text-muted-foreground hover:underline">
                   Hapus
@@ -142,7 +184,9 @@ export function CommentItem({ comment }: { comment: CommentData }) {
                   <AlertDialogHeader>
                     <AlertDialogTitle>Hapus catatan ini?</AlertDialogTitle>
                     <AlertDialogDescription>
-                      Tindakan ini tidak bisa dibatalkan.
+                      {isPublic
+                        ? "Catatan ini akan hilang dari diskusi dan diganti keterangan bahwa catatan telah dihapus. Balasan pengguna lain tetap ditampilkan."
+                        : "Tindakan ini tidak bisa dibatalkan."}
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>

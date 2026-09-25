@@ -24,7 +24,7 @@ export function QuestionCommentForm({ questionId }: { questionId: number }) {
     formState: { errors },
   } = useForm<AddQuestionCommentInput>({
     resolver: zodResolver(AddQuestionCommentSchema),
-    defaultValues: { questionId, commentText: "", commentImages: [] },
+    defaultValues: { questionId, commentText: "", commentImages: [], visibility: "PRIVATE" },
   });
 
   const commentImages = useWatch({ control, name: "commentImages" });
@@ -32,7 +32,7 @@ export function QuestionCommentForm({ questionId }: { questionId: number }) {
   function onSubmit(values: AddQuestionCommentInput) {
     startTransition(async () => {
       await addQuestionCommentAction(values);
-      reset({ questionId, commentText: "", commentImages: [] });
+      reset({ questionId, commentText: "", commentImages: [], visibility: "PRIVATE" });
       router.refresh();
     });
   }

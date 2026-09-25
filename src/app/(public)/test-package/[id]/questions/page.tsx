@@ -5,6 +5,8 @@ import { getTestPackageQuestions } from "@/features/test-package/actions";
 import { FEATURES } from "@/constants";
 import { QuestionCommentForm } from "@/features/question-comment/components/question-comment-form";
 import { CommentItem } from "@/features/question-comment/components/comment-item";
+import { DiscussionSheet } from "@/features/question-comment/components/discussion-sheet";
+import { getSession } from "@/lib/auth";
 import { CopyQuestionButton } from "@/components/copy-question-button";
 import { QuestionNavSidebar, type NavMondaiItem } from "@/components/question-nav";
 import { QuestionNavMobile } from "@/components/question-nav-mobile";
@@ -30,7 +32,11 @@ export default async function TestPackageQuestionsPage({
     notFound();
   }
 
-  const testPackage = await getTestPackageQuestions(testPackageId);
+  const [testPackage, authSession] = await Promise.all([
+    getTestPackageQuestions(testPackageId),
+    getSession(),
+  ]);
+  const currentUserId = authSession?.userId ?? null;
 
   if (testPackage.testPackageItems.length === 0) {
     return (
@@ -202,6 +208,13 @@ export default async function TestPackageQuestionsPage({
                         </div>
                       </div>
                       <div className="flex shrink-0 items-center gap-1">
+                        {FEATURES.questionDiscussion && (
+                          <DiscussionSheet
+                            questionId={question.id}
+                            initialCount={question.discussionCount}
+                            currentUserId={currentUserId}
+                          />
+                        )}
                         <CopyQuestionButton
                           contextText={question.questionContext?.storyText}
                           questionOrder={question.order}
@@ -259,7 +272,11 @@ export default async function TestPackageQuestionsPage({
                               Catatan Belajar ({question.questionComments.length})
                             </span>
                             {question.questionComments.map((comment) => (
-                              <CommentItem key={comment.id} comment={comment} />
+                              <CommentItem
+                                key={comment.id}
+                                comment={comment}
+                                canShare={FEATURES.questionDiscussion}
+                              />
                             ))}
                           </div>
                         )}
