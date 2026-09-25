@@ -11,6 +11,7 @@ import {
   revokeAllUserSessions,
 } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { generateUniqueUsername } from "./lib/username-generator";
 import {
   ConfirmEmailSchema,
   EmailSchema,
@@ -227,7 +228,6 @@ export async function loginAction(input: LoginInput): Promise<AuthActionResult> 
   }
 
   const normalizedEmail = identifier.toLowerCase();
-  const isEmail = EmailSchema.safeParse(normalizedEmail).success;
   const select = {
     id: true,
     email: true,
@@ -235,17 +235,20 @@ export async function loginAction(input: LoginInput): Promise<AuthActionResult> 
     password: true,
     emailVerifiedAt: true,
     deletionScheduledFor: true,
+    anonymizedAt: true,
   } satisfies Prisma.UserSelect;
-  const user = isEmail
+  // Email saja. Input yang bukan email tetap menjalani bcrypt.compare di bawah
+  // supaya waktu responsnya tidak membedakan "format salah" dari "password salah".
+  const user = EmailSchema.safeParse(normalizedEmail).success
     ? await prisma.user.findUnique({ where: { email: normalizedEmail }, select })
-    : await prisma.user.findUnique({ where: { username: identifier }, select });
+    : null;
 
   const isPasswordValid = await bcrypt.compare(
     password,
     user?.password ?? DUMMY_PASSWORD_HASH,
   );
 
-  if (!user || !isPasswordValid) {
+  if (!user || user.anonymizedAt || !isPasswordValid) {
     return { ok: false, message: INVALID_CREDENTIALS_MESSAGE };
   }
 
@@ -319,7 +322,10 @@ export async function registerAction(input: RegisterInput): Promise<AuthActionRe
   try {
     const createdUser = await prisma.user.create({
       data: {
-        username: null,
+        username: await generateUniqueUsername({
+          displayName: normalizedDisplayName,
+          email: normalizedEmail,
+        }),
         displayName: normalizedDisplayName,
         email: normalizedEmail,
         emailVerifiedAt: null,

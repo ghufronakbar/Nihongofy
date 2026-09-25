@@ -224,8 +224,8 @@ model User {
   role                     UserRole  @default(USER) // lihat enum UserRole: tidak pernah dibaca dari JWT
 
   questionComments     QuestionComment[]
-  deletedComments      QuestionComment[]    @relation("CommentDeletedBy")
-  adminAuditLogs       AdminAuditLog[]      @relation("AdminAuditActor")
+  deletedComments      QuestionComment[]     @relation("CommentDeletedBy")
+  adminAuditLogs       AdminAuditLog[]       @relation("AdminAuditActor")
   attempts             Attempt[]
   kanaProgresses       KanaProgress[]
   flashcardCollection  FlashcardCollection?
@@ -809,15 +809,27 @@ model QuestionComment {
   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
   questionId Int
 
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Restrict, bukan Cascade: menghapus baris user akan ikut menghancurkan
+  // balasan orang lain pada thread miliknya. Penghapusan akun menganonimkan
+  // user dan men-soft-delete comment-nya — lihat `anonymizeAccount`.
+  user   User @relation(fields: [userId], references: [id], onDelete: Restrict)
   userId Int
 
   // Balasan ikut terhapus bila root benar-benar dihapus dari database. Alur
   // aplikasi tidak pernah melakukannya; cascade ini hanya jaring pengaman untuk
-  // penghapusan user/soal.
+  // penghapusan soal.
   parent   QuestionComment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
   parentId Int?
   replies  QuestionComment[] @relation("CommentReplies")
+
+  // Balasan yang ditujukan ke comment tertentu di thread yang sama. Disimpan
+  // sebagai relasi, bukan teks "@nama" di dalam commentText: nama yang diketik
+  // akan basi begitu penulisnya ganti username, bisa dipalsukan, dan ambigu
+  // karena displayName tidak unik. SetNull supaya comment tujuan yang dihapus
+  // tidak ikut menghapus balasannya.
+  repliedTo   QuestionComment?  @relation("CommentMentions", fields: [repliedToId], references: [id], onDelete: SetNull)
+  repliedToId Int?
+  mentionedBy QuestionComment[] @relation("CommentMentions")
 
   commentText   String   @db.Text
   commentImages String[] // url gambar lampiran
@@ -852,6 +864,7 @@ model QuestionComment {
   // Antrean moderasi: seluruh entri publik lintas soal, terbaru dulu.
   @@index([sharedAt])
   @@index([deletedById])
+  @@index([repliedToId])
 }
 
 // ============================================================

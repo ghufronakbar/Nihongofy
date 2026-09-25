@@ -9,6 +9,7 @@ import {
 } from "@/lib/r2";
 import { reportServerError } from "@/lib/server-logger";
 import { prisma } from "@/lib/prisma";
+import { anonymizeAccount } from "@/features/auth/lib/anonymize-account";
 
 export const runtime = "nodejs";
 
@@ -51,7 +52,7 @@ export async function GET(request: Request) {
   }
 
   const accountsDueForDeletion = await prisma.user.findMany({
-    where: { deletionScheduledFor: { lte: now } },
+    where: { deletionScheduledFor: { lte: now }, anonymizedAt: null },
     orderBy: { deletionScheduledFor: "asc" },
     take: ACCOUNT_DELETION_CRON_BATCH_SIZE,
     select: { id: true, avatarPublicId: true },
@@ -64,13 +65,9 @@ export async function GET(request: Request) {
       if (user.avatarPublicId) await scheduleAvatarCleanup(user.avatarPublicId);
       await revokeAllUserSessions(user.id);
 
-      const deleted = await prisma.user.deleteMany({
-        where: { id: user.id, deletionScheduledFor: { lte: now } },
-      });
-      if (deleted.count === 0) {
-        if (user.avatarPublicId) await unscheduleAvatarCleanup(user.avatarPublicId);
-        continue;
-      }
+      // Anonimisasi, bukan delete: baris User harus bertahan supaya thread
+      // diskusi yang dibalas orang lain tidak ikut musnah. Lihat `anonymizeAccount`.
+      await anonymizeAccount(user.id);
 
       accountsDeleted += 1;
       if (user.avatarPublicId) {

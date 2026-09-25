@@ -28,11 +28,14 @@ export const TurnstileTokenSchema = z
   .max(2048, "Token verifikasi keamanan tidak valid.");
 
 export const LoginSchema = z.object({
+  // Login hanya menerima email. Username adalah nama publik, bukan kredensial:
+  // handle tampil di setiap komentar, jadi menjadikannya identifier login berarti
+  // membocorkan identifier semua orang.
   identifier: z
     .string()
     .trim()
-    .min(1, "Email atau username wajib diisi.")
-    .max(254, "Email atau username terlalu panjang."),
+    .min(1, "Email wajib diisi.")
+    .max(254, "Email terlalu panjang."),
   password: z.string().min(1, "Password wajib diisi."),
   next: z.string().max(2048).optional(),
   turnstileToken: TurnstileTokenSchema,

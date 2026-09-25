@@ -58,7 +58,7 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
           <input type="hidden" {...register("turnstileToken")} />
           <Field className="gap-2.5">
             <FieldLabel htmlFor="identifier" className="text-sm font-extrabold">
-              Email atau username lama
+              Email
             </FieldLabel>
             <div className="relative">
               <Mail
@@ -67,7 +67,7 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
               />
               <Input
                 id="identifier"
-                autoComplete="username"
+                autoComplete="email"
                 inputMode="email"
                 placeholder="nama@email.com"
                 className="neo-input h-12 pl-12"

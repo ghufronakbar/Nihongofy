@@ -38,7 +38,7 @@ provider OAuth lain dan MFA tetap memerlukan persetujuan terpisah.
   admin; `/admin` sengaja tidak didaftarkan di `src/proxy.ts`. Admin pertama dipromosikan lewat
   `npm run user:role`, bukan UI. Rancangan lengkap: `docs/module/admin.md`.
 
-* **Login identifier:** user baru login dengan normalized email. Akun legacy yang belum memiliki email tetap dapat login dengan `username` sampai flow pengisian email tersedia.
+* **Login identifier:** login **hanya** menerima normalized email. `User.username` adalah nama publik (handle) yang tampil di diskusi dan bukan kredensial — menjadikannya identifier login berarti identifier setiap user terbaca dari komentarnya. Jangan hidupkan kembali jalur login-by-username. Aturan handle di `src/lib/username.ts`.
 * **Password hashing:** `bcryptjs` with cost factor 12. Hash on register and compare with `bcrypt.compare()` on login. `User.password` nullable hanya untuk akun OAuth-only yang belum membuat password. NEVER store or log plaintext passwords.
 * **Session:** JWT signed with `jose` (HS256, secret from `SESSION_SECRET`) menyimpan `userId` dan `sessionId` dalam cookie **httpOnly, secure, sameSite=lax** bernama `session`. Expiry tetap 7 hari. Metadata serta status revocation session disimpan di Redis; JWT tidak boleh diterima jika registry Redis tidak dapat mengonfirmasi session tersebut.
 * **Session helpers location:** `./src/lib/auth.ts` — seluruh pembuatan, pembacaan, daftar perangkat, dan revocation session wajib melalui helper di file ini. Jangan membaca cookie atau memanipulasi key session Redis secara manual dari feature lain.
@@ -52,7 +52,8 @@ provider OAuth lain dan MFA tetap memerlukan persetujuan terpisah.
 * **Auth rate limit:** login dan register memakai bucket atomik di `AuthRateLimit`. Key disimpan sebagai HMAC-SHA256, bukan email atau alamat IP mentah.
 * **Bot protection:** seluruh form publik di route group `(auth)` wajib memakai Cloudflare Turnstile. Token harus diverifikasi server-side melalui Siteverify sebelum query database, pengiriman email, atau konsumsi rate-limit; cocokkan `action` dan hostname, lalu tolak secara fail-closed jika layanan verifikasi gagal.
 * **Data isolation:** every query for attempts, comments, history, progress, settings, and future user content MUST scope access to `session.userId`.
-* **Login safety:** on failed login, return a generic error message ("invalid credentials"), never reveal whether the email/username exists.
+* **Login safety:** on failed login, return a generic error message ("invalid credentials"), never reveal whether the email exists. Non-email input must still run `bcrypt.compare` against the dummy hash so response time does not distinguish "bad format" from "bad password".
+* **Account deletion:** penghapusan akun **menganonimkan** baris `User` (`anonymizeAccount`), tidak menghapusnya, karena `QuestionComment` milik user menahan balasan pengguna lain — FK-nya `Restrict`, bukan `Cascade`. Setiap relasi personal baru yang ditambahkan ke `User` WAJIB ikut dihapus di `anonymizeAccount`; melewatkannya berarti data pribadi tertinggal di akun yang dianggap terhapus.
 * **Supabase Data API:** tabel aplikasi pada schema `public` tidak boleh diberi grant ke `anon`, `authenticated`, atau `service_role`. RLS aktif tanpa client policy karena akses aplikasi hanya melalui Prisma server-side.
 
 ## 5. Input Validation (zod)

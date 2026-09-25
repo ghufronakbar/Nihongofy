@@ -54,7 +54,8 @@ Balasan yang dihapus langsung hilang dari tampilan tanpa tombstone, karena tidak
 
 - **Tidak pernah hard delete.** `deleteQuestionCommentAction` hanya mengisi `deletedAt`. Balasan user lain menempel pada root; menghapus barisnya akan ikut memusnahkan percakapan mereka. `onDelete: Cascade` pada self-relation hanya jaring pengaman untuk penghapusan user/soal.
 - **Tombstone dibersihkan di layer query, bukan komponen.** `toDiscussionRoot()` di `queries.ts` tidak menyalin `commentText`, `commentImages`, dan identitas penulis untuk root non-`VISIBLE`. Kalau penyembunyian hanya dilakukan di JSX, isi yang sudah dihapus tetap ikut terkirim di payload halaman.
-- **Balasan maksimal satu tingkat.** Membalas sebuah balasan menambah balasan baru pada root yang sama; mention `@nama` hanya penanda tujuan. Kedalaman tak terbatas akan memaksa recursive CTE atau materialized path.
+- **Balasan maksimal satu tingkat.** Membalas sebuah balasan menambah balasan baru pada root yang sama. Kedalaman tak terbatas akan memaksa recursive CTE atau materialized path, dan membuat setiap aturan tombstone punya kasus kembar di tiap tingkat.
+- **Mention adalah relasi, bukan teks.** Tujuan balasan disimpan di `repliedToId` dan username-nya di-resolve saat baca. Menyimpan `@nama` sebagai teks di dalam `commentText` akan basi begitu penulisnya ganti username, bisa dipalsukan siapa saja, dan ambigu karena `displayName` tidak unik. Mention hanya diterima bila menunjuk comment hidup di thread yang sama, dan tidak dirender bila comment tujuannya sudah dihapus.
 - **Thread mati bersifat read-only.** Balasan baru ditolak bila root sudah dihapus atau dikembalikan ke privat.
 - **Balasan mewarisi visibility root** dan tidak punya toggle sendiri; `setQuestionCommentVisibilityAction` menolak comment yang punya `parentId`.
 - Comment yang sudah di-soft delete tidak bisa diedit, dibagikan, atau dibalas (`requireOwnLiveComment()`).
@@ -64,6 +65,17 @@ Balasan yang dihapus langsung hilang dari tampilan tanpa tombstone, karena tidak
 Halaman mode baca dan result detail **hanya mengambil jumlah** entri diskusi per soal (`getQuestionDiscussionCounts`, satu `groupBy` untuk seluruh soal pada mondai tersebut) untuk label tombol. Isi thread baru diambil lewat `getQuestionDiscussionAction` saat sheet dibuka, supaya satu mondai berisi belasan soal tidak menyeret seluruh percakapan yang belum tentu dibaca.
 
 Thread dan hitungannya sengaja **tidak** di-`unstable_cache`. Isinya berubah setiap ada balasan, jadi biaya invalidasi per mutasi lebih besar daripada biaya query groupBy yang sudah ditopang index. Bank soalnya sendiri tetap di-cache seperti sebelumnya.
+
+## Halaman
+
+- `/discussion` — indeks seluruh diskusi, satu baris per soal, diurutkan dari aktivitas terbaru
+  (`getDiscussionIndex`, `groupBy` + `_max.createdAt`). Paginasi mengambil satu baris lebih banyak
+  dari ukuran halaman supaya `hasMore` tidak butuh `COUNT DISTINCT` terpisah.
+- `/discussion/question/[questionId]` — seluruh thread pada satu soal dalam halaman penuh,
+  pengganti sheet yang sempit.
+- `/discussion/[commentId]` — permalink satu thread.
+
+Ketiganya memakai `DiscussionQuestionCard` yang sama untuk merender soal, kunci, dan pembahasan.
 
 ## Halaman Permalink
 
@@ -81,7 +93,12 @@ Thread dan hitungannya sengaja **tidak** di-`unstable_cache`. Isinya berubah set
 - Object key upload dibatasi per user (`jlpt-exam/comments/{userId}/<uuid>.<ext>`).
 - Content-type dan content-length ikut ditandatangani, jadi R2 sendiri menolak tipe atau ukuran di luar batas.
 - Server menolak `commentImages` yang bukan object milik user ini; URL Cloudinary lama tetap diterima agar komentar sebelum migrasi masih bisa disunting.
-- Membagikan catatan memublikasikan nama tampilan dan avatar pemiliknya.
+- Membagikan catatan memublikasikan nama tampilan, username, dan avatar pemiliknya.
+- Username yang tampil di komentar bukan kredensial login — login memakai email saja. Lihat
+  `docs/module/auth.md`.
+- Penghapusan akun menganonimkan penulisnya dan men-soft-delete comment-nya; balasan pengguna lain
+  pada thread tersebut tetap utuh. `QuestionComment.userId` memakai `Restrict` supaya tidak ada
+  jalur hard delete yang bisa menghancurkan thread.
 
 ## Keterbatasan dan Bug Aktual
 

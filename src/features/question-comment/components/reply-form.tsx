@@ -12,14 +12,15 @@ import { Field, FieldError } from "@/components/ui/field";
 
 export function ReplyForm({
   parentId,
-  // Membalas sebuah balasan tetap menghasilkan balasan pada root yang sama —
-  // mention hanya penanda tujuan, bukan cabang baru.
-  defaultText = "",
+  // Membalas sebuah balasan tetap menghasilkan balasan pada root yang sama.
+  // Tujuannya disimpan sebagai relasi lewat `repliedToId`, bukan teks "@nama"
+  // di dalam isi balasan: teks akan basi begitu penulisnya ganti username.
+  repliedTo = null,
   onDone,
   onCancel,
 }: {
   parentId: number;
-  defaultText?: string;
+  repliedTo?: { id: number; username: string } | null;
   onDone: () => void;
   onCancel?: () => void;
 }) {
@@ -34,7 +35,12 @@ export function ReplyForm({
     formState: { errors },
   } = useForm<ReplyQuestionCommentInput>({
     resolver: zodResolver(ReplyQuestionCommentSchema),
-    defaultValues: { parentId, commentText: defaultText, commentImages: [] },
+    defaultValues: {
+      parentId,
+      repliedToId: repliedTo?.id ?? null,
+      commentText: "",
+      commentImages: [],
+    },
   });
 
   const commentImages = useWatch({ control, name: "commentImages" });
@@ -42,13 +48,23 @@ export function ReplyForm({
   function onSubmit(values: ReplyQuestionCommentInput) {
     startTransition(async () => {
       await replyToQuestionCommentAction(values);
-      reset({ parentId, commentText: "", commentImages: [] });
+      reset({
+        parentId,
+        repliedToId: repliedTo?.id ?? null,
+        commentText: "",
+        commentImages: [],
+      });
       onDone();
     });
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="mt-2 flex flex-col gap-2" noValidate>
+      {repliedTo && (
+        <p className="text-xs font-semibold text-muted-foreground">
+          Membalas <span className="font-mono font-black">@{repliedTo.username}</span>
+        </p>
+      )}
       <Field>
         <Textarea placeholder="Tulis balasan..." rows={2} {...register("commentText")} />
         <FieldError errors={[errors.commentText]} />
