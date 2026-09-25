@@ -4,7 +4,7 @@ import { notFound, redirect } from "next/navigation";
 import { FEATURES } from "@/constants";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
-import { createSignedUploadParams } from "@/lib/cloudinary";
+import { createCommentImageUpload, isAllowedCommentImageUrl } from "@/lib/r2";
 import { getQuestionDiscussion, type DiscussionRoot } from "./queries";
 import {
   AddQuestionCommentSchema,
@@ -13,13 +13,24 @@ import {
   ReplyQuestionCommentSchema,
   SetQuestionCommentVisibilitySchema,
   GetQuestionDiscussionSchema,
+  CreateCommentImageUploadSchema,
   type AddQuestionCommentInput,
   type EditQuestionCommentInput,
   type DeleteQuestionCommentInput,
   type ReplyQuestionCommentInput,
   type SetQuestionCommentVisibilityInput,
   type GetQuestionDiscussionInput,
+  type CreateCommentImageUploadInput,
 } from "./schemas";
+
+// Gambar komentar disimpan sebagai URL biasa, jadi tanpa cek ini user bisa
+// menyimpan URL bucket milik orang lain atau host sembarang ke dalam komentarnya.
+// URL Cloudinary lama tetap lolos supaya komentar sebelum migrasi masih bisa disunting.
+function requireOwnedCommentImages(commentImages: string[], userId: number) {
+  if (!commentImages.every((url) => isAllowedCommentImageUrl(url, userId))) {
+    throw new Error("Gambar komentar tidak valid.");
+  }
+}
 
 async function ensureQuestionExists(questionId: number) {
   const question = await prisma.question.findUnique({
@@ -55,6 +66,7 @@ export async function addQuestionCommentAction(input: AddQuestionCommentInput) {
   const { questionId, commentText, commentImages, visibility } = validated.data;
   if (visibility === "PUBLIC" && !FEATURES.questionDiscussion) notFound();
 
+  requireOwnedCommentImages(commentImages, authSession.userId);
   await ensureQuestionExists(questionId);
 
   await prisma.questionComment.create({
@@ -81,6 +93,7 @@ export async function updateQuestionCommentAction(input: EditQuestionCommentInpu
   }
 
   const { commentId, commentText, commentImages } = validated.data;
+  requireOwnedCommentImages(commentImages, authSession.userId);
   await requireOwnLiveComment(commentId, authSession.userId);
 
   await prisma.questionComment.update({
@@ -161,6 +174,7 @@ export async function replyToQuestionCommentAction(input: ReplyQuestionCommentIn
   }
 
   const { parentId, commentText, commentImages } = validated.data;
+  requireOwnedCommentImages(commentImages, authSession.userId);
 
   const target = await prisma.questionComment.findUnique({
     where: { id: parentId },
@@ -210,13 +224,24 @@ export async function getQuestionDiscussionAction(
   return getQuestionDiscussion(validated.data.questionId);
 }
 
-// Client uploads straight to Cloudinary with these signed params — our server
-// never proxies the file itself, and CLOUDINARY_API_SECRET never reaches the client.
-export async function getCommentImageUploadSignatureAction() {
+// Browser meng-PUT langsung ke R2 dengan presigned URL ini; server tidak pernah
+// memproksikan file dan R2_SECRET_ACCESS_KEY tidak pernah sampai ke client.
+// Content-type dan ukuran ikut ditandatangani, jadi R2 sendiri yang menolak
+// upload di luar batas.
+export async function createCommentImageUploadAction(input: CreateCommentImageUploadInput) {
   if (!FEATURES.questionComment) notFound();
 
   const authSession = await getSession();
   if (!authSession) redirect("/login");
 
-  return createSignedUploadParams(`jlpt-exam/comments/${authSession.userId}`);
+  const validated = CreateCommentImageUploadSchema.safeParse(input);
+  if (!validated.success) {
+    throw new Error(validated.error.issues[0]?.message ?? "Permintaan upload tidak valid.");
+  }
+
+  return createCommentImageUpload({
+    userId: authSession.userId,
+    contentType: validated.data.contentType,
+    byteLength: validated.data.byteLength,
+  });
 }

@@ -31,9 +31,9 @@ Stack: Next.js + Prisma + PostgreSQL (Supabase).
   `src/lib/auth.ts`, dan ubah lewat `npm run user:role` — belum ada UI untuk promote.
 - `User.timeZone` menyimpan nama IANA valid dan menjadi sumber batas harian SRS, filter tanggal,
   serta format timestamp user-specific. Existing user dibackfill `Asia/Jakarta`.
-- `User.avatarUrl` hanya menerima URL upload Cloudinary aplikasi pada action profile; file binary tidak disimpan di database.
+- `User.avatarUrl` hanya menerima URL object R2 milik aplikasi pada action profile; file binary tidak disimpan di database. Avatar Cloudinary lama tetap dibaca apa adanya sampai user menggantinya.
 - Avatar baru menyimpan `avatarPublicId`, `avatarFormat`, dan `avatarBytes`. Public ID wajib berada
-  di `jlpt-exam/avatars/{userId}/`, unik, serta diverifikasi melalui Cloudinary Admin API sebelum update.
+  di `jlpt-exam/avatars/{userId}/<uuid>.webp`, unik, serta diverifikasi lewat HeadObject + pembacaan header WebP (harus 512x512) sebelum update.
 - `allowAudioStorage` dan `allowConversationStorage` adalah opt-in terpisah dengan default `false`.
 - `deletionRequestedAt` dan `deletionScheduledFor` harus null bersama atau membentuk jadwal valid.
   Hard-delete user dijalankan cron setelah 7 hari; seluruh relasi user-owned memakai cascade.
@@ -48,7 +48,7 @@ Stack: Next.js + Prisma + PostgreSQL (Supabase).
 - `QuestionComment.deletedById` mencatat siapa yang menghapus. Hapusan pemilik terisi dengan
   `userId` miliknya sendiri, takedown admin terisi dengan id admin. Hanya yang kedua yang boleh
   dipulihkan — memulihkan hapusan pemilik berarti menerbitkan ulang tulisan yang sengaja ia tarik.
-- Takedown hanya mengubah record database. File lampiran di Cloudinary **tidak** dihapus.
+- Takedown hanya mengubah record database. File lampiran di object storage **tidak** dihapus.
 
 ## Struktur Data (hierarki)
 

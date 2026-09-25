@@ -181,7 +181,7 @@ export default async function AdminModerationPage({
                 {entry.commentImages.length > 0 && (
                   <p className="inline-flex items-center gap-1.5 font-mono text-[11px] font-bold text-foreground/60">
                     <ImageIcon className="size-3.5" />
-                    {entry.commentImages.length} lampiran gambar — file di Cloudinary tidak ikut
+                    {entry.commentImages.length} lampiran gambar — file di storage tidak ikut
                     terhapus saat takedown
                   </p>
                 )}

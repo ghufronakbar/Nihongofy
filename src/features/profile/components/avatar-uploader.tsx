@@ -3,55 +3,75 @@
 import { useRef, useState } from "react";
 import { Camera, LoaderCircle, Trash2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getAvatarUploadSignatureAction } from "../actions";
+import {
+  AVATAR_DIMENSION,
+  AVATAR_MAX_FILE_SIZE_BYTES,
+  AVATAR_SOURCE_ACCEPT,
+  AVATAR_SOURCE_CONTENT_TYPES,
+  AVATAR_WEBP_QUALITY,
+} from "@/constants/storage";
+import { createAvatarUploadAction } from "../actions";
 
-const MAX_FILE_SIZE_BYTES = 3 * 1024 * 1024;
-const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
+const ALLOWED_TYPES = new Set<string>(AVATAR_SOURCE_CONTENT_TYPES);
+
+/**
+ * R2 hanya menyimpan byte apa adanya — tidak ada transformasi seperti
+ * `c_fill,g_auto` di Cloudinary. Jadi crop tengah + resize ke 512x512 WebP
+ * dilakukan di browser sebelum upload, dan server memverifikasi ulang dimensi
+ * hasilnya dari header file di R2.
+ */
+async function toSquareAvatarWebp(file: File): Promise<Blob> {
+  const bitmap = await createImageBitmap(file);
+  try {
+    const side = Math.min(bitmap.width, bitmap.height);
+    const canvas = document.createElement("canvas");
+    canvas.width = AVATAR_DIMENSION;
+    canvas.height = AVATAR_DIMENSION;
+
+    const context = canvas.getContext("2d");
+    if (!context) throw new Error("Canvas tidak tersedia.");
+    context.drawImage(
+      bitmap,
+      (bitmap.width - side) / 2,
+      (bitmap.height - side) / 2,
+      side,
+      side,
+      0,
+      0,
+      AVATAR_DIMENSION,
+      AVATAR_DIMENSION,
+    );
+
+    const blob = await new Promise<Blob | null>((resolve) => {
+      canvas.toBlob(resolve, "image/webp", AVATAR_WEBP_QUALITY);
+    });
+    if (!blob) throw new Error("Gagal memproses gambar.");
+    return blob;
+  } finally {
+    bitmap.close();
+  }
+}
 
 async function uploadAvatar(file: File) {
-  const {
-    signature,
-    timestamp,
-    apiKey,
-    cloudName,
-    publicId,
-    allowedFormats,
-    transformation,
-    overwrite,
-  } =
-    await getAvatarUploadSignatureAction();
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("api_key", apiKey);
-  formData.append("timestamp", String(timestamp));
-  formData.append("signature", signature);
-  formData.append("public_id", publicId);
-  formData.append("allowed_formats", allowedFormats);
-  formData.append("transformation", transformation);
-  formData.append("overwrite", String(overwrite));
-
-  const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-    method: "POST",
-    body: formData,
-  });
-
-  if (!response.ok) throw new Error("Upload avatar gagal.");
-
-  const data: unknown = await response.json();
-  if (
-    typeof data !== "object" ||
-    data === null ||
-    !("secure_url" in data) ||
-    !("public_id" in data) ||
-    typeof data.secure_url !== "string" ||
-    typeof data.public_id !== "string" ||
-    data.public_id !== publicId ||
-    !data.secure_url.startsWith("https://res.cloudinary.com/")
-  ) {
-    throw new Error("Respons upload avatar tidak valid.");
+  const image = await toSquareAvatarWebp(file);
+  if (image.size > AVATAR_MAX_FILE_SIZE_BYTES) {
+    throw new Error("Hasil kompresi avatar masih terlalu besar.");
   }
 
-  return { url: data.secure_url, publicId: data.public_id };
+  const { uploadUrl, key, url, contentType } = await createAvatarUploadAction({
+    byteLength: image.size,
+  });
+
+  // Upload langsung ke R2. Content-Type wajib sama persis dengan yang
+  // ditandatangani server, kalau tidak R2 menolak signature-nya.
+  const response = await fetch(uploadUrl, {
+    method: "PUT",
+    headers: { "Content-Type": contentType },
+    body: image,
+  });
+  if (!response.ok) throw new Error("Upload avatar gagal.");
+
+  return { url, publicId: key };
 }
 
 export function AvatarUploader({
@@ -82,7 +102,7 @@ export function AvatarUploader({
       return;
     }
 
-    if (file.size > MAX_FILE_SIZE_BYTES) {
+    if (file.size > AVATAR_MAX_FILE_SIZE_BYTES) {
       setError("Ukuran avatar maksimal 3MB.");
       return;
     }
@@ -111,7 +131,8 @@ export function AvatarUploader({
       <div>
         <p className="font-black">Foto profil</p>
         <p className="mt-1 max-w-md text-sm text-muted-foreground">
-          Gambar disimpan di Cloudinary project. Format JPG, PNG, atau WebP hingga 3MB.
+          Gambar dipotong otomatis menjadi {AVATAR_DIMENSION}&times;{AVATAR_DIMENSION}. Format JPG,
+          PNG, atau WebP hingga 3MB.
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
           <button
@@ -142,7 +163,7 @@ export function AvatarUploader({
         <input
           ref={inputRef}
           type="file"
-          accept="image/jpeg,image/png,image/webp"
+          accept={AVATAR_SOURCE_ACCEPT}
           className="hidden"
           onChange={(event) => {
             void handleFile(event.target.files?.[0]);

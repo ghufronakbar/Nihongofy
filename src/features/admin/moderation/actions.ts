@@ -20,7 +20,7 @@ import {
 // Tidak ada invalidasi cache di sini: thread diskusi dan hitungannya memang
 // tidak di-`unstable_cache` dan tidak punya tag di CACHE_TAGS.
 //
-// Catatan Cloudinary: takedown hanya mengubah record database. File gambar yang
+// Catatan storage: takedown hanya mengubah record database. File gambar yang
 // sudah diunggah tidak dihapus — pembersihan asset fisik di luar scope modul ini.
 
 /**

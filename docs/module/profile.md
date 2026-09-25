@@ -30,7 +30,7 @@ Profile tidak punya flag sendiri. Section "Aktivitas belajar" dan "Lanjut belaja
 - Statistik jumlah kana yang pernah benar, vocabulary yang sudah dimulai, practice selesai, dan exam selesai.
 - Edit display name; email akun tampil read-only dan immutable.
 - Username legacy tampil read-only.
-- Upload, ganti, atau lepas avatar Cloudinary.
+- Upload, ganti, atau lepas avatar di Cloudflare R2.
 - Timezone IANA dipilih lewat combobox searchable dengan offset UTC untuk batas harian SRS,
   filter tanggal, dan format timestamp user-specific.
 - Ganti password dengan validasi password sekarang, atau buat password pertama setelah
@@ -43,8 +43,11 @@ Profile tidak punya flag sendiri. Section "Aktivitas belajar" dan "Lanjut belaja
 - Export JSON untuk data akun dan aktivitas user tanpa password, token, session, atau rate-limit.
 - Penghapusan akun dengan re-authentication, logout semua perangkat, grace period 7 hari, login
   recovery, pembatalan, dan hard-delete batch melalui cron.
-- Avatar baru memakai public ID unik pada folder user, metadata Cloudinary yang diverifikasi server,
-  transform 512x512, batas 3 MB, serta cleanup asset lama dan upload orphan.
+- Avatar baru memakai object key unik pada folder user (`jlpt-exam/avatars/{userId}/<uuid>.webp`),
+  di-crop dan di-resize ke 512x512 WebP di browser lalu diverifikasi ulang server lewat HeadObject
+  dan pembacaan header WebP, batas 3 MB, serta cleanup asset lama dan upload orphan.
+- Presigned PUT mengikat content-type dan content-length, sehingga R2 menolak upload di luar batas
+  tanpa bergantung pada validasi client.
 
 ## Data dan Caching
 
@@ -74,8 +77,10 @@ menggabungkan latihan seksi sebagai mock penuh.
   progress, attempt/jawaban, practice/jawaban, comment, token, setting, dan article interaction ikut
   terhapus.
 - Konten global seperti bank soal, flashcard, paket, dan artikel tidak dihapus.
-- Avatar dijadwalkan sebagai orphan sebelum row user dihapus. Kegagalan Cloudinary tidak menahan
+- Avatar dijadwalkan sebagai orphan sebelum row user dihapus. Kegagalan R2 tidak menahan
   penghapusan data akun dan akan dicoba lagi oleh cron.
+- Avatar warisan Cloudinary (object key tanpa ekstensi) dilewati saat penghapusan: objeknya tidak ada
+  di R2, jadi file lama tertinggal di Cloudinary dan perlu dibersihkan manual.
 
 ## Keterbatasan Aktual
 

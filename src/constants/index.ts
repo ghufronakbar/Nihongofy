@@ -22,9 +22,13 @@ const envSchema = z
     DATABASE_URL: z.string().min(1),
     DIRECT_URL: z.string().min(1),
     SESSION_SECRET: z.string().min(1),
-    CLOUDINARY_CLOUD_NAME: z.string().min(1),
-    CLOUDINARY_API_KEY: z.string().min(1),
-    CLOUDINARY_API_SECRET: z.string().min(1),
+    R2_ACCOUNT_ID: z.string().trim().min(1),
+    R2_ACCESS_KEY_ID: z.string().trim().min(1),
+    R2_SECRET_ACCESS_KEY: z.string().min(1),
+    R2_BUCKET: z.string().trim().min(1),
+    // Custom domain bucket R2. Trailing slash dinormalisasi supaya penyusunan
+    // URL object cukup `${base}/${key}`.
+    R2_PUBLIC_BASE_URL: z.url().transform((value) => value.replace(/\/+$/, "")),
     UPSTASH_REDIS_REST_URL: z.url(),
     UPSTASH_REDIS_REST_TOKEN: z.string().min(1),
     REDIS_PREFIX: z.string().trim().min(1).max(64),
@@ -118,7 +122,6 @@ export const PASSWORD_RESET_DURATION_SECONDS = 15 * 60;
 export const EMAIL_SEND_COOLDOWN_SECONDS = 60;
 export const ACCOUNT_DELETION_GRACE_PERIOD_SECONDS = 7 * 24 * 60 * 60;
 export const ACCOUNT_DELETION_CRON_BATCH_SIZE = 10;
-export const AVATAR_MAX_FILE_SIZE_BYTES = 3 * 1024 * 1024;
 export const AVATAR_ORPHAN_GRACE_PERIOD_SECONDS = 2 * 60 * 60;
 export const AVATAR_CLEANUP_CRON_BATCH_SIZE = 10;
 export const GOOGLE_OAUTH_STATE_COOKIE_NAME = "google_oauth_state";

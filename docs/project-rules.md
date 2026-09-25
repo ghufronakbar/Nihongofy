@@ -6,7 +6,7 @@
 |---|---|
 | Framework | Next.js (App Router) |
 | Database | PostgreSQL (Supabase) via Prisma |
-| File storage | Cloudinary (audio/images; DB stores URLs only) |
+| File storage | Cloudflare R2 via S3 API (`@aws-sdk/client-s3`, presigned PUT; DB stores URLs only). Media bank soal lama masih dilayani Cloudinary read-only. |
 | Styling | Tailwind CSS v4 + shadcn/ui |
 | State | React Context |
 | Auth | Custom credential + Google OIDC: `bcryptjs` + `jose`, Redis session registry/state, dan token PostgreSQL |
@@ -70,7 +70,7 @@ provider OAuth lain dan MFA tetap memerlukan persetujuan terpisah.
 * **Location:** `./src/constants/index.ts`
 * NEVER access `process.env.YOUR_VARIABLE` directly inside UI components, hooks, or business logic.
 * All environment variables and global constants MUST be recalled, validated, and exported from `./src/constants/index.ts`.
-* Required env vars: `APP_URL`, `DATABASE_URL`, `DIRECT_URL`, `SESSION_SECRET`, konfigurasi Cloudinary, `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`, `REDIS_PREFIX`, konfigurasi SMTP, serta `CLOUDFLARE_TURNSTILE_SITEKEY` dan `CLOUDFLARE_TURNSTILE_SECRETKEY`. `GOOGLE_CLIENT_ID` dan `GOOGLE_CLIENT_SECRET` harus diisi berpasangan untuk mengaktifkan Google OAuth. `CRON_SECRET` wajib di deployment yang menjalankan cleanup cron. Validate presence at startup (zod schema in the constants file); fail fast with a clear error if missing.
+* Required env vars: `APP_URL`, `DATABASE_URL`, `DIRECT_URL`, `SESSION_SECRET`, konfigurasi R2 (`R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET`, `R2_PUBLIC_BASE_URL`), `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`, `REDIS_PREFIX`, konfigurasi SMTP, serta `CLOUDFLARE_TURNSTILE_SITEKEY` dan `CLOUDFLARE_TURNSTILE_SECRETKEY`. `GOOGLE_CLIENT_ID` dan `GOOGLE_CLIENT_SECRET` harus diisi berpasangan untuk mengaktifkan Google OAuth. `CRON_SECRET` wajib di deployment yang menjalankan cleanup cron. Validate presence at startup (zod schema in the constants file); fail fast with a clear error if missing.
 * NEVER expose server-only secrets to the client (no `NEXT_PUBLIC_` prefix on secrets).
 * **Feature flags:** setiap modul punya env `FEATURES_<NAMA>` (`FEATURES_KANA`, `FEATURES_FLASHCARD`, `FEATURES_PRACTICE`, `FEATURES_TEST_PACKAGE`, `FEATURES_HISTORY`, `FEATURES_PROGRESS`, `FEATURES_ANALYTICS`, `FEATURES_ARTICLE`, `FEATURES_QUESTION_COMMENT`, `FEATURES_CONVERSATION`, `FEATURES_SPEAKING`). Nilai `"true"`/`"false"`, kosong = `true`. Baca hanya lewat objek `FEATURES` dari `src/constants/index.ts`; komponen client menerimanya lewat props bertipe `FeatureFlags`. Flag tidak saling mewajibkan, kecuali `FEATURES_SPEAKING` yang otomatis mati bila conversation mati.
 * **Menambah route atau link modul:** route baru di bawah segmen modul otomatis terlindungi oleh `layout.tsx` segmen tersebut (`notFound()` saat flag mati). Link lintas modul (nav, CTA, kartu shortcut, sitemap, robots) wajib disembunyikan bila flag modul tujuannya mati. API route dan Server Action yang dipanggil di luar segmen modul wajib mengecek flag sendiri.

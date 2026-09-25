@@ -69,7 +69,7 @@ export function ModerationActions({
             onClick={() => {
               if (
                 !window.confirm(
-                  "Takedown entri ini?\n\nBaris tidak dihapus dari database, jadi masih dapat dipulihkan dan tetap terhitung dalam riwayat user. File gambar di Cloudinary tidak ikut dihapus.",
+                  "Takedown entri ini?\n\nBaris tidak dihapus dari database, jadi masih dapat dipulihkan dan tetap terhitung dalam riwayat user. File gambar di storage tidak ikut dihapus.",
                 )
               )
                 return;
