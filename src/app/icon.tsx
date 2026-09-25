@@ -25,7 +25,7 @@ export default function Icon() {
           fontFamily: "sans-serif",
         }}
       >
-        楽
+        語
       </div>
     ),
     {

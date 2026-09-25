@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Tanoshii Japanese",
-    short_name: "Tanoshii",
+    name: "Nihongofy",
+    short_name: "Nihongofy",
     description: "Platform belajar bahasa Jepang & simulasi latihan JLPT terstruktur.",
     start_url: "/",
     display: "standalone",

@@ -22,14 +22,14 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: SITE_URL,
   title: {
-    default: "Tanoshii Japanese - Belajar Bahasa Jepang & Simulasi JLPT",
-    template: "%s | Tanoshii Japanese",
+    default: "Nihongofy - Belajar Bahasa Jepang & Simulasi JLPT",
+    template: "%s | Nihongofy",
   },
   description:
     "Platform belajar bahasa Jepang dan simulasi JLPT (N5 - N1) yang interaktif, terarah, dan menyenangkan. Lengkap dengan Kana, kosakata, latihan cepat, mock test, dan analitik.",
-  applicationName: "Tanoshii Japanese",
+  applicationName: "Nihongofy",
   keywords: [
-    "Tanoshii Japanese",
+    "Nihongofy",
     "belajar bahasa Jepang",
     "JLPT N5",
     "JLPT N4",
@@ -45,9 +45,9 @@ export const metadata: Metadata = {
     "bunpou",
     "choukai",
   ],
-  authors: [{ name: "Tanoshii Japanese" }],
-  creator: "Tanoshii Japanese",
-  publisher: "Tanoshii Japanese",
+  authors: [{ name: "Nihongofy" }],
+  creator: "Nihongofy",
+  publisher: "Nihongofy",
   formatDetection: {
     email: false,
     address: false,
@@ -57,17 +57,17 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "Tanoshii Japanese - Belajar Bahasa Jepang & Simulasi JLPT",
+    title: "Nihongofy - Belajar Bahasa Jepang & Simulasi JLPT",
     description:
       "Platform belajar bahasa Jepang dan simulasi JLPT (N5 - N1) dengan cara yang menyenangkan, tegas, dan terarah.",
     url: SITE_URL,
-    siteName: "Tanoshii Japanese",
+    siteName: "Nihongofy",
     locale: "id_ID",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Tanoshii Japanese - Belajar Bahasa Jepang & Simulasi JLPT",
+    title: "Nihongofy - Belajar Bahasa Jepang & Simulasi JLPT",
     description:
       "Platform belajar bahasa Jepang dan simulasi JLPT (N5 - N1) dengan cara yang menyenangkan, tegas, dan terarah.",
   },
@@ -76,7 +76,7 @@ export const metadata: Metadata = {
       { url: "/icon.svg", type: "image/svg+xml" },
     ],
     apple: [
-      { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
+      { url: "/apple-icon", sizes: "180x180", type: "image/png" },
     ],
   },
 };

@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     "Panduan belajar, strategi JLPT, tata bahasa, kosakata, dan latihan bahasa Jepang yang bisa langsung dipraktikkan.",
   alternates: { canonical: "/article" },
   openGraph: {
-    title: "Artikel Belajar Bahasa Jepang | Tanoshii Japanese",
+    title: "Artikel Belajar Bahasa Jepang | Nihongofy",
     description:
       "Panduan belajar, strategi JLPT, tata bahasa, kosakata, dan latihan bahasa Jepang.",
     url: "/article",
@@ -40,7 +40,7 @@ export default async function ArticleIndexPage() {
               <span className="block text-neo-blue [text-shadow:3px_3px_0_#111]">PAHAMI POLANYA.</span>
             </h1>
             <p className="page-reveal page-reveal-delay-2 mt-6 max-w-[58ch] text-lg leading-8 font-semibold text-foreground/70">
-              Panduan belajar bahasa Jepang yang singkat, konkret, dan terhubung dengan latihan di Tanoshii Japanese.
+              Panduan belajar bahasa Jepang yang singkat, konkret, dan terhubung dengan latihan di Nihongofy.
             </p>
           </div>
 

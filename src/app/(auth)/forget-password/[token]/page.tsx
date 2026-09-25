@@ -7,7 +7,7 @@ import { getPasswordResetTokenPageData } from "@/features/auth/queries";
 
 export const metadata: Metadata = {
   title: "Buat Password Baru",
-  description: "Atur ulang password akun Tanoshii Japanese.",
+  description: "Atur ulang password akun Nihongofy.",
   robots: { index: false, follow: false },
   referrer: "no-referrer",
 };

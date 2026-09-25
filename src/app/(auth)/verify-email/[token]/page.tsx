@@ -7,7 +7,7 @@ import { getEmailTokenPageData } from "@/features/auth/queries";
 
 export const metadata: Metadata = {
   title: "Konfirmasi Email",
-  description: "Konfirmasi alamat email Tanoshii Japanese.",
+  description: "Konfirmasi alamat email Nihongofy.",
   robots: { index: false, follow: false },
   referrer: "no-referrer",
 };
