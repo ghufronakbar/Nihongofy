@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
 import { LayoutDashboard, LogIn, Menu } from "lucide-react";
 import { BrandMark } from "@/components/marketing/brand-mark";
 import { PageContainer } from "@/components/marketing/page-container";
@@ -32,6 +32,132 @@ function isActivePath(pathname: string, href: string) {
   if (href === "/") return pathname === "/";
   if (href.startsWith("/#")) return false;
   return pathname.startsWith(href.split("#")[0]);
+}
+
+function getLoginHref(pathname: string, searchParams?: URLSearchParams | null) {
+  const search = searchParams?.toString();
+  const currentPath = search ? `${pathname}?${search}` : pathname;
+  if (!currentPath || currentPath === "/login" || currentPath === "/register") {
+    return "/login";
+  }
+  return {
+    pathname: "/login",
+    query: { next: currentPath },
+  };
+}
+
+function HeaderAuthLinkView({
+  isAuthenticated,
+  variant,
+  loginHref,
+  onItemClick,
+}: {
+  isAuthenticated: boolean;
+  variant: "desktop" | "mobile";
+  loginHref: string | { pathname: string; query: { next: string } };
+  onItemClick?: () => void;
+}) {
+  if (isAuthenticated) {
+    if (variant === "mobile") {
+      return (
+        <Link
+          href="/dashboard"
+          onClick={onItemClick}
+          className="neo-button mt-3 bg-neo-blue py-3"
+        >
+          <LayoutDashboard />
+          Buka dashboard
+        </Link>
+      );
+    }
+    return (
+      <Link
+        href="/dashboard"
+        className="neo-button min-h-10 bg-neo-green px-4 py-2"
+      >
+        <LayoutDashboard />
+        Dashboard
+      </Link>
+    );
+  }
+
+  if (variant === "mobile") {
+    return (
+      <Link
+        href={loginHref}
+        onClick={onItemClick}
+        className="neo-button mt-3 bg-neo-blue py-3"
+      >
+        <LogIn />
+        Masuk ke akun
+      </Link>
+    );
+  }
+
+  return (
+    <Link
+      href={loginHref}
+      className="neo-button min-h-10 bg-white px-4 py-2"
+    >
+      <LogIn />
+      Masuk
+    </Link>
+  );
+}
+
+function HeaderAuthLinkWithParams({
+  isAuthenticated,
+  variant,
+  onItemClick,
+}: {
+  isAuthenticated: boolean;
+  variant: "desktop" | "mobile";
+  onItemClick?: () => void;
+}) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const loginHref = getLoginHref(pathname, searchParams);
+
+  return (
+    <HeaderAuthLinkView
+      isAuthenticated={isAuthenticated}
+      variant={variant}
+      loginHref={loginHref}
+      onItemClick={onItemClick}
+    />
+  );
+}
+
+function HeaderAuthLink({
+  isAuthenticated,
+  variant,
+  onItemClick,
+}: {
+  isAuthenticated: boolean;
+  variant: "desktop" | "mobile";
+  onItemClick?: () => void;
+}) {
+  const pathname = usePathname();
+  const fallbackHref = getLoginHref(pathname);
+
+  return (
+    <Suspense
+      fallback={
+        <HeaderAuthLinkView
+          isAuthenticated={isAuthenticated}
+          variant={variant}
+          loginHref={fallbackHref}
+          onItemClick={onItemClick}
+        />
+      }
+    >
+      <HeaderAuthLinkWithParams
+        isAuthenticated={isAuthenticated}
+        variant={variant}
+        onItemClick={onItemClick}
+      />
+    </Suspense>
+  );
 }
 
 export function PublicHeader({
@@ -70,16 +196,7 @@ export function PublicHeader({
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">
-          <Link
-            href={isAuthenticated ? "/dashboard" : "/login"}
-            className={cn(
-              "neo-button min-h-10 px-4 py-2",
-              isAuthenticated ? "bg-neo-green" : "bg-white",
-            )}
-          >
-            {isAuthenticated ? <LayoutDashboard /> : <LogIn />}
-            {isAuthenticated ? "Dashboard" : "Masuk"}
-          </Link>
+          <HeaderAuthLink isAuthenticated={isAuthenticated} variant="desktop" />
         </div>
 
         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
@@ -121,14 +238,11 @@ export function PublicHeader({
                   {item.label}
                 </Link>
               ))}
-              <Link
-                href={isAuthenticated ? "/dashboard" : "/login"}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="neo-button mt-3 bg-neo-blue py-3"
-              >
-                {isAuthenticated ? <LayoutDashboard /> : <LogIn />}
-                {isAuthenticated ? "Buka dashboard" : "Masuk ke akun"}
-              </Link>
+              <HeaderAuthLink
+                isAuthenticated={isAuthenticated}
+                variant="mobile"
+                onItemClick={() => setIsMobileMenuOpen(false)}
+              />
             </nav>
           </SheetContent>
         </Sheet>
