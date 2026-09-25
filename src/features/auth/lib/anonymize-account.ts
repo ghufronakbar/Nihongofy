@@ -19,6 +19,29 @@ export async function anonymizeAccount(userId: number) {
   const anonymizedAt = new Date();
 
   await prisma.$transaction(async (tx) => {
+    const current = await tx.user.findUniqueOrThrow({
+      where: { id: userId },
+      select: { username: true },
+    });
+
+    // Handle lama ikut masuk ke username anonim, dan dipotong agar muat dalam
+    // batas 30 karakter. Dua handle dengan awalan sama yang dianonimkan pada
+    // detik yang sama akan menghasilkan string identik, jadi bentrokannya
+    // diselesaikan dengan salt acak — bukan dibiarkan menggagalkan cron.
+    let anonymizedUsername = buildAnonymizedUsername(current.username, anonymizedAt);
+    for (let attempt = 0; attempt < 10; attempt += 1) {
+      const clash = await tx.user.findUnique({
+        where: { username: anonymizedUsername },
+        select: { id: true },
+      });
+      if (!clash || clash.id === userId) break;
+      anonymizedUsername = buildAnonymizedUsername(
+        current.username,
+        anonymizedAt,
+        Math.random().toString(36).slice(2, 6),
+      );
+    }
+
     // Comment tidak dihapus, hanya di-soft delete: root menjadi tombstone dan
     // balasan orang lain di bawahnya tetap terbaca. deletedById menunjuk diri
     // sendiri supaya moderasi tidak salah membacanya sebagai takedown admin.
@@ -61,10 +84,12 @@ export async function anonymizeAccount(userId: number) {
     await tx.user.update({
       where: { id: userId },
       data: {
-        username: buildAnonymizedUsername(userId, anonymizedAt),
+        username: anonymizedUsername,
         displayName: ANONYMIZED_DISPLAY_NAME,
         // Email dikosongkan supaya orangnya dapat mendaftar lagi dengan alamat
-        // yang sama, dan supaya tidak ada jalur login yang tersisa.
+        // yang sama, dan supaya tidak ada jalur login yang tersisa. Username
+        // lama justru dipertahankan di dalam handle anonim — keputusan produk,
+        // lihat `buildAnonymizedUsername`.
         email: null,
         emailVerifiedAt: null,
         password: null,

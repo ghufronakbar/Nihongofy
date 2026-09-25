@@ -85,7 +85,7 @@ tidak membedakan "format salah" dari "password salah".
 
 Aturan handle ada di `src/lib/username.ts`: huruf kecil, angka, titik, underscore, 3–30 karakter,
 titik tidak boleh di ujung atau berurutan, unik, dan daftar kata terlarang mencakup segmen route
-serta prefix `deleted_`. Username dibuat otomatis saat register credential maupun Google
+serta akhiran `_deleted`. Username dibuat otomatis saat register credential maupun Google
 (`generateUniqueUsername`, suffix acak agar jumlah user tidak bocor) dan dapat diubah dari
 `/profile`.
 
@@ -107,10 +107,15 @@ Yang dilakukan saat jatuh tempo:
   relasi berarti data pribadi tertinggal di akun yang mengira dirinya sudah dihapus.**
 - `OAuthAccount` wajib dihapus; tanpa itu login Google menghidupkan kembali akun lewat provider
   subject yang masih tertaut.
-- Baris user disetel `username = deleted_<unix>_<id>`, `displayName = "Pengguna dihapus"`, `email`
-  dan `password` dikosongkan, avatar dihapus, `anonymizedAt` terisi, `deletionScheduledFor`
-  dikosongkan agar cron tidak memproses ulang.
-- Username lama sengaja **tidak** dipertahankan: handle publik adalah identitas orang tersebut.
+- Baris user disetel `username = <username_lama>_<unix>_deleted`, `displayName = "Pengguna
+  dihapus"`, `email` dan `password` dikosongkan, avatar dihapus, `anonymizedAt` terisi, dan
+  `deletionScheduledFor` dikosongkan agar cron tidak memproses ulang.
+- Handle lama **ikut dipertahankan** di dalam username anonim (keputusan produk). Konsekuensinya
+  jejak identitas pemiliknya tidak sepenuhnya hilang dari baris itu — pertimbangkan ulang bila
+  suatu saat ada kewajiban penghapusan yang lebih ketat.
+- Handle lama dipotong agar hasilnya muat dalam `VARCHAR(30)`. Dua handle dengan awalan sama yang
+  dianonimkan pada detik yang sama menghasilkan string identik, jadi bentrokannya diselesaikan
+  dengan salt acak alih-alih menggagalkan cron.
 - `loginAction` menolak akun dengan `anonymizedAt` terisi.
 
 ## Cloudflare Turnstile
@@ -185,7 +190,7 @@ Yang dilakukan saat jatuh tempo:
 - Login memakai email saja. Mengirim username sebagai identifier harus gagal dengan pesan
   kredensial generik yang sama.
 - Ganti username dari `/profile` tidak boleh memengaruhi kemampuan login.
-- Username yang sudah dipakai, memakai prefix `deleted_`, atau termasuk kata terlarang harus
+- Username yang sudah dipakai, berakhiran `_deleted`, atau termasuk kata terlarang harus
   ditolak dengan pesan yang jelas.
 - Setelah anonimisasi: login dengan email lama gagal, login Google gagal, thread diskusi yang
   pernah dibalas orang lain masih tampil dengan tombstone, dan balasan orang lain tetap ada.
