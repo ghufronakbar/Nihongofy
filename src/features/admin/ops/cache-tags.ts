@@ -12,7 +12,11 @@ export const INVALIDATABLE_TAGS = {
   practiceCatalog: CACHE_TAGS.practiceCatalog,
   articleList: CACHE_TAGS.articleList,
   articleFacets: CACHE_TAGS.articleFacets,
-  flashcardSystemCatalog: CACHE_TAGS.flashcardSystemCatalog,
 } as const;
+
+// `flashcardSystemCatalog` sengaja TIDAK ada di sini. Tag-nya terdefinisi di
+// CACHE_TAGS, tetapi tidak ada query yang mengikatnya — halaman katalog publik
+// membaca `flashcardSystemDeck` langsung tanpa `unstable_cache`. Tombol untuk
+// tag itu akan tampak bekerja padahal tidak mengubah apa pun.
 
 export type InvalidatableTag = keyof typeof INVALIDATABLE_TAGS;

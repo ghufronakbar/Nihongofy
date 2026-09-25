@@ -29,7 +29,10 @@ import {
 
 export type DeckActionResult = { ok: true; message?: string } | { ok: false; message: string };
 
-// Katalog deck bawaan dibaca halaman "Tambah deck" lewat satu tag global.
+// Halaman katalog publik saat ini membaca `flashcardSystemDeck` langsung tanpa
+// `unstable_cache`, jadi perubahan di sini sudah langsung terlihat dan panggilan
+// ini belum berpengaruh apa-apa. Dipertahankan supaya invalidasinya sudah benar
+// begitu katalog itu di-cache — tag-nya memang sudah terdefinisi di CACHE_TAGS.
 function revalidateCatalog() {
   updateTag(CACHE_TAGS.flashcardSystemCatalog);
 }
