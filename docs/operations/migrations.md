@@ -33,6 +33,26 @@ contract wajib memiliki migration dan catatan ringkas di dokumen/PR perubahan. J
 
 ## Ledger
 
+### 25 September 2026 - Atribusi penghapusan komentar (deletedById)
+
+- Status: deployed
+- Migration: `prisma/migrations/20260925180000_comment_deleted_by/migration.sql`
+- Alasan: moderasi admin membutuhkan pembeda antara takedown admin dan hapusan pemilik. Hanya
+  takedown admin yang boleh dipulihkan; memulihkan hapusan pemilik berarti menerbitkan ulang
+  tulisan yang sengaja ia tarik.
+- Object terdampak: kolom `QuestionComment.deletedById`, foreign key ke `User` dengan
+  `ON DELETE SET NULL`, index `QuestionComment_deletedById_idx` dan `QuestionComment_sharedAt_idx`.
+- Data existing: baris yang sudah `deletedAt` berasal dari sebelum admin ada, jadi seluruhnya
+  dibackfill `deletedById = userId` (hapusan pemilik) agar tidak tertukar dengan takedown admin.
+- Risiko operasi: kolom nullable dan dua index pada tabel yang masih kecil. SET NULL dipilih supaya
+  menghapus akun admin tidak ikut menghapus komentar milik user lain yang pernah ia takedown.
+- Validasi: `npx prisma validate`, `prisma migrate deploy`, dan `npm run verify` lulus. Dua cabang
+  state diuji lewat HTTP: entri yang dihapus pemilik tampil tanpa tombol pulihkan, entri hasil
+  takedown admin tampil dengan tombol pulihkan dan nama admin yang menghapusnya.
+- Refresh setelah deploy: redeploy agar Prisma Client terbaru aktif. Tidak ada cache yang perlu
+  diinvalidasi — thread diskusi memang tidak di-cache.
+- Owner: Engineering Owner.
+
 ### 25 September 2026 - Role statis USER/ADMIN
 
 - Status: deployed
