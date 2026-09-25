@@ -20,11 +20,12 @@ Folder ini mendokumentasikan kondisi aplikasi berdasarkan kode, fixture, dan dat
 | [Progress dan export](progress.md) | Selesai | Tabel per attempt serta export XLSX/PDF aktif; belum ada grafik dan data development masih empty state. |
 | [Profile](profile.md) | Selesai dengan gap account lifecycle | Edit akun, avatar, password, overview, dan SRS settings aktif. |
 | [Article](article.md) | Selesai, dikelola lewat seed | Listing, search, detail, SEO, save/favorite, dan view aktif; belum ada CMS atau halaman koleksi tersimpan. |
-| [Question comments](question-comment.md) | Selesai untuk catatan pribadi | CRUD dan lampiran Cloudinary aktif; bukan komentar publik/kolaboratif. |
+| [Question comments](question-comment.md) | Selesai, kini termasuk diskusi publik | Catatan pribadi, berbagi ke diskusi, balasan satu tingkat, dan permalink `/discussion/[commentId]` aktif; moderasi, notifikasi, dan rate limit belum ada. |
 | [Japanese content rendering](japanese-content-rendering.md) | Fungsional dengan gap format | Furigana, underline, slot, tabel, dan multi-passage aktif; newline dan Markdown fixture belum selalu dirender dengan benar. |
 | [Shared study utilities](study.md) | Selesai sederhana | Saat ini hanya menyediakan TTS browser bersama untuk kana dan flashcard. |
 | [Conversation dan speaking](conversation-speaking.md) | Versi awal fungsional | Teks dan suara berjalan end-to-end dengan session tersimpan dan provider mock/OpenAI; quota belum ditegakkan, moderation dan retention belum ada. Rancangan: [conversation-speaking-design.md](conversation-speaking-design.md); aset karakter: [conversation-persona-assets.md](conversation-persona-assets.md). |
 | [Content data dan seeding](content-data.md) | Infrastruktur aktif | Import tervalidasi tersedia; source fixture dan isi database development belum sinkron penuh. |
+| [Admin dashboard](admin.md) | Fondasi selesai, area fitur belum | Role statis `USER`/`ADMIN`, guard, shell `/admin`, dan overview aktif; bank soal, pembahasan, artikel, moderasi, dan user masih placeholder dan tetap dikerjakan lewat script CLI di `prisma/`. |
 
 ## Feature Flag
 
@@ -44,6 +45,7 @@ di-prerender saat build, jadi keduanya baru berubah setelah redeploy.
 | `FEATURES_ANALYTICS` | [Analytics](analytics.md#feature-flag) | `/analytics` |
 | `FEATURES_ARTICLE` | [Article](article.md#feature-flag) | `/article/*` |
 | `FEATURES_QUESTION_COMMENT` | [Question comments](question-comment.md#feature-flag) | Tidak ada route; section catatan dan action-nya dinonaktifkan |
+| `FEATURES_QUESTION_DISCUSSION` | [Question comments](question-comment.md#feature-flag) | `/discussion/*`; tombol diskusi, bagikan, dan balas tidak dirender |
 | `FEATURES_CONVERSATION` | [Conversation](conversation-speaking.md#feature-flag) | `/conversation/*`, `/api/conversation/*` |
 | `FEATURES_SPEAKING` | [Speaking](conversation-speaking.md#feature-flag) | `/speaking/*` |
 
@@ -56,12 +58,14 @@ Aturan umum:
   [Public shell](public-shell.md#feature-flag), [Dashboard](dashboard.md#feature-flag), dan
   [Profile](profile.md#feature-flag).
 - Flag tidak saling mewajibkan; halaman yang menautkan modul lain menyembunyikan link tersebut.
-  Satu-satunya ketergantungan: `FEATURES_SPEAKING` ikut mati bila conversation mati.
+  Dua ketergantungan: `FEATURES_SPEAKING` ikut mati bila conversation mati, dan
+  `FEATURES_QUESTION_DISCUSSION` ikut mati bila question comment mati.
 - Data milik modul yang mati tidak dihapus.
 - Hanya conversation, question comment, dan API export flashcard yang memeriksa flag di sisi
   server action/API. Server Action modul lain belum dijaga, sehingga tab lama yang masih terbuka
   tetap dapat memanggilnya.
-- Auth, dashboard, profile, dan shared utilities tidak punya flag.
+- Auth, dashboard, profile, dan shared utilities tidak punya flag. Admin juga tidak: aksesnya
+  ditentukan role, dan mematikannya lewat env akan mengunci operator dari alat pemulihannya.
 
 ## Snapshot Data Development
 

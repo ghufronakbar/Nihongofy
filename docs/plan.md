@@ -501,6 +501,146 @@ supaya edit tidak perlu disinkronkan antar tabel.
 - [ ] Moderasi, notifikasi balasan, rate limit posting, dan pembersihan asset Cloudinary —
   lihat Admin Dashboard tahap 5
 
+## Admin Dashboard (`/admin`)
+
+Rancangan lengkap: `docs/module/admin.md`. Role statis `USER`/`ADMIN` saja — tanpa permission
+granular, tanpa tabel role/permission. Urutannya mengikat: tahap 1 adalah prasyarat semua
+tahap lain, dan tahap 2–3 menutup gap konten yang paling menyakitkan bila scope perlu dipotong.
+
+### Tahap 1 — Role & Fondasi (prasyarat)
+
+- [x] Schema: `enum UserRole { USER ADMIN }` + `User.role` default `USER` + `@@index([role])`
+- [x] Migration SQL tulis tangan `20260925150000_user_role` + `prisma migrate deploy` (jangan
+  `migrate dev` — shadow DB Supabase). Ledger di `docs/operations/migrations.md`
+- [x] `npm run user:role -- --email <email> --role ADMIN` (`prisma/set-user-role.mjs`) —
+  **bukan** lewat UI, dan bukan model "user pertama jadi admin". Menolak demote admin terakhir;
+  `--list` menampilkan admin saat ini
+- [x] `src/lib/auth.ts`: `getSessionUser()` dan `requireAdmin()`. Role dibaca dari database per
+  request (dibungkus `cache()`), **tidak** dimasukkan ke payload JWT (JWT berlaku 7 hari → demote
+  tidak akan langsung berlaku)
+- [x] `requireAdmin()` melempar `notFound()`, bukan redirect ke login, supaya keberadaan area
+  admin tidak bocor — guest dan user biasa mendapat 404 yang identik
+- [x] `/admin` sengaja **tidak** didaftarkan di `src/proxy.ts` — proxy hanya tahu "ada session"
+  sehingga guest di-redirect ke `/login?next=/admin` (membocorkan bahwa route itu ada) sementara
+  user biasa dapat 404. Guard di layout memberi 404 identik untuk keduanya
+- [x] `src/app/admin/layout.tsx` memanggil `requireAdmin()` + `AdminSidebar` terpisah dari route
+  group `(dashboard)`, `robots: noindex`
+- [x] Placeholder jujur untuk 8 area yang belum dikerjakan, supaya sidebar tidak 404 dan statusnya
+  terbaca (`AdminPlaceholder`). Hapus tiap placeholder saat tahapnya selesai
+- [x] Perbarui `docs/project-rules.md` §4 — catatan "role hierarchy memerlukan persetujuan
+  terpisah" sudah tidak berlaku
+- [x] `/admin` overview: paket & soal per level, cakupan pembahasan, antrean `answerKeyDoubt`,
+  pembahasan AI belum direview, user, attempt 7 hari, entri diskusi baru, dan status katalog deck.
+  Sengaja tidak di-cache — halaman ini justru dibuka untuk melihat kondisi terkini
+- [ ] Perbandingan "fixture di repo vs paket di database" belum ada: membaca
+  `src/test-package-data/` saat runtime tidak aman di Vercel (hanya file yang ter-trace ikut
+  ter-bundle). Selesaikan bersama layar import di Tahap 2, mis. lewat manifest yang di-generate
+
+### Tahap 2 — Bank Soal
+
+- [ ] `/admin/test-package` — daftar paket per level/tahun
+- [ ] `/admin/test-package/[id]` — detail mondai, soal, pilihan, context
+- [ ] `/admin/test-package/import` — porting `npm run seed:test-package` ke UI, memakai validator
+  yang sama (`prisma/test-package-fixture.mjs`), preview hasil validasi sebelum commit
+- [ ] Guard import tetap: satu paket satu transaksi, paket parsial diblokir, replacement ditolak
+  bila paket sudah punya attempt
+- [ ] `/admin/question/[id]` — editor soal: `questionText`, markup `{漢字|かんじ}`, `__teks__`,
+  slot `[_]`/`[★]`, teks pilihan, `questionAnswer`, `instruction` mondai
+- [ ] Upload/ganti media soal ke Cloudinary (per 25 September 2026: 227 context audio, 144
+  question image, tetapi 0 `questionAudio`; tidak ada jalur upload selain fixture)
+- [ ] Hapus paket — porting `npm run test-package:delete` dengan konfirmasi + cek attempt
+- [ ] Setiap mutasi memanggil `revalidateTag(CACHE_TAGS.testPackageQuestions(id))` dan
+  `testPackageDetail`/`testPackageList` yang relevan
+
+### Tahap 3 — Pembahasan Soal
+
+- [ ] `/admin/explanation` — antrean: belum ada pembahasan, `source = AI` dengan `reviewedAt`
+  null, dan `answerKeyDoubt = true`
+- [ ] Trigger `npm run gen:explanation` per paket/mondai dari UI sebagai job background
+  (model reasoning 2–4 menit per soal — tidak boleh request-response)
+- [ ] `/admin/explanation/[questionId]` — editor `summary`, `detail`, `translation`, `keyPoints`,
+  dan alasan per pilihan
+- [ ] Approval mengisi `reviewedAt` dan mengubah `source` `AI` → `HUMAN` (dua kolom yang sudah ada
+  di schema dan belum pernah terisi)
+- [ ] Layar `answerKeyDoubt` menampilkan `answerKeyDoubtNote` dan menautkan ke editor soal supaya
+  kunci jawaban yang salah ketik bisa langsung diperbaiki
+
+### Tahap 4 — Konten Lain
+
+- [ ] `/admin/article` + `/admin/article/[id]` — CRUD artikel, editor body JSON tervalidasi Zod
+- [ ] `bodyText` di-regenerate otomatis dari body (sama seperti `seed:articles`)
+- [ ] Kelola `ArticleTag`/`ArticleTagLink`, toggle `isFeatured`, atur `publishedAt`
+- [ ] Transisi `ArticleStatus` DRAFT → PUBLISHED → ARCHIVED — enumnya sudah ada, UI-nya belum
+- [ ] `/admin/flashcard-deck` — CRUD `FlashcardSystemDeck`/`FlashcardSystemNote`, toggle
+  `isPublished`, atur `order`, dan `license` wajib terisi (CC BY-SA mengikat atribusi)
+- [ ] UI menyatakan jelas bahwa deck bawaan **disalin** saat user menambahkannya, jadi edit tidak
+  menyebar ke koleksi user yang sudah ada
+
+### Tahap 5 — Moderasi Diskusi Publik
+
+Naik prioritas karena fitur berbagi catatan + balasan membuat `QuestionComment` menjadi
+satu-satunya konten buatan user yang terlihat publik, termasuk oleh guest.
+
+- [ ] `/admin/moderation` — antrean root publik (`parentId = null`, `sharedAt != null`) dan
+  balasan terbaru lintas soal, dengan filter soal/user/tanggal
+- [ ] Action takedown admin **terpisah** dari action user: `requireOwnLiveComment()` menolak
+  non-pemilik dan guard itu jangan dilonggarkan
+- [ ] Unpublish paksa (`visibility = PRIVATE`) dan soft delete paksa (`deletedAt`) oleh admin —
+  tidak pernah hard delete, karena balasan user lain menempel pada root
+- [ ] Takedown menyembunyikan lampiran lewat record database saja — file asli di Cloudinary
+  **tidak** dihapus (di luar scope admin; pembersihan asset urusan bagian lain)
+- [ ] Riwayat kontribusi publik per user dalam satu layar
+- [ ] Rate limit pembuatan catatan/balasan — sekarang tidak ada sama sekali (hanya batas 2.000
+  karakter dan 4 gambar); pakai ulang pola bucket atomik `AuthRateLimit`
+- [ ] Buka `/discussion` untuk mesin pencari setelah moderasi aktif: hapus `disallow` di
+  `src/app/robots.ts` **dan** balik `robots: { index: false }` di
+  `src/app/(public)/discussion/layout.tsx`. `robots.txt` di-prerender saat build → butuh redeploy
+- [ ] Notifikasi balasan (diserahkan dari Fase 8.7, tetapi bukan fitur admin — aplikasi belum
+  punya sistem notifikasi sama sekali; putuskan apakah masuk scope atau jadi fase tersendiri)
+- [ ] Opsional tapi disarankan: `QuestionComment.deletedBy` untuk membedakan hapus oleh pemilik
+  dan takedown oleh admin — makin penting karena **balasan** yang dihapus hilang tanpa tombstone,
+  jadi takedown balasan tidak meninggalkan jejak yang terlihat pembaca
+- [ ] Opsional: penanda suspend posting publik di `User` — sekarang satu-satunya cara
+  menghentikan penyalahgunaan berulang adalah menghapus akunnya
+- [ ] Tampilkan status `FEATURES_QUESTION_DISCUSSION` sebagai kill switch yang sudah tersedia
+  (terpisah dari `FEATURES_QUESTION_COMMENT`)
+- [ ] Thread dan hitungannya sengaja tidak di-cache dan tidak punya tag di `CACHE_TAGS` — aksi
+  moderasi tidak perlu invalidasi, dan jangan menambahkan cache di jalur itu demi keseragaman
+
+### Tahap 6 — User & Akun
+
+- [ ] `/admin/user` — daftar + search + filter (verifikasi email, punya OAuth, terakhir aktif)
+- [ ] `password` (termasuk hash) dan token apa pun **tidak pernah** dikirim ke client
+- [ ] `/admin/user/[id]` — promote/demote role
+- [ ] Revoke session lewat helper `src/lib/auth.ts` — jangan menyentuh key Redis langsung
+- [ ] Reset bucket `AuthRateLimit` lewat helper yang sama yang membuat key HMAC-nya
+- [ ] Lihat dan batalkan `deletionRequestedAt` / `deletionScheduledFor`
+
+### Tahap 7 — Conversation & Operasional
+
+- [ ] `/admin/conversation` — `ConversationQuota` per user per hari: turn, detik audio, token
+- [ ] Turn dengan `moderationFlagged = true`
+- [ ] Session dengan `retentionExpiresAt` lewat tetapi belum dibersihkan
+- [ ] Transcript hanya ditampilkan bila `transcriptRetained = true` — consent user mengikat admin
+- [ ] `/admin/ops` — status `FEATURES_*` read-only (flag dibaca sekali saat server start dari env;
+  membuatnya dinamis berarti pindah ke DB/Edge Config, perubahan arsitektur tersendiri)
+- [ ] Tombol invalidasi manual per tag di `src/constants/cache-key.ts`
+- [ ] Tabel `AdminAuditLog` (aktor, aksi, target, timestamp) + layar riwayatnya
+
+### Verifikasi
+
+- [x] Guard diuji lewat HTTP pada dev server: guest → `/admin`, `/admin/user`, `/admin/ops` semua
+  404 (tanpa redirect ke login); user login berrole `USER` → 404 di `/admin` tetapi 200 di
+  `/dashboard`; setelah promote ke `ADMIN` **dengan cookie session yang sama** → 200
+- [x] Promote berlaku seketika tanpa login ulang, membuktikan role tidak diambil dari JWT
+- [ ] Demote diuji dengan cara yang sama (kebalikannya) setelah ada admin kedua
+- [ ] Server Action admin dipanggil langsung tanpa melewati layout tetap ditolak (menunggu Server
+  Action admin pertama, Tahap 2)
+- [ ] Data-leak: query/komponen admin terpisah dari jalur exam; `QUESTION_EXPLANATION_SELECT`
+  tidak dilonggarkan demi admin
+- [ ] Unit test minimal untuk aksi destruktif: import paket, hapus paket, takedown komentar
+- [ ] `npm run verify` lulus
+
 ## Fase 9 — Verifikasi & Polish
 
 - [ ] `npm run build` setelah tiap perubahan struktural/server action/caching

@@ -28,7 +28,15 @@ Do NOT introduce other libraries for these concerns (e.g., NextAuth/Auth.js, Red
 
 ## 4. Authentication & Session
 The product target is public multi-user registration. Credential auth dan Google OIDC aktif;
-provider OAuth lain, MFA, dan role hierarchy tetap memerlukan persetujuan terpisah.
+provider OAuth lain dan MFA tetap memerlukan persetujuan terpisah.
+
+* **Role:** dua role statis `USER` dan `ADMIN` pada `User.role` (default `USER`). Tidak ada tabel
+  permission granular dan tidak ada peran editor/moderator terpisah. Role **tidak pernah** masuk
+  payload JWT — token berlaku 7 hari sehingga demote tidak akan langsung berlaku; baca lewat
+  `getSessionUser()` di `src/lib/auth.ts`. Area admin dijaga `requireAdmin()` yang memanggil
+  `notFound()` (bukan redirect) di `src/app/admin/layout.tsx` **dan** di setiap Server Action
+  admin; `/admin` sengaja tidak didaftarkan di `src/proxy.ts`. Admin pertama dipromosikan lewat
+  `npm run user:role`, bukan UI. Rancangan lengkap: `docs/module/admin.md`.
 
 * **Login identifier:** user baru login dengan normalized email. Akun legacy yang belum memiliki email tetap dapat login dengan `username` sampai flow pengisian email tersedia.
 * **Password hashing:** `bcryptjs` with cost factor 12. Hash on register and compare with `bcrypt.compare()` on login. `User.password` nullable hanya untuk akun OAuth-only yang belum membuat password. NEVER store or log plaintext passwords.

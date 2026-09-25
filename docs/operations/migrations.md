@@ -33,6 +33,23 @@ contract wajib memiliki migration dan catatan ringkas di dokumen/PR perubahan. J
 
 ## Ledger
 
+### 25 September 2026 - Role statis USER/ADMIN
+
+- Status: deployed
+- Migration: `prisma/migrations/20260925150000_user_role/migration.sql`
+- Alasan: prasyarat dashboard admin (`/admin`). Dua role statis, tanpa tabel permission granular.
+- Object terdampak: enum `UserRole`, kolom `User.role` NOT NULL DEFAULT 'USER', index `User_role_idx`.
+- Data existing: tidak ada backfill terpisah. Default constant membuat seluruh akun lama tetap
+  `USER`; admin pertama dipromosikan manual lewat `npm run user:role`.
+- Risiko operasi: penambahan kolom dengan default constant, tidak menulis ulang tabel pada
+  PostgreSQL 11+. Aplikasi lama mengabaikan kolom baru sehingga urutan deploy bebas.
+- Validasi: `npx prisma validate`, `prisma migrate deploy`, `npm run lint`, `npm run typecheck`,
+  dan `npm run build` lulus. Guard diuji lewat HTTP: guest dan user berrole `USER` mendapat 404 di
+  `/admin`, admin mendapat 200 dengan cookie session yang sama.
+- Refresh setelah deploy: redeploy agar Prisma Client terbaru aktif. Tidak ada cache aplikasi yang
+  perlu diinvalidasi — overview admin sengaja tidak di-cache.
+- Owner: Engineering Owner.
+
 ### 3 September 2026 - Google OAuth account linking
 
 - Status: deployed

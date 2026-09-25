@@ -13,6 +13,12 @@ import { getSession } from "@/lib/auth";
 // akun supaya guest melihat penjelasan dan CTA masuk, bukan langsung dilempar
 // ke /login. Aksesnya tetap hanya untuk user login — dijaga di halaman dan di
 // Server Action, bukan oleh proxy.
+//
+// `/admin/*` sengaja TIDAK terdaftar di sini. Proxy tidak membaca database, jadi
+// ia hanya bisa membedakan "ada session" dan "tidak ada" — dan itu justru
+// membocorkan keberadaan area admin: guest akan dilempar ke /login (bukti route
+// itu ada dan dilindungi) sementara user biasa mendapat 404. `requireAdmin()` di
+// layout memberi 404 yang sama untuk guest maupun non-admin.
 const PROTECTED_ROUTES = [
   "/analytics",
   "/dashboard",

@@ -182,6 +182,18 @@ enum OAuthProvider {
   GOOGLE
 }
 
+// Role statis dua level, sengaja tanpa tabel permission granular. Yang dapat
+// memperbaiki typo soal juga dapat menghapus akun user; pemisahan peran editor/
+// moderator adalah keputusan terpisah bila memang dibutuhkan.
+//
+// Role TIDAK ikut masuk payload JWT session. Token berlaku 7 hari, sehingga
+// demote admin baru berlaku setelah token kedaluwarsa bila dibaca dari sana.
+// Sumber kebenarannya adalah kolom di bawah, dibaca per request.
+enum UserRole {
+  USER
+  ADMIN
+}
+
 // ============================================================
 // USER
 // ============================================================
@@ -204,6 +216,7 @@ model User {
   deletionRequestedAt      DateTime?
   deletionScheduledFor     DateTime?
   password                 String? // null hanya untuk akun OAuth-only; jika terisi wajib berupa hash
+  role                     UserRole  @default(USER) // lihat enum UserRole: tidak pernah dibaca dari JWT
 
   questionComments     QuestionComment[]
   attempts             Attempt[]
@@ -224,6 +237,10 @@ model User {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // Partial index: baris ADMIN hanya segelintir, dan daftar admin dibaca jauh
+  // lebih sering daripada diubah.
+  @@index([role])
 }
 
 // Provider subject adalah identitas stabil. Email hanya snapshot untuk status
