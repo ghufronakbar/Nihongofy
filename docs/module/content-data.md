@@ -39,8 +39,10 @@
 
 ## Keterbatasan dan Risiko
 
-- Pembahasan soal dan deck bawaan belum punya layar admin; keduanya masih lewat script seed.
-- Workflow review pembahasan (`reviewedAt`, `source` AI → HUMAN) belum ada UI-nya.
+- Deck bawaan belum punya layar admin; masih lewat script seed.
+- Pembuatan pembahasan tetap lewat `npm run gen:explanation` karena generator menulis ke file
+  fixture di repository, bukan ke database. Peninjauan dan persetujuannya sudah ada di
+  `/admin/explanation`.
 - Status runtime sangat bergantung pada seed database yang terakhir dijalankan.
 - Dokumentasi/marketing yang menyebut seluruh level tersedia bisa berbeda dari database environment tertentu.
 - Kualitas OCR, underline rujukan, media, jawaban, dan explanation tetap membutuhkan kurasi manusia walaupun schema valid.
