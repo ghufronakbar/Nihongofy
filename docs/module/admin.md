@@ -2,17 +2,16 @@
 
 ## Status Aktual
 
-**Tahap 1, 2, 3, 4-artikel, 5, 6, dan 7 selesai.** Yang sudah berjalan: role statis
+**Seluruh tahap selesai (1-7).** Yang sudah berjalan: role statis
 `USER`/`ADMIN`, `requireAdmin()`, shell `/admin` dengan sidebar sendiri, overview yang membaca
 kondisi database secara langsung, pengelolaan bank soal termasuk import fixture dan editor soal,
 antrean dan editor pembahasan dengan alur persetujuan, CRUD artikel dengan workflow
 draft/published/archived, antrean moderasi diskusi publik dengan takedown, dan pengelolaan akun
 user.
 
-Yang belum: deck flashcard bawaan (satu-satunya area yang masih placeholder). Di dalam tahap
-yang sudah selesai masih ada sisa: uploader media dan editor `QuestionContext` di bank soal,
-rate limit posting dan notifikasi balasan di moderasi, serta aksi membersihkan retensi
-conversation yang sudah lewat.
+Tidak ada area yang masih berupa placeholder. Sisa pekerjaan yang tercatat terbuka di
+`docs/plan.md`: uploader media dan editor `QuestionContext` di bank soal, rate limit posting dan
+notifikasi balasan di moderasi, serta aksi membersihkan retensi conversation yang sudah lewat.
 
 Operasi konten yang belum punya layar (pembahasan, deck bawaan) **masih dijalankan lewat script
 CLI** di `prisma/`. Untuk bank soal dan artikel, UI dan CLI kini berbagi jalur kode yang sama
@@ -60,6 +59,7 @@ dapat mengimpor TypeScript. Kedua salinannya diberi komentar silang.
 | Conversation | `src/features/admin/conversation/`, `src/app/admin/conversation/` |
 | Operasional | `src/features/admin/ops/`, `src/app/admin/ops/` |
 | Audit log | `src/features/admin/audit.ts`, migration `20260925210000_admin_audit_log` |
+| Deck bawaan | `src/features/admin/flashcard-deck/`, `src/app/admin/flashcard-deck/` |
 | Kontrak fixture dan jalur import bersama | `prisma/test-package-contract.mjs`, `prisma/import-test-package.mjs` |
 
 ## Prasyarat: Role Statis
@@ -141,7 +141,7 @@ area user.
 | `/admin/article` | Daftar artikel | selesai |
 | `/admin/article/[id]` | Editor artikel | selesai |
 | `/admin/article/new` | Artikel baru | selesai |
-| `/admin/flashcard-deck` | Deck bawaan sistem | Tahap 4 |
+| `/admin/flashcard-deck` | Deck bawaan sistem | selesai |
 | `/admin/user` | Daftar user | selesai |
 | `/admin/user/[id]` | Detail dan aksi akun | selesai |
 | `/admin/moderation` | Antrean diskusi publik dan catatan belajar | selesai |
@@ -231,9 +231,13 @@ memaksa `PUBLISHED` dan tidak ada UI yang memakai ketiganya.
 - CRUD `FlashcardSystemDeck` dan `FlashcardSystemNote`.
 - Toggle `isPublished` dan atur `order` — keduanya sudah ada di schema tanpa UI.
 - Field `license` wajib diisi dan ditampilkan: sumber CC BY-SA mengikat atribusi.
-- Deck bawaan **disalin** saat user menambahkannya, jadi mengubah deck sistem tidak mengubah
-  koleksi user yang sudah ada. Ini perlu dinyatakan jelas di UI supaya operator tidak salah
-  mengira editnya akan menyebar.
+- Deck bawaan **disalin** saat user menambahkannya, jadi mengubah maupun menghapus deck sistem
+  tidak menyentuh koleksi user yang sudah ada. UI menyatakannya agar operator tidak salah mengira
+  editnya akan menyebar.
+- **Seed tetap sumber kebenaran.** `npm run seed:flashcard-deck` menghapus note yang tidak ada di
+  `src/flashcard-deck-data/<slug>.json`, jadi penyuntingan lewat UI akan hilang pada seed
+  berikutnya. Tombol Fixture mengunduh isi deck dalam bentuk file itu untuk ditimpakan ke
+  repository — tanpa langkah itu, kedua jalur akan saling menimpa.
 
 ### 6. Moderasi Diskusi Publik
 

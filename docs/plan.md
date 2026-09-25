@@ -609,10 +609,23 @@ tahap lain, dan tahap 2–3 menutup gap konten yang paling menyakitkan bila scop
   daftar. Tanggal terbit pertama dipertahankan saat artikel diterbitkan ulang
 - [x] Hapus artikel tersedia tetapi konfirmasinya mengarahkan ke Archived, karena hard delete ikut
   menghapus interaction user lewat cascade
-- [ ] `/admin/flashcard-deck` — CRUD `FlashcardSystemDeck`/`FlashcardSystemNote`, toggle
-  `isPublished`, atur `order`, dan `license` wajib terisi (CC BY-SA mengikat atribusi)
-- [ ] UI menyatakan jelas bahwa deck bawaan **disalin** saat user menambahkannya, jadi edit tidak
-  menyebar ke koleksi user yang sudah ada
+- [x] `/admin/flashcard-deck`, `/new`, `/[id]` — CRUD deck dan note, toggle `isPublished`, atur
+  `order`, dan `license` wajib terisi dengan penjelasan kenapa (CC BY-SA mengikat atribusi)
+- [x] Field note dirender dari definisi kanonik `FLASHCARD_NOTE_TYPES`, bukan daftar yang ditulis
+  ulang; validasi field wajib dan cloze `{{c1::}}` memakai helper yang sama
+- [x] `noteType` terkunci selama deck masih berisi note — jumlah dan arti field-nya berbeda per
+  tipe, jadi menggantinya akan membuat field lama salah tafsir
+- [x] `guid` hanya dapat diisi saat membuat note, tidak saat menyunting: guid adalah kunci
+  deduplikasi salinan user (`sys:<slug>:<guid>`), dan mengubahnya menghasilkan kartu duplikat
+  dengan progres kosong
+- [x] UI menyatakan bahwa deck bawaan **disalin** saat user menambahkannya, jadi edit maupun
+  penghapusan tidak menyentuh koleksi user yang sudah ada
+- [x] Peringatan bahwa `npm run seed:flashcard-deck` memperlakukan file sebagai sumber kebenaran
+  dan **menghapus** note yang tidak ada di dalamnya, sehingga penyuntingan lewat UI hilang pada
+  seed berikutnya
+- [x] Tombol **Fixture** mengunduh isi deck dalam bentuk `src/flashcard-deck-data/<slug>.json`
+  untuk ditimpakan ke repository — ini yang menutup lingkaran antara UI dan seed. Diverifikasi:
+  hasil export lolos `npm run seed:flashcard-deck:check`
 
 ### Tahap 5 — Moderasi Diskusi Publik
 

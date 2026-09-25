@@ -39,7 +39,9 @@
 
 ## Keterbatasan dan Risiko
 
-- Deck bawaan belum punya layar admin; masih lewat script seed.
+- Deck bawaan dapat dikelola dari `/admin/flashcard-deck` maupun script seed, tetapi keduanya
+  belum saling sinkron otomatis: seed menghapus note yang tidak ada di file, jadi penyuntingan
+  lewat UI perlu diekspor kembali ke `src/flashcard-deck-data/` lewat tombol Fixture.
 - Pembuatan pembahasan tetap lewat `npm run gen:explanation` karena generator menulis ke file
   fixture di repository, bukan ke database. Peninjauan dan persetujuannya sudah ada di
   `/admin/explanation`.
