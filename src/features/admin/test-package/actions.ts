@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { updateTag } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth";
+import { recordAdminAction, recordAdminActionTx } from "../audit";
 import { CACHE_TAGS } from "@/constants/cache-key";
 // Kontrak fixture dan logika import dipakai bersama dengan CLI
 // `npm run seed:test-package`. Tidak ditulis ulang di sini — lihat catatan di
@@ -35,7 +36,7 @@ function revalidateTestPackage(packageId?: number) {
 export async function importTestPackageAction(
   input: ImportTestPackageInput,
 ): Promise<ImportResult> {
-  await requireAdmin();
+  const actor = await requireAdmin();
 
   const validated = ImportTestPackageSchema.safeParse(input);
   if (!validated.success) {
@@ -83,6 +84,19 @@ export async function importTestPackageAction(
     };
   }
 
+  // Import berjalan di transaksinya sendiri di dalam modul bersama dengan CLI,
+  // jadi lognya ditulis setelahnya — bukan di dalam transaksi itu.
+  await recordAdminAction({
+    actor,
+    action: "test-package.import",
+    targetType: "test-package",
+    targetId: result.id,
+    summary:
+      result.status === "replaced"
+        ? `Mengganti paket id ${result.replacedId} dengan import baru (${result.questionsSeeded} soal) dari ${fileLabel || "tempelan"}.`
+        : `Mengimpor paket baru (${result.questionsSeeded} soal) dari ${fileLabel || "tempelan"}.`,
+  });
+
   revalidateTestPackage(result.id);
   if (result.replacedId && result.replacedId !== result.id) {
     revalidateTestPackage(result.replacedId);
@@ -104,7 +118,7 @@ export type DeleteResult = { ok: true } | { ok: false; message: string };
 export async function deleteTestPackageAction(
   input: DeleteTestPackageInput,
 ): Promise<DeleteResult> {
-  await requireAdmin();
+  const actor = await requireAdmin();
 
   const validated = DeleteTestPackageSchema.safeParse(input);
   if (!validated.success) {
@@ -131,7 +145,16 @@ export async function deleteTestPackageAction(
     };
   }
 
-  await prisma.testPackage.delete({ where: { id } });
+  await prisma.$transaction(async (tx) => {
+    await tx.testPackage.delete({ where: { id } });
+    await recordAdminActionTx(tx, {
+      actor,
+      action: "test-package.delete",
+      targetType: "test-package",
+      targetId: id,
+      summary: `Menghapus permanen paket "${testPackage.name}" beserta seluruh soal dan turunannya.`,
+    });
+  });
   revalidateTestPackage(id);
   return { ok: true };
 }
@@ -141,7 +164,7 @@ export type UpdateQuestionResult = { ok: true } | { ok: false; message: string }
 export async function updateQuestionAction(
   input: UpdateQuestionInput,
 ): Promise<UpdateQuestionResult> {
-  await requireAdmin();
+  const actor = await requireAdmin();
 
   const validated = UpdateQuestionSchema.safeParse(input);
   if (!validated.success) {
@@ -190,6 +213,14 @@ export async function updateQuestionAction(
     await tx.testPackageItem.update({
       where: { id: current.testPackageItem.id },
       data: { instruction: data.instruction },
+    });
+
+    await recordAdminActionTx(tx, {
+      actor,
+      action: "question.update",
+      targetType: "question",
+      targetId: data.id,
+      summary: `Menyunting soal (kunci jawaban ${data.questionAnswer}) pada paket id ${current.testPackageItem.testPackageId}.`,
     });
   });
 

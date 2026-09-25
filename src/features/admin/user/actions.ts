@@ -5,6 +5,7 @@ import { updateTag } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin, revokeAllUserSessions, revokeUserSession } from "@/lib/auth";
 import { clearAuthRateLimits, type AuthRateLimitBucket } from "@/features/auth/lib/rate-limit";
+import { recordAdminAction, recordAdminActionTx } from "../audit";
 import { CACHE_TAGS } from "@/constants/cache-key";
 import {
   SetUserRoleSchema,
@@ -59,7 +60,16 @@ export async function setUserRoleAction(input: SetUserRoleInput): Promise<UserAc
     }
   }
 
-  await prisma.user.update({ where: { id: userId }, data: { role } });
+  await prisma.$transaction(async (tx) => {
+    await tx.user.update({ where: { id: userId }, data: { role } });
+    await recordAdminActionTx(tx, {
+      actor,
+      action: "user.role",
+      targetType: "user",
+      targetId: userId,
+      summary: `Mengubah role ${target.displayName} dari ${target.role} menjadi ${role}.`,
+    });
+  });
   return {
     ok: true,
     message: `${target.displayName} sekarang ${role}. Berlaku seketika tanpa login ulang.`,
@@ -94,12 +104,31 @@ export async function revokeUserSessionAction(
     }
 
     const revoked = await revokeUserSession(userId, sessionId);
-    return revoked
-      ? { ok: true, message: "Session dicabut." }
-      : { ok: false, message: "Session sudah tidak ada." };
+    if (!revoked) return { ok: false, message: "Session sudah tidak ada." };
+
+    // Efeknya di Redis, bukan database, jadi tidak ada transaksi yang dapat
+    // memayungi mutasi dan lognya sekaligus.
+    await recordAdminAction({
+      actor,
+      action: "user.session_revoke",
+      targetType: "user",
+      targetId: userId,
+      summary: "Mencabut satu session milik user.",
+    });
+    return { ok: true, message: "Session dicabut." };
   }
 
   await revokeAllUserSessions(userId, userId === actor.user.id ? actor.sessionId : undefined);
+  await recordAdminAction({
+    actor,
+    action: "user.session_revoke_all",
+    targetType: "user",
+    targetId: userId,
+    summary:
+      userId === actor.user.id
+        ? "Mencabut seluruh session sendiri kecuali yang sedang dipakai."
+        : "Mencabut seluruh session milik user.",
+  });
   return {
     ok: true,
     message:
@@ -120,7 +149,7 @@ export async function revokeUserSessionAction(
 export async function resetUserRateLimitAction(
   input: ResetUserRateLimitInput,
 ): Promise<UserActionResult> {
-  await requireAdmin();
+  const actor = await requireAdmin();
 
   const validated = ResetUserRateLimitSchema.safeParse(input);
   if (!validated.success) return { ok: false, message: "Data tidak valid." };
@@ -152,6 +181,13 @@ export async function resetUserRateLimitAction(
   push("account-deletion-cancel:user", String(user.id));
 
   await clearAuthRateLimits(buckets);
+  await recordAdminAction({
+    actor,
+    action: "user.rate_limit_reset",
+    targetType: "user",
+    targetId: user.id,
+    summary: `Mengosongkan ${buckets.length} bucket rate limit yang terikat akun ini.`,
+  });
   return {
     ok: true,
     message:
@@ -166,7 +202,7 @@ export async function resetUserRateLimitAction(
 export async function cancelUserDeletionAction(
   input: CancelUserDeletionInput,
 ): Promise<UserActionResult> {
-  await requireAdmin();
+  const actor = await requireAdmin();
 
   const validated = CancelUserDeletionSchema.safeParse(input);
   if (!validated.success) return { ok: false, message: "Data tidak valid." };
@@ -181,9 +217,18 @@ export async function cancelUserDeletionAction(
     return { ok: false, message: "Akun ini tidak sedang dijadwalkan untuk dihapus." };
   }
 
-  await prisma.user.update({
-    where: { id: userId },
-    data: { deletionRequestedAt: null, deletionScheduledFor: null },
+  await prisma.$transaction(async (tx) => {
+    await tx.user.update({
+      where: { id: userId },
+      data: { deletionRequestedAt: null, deletionScheduledFor: null },
+    });
+    await recordAdminActionTx(tx, {
+      actor,
+      action: "user.cancel_deletion",
+      targetType: "user",
+      targetId: userId,
+      summary: "Membatalkan jadwal penghapusan akun.",
+    });
   });
 
   // Halaman profil user membaca status ini dari cache per user.

@@ -198,11 +198,12 @@ enum UserRole {
 // USER
 // ============================================================
 
-// Username tetap nullable sebagai bridge login akun legacy. User baru memakai
-// displayName + normalized email; seluruh relasi existing tetap dipertahankan.
+// Username adalah nama publik (handle), BUKAN kredensial: login memakai email
+// saja. Dulu kolom ini menjadi identifier login akun legacy — jalur itu sudah
+// dihapus supaya handle boleh tampil di komentar dan boleh diganti kapan saja.
 model User {
   id                       Int       @id @default(autoincrement())
-  username                 String?   @unique // bridge login akun legacy; user baru memakai email
+  username                 String    @unique @db.VarChar(30) // handle publik, selalu lowercase
   displayName              String
   email                    String?   @unique // nullable hanya untuk akun legacy yang belum dibackfill
   emailVerifiedAt          DateTime?
@@ -215,11 +216,16 @@ model User {
   allowConversationStorage Boolean   @default(false)
   deletionRequestedAt      DateTime?
   deletionScheduledFor     DateTime?
+  // Penghapusan akun menganonimkan baris ini, tidak menghapusnya. Barisnya harus
+  // bertahan supaya thread diskusi yang dibalas orang lain tetap utuh; data
+  // pribadi lain (attempt, flashcard, conversation, token, OAuth) tetap dihapus.
+  anonymizedAt             DateTime?
   password                 String? // null hanya untuk akun OAuth-only; jika terisi wajib berupa hash
   role                     UserRole  @default(USER) // lihat enum UserRole: tidak pernah dibaca dari JWT
 
   questionComments     QuestionComment[]
   deletedComments      QuestionComment[]    @relation("CommentDeletedBy")
+  adminAuditLogs       AdminAuditLog[]      @relation("AdminAuditActor")
   attempts             Attempt[]
   kanaProgresses       KanaProgress[]
   flashcardCollection  FlashcardCollection?
@@ -543,6 +549,38 @@ model FlashcardImportJob {
   updatedAt DateTime @updatedAt
 
   @@index([userId, status])
+}
+
+// Jejak aksi admin. Role statis dua level berarti siapa pun yang dapat
+// memperbaiki typo soal juga dapat menghapus akun user, jadi satu-satunya cara
+// menelusuri apa yang terjadi adalah mencatatnya.
+//
+// Baris log tidak pernah diubah atau dihapus oleh aplikasi. Untuk aksi yang
+// menulis ke database, log ditulis di transaksi yang sama supaya tidak pernah
+// ada mutasi tanpa catatannya.
+model AdminAuditLog {
+  id Int @id @default(autoincrement())
+
+  // SetNull, bukan Cascade: menghapus akun admin tidak boleh ikut menghapus
+  // jejak aksinya. `actorName` adalah snapshot supaya baris tetap terbaca
+  // setelah akunnya hilang.
+  actor     User?  @relation("AdminAuditActor", fields: [actorId], references: [id], onDelete: SetNull)
+  actorId   Int?
+  actorName String @db.VarChar(120)
+
+  // Format "domain.aksi", mis. "article.publish" atau "comment.takedown".
+  action     String  @db.VarChar(64)
+  targetType String  @db.VarChar(40)
+  targetId   String? @db.VarChar(64)
+  // Satu baris yang dapat dibaca manusia tanpa membuka data aslinya. Tidak
+  // pernah memuat isi konten, kredensial, atau data pribadi.
+  summary    String  @db.Text
+
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([actorId])
+  @@index([targetType, targetId])
 }
 
 // Bucket rate limit auth hanya menyimpan hash, bukan email atau alamat IP mentah.
