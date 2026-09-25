@@ -167,6 +167,11 @@ enum QuestionExplanationSource {
   IMPORTED // berasal dari buku pembahasan resmi
 }
 
+enum CommentVisibility {
+  PRIVATE // catatan pribadi, hanya terlihat oleh pemiliknya
+  PUBLIC // dibagikan ke diskusi, terlihat semua orang termasuk guest
+}
+
 enum AuthTokenPurpose {
   EMAIL_VERIFICATION
   EMAIL_CHANGE
@@ -731,8 +736,17 @@ model QuestionExplanationChoice {
 // CATATAN BELAJAR
 // ============================================================
 
-// Catatan/review pribadi per soal (beda dengan Question.explanation
-// yang merupakan penjelasan "resmi"): insight, jebakan, mnemonic, dsb.
+// Catatan/review per soal (beda dengan Question.explanation yang merupakan
+// penjelasan "resmi"): insight, jebakan, mnemonic, dsb. Default privat; pemilik
+// dapat membagikannya ke diskusi publik, dan balasan user lain menempel ke sana.
+//
+// Root vs reply: `parentId == null` berarti catatan/thread utama. Balasan hanya
+// satu tingkat — balasan tidak boleh punya balasan lagi (dipaksa di action, yang
+// mengarahkan reply-of-reply ke root yang sama).
+//
+// Tidak pernah hard delete: `deletedAt` membuat root tampil sebagai tombstone
+// supaya balasan orang lain tidak ikut hilang. Isi teks/gambar comment yang
+// deletedAt-nya terisi tidak boleh ikut dikirim ke client.
 model QuestionComment {
   id Int @id @default(autoincrement())
 
@@ -742,14 +756,33 @@ model QuestionComment {
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int
 
+  // Balasan ikut terhapus bila root benar-benar dihapus dari database. Alur
+  // aplikasi tidak pernah melakukannya; cascade ini hanya jaring pengaman untuk
+  // penghapusan user/soal.
+  parent   QuestionComment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  parentId Int?
+  replies  QuestionComment[] @relation("CommentReplies")
+
   commentText   String   @db.Text
   commentImages String[] // url gambar lampiran
+
+  visibility CommentVisibility @default(PRIVATE)
+  // Terisi saat pertama kali dibagikan dan tidak pernah dikosongkan lagi. Jadi
+  // penanda keanggotaan thread publik: root yang di-unshare tetap tampil sebagai
+  // tombstone selama masih punya balasan.
+  sharedAt   DateTime?
+  deletedAt  DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([questionId])
   @@index([userId])
+  @@index([parentId])
+  // Daftar catatan pribadi milik satu user pada satu soal.
+  @@index([questionId, userId, deletedAt])
+  // Daftar root thread publik pada satu soal.
+  @@index([questionId, parentId, sharedAt])
 }
 
 // ============================================================

@@ -9,6 +9,8 @@ import { getSession } from "@/lib/auth";
 import { DEFAULT_TIME_ZONE } from "@/lib/time-zone";
 import { getUserTimeZone } from "@/lib/user-time-zone";
 import { CACHE_KEYS, CACHE_TAGS } from "@/constants/cache-key";
+import { FEATURES } from "@/constants";
+import { getQuestionDiscussionCounts } from "@/features/question-comment/queries";
 import { CreateAttemptSchema, type CreateAttemptInput } from "./schemas";
 
 const getCachedTestPackageList = unstable_cache(
@@ -142,11 +144,15 @@ export async function getTestPackageQuestions(testPackageId: number) {
   const testPackage = await getCachedTestPackageQuestions(testPackageId);
   if (!testPackage) notFound();
 
-  // The question bank is shared and globally cacheable; private comments are not.
+  // The question bank is shared and globally cacheable; a user's own notes are
+  // not. Replies (`parentId != null`) live inside the public thread, so they are
+  // excluded here — this list is the "Catatan Belajar" panel, not the thread.
   const comments = session
     ? await prisma.questionComment.findMany({
         where: {
           userId: session.userId,
+          parentId: null,
+          deletedAt: null,
           question: { testPackageItem: { testPackageId } },
         },
         orderBy: { createdAt: "desc" },
@@ -155,6 +161,7 @@ export async function getTestPackageQuestions(testPackageId: number) {
           questionId: true,
           commentText: true,
           commentImages: true,
+          visibility: true,
           createdAt: true,
           updatedAt: true,
           user: { select: { displayName: true } },
@@ -169,6 +176,16 @@ export async function getTestPackageQuestions(testPackageId: number) {
     commentsByQuestion.set(comment.questionId, list);
   }
 
+  // Only the count, never the threads themselves: it feeds the "Diskusi (n)"
+  // button, and the thread is fetched on demand when that button is opened.
+  const discussionCounts = FEATURES.questionDiscussion
+    ? await getQuestionDiscussionCounts(
+        testPackage.testPackageItems.flatMap((item) =>
+          item.questions.map((question) => question.id),
+        ),
+      )
+    : new Map<number, number>();
+
   return {
     ...testPackage,
     testPackageItems: testPackage.testPackageItems.map((item) => ({
@@ -176,6 +193,7 @@ export async function getTestPackageQuestions(testPackageId: number) {
       questions: item.questions.map((question) => ({
         ...question,
         questionComments: commentsByQuestion.get(question.id) ?? [],
+        discussionCount: discussionCounts.get(question.id) ?? 0,
       })),
     })),
   };

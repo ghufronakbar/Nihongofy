@@ -15,6 +15,9 @@ export default function robots(): MetadataRoute.Robots {
       ],
       disallow: [
         "/api/",
+        // Catatan buatan pengguna, belum ada moderasi. Dibuka untuk diindeks
+        // nanti bersamaan dengan dashboard admin.
+        "/discussion",
         "/conversation",
         "/speaking",
         "/login",

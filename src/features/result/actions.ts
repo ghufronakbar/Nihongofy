@@ -7,6 +7,8 @@ import { prisma } from "@/lib/prisma";
 import { QUESTION_EXPLANATION_SELECT } from "@/lib/question-explanation";
 import { getSession } from "@/lib/auth";
 import { CACHE_KEYS, CACHE_TAGS } from "@/constants/cache-key";
+import { FEATURES } from "@/constants";
+import { getQuestionDiscussionCounts } from "@/features/question-comment/queries";
 import type { MondaiStatInput } from "@/lib/jlpt-score";
 
 const getCachedAttemptSummary = (attemptId: number, userId: number) =>
@@ -143,12 +145,15 @@ export async function getAttemptDetail(attemptId: number) {
             select: { id: true, codeAnswer: true, answerText: true, answerImage: true },
           },
           questionComments: {
-            where: { userId: authSession.userId },
+            // Catatan pribadi milik user ini saja. Balasan pada thread publik
+            // (`parentId != null`) tidak ikut karena tempatnya di dalam thread.
+            where: { userId: authSession.userId, parentId: null, deletedAt: null },
             orderBy: { createdAt: "desc" },
             select: {
               id: true,
               commentText: true,
               commentImages: true,
+              visibility: true,
               createdAt: true,
               updatedAt: true,
               user: { select: { displayName: true } },
@@ -163,5 +168,20 @@ export async function getAttemptDetail(attemptId: number) {
     },
   });
 
-  return { attempt, testPackageItems };
+  const discussionCounts = FEATURES.questionDiscussion
+    ? await getQuestionDiscussionCounts(
+        testPackageItems.flatMap((item) => item.questions.map((question) => question.id)),
+      )
+    : new Map<number, number>();
+
+  return {
+    attempt,
+    testPackageItems: testPackageItems.map((item) => ({
+      ...item,
+      questions: item.questions.map((question) => ({
+        ...question,
+        discussionCount: discussionCounts.get(question.id) ?? 0,
+      })),
+    })),
+  };
 }

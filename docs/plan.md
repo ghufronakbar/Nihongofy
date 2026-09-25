@@ -469,6 +469,38 @@ Batch permintaan user lanjutan dari Fase 8.5.
   `npm run seed:question-explanation`
 - [ ] Transkrip audio CHOUKAI (1.494 soal) — prasyarat sebelum pembahasan choukai bisa dibuat
 
+## Fase 8.7 — Berbagi Catatan & Diskusi Publik per Soal
+
+Dokumen modul: `docs/module/question-comment.md`. Satu tabel `QuestionComment` dipakai untuk
+catatan pribadi sekaligus thread publik — yang dibagikan adalah record yang sama, bukan salinan,
+supaya edit tidak perlu disinkronkan antar tabel.
+
+- [x] Schema: `enum CommentVisibility`, kolom `visibility` (default `PRIVATE`), `sharedAt`,
+  `deletedAt`, dan self-relation `parentId` + index pendukung
+- [x] Migration SQL tulis tangan `20260925120000_question_comment_public_discussion` +
+  `prisma migrate deploy` (bukan `migrate dev` — shadow DB Supabase)
+- [x] `sharedAt` sebagai penentu keanggotaan thread publik, bukan `visibility`: root yang
+  di-unshare tetap tampil sebagai tombstone selama masih punya balasan
+- [x] Tidak pernah hard delete — `deleteQuestionCommentAction` hanya mengisi `deletedAt`, supaya
+  balasan user lain tidak ikut musnah
+- [x] Tombstone dibersihkan di layer query (`toDiscussionRoot`), bukan di JSX: teks, gambar, dan
+  identitas penulis root yang dihapus/disembunyikan tidak pernah ikut terkirim ke browser
+- [x] Balasan maksimal satu tingkat; membalas balasan menambah balasan pada root yang sama dengan
+  mention `@nama`. Thread yang root-nya mati menjadi arsip read-only
+- [x] Flag terpisah `FEATURES_QUESTION_DISCUSSION` (otomatis mati bila `FEATURES_QUESTION_COMMENT`
+  mati) sebagai kill switch konten publik tanpa mematikan catatan pribadi
+- [x] Halaman hanya memuat jumlah entri (`getQuestionDiscussionCounts`); thread diambil lazy saat
+  sheet dibuka. Sengaja tidak di-`unstable_cache` — isinya berubah tiap balasan
+- [x] `/discussion/[commentId]` — permalink ala forum, guest bisa baca. `commentId` berupa balasan
+  di-redirect ke root dengan anchor `#comment-<id>`
+- [x] `/discussion` `noindex` via metadata layout + `disallow` di `robots.ts` selama belum ada
+  moderasi
+- [x] Diterapkan di mode baca dan `/result/[attemptId]/detail`
+- [ ] Verifikasi manual dua akun (user): bagikan catatan dari akun A, baca dan balas dari akun B,
+  lalu uji unshare dan hapus — pastikan balasan tetap ada dan isi root tidak bocor
+- [ ] Moderasi, notifikasi balasan, rate limit posting, dan pembersihan asset Cloudinary —
+  lihat Admin Dashboard tahap 5
+
 ## Fase 9 — Verifikasi & Polish
 
 - [ ] `npm run build` setelah tiap perubahan struktural/server action/caching
