@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { updateTag } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth";
+import { recordAdminActionTx } from "../audit";
 import { CACHE_TAGS } from "@/constants/cache-key";
 import {
   UpdateExplanationSchema,
@@ -35,7 +36,7 @@ async function revalidateForQuestion(questionId: number) {
 export async function updateExplanationAction(
   input: UpdateExplanationInput,
 ): Promise<ExplanationActionResult> {
-  await requireAdmin();
+  const actor = await requireAdmin();
 
   const validated = UpdateExplanationSchema.safeParse(input);
   if (!validated.success) {
@@ -97,6 +98,14 @@ export async function updateExplanationAction(
         data: choiceRows.map((row) => ({ ...row, explanationId: explanation.id })),
       });
     }
+
+    await recordAdminActionTx(tx, {
+      actor,
+      action: "explanation.update",
+      targetType: "question",
+      targetId: data.questionId,
+      summary: `Menyunting pembahasan (${choiceRows.length} alasan pilihan, ${keyPoints.length} poin kunci).`,
+    });
   });
 
   await revalidateForQuestion(data.questionId);
@@ -111,7 +120,7 @@ export async function updateExplanationAction(
 export async function approveExplanationAction(
   input: ApproveExplanationInput,
 ): Promise<ExplanationActionResult> {
-  await requireAdmin();
+  const actor = await requireAdmin();
 
   const validated = ApproveExplanationSchema.safeParse(input);
   if (!validated.success) return { ok: false, message: "Data tidak valid." };
@@ -132,12 +141,24 @@ export async function approveExplanationAction(
     };
   }
 
-  await prisma.questionExplanation.update({
-    where: { id: explanation.id },
-    data: {
-      reviewedAt: new Date(),
-      ...(explanation.source === "AI" ? { source: "HUMAN" as const } : {}),
-    },
+  await prisma.$transaction(async (tx) => {
+    await tx.questionExplanation.update({
+      where: { id: explanation.id },
+      data: {
+        reviewedAt: new Date(),
+        ...(explanation.source === "AI" ? { source: "HUMAN" as const } : {}),
+      },
+    });
+    await recordAdminActionTx(tx, {
+      actor,
+      action: "explanation.approve",
+      targetType: "question",
+      targetId: validated.data.questionId,
+      summary:
+        explanation.source === "AI"
+          ? "Menyetujui pembahasan; source AI dinaikkan menjadi HUMAN."
+          : `Menyetujui pembahasan bersumber ${explanation.source}.`,
+    });
   });
 
   await revalidateForQuestion(validated.data.questionId);
@@ -149,7 +170,7 @@ export async function approveExplanationAction(
 export async function unapproveExplanationAction(
   input: UnapproveExplanationInput,
 ): Promise<ExplanationActionResult> {
-  await requireAdmin();
+  const actor = await requireAdmin();
 
   const validated = UnapproveExplanationSchema.safeParse(input);
   if (!validated.success) return { ok: false, message: "Data tidak valid." };
@@ -160,9 +181,18 @@ export async function unapproveExplanationAction(
   });
   if (!explanation) notFound();
 
-  await prisma.questionExplanation.update({
-    where: { id: explanation.id },
-    data: { reviewedAt: null },
+  await prisma.$transaction(async (tx) => {
+    await tx.questionExplanation.update({
+      where: { id: explanation.id },
+      data: { reviewedAt: null },
+    });
+    await recordAdminActionTx(tx, {
+      actor,
+      action: "explanation.unapprove",
+      targetType: "question",
+      targetId: validated.data.questionId,
+      summary: "Membatalkan persetujuan pembahasan; source tidak dikembalikan ke AI.",
+    });
   });
 
   await revalidateForQuestion(validated.data.questionId);
@@ -177,7 +207,7 @@ export async function unapproveExplanationAction(
 export async function resolveAnswerKeyDoubtAction(
   input: ResolveAnswerKeyDoubtInput,
 ): Promise<ExplanationActionResult> {
-  await requireAdmin();
+  const actor = await requireAdmin();
 
   const validated = ResolveAnswerKeyDoubtSchema.safeParse(input);
   if (!validated.success) return { ok: false, message: "Data tidak valid." };
@@ -188,9 +218,18 @@ export async function resolveAnswerKeyDoubtAction(
   });
   if (!explanation) notFound();
 
-  await prisma.questionExplanation.update({
-    where: { id: explanation.id },
-    data: { answerKeyDoubt: false, answerKeyDoubtNote: null },
+  await prisma.$transaction(async (tx) => {
+    await tx.questionExplanation.update({
+      where: { id: explanation.id },
+      data: { answerKeyDoubt: false, answerKeyDoubtNote: null },
+    });
+    await recordAdminActionTx(tx, {
+      actor,
+      action: "explanation.resolve_doubt",
+      targetType: "question",
+      targetId: validated.data.questionId,
+      summary: "Menutup penanda kunci jawaban meragukan setelah diperiksa.",
+    });
   });
 
   await revalidateForQuestion(validated.data.questionId);

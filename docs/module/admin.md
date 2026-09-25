@@ -2,16 +2,17 @@
 
 ## Status Aktual
 
-**Tahap 1, 2, 3, 4-artikel, 5, dan 6 selesai.** Yang sudah berjalan: role statis
+**Tahap 1, 2, 3, 4-artikel, 5, 6, dan 7 selesai.** Yang sudah berjalan: role statis
 `USER`/`ADMIN`, `requireAdmin()`, shell `/admin` dengan sidebar sendiri, overview yang membaca
 kondisi database secara langsung, pengelolaan bank soal termasuk import fixture dan editor soal,
 antrean dan editor pembahasan dengan alur persetujuan, CRUD artikel dengan workflow
 draft/published/archived, antrean moderasi diskusi publik dengan takedown, dan pengelolaan akun
 user.
 
-Yang belum: deck bawaan, conversation, dan operasional — masih berupa halaman placeholder yang
-menyebut tahapnya. Di dalam bank soal, yang belum ada adalah uploader media dan editor
-`QuestionContext`.
+Yang belum: deck flashcard bawaan (satu-satunya area yang masih placeholder). Di dalam tahap
+yang sudah selesai masih ada sisa: uploader media dan editor `QuestionContext` di bank soal,
+rate limit posting dan notifikasi balasan di moderasi, serta aksi membersihkan retensi
+conversation yang sudah lewat.
 
 Operasi konten yang belum punya layar (pembahasan, deck bawaan) **masih dijalankan lewat script
 CLI** di `prisma/`. Untuk bank soal dan artikel, UI dan CLI kini berbagi jalur kode yang sama
@@ -56,6 +57,9 @@ dapat mengimpor TypeScript. Kedua salinannya diberi komentar silang.
 | Bank soal | `src/features/admin/test-package/`, `src/app/admin/test-package/`, `src/app/admin/question/` |
 | Pembahasan | `src/features/admin/explanation/`, `src/app/admin/explanation/` |
 | User dan akun | `src/features/admin/user/`, `src/app/admin/user/` |
+| Conversation | `src/features/admin/conversation/`, `src/app/admin/conversation/` |
+| Operasional | `src/features/admin/ops/`, `src/app/admin/ops/` |
+| Audit log | `src/features/admin/audit.ts`, migration `20260925210000_admin_audit_log` |
 | Kontrak fixture dan jalur import bersama | `prisma/test-package-contract.mjs`, `prisma/import-test-package.mjs` |
 
 ## Prasyarat: Role Statis
@@ -141,8 +145,8 @@ area user.
 | `/admin/user` | Daftar user | selesai |
 | `/admin/user/[id]` | Detail dan aksi akun | selesai |
 | `/admin/moderation` | Antrean diskusi publik dan catatan belajar | selesai |
-| `/admin/conversation` | Pemakaian dan kuota conversation | Tahap 7 |
-| `/admin/ops` | Feature flag (read-only), cache, audit log | Tahap 7 |
+| `/admin/conversation` | Pemakaian dan kuota conversation | selesai |
+| `/admin/ops` | Feature flag (read-only), cache, audit log | selesai |
 
 ## Feature Flag
 
@@ -322,8 +326,11 @@ ditegakkan.
   arsitektur tersendiri, bukan sekadar layar baru, dan di luar scope awal.
 - **Invalidasi cache manual** — tombol untuk memicu tag di
   [`src/constants/cache-key.ts`](../../src/constants/cache-key.ts) tanpa redeploy.
-- **Audit log admin** — tabel baru `AdminAuditLog` yang mencatat aktor, aksi, target, dan
-  timestamp. Tanpa ini, aksi admin tidak dapat ditelusuri sama sekali.
+- **Audit log admin** — `AdminAuditLog` mencatat aktor, aksi, target, dan ringkasan satu baris.
+  Untuk aksi yang menulis ke database, lognya ditulis di transaksi yang sama, jadi tidak pernah
+  ada mutasi tanpa catatannya. Untuk aksi yang efeknya di Redis, lognya ditulis setelahnya dan
+  kegagalan menulis log tidak dilaporkan sebagai kegagalan aksi — aksinya sudah terjadi dan tidak
+  dapat dibatalkan.
 
 ## Aturan yang Wajib Diikuti
 
@@ -354,7 +361,7 @@ Aturan project yang existing tetap berlaku penuh di area admin:
 | Perubahan | Alasan |
 |---|---|
 | `enum UserRole` + `User.role` | Prasyarat seluruh modul |
-| `AdminAuditLog` | Aksi admin saat ini tidak dapat ditelusuri |
+| ~~`AdminAuditLog`~~ | Sudah dibuat di Tahap 7 |
 | `QuestionComment.deletedBy` (opsional) | Membedakan hapus oleh pemilik dan takedown oleh admin; sekarang `deletedAt` tidak menyimpan siapa pelakunya |
 | Penanda suspend posting publik pada `User` | Tidak ada cara menghentikan user yang berulang kali menyalahgunakan diskusi selain menghapus akunnya |
 | Bucket rate limit posting | Pembuatan catatan/balasan sekarang tanpa batas laju; pola `AuthRateLimit` dapat dipakai ulang |

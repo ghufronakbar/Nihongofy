@@ -679,14 +679,26 @@ satu-satunya konten buatan user yang terlihat publik, termasuk oleh guest.
 
 ### Tahap 7 — Conversation & Operasional
 
-- [ ] `/admin/conversation` — `ConversationQuota` per user per hari: turn, detik audio, token
-- [ ] Turn dengan `moderationFlagged = true`
-- [ ] Session dengan `retentionExpiresAt` lewat tetapi belum dibersihkan
-- [ ] Transcript hanya ditampilkan bila `transcriptRetained = true` — consent user mengikat admin
-- [ ] `/admin/ops` — status `FEATURES_*` read-only (flag dibaca sekali saat server start dari env;
-  membuatnya dinamis berarti pindah ke DB/Edge Config, perubahan arsitektur tersendiri)
-- [ ] Tombol invalidasi manual per tag di `src/constants/cache-key.ts`
-- [ ] Tabel `AdminAuditLog` (aktor, aksi, target, timestamp) + layar riwayatnya
+- [x] `/admin/conversation` — agregat 30 hari, ringkasan session per status, dan tabel
+  `ConversationQuota` per user per hari: turn, detik audio, token
+- [x] Turn dengan `moderationFlagged = true`, 50 terbaru
+- [x] Hitungan session dengan `retentionExpiresAt` lewat tetapi transcript-nya masih tersimpan
+- [ ] Aksi membersihkan retensi yang lewat — baru dilaporkan, belum ada tombolnya
+- [x] Transcript hanya ditampilkan bila `transcriptRetained = true`. Penyaringannya di layer
+  query, bukan di JSX: kalau hanya disembunyikan di komponen, isinya tetap ikut terkirim dalam
+  payload halaman
+- [x] `/admin/ops` — status seluruh `FEATURES_*` read-only, dengan alasan kenapa read-only
+- [x] Tombol invalidasi manual untuk tag global (`testPackageList`, `practiceCatalog`,
+  `articleList`, `articleFacets`, `flashcardSystemCatalog`). Tag per-entitas sengaja tidak
+  ditawarkan: butuh id dan sudah diinvalidasi otomatis oleh action yang mengubah entitasnya
+- [x] Tabel `AdminAuditLog` (aktor, nama aktor sebagai snapshot, aksi, target, ringkasan,
+  timestamp) — migration `20260925210000_admin_audit_log`. `actorId` SET NULL supaya menghapus
+  akun admin tidak ikut menghapus jejaknya
+- [x] Seluruh 18 action admin yang bermutasi mencatat ke audit log. Untuk aksi yang menulis ke
+  database, lognya ada di transaksi yang sama sehingga tidak pernah ada mutasi tanpa catatannya;
+  untuk aksi berefek di Redis (cabut session, reset rate limit) lognya ditulis setelahnya dan
+  kegagalannya tidak membatalkan aksi yang sudah terjadi
+- [x] Layar riwayat di `/admin/ops`
 
 ### Verifikasi
 

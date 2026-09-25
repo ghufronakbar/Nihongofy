@@ -41,6 +41,17 @@ Stack: Next.js + Prisma + PostgreSQL (Supabase).
 - Update bucket rate limit harus atomik dengan `INSERT ... ON CONFLICT DO UPDATE`, bukan pola select lalu update.
 - Update profile dan password selalu mengambil user dari `session.userId`. Ganti password wajib membandingkan current password, memakai bcrypt cost 12 untuk hash baru, lalu membuat ulang cookie session.
 
+## Audit Admin
+
+- `AdminAuditLog` mencatat setiap aksi admin yang bermutasi. Untuk aksi yang menulis ke database,
+  barisnya ditulis di transaksi yang sama sehingga tidak pernah ada mutasi tanpa catatannya.
+- `actorId` memakai `ON DELETE SET NULL` dan `actorName` adalah snapshot: menghapus akun admin
+  tidak boleh menghilangkan jejak aksinya.
+- `summary` adalah satu baris yang dapat dibaca tanpa membuka data aslinya. Jangan memuat isi
+  konten, kredensial, atau data pribadi — baris log bertahan lebih lama daripada data yang
+  dirujuknya.
+- Aplikasi tidak pernah mengubah atau menghapus baris log.
+
 ## Komentar dan Diskusi
 
 - `QuestionComment.deletedAt` adalah soft delete; baris tidak pernah dihapus permanen karena

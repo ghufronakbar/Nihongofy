@@ -3,6 +3,7 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth";
+import { recordAdminActionTx } from "../audit";
 import {
   HideDiscussionRootSchema,
   TakedownCommentSchema,
@@ -32,7 +33,7 @@ import {
  * penulisnya.
  */
 export async function hideDiscussionRootAction(input: HideDiscussionRootInput) {
-  await requireAdmin();
+  const actor = await requireAdmin();
 
   const validated = HideDiscussionRootSchema.safeParse(input);
   if (!validated.success) throw new Error("Data tidak valid.");
@@ -49,9 +50,18 @@ export async function hideDiscussionRootAction(input: HideDiscussionRootInput) {
     throw new Error("Hanya catatan utama yang dapat disembunyikan. Pakai takedown untuk balasan.");
   }
 
-  await prisma.questionComment.update({
-    where: { id: comment.id },
-    data: { visibility: "PRIVATE" },
+  await prisma.$transaction(async (tx) => {
+    await tx.questionComment.update({
+      where: { id: comment.id },
+      data: { visibility: "PRIVATE" },
+    });
+    await recordAdminActionTx(tx, {
+      actor,
+      action: "comment.hide",
+      targetType: "comment",
+      targetId: comment.id,
+      summary: "Menarik catatan publik kembali menjadi privat.",
+    });
   });
 }
 
@@ -61,7 +71,8 @@ export async function hideDiscussionRootAction(input: HideDiscussionRootInput) {
  * menilai pola penyalahgunaan.
  */
 export async function takedownCommentAction(input: TakedownCommentInput) {
-  const { user } = await requireAdmin();
+  const actor = await requireAdmin();
+  const { user } = actor;
 
   const validated = TakedownCommentSchema.safeParse(input);
   if (!validated.success) throw new Error("Data tidak valid.");
@@ -77,9 +88,18 @@ export async function takedownCommentAction(input: TakedownCommentInput) {
   if (!comment.sharedAt) notFound();
   if (comment.deletedAt) return;
 
-  await prisma.questionComment.update({
-    where: { id: comment.id },
-    data: { deletedAt: new Date(), deletedById: user.id },
+  await prisma.$transaction(async (tx) => {
+    await tx.questionComment.update({
+      where: { id: comment.id },
+      data: { deletedAt: new Date(), deletedById: user.id },
+    });
+    await recordAdminActionTx(tx, {
+      actor: { ...actor, user },
+      action: "comment.takedown",
+      targetType: "comment",
+      targetId: comment.id,
+      summary: "Takedown entri diskusi publik. File lampiran tidak ikut dihapus.",
+    });
   });
 }
 
@@ -89,7 +109,7 @@ export async function takedownCommentAction(input: TakedownCommentInput) {
  * tarik, dan itu bukan keputusan admin.
  */
 export async function restoreCommentAction(input: RestoreCommentInput) {
-  await requireAdmin();
+  const actor = await requireAdmin();
 
   const validated = RestoreCommentSchema.safeParse(input);
   if (!validated.success) throw new Error("Data tidak valid.");
@@ -104,8 +124,17 @@ export async function restoreCommentAction(input: RestoreCommentInput) {
     throw new Error("Ini dihapus pemiliknya sendiri, bukan takedown admin. Tidak dapat dipulihkan.");
   }
 
-  await prisma.questionComment.update({
-    where: { id: comment.id },
-    data: { deletedAt: null, deletedById: null },
+  await prisma.$transaction(async (tx) => {
+    await tx.questionComment.update({
+      where: { id: comment.id },
+      data: { deletedAt: null, deletedById: null },
+    });
+    await recordAdminActionTx(tx, {
+      actor,
+      action: "comment.restore",
+      targetType: "comment",
+      targetId: comment.id,
+      summary: "Membatalkan takedown admin atas entri diskusi.",
+    });
   });
 }

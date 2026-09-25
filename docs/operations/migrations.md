@@ -33,6 +33,28 @@ contract wajib memiliki migration dan catatan ringkas di dokumen/PR perubahan. J
 
 ## Ledger
 
+### 25 September 2026 - Audit log aksi admin
+
+- Status: deployed
+- Migration: `prisma/migrations/20260925210000_admin_audit_log/migration.sql`
+- Alasan: role statis dua level berarti siapa pun yang dapat memperbaiki typo soal juga dapat
+  menghapus akun user; tanpa tabel ini tidak ada cara menelusuri apa yang terjadi dan siapa
+  pelakunya.
+- Object terdampak: tabel `AdminAuditLog`, foreign key `actorId` ke `User` dengan
+  `ON DELETE SET NULL`, tiga index (`createdAt`, `actorId`, `targetType`+`targetId`), revoke grant
+  Data API, dan RLS aktif.
+- Data existing: tabel baru dan kosong; tidak ada backfill. Aksi admin sebelum migrasi ini memang
+  tidak tercatat dan tidak dapat direkonstruksi.
+- Risiko operasi: tabel baru, tidak menyentuh data lama. SET NULL dipilih supaya menghapus akun
+  admin tidak ikut menghapus jejak aksinya; `actorName` disimpan sebagai snapshot agar baris tetap
+  terbaca setelah akunnya hilang.
+- Validasi: `npx prisma validate`, `prisma migrate deploy`, lint, typecheck, dan build lulus.
+  Jaminan transaksional diuji langsung: transaksi yang di-rollback tidak menyisakan baris log,
+  transaksi yang commit menyisakannya.
+- Refresh setelah deploy: redeploy agar Prisma Client terbaru aktif. Tidak ada cache yang perlu
+  diinvalidasi.
+- Owner: Engineering Owner.
+
 ### 25 September 2026 - Atribusi penghapusan komentar (deletedById)
 
 - Status: deployed

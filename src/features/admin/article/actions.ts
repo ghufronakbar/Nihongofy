@@ -5,6 +5,7 @@ import { updateTag } from "next/cache";
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth";
+import { recordAdminActionTx } from "../audit";
 import { CACHE_TAGS } from "@/constants/cache-key";
 import { ArticleBodySchema } from "@/features/article/schemas";
 import {
@@ -82,7 +83,7 @@ function buildContentFields(input: { bodyJson: string }) {
 export async function createArticleAction(
   input: CreateArticleInput,
 ): Promise<AdminArticleActionResult> {
-  await requireAdmin();
+  const actor = await requireAdmin();
 
   const validated = CreateArticleSchema.safeParse(input);
   if (!validated.success) {
@@ -124,6 +125,13 @@ export async function createArticleAction(
       select: { id: true },
     });
     await syncArticleTags(tx, article.id, data.tags);
+    await recordAdminActionTx(tx, {
+      actor,
+      action: "article.create",
+      targetType: "article",
+      targetId: article.id,
+      summary: `Membuat artikel "${data.title}" (${data.slug}) berstatus ${data.status}.`,
+    });
   });
 
   revalidateArticle([data.slug]);
@@ -133,7 +141,7 @@ export async function createArticleAction(
 export async function updateArticleAction(
   input: UpdateArticleInput,
 ): Promise<AdminArticleActionResult> {
-  await requireAdmin();
+  const actor = await requireAdmin();
 
   const validated = UpdateArticleSchema.safeParse(input);
   if (!validated.success) {
@@ -184,6 +192,15 @@ export async function updateArticleAction(
       },
     });
     await syncArticleTags(tx, data.id, data.tags);
+    await recordAdminActionTx(tx, {
+      actor,
+      action: "article.update",
+      targetType: "article",
+      targetId: data.id,
+      summary:
+        `Menyunting artikel "${data.title}" (status ${data.status})` +
+        (data.slug !== current.slug ? `, slug ${current.slug} -> ${data.slug}.` : "."),
+    });
   });
 
   // Slug lama ikut diinvalidasi supaya halaman detail di URL lama tidak
@@ -193,7 +210,7 @@ export async function updateArticleAction(
 }
 
 export async function setArticleStatusAction(input: SetArticleStatusInput) {
-  await requireAdmin();
+  const actor = await requireAdmin();
 
   const validated = SetArticleStatusSchema.safeParse(input);
   if (!validated.success) throw new Error("Data tidak valid.");
@@ -205,19 +222,29 @@ export async function setArticleStatusAction(input: SetArticleStatusInput) {
   });
   if (!current) notFound();
 
-  await prisma.article.update({
-    where: { id },
-    data: {
-      status,
-      publishedAt: status === "PUBLISHED" ? (current.publishedAt ?? new Date()) : current.publishedAt,
-    },
+  await prisma.$transaction(async (tx) => {
+    await tx.article.update({
+      where: { id },
+      data: {
+        status,
+        publishedAt:
+          status === "PUBLISHED" ? (current.publishedAt ?? new Date()) : current.publishedAt,
+      },
+    });
+    await recordAdminActionTx(tx, {
+      actor,
+      action: "article.status",
+      targetType: "article",
+      targetId: id,
+      summary: `Mengubah status artikel ${current.slug} menjadi ${status}.`,
+    });
   });
 
   revalidateArticle([current.slug]);
 }
 
 export async function setArticleFeaturedAction(input: SetArticleFeaturedInput) {
-  await requireAdmin();
+  const actor = await requireAdmin();
 
   const validated = SetArticleFeaturedSchema.safeParse(input);
   if (!validated.success) throw new Error("Data tidak valid.");
@@ -226,7 +253,16 @@ export async function setArticleFeaturedAction(input: SetArticleFeaturedInput) {
   const current = await prisma.article.findUnique({ where: { id }, select: { slug: true } });
   if (!current) notFound();
 
-  await prisma.article.update({ where: { id }, data: { isFeatured } });
+  await prisma.$transaction(async (tx) => {
+    await tx.article.update({ where: { id }, data: { isFeatured } });
+    await recordAdminActionTx(tx, {
+      actor,
+      action: "article.featured",
+      targetType: "article",
+      targetId: id,
+      summary: `${isFeatured ? "Menandai" : "Melepas"} artikel ${current.slug} sebagai featured.`,
+    });
+  });
   revalidateArticle([current.slug]);
 }
 
@@ -235,7 +271,7 @@ export async function setArticleFeaturedAction(input: SetArticleFeaturedInput) {
 // padanya. Interaction user (saved/favorited) ikut terhapus lewat cascade —
 // karena itu mengarsipkan lebih disarankan daripada menghapus.
 export async function deleteArticleAction(input: DeleteArticleInput) {
-  await requireAdmin();
+  const actor = await requireAdmin();
 
   const validated = DeleteArticleSchema.safeParse(input);
   if (!validated.success) throw new Error("Data tidak valid.");
@@ -246,6 +282,15 @@ export async function deleteArticleAction(input: DeleteArticleInput) {
   });
   if (!current) notFound();
 
-  await prisma.article.delete({ where: { id: validated.data.id } });
+  await prisma.$transaction(async (tx) => {
+    await tx.article.delete({ where: { id: validated.data.id } });
+    await recordAdminActionTx(tx, {
+      actor,
+      action: "article.delete",
+      targetType: "article",
+      targetId: validated.data.id,
+      summary: `Menghapus permanen artikel ${current.slug} beserta interaksi user-nya.`,
+    });
+  });
   revalidateArticle([current.slug]);
 }
