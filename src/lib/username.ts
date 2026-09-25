@@ -7,9 +7,9 @@ import { z } from "zod";
 export const USERNAME_MIN_LENGTH = 3;
 export const USERNAME_MAX_LENGTH = 30;
 
-// Prefix ini milik akun yang sudah dianonimkan. Tanpa dilindungi, user hidup
-// bisa mengklaim `deleted_1761400000_9` dan menyamar sebagai akun tombstone.
-export const ANONYMIZED_USERNAME_PREFIX = "deleted_";
+// Akhiran ini milik akun yang sudah dianonimkan. Tanpa dilindungi, user hidup
+// bisa mengklaim `lans_1761400000_deleted` dan menyamar sebagai akun tombstone.
+export const ANONYMIZED_USERNAME_SUFFIX = "_deleted";
 
 // Segmen route yang sudah dipakai, plus kata yang lazim disalahgunakan untuk
 // menyamar sebagai akun resmi. Wajib dijaga karena username muncul sebagai
@@ -59,9 +59,7 @@ const RESERVED_USERNAMES = new Set([
 const USERNAME_PATTERN = /^[a-z0-9_](?:[a-z0-9_]|\.(?!\.))*[a-z0-9_]$/;
 
 export function isReservedUsername(value: string) {
-  return (
-    RESERVED_USERNAMES.has(value) || value.startsWith(ANONYMIZED_USERNAME_PREFIX)
-  );
+  return RESERVED_USERNAMES.has(value) || value.endsWith(ANONYMIZED_USERNAME_SUFFIX);
 }
 
 export const UsernameSchema = z
@@ -111,13 +109,24 @@ export async function resolveAvailableUsername(
   throw new Error("Tidak dapat membuat username unik.");
 }
 
-// Username akun yang dianonimkan. Username lama sengaja TIDAK dipertahankan:
-// handle publik adalah identitas orang tersebut, jadi menyimpannya akan
-// menggagalkan tujuan anonimisasi itu sendiri.
-export function buildAnonymizedUsername(userId: number, now = new Date()) {
-  return `${ANONYMIZED_USERNAME_PREFIX}${Math.floor(now.getTime() / 1000)}_${userId}`;
+// Username akun yang dianonimkan: `<username_lama>_<unix>_deleted`.
+//
+// Handle lama ikut dipertahankan atas permintaan produk, jadi jejak identitas
+// pemiliknya tidak sepenuhnya hilang dari baris ini — pertimbangkan itu bila
+// suatu saat ada kewajiban penghapusan yang lebih ketat.
+//
+// Dipotong agar tetap muat dalam batas 30 karakter. `salt` dipakai pemanggil
+// saat hasilnya bentrok: dua handle dengan awalan sama yang dianonimkan pada
+// detik yang sama akan menghasilkan string yang identik.
+export function buildAnonymizedUsername(previousUsername: string, now = new Date(), salt = "") {
+  const tail = `_${Math.floor(now.getTime() / 1000)}${ANONYMIZED_USERNAME_SUFFIX}`;
+  const room = USERNAME_MAX_LENGTH - tail.length - salt.length;
+  const base =
+    room > 0 ? previousUsername.slice(0, room).replace(/[._]+$/, "") : "";
+
+  return `${base || "user"}${salt}${tail}`;
 }
 
 export function isAnonymizedUsername(value: string) {
-  return value.startsWith(ANONYMIZED_USERNAME_PREFIX);
+  return value.endsWith(ANONYMIZED_USERNAME_SUFFIX);
 }

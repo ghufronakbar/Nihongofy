@@ -779,8 +779,8 @@ memusnahkan balasan pengguna lain pada thread miliknya.
   publik**, bukan kredensial. Jalur login-by-username dihapus — login email saja, supaya handle
   yang tampil di setiap komentar tidak menjadi identifier login semua orang
 - [x] Aturan handle ala Instagram di `src/lib/username.ts` (huruf kecil, angka, titik, underscore,
-  3–30, titik tidak di ujung/berurutan) + daftar kata terlarang berisi segmen route dan prefix
-  `deleted_`, supaya user hidup tidak bisa menyamar sebagai akun tombstone
+  3–30, titik tidak di ujung/berurutan) + daftar kata terlarang berisi segmen route dan akhiran
+  `_deleted`, supaya user hidup tidak bisa menyamar sebagai akun tombstone
 - [x] Generate otomatis saat register credential dan Google (`generateUniqueUsername`, suffix acak
   agar jumlah user tidak bocor); editable dari `/profile`
 - [x] Migrasi `20260926090000_public_username_and_account_anonymization` — backfill slug dari
@@ -790,6 +790,9 @@ memusnahkan balasan pengguna lain pada thread miliknya.
   di-soft delete jadi tombstone, dan data pribadi yang dulu ikut terhapus cascade (flashcard,
   attempt, practice, kana, article interaction, conversation, token, OAuth) dihapus eksplisit.
   `OAuthAccount` wajib dihapus atau login Google menghidupkan akun kembali
+- [x] Username akun terhapus memakai format `<username_lama>_<unix>_deleted` sesuai permintaan
+  produk. Handle lama ikut tersimpan, jadi anonimisasinya tidak penuh — dicatat di
+  `docs/module/auth.md`. Dipotong agar muat 30 karakter, bentrok diselesaikan dengan salt acak
 - [x] `loginAction` menolak akun ber-`anonymizedAt`
 - [x] Mention jadi relasi `repliedToId` (SetNull), bukan teks `@nama` di `commentText`. Divalidasi
   harus menunjuk comment hidup di thread yang sama; tidak dirender bila tujuannya dihapus

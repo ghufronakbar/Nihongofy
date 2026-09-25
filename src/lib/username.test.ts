@@ -47,9 +47,10 @@ describe("UsernameSchema", () => {
 
   // Tanpa ini, user hidup bisa mengklaim handle berbentuk akun tombstone dan
   // menyamar sebagai pengguna yang sudah dihapus.
-  it("menolak prefix akun yang dianonimkan", () => {
-    expect(isReservedUsername("deleted_1761400000_9")).toBe(true);
-    expect(parse("deleted_1761400000_9").success).toBe(false);
+  it("menolak akhiran akun yang dianonimkan", () => {
+    expect(isReservedUsername("lans_1761400000_deleted")).toBe(true);
+    expect(parse("lans_1761400000_deleted").success).toBe(false);
+    expect(parse("siapapun_deleted").success).toBe(false);
   });
 });
 
@@ -101,10 +102,39 @@ describe("resolveAvailableUsername", () => {
 });
 
 describe("buildAnonymizedUsername", () => {
-  it("tidak mempertahankan handle lama", () => {
-    const value = buildAnonymizedUsername(42, new Date("2026-09-26T00:00:00Z"));
-    expect(value).toBe("deleted_1790380800_42");
+  const at = new Date("2026-09-26T00:00:00Z");
+
+  it("memakai format <username_lama>_<unix>_deleted", () => {
+    const value = buildAnonymizedUsername("lans", at);
+    expect(value).toBe("lans_1790380800_deleted");
     expect(isAnonymizedUsername(value)).toBe(true);
+  });
+
+  // Handle lama bisa sepanjang 30 karakter sendiri, jadi tanpa pemotongan
+  // hasilnya akan menembus batas kolom VARCHAR(30).
+  it("memotong handle lama agar tetap muat 30 karakter", () => {
+    const value = buildAnonymizedUsername("ghufron_akbar_maulana", at);
     expect(value.length).toBeLessThanOrEqual(30);
+    expect(value.endsWith("_1790380800_deleted")).toBe(true);
+    expect(isAnonymizedUsername(value)).toBe(true);
+  });
+
+  it("tetap muat saat handle lama sepanjang batas maksimum", () => {
+    const value = buildAnonymizedUsername("a".repeat(30), at);
+    expect(value.length).toBeLessThanOrEqual(30);
+  });
+
+  it("menghasilkan string berbeda saat diberi salt", () => {
+    expect(buildAnonymizedUsername("ghufron_akbar_maulana", at, "ab12")).not.toBe(
+      buildAnonymizedUsername("ghufron_akbar_maulana", at),
+    );
+    expect(
+      buildAnonymizedUsername("ghufron_akbar_maulana", at, "ab12").length,
+    ).toBeLessThanOrEqual(30);
+  });
+
+  it("tidak meninggalkan titik atau underscore menggantung setelah dipotong", () => {
+    expect(buildAnonymizedUsername("abcdefghijk_lmn", at)).not.toContain("__");
+    expect(buildAnonymizedUsername("abcdefghij._xyz", at)).not.toContain("._");
   });
 });
