@@ -2,10 +2,13 @@
 
 ## Status Aktual
 
-**Fondasi selesai (Tahap 1); seluruh area fitur belum.** Yang sudah berjalan: role statis
-`USER`/`ADMIN`, `requireAdmin()`, shell `/admin` dengan sidebar sendiri, dan halaman overview
-yang membaca kondisi database secara langsung. Sembilan area fitur di bawah masih berupa
-halaman placeholder yang menyebut tahapnya — bukan implementasi.
+**Fondasi, CMS artikel, dan moderasi diskusi selesai (Tahap 1, 4-artikel, dan 5).** Yang sudah
+berjalan: role statis `USER`/`ADMIN`, `requireAdmin()`, shell `/admin` dengan sidebar sendiri,
+overview yang membaca kondisi database secara langsung, CRUD artikel dengan workflow
+draft/published/archived, dan antrean moderasi diskusi publik dengan takedown.
+
+Yang belum: bank soal, pembahasan, deck bawaan, user, conversation, dan operasional — masih
+berupa halaman placeholder yang menyebut tahapnya.
 
 Seluruh operasi konten karena itu **masih dijalankan lewat script CLI** di `prisma/`
 (`seed:test-package`, `seed:articles`, `seed:flashcard-deck`, `seed:question-explanation`,
@@ -25,8 +28,12 @@ tahap terkait selesai: [content-data.md](content-data.md), [article.md](article.
 | `getSessionUser()`, `requireAdmin()` | `src/lib/auth.ts` |
 | Shell, sidebar, dan guard | `src/app/admin/layout.tsx`, `src/components/admin-sidebar.tsx` |
 | Overview | `src/app/admin/page.tsx`, `src/features/admin/queries.ts` |
-| Placeholder 8 area | `src/features/admin/components/admin-placeholder.tsx` |
+| Placeholder area yang belum jadi | `src/features/admin/components/admin-placeholder.tsx` |
 | Promote/demote admin | `npm run user:role` (`prisma/set-user-role.mjs`) |
+| CMS artikel | `src/features/admin/article/`, `src/app/admin/article/` |
+| `articleBodyToPlainText()` | `src/features/article/lib/body-text.ts` |
+| Moderasi diskusi | `src/features/admin/moderation/`, `src/app/admin/moderation/` |
+| `QuestionComment.deletedById` | migration `20260925180000_comment_deleted_by` |
 
 ## Prasyarat: Role Statis
 
@@ -104,12 +111,13 @@ area user.
 | `/admin/question/[id]` | Editor satu soal | Tahap 2 |
 | `/admin/explanation` | Antrean pembahasan: belum ada, belum direview, `answerKeyDoubt` | Tahap 3 |
 | `/admin/explanation/[questionId]` | Editor dan approval pembahasan | Tahap 3 |
-| `/admin/article` | Daftar artikel | Tahap 4 |
-| `/admin/article/[id]` | Editor artikel | Tahap 4 |
+| `/admin/article` | Daftar artikel | selesai |
+| `/admin/article/[id]` | Editor artikel | selesai |
+| `/admin/article/new` | Artikel baru | selesai |
 | `/admin/flashcard-deck` | Deck bawaan sistem | Tahap 4 |
 | `/admin/user` | Daftar user | Tahap 6 |
 | `/admin/user/[id]` | Detail dan aksi akun | Tahap 6 |
-| `/admin/moderation` | Antrean diskusi publik dan catatan belajar | Tahap 5 |
+| `/admin/moderation` | Antrean diskusi publik dan catatan belajar | selesai |
 | `/admin/conversation` | Pemakaian dan kuota conversation | Tahap 7 |
 | `/admin/ops` | Feature flag (read-only), cache, audit log | Tahap 7 |
 

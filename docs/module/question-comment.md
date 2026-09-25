@@ -27,7 +27,7 @@ Dua flag terpisah.
 - Catatan default privat. Publik hanya terjadi karena tindakan eksplisit pemiliknya.
 - `Question.explanation` adalah pembahasan resmi/terkurasi; `QuestionComment` adalah catatan user, dan keduanya tetap dipisahkan.
 - Diskusi dapat dibaca guest; menulis dan membalas butuh login.
-- Belum ada moderasi, laporan penyalahgunaan, notifikasi balasan, like, atau sorting selain terbaru.
+- Moderasi admin tersedia di `/admin/moderation`. Yang belum ada: laporan penyalahgunaan dari user, notifikasi balasan, like, dan sorting selain terbaru.
 
 ## Model Data
 
@@ -36,6 +36,7 @@ Satu tabel `QuestionComment` untuk catatan pribadi dan thread publik — yang di
 - `visibility` (`PRIVATE` | `PUBLIC`) — status saat ini.
 - `sharedAt` — terisi saat pertama kali dibagikan, **tidak pernah dikosongkan lagi**. Ini penentu keanggotaan thread publik, bukan `visibility`.
 - `deletedAt` — soft delete.
+- `deletedById` — siapa yang menghapus. Hapusan pemilik terisi `userId` miliknya sendiri, takedown admin terisi id admin. Pembeda ini yang menentukan apakah entri dapat dipulihkan.
 - `parentId` — self-relation. `null` berarti root; balasan hanya satu tingkat.
 
 ### Aturan tampil root
@@ -70,7 +71,7 @@ Thread dan hitungannya sengaja **tidak** di-`unstable_cache`. Isinya berubah set
 
 - `commentId` berupa balasan akan di-redirect ke permalink root dengan anchor `#comment-<id>`.
 - Catatan privat yang belum pernah dibagikan tidak punya permalink (404).
-- Route ini `noindex` lewat metadata layout dan masuk `disallow` di `robots.ts`: konten buatan user tanpa moderasi tidak dibuka untuk mesin pencari sampai dashboard admin tersedia.
+- Route ini `noindex` lewat metadata layout dan masuk `disallow` di `robots.ts`. Alasan semula "menunggu dashboard admin"; moderasinya kini ada, jadi membuka indexing tinggal keputusan produk — lihat Tahap 5 di `docs/plan.md`. Ingat `robots.txt` di-prerender saat build.
 
 ## Data dan Security
 
@@ -82,9 +83,9 @@ Thread dan hitungannya sengaja **tidak** di-`unstable_cache`. Isinya berubah set
 
 ## Keterbatasan dan Bug Aktual
 
-- **Belum ada moderasi.** Tidak ada role admin, antrean laporan, atau takedown. Satu-satunya rem darurat adalah `FEATURES_QUESTION_DISCUSSION=false`. Rencananya di `docs/module/admin.md`.
+- **Belum ada laporan dari user.** Moderasi admin sudah ada (`/admin/moderation`: antrean, sembunyikan root, takedown, pulihkan takedown admin, filter per user), tetapi penyalahgunaan hanya ketahuan bila admin memeriksa antrean secara aktif. Rem darurat `FEATURES_QUESTION_DISCUSSION=false` tetap tersedia.
 - **Tidak ada notifikasi** saat catatan dibalas — aplikasi belum punya sistem notifikasi sama sekali.
-- **Lampiran Cloudinary tidak pernah terhapus.** Dengan soft delete permanen, asset fisik hanya menumpuk. Diterima sadar oleh user; pembersihannya menyusul bersama dashboard admin.
+- **Lampiran Cloudinary tidak pernah terhapus**, termasuk saat takedown admin. Ini keputusan eksplisit: takedown bekerja di level record database saja, dan pembersihan asset fisik berada di luar scope modul admin.
 - Tidak ada rate limit khusus pada pembuatan comment/balasan; yang ada hanya batas 2.000 karakter dan 4 gambar.
 - Multi-file uploader memakai closure `value` lama di dalam loop; beberapa upload berurutan dapat saling menimpa sehingga hanya URL terakhir yang tertinggal.
 - Schema menerima URL valid dari host mana pun dan belum memastikan URL berasal dari folder Cloudinary user.
@@ -108,3 +109,4 @@ Thread dan hitungannya sengaja **tidak** di-`unstable_cache`. Isinya berubah set
 - `src/app/(public)/discussion/layout.tsx`
 - `src/app/(public)/discussion/[commentId]/page.tsx`
 - `src/app/api/cloudinary/signature/route.ts`
+- `src/features/admin/moderation/` — antrean dan action takedown milik admin, terpisah dari action user di atas yang tetap menolak non-pemilik

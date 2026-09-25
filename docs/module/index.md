@@ -19,13 +19,13 @@ Folder ini mendokumentasikan kondisi aplikasi berdasarkan kode, fixture, dan dat
 | [Analytics](analytics.md) | Selesai untuk exam/practice | Filter, tren, breakdown mondai, dan practice summary aktif; data development saat audit masih empty state. |
 | [Progress dan export](progress.md) | Selesai | Tabel per attempt serta export XLSX/PDF aktif; belum ada grafik dan data development masih empty state. |
 | [Profile](profile.md) | Selesai dengan gap account lifecycle | Edit akun, avatar, password, overview, dan SRS settings aktif. |
-| [Article](article.md) | Selesai, dikelola lewat seed | Listing, search, detail, SEO, save/favorite, dan view aktif; belum ada CMS atau halaman koleksi tersimpan. |
-| [Question comments](question-comment.md) | Selesai, kini termasuk diskusi publik | Catatan pribadi, berbagi ke diskusi, balasan satu tingkat, dan permalink `/discussion/[commentId]` aktif; moderasi, notifikasi, dan rate limit belum ada. |
+| [Article](article.md) | Selesai, kini punya CMS admin | Listing, search, detail, SEO, save/favorite, dan view aktif; CRUD serta workflow draft/published/archived ada di `/admin/article`. Belum ada halaman koleksi tersimpan. |
+| [Question comments](question-comment.md) | Selesai, kini termasuk diskusi publik | Catatan pribadi, berbagi ke diskusi, balasan satu tingkat, permalink `/discussion/[commentId]`, dan moderasi admin aktif; laporan dari user, notifikasi, dan rate limit belum ada. |
 | [Japanese content rendering](japanese-content-rendering.md) | Fungsional dengan gap format | Furigana, underline, slot, tabel, dan multi-passage aktif; newline dan Markdown fixture belum selalu dirender dengan benar. |
 | [Shared study utilities](study.md) | Selesai sederhana | Saat ini hanya menyediakan TTS browser bersama untuk kana dan flashcard. |
 | [Conversation dan speaking](conversation-speaking.md) | Versi awal fungsional | Teks dan suara berjalan end-to-end dengan session tersimpan dan provider mock/OpenAI; quota belum ditegakkan, moderation dan retention belum ada. Rancangan: [conversation-speaking-design.md](conversation-speaking-design.md); aset karakter: [conversation-persona-assets.md](conversation-persona-assets.md). |
 | [Content data dan seeding](content-data.md) | Infrastruktur aktif | Import tervalidasi tersedia; source fixture dan isi database development belum sinkron penuh. |
-| [Admin dashboard](admin.md) | Fondasi selesai, area fitur belum | Role statis `USER`/`ADMIN`, guard, shell `/admin`, dan overview aktif; bank soal, pembahasan, artikel, moderasi, dan user masih placeholder dan tetap dikerjakan lewat script CLI di `prisma/`. |
+| [Admin dashboard](admin.md) | Fondasi, artikel, dan moderasi selesai | Role statis `USER`/`ADMIN`, guard, overview, CMS artikel, dan moderasi diskusi publik aktif; bank soal, pembahasan, deck, user, dan conversation masih placeholder dan tetap dikerjakan lewat script CLI di `prisma/`. |
 
 ## Feature Flag
 

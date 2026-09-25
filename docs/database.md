@@ -41,6 +41,15 @@ Stack: Next.js + Prisma + PostgreSQL (Supabase).
 - Update bucket rate limit harus atomik dengan `INSERT ... ON CONFLICT DO UPDATE`, bukan pola select lalu update.
 - Update profile dan password selalu mengambil user dari `session.userId`. Ganti password wajib membandingkan current password, memakai bcrypt cost 12 untuk hash baru, lalu membuat ulang cookie session.
 
+## Komentar dan Diskusi
+
+- `QuestionComment.deletedAt` adalah soft delete; baris tidak pernah dihapus permanen karena
+  balasan user lain menempel pada root.
+- `QuestionComment.deletedById` mencatat siapa yang menghapus. Hapusan pemilik terisi dengan
+  `userId` miliknya sendiri, takedown admin terisi dengan id admin. Hanya yang kedua yang boleh
+  dipulihkan — memulihkan hapusan pemilik berarti menerbitkan ulang tulisan yang sengaja ia tarik.
+- Takedown hanya mengubah record database. File lampiran di Cloudinary **tidak** dihapus.
+
 ## Struktur Data (hierarki)
 
 ```

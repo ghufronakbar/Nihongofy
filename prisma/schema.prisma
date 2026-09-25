@@ -219,6 +219,7 @@ model User {
   role                     UserRole  @default(USER) // lihat enum UserRole: tidak pernah dibaca dari JWT
 
   questionComments     QuestionComment[]
+  deletedComments      QuestionComment[]    @relation("CommentDeletedBy")
   attempts             Attempt[]
   kanaProgresses       KanaProgress[]
   flashcardCollection  FlashcardCollection?
@@ -790,6 +791,16 @@ model QuestionComment {
   sharedAt   DateTime?
   deletedAt  DateTime?
 
+  // Siapa yang menghapus. Tanpa kolom ini, takedown oleh admin tidak dapat
+  // dibedakan dari pemilik yang menghapus catatannya sendiri — padahal hanya
+  // takedown admin yang boleh dipulihkan; memulihkan hapusan pemilik berarti
+  // menerbitkan ulang tulisan yang sengaja ia tarik.
+  //
+  // SetNull, bukan Cascade: akun admin yang dihapus tidak boleh ikut menghapus
+  // baris komentar milik orang lain.
+  deletedBy   User? @relation("CommentDeletedBy", fields: [deletedById], references: [id], onDelete: SetNull)
+  deletedById Int?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -800,6 +811,9 @@ model QuestionComment {
   @@index([questionId, userId, deletedAt])
   // Daftar root thread publik pada satu soal.
   @@index([questionId, parentId, sharedAt])
+  // Antrean moderasi: seluruh entri publik lintas soal, terbaru dulu.
+  @@index([sharedAt])
+  @@index([deletedById])
 }
 
 // ============================================================

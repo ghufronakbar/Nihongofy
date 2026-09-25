@@ -108,7 +108,9 @@ export async function deleteQuestionCommentAction(input: DeleteQuestionCommentIn
 
   await prisma.questionComment.update({
     where: { id: commentId },
-    data: { deletedAt: new Date() },
+    // deletedById dicatat supaya moderasi dapat membedakan hapusan pemilik dari
+    // takedown admin. Hanya takedown admin yang boleh dipulihkan.
+    data: { deletedAt: new Date(), deletedById: authSession.userId },
   });
 }
 

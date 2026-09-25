@@ -498,8 +498,10 @@ supaya edit tidak perlu disinkronkan antar tabel.
 - [x] Diterapkan di mode baca dan `/result/[attemptId]/detail`
 - [ ] Verifikasi manual dua akun (user): bagikan catatan dari akun A, baca dan balas dari akun B,
   lalu uji unshare dan hapus — pastikan balasan tetap ada dan isi root tidak bocor
-- [ ] Moderasi, notifikasi balasan, rate limit posting, dan pembersihan asset Cloudinary —
-  lihat Admin Dashboard tahap 5
+- [x] Moderasi — selesai di Admin Dashboard tahap 5
+- [ ] Notifikasi balasan dan rate limit posting — masih terbuka, lihat Admin Dashboard tahap 5
+- [x] Pembersihan asset Cloudinary — diputuskan **di luar scope**: takedown hanya mengubah record
+  database, file asli tidak dihapus
 
 ## Admin Dashboard (`/admin`)
 
@@ -567,10 +569,20 @@ tahap lain, dan tahap 2–3 menutup gap konten yang paling menyakitkan bila scop
 
 ### Tahap 4 — Konten Lain
 
-- [ ] `/admin/article` + `/admin/article/[id]` — CRUD artikel, editor body JSON tervalidasi Zod
-- [ ] `bodyText` di-regenerate otomatis dari body (sama seperti `seed:articles`)
-- [ ] Kelola `ArticleTag`/`ArticleTagLink`, toggle `isFeatured`, atur `publishedAt`
-- [ ] Transisi `ArticleStatus` DRAFT → PUBLISHED → ARCHIVED — enumnya sudah ada, UI-nya belum
+- [x] `/admin/article`, `/admin/article/new`, `/admin/article/[id]` — CRUD artikel, editor body JSON
+  tervalidasi `ArticleBodySchema` (schema yang sama dengan halaman publik), ringkasan jumlah blok
+  per tipe, filter status, dan pencarian judul/slug/kategori
+- [x] `bodyText` di-regenerate otomatis dari body lewat `articleBodyToPlainText()`
+  (`src/features/article/lib/body-text.ts`). Salinan fungsi ini ada di `prisma/seed-articles.mjs`
+  karena script .mjs tidak dapat mengimpor TypeScript — keduanya harus diubah bersamaan
+- [x] Kelola `ArticleTag`/`ArticleTagLink` (tag baru dibuat otomatis, slug diturunkan supaya ejaan
+  berbeda tidak jadi dua baris), toggle `isFeatured`, dan `publishedAt` otomatis
+- [x] Invalidasi `articleList` + `articleFacets` + `articleDetail` tiap mutasi; slug lama ikut
+  diinvalidasi saat slug berubah
+- [x] Transisi `ArticleStatus` DRAFT → PUBLISHED → ARCHIVED dari form maupun langsung di baris
+  daftar. Tanggal terbit pertama dipertahankan saat artikel diterbitkan ulang
+- [x] Hapus artikel tersedia tetapi konfirmasinya mengarahkan ke Archived, karena hard delete ikut
+  menghapus interaction user lewat cascade
 - [ ] `/admin/flashcard-deck` — CRUD `FlashcardSystemDeck`/`FlashcardSystemNote`, toggle
   `isPublished`, atur `order`, dan `license` wajib terisi (CC BY-SA mengikat atribusi)
 - [ ] UI menyatakan jelas bahwa deck bawaan **disalin** saat user menambahkannya, jadi edit tidak
@@ -581,15 +593,21 @@ tahap lain, dan tahap 2–3 menutup gap konten yang paling menyakitkan bila scop
 Naik prioritas karena fitur berbagi catatan + balasan membuat `QuestionComment` menjadi
 satu-satunya konten buatan user yang terlihat publik, termasuk oleh guest.
 
-- [ ] `/admin/moderation` — antrean root publik (`parentId = null`, `sharedAt != null`) dan
-  balasan terbaru lintas soal, dengan filter soal/user/tanggal
-- [ ] Action takedown admin **terpisah** dari action user: `requireOwnLiveComment()` menolak
-  non-pemilik dan guard itu jangan dilonggarkan
-- [ ] Unpublish paksa (`visibility = PRIVATE`) dan soft delete paksa (`deletedAt`) oleh admin —
-  tidak pernah hard delete, karena balasan user lain menempel pada root
-- [ ] Takedown menyembunyikan lampiran lewat record database saja — file asli di Cloudinary
-  **tidak** dihapus (di luar scope admin; pembersihan asset urusan bagian lain)
-- [ ] Riwayat kontribusi publik per user dalam satu layar
+- [x] `/admin/moderation` — antrean seluruh entri yang pernah dibagikan (`sharedAt != null`), root
+  maupun balasan, terbaru dulu, dengan filter status dan pencarian isi/nama penulis. Dibatasi 100
+  entri; pagination belum ada
+- [x] Action takedown admin **terpisah** di `src/features/admin/moderation/actions.ts`;
+  `requireOwnLiveComment()` milik user tidak disentuh
+- [x] Sembunyikan root (`visibility = PRIVATE`) dan takedown (`deletedAt`) oleh admin — tidak
+  pernah hard delete. Sengaja tidak ada kebalikan dari "sembunyikan": menerbitkan ulang catatan
+  orang lain bukan keputusan admin
+- [x] Pulihkan takedown, **hanya** untuk entri yang dihapus admin. Entri yang dihapus pemiliknya
+  ditolak dengan pesan eksplisit
+- [x] Takedown menyembunyikan lampiran lewat record database saja — file asli di Cloudinary
+  **tidak** dihapus (di luar scope admin). Jumlah lampiran ditampilkan di antrean beserta
+  keterangan ini
+- [x] Riwayat kontribusi publik per user: klik nama penulis memfilter antrean dan menampilkan
+  ringkasan (jumlah catatan, balasan, dan berapa kali kena takedown)
 - [ ] Rate limit pembuatan catatan/balasan — sekarang tidak ada sama sekali (hanya batas 2.000
   karakter dan 4 gambar); pakai ulang pola bucket atomik `AuthRateLimit`
 - [ ] Buka `/discussion` untuk mesin pencari setelah moderasi aktif: hapus `disallow` di
@@ -597,15 +615,15 @@ satu-satunya konten buatan user yang terlihat publik, termasuk oleh guest.
   `src/app/(public)/discussion/layout.tsx`. `robots.txt` di-prerender saat build → butuh redeploy
 - [ ] Notifikasi balasan (diserahkan dari Fase 8.7, tetapi bukan fitur admin — aplikasi belum
   punya sistem notifikasi sama sekali; putuskan apakah masuk scope atau jadi fase tersendiri)
-- [ ] Opsional tapi disarankan: `QuestionComment.deletedBy` untuk membedakan hapus oleh pemilik
-  dan takedown oleh admin — makin penting karena **balasan** yang dihapus hilang tanpa tombstone,
-  jadi takedown balasan tidak meninggalkan jejak yang terlihat pembaca
+- [x] `QuestionComment.deletedById` — migration `20260925180000_comment_deleted_by`. Bukan opsional
+  pada akhirnya: tanpa itu pemulihan tidak dapat membedakan takedown admin dari hapusan pemilik.
+  Baris lama dibackfill sebagai hapusan pemilik
 - [ ] Opsional: penanda suspend posting publik di `User` — sekarang satu-satunya cara
   menghentikan penyalahgunaan berulang adalah menghapus akunnya
-- [ ] Tampilkan status `FEATURES_QUESTION_DISCUSSION` sebagai kill switch yang sudah tersedia
-  (terpisah dari `FEATURES_QUESTION_COMMENT`)
-- [ ] Thread dan hitungannya sengaja tidak di-cache dan tidak punya tag di `CACHE_TAGS` — aksi
-  moderasi tidak perlu invalidasi, dan jangan menambahkan cache di jalur itu demi keseragaman
+- [x] Peringatan saat `FEATURES_QUESTION_DISCUSSION` mati ditampilkan di halaman moderasi (dan
+  `FEATURES_ARTICLE` di halaman artikel): layar admin tetap dapat dipakai saat modul publiknya mati
+- [x] Thread dan hitungannya sengaja tidak di-cache dan tidak punya tag di `CACHE_TAGS` — aksi
+  moderasi tidak memanggil invalidasi apa pun
 
 ### Tahap 6 — User & Akun
 
@@ -634,8 +652,13 @@ satu-satunya konten buatan user yang terlihat publik, termasuk oleh guest.
   `/dashboard`; setelah promote ke `ADMIN` **dengan cookie session yang sama** → 200
 - [x] Promote berlaku seketika tanpa login ulang, membuktikan role tidak diambil dari JWT
 - [ ] Demote diuji dengan cara yang sama (kebalikannya) setelah ada admin kedua
-- [ ] Server Action admin dipanggil langsung tanpa melewati layout tetap ditolak (menunggu Server
-  Action admin pertama, Tahap 2)
+- [x] Setiap Server Action admin (artikel dan moderasi) memanggil `requireAdmin()` sendiri, tidak
+  bergantung pada layout
+- [x] Antrean moderasi diuji lewat HTTP dengan data uji: root tampil dengan tombol sembunyikan +
+  takedown, balasan hanya takedown (tidak punya toggle visibility sendiri), entri yang dihapus
+  pemilik tanpa tombol pulihkan, dan entri hasil takedown admin dengan tombol pulihkan beserta nama
+  admin yang menghapusnya. Data uji sudah dibersihkan
+- [ ] Uji manual dua akun untuk alur artikel: buat draft, terbitkan, ubah slug, arsipkan (user)
 - [ ] Data-leak: query/komponen admin terpisah dari jalur exam; `QUESTION_EXPLANATION_SELECT`
   tidak dilonggarkan demi admin
 - [ ] Unit test minimal untuk aksi destruktif: import paket, hapus paket, takedown komentar
