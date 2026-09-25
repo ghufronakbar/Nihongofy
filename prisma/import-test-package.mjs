@@ -80,20 +80,16 @@ export function existingPackageMismatches(existing, pkg) {
   return mismatches;
 }
 
-// Bentuk nested-create untuk relasi 1:1 QuestionExplanation. Mengembalikan
-// undefined bila soal memang belum punya pembahasan, supaya tidak ada baris
-// kosong yang dibuat.
-export function explanationCreateInput(question) {
+// Baris QuestionExplanation beserta alasan per pilihannya, siap untuk bulk
+// insert. Mengembalikan null bila soal memang belum punya pembahasan.
+export function explanationRows(question, questionId) {
   const explanation = normalizeExplanation(question);
-  if (!explanation) return undefined;
+  if (!explanation) return null;
 
   const { choices, generatedAt, ...columns } = explanation;
   return {
-    create: {
-      ...columns,
-      ...(generatedAt ? { generatedAt } : {}),
-      ...(choices ? { choices: { create: choices } } : {}),
-    },
+    row: { questionId, ...columns, ...(generatedAt ? { generatedAt } : {}) },
+    choices: choices ?? [],
   };
 }
 
@@ -164,62 +160,133 @@ export async function importTestPackage(prisma, { file, pkg }, replaceExisting) 
         await transaction.testPackage.delete({ where: { id: existing.id } });
       }
 
+      // Seluruh isi paket ditulis dengan bulk insert, bukan satu baris satu
+      // perintah. Paket berukuran wajar berisi ratusan sampai ribuan baris, dan
+      // setiap perintah ke database berbiaya satu perjalanan bolak-balik
+      // jaringan — pada koneksi Supabase terukur ~35 ms. Menulis satu per satu
+      // membuat impor satu paket memakan puluhan detik padahal kerjanya sendiri
+      // di bawah satu detik.
+      //
+      // `createManyAndReturn` mengembalikan baris sesuai urutan input, sehingga
+      // id hasilnya dapat dipasangkan kembali ke data asal lewat posisi array.
       const testPackage = await transaction.testPackage.create({
         data: { name: pkg.name, jlptLevel: pkg.jlptLevel },
         select: { id: true },
       });
 
       const events = [];
-      const contextIdMap = new Map();
 
-      for (const questionContext of pkg.questionContexts) {
-        const created = await transaction.questionContext.create({
-          data: {
+      const contextIdMap = new Map();
+      if (pkg.questionContexts.length > 0) {
+        const createdContexts = await transaction.questionContext.createManyAndReturn({
+          data: pkg.questionContexts.map((questionContext) => ({
             testPackageId: testPackage.id,
             storyText: questionContext.storyText ?? null,
             storyImage: questionContext.storyImage ?? null,
             storyAudio: questionContext.storyAudio ?? null,
-          },
+          })),
           select: { id: true },
         });
-        contextIdMap.set(questionContext.id, created.id);
-        events.push(`CREATE context "${questionContext.id}" -> id ${created.id}`);
+
+        if (createdContexts.length !== pkg.questionContexts.length) {
+          throw new Error("jumlah context yang dibuat tidak sama dengan fixture");
+        }
+        pkg.questionContexts.forEach((questionContext, index) => {
+          contextIdMap.set(questionContext.id, createdContexts[index].id);
+        });
+        events.push(`CREATE ${createdContexts.length} context`);
       }
 
-      for (const item of pkg.testPackageItems) {
-        const questions = item.questions.map((question) => ({
-          order: question.order,
-          questionText: question.questionText,
-          questionImage: question.questionImage ?? null,
-          questionAudio: question.questionAudio ?? null,
-          questionAnswer: question.questionAnswer,
-          explanation: explanationCreateInput(question),
-          questionContextId: question.questionContextRef
-            ? contextIdMap.get(question.questionContextRef)
-            : null,
-          questionChoices: {
-            create: question.questionChoices.map((choice) => ({
-              codeAnswer: choice.codeAnswer,
-              answerText: choice.answerText,
-              answerImage: choice.answerImage ?? null,
-            })),
-          },
-        }));
+      const createdItems = await transaction.testPackageItem.createManyAndReturn({
+        data: pkg.testPackageItems.map((item) => ({
+          testPackageId: testPackage.id,
+          mondaiType: item.mondaiType,
+          section: item.section,
+          session: item.session,
+          order: item.order,
+          instruction: item.instruction ?? null,
+        })),
+        select: { id: true, mondaiType: true },
+      });
+      const itemIdByMondai = new Map(createdItems.map((item) => [item.mondaiType, item.id]));
+      events.push(`CREATE ${createdItems.length} mondai`);
 
-        await transaction.testPackageItem.create({
-          data: {
-            testPackageId: testPackage.id,
-            mondaiType: item.mondaiType,
-            section: item.section,
-            session: item.session,
-            order: item.order,
-            instruction: item.instruction ?? null,
-            questions: { create: questions },
-          },
+      const sourceQuestions = [];
+      const questionData = [];
+      for (const item of pkg.testPackageItems) {
+        for (const question of item.questions) {
+          sourceQuestions.push(question);
+          questionData.push({
+            testPackageItemId: itemIdByMondai.get(item.mondaiType),
+            order: question.order,
+            questionText: question.questionText,
+            questionImage: question.questionImage ?? null,
+            questionAudio: question.questionAudio ?? null,
+            questionAnswer: question.questionAnswer,
+            questionContextId: question.questionContextRef
+              ? contextIdMap.get(question.questionContextRef)
+              : null,
+          });
+        }
+      }
+
+      const createdQuestions = await transaction.question.createManyAndReturn({
+        data: questionData,
+        select: { id: true },
+      });
+      if (createdQuestions.length !== sourceQuestions.length) {
+        throw new Error("jumlah soal yang dibuat tidak sama dengan fixture");
+      }
+      events.push(`CREATE ${createdQuestions.length} soal`);
+
+      const choiceData = [];
+      const explanationData = [];
+      const explanationChoiceSources = [];
+      sourceQuestions.forEach((question, index) => {
+        const questionId = createdQuestions[index].id;
+
+        for (const choice of question.questionChoices) {
+          choiceData.push({
+            questionId,
+            codeAnswer: choice.codeAnswer,
+            answerText: choice.answerText,
+            answerImage: choice.answerImage ?? null,
+          });
+        }
+
+        const explanation = explanationRows(question, questionId);
+        if (explanation) {
+          explanationData.push(explanation.row);
+          explanationChoiceSources.push(explanation.choices);
+        }
+      });
+
+      if (choiceData.length > 0) {
+        await transaction.questionChoice.createMany({ data: choiceData });
+        events.push(`CREATE ${choiceData.length} pilihan`);
+      }
+
+      if (explanationData.length > 0) {
+        const createdExplanations = await transaction.questionExplanation.createManyAndReturn({
+          data: explanationData,
+          select: { id: true },
+        });
+        if (createdExplanations.length !== explanationData.length) {
+          throw new Error("jumlah pembahasan yang dibuat tidak sama dengan fixture");
+        }
+
+        const explanationChoiceData = [];
+        explanationChoiceSources.forEach((choices, index) => {
+          for (const choice of choices) {
+            explanationChoiceData.push({ explanationId: createdExplanations[index].id, ...choice });
+          }
         });
 
+        if (explanationChoiceData.length > 0) {
+          await transaction.questionExplanationChoice.createMany({ data: explanationChoiceData });
+        }
         events.push(
-          `CREATE item ${item.mondaiType} (sesi ${item.session}, order ${item.order}, ${questions.length} soal)`,
+          `CREATE ${createdExplanations.length} pembahasan (${explanationChoiceData.length} alasan pilihan)`,
         );
       }
 
