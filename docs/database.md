@@ -45,12 +45,17 @@ Stack: Next.js + Prisma + PostgreSQL (Supabase).
 
 - `AdminAuditLog` mencatat setiap aksi admin yang bermutasi. Untuk aksi yang menulis ke database,
   barisnya ditulis di transaksi yang sama sehingga tidak pernah ada mutasi tanpa catatannya.
-- `actorId` memakai `ON DELETE SET NULL` dan `actorName` adalah snapshot: menghapus akun admin
-  tidak boleh menghilangkan jejak aksinya.
+- `actorId` memakai `ON DELETE SET NULL`: jejak aksi tidak boleh ikut hilang bersama akunnya.
+  Dalam alur normal ini tidak terpakai, karena penghapusan akun menganonimkan baris `User` alih-alih
+  menghapusnya — lihat `anonymizeAccount()`.
+- `actorName` adalah snapshot nama aktor. Anonimisasi akun **menggantinya** dengan
+  "Pengguna dihapus" sambil mempertahankan `actorId` dan barisnya: yang dibersihkan identitasnya,
+  bukan catatan akuntabilitasnya.
 - `summary` adalah satu baris yang dapat dibaca tanpa membuka data aslinya. Jangan memuat isi
   konten, kredensial, atau data pribadi — baris log bertahan lebih lama daripada data yang
   dirujuknya.
-- Aplikasi tidak pernah mengubah atau menghapus baris log.
+- Selain penggantian `actorName` oleh anonimisasi, aplikasi tidak pernah mengubah atau menghapus
+  baris log.
 
 ## Komentar dan Diskusi
 

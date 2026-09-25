@@ -14,7 +14,8 @@ export type AdminAuditEntry = {
   /**
    * Satu baris yang dapat dibaca tanpa membuka data aslinya. JANGAN memuat isi
    * konten, kredensial, atau data pribadi — baris log ini bertahan lebih lama
-   * daripada data yang dirujuknya.
+   * daripada data yang dirujuknya, dan anonimisasi akun hanya membersihkan
+   * `actorName`, bukan isi `summary`.
    */
   summary: string;
 };
