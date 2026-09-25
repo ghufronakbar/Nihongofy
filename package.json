@@ -21,6 +21,7 @@
     "seed:question-explanation": "node --env-file-if-exists=.env prisma/seed-question-explanation.mjs",
     "seed:question-explanation:check": "node --env-file-if-exists=.env prisma/seed-question-explanation.mjs --validate-only",
     "test-package:delete": "node --env-file-if-exists=.env prisma/delete-test-package.mjs",
+    "user:role": "node --env-file-if-exists=.env prisma/set-user-role.mjs",
     "seed:demo-test-package": "node --env-file-if-exists=.env prisma/seed-demo-test-package.mjs",
     "gen:explanation": "node --env-file-if-exists=.env prisma/generate-question-explanation.mjs",
     "explanation:doubts": "node prisma/report-explanation-doubts.mjs",

@@ -25,6 +25,10 @@ Stack: Next.js + Prisma + PostgreSQL (Supabase).
 - `OAuthAccount` menyimpan identitas provider berdasarkan `(provider, providerAccountId)`; Google
   `sub` adalah identity stabil, sedangkan `providerEmail` hanya snapshot. Satu user hanya boleh
   memiliki satu identity per provider dan row dihapus cascade bersama user.
+- `User.role` adalah `USER` atau `ADMIN` dengan default `USER`. Hanya dua level, tanpa tabel
+  permission granular. Nilainya **tidak pernah** ikut ke payload JWT session: token berlaku 7 hari
+  sehingga demote tidak akan langsung berlaku. Baca lewat `getSessionUser()`/`requireAdmin()` di
+  `src/lib/auth.ts`, dan ubah lewat `npm run user:role` — belum ada UI untuk promote.
 - `User.timeZone` menyimpan nama IANA valid dan menjadi sumber batas harian SRS, filter tanggal,
   serta format timestamp user-specific. Existing user dibackfill `Asia/Jakarta`.
 - `User.avatarUrl` hanya menerima URL upload Cloudinary aplikasi pada action profile; file binary tidak disimpan di database.

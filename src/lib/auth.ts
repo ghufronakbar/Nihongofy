@@ -2,6 +2,7 @@ import "server-only";
 
 import { cache } from "react";
 import { cookies, headers } from "next/headers";
+import { notFound } from "next/navigation";
 import { SignJWT, jwtVerify } from "jose";
 import { z } from "zod";
 import {
@@ -198,6 +199,37 @@ export const getSession = cache(async (): Promise<SessionPayload | null> => {
     return null;
   }
 });
+
+// Role dibaca dari database per request, BUKAN dari payload JWT. JWT berlaku 7
+// hari, jadi role yang ikut ditandatangani di dalamnya akan membuat demote admin
+// baru berlaku setelah token kedaluwarsa. `cache()` membatasi biayanya menjadi
+// satu query per request meski dipanggil layout dan beberapa Server Action.
+export const getSessionUser = cache(async () => {
+  const session = await getSession();
+  if (!session) return null;
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.userId },
+    select: { id: true, displayName: true, avatarUrl: true, role: true },
+  });
+  if (!user) return null;
+
+  return { ...session, user };
+});
+
+export type SessionUser = NonNullable<Awaited<ReturnType<typeof getSessionUser>>>;
+
+// Dipakai oleh layout /admin DAN oleh setiap Server Action admin. Layout tidak
+// melindungi Server Action, jadi memanggilnya sekali di layout saja tidak cukup.
+//
+// Sengaja `notFound()`, bukan redirect ke /login: user biasa yang menebak URL
+// tidak perlu tahu bahwa area admin itu ada. Guest pun mendapat 404 yang sama,
+// karena membedakan "belum login" dan "bukan admin" sudah membocorkan hal itu.
+export async function requireAdmin() {
+  const sessionUser = await getSessionUser();
+  if (!sessionUser || sessionUser.user.role !== "ADMIN") notFound();
+  return sessionUser;
+}
 
 export async function listUserSessions(userId: number) {
   const indexKey = userSessionsKey(userId);
