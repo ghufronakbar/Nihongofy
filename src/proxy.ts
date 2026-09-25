@@ -44,6 +44,7 @@ const PROTECTED_PREFIXES = [
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   if (
+    pathname === "/api/ping" ||
     pathname.startsWith("/api/cron/") ||
     pathname.startsWith("/api/auth/google/")
   ) {
