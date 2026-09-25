@@ -1,6 +1,6 @@
 import "server-only";
 
-import type { Prisma } from "@prisma/client";
+import type { JlptLevel, MondaiType, Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { QUESTION_EXPLANATION_SELECT } from "@/lib/question-explanation";
 
@@ -10,9 +10,18 @@ import { QUESTION_EXPLANATION_SELECT } from "@/lib/question-explanation";
 
 export type DiscussionAuthor = {
   id: number;
+  username: string;
   displayName: string;
   avatarUrl: string | null;
 };
+
+// Tujuan sebuah balasan. Disimpan sebagai relasi lalu di-resolve saat baca,
+// bukan teks "@nama" di dalam isi komentar — ganti username otomatis ikut
+// terbawa, dan mention tidak bisa dipalsukan.
+export type DiscussionMention = {
+  id: number;
+  username: string;
+} | null;
 
 export type DiscussionReply = {
   id: number;
@@ -21,6 +30,7 @@ export type DiscussionReply = {
   createdAt: Date;
   updatedAt: Date;
   author: DiscussionAuthor;
+  repliedTo: DiscussionMention;
 };
 
 // VISIBLE  : catatan publik yang masih hidup, isi ditampilkan utuh.
@@ -45,6 +55,7 @@ export type DiscussionRoot = {
 
 const discussionAuthorSelect = {
   id: true,
+  username: true,
   displayName: true,
   avatarUrl: true,
 } satisfies Prisma.UserSelect;
@@ -69,6 +80,9 @@ const discussionRootSelect = {
       createdAt: true,
       updatedAt: true,
       user: { select: discussionAuthorSelect },
+      repliedTo: {
+        select: { id: true, deletedAt: true, user: { select: { username: true } } },
+      },
     },
   },
 } satisfies Prisma.QuestionCommentSelect;
@@ -88,6 +102,12 @@ const publicRootWhere = {
 function toDiscussionRoot(row: RawDiscussionRoot): DiscussionRoot {
   const replies: DiscussionReply[] = row.replies.map((reply) => ({
     id: reply.id,
+    // Mention ke komentar yang sudah dihapus tidak dirender: nama penulisnya
+    // adalah bagian dari isi yang sudah ditarik.
+    repliedTo:
+      reply.repliedTo && !reply.repliedTo.deletedAt
+        ? { id: reply.repliedTo.id, username: reply.repliedTo.user.username }
+        : null,
     commentText: reply.commentText,
     commentImages: reply.commentImages,
     createdAt: reply.createdAt,
@@ -181,9 +201,13 @@ export async function getQuestionDiscussionCounts(
 // PERMALINK
 // ============================================================
 
+export type DiscussionQuestion = Prisma.QuestionGetPayload<{
+  select: typeof permalinkQuestionSelect;
+}>;
+
 export type DiscussionPermalink = {
   root: DiscussionRoot;
-  question: Prisma.QuestionGetPayload<{ select: typeof permalinkQuestionSelect }>;
+  question: DiscussionQuestion;
 };
 
 const permalinkQuestionSelect = {
@@ -240,4 +264,113 @@ export async function getDiscussionPermalink(
   if (!isWorthRendering(root)) return null;
 
   return { root, question: row.question };
+}
+
+// ============================================================
+// HALAMAN DISKUSI PER SOAL
+// ============================================================
+
+export type QuestionDiscussionPage = {
+  question: DiscussionQuestion;
+  roots: DiscussionRoot[];
+};
+
+export async function getQuestionDiscussionPage(
+  questionId: number,
+): Promise<QuestionDiscussionPage | null> {
+  const question = await prisma.question.findUnique({
+    where: { id: questionId },
+    select: permalinkQuestionSelect,
+  });
+  if (!question) return null;
+
+  return { question, roots: await getQuestionDiscussion(questionId) };
+}
+
+// ============================================================
+// INDEKS SELURUH DISKUSI
+// ============================================================
+
+export type DiscussionIndexEntry = {
+  questionId: number;
+  questionOrder: number;
+  questionText: string | null;
+  entryCount: number;
+  lastActivityAt: Date;
+  testPackage: { id: number; name: string; jlptLevel: JlptLevel };
+  testPackageItem: { id: number; mondaiType: MondaiType };
+};
+
+export const DISCUSSION_INDEX_PAGE_SIZE = 20;
+
+// Entri yang benar-benar tampil di thread: root publik yang masih hidup plus
+// seluruh balasan hidup. Definisi yang sama dipakai `getQuestionDiscussionCounts`.
+const visibleDiscussionEntryWhere = {
+  deletedAt: null,
+  OR: [
+    { parentId: { not: null } },
+    { visibility: "PUBLIC" as const, parentId: null, sharedAt: { not: null } },
+  ],
+} satisfies Prisma.QuestionCommentWhereInput;
+
+export async function getDiscussionIndex(page: number): Promise<{
+  entries: DiscussionIndexEntry[];
+  hasMore: boolean;
+}> {
+  const skip = Math.max(0, page - 1) * DISCUSSION_INDEX_PAGE_SIZE;
+
+  // Satu baris per soal, diurutkan dari aktivitas terbaru. Mengambil satu baris
+  // lebih banyak dari ukuran halaman supaya `hasMore` tidak butuh COUNT DISTINCT
+  // terpisah.
+  const grouped = await prisma.questionComment.groupBy({
+    by: ["questionId"],
+    where: visibleDiscussionEntryWhere,
+    _count: { _all: true },
+    _max: { createdAt: true },
+    orderBy: { _max: { createdAt: "desc" } },
+    take: DISCUSSION_INDEX_PAGE_SIZE + 1,
+    skip,
+  });
+
+  const hasMore = grouped.length > DISCUSSION_INDEX_PAGE_SIZE;
+  const rows = hasMore ? grouped.slice(0, DISCUSSION_INDEX_PAGE_SIZE) : grouped;
+  if (rows.length === 0) return { entries: [], hasMore: false };
+
+  const questions = await prisma.question.findMany({
+    where: { id: { in: rows.map((row) => row.questionId) } },
+    select: {
+      id: true,
+      order: true,
+      questionText: true,
+      testPackageItem: {
+        select: {
+          id: true,
+          mondaiType: true,
+          testPackage: { select: { id: true, name: true, jlptLevel: true } },
+        },
+      },
+    },
+  });
+  const questionById = new Map(questions.map((question) => [question.id, question]));
+
+  const entries: DiscussionIndexEntry[] = [];
+  for (const row of rows) {
+    const question = questionById.get(row.questionId);
+    if (!question || !row._max.createdAt) continue;
+
+    entries.push({
+      questionId: question.id,
+      questionOrder: question.order,
+      questionText: question.questionText,
+      entryCount: row._count._all,
+      lastActivityAt: row._max.createdAt,
+      testPackage: question.testPackageItem.testPackage,
+      testPackageItem: {
+        id: question.testPackageItem.id,
+        mondaiType: question.testPackageItem.mondaiType,
+      },
+    });
+  }
+
+  return { entries, hasMore };
 }

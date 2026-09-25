@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Mail, Save, UserRound } from "lucide-react";
+import { AtSign, Mail, Save, UserRound } from "lucide-react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -19,7 +19,7 @@ export function ProfileForm({
   account: {
     displayName: string;
     email: string | null;
-    username: string | null;
+    username: string;
     avatarUrl: string | null;
     avatarPublicId: string | null;
     timeZone: string;
@@ -39,6 +39,7 @@ export function ProfileForm({
     resolver: zodResolver(UpdateProfileSchema),
     defaultValues: {
       displayName: account.displayName,
+      username: account.username,
       avatarUrl: account.avatarUrl,
       avatarPublicId: account.avatarPublicId,
       timeZone: account.timeZone,
@@ -127,13 +128,28 @@ export function ProfileForm({
             <FieldError errors={[errors.timeZone]} className="font-semibold" />
           </Field>
 
-          {account.username ? (
-            <Field>
-              <FieldLabel htmlFor="legacyUsername" className="font-extrabold">Username lama</FieldLabel>
-              <Input id="legacyUsername" value={account.username} readOnly disabled className="neo-input bg-muted" />
-              <FieldDescription>Read-only untuk kompatibilitas akun lama.</FieldDescription>
-            </Field>
-          ) : null}
+          <Field>
+            <FieldLabel htmlFor="username" className="font-extrabold">Username</FieldLabel>
+            <div className="relative">
+              <AtSign
+                className="pointer-events-none absolute top-1/2 left-4 z-10 size-5 -translate-y-1/2 text-black/55"
+                aria-hidden="true"
+              />
+              <Input
+                id="username"
+                autoComplete="off"
+                spellCheck={false}
+                className="neo-input pl-12"
+                aria-invalid={Boolean(errors.username)}
+                {...register("username")}
+              />
+            </div>
+            <FieldDescription>
+              Nama publik yang tampil di diskusi. Huruf kecil, angka, titik, dan underscore,
+              3–30 karakter. Ini bukan kredensial login — masuk tetap memakai email.
+            </FieldDescription>
+            <FieldError errors={[errors.username]} className="font-semibold" />
+          </Field>
         </div>
 
         {notice ? (

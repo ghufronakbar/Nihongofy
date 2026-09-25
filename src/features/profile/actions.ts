@@ -166,6 +166,7 @@ export async function updateProfileAction(
 
   const values: UpdateProfileInput = {
     displayName: validated.data.displayName.replace(/\s+/g, " "),
+    username: validated.data.username,
     avatarUrl: validated.data.avatarUrl,
     avatarPublicId: validated.data.avatarPublicId,
     timeZone: validated.data.timeZone,
@@ -230,6 +231,7 @@ export async function updateProfileAction(
       where: { id: session.userId },
       data: {
         displayName: values.displayName,
+        username: values.username,
         ...avatar,
         timeZone: values.timeZone,
       },
@@ -237,9 +239,16 @@ export async function updateProfileAction(
     });
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+      const target = error.meta?.target;
+      const conflictsOnUsername = Array.isArray(target)
+        ? target.includes("username")
+        : typeof target === "string" && target.includes("username");
+
       return {
         ok: false,
-        message: "Avatar tersebut sudah digunakan atau profil tidak dapat diperbarui.",
+        message: conflictsOnUsername
+          ? "Username tersebut sudah dipakai. Coba yang lain."
+          : "Avatar tersebut sudah digunakan atau profil tidak dapat diperbarui.",
       };
     }
 

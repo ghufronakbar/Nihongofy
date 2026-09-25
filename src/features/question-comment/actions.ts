@@ -173,7 +173,7 @@ export async function replyToQuestionCommentAction(input: ReplyQuestionCommentIn
     throw new Error("Data tidak valid.");
   }
 
-  const { parentId, commentText, commentImages } = validated.data;
+  const { parentId, repliedToId, commentText, commentImages } = validated.data;
   requireOwnedCommentImages(commentImages, authSession.userId);
 
   const target = await prisma.questionComment.findUnique({
@@ -196,11 +196,27 @@ export async function replyToQuestionCommentAction(input: ReplyQuestionCommentIn
     notFound();
   }
 
+  // Mention hanya diterima bila menunjuk comment hidup di thread yang sama.
+  // Tanpa cek ini, balasan bisa "membalas" comment di soal lain dan merender
+  // username orang yang tidak pernah ikut percakapan ini.
+  let mentionId: number | null = null;
+  if (repliedToId !== null) {
+    const mentionTarget = await prisma.questionComment.findUnique({
+      where: { id: repliedToId },
+      select: { id: true, parentId: true, deletedAt: true },
+    });
+    const mentionRootId = mentionTarget?.parentId ?? mentionTarget?.id;
+    if (mentionTarget && !mentionTarget.deletedAt && mentionRootId === root.id) {
+      mentionId = mentionTarget.id;
+    }
+  }
+
   await prisma.questionComment.create({
     data: {
       questionId: root.questionId,
       userId: authSession.userId,
       parentId: root.id,
+      repliedToId: mentionId,
       commentText,
       commentImages,
       // Balasan ikut visibility root; tidak pernah menjadi catatan pribadi.

@@ -131,7 +131,13 @@ export function DiscussionSheet({
         <SheetHeader>
           <SheetTitle>Diskusi Soal</SheetTitle>
           <SheetDescription>
-            Catatan belajar yang dibagikan pengguna lain untuk soal ini.
+            Catatan belajar yang dibagikan pengguna lain untuk soal ini.{" "}
+            <Link
+              href={`/discussion/question/${questionId}`}
+              className="font-semibold underline underline-offset-2"
+            >
+              Buka halaman penuh
+            </Link>
           </SheetDescription>
         </SheetHeader>
 

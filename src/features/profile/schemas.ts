@@ -2,6 +2,7 @@ import { z } from "zod";
 import { AVATAR_MAX_FILE_SIZE_BYTES } from "@/constants/storage";
 import { PasswordSchema } from "@/features/auth/schemas";
 import { isValidTimeZone } from "@/lib/time-zone";
+import { UsernameSchema } from "@/lib/username";
 
 const DisplayNameSchema = z
   .string()
@@ -40,6 +41,8 @@ export const TimeZoneSchema = z
 
 export const UpdateProfileSchema = z.object({
   displayName: DisplayNameSchema,
+  // Nama publik. Aturan dan daftar kata terlarangnya di `src/lib/username.ts`.
+  username: UsernameSchema,
   avatarUrl: AvatarUrlSchema.nullable(),
   avatarPublicId: AvatarPublicIdSchema.nullable(),
   timeZone: TimeZoneSchema,

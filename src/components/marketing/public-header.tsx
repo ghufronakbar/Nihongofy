@@ -24,6 +24,7 @@ const NAV_ITEMS: { label: string; href: string; feature?: FeatureName }[] = [
   { label: "Latihan Cepat", href: "/exercises", feature: "practice" },
   { label: "Mock JLPT", href: "/test-package", feature: "testPackage" },
   { label: "Artikel", href: "/article", feature: "article" },
+  { label: "Diskusi", href: "/discussion", feature: "questionDiscussion" },
   { label: "Percakapan", href: "/conversation", feature: "conversation" },
   { label: "Bicara", href: "/speaking", feature: "speaking" },
 ];

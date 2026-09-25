@@ -71,7 +71,47 @@ selain Google tetap di luar scope.
 - Key cooldown serta bucket rate limit memakai HMAC, bukan email atau alamat IP mentah.
 - Verifikasi dan reset password dibatasi per user/email serta per IP selain cooldown.
 - Login dan register tetap memakai bucket atomik PostgreSQL pada `AuthRateLimit`.
-- Cron harian `/api/cron/auth-cleanup` menghapus token expired dan bucket rate limit lama.
+- Cron harian `/api/cron/auth-cleanup` menghapus token expired dan bucket rate limit lama, serta
+  mengeksekusi akun yang jatuh tempo penghapusan.
+
+## Identifier Login
+
+Login **hanya menerima email**. `User.username` adalah nama publik (handle) yang tampil di
+diskusi, bukan kredensial: menjadikannya identifier login berarti identifier semua orang terbaca
+dari setiap komentar. Jalur lama "login dengan username" sudah dihapus dari `loginAction`.
+
+Input yang bukan email tetap melewati `bcrypt.compare` terhadap dummy hash supaya waktu respons
+tidak membedakan "format salah" dari "password salah".
+
+Aturan handle ada di `src/lib/username.ts`: huruf kecil, angka, titik, underscore, 3–30 karakter,
+titik tidak boleh di ujung atau berurutan, unik, dan daftar kata terlarang mencakup segmen route
+serta prefix `deleted_`. Username dibuat otomatis saat register credential maupun Google
+(`generateUniqueUsername`, suffix acak agar jumlah user tidak bocor) dan dapat diubah dari
+`/profile`.
+
+## Penghapusan Akun (Anonimisasi)
+
+Penghapusan akun **menganonimkan** baris `User`, tidak menghapusnya — lihat `anonymizeAccount`.
+
+Alasannya bukan kenyamanan: `QuestionComment.userId` dulu memakai `onDelete: Cascade`, sehingga
+satu penghapusan akun ikut memusnahkan setiap balasan pengguna lain pada thread milik akun itu.
+Foreign key tersebut kini `Restrict`.
+
+Yang dilakukan saat jatuh tempo:
+
+- Seluruh comment milik user di-soft delete (`deletedAt`, `deletedById` menunjuk diri sendiri).
+  Root menjadi tombstone; balasan orang lain di bawahnya tetap terbaca.
+- Data pribadi yang dulu ikut terhapus oleh cascade kini dihapus eksplisit: flashcard beserta
+  revlog/card/note/deck/preset/collection, practice session, attempt, kana progress, article
+  interaction, conversation session dan quota, auth token, serta `OAuthAccount`. **Melewatkan satu
+  relasi berarti data pribadi tertinggal di akun yang mengira dirinya sudah dihapus.**
+- `OAuthAccount` wajib dihapus; tanpa itu login Google menghidupkan kembali akun lewat provider
+  subject yang masih tertaut.
+- Baris user disetel `username = deleted_<unix>_<id>`, `displayName = "Pengguna dihapus"`, `email`
+  dan `password` dikosongkan, avatar dihapus, `anonymizedAt` terisi, `deletionScheduledFor`
+  dikosongkan agar cron tidak memproses ulang.
+- Username lama sengaja **tidak** dipertahankan: handle publik adalah identitas orang tersebut.
+- `loginAction` menolak akun dengan `anonymizedAt` terisi.
 
 ## Cloudflare Turnstile
 
@@ -142,8 +182,13 @@ selain Google tetap di luar scope.
   setelah disconnect, login Google ditolak sampai connect ulang dari profile.
 - Cancel OAuth, state/cookie mismatch, nonce invalid, callback replay, dan rate-limit: gagal aman
   tanpa session atau relasi baru.
-- Akun legacy dengan email hasil backfill tetap dapat login. Akun legacy tanpa email tetap dapat
-  login menggunakan username.
+- Login memakai email saja. Mengirim username sebagai identifier harus gagal dengan pesan
+  kredensial generik yang sama.
+- Ganti username dari `/profile` tidak boleh memengaruhi kemampuan login.
+- Username yang sudah dipakai, memakai prefix `deleted_`, atau termasuk kata terlarang harus
+  ditolak dengan pesan yang jelas.
+- Setelah anonimisasi: login dengan email lama gagal, login Google gagal, thread diskusi yang
+  pernah dibalas orang lain masih tampil dengan tombstone, dan balasan orang lain tetap ada.
 - Login dengan `next` eksternal seperti `//evil.example`: redirect harus tetap menuju dashboard.
 - Panggil cron tanpa bearer secret: harus `401`; dengan secret yang benar: cleanup berhasil.
 - Pastikan seluruh form pada route group `(auth)` menampilkan Turnstile dan tombol submit baru aktif

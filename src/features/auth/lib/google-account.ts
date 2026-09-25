@@ -3,6 +3,7 @@ import "server-only";
 import { AuthTokenPurpose, OAuthProvider, Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import type { GoogleIdentity } from "./google-oauth";
+import { generateUniqueUsername } from "./username-generator";
 
 type GoogleAccountResult =
   | {
@@ -92,7 +93,10 @@ export async function loginWithGoogle(
 
       const createdUser = await transaction.user.create({
         data: {
-          username: null,
+          username: await generateUniqueUsername(
+            { displayName: identity.displayName, email: identity.email },
+            transaction,
+          ),
           displayName: identity.displayName,
           email: identity.email,
           emailVerifiedAt: new Date(),

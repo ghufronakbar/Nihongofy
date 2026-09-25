@@ -25,12 +25,16 @@ export function CommentAvatar({
 
 export function CommentAuthorLine({
   displayName,
+  username,
   createdAt,
   updatedAt,
   isOwn,
   badge,
 }: {
   displayName: string;
+  // Handle publik. displayName tidak unik, jadi ini yang membedakan dua orang
+  // dengan nama tampilan sama.
+  username?: string;
   createdAt: Date;
   updatedAt?: Date | null;
   isOwn?: boolean;
@@ -41,6 +45,9 @@ export function CommentAuthorLine({
   return (
     <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
       <span className="text-sm font-medium">{displayName}</span>
+      {username && (
+        <span className="font-mono text-xs text-muted-foreground">@{username}</span>
+      )}
       {isOwn && (
         <span className="rounded border border-neo-ink/30 px-1 font-mono text-[10px] font-black uppercase text-foreground/60">
           Anda

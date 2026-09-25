@@ -43,6 +43,10 @@ export const DeleteQuestionCommentSchema = z.object({
 // parent. Balasan tidak punya toggle visibility sendiri.
 export const ReplyQuestionCommentSchema = z.object({
   parentId: z.number().int().positive(),
+  // Comment yang dituju balasan ini. Nullable dan wajib dikirim eksplisit —
+  // `.default()` membuat tipe input dan output zod berbeda sehingga zodResolver
+  // tidak lagi cocok dengan react-hook-form.
+  repliedToId: z.number().int().positive().nullable(),
   commentText: commentTextSchema,
   commentImages: commentImagesSchema,
 });

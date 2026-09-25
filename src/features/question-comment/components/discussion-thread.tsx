@@ -13,7 +13,7 @@ import {
 } from "./comment-body";
 import { ReplyForm } from "./reply-form";
 
-type ReplyTarget = { parentId: number; defaultText: string } | null;
+type ReplyTarget = { parentId: number; repliedTo: { id: number; username: string } | null } | null;
 
 function ReplyRow({
   reply,
@@ -30,10 +30,19 @@ function ReplyRow({
       <div className="min-w-0 flex-1">
         <CommentAuthorLine
           displayName={reply.author.displayName}
+          username={reply.author.username}
           createdAt={reply.createdAt}
           updatedAt={reply.updatedAt}
           isOwn={currentUserId === reply.author.id}
         />
+        {reply.repliedTo && (
+          <p className="mt-0.5 text-xs font-semibold text-muted-foreground">
+            Membalas{" "}
+            <a href={`#comment-${reply.repliedTo.id}`} className="font-mono font-black hover:underline">
+              @{reply.repliedTo.username}
+            </a>
+          </p>
+        )}
         <p className="mt-1 text-sm break-words whitespace-pre-wrap">{reply.commentText}</p>
         <CommentImages images={reply.commentImages} />
         {onReply && (
@@ -67,8 +76,8 @@ export function DiscussionRootCard({
   // read-only: balasan lama tetap terbaca, balasan baru ditolak server.
   const canReply = root.state === "VISIBLE" && currentUserId !== null;
 
-  function openReply(defaultText = "") {
-    setReplyTarget({ parentId: root.id, defaultText });
+  function openReply(repliedTo: { id: number; username: string } | null = null) {
+    setReplyTarget({ parentId: root.id, repliedTo });
   }
 
   return (
@@ -80,6 +89,7 @@ export function DiscussionRootCard({
             <div className="flex items-start justify-between gap-2">
               <CommentAuthorLine
                 displayName={root.author.displayName}
+                username={root.author.username}
                 createdAt={root.createdAt}
                 updatedAt={root.updatedAt}
                 isOwn={currentUserId === root.author.id}
@@ -109,7 +119,11 @@ export function DiscussionRootCard({
               key={reply.id}
               reply={reply}
               currentUserId={currentUserId}
-              onReply={canReply ? () => openReply(`@${reply.author.displayName} `) : undefined}
+              onReply={
+                canReply
+                  ? () => openReply({ id: reply.id, username: reply.author.username })
+                  : undefined
+              }
             />
           ))}
         </div>
@@ -118,7 +132,7 @@ export function DiscussionRootCard({
       {replyTarget ? (
         <ReplyForm
           parentId={replyTarget.parentId}
-          defaultText={replyTarget.defaultText}
+          repliedTo={replyTarget.repliedTo}
           onDone={() => {
             setReplyTarget(null);
             onChanged();

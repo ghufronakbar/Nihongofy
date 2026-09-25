@@ -769,6 +769,39 @@ dikerjakan. Detail operasional ada di `docs/operations/storage.md`.
 - [ ] CORS bucket R2 dipasang untuk origin produksi dan `http://localhost:3000`
 - [ ] Env R2 diisi di Vercel (production/preview/development)
 
+## Fase 8.8 — Username Publik, Mention Relasional, Anonimisasi Akun, Halaman Diskusi
+
+Lanjutan Fase 8.7. Dipicu satu temuan: `QuestionComment.userId` memakai `onDelete: Cascade`
+sementara cron penghapusan akun melakukan hard delete `User`, sehingga satu penghapusan akun ikut
+memusnahkan balasan pengguna lain pada thread miliknya.
+
+- [x] `User.username` jadi `NOT NULL @unique @db.VarChar(30)` dan berubah peran menjadi **nama
+  publik**, bukan kredensial. Jalur login-by-username dihapus — login email saja, supaya handle
+  yang tampil di setiap komentar tidak menjadi identifier login semua orang
+- [x] Aturan handle ala Instagram di `src/lib/username.ts` (huruf kecil, angka, titik, underscore,
+  3–30, titik tidak di ujung/berurutan) + daftar kata terlarang berisi segmen route dan prefix
+  `deleted_`, supaya user hidup tidak bisa menyamar sebagai akun tombstone
+- [x] Generate otomatis saat register credential dan Google (`generateUniqueUsername`, suffix acak
+  agar jumlah user tidak bocor); editable dari `/profile`
+- [x] Migrasi `20260926090000_public_username_and_account_anonymization` — backfill slug dari
+  `displayName`, fallback, dedupe, lalu `SET NOT NULL`
+- [x] `QuestionComment.userId` diubah dari `Cascade` ke `Restrict`
+- [x] Penghapusan akun jadi **anonimisasi** (`anonymizeAccount`): baris `User` bertahan, comment
+  di-soft delete jadi tombstone, dan data pribadi yang dulu ikut terhapus cascade (flashcard,
+  attempt, practice, kana, article interaction, conversation, token, OAuth) dihapus eksplisit.
+  `OAuthAccount` wajib dihapus atau login Google menghidupkan akun kembali
+- [x] `loginAction` menolak akun ber-`anonymizedAt`
+- [x] Mention jadi relasi `repliedToId` (SetNull), bukan teks `@nama` di `commentText`. Divalidasi
+  harus menunjuk comment hidup di thread yang sama; tidak dirender bila tujuannya dihapus
+- [x] `/discussion` (indeks semua diskusi per soal, aktivitas terbaru dulu) dan
+  `/discussion/question/[questionId]` (seluruh thread satu soal). `DiscussionQuestionCard` dipakai
+  bersama ketiga halaman diskusi
+- [x] Nav publik dapat entri "Diskusi" di balik `FEATURES_QUESTION_DISCUSSION`
+- [ ] Verifikasi manual (user): ganti username lalu pastikan mention lama ikut berubah; uji
+  request deletion sampai cron berjalan dan cek thread tetap utuh
+- [ ] Setiap relasi personal baru pada `User` wajib ditambahkan ke `anonymizeAccount` — belum ada
+  test otomatis yang menjaga ini
+
 ## Fase 9 — Verifikasi & Polish
 
 - [ ] `npm run build` setelah tiap perubahan struktural/server action/caching

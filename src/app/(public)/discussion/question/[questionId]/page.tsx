@@ -1,46 +1,38 @@
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { getSession } from "@/lib/auth";
-import {
-  getDiscussionPermalink,
-  resolveDiscussionRootId,
-} from "@/features/question-comment/queries";
-import { DiscussionPermalinkThread } from "@/features/question-comment/components/discussion-permalink-thread";
+import { getQuestionDiscussionPage } from "@/features/question-comment/queries";
+import { DiscussionPageThreads } from "@/features/question-comment/components/discussion-permalink-thread";
 import { DiscussionQuestionCard } from "@/features/question-comment/components/discussion-question-card";
 import { mondaiTypeFullLabel } from "@/constants/jlpt";
 
-export default async function DiscussionPermalinkPage({
+export default async function QuestionDiscussionPage({
   params,
 }: {
-  params: Promise<{ commentId: string }>;
+  params: Promise<{ questionId: string }>;
 }) {
-  const { commentId } = await params;
-  const commentIdNum = Number(commentId);
+  const { questionId } = await params;
+  const questionIdNum = Number(questionId);
 
-  if (!Number.isInteger(commentIdNum) || commentIdNum <= 0) {
+  if (!Number.isInteger(questionIdNum) || questionIdNum <= 0) {
     notFound();
   }
 
-  const resolved = await resolveDiscussionRootId(commentIdNum);
-  if (!resolved) notFound();
-
-  // Balasan tidak punya halaman sendiri — arahkan ke thread induknya dan biarkan
-  // anchor membawa pembaca langsung ke balasan yang dimaksud.
-  if (resolved.isReply) {
-    redirect(`/discussion/${resolved.rootId}#comment-${commentIdNum}`);
-  }
-
-  const [permalink, authSession] = await Promise.all([
-    getDiscussionPermalink(resolved.rootId),
+  const [discussion, authSession] = await Promise.all([
+    getQuestionDiscussionPage(questionIdNum),
     getSession(),
   ]);
-  if (!permalink) notFound();
+  if (!discussion) notFound();
 
-  const { root, question } = permalink;
+  const { question, roots } = discussion;
   const { testPackageItem } = question;
   const { testPackage } = testPackageItem;
-  const questionsHref = `/test-package/${testPackage.id}/questions?mondai=${testPackageItem.id}`;
+
+  const entryCount = roots.reduce(
+    (total, root) => total + root.replies.length + (root.state === "VISIBLE" ? 1 : 0),
+    0,
+  );
 
   return (
     <div className="mx-auto w-full max-w-3xl px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-6">
@@ -59,13 +51,16 @@ export default async function DiscussionPermalinkPage({
         </p>
         <div className="flex flex-wrap gap-2">
           <Link
-            href={`/discussion/question/${question.id}`}
+            href="/discussion"
             className="neo-button bg-white text-black font-extrabold text-xs"
           >
             <ArrowLeft className="size-4" />
-            Semua Diskusi Soal Ini
+            Semua Diskusi
           </Link>
-          <Link href={questionsHref} className="neo-button bg-white text-black font-extrabold text-xs">
+          <Link
+            href={`/test-package/${testPackage.id}/questions?mondai=${testPackageItem.id}`}
+            className="neo-button bg-white text-black font-extrabold text-xs"
+          >
             Buka Mode Baca
           </Link>
         </div>
@@ -75,9 +70,9 @@ export default async function DiscussionPermalinkPage({
 
       <div className="neo-surface bg-white p-6 border-[3px] border-neo-ink shadow-neo flex flex-col gap-4">
         <h2 className="font-mono text-xs font-black uppercase text-foreground/70">
-          Catatan Pengguna ({root.replies.length + (root.state === "VISIBLE" ? 1 : 0)})
+          Catatan Pengguna ({entryCount})
         </h2>
-        <DiscussionPermalinkThread root={root} currentUserId={authSession?.userId ?? null} />
+        <DiscussionPageThreads roots={roots} currentUserId={authSession?.userId ?? null} />
       </div>
     </div>
   );
