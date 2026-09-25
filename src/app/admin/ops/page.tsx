@@ -109,7 +109,10 @@ export default async function AdminOpsPage() {
                           {row.actorName}
                         </Link>
                       ) : (
-                        <span className="text-foreground/50">{row.actorName} (akun dihapus)</span>
+                        // Hanya terjadi bila baris User benar-benar hilang. Alur
+                        // normal menganonimkan, bukan menghapus, sehingga actorId
+                        // tetap ada dan actorName sudah diganti oleh anonimisasi.
+                        <span className="text-foreground/50">{row.actorName} (akun hilang)</span>
                       )}
                     </td>
                     <td className="px-4 py-2">

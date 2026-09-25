@@ -561,9 +561,11 @@ model FlashcardImportJob {
 model AdminAuditLog {
   id Int @id @default(autoincrement())
 
-  // SetNull, bukan Cascade: menghapus akun admin tidak boleh ikut menghapus
-  // jejak aksinya. `actorName` adalah snapshot supaya baris tetap terbaca
-  // setelah akunnya hilang.
+  // SetNull, bukan Cascade: jejak aksi tidak boleh ikut hilang bersama akunnya.
+  // Dalam alur normal ini tidak terpakai — penghapusan akun menganonimkan baris
+  // User alih-alih menghapusnya. `actorName` adalah snapshot nama aktor, dan
+  // anonimisasi menggantinya sambil mempertahankan barisnya: yang dibersihkan
+  // identitasnya, bukan catatan akuntabilitasnya.
   actor     User?  @relation("AdminAuditActor", fields: [actorId], references: [id], onDelete: SetNull)
   actorId   Int?
   actorName String @db.VarChar(120)
