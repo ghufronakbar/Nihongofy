@@ -54,7 +54,7 @@ export default function OpenGraphImage() {
             fontWeight: 900,
           }}
         >
-          楽
+          語
         </div>
 
         <div
@@ -97,7 +97,7 @@ export default function OpenGraphImage() {
                 letterSpacing: "0.1em",
               }}
             >
-              楽しい日本語
+              日本語
             </div>
             <div
               style={{
@@ -126,7 +126,7 @@ export default function OpenGraphImage() {
                 textTransform: "uppercase",
               }}
             >
-              Tanoshii Japanese
+              Nihongofy
             </div>
             <div
               style={{

@@ -31,7 +31,7 @@ import {
 
 const REQUEST_TIMEOUT_MS = 30_000;
 const MAX_RETRIES = 1;
-const USER_AGENT = "tanoshii-japanese/1.0";
+const USER_AGENT = "nihongofy/1.0";
 
 // Hasil provider adalah data tidak tepercaya: divalidasi ulang di sisi kita.
 const FeedbackPayloadSchema = z.object({

@@ -31,7 +31,7 @@ const SDK_MAX_RETRIES = 2;
 const MAX_ATTEMPTS = 2;
 // Gateway menolak User-Agent bawaan SDK OpenAI dengan 403. Lihat catatan di
 // src/features/conversation/lib/provider/openai.ts.
-const USER_AGENT = "tanoshii-japanese/1.0";
+const USER_AGENT = "nihongofy/1.0";
 
 const envSchema = z.object({
   EXPLANATION_BASE_URL: z.url(),

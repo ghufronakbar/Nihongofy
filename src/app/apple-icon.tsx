@@ -25,7 +25,7 @@ export default function AppleIcon() {
           fontFamily: "sans-serif",
         }}
       >
-        楽
+        語
       </div>
     ),
     {

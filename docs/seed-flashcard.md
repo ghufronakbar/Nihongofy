@@ -39,7 +39,7 @@ sudah ada dilewati sehingga progres belajarnya tidak tereset.
   "description": "Kosakata inti N4.",
   "jlptLevel": "N4",                // opsional: N5 | N4 | N3 | N2 | N1
   "noteType": "VOCAB_JP",           // wajib: lihat tabel di bawah
-  "license": "Konten asli Tanoshii Japanese.",  // wajib, DITAMPILKAN di UI
+  "license": "Konten asli Nihongofy.",  // wajib, DITAMPILKAN di UI
   "order": 20,                      // opsional: urutan di katalog
   "isPublished": true,              // opsional, default true
   "notes": [

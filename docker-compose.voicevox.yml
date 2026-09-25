@@ -11,7 +11,7 @@
 # Produksi memerlukan engine yang di-host sendiri; `localhost` tidak terjangkau
 # dari fungsi serverless Vercel.
 
-name: tanoshii-voicevox
+name: nihongofy-voicevox
 
 services:
   voicevox:
@@ -22,7 +22,7 @@ services:
     # evaluasi tetap sama dengan yang berjalan nanti — pembaruan engine dapat
     # mengubah hasil sintesis. Ukuran unduhannya sekitar 2 GB.
     image: voicevox/voicevox_engine:cpu-ubuntu24.04-0.25.2
-    container_name: tanoshii-voicevox
+    container_name: nihongofy-voicevox
     restart: unless-stopped
 
     ports:

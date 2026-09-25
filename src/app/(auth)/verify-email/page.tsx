@@ -6,7 +6,7 @@ import { getPendingVerificationPageData } from "@/features/auth/queries";
 
 export const metadata: Metadata = {
   title: "Periksa Email",
-  description: "Konfirmasi alamat email untuk mengaktifkan akun Tanoshii Japanese.",
+  description: "Konfirmasi alamat email untuk mengaktifkan akun Nihongofy.",
   robots: { index: false, follow: false },
 };
 

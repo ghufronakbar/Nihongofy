@@ -127,7 +127,7 @@ export async function GET(
               fontWeight: 800,
             }}
           >
-            TANOSHII JAPANESE / ARTIKEL BELAJAR
+            NIHONGOFY / ARTIKEL BELAJAR
           </div>
         </div>
       </div>

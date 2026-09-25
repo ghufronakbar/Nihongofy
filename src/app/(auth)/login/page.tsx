@@ -10,7 +10,7 @@ import { GOOGLE_OAUTH_ENABLED } from "@/constants";
 
 export const metadata: Metadata = {
   title: "Masuk",
-  description: "Masuk ke akun Tanoshii Japanese untuk melanjutkan latihan, review jawaban, dan melacak progres.",
+  description: "Masuk ke akun Nihongofy untuk melanjutkan latihan, review jawaban, dan melacak progres.",
 };
 
 const GOOGLE_NOTICE: Record<string, string> = {

@@ -9,7 +9,7 @@ import { DeckTreeView } from "@/features/flashcard/components/deck-tree-view";
 export const metadata: Metadata = {
   title: "Flashcard",
   description:
-    "Belajar kosakata dan kanji Jepang dengan flashcard spaced repetition FSRS di Tanoshii Japanese.",
+    "Belajar kosakata dan kanji Jepang dengan flashcard spaced repetition FSRS di Nihongofy.",
 };
 
 export default async function FlashcardPage() {

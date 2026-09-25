@@ -46,7 +46,7 @@ import {
 const REQUEST_TIMEOUT_MS = 300_000;
 const SDK_MAX_RETRIES = 2;
 const MAX_ATTEMPTS = 2;
-const USER_AGENT = "tanoshii-japanese/1.0";
+const USER_AGENT = "nihongofy/1.0";
 
 const envSchema = z.object({
   EXPLANATION_BASE_URL: z.url(),

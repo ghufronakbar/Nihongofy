@@ -25,11 +25,13 @@ import { getArticleIndexData } from "@/features/article/queries";
 import { getSession } from "@/lib/auth";
 
 export const metadata: Metadata = {
-  title: "Tanoshii Japanese | Belajar Bahasa Jepang & Simulasi JLPT",
+  title: {
+    absolute: "Nihongofy - Belajar Bahasa Jepang & Simulasi JLPT",
+  },
   description:
     "Platform belajar bahasa Jepang dan persiapan JLPT (N5 - N1) yang interaktif, terarah, dan menyenangkan. Lengkap dengan latihan Kana, kosakata, latihan cepat, dan mock test resmi.",
   openGraph: {
-    title: "Tanoshii Japanese | Belajar Bahasa Jepang & Latihan JLPT Seru",
+    title: "Nihongofy | Belajar Bahasa Jepang & Latihan JLPT Seru",
     description:
       "Platform belajar bahasa Jepang dan persiapan JLPT (N5 - N1) lengkap dengan review mendalam dan analitik progres.",
     type: "website",

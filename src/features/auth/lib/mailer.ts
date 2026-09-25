@@ -48,7 +48,7 @@ function emailShell({
     <div style="display:none;max-height:0;overflow:hidden">${escapeHtml(preheader)}</div>
     <div style="max-width:620px;margin:0 auto;padding:32px 18px">
       <div style="border:3px solid #111;background:#fff;box-shadow:7px 7px 0 #111;padding:30px">
-        <div style="display:inline-block;border:2px solid #111;background:#facc00;padding:6px 10px;font-size:12px;font-weight:800;letter-spacing:.12em">TANOSHII JAPANESE</div>
+        <div style="display:inline-block;border:2px solid #111;background:#facc00;padding:6px 10px;font-size:12px;font-weight:800;letter-spacing:.12em">NIHONGOFY</div>
         <h1 style="font-size:34px;line-height:1.05;margin:24px 0 16px">${escapeHtml(title)}</h1>
         <p style="font-size:16px;line-height:1.7;margin:0 0 12px">${escapeHtml(greeting)}</p>
         <p style="font-size:16px;line-height:1.7;margin:0 0 24px">${escapeHtml(description)}</p>
@@ -97,7 +97,7 @@ export async function sendEmailVerificationMail({
 
   await sendMail({
     to: email,
-    subject: `${title} - Tanoshii Japanese`,
+    subject: `${title} - Nihongofy`,
     text: `Halo ${displayName},\n\n${description}\n\n${url}\n\n${expiryText}`,
     html: emailShell({
       preheader: title,
@@ -126,7 +126,7 @@ export async function sendPasswordResetMail({
 
   await sendMail({
     to: email,
-    subject: "Reset password - Tanoshii Japanese",
+    subject: "Reset password - Nihongofy",
     text: `Halo ${displayName},\n\n${description}\n\n${url}\n\n${expiryText}`,
     html: emailShell({
       preheader: "Permintaan reset password",

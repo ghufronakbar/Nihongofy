@@ -39,7 +39,7 @@ export function PublicFooter() {
       </PageContainer>
       <div className="border-t-[3px] border-neo-ink bg-neo-ink py-4 text-white">
         <PageContainer className="flex flex-col gap-1 font-mono text-xs sm:flex-row sm:items-center sm:justify-between">
-          <span>TANOSHII JAPANESE / 楽しい日本語</span>
+          <span>NIHONGOFY / 日本語</span>
           <span>© {new Date().getFullYear()} Belajar bahasa Jepang dengan cara seru & terstruktur.</span>
         </PageContainer>
       </div>

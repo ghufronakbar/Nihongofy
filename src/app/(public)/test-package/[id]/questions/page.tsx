@@ -237,11 +237,6 @@ export default async function TestPackageQuestionsPage({
                                 />
                               )}
                             </div>
-                            {isCorrect && (
-                              <span className="ml-auto font-mono text-[10px] font-black border border-neo-ink bg-white px-1.5 py-0.5 rounded shadow-neo-sm">
-                                KUNCI
-                              </span>
-                            )}
                           </div>
                         );
                       })}
