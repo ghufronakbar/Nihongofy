@@ -12,7 +12,7 @@ Folder ini mendokumentasikan kondisi aplikasi berdasarkan kode, fixture, dan dat
 | [Kana](kana.md) | Selesai dengan scope terbatas | Fixture kana terkurasi dan progress akun aktif; audio memakai Web Speech API, bukan rekaman. |
 | [Flashcard](flashcard.md) | Fungsional | Paritas Anki: FSRS-6, queue v3, deck options, deck bawaan, impor/export teks, card browser, statistik, dan mode coba guest (186 unit test). Impor `.apkg` dan konten N4-N1 belum ada. |
 | [Latihan cepat](practice.md) | Fungsional dengan gap guest | Session akun persisten dan feedback langsung aktif; guest hanya state sementara. |
-| [Paket tes](test-package.md) | Fungsional, database belum selengkap fixture | Source memiliki 50 paket; database aktif baru memuat 31 paket N2-N4. |
+| [Paket tes](test-package.md) | Fungsional, kini dikelola dari admin | 48 fixture dan 48 paket di database mencakup kelima level; import, editor soal, dan penghapusan tersedia di `/admin/test-package`. |
 | [Exam runner](exam.md) | Fungsional dengan hardening tersisa | State sesi dan submit aktif; belum ada timer, marker submit per sesi, dan validasi kelengkapan payload. |
 | [Result](result.md) | Selesai dengan skor aproksimasi | Summary dan review aktif; skor 180 bukan scaled score resmi JLPT. |
 | [History](history.md) | Selesai | Riwayat dan resume attempt akun aktif; belum mencakup latihan cepat. |
@@ -24,8 +24,8 @@ Folder ini mendokumentasikan kondisi aplikasi berdasarkan kode, fixture, dan dat
 | [Japanese content rendering](japanese-content-rendering.md) | Fungsional dengan gap format | Furigana, underline, slot, tabel, dan multi-passage aktif; newline dan Markdown fixture belum selalu dirender dengan benar. |
 | [Shared study utilities](study.md) | Selesai sederhana | Saat ini hanya menyediakan TTS browser bersama untuk kana dan flashcard. |
 | [Conversation dan speaking](conversation-speaking.md) | Versi awal fungsional | Teks dan suara berjalan end-to-end dengan session tersimpan dan provider mock/OpenAI; quota belum ditegakkan, moderation dan retention belum ada. Rancangan: [conversation-speaking-design.md](conversation-speaking-design.md); aset karakter: [conversation-persona-assets.md](conversation-persona-assets.md). |
-| [Content data dan seeding](content-data.md) | Infrastruktur aktif | Import tervalidasi tersedia; source fixture dan isi database development belum sinkron penuh. |
-| [Admin dashboard](admin.md) | Fondasi, artikel, dan moderasi selesai | Role statis `USER`/`ADMIN`, guard, overview, CMS artikel, dan moderasi diskusi publik aktif; bank soal, pembahasan, deck, user, dan conversation masih placeholder dan tetap dikerjakan lewat script CLI di `prisma/`. |
+| [Content data dan seeding](content-data.md) | Infrastruktur aktif, sebagian punya UI | Import tervalidasi tersedia lewat CLI maupun `/admin`; bank soal dan artikel berbagi jalur kode antara keduanya. Pembahasan dan deck bawaan masih CLI saja. |
+| [Admin dashboard](admin.md) | Fondasi, bank soal, artikel, dan moderasi selesai | Role statis `USER`/`ADMIN`, guard, overview, pengelolaan bank soal (import fixture + editor soal), CMS artikel, dan moderasi diskusi publik aktif; pembahasan, deck, user, dan conversation masih placeholder. |
 
 ## Feature Flag
 

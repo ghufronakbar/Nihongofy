@@ -2,23 +2,41 @@
 
 ## Status Aktual
 
-**Fondasi, CMS artikel, dan moderasi diskusi selesai (Tahap 1, 4-artikel, dan 5).** Yang sudah
-berjalan: role statis `USER`/`ADMIN`, `requireAdmin()`, shell `/admin` dengan sidebar sendiri,
-overview yang membaca kondisi database secara langsung, CRUD artikel dengan workflow
-draft/published/archived, dan antrean moderasi diskusi publik dengan takedown.
+**Fondasi, bank soal, CMS artikel, dan moderasi diskusi selesai (Tahap 1, 2, 4-artikel, dan 5).**
+Yang sudah berjalan: role statis `USER`/`ADMIN`, `requireAdmin()`, shell `/admin` dengan sidebar
+sendiri, overview yang membaca kondisi database secara langsung, pengelolaan bank soal termasuk
+import fixture dan editor soal, CRUD artikel dengan workflow draft/published/archived, dan
+antrean moderasi diskusi publik dengan takedown.
 
-Yang belum: bank soal, pembahasan, deck bawaan, user, conversation, dan operasional — masih
-berupa halaman placeholder yang menyebut tahapnya.
+Yang belum: pembahasan, deck bawaan, user, conversation, dan operasional — masih berupa halaman
+placeholder yang menyebut tahapnya. Di dalam bank soal, yang belum ada adalah uploader media dan
+editor `QuestionContext`.
 
-Seluruh operasi konten karena itu **masih dijalankan lewat script CLI** di `prisma/`
-(`seed:test-package`, `seed:articles`, `seed:flashcard-deck`, `seed:question-explanation`,
-`gen:explanation`, `fixture:lint`, `fixture:repair`, `test-package:delete`,
-`explanation:doubts`, dan turunannya). Admin dashboard pada dasarnya adalah pemindahan
-pipeline tersebut ke UI, bukan pembangunan fitur dari nol.
+Operasi konten yang belum punya layar (pembahasan, deck bawaan) **masih dijalankan lewat script
+CLI** di `prisma/`. Untuk bank soal dan artikel, UI dan CLI kini berbagi jalur kode yang sama
+sehingga keduanya tetap tersedia dan tidak dapat menyimpang satu sama lain — lihat
+[Berbagi kode dengan CLI](#berbagi-kode-dengan-cli).
 
-Tiga dokumen modul mencatat ketiadaan admin sebagai gap eksplisit dan masih berlaku sampai
-tahap terkait selesai: [content-data.md](content-data.md), [article.md](article.md), dan
-[test-package.md](test-package.md).
+## Berbagi kode dengan CLI
+
+Admin dashboard pada dasarnya adalah pemindahan pipeline seed ke UI. Yang dihindari di sini
+adalah menyalin logikanya: dua salinan kontrak atau dua jalur tulis akan berbeda diam-diam
+begitu salah satunya diubah.
+
+| Dipakai bersama | CLI | Admin |
+|---|---|---|
+| `prisma/test-package-contract.mjs` — kontrak fixture (zod) | `seed:test-package` dan turunannya | validasi layar import |
+| `prisma/import-test-package.mjs` — transaksi tulis paket | `seed:test-package` | action import |
+| `src/features/article/lib/body-text.ts` — turunan `bodyText` | disalin di `seed-articles.mjs` | action artikel |
+
+Dua modul `.mjs` itu menerima client Prisma sebagai argumen, karena CLI memakai `PrismaClient`
+sendiri sementara aplikasi memakai singleton `src/lib/prisma`. `test-package-contract.mjs`
+sengaja tidak mengimpor `node:fs`/`node:path`/`node:url`: ia ikut ter-bundle ke aplikasi lewat
+Server Action, dan sentuhan filesystem di top level membuat bundler gagal me-resolve-nya. Helper
+yang membaca disk tetap di `test-package-fixture.mjs`, yang hanya dipakai CLI.
+
+`articleBodyToPlainText()` adalah satu-satunya yang masih tersalin, karena script `.mjs` tidak
+dapat mengimpor TypeScript. Kedua salinannya diberi komentar silang.
 
 ### Yang sudah ada
 
@@ -34,6 +52,8 @@ tahap terkait selesai: [content-data.md](content-data.md), [article.md](article.
 | `articleBodyToPlainText()` | `src/features/article/lib/body-text.ts` |
 | Moderasi diskusi | `src/features/admin/moderation/`, `src/app/admin/moderation/` |
 | `QuestionComment.deletedById` | migration `20260925180000_comment_deleted_by` |
+| Bank soal | `src/features/admin/test-package/`, `src/app/admin/test-package/`, `src/app/admin/question/` |
+| Kontrak fixture dan jalur import bersama | `prisma/test-package-contract.mjs`, `prisma/import-test-package.mjs` |
 
 ## Prasyarat: Role Statis
 
@@ -105,10 +125,10 @@ area user.
 | Route | Isi | Status |
 |---|---|---|
 | `/admin` | Overview | selesai |
-| `/admin/test-package` | Daftar paket tes | Tahap 2 |
-| `/admin/test-package/[id]` | Detail paket: mondai, soal, context | Tahap 2 |
-| `/admin/test-package/import` | Import fixture JSON | Tahap 2 |
-| `/admin/question/[id]` | Editor satu soal | Tahap 2 |
+| `/admin/test-package` | Daftar paket tes | selesai |
+| `/admin/test-package/[id]` | Detail paket: mondai, soal, context | selesai |
+| `/admin/test-package/import` | Import fixture JSON | selesai |
+| `/admin/question/[id]` | Editor satu soal | selesai |
 | `/admin/explanation` | Antrean pembahasan: belum ada, belum direview, `answerKeyDoubt` | Tahap 3 |
 | `/admin/explanation/[questionId]` | Editor dan approval pembahasan | Tahap 3 |
 | `/admin/article` | Daftar artikel | selesai |

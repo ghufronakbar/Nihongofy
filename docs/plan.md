@@ -540,19 +540,30 @@ tahap lain, dan tahap 2–3 menutup gap konten yang paling menyakitkan bila scop
 
 ### Tahap 2 — Bank Soal
 
-- [ ] `/admin/test-package` — daftar paket per level/tahun
-- [ ] `/admin/test-package/[id]` — detail mondai, soal, pilihan, context
-- [ ] `/admin/test-package/import` — porting `npm run seed:test-package` ke UI, memakai validator
-  yang sama (`prisma/test-package-fixture.mjs`), preview hasil validasi sebelum commit
-- [ ] Guard import tetap: satu paket satu transaksi, paket parsial diblokir, replacement ditolak
-  bila paket sudah punya attempt
-- [ ] `/admin/question/[id]` — editor soal: `questionText`, markup `{漢字|かんじ}`, `__teks__`,
-  slot `[_]`/`[★]`, teks pilihan, `questionAnswer`, `instruction` mondai
-- [ ] Upload/ganti media soal ke Cloudinary (per 25 September 2026: 227 context audio, 144
-  question image, tetapi 0 `questionAudio`; tidak ada jalur upload selain fixture)
-- [ ] Hapus paket — porting `npm run test-package:delete` dengan konfirmasi + cek attempt
-- [ ] Setiap mutasi memanggil `revalidateTag(CACHE_TAGS.testPackageQuestions(id))` dan
-  `testPackageDetail`/`testPackageList` yang relevan
+- [x] `/admin/test-package` — daftar per level dengan pencarian nama, plus cakupan pembahasan per
+  paket. Kolom mondai dan sesi dipisah, karena label "SESI UJIAN" di halaman publik sebenarnya
+  menghitung blok mondai
+- [x] `/admin/test-package/[id]` — detail per mondai: daftar soal, kunci, status pembahasan,
+  penanda context/gambar/audio, dan peringatan bila ada `answerKeyDoubt`
+- [x] `/admin/test-package/import` — upload atau tempel JSON, divalidasi kontrak yang **sama
+  persis** dengan CLI, dengan daftar issue per path bila gagal
+- [x] Kontrak dan logika import diekstrak jadi modul bersama supaya CLI dan admin tidak punya
+  salinan masing-masing: `prisma/test-package-contract.mjs` (kontrak zod murni, bebas `node:*`
+  supaya dapat ikut ter-bundle) dan `prisma/import-test-package.mjs` (transaksi tulis, menerima
+  client Prisma sebagai argumen). `test-package-fixture.mjs` kini hanya helper filesystem CLI
+- [x] Guard import tetap berlaku karena memang jalur kode yang sama: advisory lock per nama paket,
+  satu paket satu transaksi, paket parsial diblokir, replacement ditolak bila sudah punya attempt
+- [x] `/admin/question/[id]` — editor soal: `questionText`, teks/gambar tiap pilihan,
+  `questionAnswer` lewat radio, dan `instruction` mondai. Markup diingatkan di UI. Pilihan
+  di-update lewat id yang sudah ada, tidak dihapus-lalu-dibuat-ulang
+- [ ] Upload/ganti media soal ke Cloudinary. Saat ini editor hanya menerima URL yang ditempel;
+  belum ada uploader (per 25 September 2026: 227 context audio, 144 question image, 0
+  `questionAudio`)
+- [ ] Editor `QuestionContext` — wacana bersama baru dapat dilihat di editor soal, belum diubah
+- [x] Hapus paket — konfirmasi dengan mengetik ulang nama paket, dan ditolak bila paket sudah
+  punya attempt (aturan yang sama dengan `npm run test-package:delete`)
+- [x] Setiap mutasi memanggil `testPackageList`, `practiceCatalog`, `testPackageDetail(id)`, dan
+  `testPackageQuestions(id)`
 
 ### Tahap 3 — Pembahasan Soal
 
