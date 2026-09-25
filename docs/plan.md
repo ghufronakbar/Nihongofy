@@ -653,12 +653,29 @@ satu-satunya konten buatan user yang terlihat publik, termasuk oleh guest.
 
 ### Tahap 6 — User & Akun
 
-- [ ] `/admin/user` — daftar + search + filter (verifikasi email, punya OAuth, terakhir aktif)
-- [ ] `password` (termasuk hash) dan token apa pun **tidak pernah** dikirim ke client
-- [ ] `/admin/user/[id]` — promote/demote role
-- [ ] Revoke session lewat helper `src/lib/auth.ts` — jangan menyentuh key Redis langsung
-- [ ] Reset bucket `AuthRateLimit` lewat helper yang sama yang membuat key HMAC-nya
-- [ ] Lihat dan batalkan `deletionRequestedAt` / `deletionScheduledFor`
+- [x] `/admin/user` — daftar dengan pencarian nama/email/username dan filter: semua, admin, belum
+  verifikasi, punya Google, menunggu dihapus
+- [x] Filter "terakhir aktif" **tidak dibuat**: tidak ada kolom `lastActiveAt`, dan aktivitas
+  session hidup di Redis sehingga tidak dapat di-query massal. Sebagai gantinya detail user
+  menampilkan attempt terakhir, yang memang tersimpan di database
+- [x] `password` (termasuk hash) dan isi `AuthToken` tidak pernah masuk `select` mana pun.
+  "Punya password atau tidak" dijawab dengan `count`, token hanya dihitung. Diverifikasi dengan
+  memindai HTML halaman detail: tidak ada pola hash bcrypt maupun tokenHash
+- [x] `/admin/user/[id]` — promote/demote role, dengan dua penjagaan: admin tidak dapat
+  menurunkan dirinya sendiri (role dibaca per request, jadi ia langsung kehilangan akses tanpa
+  jalan kembali dari UI), dan admin terakhir tidak dapat diturunkan — aturan yang sama dengan
+  `npm run user:role`
+- [x] Revoke session lewat `listUserSessions`/`revokeUserSession`/`revokeAllUserSessions` di
+  `src/lib/auth.ts`; tidak ada key Redis yang disentuh langsung. Mencabut session yang sedang
+  dipakai admin itu sendiri ditolak, dan "cabut semua" atas akun sendiri menyisakan session ini
+- [x] Reset bucket `AuthRateLimit` lewat `clearAuthRateLimits()`, yang menurunkan HMAC dengan
+  fungsi yang sama seperti saat bucket dikonsumsi
+- [x] Bucket beridentitas IP sengaja tidak ikut: alamat IP mentah memang tidak pernah disimpan,
+  jadi bucket itu tidak dapat ditemukan dari sisi user dan hilang sendiri setelah jendelanya lewat.
+  UI menyatakan batasan ini
+- [x] Lihat dan batalkan `deletionRequestedAt` / `deletionScheduledFor`, lalu invalidasi
+  `profileAccount`. Admin hanya dapat membatalkan, tidak pernah menjadwalkan: meminta penghapusan
+  akun adalah keputusan pemiliknya
 
 ### Tahap 7 — Conversation & Operasional
 
