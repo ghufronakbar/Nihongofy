@@ -37,7 +37,8 @@
 - `TestPackage` -> `TestPackageItem` per mondai -> `Question` -> `QuestionChoice`.
 - `QuestionContext` menyimpan stimulus bersama seperti bacaan, image, atau audio.
 - Kunci memakai `codeAnswer` 1-4, bukan ID choice.
-- Konten diisi melalui JSON fixture dan script import; tidak ada admin UI.
+- Konten diisi melalui JSON fixture, lewat `npm run seed:test-package` atau layar import di
+  `/admin/test-package/import`. Keduanya memakai kontrak dan jalur tulis yang sama.
 
 ## Data Aktual
 
@@ -48,7 +49,7 @@
 
 ## Keterbatasan dan Isu Aktual
 
-- Label jumlah pada detail memakai `testPackageItems.length` tetapi ditampilkan sebagai "SESI UJIAN"; angka tersebut sebenarnya jumlah blok mondai, bukan jumlah session unik.
+- Label jumlah pada detail memakai `testPackageItems.length` tetapi ditampilkan sebagai "SESI UJIAN"; angka tersebut sebenarnya jumlah blok mondai, bukan jumlah session unik. Daftar admin memisahkan keduanya.
 - Tombol lanjut pada history per paket selalu menuju session 1; halaman History global memiliki resolver resume yang lebih akurat.
 - Copy "pembahasan lengkap" belum sesuai dengan database karena hanya 20 dari 3.159 soal memiliki explanation.
 - Mode baca bersifat publik dan sengaja membuka kunci/explanation karena bukan mode pengerjaan.

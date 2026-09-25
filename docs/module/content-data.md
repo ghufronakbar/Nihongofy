@@ -2,7 +2,7 @@
 
 ## Status Aktual
 
-**Infrastruktur import aktif, tetapi source fixture dan database development belum sinkron penuh.** Bank soal, vocabulary, dan artikel tidak memiliki admin UI; konten masuk melalui fixture dan script seed.
+**Infrastruktur import aktif; sebagian sudah punya admin UI.** Bank soal dan artikel dapat dikelola dari `/admin` maupun script seed — keduanya berbagi jalur kode yang sama, jadi tidak dapat menyimpang. Pembahasan dan deck bawaan masih lewat script seed saja.
 
 ## Sumber Data
 
@@ -39,7 +39,8 @@
 
 ## Keterbatasan dan Risiko
 
-- Tidak ada dashboard admin, workflow draft/review, atau editor konten.
+- Pembahasan soal dan deck bawaan belum punya layar admin; keduanya masih lewat script seed.
+- Workflow review pembahasan (`reviewedAt`, `source` AI → HUMAN) belum ada UI-nya.
 - Status runtime sangat bergantung pada seed database yang terakhir dijalankan.
 - Dokumentasi/marketing yang menyebut seluruh level tersedia bisa berbeda dari database environment tertentu.
 - Kualitas OCR, underline rujukan, media, jawaban, dan explanation tetap membutuhkan kurasi manusia walaupun schema valid.

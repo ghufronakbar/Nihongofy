@@ -51,7 +51,7 @@
 
 ## Keterbatasan Aktual
 
-- Belum ada admin/CMS, editor, preview draft, revision history, scheduled publishing UI, atau moderation workflow.
+- CMS ada di `/admin/article` (CRUD, editor body JSON, tag, featured, dan transisi DRAFT/PUBLISHED/ARCHIVED). Yang belum: preview draft, revision history, dan scheduled publishing.
 - Fitur save tersedia, tetapi belum ada halaman "artikel tersimpan/favorit saya".
 - View count hanya menghitung user login, bukan seluruh visitor unik.
 - Seed selalu menerbitkan keenam fixture; enum `DRAFT`/`ARCHIVED` belum memiliki workflow UI.
