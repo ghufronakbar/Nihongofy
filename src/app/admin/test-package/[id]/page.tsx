@@ -1,7 +1,14 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { AlertTriangle, ArrowLeft, ExternalLink, Image as ImageIcon, Volume2 } from "lucide-react";
+import {
+  AlertTriangle,
+  ArrowLeft,
+  ExternalLink,
+  Image as ImageIcon,
+  Pencil,
+  Volume2,
+} from "lucide-react";
 import { requireAdmin } from "@/lib/auth";
 import { getAdminTestPackage } from "@/features/admin/test-package/queries";
 import { DeletePackageButton } from "@/features/admin/test-package/components/delete-package-button";
@@ -66,6 +73,51 @@ export default async function AdminTestPackageDetailPage({
           <AlertTriangle className="size-4 shrink-0 stroke-[2.5]" />
           {doubted} soal punya kunci jawaban yang ditandai meragukan oleh generator pembahasan.
         </p>
+      )}
+
+      {testPackage.questionContexts.length > 0 && (
+        <section className="flex flex-col gap-3">
+          <h2 className="font-mono text-xs font-black uppercase tracking-wider text-foreground/60">
+            Wacana bersama ({testPackage.questionContexts.length})
+          </h2>
+          <ul className="neo-surface flex flex-col border-[3px] border-neo-ink bg-white shadow-neo">
+            {testPackage.questionContexts.map((context) => (
+              <li
+                key={context.id}
+                className="flex flex-wrap items-center gap-3 border-b-2 border-neo-ink/15 px-4 py-2.5 last:border-b-0"
+              >
+                <span className="font-mono text-[10px] font-black text-foreground/50">
+                  #{context.id}
+                </span>
+                <span className="font-japanese line-clamp-1 min-w-0 flex-1 text-sm font-semibold">
+                  {context.storyText?.trim() || (
+                    <span className="font-sans text-foreground/40">(tanpa teks)</span>
+                  )}
+                </span>
+                <span className="flex shrink-0 items-center gap-2 font-mono text-[10px] text-foreground/50">
+                  {context.storyImage && (
+                    <span className="inline-flex items-center gap-0.5">
+                      <ImageIcon className="size-3" /> gambar
+                    </span>
+                  )}
+                  {context.storyAudio && (
+                    <span className="inline-flex items-center gap-0.5">
+                      <Volume2 className="size-3" /> audio
+                    </span>
+                  )}
+                  {context._count.questions} soal
+                </span>
+                <Link
+                  href={`/admin/context/${context.id}`}
+                  className="neo-button shrink-0 bg-white text-[11px] font-extrabold text-black"
+                >
+                  <Pencil className="size-3.5" />
+                  Edit
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
 
       {testPackage.testPackageItems.map((item) => (
@@ -135,11 +187,17 @@ export default async function AdminTestPackageDetailPage({
                     </td>
                     <td className="px-3 py-2">
                       {!question.explanation ? (
-                        <span className="font-mono text-[10px] font-bold text-foreground/50">
-                          belum ada
-                        </span>
+                        <Link
+                          href={`/admin/explanation/${question.id}`}
+                          className="font-mono text-[10px] font-bold text-foreground/50 underline-offset-4 hover:text-neo-blue hover:underline"
+                        >
+                          belum ada — tulis
+                        </Link>
                       ) : (
-                        <span className="flex flex-wrap items-center gap-1.5">
+                        <Link
+                          href={`/admin/explanation/${question.id}`}
+                          className="flex flex-wrap items-center gap-1.5 underline-offset-4 hover:underline"
+                        >
                           <span className="inline-flex items-center border-2 border-neo-ink bg-white px-1.5 py-0 font-mono text-[10px] font-black">
                             {question.explanation.source}
                           </span>
@@ -157,7 +215,7 @@ export default async function AdminTestPackageDetailPage({
                               kunci ragu
                             </span>
                           )}
-                        </span>
+                        </Link>
                       )}
                     </td>
                   </tr>

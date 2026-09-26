@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { AlertTriangle, ArrowLeft } from "lucide-react";
+import { AlertTriangle, ArrowLeft, Pencil } from "lucide-react";
 import { requireAdmin } from "@/lib/auth";
 import { getAdminQuestion } from "@/features/admin/test-package/queries";
 import { QuestionForm } from "@/features/admin/test-package/components/question-form";
@@ -59,9 +59,18 @@ export default async function AdminQuestionPage({
 
       {questionContext && (
         <section className="neo-surface flex flex-col gap-2 border-[3px] border-neo-ink bg-neo-paper p-5 shadow-neo">
-          <p className="font-mono text-[10px] font-black uppercase tracking-wider text-foreground/60">
-            Wacana bersama (context #{questionContext.id}) — belum dapat diedit dari sini
-          </p>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="font-mono text-[10px] font-black uppercase tracking-wider text-foreground/60">
+              Wacana bersama (context #{questionContext.id})
+            </p>
+            <Link
+              href={`/admin/context/${questionContext.id}`}
+              className="inline-flex shrink-0 items-center gap-1 font-mono text-[11px] font-bold text-foreground/60 hover:text-neo-blue"
+            >
+              <Pencil className="size-3" />
+              Edit wacana
+            </Link>
+          </div>
           {questionContext.storyText && (
             <pre className="font-japanese whitespace-pre-wrap text-xs font-semibold text-foreground/80">
               {questionContext.storyText}
@@ -91,13 +100,31 @@ export default async function AdminQuestionPage({
         }}
       />
 
+      {!explanation && (
+        <Link
+          href={`/admin/explanation/${question.id}`}
+          className="neo-button self-start bg-white text-xs font-extrabold text-black"
+        >
+          <Pencil className="size-4" />
+          Tulis pembahasan
+        </Link>
+      )}
+
       {explanation && (
         <section className="neo-surface flex flex-col gap-2 border-[3px] border-neo-ink bg-white p-5 shadow-neo">
-          <p className="font-mono text-[10px] font-black uppercase tracking-wider text-foreground/60">
-            Pembahasan ({explanation.source}
-            {explanation.reviewedAt ? ", sudah direview" : ", belum direview"}) — editornya ada di
-            Tahap 3
-          </p>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="font-mono text-[10px] font-black uppercase tracking-wider text-foreground/60">
+              Pembahasan ({explanation.source}
+              {explanation.reviewedAt ? ", sudah direview" : ", belum direview"})
+            </p>
+            <Link
+              href={`/admin/explanation/${question.id}`}
+              className="inline-flex shrink-0 items-center gap-1 font-mono text-[11px] font-bold text-foreground/60 hover:text-neo-blue"
+            >
+              <Pencil className="size-3" />
+              Edit pembahasan
+            </Link>
+          </div>
           <p className="font-japanese text-xs font-semibold text-foreground/80">
             {explanation.summary}
           </p>

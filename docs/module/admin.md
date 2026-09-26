@@ -10,8 +10,9 @@ draft/published/archived, antrean moderasi diskusi publik dengan takedown, antre
 dengan balasan email opsional, dan pengelolaan akun user.
 
 Tidak ada area yang masih berupa placeholder. Sisa pekerjaan yang tercatat terbuka di
-`docs/plan.md`: uploader media dan editor `QuestionContext` di bank soal, rate limit posting dan
-notifikasi balasan di moderasi, serta aksi membersihkan retensi conversation yang sudah lewat.
+`docs/plan.md`: uploader media di bank soal (editor soal dan wacana baru menerima URL yang
+ditempel), rate limit posting dan notifikasi balasan di moderasi, serta aksi membersihkan
+retensi conversation yang sudah lewat.
 
 Operasi konten yang belum punya layar (pembahasan, deck bawaan) **masih dijalankan lewat script
 CLI** di `prisma/`. Untuk bank soal dan artikel, UI dan CLI kini berbagi jalur kode yang sama
@@ -137,6 +138,7 @@ area user.
 | `/admin/test-package/[id]` | Detail paket: mondai, soal, context | selesai |
 | `/admin/test-package/import` | Import fixture JSON | selesai |
 | `/admin/question/[id]` | Editor satu soal | selesai |
+| `/admin/context/[id]` | Editor wacana bersama | selesai |
 | `/admin/explanation` | Antrean pembahasan: belum ada, belum direview, `answerKeyDoubt` | selesai |
 | `/admin/explanation/[questionId]` | Editor dan approval pembahasan | selesai |
 | `/admin/article` | Daftar artikel | selesai |
@@ -186,7 +188,11 @@ Prioritas tertinggi karena inilah satu-satunya jalur konten yang sekarang sepenu
   replacement ditolak bila paket sudah memiliki attempt.
 - **Editor soal** — memperbaiki hasil OCR tanpa mengedit JSON lalu re-seed: `questionText`,
   markup furigana `{漢字|かんじ}`, underline `__teks__`, slot `[_]`/`[★]`, teks pilihan,
-  `questionAnswer`, dan `instruction` mondai.
+  `questionAnswer`, dan `instruction` mondai. Mengubah kunci jawaban ikut menurunkan ulang
+  `QuestionExplanationChoice.isCorrect`, yang merupakan denormalisasi dari kunci itu.
+- **Editor wacana bersama** — teks, gambar, dan audio `QuestionContext`. Satu wacana dipakai
+  beberapa soal sekaligus, jadi layarnya menyebut berapa banyak dan menautkan semuanya.
+  Menolak wacana yang tidak punya teks, gambar, maupun audio, sama seperti kontrak fixture.
 - **Media** — upload dan ganti audio/gambar soal ke Cloudflare R2. Per 25 September 2026 database
   punya 227 context audio, 144 question image, 1 context image, tetapi **0** question audio, dan
   tidak ada jalur upload selain fixture.

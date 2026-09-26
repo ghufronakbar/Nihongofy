@@ -119,6 +119,30 @@ export async function getAdminTestPackage(id: number) {
   });
 }
 
+// Editor wacana bersama. Menyertakan daftar soal yang memakainya, karena
+// perubahan di sini terasa di semua soal itu sekaligus.
+export async function getAdminQuestionContext(id: number) {
+  return prisma.questionContext.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      storyText: true,
+      storyImage: true,
+      storyAudio: true,
+      testPackage: { select: { id: true, name: true, jlptLevel: true } },
+      questions: {
+        orderBy: [{ testPackageItem: { session: "asc" } }, { order: "asc" }],
+        select: {
+          id: true,
+          order: true,
+          questionText: true,
+          testPackageItem: { select: { mondaiType: true, session: true } },
+        },
+      },
+    },
+  });
+}
+
 // Editor soal. Admin memang boleh melihat kunci jawaban dan pembahasan — jalur
 // ini tidak boleh dipakai ulang oleh modul exam.
 export async function getAdminQuestion(id: number) {
