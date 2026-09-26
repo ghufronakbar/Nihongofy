@@ -818,6 +818,40 @@ memusnahkan balasan pengguna lain pada thread miliknya.
 - [ ] Setiap relasi personal baru pada `User` wajib ditambahkan ke `anonymizeAccount` — belum ada
   test otomatis yang menjaga ini
 
+## Fase 8.9 — Bugfix Hitungan Lembar Jawaban + Hasil untuk Guest
+
+Dua temuan dari testing manual user pada `/exam/[attemptId]/[session]`.
+
+- [x] Bug: soal terakhir yang baru dijawab belum terhitung saat submit ("1 soal belum dijawab"
+  padahal sudah penuh), dan baru benar setelah pindah soal. Penyebabnya `answeredMap` di
+  `exam-runner.tsx` di-memo dengan dep `[questions, hydrated]` — keduanya tidak berubah saat
+  menjawab, jadi seluruh hitungan (badge `n/total`, dialog submit, legend) baru menyegar ketika
+  navigasi memicu RSC refetch dan mengganti identitas `questions`. Grid lembar jawaban tidak
+  terkena karena memanggil `getAnswer` langsung
+- [x] Dep diganti `[questions, getAnswer]`; identitas `getAnswer` berubah setiap jawaban diedit
+  karena context value di `exam-provider.tsx` di-memo atas `[answers, hydrated]`
+- [x] Fallback "lompat ke soal pertama yang belum dijawab" dipisah jadi `restoredEntryIndex` yang
+  sengaja tetap snapshot hydration — kalau ikut reaktif, menjawab soal yang sedang dibuka akan
+  menggeser fallback dan melempar user ke soal lain selama URL belum ber-`questionNumber`
+- [x] Guest kini melihat hasil: submit session terakhir diarahkan ke `/result/guest`, bukan
+  langsung ke mode baca paket
+- [x] `getGuestAttemptSummary` di `src/features/result/actions.ts` — menilai di server (kunci
+  jawaban tidak pernah ke client), penyebut dari seluruh soal pada scope sehingga session yang
+  dilewati terhitung kosong
+- [x] `src/features/result/components/guest-result.tsx` mengumpulkan lembar jawaban seluruh
+  session dari `sessionStorage` lewat prefix `exam-state-0-`; tidak ada key sama sekali → empty
+  state ber-CTA daftar, bukan skor 0%
+- [x] UI ringkasan diekstrak ke `ResultSummaryView` dan dipakai bersama `/result/[attemptId]`
+  supaya tidak ada dua salinan yang melenceng. Guest tidak mendapat durasi, review per soal,
+  riwayat, maupun analitik, dan hasilnya hilang saat tab ditutup
+- [x] Helper bersama: `src/features/exam/storage.ts` (key sessionStorage) dan
+  `src/features/exam/guest-cookie.ts` (`readGuestExamCookie`, `GUEST_EXAM_COOKIE`)
+- [x] Verifikasi: `npm run lint`, `npm run typecheck`, `npm run test` (258 test), dan
+  `npm run build` lulus; `/result/guest` terdaftar sebagai route `ƒ`
+- [ ] Verifikasi manual (user): jawab soal terakhir lalu submit tanpa pindah soal (Belum = 0);
+  buka sesi setengah jadi tanpa `?questionNumber` dan pastikan tidak melompat saat menjawab;
+  selesaikan mock penuh sebagai guest dan cek hasil lintas session
+
 ## Fase 9 — Verifikasi & Polish
 
 - [ ] `npm run build` setelah tiap perubahan struktural/server action/caching

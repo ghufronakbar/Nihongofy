@@ -11,6 +11,7 @@ import { getUserTimeZone } from "@/lib/user-time-zone";
 import { CACHE_KEYS, CACHE_TAGS } from "@/constants/cache-key";
 import { FEATURES } from "@/constants";
 import { getQuestionDiscussionCounts } from "@/features/question-comment/queries";
+import { GUEST_EXAM_COOKIE } from "@/features/exam/guest-cookie";
 import { CreateAttemptSchema, type CreateAttemptInput } from "./schemas";
 
 const getCachedTestPackageList = unstable_cache(
@@ -221,7 +222,7 @@ export async function createAttemptAction(input: CreateAttemptInput) {
     // Guest mode: do not create attempt in database, save guest exam cookie
     const cookieStore = await cookies();
     cookieStore.set(
-      "jlpt_guest_exam",
+      GUEST_EXAM_COOKIE,
       JSON.stringify({
         testPackageId,
         sectionScope: sectionScope ?? null,

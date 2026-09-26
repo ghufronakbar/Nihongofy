@@ -14,7 +14,7 @@ Folder ini mendokumentasikan kondisi aplikasi berdasarkan kode, fixture, dan dat
 | [Latihan cepat](practice.md) | Fungsional dengan gap guest | Session akun persisten dan feedback langsung aktif; guest hanya state sementara. |
 | [Paket tes](test-package.md) | Fungsional, kini dikelola dari admin | 48 fixture dan 48 paket di database mencakup kelima level; import, editor soal, dan penghapusan tersedia di `/admin/test-package`. |
 | [Exam runner](exam.md) | Fungsional dengan hardening tersisa | State sesi dan submit aktif; belum ada timer, marker submit per sesi, dan validasi kelengkapan payload. |
-| [Result](result.md) | Selesai dengan skor aproksimasi | Summary dan review aktif; skor 180 bukan scaled score resmi JLPT. |
+| [Result](result.md) | Selesai dengan skor aproksimasi | Summary dan review aktif, guest dapat summary sementara; skor 180 bukan scaled score resmi JLPT. |
 | [History](history.md) | Selesai | Riwayat dan resume attempt akun aktif; belum mencakup latihan cepat. |
 | [Analytics](analytics.md) | Selesai untuk exam/practice | Filter, tren, breakdown mondai, dan practice summary aktif; data development saat audit masih empty state. |
 | [Progress dan export](progress.md) | Selesai | Tabel per attempt serta export XLSX/PDF aktif; belum ada grafik dan data development masih empty state. |
@@ -90,9 +90,9 @@ Snapshot ini bersifat lokal dan dapat berubah setelah seed/import berikutnya.
 
 ## Catatan Verifikasi
 
-- Test suite: 186 unit test flashcard — scheduler, queue, deck tree, note type, sanitasi, deck options, parser impor/export, dan statistik (`npm run test`, vitest). Modul lain belum punya test.
-- `npm run build` lulus pada Next.js 16.2.10.
-- `npm run lint` gagal karena 2 error `no-explicit-any` pada guest exam dan menghasilkan 28 warning unused import.
+- Test suite: 258 unit test pada 13 file (`npm run test`, vitest), mayoritas flashcard — scheduler, queue, deck tree, note type, sanitasi, deck options, parser impor/export, dan statistik. Exam dan result belum punya test.
+- `npm run build` lulus.
+- `npm run lint` lulus dengan `--max-warnings=0` (diverifikasi ulang 26 September 2026; error `no-explicit-any` pada guest exam yang tercatat saat audit awal sudah tidak ada).
 - `npm run seed:test-package:check` lulus untuk seluruh 50 fixture.
 - Audit mengandalkan pembacaan kode, validasi fixture, lint, build, dan query read-only ke database development.
 - Checklist manual end-to-end dan audit kebocoran answer key masih tercatat belum selesai di `docs/plan.md`.

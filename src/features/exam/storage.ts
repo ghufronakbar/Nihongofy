@@ -1,0 +1,14 @@
+// Key sessionStorage lembar jawaban exam, dipakai bersama oleh runner dan
+// halaman hasil guest.
+//
+// Guest tidak punya row `Attempt`, sehingga memakai id sentinel 0. Hasil guest
+// dibentuk dengan memindai seluruh key berprefix `GUEST_EXAM_STORAGE_PREFIX`,
+// jadi satu sesi ujian penuh tetap dapat dijumlahkan lintas session.
+
+export const GUEST_ATTEMPT_ID = 0;
+
+export function examStorageKey(attemptId: number, session: number) {
+  return `exam-state-${attemptId}-${session}`;
+}
+
+export const GUEST_EXAM_STORAGE_PREFIX = `exam-state-${GUEST_ATTEMPT_ID}-`;

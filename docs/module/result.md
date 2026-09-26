@@ -2,7 +2,7 @@
 
 ## Status Aktual
 
-**Selesai untuk attempt user login, dengan skor aproksimasi.** Summary dan review per soal memakai data database, ownership check, serta hanya menerima attempt `COMPLETED`.
+**Selesai untuk attempt user login, dengan skor aproksimasi.** Summary dan review per soal memakai data database, ownership check, serta hanya menerima attempt `COMPLETED`. Guest mendapat summary sementara tanpa review per soal.
 
 ## Feature Flag
 
@@ -12,6 +12,7 @@ Tidak punya flag sendiri; ikut `FEATURES_TEST_PACKAGE` (lihat [Paket tes](test-p
 
 - `/result/[attemptId]`
 - `/result/[attemptId]/detail`
+- `/result/guest`
 
 ## Result Summary
 
@@ -27,6 +28,15 @@ Tidak punya flag sendiri; ikut `FEATURES_TEST_PACKAGE` (lihat [Paket tes](test-p
 - User dapat copy soal ke clipboard serta mengelola catatan pribadi.
 - Detail tidak dicache karena comment harus langsung terlihat setelah mutation.
 
+## Result Guest
+
+- Guest tidak punya row `Attempt`, sehingga lembar jawaban dikirim client dari `sessionStorage` (seluruh key berprefix `exam-state-0-`, jadi satu mock penuh terjumlah lintas session).
+- `getGuestAttemptSummary` menilai di server: `questionAnswer` tidak pernah ikut ke client selama exam.
+- Penyebut diambil dari seluruh soal pada scope paket/section, bukan dari payload client, sehingga session yang dilewati tetap terhitung kosong.
+- Menampilkan akurasi, benar/salah/kosong/ragu, dan proyeksi 180 poin memakai `ResultSummaryView` yang sama dengan attempt user login. Yang tidak diberikan: durasi, review per soal, riwayat, dan analitik.
+- Cookie guest habis atau `sessionStorage` kosong menghasilkan empty state ber-CTA daftar, bukan skor 0%.
+- Payload jawaban tidak diverifikasi keasliannya. Ini tidak menambah kebocoran kunci karena guest memang sudah bisa membuka `/test-package/[id]/questions` yang menampilkan kunci.
+
 ## Kondisi Skor
 
 - Akurasi dihitung langsung dari `AttemptAnswer.isCorrect`.
@@ -40,13 +50,15 @@ Tidak punya flag sendiri; ikut `FEATURES_TEST_PACKAGE` (lihat [Paket tes](test-p
 - Total soal summary berasal dari jumlah row `AttemptAnswer`, bukan jumlah soal seharusnya pada scope. Ini mengikuti gap validasi kelengkapan submit di modul Exam.
 - Durasi adalah selisih `startedAt`-`finishedAt`; waktu idle dan jeda antar-session ikut dihitung.
 - Mayoritas soal database belum memiliki explanation, sehingga review sering hanya menampilkan kunci.
-- Guest tidak memiliki result karena tidak membuat attempt database.
 - Tidak ada compare-attempt, share report, atau export dari halaman result.
 
 ## File Utama
 
 - `src/features/result/actions.ts`
+- `src/features/result/components/result-summary-view.tsx`
+- `src/features/result/components/guest-result.tsx`
 - `src/app/(public)/result/[attemptId]/page.tsx`
 - `src/app/(public)/result/[attemptId]/detail/page.tsx`
+- `src/app/(public)/result/guest/page.tsx`
 - `src/lib/jlpt-score.ts`
 
