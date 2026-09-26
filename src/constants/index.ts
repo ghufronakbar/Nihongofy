@@ -124,6 +124,12 @@ export const ACCOUNT_DELETION_GRACE_PERIOD_SECONDS = 7 * 24 * 60 * 60;
 export const ACCOUNT_DELETION_CRON_BATCH_SIZE = 10;
 export const AVATAR_ORPHAN_GRACE_PERIOD_SECONDS = 2 * 60 * 60;
 export const AVATAR_CLEANUP_CRON_BATCH_SIZE = 10;
+// Lembar jawaban guest yang menunggu diklaim ke akun. TTL disamakan dengan
+// jendela verifikasi email: jalur register baru punya session setelah user
+// mengeklik tautan di email, yang bisa berjam-jam kemudian.
+export const GUEST_ATTEMPT_STASH_COOKIE_NAME = "guest_attempt_stash";
+export const GUEST_ATTEMPT_STASH_DURATION_SECONDS = 60 * 60 * 24;
+
 export const GOOGLE_OAUTH_STATE_COOKIE_NAME = "google_oauth_state";
 export const GOOGLE_OAUTH_REAUTH_COOKIE_NAME = "google_oauth_reauth";
 export const GOOGLE_OAUTH_TRANSACTION_DURATION_SECONDS = 10 * 60;

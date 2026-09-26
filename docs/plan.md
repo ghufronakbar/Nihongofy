@@ -852,6 +852,36 @@ Dua temuan dari testing manual user pada `/exam/[attemptId]/[session]`.
   buka sesi setengah jadi tanpa `?questionNumber` dan pastikan tidak melompat saat menjawab;
   selesaikan mock penuh sebagai guest dan cek hasil lintas session
 
+### Klaim hasil guest ke akun
+
+Lanjutan permintaan user: CTA login/register pada halaman hasil guest yang langsung mengimpor
+pekerjaan lalu membersihkan penyimpanan sementara.
+
+- [x] Temuan yang mengubah rancangan: membawa jawaban di `sessionStorage` melewati auth hanya
+  bekerja untuk login. `registerAction` tidak membuat session — user dibuat `emailVerifiedAt: null`
+  lalu diarahkan ke `/verify-email`, dan session baru lahir di `confirmEmailAction` yang dipicu dari
+  tautan email, hampir selalu di tab baru. `sessionStorage` per-tab, jadi jalur register (justru
+  jalur yang paling mungkin dipakai guest) akan selalu kehilangan jawabannya
+- [x] Solusi: jawaban dipindahkan ke server saat CTA diklik, sebelum auth, memakai pola
+  `google-oauth-state.ts` — token acak di cookie httpOnly + payload Redis ber-TTL 24 jam,
+  `getdel` sekali pakai. Cookie dibagi lintas tab sehingga tab dari tautan email tetap bisa
+  menyelesaikan impor
+- [x] `src/features/result/lib/guest-attempt-stash.ts`, `stashGuestAttemptAction`, dan
+  `importGuestAttemptAction`
+- [x] `Attempt` hasil impor `COMPLETED` dengan satu row per soal pada scope; `isCorrect` dihitung
+  ulang dari kunci, dan cache dashboard/analytics/profile diinvalidasi seperti submit biasa
+- [x] Cookie guest kini mencatat `startedAt` saat exam dimulai supaya durasi attempt nyata
+- [x] Setelah impor: cookie `jlpt_guest_exam` + titipan dihapus server-side, `sessionStorage`
+  dibersihkan client-side, lalu redirect ke `/result/[attemptId]`
+- [x] `?import=1` sebagai penanda kembalian auth supaya membuka `/result/guest` sambil login tidak
+  mengimpor diam-diam; layar "Menyimpan ke Akunmu" menggantikan empty state selama klaim berjalan
+- [x] Verifikasi: guest mengerjakan Choukai N1 lalu menekan CTA — berpindah ke
+  `/register?next=%2Fresult%2Fguest%3Fimport%3D1` dan titipan terbukti mendarat di Redis (TTL 24 jam,
+  `startedAt` terisi, jawaban utuh). `npm run lint`, `typecheck`, `test`, `build` lulus
+- [ ] Verifikasi manual (user): belum diuji dengan akun sungguhan karena butuh kredensial. Perlu
+  dicek dua jalur — login (tab sama) dan register (tautan verifikasi email di tab baru) — sampai
+  attempt muncul di `/history` dengan durasi wajar dan review per soal terbuka
+
 ## Fase 9 — Verifikasi & Polish
 
 - [ ] `npm run build` setelah tiap perubahan struktural/server action/caching

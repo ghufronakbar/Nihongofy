@@ -1,7 +1,8 @@
 "use server";
 
 import { notFound, redirect } from "next/navigation";
-import { unstable_cache } from "next/cache";
+import { unstable_cache, updateTag } from "next/cache";
+import { cookies } from "next/headers";
 import { z } from "zod";
 import type { MondaiType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
@@ -10,8 +11,12 @@ import { getSession } from "@/lib/auth";
 import { CACHE_KEYS, CACHE_TAGS } from "@/constants/cache-key";
 import { FEATURES } from "@/constants";
 import { getQuestionDiscussionCounts } from "@/features/question-comment/queries";
-import { readGuestExamCookie } from "@/features/exam/guest-cookie";
+import { readGuestExamCookie, GUEST_EXAM_COOKIE } from "@/features/exam/guest-cookie";
 import { ExamAnswerSchema, type ExamAnswerInput } from "@/features/exam/schemas";
+import {
+  createGuestAttemptStash,
+  consumeGuestAttemptStash,
+} from "./lib/guest-attempt-stash";
 import { computeJlptScoreProjection, type MondaiStatInput } from "@/lib/jlpt-score";
 
 const GuestAttemptAnswersSchema = z.array(ExamAnswerSchema).max(500);
@@ -185,6 +190,107 @@ export async function getGuestAttemptSummary(answers: ExamAnswerInput[]) {
     },
     projection: computeJlptScoreProjection(mondaiStats),
   };
+}
+
+/**
+ * Menitipkan lembar jawaban guest sebelum ia masuk ke alur login/register.
+ *
+ * Dipanggil saat guest menekan CTA simpan, bukan setelah auth selesai:
+ * `sessionStorage` terikat satu tab, sedangkan jalur register baru membuat
+ * session setelah tautan verifikasi email diklik — biasanya di tab baru.
+ */
+export async function stashGuestAttemptAction(answers: ExamAnswerInput[]) {
+  const validated = GuestAttemptAnswersSchema.safeParse(answers);
+  if (!validated.success) {
+    throw new Error("Data tidak valid.");
+  }
+
+  const guestData = await readGuestExamCookie();
+  if (!guestData) return { ok: false as const };
+
+  await createGuestAttemptStash({
+    testPackageId: guestData.testPackageId,
+    sectionScope: guestData.sectionScope,
+    startedAt: guestData.startedAt ?? null,
+    answers: validated.data,
+  });
+
+  return { ok: true as const };
+}
+
+/**
+ * Mengklaim titipan tadi menjadi `Attempt` milik user yang baru masuk.
+ *
+ * `isCorrect` dihitung ulang dari kunci jawaban seperti submit biasa, jadi skor
+ * tidak bisa dikarang client — yang bisa dikarang hanya pilihan jawabannya, dan
+ * itu hanya mengotori statistik miliknya sendiri.
+ */
+export async function importGuestAttemptAction() {
+  const authSession = await getSession();
+  if (!authSession) redirect("/login");
+
+  const stash = await consumeGuestAttemptStash();
+  if (!stash) return { ok: false as const, reason: "expired" as const };
+
+  const scopedWhere = stash.sectionScope
+    ? { testPackageId: stash.testPackageId, section: stash.sectionScope }
+    : { testPackageId: stash.testPackageId };
+
+  const testPackageItems = await prisma.testPackageItem.findMany({
+    where: scopedWhere,
+    select: { questions: { select: { id: true, questionAnswer: true } } },
+  });
+
+  const answerKey = new Map<number, number>();
+  for (const item of testPackageItems) {
+    for (const question of item.questions) {
+      answerKey.set(question.id, question.questionAnswer);
+    }
+  }
+  if (answerKey.size === 0) return { ok: false as const, reason: "expired" as const };
+
+  const submitted = new Map(stash.answers.map((answer) => [answer.questionId, answer]));
+
+  // Satu row per soal pada scope — bukan hanya yang dikirim client — supaya
+  // penyebut attempt hasil impor sama dengan yang dilihat guest di ringkasan.
+  const finishedAt = new Date();
+  const startedAt = stash.startedAt ? new Date(stash.startedAt) : finishedAt;
+
+  const attempt = await prisma.attempt.create({
+    data: {
+      userId: authSession.userId,
+      testPackageId: stash.testPackageId,
+      sectionScope: stash.sectionScope,
+      status: "COMPLETED",
+      startedAt,
+      finishedAt,
+      answers: {
+        createMany: {
+          data: Array.from(answerKey, ([questionId, correctAnswer]) => {
+            const answer = submitted.get(questionId);
+            return {
+              questionId,
+              selectedAnswer: answer?.selectedAnswer ?? null,
+              isCorrect:
+                answer?.selectedAnswer != null && answer.selectedAnswer === correctAnswer,
+              flagged: answer?.flagged ?? false,
+            };
+          }),
+        },
+      },
+    },
+    select: { id: true },
+  });
+
+  // Cookie exam guest ikut dibuang: lembar jawabannya sudah punya rumah tetap.
+  const cookieStore = await cookies();
+  cookieStore.delete(GUEST_EXAM_COOKIE);
+
+  updateTag(CACHE_TAGS.dashboardSummary(authSession.userId));
+  updateTag(CACHE_TAGS.analytics(authSession.userId));
+  updateTag(CACHE_TAGS.profileOverview(authSession.userId));
+
+  return { ok: true as const, attemptId: attempt.id };
 }
 
 // Not cached: includes per-user QuestionComment which must reflect new

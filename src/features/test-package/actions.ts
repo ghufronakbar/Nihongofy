@@ -226,6 +226,7 @@ export async function createAttemptAction(input: CreateAttemptInput) {
       JSON.stringify({
         testPackageId,
         sectionScope: sectionScope ?? null,
+        startedAt: new Date().toISOString(),
       }),
       { httpOnly: true, secure: true, sameSite: "lax", path: "/" }
     );

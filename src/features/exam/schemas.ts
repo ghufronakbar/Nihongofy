@@ -16,6 +16,9 @@ export const SubmitExamSessionSchema = z.object({
 export const GuestExamCookieSchema = z.object({
   testPackageId: z.number().int().positive(),
   sectionScope: z.nativeEnum(JlptSection).nullable(),
+  // Ditambahkan belakangan agar attempt hasil impor punya durasi nyata; cookie
+  // yang dibuat sebelum ini tidak memilikinya, jadi tetap optional.
+  startedAt: z.iso.datetime().optional(),
 });
 
 export type ExamAnswerInput = z.infer<typeof ExamAnswerSchema>;
