@@ -65,6 +65,31 @@ export const UpdateQuestionSchema = z
     }
   });
 
+// Wacana bersama satu paket. Dipakai beberapa soal sekaligus, jadi
+// perubahannya terasa di semua soal yang merujuknya.
+export const UpdateQuestionContextSchema = z
+  .object({
+    id: z.number().int().positive(),
+    storyText: z.string().max(20000).nullable(),
+    storyImage: z.string().trim().max(1000).nullable(),
+    storyAudio: z.string().trim().max(1000).nullable(),
+  })
+  .superRefine((value, context) => {
+    // Aturan yang sama dengan kontrak fixture: context tanpa teks, gambar, dan
+    // audio tidak memuat apa pun untuk dirender.
+    const hasContent = [value.storyText, value.storyImage, value.storyAudio].some(
+      (field) => typeof field === "string" && field.trim().length > 0,
+    );
+    if (!hasContent) {
+      context.addIssue({
+        code: "custom",
+        path: ["storyText"],
+        message: "Context wajib punya minimal salah satu dari teks, gambar, atau audio.",
+      });
+    }
+  });
+
+export type UpdateQuestionContextInput = z.infer<typeof UpdateQuestionContextSchema>;
 export type ImportTestPackageInput = z.infer<typeof ImportTestPackageSchema>;
 export type DeleteTestPackageInput = z.infer<typeof DeleteTestPackageSchema>;
 export type UpdateQuestionInput = z.infer<typeof UpdateQuestionSchema>;

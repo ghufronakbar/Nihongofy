@@ -559,7 +559,14 @@ tahap lain, dan tahap 2–3 menutup gap konten yang paling menyakitkan bila scop
 - [ ] Upload/ganti media soal ke Cloudinary. Saat ini editor hanya menerima URL yang ditempel;
   belum ada uploader (per 25 September 2026: 227 context audio, 144 question image, 0
   `questionAudio`)
-- [ ] Editor `QuestionContext` — wacana bersama baru dapat dilihat di editor soal, belum diubah
+- [x] `/admin/context/[id]` — editor wacana bersama: teks, URL gambar, dan URL audio, dengan
+  pratinjau media dan daftar soal yang memakainya. Memperingatkan bahwa perubahan terasa di
+  semua soal itu sekaligus, dan menolak context yang tidak punya teks, gambar, maupun audio —
+  aturan yang sama dengan kontrak fixture
+- [x] Halaman paket menampilkan daftar wacana bersama (sebelumnya diambil query tetapi tidak
+  pernah dirender) dan kolom pembahasan menjadi tautan, termasuk saat pembahasannya belum ada
+- [x] Mengubah kunci jawaban ikut menurunkan ulang `QuestionExplanationChoice.isCorrect`.
+  Sebelumnya tidak, sehingga pembahasan akan menyorot pilihan yang salah sebagai jawaban benar
 - [x] Hapus paket — konfirmasi dengan mengetik ulang nama paket, dan ditolak bila paket sudah
   punya attempt (aturan yang sama dengan `npm run test-package:delete`)
 - [x] Setiap mutasi memanggil `testPackageList`, `practiceCatalog`, `testPackageDetail(id)`, dan

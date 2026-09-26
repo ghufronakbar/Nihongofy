@@ -15,9 +15,11 @@ import {
   ImportTestPackageSchema,
   DeleteTestPackageSchema,
   UpdateQuestionSchema,
+  UpdateQuestionContextSchema,
   type ImportTestPackageInput,
   type DeleteTestPackageInput,
   type UpdateQuestionInput,
+  type UpdateQuestionContextInput,
 } from "./schemas";
 
 export type ImportResult =
@@ -176,8 +178,10 @@ export async function updateQuestionAction(
     where: { id: data.id },
     select: {
       id: true,
+      questionAnswer: true,
       testPackageItem: { select: { id: true, testPackageId: true } },
       questionChoices: { select: { id: true } },
+      explanation: { select: { id: true } },
     },
   });
   if (!current) notFound();
@@ -215,15 +219,80 @@ export async function updateQuestionAction(
       data: { instruction: data.instruction },
     });
 
+    // `QuestionExplanationChoice.isCorrect` adalah denormalisasi dari kunci
+    // jawaban soal. Mengubah kuncinya tanpa ikut memperbaruinya membuat
+    // pembahasan menyorot pilihan yang salah sebagai jawaban benar.
+    if (current.explanation && data.questionAnswer !== current.questionAnswer) {
+      await tx.questionExplanationChoice.updateMany({
+        where: { explanationId: current.explanation.id },
+        data: { isCorrect: false },
+      });
+      await tx.questionExplanationChoice.updateMany({
+        where: { explanationId: current.explanation.id, codeAnswer: data.questionAnswer },
+        data: { isCorrect: true },
+      });
+    }
+
     await recordAdminActionTx(tx, {
       actor,
       action: "question.update",
       targetType: "question",
       targetId: data.id,
-      summary: `Menyunting soal (kunci jawaban ${data.questionAnswer}) pada paket id ${current.testPackageItem.testPackageId}.`,
+      summary:
+        `Menyunting soal pada paket id ${current.testPackageItem.testPackageId}` +
+        (data.questionAnswer !== current.questionAnswer
+          ? `; kunci jawaban ${current.questionAnswer} -> ${data.questionAnswer}.`
+          : ` (kunci jawaban tetap ${data.questionAnswer}).`),
     });
   });
 
   revalidateTestPackage(current.testPackageItem.testPackageId);
+  return { ok: true };
+}
+
+export type UpdateContextResult = { ok: true } | { ok: false; message: string };
+
+/**
+ * Menyunting wacana bersama. Berbeda dengan editor soal, perubahan di sini
+ * terasa di SEMUA soal yang merujuk context ini sekaligus — jumlahnya
+ * ditampilkan di layar supaya itu tidak mengejutkan.
+ */
+export async function updateQuestionContextAction(
+  input: UpdateQuestionContextInput,
+): Promise<UpdateContextResult> {
+  const actor = await requireAdmin();
+
+  const validated = UpdateQuestionContextSchema.safeParse(input);
+  if (!validated.success) {
+    return { ok: false, message: validated.error.issues[0]?.message ?? "Data tidak valid." };
+  }
+
+  const data = validated.data;
+  const current = await prisma.questionContext.findUnique({
+    where: { id: data.id },
+    select: { testPackageId: true, _count: { select: { questions: true } } },
+  });
+  if (!current) notFound();
+
+  await prisma.$transaction(async (tx) => {
+    await tx.questionContext.update({
+      where: { id: data.id },
+      data: {
+        storyText: data.storyText,
+        storyImage: data.storyImage,
+        storyAudio: data.storyAudio,
+      },
+    });
+
+    await recordAdminActionTx(tx, {
+      actor,
+      action: "question-context.update",
+      targetType: "question-context",
+      targetId: data.id,
+      summary: `Menyunting wacana bersama yang dipakai ${current._count.questions} soal pada paket id ${current.testPackageId}.`,
+    });
+  });
+
+  revalidateTestPackage(current.testPackageId);
   return { ok: true };
 }
