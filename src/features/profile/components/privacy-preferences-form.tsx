@@ -12,8 +12,12 @@ import {
 
 export function PrivacyPreferencesForm({
   preferences,
+  showAudioStorage,
+  showConversationStorage,
 }: {
   preferences: PrivacyPreferencesInput;
+  showAudioStorage: boolean;
+  showConversationStorage: boolean;
 }) {
   const [isPending, startTransition] = useTransition();
   const [notice, setNotice] = useState<{ ok: boolean; message: string } | null>(null);
@@ -32,36 +36,42 @@ export function PrivacyPreferencesForm({
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="grid gap-5">
       <fieldset disabled={isPending} className="contents">
-        <label className="flex cursor-pointer items-start gap-4 border-[3px] border-black bg-white p-4 shadow-neo-sm">
-          <input
-            type="checkbox"
-            className="mt-1 size-5 shrink-0 accent-black"
-            {...register("allowAudioStorage")}
-          />
-          <span>
-            <span className="block font-black">Izinkan penyimpanan audio</span>
-            <span className="mt-1 block text-sm font-semibold text-foreground/65">
-              Audio dari fitur speaking hanya boleh disimpan jika pilihan ini aktif.
+        {showAudioStorage ? (
+          <label className="flex cursor-pointer items-start gap-4 border-[3px] border-black bg-white p-4 shadow-neo-sm">
+            <input
+              type="checkbox"
+              className="mt-1 size-5 shrink-0 accent-black"
+              {...register("allowAudioStorage")}
+            />
+            <span>
+              <span className="block font-black">Izinkan penyimpanan audio</span>
+              <span className="mt-1 block text-sm font-semibold text-foreground/65">
+                Audio dari fitur speaking hanya boleh disimpan jika pilihan ini aktif.
+              </span>
             </span>
-          </span>
-        </label>
+          </label>
+        ) : null}
 
-        <label className="flex cursor-pointer items-start gap-4 border-[3px] border-black bg-white p-4 shadow-neo-sm">
-          <input
-            type="checkbox"
-            className="mt-1 size-5 shrink-0 accent-black"
-            {...register("allowConversationStorage")}
-          />
-          <span>
-            <span className="block font-black">Izinkan penyimpanan conversation</span>
-            <span className="mt-1 block text-sm font-semibold text-foreground/65">
-              Percakapan AI hanya boleh dipersistenkan jika pilihan ini aktif.
+        {showConversationStorage ? (
+          <label className="flex cursor-pointer items-start gap-4 border-[3px] border-black bg-white p-4 shadow-neo-sm">
+            <input
+              type="checkbox"
+              className="mt-1 size-5 shrink-0 accent-black"
+              {...register("allowConversationStorage")}
+            />
+            <span>
+              <span className="block font-black">Izinkan penyimpanan conversation</span>
+              <span className="mt-1 block text-sm font-semibold text-foreground/65">
+                Percakapan AI hanya boleh dipersistenkan jika pilihan ini aktif.
+              </span>
             </span>
-          </span>
-        </label>
+          </label>
+        ) : null}
 
         <p className="text-sm font-semibold text-foreground/65">
-          Keduanya default nonaktif dan menjadi guard sebelum modul Conversation atau Speaking dibuka.
+          {showAudioStorage && showConversationStorage
+            ? "Keduanya default nonaktif dan menjadi guard sebelum modul Conversation atau Speaking dibuka."
+            : "Default nonaktif dan menjadi guard sebelum modul AI terkait dibuka."}
         </p>
 
         {notice ? (

@@ -40,6 +40,8 @@ Profile tidak punya flag sendiri. Section "Aktivitas belajar" dan "Lanjut belaja
 - Daftar perangkat aktif, revoke satu perangkat, dan logout seluruh perangkat lain.
 - Edit/reset preferensi scheduler flashcard melalui route mandiri di luar profile.
 - Privacy opt-in terpisah untuk penyimpanan audio dan conversation; default keduanya nonaktif.
+  Toggle audio hanya tampil bila `FEATURES_SPEAKING` aktif, toggle conversation bila
+  `FEATURES_CONVERSATION` aktif, dan seluruh box "Izin penyimpanan AI" hilang bila keduanya mati.
 - Export JSON untuk data akun dan aktivitas user tanpa password, token, session, atau rate-limit.
 - Penghapusan akun dengan re-authentication, logout semua perangkat, grace period 7 hari, login
   recovery, pembatalan, dan hard-delete batch melalui cron.

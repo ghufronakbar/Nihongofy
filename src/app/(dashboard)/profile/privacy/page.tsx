@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Database, Download, LockKeyhole } from "lucide-react";
+import { FEATURES } from "@/constants";
 import { getPrivacySettingsAction } from "@/features/profile/privacy-actions";
 import { AccountLifecycle } from "@/features/profile/components/account-lifecycle";
 import { PrivacyPreferencesForm } from "@/features/profile/components/privacy-preferences-form";
@@ -33,6 +34,7 @@ export default async function ProfilePrivacyPage({
   }>;
 }) {
   const { google, googleReauth } = await searchParams;
+  const showAiStorage = FEATURES.conversation || FEATURES.speaking;
   const settings = await getPrivacySettingsAction();
   const scheduledForLabel = settings.deletionScheduledFor
     ? formatInTimeZone(settings.deletionScheduledFor, settings.timeZone, {
@@ -47,29 +49,35 @@ export default async function ProfilePrivacyPage({
         <p className="font-mono text-xs font-black tracking-widest uppercase">PROFILE / PRIVACY</p>
         <h1 className="mt-2 text-4xl sm:text-6xl">Privasi & data</h1>
         <p className="mt-3 max-w-2xl text-lg text-muted-foreground">
-          Tentukan data AI yang boleh disimpan, ambil salinan data akun, atau kelola penghapusan akun.
+          {showAiStorage
+            ? "Tentukan data AI yang boleh disimpan, ambil salinan data akun, atau kelola penghapusan akun."
+            : "Ambil salinan data akun atau kelola penghapusan akun."}
         </p>
       </header>
 
-      <section className="neo-surface overflow-hidden bg-white" aria-labelledby="privacy-heading">
-        <div className="flex items-center gap-4 border-b-[3px] border-black bg-neo-blue p-5 sm:p-6">
-          <span className="grid size-12 place-items-center border-[3px] border-black bg-white shadow-neo-sm">
-            <LockKeyhole className="size-6" aria-hidden="true" />
-          </span>
-          <div>
-            <h2 id="privacy-heading" className="text-2xl">Izin penyimpanan AI</h2>
-            <p className="text-sm font-semibold text-black/65">Default-deny sebelum modul AI digunakan.</p>
+      {showAiStorage ? (
+        <section className="neo-surface overflow-hidden bg-white" aria-labelledby="privacy-heading">
+          <div className="flex items-center gap-4 border-b-[3px] border-black bg-neo-blue p-5 sm:p-6">
+            <span className="grid size-12 place-items-center border-[3px] border-black bg-white shadow-neo-sm">
+              <LockKeyhole className="size-6" aria-hidden="true" />
+            </span>
+            <div>
+              <h2 id="privacy-heading" className="text-2xl">Izin penyimpanan AI</h2>
+              <p className="text-sm font-semibold text-black/65">Default-deny sebelum modul AI digunakan.</p>
+            </div>
           </div>
-        </div>
-        <div className="p-5 sm:p-8">
-          <PrivacyPreferencesForm
-            preferences={{
-              allowAudioStorage: settings.allowAudioStorage,
-              allowConversationStorage: settings.allowConversationStorage,
-            }}
-          />
-        </div>
-      </section>
+          <div className="p-5 sm:p-8">
+            <PrivacyPreferencesForm
+              preferences={{
+                allowAudioStorage: settings.allowAudioStorage,
+                allowConversationStorage: settings.allowConversationStorage,
+              }}
+              showAudioStorage={FEATURES.speaking}
+              showConversationStorage={FEATURES.conversation}
+            />
+          </div>
+        </section>
+      ) : null}
 
       <section className="neo-surface bg-white p-5 sm:p-8" aria-labelledby="export-heading">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
