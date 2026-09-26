@@ -39,20 +39,20 @@ export const metadata: Metadata = pageMetadata({
 const LEARNING_FLOW = [
   {
     icon: Target,
-    title: "Pilih target",
-    description: "Mulai dari level dan paket soal yang sesuai dengan fokus belajarmu.",
+    title: "Pilih targetmu",
+    description: "Tentukan level dan paket soal yang paling dekat dengan tujuanmu sekarang.",
     color: "bg-white",
   },
   {
     icon: Clock3,
-    title: "Kerjakan fokus",
-    description: "Jalankan mock test penuh atau latihan per seksi tanpa bocoran jawaban.",
+    title: "Kerjakan tanpa distraksi",
+    description: "Satu sesi penuh atau satu seksi saja. Jawaban tidak bocor sampai kamu selesai.",
     color: "bg-neo-yellow",
   },
   {
     icon: Check,
-    title: "Bedah hasil",
-    description: "Tinjau jawaban, simpan catatan, lalu ulangi pola yang masih lemah.",
+    title: "Bedah hasilnya",
+    description: "Lihat kenapa sebuah jawaban salah, catat pelajarannya, lalu ulangi sampai lancar.",
     color: "bg-neo-green",
   },
 ];
@@ -125,7 +125,7 @@ export default async function HomePage() {
         <PageContainer className="grid min-h-[calc(100dvh-76px)] items-center gap-12 py-12 md:py-16 lg:grid-cols-[1.08fr_0.92fr] lg:py-18">
           <div className="relative z-10 max-w-3xl">
             <div className="neo-kicker page-reveal -rotate-1">
-              {FEATURES.testPackage ? "Mock JLPT + review terarah" : "Belajar bahasa Jepang terarah"}
+              {FEATURES.testPackage ? "Mock JLPT + review yang jelas" : "Belajar Jepang tanpa bingung"}
             </div>
             <h1 className="page-reveal page-reveal-delay-1 mt-7 text-[clamp(3.2rem,7.5vw,7rem)] leading-[0.88] font-black tracking-[-0.075em] text-neo-ink">
               LATIHAN JLPT.
@@ -135,8 +135,8 @@ export default async function HomePage() {
             </h1>
             <p className="page-reveal page-reveal-delay-2 mt-7 max-w-[55ch] text-lg leading-8 font-semibold text-foreground/75 md:text-xl">
               {FEATURES.testPackage
-                ? "Kerjakan mock test, bedah kesalahan, lalu ulangi bagian yang paling lemah."
-                : "Latih materi, bedah kesalahan, lalu ulangi bagian yang paling lemah."}
+                ? "Kerjakan mock test-nya, cari tahu di mana kamu jatuh, lalu latih bagian itu sampai tidak jatuh lagi."
+                : "Latih materinya, cari tahu di mana kamu masih goyah, lalu ulangi sampai benar-benar mantap."}
             </p>
             <div className="page-reveal page-reveal-delay-2 mt-8 flex flex-col gap-4 sm:flex-row">
               <Link
@@ -192,7 +192,7 @@ export default async function HomePage() {
             </div>
             <div className="neo-surface absolute -bottom-1 left-5 flex items-center gap-2 bg-neo-green px-4 py-2 font-bold sm:left-auto sm:-right-6">
               <Sparkles className="size-4" aria-hidden="true" />
-              Hasil yang bisa ditindaklanjuti
+              Tahu apa yang perlu dilatih
             </div>
           </div>
         </PageContainer>
@@ -206,13 +206,14 @@ export default async function HomePage() {
                 BUKAN SEKADAR MENGERJAKAN SOAL.
               </h2>
               <p className="mt-6 max-w-[55ch] text-lg leading-8 text-foreground/70">
-                Setiap attempt menjadi bahan evaluasi yang bisa kamu buka dan catat kembali.
+                Setiap kali kamu mengerjakan, hasilnya jadi bahan belajar: bisa dibuka lagi, dicatat, dan
+                dilatih ulang kapan pun.
               </p>
               <div className="neo-surface mt-9 -rotate-2 overflow-hidden bg-neo-blue p-7 text-center">
                 <p lang="ja" className="font-japanese text-8xl leading-none font-black text-white/45 sm:text-9xl">
                   学
                 </p>
-                <p className="-mt-5 text-xl font-black">Belajar berarti melihat pola, bukan menebak.</p>
+                <p className="-mt-5 text-xl font-black">Kemajuan datang dari melihat pola, bukan dari menebak.</p>
               </div>
             </div>
 
@@ -241,8 +242,8 @@ export default async function HomePage() {
           <PageContainer>
             <SectionIntro title={learningModulesTitle(learningModules.length)}>
               <p>
-                {capitalize(joinIndonesian(learningModules))} sudah aktif dengan progres yang tersimpan di
-                akunmu.
+                {capitalize(joinIndonesian(learningModules))} sudah bisa kamu pakai sekarang, dan setiap
+                progresmu tersimpan rapi di akunmu.
               </p>
             </SectionIntro>
 
@@ -255,7 +256,8 @@ export default async function HomePage() {
                   </div>
                   <h3 className="mt-8 text-3xl">Kana interaktif</h3>
                   <p className="mt-3 max-w-[38ch] leading-7 text-neo-ink/75">
-                    Hiragana dan katakana dengan flip card, romaji, variasi bunyi, dan fallback audio.
+                    Balik kartunya, baca romaji-nya, dengar bunyinya. Hiragana dan katakana melekat tanpa
+                    terasa menghafal.
                   </p>
                   <div className="mt-8 grid grid-cols-3 gap-3" aria-label="Contoh kartu kana">
                     {["あ", "か", "さ", "た", "な", "は"].map((kana, index) => (
@@ -285,7 +287,8 @@ export default async function HomePage() {
                     <div>
                       <h3 className="text-3xl">Paket kosakata</h3>
                       <p className="mt-3 max-w-[38ch] leading-7 text-neo-ink/75">
-                        Deck per level dengan reading, arti, contoh penggunaan, dan antrean review.
+                        Cara baca, arti, dan contoh kalimat dalam satu deck. Antrean review-nya kami yang
+                        atur untukmu.
                       </p>
                     </div>
                     <div className="neo-surface rotate-2 bg-white p-5 text-center">
@@ -314,7 +317,8 @@ export default async function HomePage() {
                     <div>
                       <h3 className="text-3xl">Latihan cepat</h3>
                       <p className="mt-3 max-w-[38ch] leading-7 text-neo-ink/75">
-                        Satu soal per langkah dengan feedback langsung, terpisah dari skor mock resmi.
+                        Satu soal, jawab, langsung tahu benar atau salah. Santai, ini tidak memengaruhi
+                        skor mock-mu.
                       </p>
                     </div>
                     <div className="border-[3px] border-neo-ink bg-white p-5 shadow-neo-sm">
@@ -341,7 +345,8 @@ export default async function HomePage() {
                   </div>
                   <h3 className="mt-8 text-3xl">Mock JLPT lengkap</h3>
                   <p className="mt-3 leading-7 text-neo-ink/75">
-                    Paket soal per sesi atau per seksi, history attempt, review, catatan, dan analitik.
+                    Kerjakan satu sesi penuh atau per seksi saja. History, review, catatan, dan grafik
+                    progresmu tersimpan semua.
                   </p>
                   <Link href="/test-package" className="neo-button mt-8 bg-white px-6 py-3 sm:self-start">
                     Buka paket ujian
@@ -364,13 +369,13 @@ export default async function HomePage() {
                 LATIH PERCAKAPAN TANPA TAKUT SALAH.
               </h2>
               <p className="mt-5 max-w-[55ch] text-lg leading-8 font-semibold text-neo-ink/75">
-                Pilih partner bicara, level JLPT, dan topik. Balasan tampil dengan furigana, romaji, dan
-                terjemahan yang bisa dimatikan satu per satu.
+                Pilih partner bicara, level, dan topiknya. Balasannya datang lengkap dengan furigana,
+                romaji, dan terjemahan, yang bisa kamu matikan satu per satu begitu merasa sudah bisa.
               </p>
               <div className="mt-7 border-[3px] border-neo-ink bg-white px-4 py-3 font-bold shadow-neo-sm sm:w-fit">
                 {CONVERSATION_PROVIDER === "mock"
-                  ? "Versi awal: balasan berasal dari skrip tetap, belum dari AI."
-                  : "Simulasi percakapan belum memakai provider AI production."}
+                  ? "Masih versi awal: balasannya dari skrip tetap, belum dari AI."
+                  : "Masih versi awal: percakapan belum memakai provider AI production."}
               </div>
               <Link href="/conversation" className="neo-button mt-8 bg-white px-6 py-3 sm:w-fit">
                 Coba percakapan
@@ -402,7 +407,7 @@ export default async function HomePage() {
               </div>
               <div className="neo-surface absolute right-0 bottom-0 flex items-center gap-2 bg-neo-yellow px-4 py-3 font-bold sm:right-3">
                 <AudioLines className="size-5" aria-hidden="true" />
-                TTS dengan fallback
+                Ada suaranya, bukan cuma teks
               </div>
             </div>
           </PageContainer>
@@ -417,7 +422,7 @@ export default async function HomePage() {
                 <div className="flex items-center justify-between gap-4 border-b-[3px] border-neo-ink pb-5">
                   <div>
                     <p className="font-black">Latihan pengucapan</p>
-                    <p className="text-sm font-semibold text-foreground/60">Mode capability-aware</p>
+                    <p className="text-sm font-semibold text-foreground/60">Menyesuaikan perangkatmu</p>
                   </div>
                   <Mic2 className="size-9" strokeWidth={2.5} aria-hidden="true" />
                 </div>
@@ -436,7 +441,7 @@ export default async function HomePage() {
                   </div>
                 </div>
                 <div className="border-[3px] border-neo-ink bg-neo-yellow p-3 text-sm font-bold">
-                  Jika speech recognition tidak tersedia, input teks menjadi fallback.
+                  Mikrofon belum didukung browser-mu? Jawabanmu tetap bisa diketik seperti biasa.
                 </div>
               </div>
             </div>
@@ -448,11 +453,12 @@ export default async function HomePage() {
                 SUARA, TRANSKRIP, DAN FEEDBACK YANG JUJUR.
               </h2>
               <p className="mt-5 max-w-[55ch] text-lg leading-8 font-semibold text-neo-ink/75">
-                Ucapkan jawabanmu, periksa transkripnya, lalu kirim. Suara diproses di perangkatmu dan
-                tidak diunggah ke mana pun.
+                Ucapkan jawabanmu, cek transkripnya, lalu kirim. Suaramu diproses di perangkatmu sendiri
+                dan tidak diunggah ke mana pun.
               </p>
               <div className="mt-7 border-[3px] border-neo-ink bg-white px-4 py-3 font-bold shadow-neo-sm sm:w-fit">
-                Butuh browser berbasis Chromium; selain itu tersedia input ketik penuh.
+                Paling mulus di browser berbasis Chromium. Di browser lain, kamu tetap bisa menjawab penuh
+                lewat ketikan.
               </div>
               <Link href="/speaking" className="neo-button mt-8 bg-white px-6 py-3 sm:w-fit">
                 Coba latihan bicara
@@ -467,12 +473,12 @@ export default async function HomePage() {
         <section className="neo-grid-paper border-b-[3px] border-neo-ink py-18 md:py-24">
           <PageContainer>
             <SectionIntro
-              title={articleIndex.featured ? "BACA SATU HAL. COBA HARI INI." : "ARTIKEL AKAN HADIR SAAT KONTENNYA SIAP."}
+              title={articleIndex.featured ? "BACA SATU HAL. COBA HARI INI." : "ARTIKEL PERTAMA MASIH DIGARAP."}
             >
               <p>
                 {articleIndex.featured
-                  ? "Panduan singkat menghubungkan konsep bahasa Jepang dengan latihan yang tersedia di akunmu."
-                  : "Area artikel tetap empty-safe agar home berguna tanpa mengarang penulis atau konten."}
+                  ? "Panduan singkat yang menghubungkan satu konsep bahasa Jepang dengan latihan yang sudah ada di akunmu."
+                  : "Kami memilih menunggu tulisan yang benar-benar layak dibaca daripada mengisinya asal ada."}
               </p>
             </SectionIntro>
 
@@ -486,13 +492,13 @@ export default async function HomePage() {
                   <NotebookTabs className="size-8" strokeWidth={2.5} aria-hidden="true" />
                 </div>
                 <div>
-                  <h3 className="text-2xl">Belum ada artikel yang diterbitkan</h3>
+                  <h3 className="text-2xl">Belum ada artikel yang terbit</h3>
                   <p className="mt-2 max-w-[60ch] leading-7 text-foreground/70">
-                    Mock test dan alat belajar lain tetap dapat dipakai sambil menunggu konten pertama.
+                    Sambil menunggu, mock test dan alat belajar lainnya sudah bisa kamu pakai sekarang.
                   </p>
                 </div>
                 <span className="border-[3px] border-neo-ink bg-background px-4 py-3 text-center font-mono text-sm font-bold shadow-neo-sm">
-                  EMPTY STATE SIAP
+                  SEGERA HADIR
                 </span>
               </div>
             )}
@@ -510,17 +516,17 @@ export default async function HomePage() {
                   ? "LANJUTKAN DARI HASIL TERAKHIRMU."
                   : "LANJUTKAN BELAJARMU."
                 : FEATURES.testPackage
-                  ? "MULAI DENGAN SATU ATTEMPT."
+                  ? "MULAI DARI SATU MOCK TEST."
                   : "MULAI BELAJAR HARI INI."}
             </h2>
             <p className="mt-4 max-w-[52ch] text-lg font-semibold">
               {isAuthenticated
                 ? FEATURES.testPackage
-                  ? "Buka dashboard atau pilih paket JLPT berikutnya tanpa kehilangan history belajarmu."
-                  : "Buka dashboard dan lanjutkan dari progres terakhirmu."
+                  ? "Lanjut dari dashboard atau ambil paket JLPT berikutnya. History belajarmu tetap utuh."
+                  : "Lanjut dari dashboard, tepat di titik terakhir kamu berhenti."
                 : FEATURES.testPackage
-                  ? "Buat akun untuk menyimpan history, review jawaban, catatan, dan progres milikmu sendiri."
-                  : "Buat akun untuk menyimpan progres belajarmu sendiri."}
+                  ? "Buat akun dulu supaya history, review jawaban, catatan, dan progresmu tidak hilang begitu saja."
+                  : "Buat akun dulu supaya progres belajarmu tersimpan dan tidak hilang begitu saja."}
             </p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
