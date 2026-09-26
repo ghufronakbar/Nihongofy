@@ -5,8 +5,15 @@ import { prisma } from "@/lib/prisma";
 import { DeckOptionsForm } from "@/features/flashcard/components/deck-options-form";
 import { ensureCollection, ensureDefaultPreset } from "@/features/flashcard/lib/collection";
 import { parsePresetConfig } from "@/features/flashcard/schemas";
+import type { Metadata } from "next";
+import { privateMetadata } from "@/lib/seo";
 
 type Props = { params: Promise<{ deckId: string }> };
+
+export const metadata: Metadata = privateMetadata(
+  "Pengaturan deck",
+  "Atur batas kartu baru, urutan, dan parameter penjadwalan deck.",
+);
 
 export default async function DeckOptionsPage({ params }: Props) {
   const session = await getSession();

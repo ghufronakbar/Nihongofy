@@ -10,13 +10,18 @@ import {
 import { getTestPackages } from "@/features/test-package/actions";
 import { JLPT_LEVEL_ORDER } from "@/constants/jlpt";
 import type { JlptLevel } from "@prisma/client";
+import { JsonLd } from "@/components/seo/json-ld";
+import { breadcrumbJsonLd } from "@/lib/json-ld";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Katalog Mock Test JLPT (N1 - N5)",
   description:
     "Pilih paket simulasi ujian JLPT N1 sampai N5 lengkap dengan mode ujian resmi, mode latihan per seksi, dan mode baca pembahasan.",
-  alternates: { canonical: "/test-package" },
-};
+  path: "/test-package",
+  ogDescription:
+    "Paket simulasi ujian JLPT N1 - N5 dengan durasi resmi, latihan per seksi, dan pembahasan tiap soal.",
+});
 
 const LEVEL_CONFIG: Record<
   JlptLevel,
@@ -70,6 +75,13 @@ export default async function TestPackageListPage() {
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-10">
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Beranda", path: "/" },
+          { name: "Mock Test JLPT", path: "/test-package" },
+        ])}
+      />
+
       {/* Hero Banner */}
       <section className="neo-surface neo-grid-paper relative overflow-hidden bg-neo-blue p-6 sm:p-8 md:p-10 border-[3px] border-neo-ink shadow-neo-lg text-black">
         <div

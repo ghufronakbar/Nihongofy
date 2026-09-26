@@ -21,6 +21,13 @@ import { FuriganaScope } from "@/components/furigana-scope";
 import { ImageWithLightbox } from "@/components/image-with-lightbox";
 import { mondaiTypeFullLabel } from "@/constants/jlpt";
 import { cn } from "@/lib/utils";
+import type { Metadata } from "next";
+import { privateMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = privateMetadata(
+  "Rincian jawaban",
+  "Rincian jawaban per soal beserta pembahasannya.",
+);
 
 export default async function ResultDetailPage({
   params,

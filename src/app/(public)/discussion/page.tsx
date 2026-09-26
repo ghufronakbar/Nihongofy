@@ -6,6 +6,13 @@ import { getDiscussionIndex } from "@/features/question-comment/queries";
 import { JapaneseText } from "@/components/japanese-text";
 import { FuriganaScope } from "@/components/furigana-scope";
 import { mondaiTypeFullLabel } from "@/constants/jlpt";
+import type { Metadata } from "next";
+import { privateMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = privateMetadata(
+  "Diskusi Soal",
+  "Diskusi publik seputar soal-soal JLPT.",
+);
 
 export default async function DiscussionIndexPage({
   searchParams,

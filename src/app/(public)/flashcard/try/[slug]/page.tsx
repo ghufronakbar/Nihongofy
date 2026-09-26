@@ -15,6 +15,7 @@ import {
   FLASHCARD_DEFAULT_PRESET_CONFIG,
   type FlashcardRatingInput,
 } from "@/features/flashcard/schemas";
+import { pageMetadata, privateMetadata } from "@/lib/seo";
 
 /**
  * Mode coba: siapa pun boleh mencicipi deck bawaan tanpa akun.
@@ -35,12 +36,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     where: { slug, isPublished: true },
     select: { name: true, description: true },
   });
-  if (!deck) return { title: "Coba deck" };
+  if (!deck) {
+    return privateMetadata("Deck tidak ditemukan", "Deck yang kamu cari sudah tidak tersedia.");
+  }
 
-  return {
-    title: `Coba ${deck.name}`,
+  return pageMetadata({
+    title: `Coba deck ${deck.name}`,
     description: deck.description,
-  };
+    path: `/flashcard/try/${slug}`,
+    ogTitle: `Coba deck flashcard ${deck.name} | Nihongofy`,
+  });
 }
 
 export default async function TryDeckPage({ params }: Props) {

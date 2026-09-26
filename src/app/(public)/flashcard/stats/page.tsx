@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { privateMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
@@ -14,7 +15,10 @@ import {
   type DailyBucket,
 } from "@/features/flashcard/lib/stats";
 
-export const metadata: Metadata = { title: "Statistik flashcard" };
+export const metadata: Metadata = privateMetadata(
+  "Statistik flashcard",
+  "Ringkasan beban review dan riwayat belajar flashcard-mu.",
+);
 
 const FORECAST_DAYS = 30;
 const HISTORY_DAYS = 30;

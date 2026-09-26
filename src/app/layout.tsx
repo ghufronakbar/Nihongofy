@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SITE_URL } from "@/constants";
+import { JsonLd } from "@/components/seo/json-ld";
+import { organizationJsonLd, websiteJsonLd } from "@/lib/json-ld";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -53,9 +55,10 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  alternates: {
-    canonical: "/",
-  },
+  // JANGAN tambahkan `alternates.canonical` di sini. Field metadata diwarisi
+  // oleh segmen di bawahnya, jadi canonical root akan menempel di setiap
+  // halaman yang tidak menyetelnya sendiri dan menyatakan halaman itu duplikat
+  // dari homepage. Canonical selalu per halaman, lewat `pageMetadata()`.
   openGraph: {
     title: "Nihongofy - Belajar Bahasa Jepang & Simulasi JLPT",
     description:
@@ -92,7 +95,10 @@ export default function RootLayout({
       data-scroll-behavior="smooth"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">
+        <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
+        {children}
+      </body>
     </html>
   );
 }

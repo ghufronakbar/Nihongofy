@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import { requireAdmin } from "@/lib/auth";
 import { getAdminOverview } from "@/features/admin/queries";
+import type { Metadata } from "next";
+import { privateMetadata } from "@/lib/seo";
 
 function percent(part: number, total: number) {
   if (total === 0) return "0%";
@@ -48,6 +50,11 @@ function StatCard({
     </div>
   );
 }
+
+export const metadata: Metadata = privateMetadata(
+  "Dashboard admin",
+  "Ringkasan operasional dan pintasan pengelolaan konten.",
+);
 
 export default async function AdminOverviewPage() {
   // Layout sudah memanggil requireAdmin(), tetapi page bisa saja dirender di

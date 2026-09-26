@@ -9,6 +9,13 @@ import {
 import { DiscussionPermalinkThread } from "@/features/question-comment/components/discussion-permalink-thread";
 import { DiscussionQuestionCard } from "@/features/question-comment/components/discussion-question-card";
 import { mondaiTypeFullLabel } from "@/constants/jlpt";
+import type { Metadata } from "next";
+import { privateMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = privateMetadata(
+  "Utas diskusi",
+  "Utas diskusi pada satu soal JLPT.",
+);
 
 export default async function DiscussionPermalinkPage({
   params,

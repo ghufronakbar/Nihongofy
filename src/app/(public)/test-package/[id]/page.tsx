@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -13,10 +14,14 @@ import {
   Trophy,
 } from "lucide-react";
 import { getTestPackageDetail } from "@/features/test-package/actions";
+import { getTestPackageMetadata } from "@/features/test-package/queries";
 import { StartAttemptActions } from "@/features/test-package/components/start-attempt-actions";
 import { JLPT_SESSION_TIMING, JLPT_SECTION_LABELS } from "@/constants/jlpt";
 import type { JlptLevel } from "@prisma/client";
 import { formatInTimeZone } from "@/lib/time-zone";
+import { JsonLd } from "@/components/seo/json-ld";
+import { breadcrumbJsonLd, testPackageJsonLd } from "@/lib/json-ld";
+import { pageMetadata, privateMetadata } from "@/lib/seo";
 
 const LEVEL_BADGE_STYLES: Record<JlptLevel, string> = {
   N5: "bg-neo-green text-black",
@@ -25,6 +30,34 @@ const LEVEL_BADGE_STYLES: Record<JlptLevel, string> = {
   N2: "bg-neo-coral text-white",
   N1: "bg-purple-400 text-white",
 };
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const testPackageId = Number(id);
+  const testPackage = Number.isInteger(testPackageId)
+    ? await getTestPackageMetadata(testPackageId)
+    : null;
+
+  if (!testPackage) {
+    return privateMetadata(
+      "Paket ujian tidak ditemukan",
+      "Paket simulasi JLPT yang kamu cari sudah tidak tersedia.",
+    );
+  }
+
+  return pageMetadata({
+    title: `${testPackage.name} — Mock Test JLPT ${testPackage.jlptLevel}`,
+    description: `Simulasi ujian JLPT ${testPackage.jlptLevel} "${testPackage.name}" berstandar resmi: ${testPackage.questionCount} soal dalam ${testPackage.sessionCount} sesi (total ${testPackage.totalMinutes} menit). Bisa dikerjakan sebagai mock test penuh, latihan per seksi, atau dibaca bersama pembahasannya.`,
+    path: `/test-package/${testPackage.id}`,
+    ogTitle: `Mock Test JLPT ${testPackage.jlptLevel} — ${testPackage.name}`,
+    ogDescription: `${testPackage.questionCount} soal, ${testPackage.sessionCount} sesi, durasi resmi ${testPackage.totalMinutes} menit. Kerjakan gratis di Nihongofy.`,
+    ownSegmentImage: true,
+  });
+}
 
 export default async function TestPackageDetailPage({
   params,
@@ -48,8 +81,30 @@ export default async function TestPackageDetailPage({
   const levelStyle =
     LEVEL_BADGE_STYLES[testPackage.jlptLevel] || "bg-neo-blue text-white";
 
+  const totalMinutes = timing.reduce(
+    (total, session) => total + session.durationMinutes,
+    0,
+  );
+
   return (
     <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8">
+      <JsonLd
+        data={[
+          testPackageJsonLd({
+            id: testPackage.id,
+            name: testPackage.name,
+            jlptLevel: testPackage.jlptLevel,
+            sessionCount: timing.length,
+            totalMinutes,
+          }),
+          breadcrumbJsonLd([
+            { name: "Beranda", path: "/" },
+            { name: "Mock Test JLPT", path: "/test-package" },
+            { name: testPackage.name, path: `/test-package/${testPackage.id}` },
+          ]),
+        ]}
+      />
+
       {/* Back link */}
       <div>
         <Link

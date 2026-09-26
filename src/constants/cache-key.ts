@@ -27,6 +27,11 @@ export const CACHE_KEYS = {
     "test-package-questions",
     String(testPackageId),
   ],
+  testPackageMetadata: (testPackageId: number) => [
+    "test-package-metadata",
+    String(testPackageId),
+  ],
+  testPackageSitemap: ["test-package-sitemap"] as string[],
   attemptSummary: (attemptId: number) => ["attempt-summary", String(attemptId)],
   dashboardSummary: (userId: number) => ["dashboard-summary", String(userId)],
   profileAccount: (userId: number) => ["profile-account-v2", String(userId)],

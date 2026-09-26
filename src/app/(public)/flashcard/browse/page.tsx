@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { privateMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
@@ -10,7 +11,10 @@ import {
   type BrowseFilters,
 } from "@/features/flashcard/browse-data";
 
-export const metadata: Metadata = { title: "Cari kartu" };
+export const metadata: Metadata = privateMetadata(
+  "Cari kartu",
+  "Telusuri dan filter kartu di koleksi flashcard-mu.",
+);
 
 type Props = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;

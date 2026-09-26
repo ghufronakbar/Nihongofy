@@ -15,6 +15,8 @@ import { JLPT_SECTION_LABELS } from "@/constants/jlpt";
 import type { JlptLevel } from "@prisma/client";
 import { formatInTimeZone } from "@/lib/time-zone";
 import { getCurrentUserTimeZone } from "@/lib/user-time-zone";
+import type { Metadata } from "next";
+import { privateMetadata } from "@/lib/seo";
 
 const LEVEL_BADGE_STYLES: Record<JlptLevel, string> = {
   N5: "bg-neo-green text-black",
@@ -23,6 +25,11 @@ const LEVEL_BADGE_STYLES: Record<JlptLevel, string> = {
   N2: "bg-neo-coral text-white",
   N1: "bg-purple-400 text-white",
 };
+
+export const metadata: Metadata = privateMetadata(
+  "Riwayat",
+  "Riwayat seluruh attempt mock test dan latihanmu.",
+);
 
 export default async function HistoryPage() {
   const [attempts, timeZone] = await Promise.all([

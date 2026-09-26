@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { privateMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Upload } from "lucide-react";
@@ -10,7 +11,10 @@ import {
 } from "@/features/flashcard/components/system-deck-catalog";
 import { FLASHCARD_NOTE_TYPES } from "@/features/flashcard/note-types";
 
-export const metadata: Metadata = { title: "Tambah deck" };
+export const metadata: Metadata = privateMetadata(
+  "Tambah deck",
+  "Tambahkan deck flashcard baru atau ambil dari katalog bawaan.",
+);
 
 export default async function AddDeckPage() {
   const session = await getSession();

@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
+import { privateMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import { ImportWizard } from "@/features/flashcard/components/import-wizard";
 
-export const metadata: Metadata = { title: "Impor deck" };
+export const metadata: Metadata = privateMetadata(
+  "Impor deck",
+  "Impor deck flashcard dari file.",
+);
 
 export default async function ImportPage() {
   const session = await getSession();

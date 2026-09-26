@@ -3,6 +3,13 @@ import { ArrowLeft, BarChart3, BookOpenCheck, Target } from "lucide-react";
 import { BrandMark } from "@/components/marketing/brand-mark";
 import { env } from "@/constants";
 import { TurnstileProvider } from "@/features/auth/components/turnstile";
+import type { Metadata } from "next";
+
+// Seluruh segmen auth di luar jangkauan indeks. Disetel di layout, bukan di
+// tiap halaman, supaya route auth baru ikut terlindungi tanpa harus diingat.
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 export default function AuthLayout({
   children,

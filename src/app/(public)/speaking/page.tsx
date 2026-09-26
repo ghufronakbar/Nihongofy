@@ -8,6 +8,13 @@ import { SimulationNotice } from "@/features/conversation/components/simulation-
 import { ConversationSessionList } from "@/features/conversation/components/conversation-session-list";
 import { SpeechSupportProbe } from "@/features/conversation/components/speech-support-probe";
 import { listConversationSessions } from "@/features/conversation/queries";
+import type { Metadata } from "next";
+import { privateMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = privateMetadata(
+  "Latihan Speaking",
+  "Latihan berbicara bahasa Jepang dengan umpan balik pelafalan.",
+);
 
 export default async function SpeakingIndexPage() {
   if (!FEATURES.speaking) notFound();

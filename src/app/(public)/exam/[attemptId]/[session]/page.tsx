@@ -2,6 +2,13 @@ import { notFound } from "next/navigation";
 import { getExamQuestions } from "@/features/exam/actions";
 import { ExamProvider } from "@/features/exam/components/exam-provider";
 import { ExamRunner } from "@/features/exam/components/exam-runner";
+import type { Metadata } from "next";
+import { privateMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = privateMetadata(
+  "Sesi ujian",
+  "Sesi mock test JLPT yang sedang berjalan.",
+);
 
 export default async function ExamPage({
   params,
