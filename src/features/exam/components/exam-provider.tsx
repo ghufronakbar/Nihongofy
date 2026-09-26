@@ -8,6 +8,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { examStorageKey } from "../storage";
 
 type AnswerState = {
   selectedAnswer: number | null;
@@ -25,10 +26,6 @@ const ExamContext = createContext<ExamContextValue | null>(null);
 
 const EMPTY_ANSWER: AnswerState = { selectedAnswer: null, flagged: false };
 
-function storageKey(attemptId: number, session: number) {
-  return `exam-state-${attemptId}-${session}`;
-}
-
 export function ExamProvider({
   attemptId,
   session,
@@ -43,7 +40,7 @@ export function ExamProvider({
 
   // Runs before paint so the sessionStorage state is applied without a visible flash.
   useLayoutEffect(() => {
-    const raw = sessionStorage.getItem(storageKey(attemptId, session));
+    const raw = sessionStorage.getItem(examStorageKey(attemptId, session));
     if (raw) {
       try {
         // sessionStorage isn't readable during SSR, so this can only happen
@@ -60,7 +57,7 @@ export function ExamProvider({
 
   useLayoutEffect(() => {
     if (!hydrated) return;
-    sessionStorage.setItem(storageKey(attemptId, session), JSON.stringify(answers));
+    sessionStorage.setItem(examStorageKey(attemptId, session), JSON.stringify(answers));
   }, [answers, attemptId, session, hydrated]);
 
   const value = useMemo<ExamContextValue>(

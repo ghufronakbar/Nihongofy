@@ -25,9 +25,11 @@ Tidak punya flag sendiri; ikut `FEATURES_TEST_PACKAGE` (lihat [Paket tes](test-p
 
 ## Guest Mode
 
-- Pilihan paket/section disimpan dalam cookie `jlpt_guest_exam`.
-- Jawaban hanya disimpan dalam `sessionStorage`; tidak ada row attempt, score, history, analytics, atau comment.
-- Server tidak menilai jawaban guest. Setelah session terakhir, guest diarahkan ke mode baca paket yang membuka kunci jawaban.
+- Pilihan paket/section disimpan dalam cookie `jlpt_guest_exam` (dibaca lewat `readGuestExamCookie`).
+- Jawaban hanya disimpan dalam `sessionStorage`; tidak ada row attempt, history, analytics, atau comment.
+- Setelah session terakhir guest diarahkan ke `/result/guest`. Halaman itu mengumpulkan lembar jawaban seluruh session dari `sessionStorage`, lalu server menilainya lewat `getGuestAttemptSummary` — lihat [Result](result.md#result-guest).
+- Penilaian tetap di server karena `questionAnswer` tidak pernah dikirim ke client selama exam. Tidak ada score yang dipersist; hasil hilang saat tab ditutup.
+- Mode baca paket yang membuka kunci jawaban tetap dapat diakses dari tombol pada halaman hasil guest.
 
 ## Perilaku yang Disengaja
 
@@ -44,14 +46,15 @@ Tidak punya flag sendiri; ikut `FEATURES_TEST_PACKAGE` (lihat [Paket tes](test-p
 - `AttemptAnswer.timeSpentSec` belum diisi.
 - `AttemptStatus.ABANDONED` belum mempunyai action/UI pada mock exam.
 - State yang belum disubmit terikat pada satu tab/sessionStorage dan tidak sinkron antar-device.
-- Guest cookie parsing masih memakai cast longgar untuk `sectionScope`; validasi runtime cookie dapat diperketat.
-- Dua cast tersebut memakai explicit `any`, sehingga `npm run lint` saat audit gagal pada `src/features/exam/actions.ts`.
+- Payload jawaban guest yang dikirim ke `/result/guest` tidak diverifikasi keasliannya; hasilnya tidak dipersist sehingga hanya memengaruhi tampilan milik guest itu sendiri.
 - Audit answer-key leakage dan test end-to-end masih tercatat sebagai pekerjaan manual di `docs/plan.md`.
 
 ## File Utama
 
 - `src/features/exam/actions.ts`
+- `src/features/exam/guest-cookie.ts`
 - `src/features/exam/schemas.ts`
+- `src/features/exam/storage.ts`
 - `src/features/exam/components/exam-provider.tsx`
 - `src/features/exam/components/exam-runner.tsx`
 - `src/app/(public)/exam/[attemptId]/[session]/page.tsx`

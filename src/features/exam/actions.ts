@@ -2,24 +2,11 @@
 
 import { notFound, redirect } from "next/navigation";
 import { updateTag } from "next/cache";
-import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { CACHE_TAGS } from "@/constants/cache-key";
-import {
-  GuestExamCookieSchema,
-  SubmitExamSessionSchema,
-  type SubmitExamSessionInput,
-} from "./schemas";
-
-function parseGuestExamCookie(rawCookie: string) {
-  try {
-    const parsed = GuestExamCookieSchema.safeParse(JSON.parse(rawCookie));
-    return parsed.success ? parsed.data : null;
-  } catch {
-    return null;
-  }
-}
+import { readGuestExamCookie } from "./guest-cookie";
+import { SubmitExamSessionSchema, type SubmitExamSessionInput } from "./schemas";
 
 // Exam-mode data-leak guard (docs/database.md): questionAnswer & explanation
 // must never be selected here — only exposed post-submit via the result feature.
@@ -27,11 +14,7 @@ export async function getExamQuestions(attemptId: number, urlSession: number) {
   const authSession = await getSession();
 
   if (attemptId === 0 || !authSession) {
-    const cookieStore = await cookies();
-    const guestCookie = cookieStore.get("jlpt_guest_exam")?.value;
-    if (!guestCookie) notFound();
-
-    const guestData = parseGuestExamCookie(guestCookie);
+    const guestData = await readGuestExamCookie();
     if (!guestData) notFound();
 
     const testPackage = await prisma.testPackage.findUnique({
@@ -157,11 +140,7 @@ export async function submitExamSessionAction(input: SubmitExamSessionInput) {
   const { attemptId, session: urlSession, answers } = validated.data;
 
   if (attemptId === 0 || !authSession) {
-    const cookieStore = await cookies();
-    const guestCookie = cookieStore.get("jlpt_guest_exam")?.value;
-    if (!guestCookie) notFound();
-
-    const guestData = parseGuestExamCookie(guestCookie);
+    const guestData = await readGuestExamCookie();
     if (!guestData) notFound();
 
     const scopedWhere = guestData.sectionScope
@@ -176,8 +155,10 @@ export async function submitExamSessionAction(input: SubmitExamSessionInput) {
     const sessionNumbers = sessionRows.map((row) => row.session).sort((a, b) => a - b);
     const isLastSession = guestData.sectionScope ? true : sessionNumbers.at(-1) === urlSession;
 
+    // Jawaban guest tidak dipersist; penilaiannya dibentuk di `/result/guest`
+    // dari sessionStorage lalu dinilai server (lihat getGuestAttemptSummary).
     if (isLastSession) {
-      redirect(`/test-package/${guestData.testPackageId}/questions`);
+      redirect("/result/guest");
     }
 
     const nextSession = sessionNumbers[sessionNumbers.indexOf(urlSession) + 1];

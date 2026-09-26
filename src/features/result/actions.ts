@@ -2,6 +2,7 @@
 
 import { notFound, redirect } from "next/navigation";
 import { unstable_cache } from "next/cache";
+import { z } from "zod";
 import type { MondaiType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { QUESTION_EXPLANATION_SELECT } from "@/lib/question-explanation";
@@ -9,7 +10,11 @@ import { getSession } from "@/lib/auth";
 import { CACHE_KEYS, CACHE_TAGS } from "@/constants/cache-key";
 import { FEATURES } from "@/constants";
 import { getQuestionDiscussionCounts } from "@/features/question-comment/queries";
-import type { MondaiStatInput } from "@/lib/jlpt-score";
+import { readGuestExamCookie } from "@/features/exam/guest-cookie";
+import { ExamAnswerSchema, type ExamAnswerInput } from "@/features/exam/schemas";
+import { computeJlptScoreProjection, type MondaiStatInput } from "@/lib/jlpt-score";
+
+const GuestAttemptAnswersSchema = z.array(ExamAnswerSchema).max(500);
 
 const getCachedAttemptSummary = (attemptId: number, userId: number) =>
   unstable_cache(
@@ -91,6 +96,94 @@ export async function getAttemptSummary(attemptId: number) {
     },
     stats: { totalQuestions, totalCorrect, totalWrong, totalUnanswered, totalFlagged, scorePercentage },
     mondaiStats,
+  };
+}
+
+/**
+ * Ringkasan hasil untuk guest.
+ *
+ * Guest tidak membuat row `Attempt`, jadi lembar jawabannya dikirim client dari
+ * `sessionStorage`. Penilaian tetap dikerjakan server karena `questionAnswer`
+ * sengaja tidak pernah ikut ke client selama exam berlangsung.
+ *
+ * Mengembalikan `null` — bukan `notFound()` — ketika cookie guest sudah habis,
+ * supaya halaman hasil bisa menampilkan empty state yang menjelaskan bahwa
+ * hasil guest memang tidak disimpan.
+ */
+export async function getGuestAttemptSummary(answers: ExamAnswerInput[]) {
+  const validated = GuestAttemptAnswersSchema.safeParse(answers);
+  if (!validated.success) {
+    throw new Error("Data tidak valid.");
+  }
+
+  const guestData = await readGuestExamCookie();
+  if (!guestData) return null;
+
+  const testPackage = await prisma.testPackage.findUnique({
+    where: { id: guestData.testPackageId },
+    select: { id: true, name: true, jlptLevel: true },
+  });
+  if (!testPackage) return null;
+
+  // Penyebut diambil dari seluruh soal pada scope, bukan dari payload client:
+  // session yang dilewati guest tetap terhitung sebagai kosong.
+  const testPackageItems = await prisma.testPackageItem.findMany({
+    where: guestData.sectionScope
+      ? { testPackageId: guestData.testPackageId, section: guestData.sectionScope }
+      : { testPackageId: guestData.testPackageId },
+    select: {
+      mondaiType: true,
+      questions: { select: { id: true, questionAnswer: true } },
+    },
+  });
+
+  const submitted = new Map(validated.data.map((answer) => [answer.questionId, answer]));
+  const byMondaiType = new Map<MondaiType, { correct: number; total: number }>();
+
+  let totalQuestions = 0;
+  let totalCorrect = 0;
+  let totalUnanswered = 0;
+  let totalFlagged = 0;
+
+  for (const item of testPackageItems) {
+    const stat = byMondaiType.get(item.mondaiType) ?? { correct: 0, total: 0 };
+
+    for (const question of item.questions) {
+      const answer = submitted.get(question.id);
+      totalQuestions += 1;
+      stat.total += 1;
+
+      if (answer?.flagged) totalFlagged += 1;
+
+      if (!answer || answer.selectedAnswer === null) {
+        totalUnanswered += 1;
+      } else if (answer.selectedAnswer === question.questionAnswer) {
+        totalCorrect += 1;
+        stat.correct += 1;
+      }
+    }
+
+    byMondaiType.set(item.mondaiType, stat);
+  }
+
+  const mondaiStats: MondaiStatInput[] = Array.from(byMondaiType, ([mondaiType, stat]) => ({
+    mondaiType,
+    ...stat,
+  }));
+
+  return {
+    testPackage,
+    sectionScope: guestData.sectionScope,
+    stats: {
+      totalQuestions,
+      totalCorrect,
+      totalWrong: totalQuestions - totalCorrect - totalUnanswered,
+      totalUnanswered,
+      totalFlagged,
+      scorePercentage:
+        totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0,
+    },
+    projection: computeJlptScoreProjection(mondaiStats),
   };
 }
 
