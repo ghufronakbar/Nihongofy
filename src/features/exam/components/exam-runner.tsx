@@ -75,10 +75,11 @@ export function ExamRunner({
   const [isSubmitting, startTransition] = useTransition();
 
   const totalQuestions = questions.length;
+  // getAnswer changes identity on every answer edit, so the counts derived from
+  // this map include the selection made just before opening the submit dialog.
   const answeredMap = useMemo(
     () => Object.fromEntries(questions.map((q) => [q.id, getAnswer(q.id)])),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [questions, hydrated],
+    [questions, getAnswer],
   );
 
   const answeredCount = useMemo(
@@ -94,19 +95,21 @@ export function ExamRunner({
 
   const rawQuestionNumber = Number(searchParams.get("questionNumber"));
 
-  const currentIndex = useMemo(() => {
-    if (
-      Number.isInteger(rawQuestionNumber) &&
-      rawQuestionNumber >= 1 &&
-      rawQuestionNumber <= totalQuestions
-    ) {
-      return rawQuestionNumber - 1;
-    }
-    const firstUnanswered = questions.findIndex(
-      (q) => answeredMap[q.id]?.selectedAnswer == null,
-    );
+  // Deliberately a snapshot of the answers restored at hydration, not the live
+  // map: recomputing it per answer would move "first unanswered" forward and
+  // jump the user off the question they just answered while the URL catches up.
+  const restoredEntryIndex = useMemo(() => {
+    const firstUnanswered = questions.findIndex((q) => getAnswer(q.id).selectedAnswer == null);
     return firstUnanswered !== -1 ? firstUnanswered : 0;
-  }, [rawQuestionNumber, totalQuestions, questions, answeredMap]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [questions, hydrated]);
+
+  const currentIndex =
+    Number.isInteger(rawQuestionNumber) &&
+    rawQuestionNumber >= 1 &&
+    rawQuestionNumber <= totalQuestions
+      ? rawQuestionNumber - 1
+      : restoredEntryIndex;
 
   useEffect(() => {
     if (!hydrated) return;
