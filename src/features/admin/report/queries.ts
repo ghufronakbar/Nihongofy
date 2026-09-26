@@ -1,0 +1,166 @@
+import "server-only";
+
+import type { Prisma, ReportStatus } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
+import type { ReportQueryInput } from "./schemas";
+
+// Tidak di-cache, sama seperti antrean moderasi: layar ini dibuka justru untuk
+// melihat keadaan sekarang, termasuk tepat setelah satu laporan ditandai selesai.
+
+const QUEUE_PAGE_SIZE = 100;
+
+const OPEN_STATUSES: ReportStatus[] = ["OPEN", "IN_REVIEW"];
+const DONE_STATUSES: ReportStatus[] = ["RESOLVED", "REJECTED", "DUPLICATE"];
+
+const reportSelect = {
+  id: true,
+  targetType: true,
+  category: true,
+  status: true,
+  targetLabel: true,
+  message: true,
+  pagePath: true,
+  userAgent: true,
+  replyEmail: true,
+  repliedAt: true,
+  replyMessage: true,
+  handledAt: true,
+  adminNote: true,
+  createdAt: true,
+  questionId: true,
+  articleId: true,
+  commentId: true,
+  reporter: { select: { id: true, displayName: true, username: true } },
+  handledBy: { select: { id: true, displayName: true } },
+  repliedBy: { select: { id: true, displayName: true } },
+  article: { select: { id: true, slug: true } },
+  comment: { select: { id: true, userId: true, deletedAt: true } },
+} satisfies Prisma.ReportSelect;
+
+type ReportRow = Prisma.ReportGetPayload<{ select: typeof reportSelect }>;
+
+export type ReportEntry = ReportRow & {
+  /**
+   * Tautan ke layar tempat laporan ini sebenarnya diperbaiki. `null` bila
+   * targetnya sudah dihapus — barisnya tetap terbaca lewat `targetLabel`.
+   */
+  targetHref: string | null;
+  /** Laporan lain yang belum selesai pada target yang sama. */
+  otherOpenOnTarget: number;
+  canReply: boolean;
+};
+
+function buildTargetHref(row: ReportRow): string | null {
+  switch (row.targetType) {
+    case "QUESTION":
+      return row.questionId ? `/admin/question/${row.questionId}` : null;
+    case "QUESTION_EXPLANATION":
+      return row.questionId ? `/admin/explanation/${row.questionId}` : null;
+    case "ARTICLE":
+      return row.articleId ? `/admin/article/${row.articleId}` : null;
+    // Komentar TIDAK punya layar sendiri di sini. Takedown sudah hidup di antrean
+    // moderasi, dan jalur takedown kedua berarti dua tempat yang dapat berbeda
+    // perlakuannya atas entri yang sama.
+    case "COMMENT":
+      return row.comment ? `/admin/moderation?state=all&user=${row.comment.userId}` : null;
+    case "GENERAL":
+      return null;
+  }
+}
+
+function statusFilter(state: ReportQueryInput["state"]): Prisma.ReportWhereInput {
+  if (state === "open") return { status: { in: OPEN_STATUSES } };
+  if (state === "done") return { status: { in: DONE_STATUSES } };
+  return {};
+}
+
+export async function listReportQueue(filter: ReportQueryInput) {
+  const where: Prisma.ReportWhereInput = { ...statusFilter(filter.state) };
+  if (filter.targetType) where.targetType = filter.targetType;
+  if (filter.category) where.category = filter.category;
+  if (filter.query) {
+    where.OR = [
+      { message: { contains: filter.query, mode: "insensitive" } },
+      { targetLabel: { contains: filter.query, mode: "insensitive" } },
+    ];
+  }
+
+  const [rows, byStatus] = await Promise.all([
+    prisma.report.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      take: QUEUE_PAGE_SIZE,
+      select: reportSelect,
+    }),
+    prisma.report.groupBy({ by: ["status"], _count: { _all: true } }),
+  ]);
+
+  const counts = { all: 0, open: 0, done: 0 };
+  for (const group of byStatus) {
+    counts.all += group._count._all;
+    if (OPEN_STATUSES.includes(group.status)) counts.open += group._count._all;
+    else counts.done += group._count._all;
+  }
+
+  // "Laporan lain pada target ini" dihitung hanya untuk target yang muncul di
+  // halaman ini. Tanpa angka ini, dua belas orang yang melaporkan soal yang sama
+  // terbaca sebagai dua belas pekerjaan berbeda.
+  const openWhere: Prisma.ReportWhereInput = { status: { in: OPEN_STATUSES } };
+  const questionIds = [...new Set(rows.flatMap((row) => (row.questionId ? [row.questionId] : [])))];
+  const articleIds = [...new Set(rows.flatMap((row) => (row.articleId ? [row.articleId] : [])))];
+  const commentIds = [...new Set(rows.flatMap((row) => (row.commentId ? [row.commentId] : [])))];
+
+  const [questionGroups, articleGroups, commentGroups] = await Promise.all([
+    questionIds.length
+      ? prisma.report.groupBy({
+          by: ["questionId"],
+          where: { ...openWhere, questionId: { in: questionIds } },
+          _count: { _all: true },
+        })
+      : Promise.resolve([]),
+    articleIds.length
+      ? prisma.report.groupBy({
+          by: ["articleId"],
+          where: { ...openWhere, articleId: { in: articleIds } },
+          _count: { _all: true },
+        })
+      : Promise.resolve([]),
+    commentIds.length
+      ? prisma.report.groupBy({
+          by: ["commentId"],
+          where: { ...openWhere, commentId: { in: commentIds } },
+          _count: { _all: true },
+        })
+      : Promise.resolve([]),
+  ]);
+
+  const openByQuestion = new Map(
+    questionGroups.map((group) => [group.questionId, group._count._all]),
+  );
+  const openByArticle = new Map(articleGroups.map((group) => [group.articleId, group._count._all]));
+  const openByComment = new Map(commentGroups.map((group) => [group.commentId, group._count._all]));
+
+  function otherOpenOnTarget(row: ReportRow) {
+    const total = row.questionId
+      ? openByQuestion.get(row.questionId)
+      : row.articleId
+        ? openByArticle.get(row.articleId)
+        : row.commentId
+          ? openByComment.get(row.commentId)
+          : undefined;
+    if (total === undefined) return 0;
+    // Baris ini sendiri ikut terhitung hanya bila statusnya masih terbuka.
+    const includesSelf = OPEN_STATUSES.includes(row.status);
+    return Math.max(0, total - (includesSelf ? 1 : 0));
+  }
+
+  const entries: ReportEntry[] = rows.map((row) => ({
+    ...row,
+    targetHref: buildTargetHref(row),
+    otherOpenOnTarget: otherOpenOnTarget(row),
+    // Balasan hanya satu kali, dan hanya bila pelapor memang meninggalkan alamat.
+    canReply: Boolean(row.replyEmail) && row.repliedAt === null,
+  }));
+
+  return { entries, counts, truncated: rows.length === QUEUE_PAGE_SIZE };
+}

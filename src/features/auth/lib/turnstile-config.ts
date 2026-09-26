@@ -5,6 +5,9 @@ export const TURNSTILE_ACTIONS = {
   resetPassword: "reset_password",
   resendVerification: "resend_verification",
   confirmEmail: "confirm_email",
+  // Form laporan publik. Di luar route group (auth), tetapi alasannya sama:
+  // form yang dapat dikirim tanpa akun akan dipakai bot bila tidak dijaga.
+  report: "report",
 } as const;
 
 export type TurnstileAction =

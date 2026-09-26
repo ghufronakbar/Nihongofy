@@ -29,6 +29,9 @@ export default function robots(): MetadataRoute.Robots {
         "/discussion",
         "/conversation",
         "/speaking",
+        // Form laporan publik. `noindex` di halamannya yang menjadi penjaga utama;
+        // baris ini supaya crawler tidak menjadikannya pintu masuk spam.
+        "/report",
         "/login",
         "/register",
         "/verify-email",

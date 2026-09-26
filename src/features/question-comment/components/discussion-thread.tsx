@@ -11,6 +11,7 @@ import {
   CommentImages,
   CommentTombstone,
 } from "./comment-body";
+import { ReportButton } from "@/features/report/components/report-button";
 import { ReplyForm } from "./reply-form";
 
 type ReplyTarget = { parentId: number; repliedTo: { id: number; username: string } | null } | null;
@@ -19,11 +20,18 @@ function ReplyRow({
   reply,
   currentUserId,
   onReply,
+  reportEnabled,
 }: {
   reply: DiscussionReply;
   currentUserId: number | null;
   onReply?: () => void;
+  // Status `FEATURES.report` diteruskan sebagai props: komponen client tidak
+  // boleh mengimpor `@/constants`.
+  reportEnabled: boolean;
 }) {
+  // Melaporkan catatan sendiri tidak ada gunanya — pemiliknya punya tombol hapus,
+  // dan action pun menolaknya.
+  const canReport = reportEnabled && currentUserId !== reply.author.id;
   return (
     <div id={`comment-${reply.id}`} className="flex gap-2 scroll-mt-24">
       <CommentAvatar author={reply.author} />
@@ -45,15 +53,23 @@ function ReplyRow({
         )}
         <p className="mt-1 text-sm break-words whitespace-pre-wrap">{reply.commentText}</p>
         <CommentImages images={reply.commentImages} />
-        {onReply && (
-          <button
-            type="button"
-            onClick={onReply}
-            className="mt-1 text-xs text-muted-foreground hover:underline"
-          >
-            Balas
-          </button>
-        )}
+        <div className="mt-1 flex flex-wrap items-center gap-3">
+          {onReply && (
+            <button
+              type="button"
+              onClick={onReply}
+              className="text-xs text-muted-foreground hover:underline"
+            >
+              Balas
+            </button>
+          )}
+          {canReport && (
+            <ReportButton
+              target={{ targetType: "COMMENT", commentId: reply.id }}
+              variant="link"
+            />
+          )}
+        </div>
       </div>
     </div>
   );
@@ -64,17 +80,22 @@ export function DiscussionRootCard({
   currentUserId,
   onChanged,
   showPermalink = true,
+  reportEnabled,
 }: {
   root: DiscussionRoot;
   currentUserId: number | null;
   onChanged: () => void;
   showPermalink?: boolean;
+  reportEnabled: boolean;
 }) {
   const [replyTarget, setReplyTarget] = useState<ReplyTarget>(null);
 
   // Thread yang root-nya sudah disembunyikan atau dihapus menjadi arsip
   // read-only: balasan lama tetap terbaca, balasan baru ditolak server.
   const canReply = root.state === "VISIBLE" && currentUserId !== null;
+  // Tombstone tidak menampilkan isi apa pun, jadi tidak ada yang bisa dilaporkan.
+  const canReportRoot =
+    reportEnabled && root.state === "VISIBLE" && currentUserId !== root.author?.id;
 
   function openReply(repliedTo: { id: number; username: string } | null = null) {
     setReplyTarget({ parentId: root.id, repliedTo });
@@ -124,6 +145,7 @@ export function DiscussionRootCard({
                   ? () => openReply({ id: reply.id, username: reply.author.username })
                   : undefined
               }
+              reportEnabled={reportEnabled}
             />
           ))}
         </div>
@@ -140,25 +162,36 @@ export function DiscussionRootCard({
           onCancel={() => setReplyTarget(null)}
         />
       ) : root.state === "VISIBLE" ? (
-        currentUserId === null ? (
-          <Link
-            href="/login"
-            className="mt-2 inline-block text-xs font-semibold text-muted-foreground hover:underline"
-          >
-            Masuk untuk membalas
-          </Link>
-        ) : (
-          <Button
-            type="button"
-            size="sm"
-            variant="ghost"
-            className="mt-1 h-7 px-2 text-xs"
-            onClick={() => openReply()}
-          >
-            <MessageSquareReply className="size-3.5" />
-            Balas
-          </Button>
-        )
+        // Guest tidak dapat membalas, tetapi tetap boleh melaporkan: entri inilah
+        // yang ia lihat, dan menuntut akun dulu berarti penyalahgunaan dibiarkan
+        // lebih lama.
+        <div className="mt-1 flex flex-wrap items-center gap-3">
+          {currentUserId === null ? (
+            <Link
+              href="/login"
+              className="inline-block text-xs font-semibold text-muted-foreground hover:underline"
+            >
+              Masuk untuk membalas
+            </Link>
+          ) : (
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              className="h-7 px-2 text-xs"
+              onClick={() => openReply()}
+            >
+              <MessageSquareReply className="size-3.5" />
+              Balas
+            </Button>
+          )}
+          {canReportRoot && (
+            <ReportButton
+              target={{ targetType: "COMMENT", commentId: root.id }}
+              variant="link"
+            />
+          )}
+        </div>
       ) : null}
     </div>
   );
@@ -169,11 +202,13 @@ export function DiscussionThread({
   currentUserId,
   onChanged,
   showPermalink = true,
+  reportEnabled,
 }: {
   roots: DiscussionRoot[];
   currentUserId: number | null;
   onChanged: () => void;
   showPermalink?: boolean;
+  reportEnabled: boolean;
 }) {
   if (roots.length === 0) {
     return (
@@ -192,6 +227,7 @@ export function DiscussionThread({
           currentUserId={currentUserId}
           onChanged={onChanged}
           showPermalink={showPermalink}
+          reportEnabled={reportEnabled}
         />
       ))}
     </div>

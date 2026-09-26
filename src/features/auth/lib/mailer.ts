@@ -1,29 +1,11 @@
 import "server-only";
 
-import nodemailer from "nodemailer";
-import { env, SITE_URL } from "@/constants";
+import { SITE_URL } from "@/constants";
+import { escapeHtml, sendMail } from "@/lib/mailer";
 
-const transporter = nodemailer.createTransport({
-  host: env.SMTP_HOST,
-  port: env.SMTP_PORT,
-  secure: env.SMTP_SECURE,
-  auth: {
-    user: env.SMTP_USER,
-    pass: env.SMTP_APP_PASSWORD,
-  },
-  connectionTimeout: 10_000,
-  greetingTimeout: 10_000,
-  socketTimeout: 15_000,
-});
-
-function escapeHtml(value: string) {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
+// Hanya template email auth. Transporter dan jalur kirimnya ada di
+// `src/lib/mailer.ts` supaya modul lain yang mengirim email tidak perlu membuat
+// transport SMTP kedua.
 
 function emailShell({
   preheader,
@@ -58,26 +40,6 @@ function emailShell({
     </div>
   </body>
 </html>`;
-}
-
-async function sendMail({
-  to,
-  subject,
-  text,
-  html,
-}: {
-  to: string;
-  subject: string;
-  text: string;
-  html: string;
-}) {
-  await transporter.sendMail({
-    from: { name: env.SMTP_FROM_NAME, address: env.SMTP_FROM_EMAIL },
-    to,
-    subject,
-    text,
-    html,
-  });
 }
 
 export async function sendEmailVerificationMail({
@@ -138,8 +100,4 @@ export async function sendPasswordResetMail({
       expiryText,
     }),
   });
-}
-
-export async function verifySmtpConnection() {
-  return transporter.verify();
 }

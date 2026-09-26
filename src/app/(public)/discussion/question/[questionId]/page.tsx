@@ -5,6 +5,7 @@ import { getSession } from "@/lib/auth";
 import { getQuestionDiscussionPage } from "@/features/question-comment/queries";
 import { DiscussionPageThreads } from "@/features/question-comment/components/discussion-permalink-thread";
 import { DiscussionQuestionCard } from "@/features/question-comment/components/discussion-question-card";
+import { FEATURES } from "@/constants";
 import { mondaiTypeFullLabel } from "@/constants/jlpt";
 import type { Metadata } from "next";
 import { privateMetadata } from "@/lib/seo";
@@ -79,7 +80,11 @@ export default async function QuestionDiscussionPage({
         <h2 className="font-mono text-xs font-black uppercase text-foreground/70">
           Catatan Pengguna ({entryCount})
         </h2>
-        <DiscussionPageThreads roots={roots} currentUserId={authSession?.userId ?? null} />
+        <DiscussionPageThreads
+          roots={roots}
+          currentUserId={authSession?.userId ?? null}
+          reportEnabled={FEATURES.report}
+        />
       </div>
     </div>
   );

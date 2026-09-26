@@ -3,6 +3,7 @@ import {
   AlertTriangle,
   BookOpen,
   FileText,
+  Flag,
   Layers,
   MessagesSquare,
   ScrollText,
@@ -62,7 +63,7 @@ export default async function AdminOverviewPage() {
   await requireAdmin();
 
   const overview = await getAdminOverview();
-  const { content, explanation, discussion, people, activity, editorial } = overview;
+  const { content, explanation, discussion, people, activity, editorial, reports } = overview;
 
   // Hanya hal yang benar-benar butuh tindakan operator yang muncul di sini.
   const attention: { label: string; detail: string }[] = [];
@@ -89,6 +90,15 @@ export default async function AdminOverviewPage() {
     attention.push({
       label: `Level ${emptyLevels.map((level) => level.level).join(", ")} belum punya paket`,
       detail: "Fixture bisa saja sudah ada di repository tetapi belum diimpor ke database.",
+    });
+  }
+  if (reports.open > 0) {
+    attention.push({
+      label: `${reports.open.toLocaleString("id-ID")} laporan belum selesai`,
+      detail:
+        reports.awaitingReply > 0
+          ? `${reports.awaitingReply} di antaranya meninggalkan alamat email untuk dibalas.`
+          : "Tidak ada yang menunggu balasan email.",
     });
   }
   if (people.pendingDeletion > 0) {
@@ -128,6 +138,13 @@ export default async function AdminOverviewPage() {
           value={(discussion.publicRoots + discussion.replies).toLocaleString("id-ID")}
           hint={`${discussion.publicRoots} catatan dibagikan, ${discussion.replies} balasan, ${discussion.lastSevenDays} entri 7 hari terakhir`}
           accent="bg-neo-coral"
+        />
+        <StatCard
+          icon={Flag}
+          label="Laporan"
+          value={reports.open.toLocaleString("id-ID")}
+          hint={`belum selesai; ${reports.lastSevenDays} masuk 7 hari terakhir, ${reports.awaitingReply} menunggu balasan`}
+          accent="bg-neo-green"
         />
         <StatCard
           icon={Users}

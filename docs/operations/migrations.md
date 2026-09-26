@@ -33,6 +33,30 @@ contract wajib memiliki migration dan catatan ringkas di dokumen/PR perubahan. J
 
 ## Ledger
 
+### 26 September 2026 - Kotak masuk laporan pengguna (Report)
+
+- Status: deployed
+- Migration: `prisma/migrations/20260926230000_report_inbox/migration.sql`
+- Alasan: kesalahan isi soal, kunci jawaban keliru, dan bug aplikasi sebelumnya hanya sampai lewat
+  jalur di luar aplikasi. Tabel ini menjadikannya antrean yang dapat ditindak dan ditelusuri, dengan
+  tautan langsung ke objek yang dikeluhkan.
+- Object terdampak: tiga enum (`ReportTargetType`, `ReportCategory`, `ReportStatus`), tabel `Report`,
+  enam foreign key (`questionId`, `articleId`, `commentId`, `reporterId`, `repliedById`,
+  `handledById`) seluruhnya `ON DELETE SET NULL`, dua CHECK constraint, delapan index biasa, tiga
+  partial unique index, revoke grant Data API, dan RLS aktif.
+- Data existing: tabel baru dan kosong; tidak ada backfill.
+- Risiko operasi: tabel baru, tidak menyentuh data lama. Dua hal yang perlu diingat saat mengubah
+  tabel ini kemudian: (1) `Report_target_columns_check` sengaja TIDAK mewajibkan kolom target terisi,
+  karena FK-nya `SET NULL` dan CHECK semacam itu akan menggagalkan penghapusan soal/artikel/komentar
+  yang dirujuknya; (2) ketiga partial unique index dan kedua CHECK tidak terlihat oleh Prisma, jadi
+  `schema.prisma` bukan daftar lengkap constraint tabel ini.
+- Validasi: `npx prisma validate`, `prisma migrate deploy`, `prisma migrate status` (up to date),
+  `npm run lint`, `npm run typecheck`, `npm run test` (258 lulus), dan `npm run build` lulus.
+- Refresh setelah deploy: redeploy agar Prisma Client terbaru aktif, dan set `FEATURES_REPORT` di
+  environment bila ingin eksplisit (kosong = aktif). Tidak ada cache yang perlu diinvalidasi —
+  antrean laporan memang tidak di-cache.
+- Owner: Engineering Owner.
+
 ### 25 September 2026 - Audit log aksi admin
 
 - Status: deployed

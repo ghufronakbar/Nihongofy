@@ -3,6 +3,7 @@ import { getPracticeSession } from "@/features/practice/actions";
 import { PracticeRunner } from "@/features/practice/components/practice-runner";
 import type { Metadata } from "next";
 import { privateMetadata } from "@/lib/seo";
+import { FEATURES } from "@/constants";
 
 export const metadata: Metadata = privateMetadata(
   "Sesi latihan",
@@ -24,5 +25,5 @@ export default async function PracticeSessionPage({
 
   const practiceSession = await getPracticeSession({ sessionId: sessionIdNumber });
 
-  return <PracticeRunner practiceSession={practiceSession} />;
+  return <PracticeRunner practiceSession={practiceSession} reportEnabled={FEATURES.report} />;
 }

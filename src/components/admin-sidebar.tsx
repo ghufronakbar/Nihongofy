@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   BookOpen,
   FileText,
+  Flag,
   LayoutDashboard,
   Layers,
   LogOut,
@@ -57,6 +58,7 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
   {
     label: "Komunitas",
     items: [
+      { title: "Laporan", href: "/admin/report", icon: Flag },
       { title: "Moderasi", href: "/admin/moderation", icon: MessageSquareWarning },
       { title: "User", href: "/admin/user", icon: Users },
       { title: "Conversation", href: "/admin/conversation", icon: MessagesSquare },
