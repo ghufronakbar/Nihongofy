@@ -1,12 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import Link from "next/link";
-import { AlertTriangle, ArrowLeft, BookOpen, RotateCcw, UserPlus } from "lucide-react";
-import { getGuestAttemptSummary } from "../actions";
+import { useRouter } from "next/navigation";
+import { AlertTriangle, ArrowLeft, BookOpen, LogIn, RotateCcw, Save, UserPlus } from "lucide-react";
+import {
+  getGuestAttemptSummary,
+  importGuestAttemptAction,
+  stashGuestAttemptAction,
+} from "../actions";
 import { ResultSummaryView } from "./result-summary-view";
-import { GUEST_EXAM_STORAGE_PREFIX } from "@/features/exam/storage";
+import { clearGuestExamStorage, GUEST_EXAM_STORAGE_PREFIX } from "@/features/exam/storage";
 import type { ExamAnswerInput } from "@/features/exam/schemas";
+
+// Penanda pada URL kembalian auth supaya impor hanya berjalan ketika user memang
+// menekan CTA simpan, bukan setiap kali halaman ini dibuka sambil login. Query-nya
+// dibaca server-side lalu dioper sebagai prop, jadi hook pembaca URL di client
+// (yang menuntut Suspense boundary saat prerender) tidak diperlukan.
+const RETURN_PATH = "/result/guest?import=1";
 
 type GuestSummary = NonNullable<Awaited<ReturnType<typeof getGuestAttemptSummary>>>;
 
@@ -69,8 +80,17 @@ function readGuestAnswers(): ExamAnswerInput[] | null {
   return found ? answers : null;
 }
 
-export function GuestResult() {
+export function GuestResult({
+  isAuthenticated,
+  shouldImport,
+}: {
+  isAuthenticated: boolean;
+  shouldImport: boolean;
+}) {
+  const router = useRouter();
   const [view, setView] = useState<ViewState>({ status: "loading" });
+  const [isSaving, startSaving] = useTransition();
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -94,16 +114,64 @@ export function GuestResult() {
     };
   }, []);
 
-  if (view.status === "loading") {
+  const importToAccount = useCallback(() => {
+    startSaving(async () => {
+      setSaveError(null);
+      const result = await importGuestAttemptAction();
+      if (!result.ok) {
+        setSaveError(
+          "Lembar jawaban yang dititipkan sudah kedaluwarsa, jadi tidak bisa disimpan ke akun.",
+        );
+        return;
+      }
+      clearGuestExamStorage();
+      router.replace(`/result/${result.attemptId}`);
+    });
+  }, [router]);
+
+  // Kembali dari login/register dengan ?import=1: klaim titipannya sekali saja.
+  const autoImported = useRef(false);
+  useEffect(() => {
+    if (autoImported.current) return;
+    if (!isAuthenticated || !shouldImport) return;
+    autoImported.current = true;
+    // Ditunda satu microtask supaya impor tidak memicu setState sinkron di
+    // dalam effect (cascading render).
+    void Promise.resolve().then(importToAccount);
+  }, [isAuthenticated, shouldImport, importToAccount]);
+
+  function saveThenAuthenticate(destination: "login" | "register") {
+    setSaveError(null);
+    startSaving(async () => {
+      const answers = readGuestAnswers();
+      const stashed = answers ? await stashGuestAttemptAction(answers) : { ok: false as const };
+      if (!stashed.ok) {
+        setSaveError("Lembar jawaban sudah tidak tersedia di tab ini, jadi tidak bisa disimpan.");
+        return;
+      }
+      router.push(`/${destination}?next=${encodeURIComponent(RETURN_PATH)}`);
+    });
+  }
+
+  // Kembali dari auth: tampilkan layar impor, bukan ringkasan atau empty state.
+  // Pada jalur verifikasi email tab-nya baru, jadi sessionStorage pasti kosong
+  // dan tanpa ini user sempat melihat "Hasil Tidak Tersedia" yang menyesatkan.
+  const isClaiming = isAuthenticated && shouldImport && !saveError;
+
+  if (isClaiming || view.status === "loading") {
     return (
       <main className="page-reveal mx-auto w-full max-w-2xl px-4 py-16">
         <div className="neo-surface neo-grid-paper border-[3px] border-neo-ink bg-white p-8 text-center shadow-neo space-y-4">
           <div className="inline-flex size-14 items-center justify-center rounded-xl border-[3px] border-neo-ink bg-neo-yellow shadow-neo-sm">
             <span className="font-mono text-2xl font-black">JLPT</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-neo-ink">Menilai Jawabanmu...</h1>
+          <h1 className="text-2xl sm:text-3xl font-black text-neo-ink">
+            {isClaiming ? "Menyimpan ke Akunmu..." : "Menilai Jawabanmu..."}
+          </h1>
           <p className="text-sm font-semibold text-foreground/70">
-            Mencocokkan lembar jawaban dengan kunci di server.
+            {isClaiming
+              ? "Memindahkan lembar jawaban yang kamu kerjakan ke riwayat akun."
+              : "Mencocokkan lembar jawaban dengan kunci di server."}
           </p>
         </div>
       </main>
@@ -119,9 +187,8 @@ export function GuestResult() {
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-neo-ink">Hasil Tidak Tersedia</h1>
           <p className="text-sm font-semibold text-foreground/70">
-            Hasil ujian tanpa akun hanya tersimpan di tab browser yang dipakai mengerjakan, dan
-            hilang begitu tab ditutup. Daftar akun supaya hasil dan riwayat ujianmu tersimpan
-            permanen.
+            {saveError ??
+              "Hasil ujian tanpa akun hanya tersimpan di tab browser yang dipakai mengerjakan, dan hilang begitu tab ditutup. Daftar akun supaya hasil dan riwayat ujianmu tersimpan permanen."}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
             <Link href="/register" className="neo-button bg-neo-blue text-white font-black text-sm">
@@ -152,24 +219,59 @@ export function GuestResult() {
       stats={summary.stats}
       projection={summary.projection}
       notice={
-        <div className="neo-surface flex items-start gap-3 border-[3px] border-neo-ink bg-neo-yellow p-4 shadow-neo">
-          <AlertTriangle className="mt-0.5 size-5 shrink-0 text-black" />
-          <p className="text-sm font-bold text-black">
-            Hasil ini tidak tersimpan. Menutup tab akan menghapusnya, dan ujian ini tidak masuk
-            riwayat, statistik, maupun analisis progres.{" "}
-            <Link href="/register" className="underline underline-offset-2">
-              Daftar gratis
-            </Link>{" "}
-            untuk menyimpan hasil dan membuka review jawaban soal per soal.
-          </p>
+        <div className="neo-surface space-y-3 border-[3px] border-neo-ink bg-neo-yellow p-4 shadow-neo">
+          <div className="flex items-start gap-3">
+            <AlertTriangle className="mt-0.5 size-5 shrink-0 text-black" />
+            <p className="text-sm font-bold text-black">
+              {isAuthenticated
+                ? "Hasil ini belum tersimpan. Simpan ke akunmu untuk masuk riwayat, statistik, dan analisis progres, serta membuka review jawaban soal per soal."
+                : "Hasil ini tidak tersimpan. Menutup tab akan menghapusnya, dan ujian ini tidak masuk riwayat, statistik, maupun analisis progres. Simpan ke akun untuk menyimpannya permanen dan membuka review jawaban soal per soal."}
+            </p>
+          </div>
+          {saveError && (
+            <p className="border-2 border-neo-ink bg-white px-3 py-2 text-sm font-bold text-destructive">
+              {saveError}
+            </p>
+          )}
         </div>
       }
       actions={
         <>
-          <Link href="/register" className="neo-button bg-neo-blue text-white font-black text-sm">
-            <UserPlus className="size-4" />
-            Daftar untuk Simpan Hasil
-          </Link>
+          {isAuthenticated ? (
+            <button
+              type="button"
+              onClick={() => {
+                setSaveError(null);
+                importToAccount();
+              }}
+              disabled={isSaving}
+              className="neo-button bg-neo-blue text-white font-black text-sm disabled:opacity-60"
+            >
+              <Save className="size-4" />
+              {isSaving ? "Menyimpan..." : "Simpan ke Akun"}
+            </button>
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={() => saveThenAuthenticate("register")}
+                disabled={isSaving}
+                className="neo-button bg-neo-blue text-white font-black text-sm disabled:opacity-60"
+              >
+                <UserPlus className="size-4" />
+                {isSaving ? "Menyiapkan..." : "Daftar & Simpan Hasil"}
+              </button>
+              <button
+                type="button"
+                onClick={() => saveThenAuthenticate("login")}
+                disabled={isSaving}
+                className="neo-button bg-white text-black font-extrabold text-sm disabled:opacity-60"
+              >
+                <LogIn className="size-4" />
+                Sudah Punya Akun? Masuk
+              </button>
+            </>
+          )}
           <Link
             href={`/test-package/${summary.testPackage.id}/questions`}
             className="neo-button bg-white text-black font-extrabold text-sm"

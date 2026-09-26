@@ -30,6 +30,7 @@ Tidak punya flag sendiri; ikut `FEATURES_TEST_PACKAGE` (lihat [Paket tes](test-p
 - Setelah session terakhir guest diarahkan ke `/result/guest`. Halaman itu mengumpulkan lembar jawaban seluruh session dari `sessionStorage`, lalu server menilainya lewat `getGuestAttemptSummary` — lihat [Result](result.md#result-guest).
 - Penilaian tetap di server karena `questionAnswer` tidak pernah dikirim ke client selama exam. Tidak ada score yang dipersist; hasil hilang saat tab ditutup.
 - Mode baca paket yang membuka kunci jawaban tetap dapat diakses dari tombol pada halaman hasil guest.
+- Cookie guest menyimpan `startedAt` saat exam dimulai, dipakai saat hasilnya diklaim ke akun — lihat [Result](result.md#klaim-hasil-ke-akun).
 
 ## Perilaku yang Disengaja
 

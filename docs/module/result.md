@@ -37,6 +37,18 @@ Tidak punya flag sendiri; ikut `FEATURES_TEST_PACKAGE` (lihat [Paket tes](test-p
 - Cookie guest habis atau `sessionStorage` kosong menghasilkan empty state ber-CTA daftar, bukan skor 0%.
 - Payload jawaban tidak diverifikasi keasliannya. Ini tidak menambah kebocoran kunci karena guest memang sudah bisa membuka `/test-package/[id]/questions` yang menampilkan kunci.
 
+### Klaim Hasil ke Akun
+
+- CTA "Daftar & Simpan Hasil" / "Sudah Punya Akun? Masuk" memanggil `stashGuestAttemptAction` **sebelum** berpindah ke auth, lalu mengarah ke `/login|/register?next=/result/guest?import=1`.
+- Alasannya jalur register: `registerAction` tidak membuat session, melainkan mengirim email verifikasi, dan tautannya hampir selalu dibuka di tab baru. `sessionStorage` terikat satu tab, jadi jawaban harus sudah pindah ke server sebelum auth dimulai.
+- Titipan memakai pola `google-oauth-state.ts`: token acak di cookie httpOnly `guest_attempt_stash` + payload di Redis ber-TTL 24 jam (`GUEST_ATTEMPT_STASH_DURATION_SECONDS`, disamakan dengan jendela verifikasi email), dikonsumsi sekali pakai lewat `getdel`.
+- `getSafeRedirectPath` mempertahankan query string, sehingga `?import=1` selamat melewati login maupun `confirmEmailAction`.
+- `importGuestAttemptAction` membuat satu `Attempt` berstatus `COMPLETED` dengan satu row `AttemptAnswer` per soal pada scope. `isCorrect` dihitung ulang dari kunci, jadi skor tidak bisa dikarang client — yang bisa hanya pilihan jawabannya, dan itu hanya mengotori statistik akun miliknya sendiri.
+- `startedAt` diambil dari cookie guest (dicatat saat exam dimulai) supaya durasi attempt nyata; cookie lama tanpa field itu jatuh ke `finishedAt` sehingga durasinya 0 menit.
+- Setelah sukses: cookie `jlpt_guest_exam` dan titipan dihapus server-side, `sessionStorage` dibersihkan client-side, cache dashboard/analytics/profile diinvalidasi, lalu user diarahkan ke `/result/[attemptId]` yang sebenarnya.
+- `?import=1` hanya dipakai sebagai penanda kembalian auth; membuka `/result/guest` sambil login tanpa parameter itu menampilkan tombol "Simpan ke Akun", tidak mengimpor diam-diam.
+- Titipan kedaluwarsa (lewat 24 jam atau sudah dipakai) menghasilkan pesan gagal, bukan attempt kosong.
+
 ## Kondisi Skor
 
 - Akurasi dihitung langsung dari `AttemptAnswer.isCorrect`.
@@ -55,6 +67,7 @@ Tidak punya flag sendiri; ikut `FEATURES_TEST_PACKAGE` (lihat [Paket tes](test-p
 ## File Utama
 
 - `src/features/result/actions.ts`
+- `src/features/result/lib/guest-attempt-stash.ts`
 - `src/features/result/components/result-summary-view.tsx`
 - `src/features/result/components/guest-result.tsx`
 - `src/app/(public)/result/[attemptId]/page.tsx`

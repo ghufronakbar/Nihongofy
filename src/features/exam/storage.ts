@@ -12,3 +12,17 @@ export function examStorageKey(attemptId: number, session: number) {
 }
 
 export const GUEST_EXAM_STORAGE_PREFIX = `exam-state-${GUEST_ATTEMPT_ID}-`;
+
+/** Dipakai setelah lembar jawaban guest berpindah ke akun. */
+export function clearGuestExamStorage() {
+  try {
+    const keys: string[] = [];
+    for (let index = 0; index < sessionStorage.length; index += 1) {
+      const key = sessionStorage.key(index);
+      if (key?.startsWith(GUEST_EXAM_STORAGE_PREFIX)) keys.push(key);
+    }
+    for (const key of keys) sessionStorage.removeItem(key);
+  } catch {
+    // sessionStorage dapat melempar di private mode / storage diblokir
+  }
+}
