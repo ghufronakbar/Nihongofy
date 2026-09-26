@@ -5,12 +5,16 @@ import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getDeckOverview } from "@/features/flashcard/data";
 import { DeckTreeView } from "@/features/flashcard/components/deck-tree-view";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Flashcard",
+export const metadata: Metadata = pageMetadata({
+  title: "Flashcard Kosakata & Kanji Jepang",
   description:
     "Belajar kosakata dan kanji Jepang dengan flashcard spaced repetition FSRS di Nihongofy.",
-};
+  path: "/flashcard",
+  ogDescription:
+    "Deck flashcard kosakata dan kanji Jepang dengan penjadwalan FSRS. Bisa dicoba tanpa akun.",
+});
 
 export default async function FlashcardPage() {
   const session = await getSession();

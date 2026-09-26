@@ -7,6 +7,13 @@ import { ConversationSetup } from "@/features/conversation/components/conversati
 import { ConversationSignInGate } from "@/features/conversation/components/sign-in-gate";
 import { SimulationNotice } from "@/features/conversation/components/simulation-notice";
 import { SpeechSupportProbe } from "@/features/conversation/components/speech-support-probe";
+import type { Metadata } from "next";
+import { privateMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = privateMetadata(
+  "Siapkan speaking",
+  "Pilih topik dan level sebelum mulai latihan speaking.",
+);
 
 export default async function SpeakingSetupPage() {
   if (!FEATURES.speaking) notFound();

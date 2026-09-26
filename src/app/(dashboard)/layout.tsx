@@ -9,6 +9,13 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import type { Metadata } from "next";
+
+// Area yang wajib login. `robots.txt` hanya mencegah crawling; URL yang
+// dilink dari luar tetap bisa masuk indeks tanpa noindex di halamannya.
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 export default async function DashboardLayout({
   children,

@@ -6,6 +6,13 @@ import { getQuestionDiscussionPage } from "@/features/question-comment/queries";
 import { DiscussionPageThreads } from "@/features/question-comment/components/discussion-permalink-thread";
 import { DiscussionQuestionCard } from "@/features/question-comment/components/discussion-question-card";
 import { mondaiTypeFullLabel } from "@/constants/jlpt";
+import type { Metadata } from "next";
+import { privateMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = privateMetadata(
+  "Diskusi soal",
+  "Seluruh utas diskusi pada satu soal JLPT.",
+);
 
 export default async function QuestionDiscussionPage({
   params,

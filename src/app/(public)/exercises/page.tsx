@@ -2,13 +2,16 @@ import type { Metadata } from "next";
 import { BrainCircuit, ShieldCheck, Sparkles } from "lucide-react";
 import { getPracticeCatalog } from "@/features/practice/actions";
 import { PracticeConfigurator } from "@/features/practice/components/practice-configurator";
+import { JsonLd } from "@/components/seo/json-ld";
+import { breadcrumbJsonLd, learningResourceJsonLd } from "@/lib/json-ld";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Latihan Cepat JLPT",
   description:
     "Latihan soal JLPT per mondai dan level dengan feedback instan tanpa timer. Cocok untuk memperkuat tipe soal tertentu.",
-  alternates: { canonical: "/exercises" },
-};
+  path: "/exercises",
+});
 
 export default async function ExercisesPage() {
   const catalog = await getPracticeCatalog();
@@ -17,6 +20,22 @@ export default async function ExercisesPage() {
 
   return (
     <main className="page-reveal mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-10">
+      <JsonLd
+        data={[
+          learningResourceJsonLd({
+            path: "/exercises",
+            name: "Latihan Cepat JLPT",
+            description:
+              "Latihan soal JLPT per tipe mondai dan level dengan koreksi instan, tanpa timer.",
+            resourceType: "Practice quiz",
+            educationalLevel: "JLPT N5 - N1",
+          }),
+          breadcrumbJsonLd([
+            { name: "Beranda", path: "/" },
+            { name: "Latihan Cepat", path: "/exercises" },
+          ]),
+        ]}
+      />
       <section className="neo-surface neo-grid-paper relative overflow-hidden p-6 sm:p-9">
         <div className="absolute -top-10 -right-8 size-40 rotate-12 border-[3px] border-neo-ink bg-neo-coral opacity-90" aria-hidden="true" />
         <div className="relative max-w-3xl">

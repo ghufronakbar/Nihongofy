@@ -9,6 +9,9 @@ import { ArticleBody } from "@/features/article/components/article-body";
 import { ArticleCard } from "@/features/article/components/article-card";
 import { formatArticleCount, formatArticleDate } from "@/features/article/lib/format";
 import { getArticleDetail, getArticleViewerState } from "@/features/article/queries";
+import { JsonLd } from "@/components/seo/json-ld";
+import { articleJsonLd, breadcrumbJsonLd } from "@/lib/json-ld";
+import { pageMetadata, privateMetadata } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -17,39 +20,34 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const article = await getArticleDetail(slug);
-  if (!article) return { title: "Artikel tidak ditemukan" };
+  if (!article) {
+    return privateMetadata(
+      "Artikel tidak ditemukan",
+      "Artikel yang kamu cari sudah tidak tersedia.",
+    );
+  }
 
-  return {
+  return pageMetadata({
     title: article.title,
     description: article.excerpt,
-    authors: [{ name: article.authorName }],
-    alternates: { canonical: `/article/${article.slug}` },
-    openGraph: {
-      title: article.title,
-      description: article.excerpt,
-      type: "article",
-      locale: "id_ID",
-      url: `/article/${article.slug}`,
+    path: `/article/${article.slug}`,
+    ogTitle: article.title,
+    images: [
+      {
+        url: article.coverImage,
+        width: 1200,
+        height: 675,
+        alt: article.coverAlt,
+      },
+    ],
+    keywords: article.tags.map((tag) => tag.label),
+    article: {
       publishedTime: article.publishedAt?.toISOString(),
       modifiedTime: article.updatedAt.toISOString(),
       authors: [article.authorName],
       tags: article.tags.map((tag) => tag.label),
-      images: [
-        {
-          url: article.coverImage,
-          width: 1200,
-          height: 675,
-          alt: article.coverAlt,
-        },
-      ],
     },
-    twitter: {
-      card: "summary_large_image",
-      title: article.title,
-      description: article.excerpt,
-      images: [article.coverImage],
-    },
-  };
+  });
 }
 
 export default async function ArticleDetailPage({
@@ -71,6 +69,28 @@ export default async function ArticleDetailPage({
 
   return (
     <>
+      <JsonLd
+        data={[
+          articleJsonLd({
+            slug: article.slug,
+            title: article.title,
+            excerpt: article.excerpt,
+            coverImage: article.coverImage,
+            authorName: article.authorName,
+            publishedAt: article.publishedAt,
+            updatedAt: article.updatedAt,
+            category: article.category,
+            tags: article.tags.map((tag) => tag.label),
+            readTime: article.readTime,
+          }),
+          breadcrumbJsonLd([
+            { name: "Beranda", path: "/" },
+            { name: "Artikel", path: "/article" },
+            { name: article.title, path: `/article/${article.slug}` },
+          ]),
+        ]}
+      />
+
       <article>
         <header className="border-b-[3px] border-neo-ink bg-white py-10 md:py-14">
           <PageContainer>

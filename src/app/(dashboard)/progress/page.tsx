@@ -16,9 +16,16 @@ import { Info, TrendingUp, Trophy } from "lucide-react";
 import Link from "next/link";
 import { formatInTimeZone } from "@/lib/time-zone";
 import { getCurrentUserTimeZone } from "@/lib/user-time-zone";
+import type { Metadata } from "next";
+import { privateMetadata } from "@/lib/seo";
 
 const MONDAI_ORDER = Object.keys(MONDAI_WEIGHTS) as MondaiType[];
 const SECTION_KEYS: ScoringSectionKey[] = ["GENGO_CHISHIKI", "DOKKAI", "CHOUKAI"];
+
+export const metadata: Metadata = privateMetadata(
+  "Progres",
+  "Perkembangan skor dan konsistensi belajarmu.",
+);
 
 export default async function ProgressPage() {
   const [progressLevels, timeZone] = await Promise.all([

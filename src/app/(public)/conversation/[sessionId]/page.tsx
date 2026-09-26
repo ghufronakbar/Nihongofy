@@ -4,6 +4,13 @@ import { getSession } from "@/lib/auth";
 import { ConversationRunner } from "@/features/conversation/components/conversation-runner";
 import { ConversationSignInGate } from "@/features/conversation/components/sign-in-gate";
 import { getConversationSession } from "@/features/conversation/queries";
+import type { Metadata } from "next";
+import { privateMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = privateMetadata(
+  "Sesi percakapan",
+  "Sesi latihan percakapan bahasa Jepang yang sedang berjalan.",
+);
 
 export default async function ConversationRunnerPage({
   params,

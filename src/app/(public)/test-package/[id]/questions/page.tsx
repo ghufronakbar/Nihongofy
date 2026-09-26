@@ -1,7 +1,9 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { getTestPackageQuestions } from "@/features/test-package/actions";
+import { getTestPackageMetadata } from "@/features/test-package/queries";
 import { FEATURES } from "@/constants";
 import { QuestionCommentForm } from "@/features/question-comment/components/question-comment-form";
 import { CommentItem } from "@/features/question-comment/components/comment-item";
@@ -16,6 +18,39 @@ import { JapanesePassage } from "@/components/japanese-passage";
 import { FuriganaScope } from "@/components/furigana-scope";
 import { mondaiTypeFullLabel } from "@/constants/jlpt";
 import { cn } from "@/lib/utils";
+import { JsonLd } from "@/components/seo/json-ld";
+import { breadcrumbJsonLd } from "@/lib/json-ld";
+import { pageMetadata, privateMetadata } from "@/lib/seo";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const testPackageId = Number(id);
+  const testPackage = Number.isInteger(testPackageId)
+    ? await getTestPackageMetadata(testPackageId)
+    : null;
+
+  if (!testPackage) {
+    return privateMetadata(
+      "Paket ujian tidak ditemukan",
+      "Paket simulasi JLPT yang kamu cari sudah tidak tersedia.",
+    );
+  }
+
+  // Canonical sengaja tanpa `?mondai=`: setiap blok mondai adalah potongan dari
+  // satu dokumen yang sama, bukan halaman berdiri sendiri.
+  return pageMetadata({
+    title: `Soal & Pembahasan ${testPackage.name} (JLPT ${testPackage.jlptLevel})`,
+    description: `Baca ${testPackage.questionCount} soal JLPT ${testPackage.jlptLevel} dari paket "${testPackage.name}" beserta jawaban dan pembahasannya, dibagi ke ${testPackage.mondaiCount} blok mondai.`,
+    path: `/test-package/${testPackage.id}/questions`,
+    ogTitle: `Soal & Pembahasan JLPT ${testPackage.jlptLevel} — ${testPackage.name}`,
+    ogDescription: `${testPackage.questionCount} soal lengkap dengan kunci dan pembahasan per nomor.`,
+    ownSegmentImage: true,
+  });
+}
 
 export default async function TestPackageQuestionsPage({
   params,
@@ -88,6 +123,18 @@ export default async function TestPackageQuestionsPage({
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-6">
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Beranda", path: "/" },
+          { name: "Mock Test JLPT", path: "/test-package" },
+          { name: testPackage.name, path: `/test-package/${testPackage.id}` },
+          {
+            name: "Soal & Pembahasan",
+            path: `/test-package/${testPackage.id}/questions`,
+          },
+        ])}
+      />
+
       {/* Header Banner */}
       <div className="neo-surface bg-white p-6 border-[3px] border-neo-ink shadow-neo relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>

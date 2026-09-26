@@ -23,21 +23,18 @@ import { ArticleCard } from "@/features/article/components/article-card";
 import { CONVERSATION_PROVIDER, FEATURES, type FeatureName } from "@/constants";
 import { getArticleIndexData } from "@/features/article/queries";
 import { getSession } from "@/lib/auth";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: {
-    absolute: "Nihongofy - Belajar Bahasa Jepang & Simulasi JLPT",
-  },
+export const metadata: Metadata = pageMetadata({
+  title: "Nihongofy - Belajar Bahasa Jepang & Simulasi JLPT",
+  absoluteTitle: true,
   description:
     "Platform belajar bahasa Jepang dan persiapan JLPT (N5 - N1) yang interaktif, terarah, dan menyenangkan. Lengkap dengan latihan Kana, kosakata, latihan cepat, dan mock test resmi.",
-  openGraph: {
-    title: "Nihongofy | Belajar Bahasa Jepang & Latihan JLPT Seru",
-    description:
-      "Platform belajar bahasa Jepang dan persiapan JLPT (N5 - N1) lengkap dengan review mendalam dan analitik progres.",
-    type: "website",
-    locale: "id_ID",
-  },
-};
+  path: "/",
+  ogTitle: "Nihongofy | Belajar Bahasa Jepang & Latihan JLPT Seru",
+  ogDescription:
+    "Platform belajar bahasa Jepang dan persiapan JLPT (N5 - N1) lengkap dengan review mendalam dan analitik progres.",
+});
 
 const LEARNING_FLOW = [
   {

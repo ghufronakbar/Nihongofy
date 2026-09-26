@@ -882,6 +882,63 @@ pekerjaan lalu membersihkan penyimpanan sementara.
   dicek dua jalur — login (tab sama) dan register (tautan verifikasi email di tab baru) — sampai
   attempt muncul di `/history` dengan durasi wajar dan review per soal terbuka
 
+## Fase 8.10 — SEO Metadata, Preview Share, dan Structured Data
+
+Permintaan user: melengkapi metadata supaya SEO bagus dan tautan yang dishare punya preview.
+
+### Dua bug yang ditemukan saat audit
+
+- [x] **Canonical bocor ke seluruh situs.** Root layout menyetel `alternates.canonical: "/"`.
+  Field metadata diwarisi bila segmen di bawahnya tidak menyetelnya, jadi setiap halaman selain
+  lima yang punya canonical sendiri memancarkan `<link rel="canonical" href="https://…/">` —
+  menyatakan dirinya duplikat homepage dan berhenti diindeks. Canonical dicabut dari root dan
+  sekarang selalu per halaman
+- [x] **`openGraph` di-merge shallow.** Begitu sebuah halaman menulis `openGraph`, seluruh objek
+  dari root dibuang: `siteName`, `locale`, dan **gambarnya** ikut hilang. Homepage dan index
+  artikel sudah kehilangan `og:image` sebelum perubahan ini. `opengraph-image` root hanya mengisi
+  segmen root, jadi gambar default kini disebut eksplisit lewat `pageMetadata()`
+
+### Fondasi
+
+- [x] `src/lib/seo.ts` — `pageMetadata()` merakit title/description/canonical/OG/Twitter sekaligus
+  supaya tidak ada halaman yang menulis `openGraph` mentah lagi; `privateMetadata()` untuk halaman
+  yang tidak layak diindeks; flag `ownSegmentImage` bagi segmen yang punya `opengraph-image` sendiri
+- [x] `src/lib/json-ld.ts` + `src/components/seo/json-ld.tsx` — builder schema.org dan penyuntiknya
+  (`<` di-escape karena judul dari database bisa menutup tag `</script>`)
+
+### Cakupan halaman
+
+- [x] 24 halaman yang sebelumnya tanpa metadata kini punya judul sendiri; yang privat
+  (`/exam`, `/result`, dashboard, flashcard deck, sesi latihan, conversation, speaking) `noindex`
+- [x] `noindex` dipasang di layout `(auth)`, `(dashboard)`, `/exam`, `/result` supaya route baru di
+  bawahnya ikut terlindungi. `robots.txt` saja tidak cukup: URL yang dilink dari luar tetap bisa
+  masuk indeks tanpa dirayapi
+- [x] `/test-package/[id]` dan `/test-package/[id]/questions` — `generateMetadata` dengan jumlah
+  soal, sesi, dan durasi resmi dari `src/features/test-package/queries.ts` (query terpisah dari
+  `actions.ts` karena yang di sana memanggil `getSession()` dan akan membatalkan prerender)
+
+### Gambar preview
+
+- [x] `alt` pada `opengraph-image` root (`og:image:alt` sebelumnya kosong) dan `twitter-image.tsx`
+  baru supaya `twitter:image` tidak bergantung pada fallback ke `og:image`
+- [x] Kartu OG per paket ujian (level, nama, sesi, durasi, jumlah soal) mengikuti pola cover
+  artikel. Dua file `opengraph-image.tsx` — segmen anak yang menulis `openGraph` sendiri tidak
+  mewarisi gambar dari induknya
+
+### Structured data, manifest, sitemap
+
+- [x] `EducationalOrganization` + `WebSite` (dengan `SearchAction` saat modul artikel hidup) di root;
+  `BlogPosting`, `Quiz`, `LearningResource`, dan `BreadcrumbList` di halaman terkait
+- [x] Manifest: ikon PNG 192/512 + varian `maskable` lewat `/app-icon/[variant]`. Android
+  mengabaikan ikon SVG saat menilai kelayakan install
+- [x] Sitemap memuat detail paket dan mode bacanya (6 → 102 URL); `robots.ts` menutup sesi latihan
+  dan koleksi flashcard pribadi
+- [x] Verifikasi: `lint`, `typecheck`, `test`, `build` lulus; `next start` dicek per halaman —
+  canonical benar per URL, `og:image` + `og:image:alt` + `twitter:image` terisi di seluruh halaman,
+  JSON-LD terparse, manifest dan sitemap sesuai
+- [ ] Verifikasi manual (user): tempel URL produksi ke WhatsApp/X/Facebook debugger dan daftarkan
+  sitemap di Google Search Console
+
 ## Fase 9 — Verifikasi & Polish
 
 - [ ] `npm run build` setelah tiap perubahan struktural/server action/caching

@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { FEATURES, SITE_URL, type FeatureName } from "@/constants";
 import { getArticleSitemapEntries } from "@/features/article/queries";
+import { getTestPackageSitemapEntries } from "@/features/test-package/queries";
 
 type StaticEntry = {
   path: string;
@@ -20,7 +21,10 @@ const STATIC_ENTRIES: StaticEntry[] = [
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const articles = FEATURES.article ? await getArticleSitemapEntries() : [];
+  const [articles, testPackages] = await Promise.all([
+    FEATURES.article ? getArticleSitemapEntries() : [],
+    FEATURES.testPackage ? getTestPackageSitemapEntries() : [],
+  ]);
 
   return [
     ...STATIC_ENTRIES.filter((entry) => !entry.feature || FEATURES[entry.feature]).map(
@@ -30,6 +34,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: entry.priority,
       }),
     ),
+    // Detail paket dan mode bacanya adalah halaman konten terbanyak di situs ini
+    // sesudah artikel; tanpa entri di sini keduanya hanya bisa ditemukan lewat
+    // link dari katalog.
+    ...testPackages.flatMap((testPackage) => [
+      {
+        url: new URL(`/test-package/${testPackage.id}`, SITE_URL).toString(),
+        lastModified: testPackage.updatedAt,
+        changeFrequency: "monthly" as const,
+        priority: 0.75,
+      },
+      {
+        url: new URL(`/test-package/${testPackage.id}/questions`, SITE_URL).toString(),
+        lastModified: testPackage.updatedAt,
+        changeFrequency: "monthly" as const,
+        priority: 0.7,
+      },
+    ]),
     ...articles.map((article) => ({
       url: new URL(`/article/${article.slug}`, SITE_URL).toString(),
       lastModified: article.updatedAt,

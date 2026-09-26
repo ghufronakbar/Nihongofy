@@ -15,6 +15,15 @@ export default function robots(): MetadataRoute.Robots {
       ],
       disallow: [
         "/api/",
+        // Turunan modul yang halaman indeksnya tetap dibuka: sesi latihan dan
+        // koleksi flashcard pribadi tidak punya nilai pencarian, dan aturan yang
+        // lebih spesifik mengalahkan `allow` di atasnya.
+        "/exercises/",
+        "/flashcard/add",
+        "/flashcard/browse",
+        "/flashcard/import",
+        "/flashcard/stats",
+        "/flashcard/deck/",
         // Catatan buatan pengguna, belum ada moderasi. Dibuka untuk diindeks
         // nanti bersamaan dengan dashboard admin.
         "/discussion",

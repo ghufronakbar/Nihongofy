@@ -7,6 +7,13 @@ import { ConversationSessionList } from "@/features/conversation/components/conv
 import { listConversationSessions } from "@/features/conversation/queries";
 import { ConversationSignInGate } from "@/features/conversation/components/sign-in-gate";
 import { SimulationNotice } from "@/features/conversation/components/simulation-notice";
+import type { Metadata } from "next";
+import { privateMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = privateMetadata(
+  "Latihan Percakapan",
+  "Latihan percakapan bahasa Jepang berbasis skenario.",
+);
 
 export default async function ConversationIndexPage() {
   if (!FEATURES.conversation) notFound();

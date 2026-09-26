@@ -15,6 +15,13 @@ import { getDashboardSummary } from "@/features/dashboard/actions";
 import { formatInTimeZone } from "@/lib/time-zone";
 import { getCurrentUserTimeZone } from "@/lib/user-time-zone";
 import { JLPT_SECTION_LABELS } from "@/constants/jlpt";
+import type { Metadata } from "next";
+import { privateMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = privateMetadata(
+  "Dashboard",
+  "Ringkasan progres belajar dan aktivitas terakhirmu.",
+);
 
 export default async function DashboardPage() {
   const [{ lastAttempt, completedCount }, timeZone] = await Promise.all([

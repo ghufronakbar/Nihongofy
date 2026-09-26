@@ -17,6 +17,8 @@ import {
   Zap,
 } from "lucide-react";
 import Link from "next/link";
+import type { Metadata } from "next";
+import { privateMetadata } from "@/lib/seo";
 
 const VALID_SECTIONS = Object.keys(JLPT_SECTION_LABELS) as JlptSection[];
 
@@ -29,6 +31,11 @@ function resolveScope(value: string | undefined): AnalyticsScope {
   if (value && (VALID_SECTIONS as string[]).includes(value)) return value as JlptSection;
   return "ALL";
 }
+
+export const metadata: Metadata = privateMetadata(
+  "Analitik",
+  "Analisis performa per seksi dan tipe soal JLPT.",
+);
 
 export default async function AnalyticsPage({
   searchParams,

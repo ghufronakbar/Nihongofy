@@ -4,6 +4,8 @@ import { ArrowLeft, ArrowRight, Eye } from "lucide-react";
 import { getAttemptSummary } from "@/features/result/actions";
 import { ResultSummaryView } from "@/features/result/components/result-summary-view";
 import { computeJlptScoreProjection } from "@/lib/jlpt-score";
+import type { Metadata } from "next";
+import { privateMetadata } from "@/lib/seo";
 
 function formatDuration(startedAt: string, finishedAt: string | null) {
   if (!finishedAt) return "-";
@@ -14,6 +16,11 @@ function formatDuration(startedAt: string, finishedAt: string | null) {
   const minutes = Math.max(0, Math.round((finishedAtMs - startedAtMs) / 60000));
   return `${minutes} Menit`;
 }
+
+export const metadata: Metadata = privateMetadata(
+  "Hasil ujian",
+  "Ringkasan skor dan capaian satu attempt mock test JLPT.",
+);
 
 export default async function ResultSummaryPage({
   params,

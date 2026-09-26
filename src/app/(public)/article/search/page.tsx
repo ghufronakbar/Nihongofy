@@ -9,13 +9,16 @@ import {
   parseArticleSearchParams,
   searchArticles,
 } from "@/features/article/queries";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+// Halaman hasil pencarian: `noindex` supaya kombinasi query tidak membanjiri
+// indeks, tapi tetap `follow` agar link ke artikelnya ikut ditelusuri.
+export const metadata: Metadata = pageMetadata({
   title: "Cari artikel",
   description: "Cari artikel belajar bahasa Jepang berdasarkan kata kunci, kategori, dan tag.",
-  alternates: { canonical: "/article/search" },
-  robots: { index: false, follow: true },
-};
+  path: "/article/search",
+  noindex: "follow",
+});
 
 export default async function ArticleSearchPage({
   searchParams,

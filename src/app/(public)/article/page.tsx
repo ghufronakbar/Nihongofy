@@ -4,21 +4,18 @@ import { ArrowRight, BookOpenText, Search, Tag } from "lucide-react";
 import { PageContainer } from "@/components/marketing/page-container";
 import { ArticleCard } from "@/features/article/components/article-card";
 import { getArticleFacets, getArticleIndexData } from "@/features/article/queries";
+import { JsonLd } from "@/components/seo/json-ld";
+import { breadcrumbJsonLd } from "@/lib/json-ld";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Artikel Belajar Bahasa Jepang",
   description:
     "Panduan belajar, strategi JLPT, tata bahasa, kosakata, dan latihan bahasa Jepang yang bisa langsung dipraktikkan.",
-  alternates: { canonical: "/article" },
-  openGraph: {
-    title: "Artikel Belajar Bahasa Jepang | Nihongofy",
-    description:
-      "Panduan belajar, strategi JLPT, tata bahasa, kosakata, dan latihan bahasa Jepang.",
-    url: "/article",
-    type: "website",
-    locale: "id_ID",
-  },
-};
+  path: "/article",
+  ogDescription:
+    "Panduan belajar, strategi JLPT, tata bahasa, kosakata, dan latihan bahasa Jepang.",
+});
 
 export default async function ArticleIndexPage() {
   const [{ featured, latest }, facets] = await Promise.all([
@@ -28,6 +25,13 @@ export default async function ArticleIndexPage() {
 
   return (
     <>
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Beranda", path: "/" },
+          { name: "Artikel", path: "/article" },
+        ])}
+      />
+
       <section className="neo-grid-paper border-b-[3px] border-neo-ink py-14 md:py-20">
         <PageContainer className="grid items-end gap-10 lg:grid-cols-[1.05fr_0.95fr]">
           <div>

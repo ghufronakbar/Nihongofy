@@ -4,8 +4,15 @@ import { Download, Play, Search, Settings2 } from "lucide-react";
 import { getSession } from "@/lib/auth";
 import { getDeckOverview, rollUpCounts } from "@/features/flashcard/data";
 import { flattenDeckTree } from "@/features/flashcard/lib/deck-tree";
+import type { Metadata } from "next";
+import { privateMetadata } from "@/lib/seo";
 
 type Props = { params: Promise<{ deckId: string }> };
+
+export const metadata: Metadata = privateMetadata(
+  "Deck flashcard",
+  "Isi deck flashcard, beban review hari ini, dan pengaturannya.",
+);
 
 export default async function DeckPage({ params }: Props) {
   const session = await getSession();

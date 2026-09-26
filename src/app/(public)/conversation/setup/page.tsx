@@ -6,6 +6,13 @@ import { getSession } from "@/lib/auth";
 import { ConversationSetup } from "@/features/conversation/components/conversation-setup";
 import { ConversationSignInGate } from "@/features/conversation/components/sign-in-gate";
 import { SimulationNotice } from "@/features/conversation/components/simulation-notice";
+import type { Metadata } from "next";
+import { privateMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = privateMetadata(
+  "Siapkan percakapan",
+  "Pilih skenario, level, dan gaya bahasa sebelum mulai percakapan.",
+);
 
 export default async function ConversationSetupPage() {
   if (!FEATURES.conversation) notFound();

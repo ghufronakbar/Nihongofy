@@ -106,5 +106,16 @@ Aturan halaman exam:
   cache lintas user.
 - Body artikel memakai JSON tervalidasi dan tidak pernah dirender sebagai HTML mentah.
 - Metadata artikel mencakup canonical, Open Graph, Twitter card, generated cover, sitemap, dan robots.
+- Seluruh metadata halaman dirakit lewat `pageMetadata()`/`privateMetadata()` di `src/lib/seo.ts`.
+  Jangan menulis objek `openGraph` atau `alternates.canonical` langsung di halaman: merge metadata
+  Next bersifat shallow (objek `openGraph` halaman menimpa milik root, termasuk gambarnya) sementara
+  field yang tidak disetel justru diwarisi — canonical di root akan menempel ke semua halaman.
+- Structured data schema.org dibangun di `src/lib/json-ld.ts` dan disuntikkan lewat komponen
+  `JsonLd`. Root memasang `EducationalOrganization` + `WebSite`; halaman detail menambah
+  `BlogPosting`, `Quiz`, `LearningResource`, atau `BreadcrumbList`.
+- Gambar preview dihasilkan `next/og`, bukan file statis: kartu situs di root (`opengraph-image` +
+  `twitter-image`), cover per artikel, kartu per paket ujian, dan ikon PNG manifest di
+  `/app-icon/[variant]`. Segmen yang menulis metadata sendiri tidak mewarisi gambar dari induknya,
+  jadi tiap segmen yang butuh kartu khusus wajib punya `opengraph-image.tsx` sendiri.
 - `APP_URL` menentukan origin canonical, sitemap, robots, dan link email auth; nilainya harus URL
   absolut untuk environment aktif.

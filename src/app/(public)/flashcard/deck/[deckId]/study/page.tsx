@@ -8,8 +8,15 @@ import {
 import { previewSchedule } from "@/features/flashcard/lib/scheduler";
 import { formatIntervalLabel } from "@/features/flashcard/lib/preview-interval";
 import type { FlashcardRatingInput } from "@/features/flashcard/schemas";
+import type { Metadata } from "next";
+import { privateMetadata } from "@/lib/seo";
 
 type Props = { params: Promise<{ deckId: string }> };
+
+export const metadata: Metadata = privateMetadata(
+  "Sesi belajar flashcard",
+  "Sesi review flashcard dengan penjadwalan FSRS.",
+);
 
 export default async function StudyPage({ params }: Props) {
   const session = await getSession();
