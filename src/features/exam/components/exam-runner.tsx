@@ -29,6 +29,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { ReportButton } from "@/features/report/components/report-button";
 
 type ExamQuestion = {
   id: number;
@@ -59,6 +60,11 @@ type ExamRunnerProps = {
   jlptLevel?: JlptLevel | null;
   sectionScope?: JlptSection | null;
   questions: ExamQuestion[];
+  /**
+   * Status `FEATURES.report` diteruskan sebagai props, bukan diimpor: komponen
+   * client tidak boleh menarik `@/constants` ke bundle browser.
+   */
+  reportEnabled: boolean;
 };
 
 export function ExamRunner({
@@ -68,6 +74,7 @@ export function ExamRunner({
   jlptLevel,
   sectionScope,
   questions,
+  reportEnabled,
 }: ExamRunnerProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -402,22 +409,30 @@ export function ExamRunner({
                 </div>
               </div>
 
-              <button
-                type="button"
-                onClick={() => toggleFlag(currentQuestion.id)}
-                aria-label={answerState.flagged ? "Hapus tanda ragu-ragu" : "Tandai ragu-ragu"}
-                className={cn(
-                  "neo-button text-xs font-black py-2 px-3 sm:px-4",
-                  answerState.flagged
-                    ? "bg-neo-coral text-white border-[3px] border-neo-ink shadow-neo-sm"
-                    : "bg-white text-black border-2 border-neo-ink hover:bg-neo-paper",
+              <div className="flex shrink-0 items-center gap-1.5">
+                {reportEnabled && (
+                  <ReportButton
+                    target={{ targetType: "QUESTION", questionId: currentQuestion.id }}
+                    label="Laporkan soal"
+                  />
                 )}
-              >
-                <Flag className={cn("size-3.5", answerState.flagged ? "fill-white text-white" : "text-black")} />
-                <span className="hidden sm:inline">
-                  {answerState.flagged ? "Ditandai Ragu" : "Tandai Ragu"}
-                </span>
-              </button>
+                <button
+                  type="button"
+                  onClick={() => toggleFlag(currentQuestion.id)}
+                  aria-label={answerState.flagged ? "Hapus tanda ragu-ragu" : "Tandai ragu-ragu"}
+                  className={cn(
+                    "neo-button text-xs font-black py-2 px-3 sm:px-4",
+                    answerState.flagged
+                      ? "bg-neo-coral text-white border-[3px] border-neo-ink shadow-neo-sm"
+                      : "bg-white text-black border-2 border-neo-ink hover:bg-neo-paper",
+                  )}
+                >
+                  <Flag className={cn("size-3.5", answerState.flagged ? "fill-white text-white" : "text-black")} />
+                  <span className="hidden sm:inline">
+                    {answerState.flagged ? "Ditandai Ragu" : "Tandai Ragu"}
+                  </span>
+                </button>
+              </div>
             </div>
 
             {/* Question Text */}

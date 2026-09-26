@@ -42,6 +42,11 @@ export type AdminOverview = {
     completedAttempts: number;
     attemptsLastSevenDays: number;
   };
+  reports: {
+    open: number;
+    lastSevenDays: number;
+    awaitingReply: number;
+  };
   editorial: {
     articlesPublished: number;
     articlesDraft: number;
@@ -73,6 +78,9 @@ export async function getAdminOverview(): Promise<AdminOverview> {
     attemptsRecent,
     articlesByStatus,
     systemDecksByPublished,
+    reportsOpen,
+    reportsRecent,
+    reportsAwaitingReply,
   ] = await Promise.all([
     prisma.testPackage.groupBy({ by: ["jlptLevel"], _count: { _all: true } }),
     // Soal tidak menyimpan level sendiri; jalurnya
@@ -100,6 +108,13 @@ export async function getAdminOverview(): Promise<AdminOverview> {
     prisma.attempt.count({ where: { startedAt: { gte: sevenDaysAgo } } }),
     prisma.article.groupBy({ by: ["status"], _count: { _all: true } }),
     prisma.flashcardSystemDeck.groupBy({ by: ["isPublished"], _count: { _all: true } }),
+    prisma.report.count({ where: { status: { in: ["OPEN", "IN_REVIEW"] } } }),
+    prisma.report.count({ where: { createdAt: { gte: sevenDaysAgo } } }),
+    // Pelapor yang meninggalkan alamat dan belum pernah dibalas. Bukan kewajiban
+    // — admin berhak tidak menjawab — tetapi angkanya perlu terlihat.
+    prisma.report.count({
+      where: { replyEmail: { not: null }, repliedAt: null, status: { in: ["OPEN", "IN_REVIEW"] } },
+    }),
   ]);
 
   // Satu query tambahan memetakan item -> level, jauh lebih murah daripada
@@ -155,6 +170,11 @@ export async function getAdminOverview(): Promise<AdminOverview> {
     activity: {
       completedAttempts,
       attemptsLastSevenDays: attemptsRecent,
+    },
+    reports: {
+      open: reportsOpen,
+      lastSevenDays: reportsRecent,
+      awaitingReply: reportsAwaitingReply,
     },
     editorial: {
       articlesPublished: articleCount("PUBLISHED"),

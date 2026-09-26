@@ -66,6 +66,39 @@ Stack: Next.js + Prisma + PostgreSQL (Supabase).
   dipulihkan — memulihkan hapusan pemilik berarti menerbitkan ulang tulisan yang sengaja ia tarik.
 - Takedown hanya mengubah record database. File lampiran di object storage **tidak** dihapus.
 
+## Laporan Pengguna
+
+- `Report` adalah kotak masuk laporan: bug, typo soal, kunci jawaban keliru, penyalahgunaan diskusi,
+  dan saran. Target opsional dan memakai **FK nyata** (`questionId`, `articleId`, `commentId`), bukan
+  pasangan `(targetType, targetId)` seperti `AdminAuditLog`. Baris audit harus bertahan setelah
+  targetnya hilang; laporan justru ada untuk membuka targetnya dan memperbaikinya.
+- Ketiga FK target memakai `ON DELETE SET NULL`. Menghapus satu soal tidak boleh ikut menghapus
+  laporan yang belum ditindak.
+- `targetLabel` adalah snapshot teks target saat laporan dibuat. **Selalu** dibangun di server dari
+  baris target — label kiriman client dapat dipalsukan dan akan menyuntikkan teks ke layar admin.
+  Tanpa kolom ini, FK yang menjadi null meninggalkan baris yang tidak terbaca.
+- `targetType = QUESTION_EXPLANATION` juga memakai `questionId`, bukan id pembahasan. Pembahasan
+  di-upsert oleh `seed:question-explanation` dan layar perbaikannya `/admin/explanation/[questionId]`.
+- `Report_target_columns_check` menolak kombinasi kolom yang salah kabel. Sisi "target harus ada"
+  sengaja TIDAK ada di database: dengan `ON DELETE SET NULL`, CHECK semacam itu akan menggagalkan
+  penghapusan soal. Kewajiban itu ditegakkan zod di `src/features/report/schemas.ts`.
+- `Report_reply_shape_check` memastikan `repliedAt` dan `replyMessage` terisi bersama — `repliedAt`
+  tanpa isi balasan berarti ada email terkirim tanpa jejak.
+- Tiga partial unique index melarang satu pelapor yang dikenal punya lebih dari satu laporan `OPEN`
+  pada target yang sama. Guest tidak punya identitas untuk dijadikan kunci; di sana rate limit per IP
+  yang bekerja. Ketiga index dan kedua CHECK di atas hanya ada di SQL migration — Prisma tidak dapat
+  mengekspresikannya, jadi jangan menganggap `schema.prisma` sebagai daftar lengkap constraint tabel
+  ini.
+- `reporterId` nullable (`SET NULL`) untuk guest dan akun yang dianonimkan. `anonymizeAccount`
+  mengosongkan `reporterId` dan `replyEmail` tetapi TIDAK menghapus laporannya: bug yang dilaporkan
+  tetap perlu ditindak setelah pelapornya pergi.
+- `replyEmail` adalah data pribadi pada baris yang bisa jadi tidak punya pemilik. Cron
+  `auth-cleanup` mengosongkannya untuk laporan yang sudah ditutup dan lebih tua dari
+  `REPORT_REPLY_EMAIL_RETENTION_DAYS`.
+- `message` bukan kolom markup Jepang. Jangan merendernya sebagai markup.
+- Tidak ada IP mentah yang disimpan di tabel ini. IP hanya menjadi subject bucket rate limit yang
+  di-HMAC, sama seperti `AuthRateLimit`.
+
 ## Struktur Data (hierarki)
 
 ```
@@ -191,6 +224,9 @@ Constraint berikut menjaga integritas saat import/ekstraksi soal via AI:
 - `Question`: `@@unique([testPackageItemId, order])` — nomor soal tidak boleh dobel.
 - `QuestionChoice`: `@@unique([questionId, codeAnswer])` — kode pilihan tidak boleh dobel.
 - `AttemptAnswer`: `@@unique([attemptId, questionId])` — satu jawaban per soal per attempt.
+- `Report`: tiga partial unique index pada `(reporterId, target)` untuk status `OPEN` — satu pelapor
+  yang dikenal tidak boleh membanjiri satu target. Hanya ada di SQL migration, tidak di
+  `schema.prisma`.
 
 Saat import data soal, tangani pelanggaran constraint sebagai sinyal error ekstraksi — laporkan, jangan di-skip diam-diam.
 

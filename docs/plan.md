@@ -939,6 +939,73 @@ Permintaan user: melengkapi metadata supaya SEO bagus dan tautan yang dishare pu
 - [ ] Verifikasi manual (user): tempel URL produksi ke WhatsApp/X/Facebook debugger dan daftarkan
   sitemap di Google Search Console
 
+## Fase 8.11 — Laporan Pengguna (Report)
+
+Permintaan user: fitur report untuk bug dan hal umum lain, tampil di halaman publik, dengan relasi
+non-mandatory ke soal, pembahasan, atau modul lain, supaya tombol "Laporkan" di UI ikut membawa id
+yang bersangkutan. Ditampilkan di halaman admin.
+
+Keputusan yang diambil sebelum implementasi: form publik saja (daftar laporan tidak publik), guest
+boleh melapor dengan Turnstile, relasi memakai enum `targetType` + FK nullable, kategori dibatasi
+oleh target, dan balasan hanya lewat email serta opsional. Rancangan lengkap:
+[docs/module/report.md](module/report.md).
+
+### Schema dan data
+
+- [x] Tiga enum + model `Report`, migration `20260926230000_report_inbox` (SQL tulis tangan +
+  `migrate deploy`; `migrate dev` tidak dipakai karena shadow database Supabase)
+- [x] FK target `questionId`/`articleId`/`commentId` seluruhnya `ON DELETE SET NULL` + snapshot
+  `targetLabel` supaya laporan tetap terbaca setelah targetnya dihapus
+- [x] `Report_target_columns_check` menolak kombinasi kolom yang salah kabel. Sisi "harus ada"
+  sengaja tidak di database: dengan `SET NULL`, CHECK itu akan menggagalkan penghapusan soal
+- [x] `Report_reply_shape_check` — `repliedAt` dan `replyMessage` harus terisi bersama
+- [x] Tiga partial unique index: satu pelapor yang dikenal hanya boleh punya satu laporan `OPEN` per
+  target; pelanggaran `P2002` diterjemahkan menjadi pesan yang jelas
+- [x] `anonymizeAccount` mengosongkan `reporterId` + `replyEmail` tanpa menghapus laporannya
+- [x] Retensi `replyEmail` 90 hari untuk laporan yang sudah ditutup, dijalankan cron `auth-cleanup`
+
+### Jalur kirim
+
+- [x] Peta kategori per target sebagai satu konstanta yang dipakai form, zod, dan layar admin
+- [x] `submitReportAction`: Turnstile (action `report` baru) untuk pengirim tanpa session, rate limit
+  per IP/akun lewat bucket `AuthRateLimit` yang sudah ada, target diverifikasi ulang di server, dan
+  `targetLabel` dibangun dari baris database — bukan dari client
+- [x] Halaman publik `/report` (`noindex, follow`) + tautan footer yang mengikuti flag
+- [x] `ReportButton` + dialog di tempat, tanpa navigasi; tidak ada `revalidatePath` pada route exam
+  supaya state jawaban dan timer tidak terganggu
+- [x] Dipasang di exam runner, latihan cepat, mode baca paket, review hasil, kartu pembahasan,
+  halaman artikel, dan thread diskusi (root + balasan, guest juga boleh melapor)
+- [x] Transport SMTP diangkat ke `src/lib/mailer.ts` supaya balasan laporan tidak membuat transport
+  kedua; template email auth tetap di modul auth
+
+### Sisi admin
+
+- [x] `/admin/report`: tab status, filter target dan kategori, pencarian, 100 baris terbaru
+- [x] Aksi `Tinjau`/`Selesai`/`Tolak`/`Duplikat` + catatan internal, masing-masing menulis
+  `AdminAuditLog` di transaksi yang sama
+- [x] Balasan email opsional: satu kali per laporan, email dikirim sebelum barisnya ditulis, dan isi
+  laporan asli tidak pernah dikutip ke dalam email
+- [x] Kolom "+N laporan lain di target ini", tautan ke layar perbaikan, dan laporan komentar
+  diarahkan ke `/admin/moderation` alih-alih membuat jalur takedown kedua
+- [x] Entri sidebar, kartu overview, dan baris "perlu perhatian" di `/admin`
+
+### Verifikasi
+
+- [x] `npm run lint`, `npm run typecheck`, `npm run test`, `npm run build` lulus
+- [ ] Verifikasi manual (user): kirim laporan sebagai guest (Turnstile) dan sebagai user login, cek
+  laporan muncul di `/admin/report`, coba ubah status, lalu kirim satu balasan email dan pastikan
+  isi laporan tidak ikut terkutip di email yang diterima
+
+### Yang sengaja ditunda
+
+- [ ] Kartu deck bawaan flashcard sebagai target laporan — deck bawaan **disalin** ke
+  `FlashcardNote` milik user, jadi memperbaiki sumbernya tidak memperbaiki salinan yang sudah ada.
+  Butuh keputusan backfill tersendiri
+- [ ] Notifikasi admin saat laporan masuk
+- [ ] Halaman status laporan untuk pelapor
+- [ ] Lampiran gambar pada laporan
+- [ ] `DUPLICATE` yang menunjuk laporan induknya
+
 ## Fase 9 — Verifikasi & Polish
 
 - [ ] `npm run build` setelah tiap perubahan struktural/server action/caching

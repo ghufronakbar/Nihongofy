@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
-import { ACCOUNT_DELETION_CRON_BATCH_SIZE, env } from "@/constants";
+import {
+  ACCOUNT_DELETION_CRON_BATCH_SIZE,
+  REPORT_REPLY_EMAIL_CLEANUP_BATCH_SIZE,
+  REPORT_REPLY_EMAIL_RETENTION_DAYS,
+  env,
+} from "@/constants";
 import { revokeAllUserSessions } from "@/lib/auth";
 import {
   destroyManagedAvatar,
@@ -27,6 +32,30 @@ export async function GET(request: Request) {
     prisma.authToken.deleteMany({ where: { expiresAt: { lte: now } } }),
     prisma.authRateLimit.deleteMany({ where: { updatedAt: { lt: staleRateLimitCutoff } } }),
   ]);
+
+  // Retensi alamat balasan laporan. Barisnya dipertahankan sebagai riwayat; yang
+  // kedaluwarsa hanya data pribadinya, dan hanya setelah laporannya ditutup.
+  const replyEmailCutoff = new Date(
+    now.getTime() - REPORT_REPLY_EMAIL_RETENTION_DAYS * 24 * 60 * 60 * 1000,
+  );
+  const staleReplyEmails = await prisma.report.findMany({
+    where: {
+      replyEmail: { not: null },
+      status: { in: ["RESOLVED", "REJECTED", "DUPLICATE"] },
+      updatedAt: { lt: replyEmailCutoff },
+    },
+    orderBy: { updatedAt: "asc" },
+    take: REPORT_REPLY_EMAIL_CLEANUP_BATCH_SIZE,
+    select: { id: true },
+  });
+  const reportReplyEmailsCleared = staleReplyEmails.length
+    ? (
+        await prisma.report.updateMany({
+          where: { id: { in: staleReplyEmails.map((report) => report.id) } },
+          data: { replyEmail: null },
+        })
+      ).count
+    : 0;
 
   let orphanAvatarsDeleted = 0;
   let orphanAvatarFailures = 0;
@@ -87,6 +116,7 @@ export async function GET(request: Request) {
   return NextResponse.json({
     expiredTokensDeleted: expiredTokens.count,
     staleRateLimitsDeleted: staleRateLimits.count,
+    reportReplyEmailsCleared,
     orphanAvatarsDeleted,
     orphanAvatarFailures,
     accountsDeleted,

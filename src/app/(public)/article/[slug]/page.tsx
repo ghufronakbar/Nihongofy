@@ -4,11 +4,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Clock3, Eye, Tag } from "lucide-react";
 import { PageContainer } from "@/components/marketing/page-container";
+import { FEATURES } from "@/constants";
 import { ArticleActions } from "@/features/article/components/article-actions";
 import { ArticleBody } from "@/features/article/components/article-body";
 import { ArticleCard } from "@/features/article/components/article-card";
 import { formatArticleCount, formatArticleDate } from "@/features/article/lib/format";
 import { getArticleDetail, getArticleViewerState } from "@/features/article/queries";
+import { ReportButton } from "@/features/report/components/report-button";
 import { JsonLd } from "@/components/seo/json-ld";
 import { articleJsonLd, breadcrumbJsonLd } from "@/lib/json-ld";
 import { pageMetadata, privateMetadata } from "@/lib/seo";
@@ -194,6 +196,23 @@ export default async function ArticleDetailPage({
                 <h2 className="mt-2 text-2xl">{article.authorName}</h2>
                 {article.authorRole ? <p className="mt-2 leading-7">{article.authorRole}</p> : null}
               </div>
+
+              {FEATURES.report ? (
+                <div className="mt-5 border-[3px] border-neo-ink bg-white p-4 shadow-neo-sm">
+                  <p className="text-sm font-bold">Menemukan kekeliruan di artikel ini?</p>
+                  <p className="mt-1 text-xs font-semibold text-foreground/65">
+                    Laporan Anda ikut membawa identitas artikel ini, jadi tidak perlu menyebut
+                    judulnya.
+                  </p>
+                  <div className="mt-3">
+                    <ReportButton
+                      target={{ targetType: "ARTICLE", articleId: article.id }}
+                      variant="outline"
+                      label="Laporkan artikel"
+                    />
+                  </div>
+                </div>
+              ) : null}
             </aside>
           </PageContainer>
         </section>

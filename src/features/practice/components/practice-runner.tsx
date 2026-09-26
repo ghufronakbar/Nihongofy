@@ -18,6 +18,7 @@ import { JapaneseText } from "@/components/japanese-text";
 import { ImageWithLightbox } from "@/components/image-with-lightbox";
 import { JLPT_SECTION_LABELS, mondaiTypeFullLabel } from "@/constants/jlpt";
 import { QuestionExplanationBody } from "@/components/question-explanation";
+import { ReportButton } from "@/features/report/components/report-button";
 import type { QuestionExplanationView } from "@/lib/question-explanation";
 import { cn } from "@/lib/utils";
 import {
@@ -60,6 +61,11 @@ type PracticeQuestion = {
 };
 
 type PracticeRunnerProps = {
+  /**
+   * Status `FEATURES.report` diteruskan sebagai props: komponen client tidak boleh
+   * mengimpor `@/constants`.
+   */
+  reportEnabled: boolean;
   practiceSession: {
     id: number;
     jlptLevel: string;
@@ -71,7 +77,7 @@ type PracticeRunnerProps = {
   };
 };
 
-export function PracticeRunner({ practiceSession }: PracticeRunnerProps) {
+export function PracticeRunner({ practiceSession, reportEnabled }: PracticeRunnerProps) {
   const initialQuestions = practiceSession.questions;
   const firstUnanswered = initialQuestions.findIndex((question) => question.answeredAt === null);
   const [questions, setQuestions] = useState(initialQuestions);
@@ -293,7 +299,15 @@ export function PracticeRunner({ practiceSession }: PracticeRunnerProps) {
           )}
 
           <div className="neo-surface p-5 sm:p-7">
-            <p className="font-mono text-xs font-black tracking-[0.12em] uppercase">Pertanyaan</p>
+            <div className="flex items-start justify-between gap-3">
+              <p className="font-mono text-xs font-black tracking-[0.12em] uppercase">Pertanyaan</p>
+              {reportEnabled && (
+                <ReportButton
+                  target={{ targetType: "QUESTION", questionId: currentQuestion.id }}
+                  label="Laporkan soal"
+                />
+              )}
+            </div>
             <div className="mt-3 font-japanese text-xl leading-9 font-bold sm:text-2xl">
               {currentQuestion.questionText ? (
                 <JapaneseText
@@ -408,6 +422,18 @@ export function PracticeRunner({ practiceSession }: PracticeRunnerProps) {
                   <p>Kunci jawaban sudah ditandai. Penjelasan untuk soal ini belum tersedia.</p>
                 )}
               </div>
+              {reportEnabled && currentQuestion.feedback?.explanation && (
+                <div className="mt-3">
+                  <ReportButton
+                    target={{
+                      targetType: "QUESTION_EXPLANATION",
+                      questionId: currentQuestion.id,
+                    }}
+                    variant="outline"
+                    label="Laporkan pembahasan"
+                  />
+                </div>
+              )}
             </div>
           )}
 

@@ -87,10 +87,12 @@ export function DiscussionSheet({
   questionId,
   initialCount,
   currentUserId,
+  reportEnabled,
 }: {
   questionId: number;
   initialCount: number;
   currentUserId: number | null;
+  reportEnabled: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const [roots, setRoots] = useState<DiscussionRoot[] | null>(null);
@@ -151,6 +153,7 @@ export function DiscussionSheet({
               roots={roots ?? []}
               currentUserId={currentUserId}
               onChanged={() => void load()}
+              reportEnabled={reportEnabled}
             />
           )}
         </div>

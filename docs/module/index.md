@@ -20,11 +20,12 @@ Folder ini mendokumentasikan kondisi aplikasi berdasarkan kode, fixture, dan dat
 | [Progress dan export](progress.md) | Selesai | Tabel per attempt serta export XLSX/PDF aktif; belum ada grafik dan data development masih empty state. |
 | [Profile](profile.md) | Selesai dengan gap account lifecycle | Edit akun, avatar, password, overview, dan SRS settings aktif. |
 | [Article](article.md) | Selesai, kini punya CMS admin | Listing, search, detail, SEO, save/favorite, dan view aktif; CRUD serta workflow draft/published/archived ada di `/admin/article`. Belum ada halaman koleksi tersimpan. |
-| [Question comments](question-comment.md) | Selesai, kini termasuk diskusi publik | Catatan pribadi, berbagi ke diskusi, balasan satu tingkat, permalink `/discussion/[commentId]`, dan moderasi admin aktif; laporan dari user, notifikasi, dan rate limit belum ada. |
+| [Question comments](question-comment.md) | Selesai, kini termasuk diskusi publik | Catatan pribadi, berbagi ke diskusi, balasan satu tingkat, permalink `/discussion/[commentId]`, dan moderasi admin aktif; laporan dari user kini ada lewat [modul report](report.md), sedangkan notifikasi dan rate limit posting belum ada. |
 | [Japanese content rendering](japanese-content-rendering.md) | Fungsional dengan gap format | Furigana, underline, slot, tabel, dan multi-passage aktif; newline dan Markdown fixture belum selalu dirender dengan benar. |
 | [Shared study utilities](study.md) | Selesai sederhana | Saat ini hanya menyediakan TTS browser bersama untuk kana dan flashcard. |
 | [Conversation dan speaking](conversation-speaking.md) | Versi awal fungsional | Teks dan suara berjalan end-to-end dengan session tersimpan dan provider mock/OpenAI; quota belum ditegakkan, moderation dan retention belum ada. Rancangan: [conversation-speaking-design.md](conversation-speaking-design.md); aset karakter: [conversation-persona-assets.md](conversation-persona-assets.md). |
 | [Content data dan seeding](content-data.md) | Infrastruktur aktif, sebagian punya UI | Import tervalidasi tersedia lewat CLI maupun `/admin`; bank soal dan artikel berbagi jalur kode antara keduanya. Pembahasan dan deck bawaan masih CLI saja. |
+| [Report](report.md) | Selesai untuk scope v1 | Form publik (guest boleh, dengan Turnstile), tombol Laporkan pada soal/pembahasan/artikel/diskusi, antrean admin, dan balasan email opsional. Kartu deck bawaan belum termasuk. |
 | [Admin dashboard](admin.md) | Selesai | Role statis `USER`/`ADMIN`, guard, overview, bank soal, pembahasan, CMS artikel, deck bawaan, moderasi diskusi, pengelolaan user, observability conversation, feature flag read-only, invalidasi cache, dan audit log aktif. |
 
 ## Feature Flag
@@ -46,6 +47,7 @@ di-prerender saat build, jadi keduanya baru berubah setelah redeploy.
 | `FEATURES_ARTICLE` | [Article](article.md#feature-flag) | `/article/*` |
 | `FEATURES_QUESTION_COMMENT` | [Question comments](question-comment.md#feature-flag) | Tidak ada route; section catatan dan action-nya dinonaktifkan |
 | `FEATURES_QUESTION_DISCUSSION` | [Question comments](question-comment.md#feature-flag) | `/discussion/*`; tombol diskusi, bagikan, dan balas tidak dirender |
+| `FEATURES_REPORT` | [Report](report.md#feature-flag) | `/report`; seluruh tombol "Laporkan" tidak dirender. `/admin/report` tetap hidup |
 | `FEATURES_CONVERSATION` | [Conversation](conversation-speaking.md#feature-flag) | `/conversation/*`, `/api/conversation/*` |
 | `FEATURES_SPEAKING` | [Speaking](conversation-speaking.md#feature-flag) | `/speaking/*` |
 
@@ -59,9 +61,11 @@ Aturan umum:
   [Profile](profile.md#feature-flag).
 - Flag tidak saling mewajibkan; halaman yang menautkan modul lain menyembunyikan link tersebut.
   Dua ketergantungan: `FEATURES_SPEAKING` ikut mati bila conversation mati, dan
-  `FEATURES_QUESTION_DISCUSSION` ikut mati bila question comment mati.
+  `FEATURES_QUESTION_DISCUSSION` ikut mati bila question comment mati. `FEATURES_REPORT` berdiri
+  sendiri, dan mematikannya tidak ikut mematikan antrean admin-nya — lihat
+  [Report](report.md#feature-flag).
 - Data milik modul yang mati tidak dihapus.
-- Hanya conversation, question comment, dan API export flashcard yang memeriksa flag di sisi
+- Hanya conversation, question comment, report, dan API export flashcard yang memeriksa flag di sisi
   server action/API. Server Action modul lain belum dijaga, sehingga tab lama yang masih terbuka
   tetap dapat memanggilnya.
 - Auth, dashboard, profile, dan shared utilities tidak punya flag. Admin juga tidak: aksesnya

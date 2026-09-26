@@ -172,6 +172,45 @@ enum CommentVisibility {
   PUBLIC // dibagikan ke diskusi, terlihat semua orang termasuk guest
 }
 
+// Laporan dari pengguna. Target opsional: satu laporan boleh berdiri sendiri
+// (bug aplikasi, saran) atau menempel pada objek yang dikeluhkan.
+//
+// GENERAL bukan "tanpa nilai", melainkan pilihan eksplisit — dengan begitu
+// filter antrean admin tidak perlu menebak dari kolom mana yang non-null.
+enum ReportTargetType {
+  GENERAL
+  QUESTION
+  QUESTION_EXPLANATION
+  ARTICLE
+  COMMENT
+}
+
+// Kategori dibatasi oleh target: peta lengkapnya ada di
+// `src/features/report/constants.ts` dan ditegakkan oleh zod, bukan oleh CHECK
+// constraint — peta itu yang paling sering berubah, dan mengubahnya lewat
+// migrasi setiap kali ada kategori baru adalah gesekan tanpa imbalan.
+//
+// ANSWER_KEY dipisah dari CONTENT_ERROR karena sudah ada alur untuknya:
+// `QuestionExplanation.answerKeyDoubt`. Keduanya antrean yang sama.
+enum ReportCategory {
+  BUG
+  CONTENT_ERROR
+  ANSWER_KEY
+  MEDIA_ERROR
+  EXPLANATION_ERROR
+  ABUSE
+  SUGGESTION
+  OTHER
+}
+
+enum ReportStatus {
+  OPEN
+  IN_REVIEW
+  RESOLVED
+  REJECTED
+  DUPLICATE
+}
+
 enum AuthTokenPurpose {
   EMAIL_VERIFICATION
   EMAIL_CHANGE
@@ -241,6 +280,9 @@ model User {
   oauthAccounts        OAuthAccount[]
   conversationSessions ConversationSession[]
   conversationQuotas   ConversationQuota[]
+  reports              Report[]              @relation("ReportReporter")
+  handledReports       Report[]              @relation("ReportHandledBy")
+  reportReplies        Report[]              @relation("ReportRepliedBy")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -700,6 +742,7 @@ model Question {
   questionComments QuestionComment[]
   attemptAnswers   AttemptAnswer[]
   practiceAnswers  PracticeAnswer[]
+  reports          Report[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -832,6 +875,8 @@ model QuestionComment {
   repliedTo   QuestionComment?  @relation("CommentMentions", fields: [repliedToId], references: [id], onDelete: SetNull)
   repliedToId Int?
   mentionedBy QuestionComment[] @relation("CommentMentions")
+
+  reports Report[]
 
   commentText   String   @db.Text
   commentImages String[] // url gambar lampiran
@@ -1014,6 +1059,7 @@ model Article {
 
   tagLinks     ArticleTagLink[]
   interactions ArticleInteraction[]
+  reports      Report[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1199,4 +1245,94 @@ model ConversationQuota {
 
   @@unique([userId, quotaDate])
   @@index([quotaDate])
+}
+
+// ============================================================
+// LAPORAN PENGGUNA
+// ============================================================
+
+// Kotak masuk laporan: bug aplikasi, typo soal, kunci jawaban yang keliru,
+// penyalahgunaan di diskusi, dan saran. Form-nya publik (guest boleh mengirim);
+// daftarnya hanya terlihat di /admin.
+//
+// Target bersifat opsional dan memakai FK nyata, bukan pasangan
+// (targetType, targetId) seperti `AdminAuditLog`. Perbedaannya bukan selera:
+// baris audit HARUS bertahan setelah targetnya hilang, sedangkan laporan justru
+// ada untuk membuka targetnya dan memperbaikinya. Sekali laporan tidak dapat
+// di-join, layar admin berubah menjadi resolusi label per jenis target.
+model Report {
+  id Int @id @default(autoincrement())
+
+  targetType ReportTargetType
+  category   ReportCategory
+  status     ReportStatus     @default(OPEN)
+
+  // SetNull, bukan Cascade: menghapus satu soal tidak boleh ikut menghapus
+  // laporan bug yang belum ditindak. `questionId` melayani DUA targetType —
+  // QUESTION dan QUESTION_EXPLANATION — karena pembahasan di-upsert oleh
+  // `seed:question-explanation` dan layar perbaikannya memang
+  // /admin/explanation/[questionId].
+  question   Question? @relation(fields: [questionId], references: [id], onDelete: SetNull)
+  questionId Int?
+
+  article   Article? @relation(fields: [articleId], references: [id], onDelete: SetNull)
+  articleId Int?
+
+  comment   QuestionComment? @relation(fields: [commentId], references: [id], onDelete: SetNull)
+  commentId Int?
+
+  // Snapshot teks target saat laporan dibuat, mis. "N2 Juli 2025 · 文法 · soal 12".
+  // Mengikuti pola `AdminAuditLog.actorName`: FK yang menjadi null karena
+  // targetnya dihapus akan meninggalkan baris yang tidak terbaca tanpa ini.
+  //
+  // SELALU dibangun di server dari baris target. Label kiriman client dapat
+  // dipalsukan dan menyuntikkan teks ke layar admin.
+  targetLabel String? @db.VarChar(200)
+
+  // Teks laporan apa adanya. Dirender sebagai plain text di admin — ini bukan
+  // kolom markup Jepang dan tidak boleh diperlakukan sebagai markup.
+  message String @db.Text
+
+  // Null untuk guest. SetNull dan bukan Cascade karena laporan bug tetap perlu
+  // ditindak setelah pelapornya menghapus akun; `anonymizeAccount` mengosongkan
+  // identitasnya, bukan barisnya.
+  reporter   User? @relation("ReportReporter", fields: [reporterId], references: [id], onDelete: SetNull)
+  reporterId Int?
+
+  // Konteks teknis untuk laporan bug. Tidak pernah memuat alamat IP mentah —
+  // IP hanya dipakai sebagai subject bucket rate limit yang di-HMAC.
+  pagePath  String? @db.VarChar(200)
+  userAgent String? @db.VarChar(400)
+
+  // Terisi hanya bila pelapor memang ingin dibalas. Data pribadi pada baris yang
+  // bisa jadi tidak punya pemilik, jadi ada retensinya: cron membersihkan kolom
+  // ini untuk laporan yang sudah selesai dan cukup tua.
+  replyEmail String?
+
+  // Balasan tidak pernah otomatis. Admin berhak menjawab atau tidak, dan hanya
+  // satu balasan per laporan: `repliedAt` yang terisi mematikan tombolnya.
+  repliedAt    DateTime?
+  repliedBy    User?     @relation("ReportRepliedBy", fields: [repliedById], references: [id], onDelete: SetNull)
+  repliedById  Int?
+  replyMessage String?   @db.Text
+
+  handledBy   User?     @relation("ReportHandledBy", fields: [handledById], references: [id], onDelete: SetNull)
+  handledById Int?
+  handledAt   DateTime?
+  // Catatan internal. JANGAN pernah ikut dikirim ke pelapor.
+  adminNote   String?   @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Antrean utama: status tertentu, terbaru dulu.
+  @@index([status, createdAt])
+  // Tab per jenis target.
+  @@index([targetType, status])
+  @@index([questionId])
+  @@index([articleId])
+  @@index([commentId])
+  @@index([reporterId])
+  @@index([handledById])
+  @@index([repliedById])
 }

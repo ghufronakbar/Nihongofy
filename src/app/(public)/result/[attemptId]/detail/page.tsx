@@ -12,6 +12,7 @@ import { CommentItem } from "@/features/question-comment/components/comment-item
 import { DiscussionSheet } from "@/features/question-comment/components/discussion-sheet";
 import { getSession } from "@/lib/auth";
 import { CopyQuestionButton } from "@/components/copy-question-button";
+import { ReportButton } from "@/features/report/components/report-button";
 import { QuestionNavList, type NavMondaiItem } from "@/components/question-nav";
 import { QuestionNavMobile } from "@/components/question-nav-mobile";
 import { JapaneseText } from "@/components/japanese-text";
@@ -317,6 +318,7 @@ export default async function ResultDetailPage({
                               questionId={question.id}
                               initialCount={question.discussionCount}
                               currentUserId={currentUserId}
+                              reportEnabled={FEATURES.report}
                             />
                           )}
                           <CopyQuestionButton
@@ -325,6 +327,12 @@ export default async function ResultDetailPage({
                             questionText={question.questionText}
                             choices={question.questionChoices}
                           />
+                          {FEATURES.report && (
+                            <ReportButton
+                              target={{ targetType: "QUESTION", questionId: question.id }}
+                              label="Laporkan soal"
+                            />
+                          )}
                           {userAnswer && (
                             <span
                               className={cn(
@@ -404,9 +412,20 @@ export default async function ResultDetailPage({
 
                       {question.explanation && (
                         <div className="rounded-lg border-2 border-neo-ink bg-neo-yellow/20 p-3.5 text-xs font-semibold text-neo-ink shadow-neo-sm">
-                          <span className="font-mono text-[10px] font-black uppercase text-foreground/70 block mb-1">
-                            PENJELASAN SOAL:
-                          </span>
+                          <div className="mb-1 flex items-center justify-between gap-2">
+                            <span className="font-mono text-[10px] font-black uppercase text-foreground/70">
+                              PENJELASAN SOAL:
+                            </span>
+                            {FEATURES.report && (
+                              <ReportButton
+                                target={{
+                                  targetType: "QUESTION_EXPLANATION",
+                                  questionId: question.id,
+                                }}
+                                label="Laporkan pembahasan"
+                              />
+                            )}
+                          </div>
                           <QuestionExplanationBody explanation={question.explanation} />
                         </div>
                       )}

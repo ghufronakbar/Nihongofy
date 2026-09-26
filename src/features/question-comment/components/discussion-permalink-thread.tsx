@@ -9,9 +9,11 @@ import { DiscussionRootCard, DiscussionThread } from "./discussion-thread";
 export function DiscussionPermalinkThread({
   root,
   currentUserId,
+  reportEnabled,
 }: {
   root: DiscussionRoot;
   currentUserId: number | null;
+  reportEnabled: boolean;
 }) {
   const router = useRouter();
 
@@ -21,6 +23,7 @@ export function DiscussionPermalinkThread({
       currentUserId={currentUserId}
       onChanged={() => router.refresh()}
       showPermalink={false}
+      reportEnabled={reportEnabled}
     />
   );
 }
@@ -29,9 +32,11 @@ export function DiscussionPermalinkThread({
 export function DiscussionPageThreads({
   roots,
   currentUserId,
+  reportEnabled,
 }: {
   roots: DiscussionRoot[];
   currentUserId: number | null;
+  reportEnabled: boolean;
 }) {
   const router = useRouter();
 
@@ -41,6 +46,7 @@ export function DiscussionPageThreads({
       currentUserId={currentUserId}
       onChanged={() => router.refresh()}
       showPermalink
+      reportEnabled={reportEnabled}
     />
   );
 }

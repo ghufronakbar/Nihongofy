@@ -58,6 +58,7 @@ const envSchema = z
     FEATURES_ARTICLE: featureFlag,
     FEATURES_QUESTION_COMMENT: featureFlag,
     FEATURES_QUESTION_DISCUSSION: featureFlag,
+    FEATURES_REPORT: featureFlag,
     FEATURES_CONVERSATION: featureFlag,
     FEATURES_SPEAKING: featureFlag,
     CONVERSATION_PROVIDER: z.enum(["mock", "openai"]).default("mock"),
@@ -122,6 +123,11 @@ export const PASSWORD_RESET_DURATION_SECONDS = 15 * 60;
 export const EMAIL_SEND_COOLDOWN_SECONDS = 60;
 export const ACCOUNT_DELETION_GRACE_PERIOD_SECONDS = 7 * 24 * 60 * 60;
 export const ACCOUNT_DELETION_CRON_BATCH_SIZE = 10;
+// Alamat balasan pada laporan adalah data pribadi di baris yang bisa jadi tidak
+// punya pemilik (guest). Setelah laporan selesai dan cukup tua, kolomnya
+// dikosongkan cron; barisnya sendiri dipertahankan sebagai riwayat.
+export const REPORT_REPLY_EMAIL_RETENTION_DAYS = 90;
+export const REPORT_REPLY_EMAIL_CLEANUP_BATCH_SIZE = 200;
 export const AVATAR_ORPHAN_GRACE_PERIOD_SECONDS = 2 * 60 * 60;
 export const AVATAR_CLEANUP_CRON_BATCH_SIZE = 10;
 // Lembar jawaban guest yang menunggu diklaim ke akun. TTL disamakan dengan
@@ -162,6 +168,11 @@ export const FEATURES = {
   // belajar mati. Dipisah supaya konten publik bisa dimatikan sendiri saat ada
   // penyalahgunaan tanpa ikut mematikan catatan pribadi.
   questionDiscussion: env.FEATURES_QUESTION_DISCUSSION && env.FEATURES_QUESTION_COMMENT,
+  // Kotak masuk laporan. Berdiri sendiri: mematikannya menutup form publik dan
+  // seluruh tombol "Laporkan", tetapi laporan yang sudah masuk tetap dapat
+  // ditindak di /admin — justru itu yang dibutuhkan saat form-nya dimatikan
+  // karena disalahgunakan.
+  report: env.FEATURES_REPORT,
   conversation: env.FEATURES_CONVERSATION,
   // Speaking menumpang seluruh jalur turn milik conversation, jadi ikut mati
   // bila conversation mati.

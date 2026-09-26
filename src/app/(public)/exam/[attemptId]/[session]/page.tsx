@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { FEATURES } from "@/constants";
 import { getExamQuestions } from "@/features/exam/actions";
 import { ExamProvider } from "@/features/exam/components/exam-provider";
 import { ExamRunner } from "@/features/exam/components/exam-runner";
@@ -43,6 +44,7 @@ export default async function ExamPage({
         jlptLevel={attempt.testPackage.jlptLevel}
         sectionScope={attempt.sectionScope}
         questions={questions}
+        reportEnabled={FEATURES.report}
       />
     </ExamProvider>
   );

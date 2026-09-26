@@ -10,6 +10,7 @@ const FOOTER_LINKS: { label: string; href: string; feature?: FeatureName }[] = [
   { label: "Mock JLPT", href: "/test-package", feature: "testPackage" },
   { label: "Masuk", href: "/login" },
   { label: "Daftar", href: "/register" },
+  { label: "Laporkan masalah", href: "/report", feature: "report" },
 ];
 
 export function PublicFooter() {

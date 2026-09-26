@@ -72,6 +72,17 @@ export async function anonymizeAccount(userId: number) {
     await tx.oAuthAccount.deleteMany({ where: { userId } });
     await tx.authToken.deleteMany({ where: { userId } });
 
+    // Laporan sengaja TIDAK dihapus: bug atau typo yang dilaporkan tetap perlu
+    // ditindak setelah pelapornya pergi, dan menghapusnya berarti kehilangan
+    // pekerjaan yang belum selesai. Yang dibuang adalah identitasnya — tautan
+    // pelapor dan alamat balasan, yang merupakan satu-satunya data pribadi di
+    // baris ini. `message` ditulis sendiri oleh pelapor tentang konten, bukan
+    // tentang dirinya.
+    await tx.report.updateMany({
+      where: { reporterId: userId },
+      data: { reporterId: null, replyEmail: null },
+    });
+
     // Jejak audit admin sengaja DIPERTAHANKAN: itu catatan akuntabilitas atas
     // aksi terhadap konten orang lain, bukan data pribadi si aktor. Yang
     // dibersihkan hanya snapshot namanya; tautan actorId tetap ada dan kini

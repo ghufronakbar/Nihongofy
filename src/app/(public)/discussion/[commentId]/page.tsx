@@ -8,6 +8,7 @@ import {
 } from "@/features/question-comment/queries";
 import { DiscussionPermalinkThread } from "@/features/question-comment/components/discussion-permalink-thread";
 import { DiscussionQuestionCard } from "@/features/question-comment/components/discussion-question-card";
+import { FEATURES } from "@/constants";
 import { mondaiTypeFullLabel } from "@/constants/jlpt";
 import type { Metadata } from "next";
 import { privateMetadata } from "@/lib/seo";
@@ -84,7 +85,11 @@ export default async function DiscussionPermalinkPage({
         <h2 className="font-mono text-xs font-black uppercase text-foreground/70">
           Catatan Pengguna ({root.replies.length + (root.state === "VISIBLE" ? 1 : 0)})
         </h2>
-        <DiscussionPermalinkThread root={root} currentUserId={authSession?.userId ?? null} />
+        <DiscussionPermalinkThread
+          root={root}
+          currentUserId={authSession?.userId ?? null}
+          reportEnabled={FEATURES.report}
+        />
       </div>
     </div>
   );

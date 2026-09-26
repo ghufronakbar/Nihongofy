@@ -6,8 +6,8 @@
 `USER`/`ADMIN`, `requireAdmin()`, shell `/admin` dengan sidebar sendiri, overview yang membaca
 kondisi database secara langsung, pengelolaan bank soal termasuk import fixture dan editor soal,
 antrean dan editor pembahasan dengan alur persetujuan, CRUD artikel dengan workflow
-draft/published/archived, antrean moderasi diskusi publik dengan takedown, dan pengelolaan akun
-user.
+draft/published/archived, antrean moderasi diskusi publik dengan takedown, antrean laporan pengguna
+dengan balasan email opsional, dan pengelolaan akun user.
 
 Tidak ada area yang masih berupa placeholder. Sisa pekerjaan yang tercatat terbuka di
 `docs/plan.md`: uploader media dan editor `QuestionContext` di bank soal, rate limit posting dan
@@ -52,6 +52,7 @@ dapat mengimpor TypeScript. Kedua salinannya diberi komentar silang.
 | CMS artikel | `src/features/admin/article/`, `src/app/admin/article/` |
 | `articleBodyToPlainText()` | `src/features/article/lib/body-text.ts` |
 | Moderasi diskusi | `src/features/admin/moderation/`, `src/app/admin/moderation/` |
+| Laporan pengguna | `src/features/admin/report/`, `src/app/admin/report/` — rancangan di [report.md](report.md) |
 | `QuestionComment.deletedById` | migration `20260925180000_comment_deleted_by` |
 | Bank soal | `src/features/admin/test-package/`, `src/app/admin/test-package/`, `src/app/admin/question/` |
 | Pembahasan | `src/features/admin/explanation/`, `src/app/admin/explanation/` |
