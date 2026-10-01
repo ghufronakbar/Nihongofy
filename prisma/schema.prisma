@@ -339,19 +339,20 @@ model KanaProgress {
   @@index([userId, updatedAt])
 }
 
-// Pengaturan flashcard per user, dibuat malas saat pertama dibutuhkan. Batas
-// hari memakai `User.timeZone` (satu-satunya sumber zona waktu user) dengan jam
-// rollover Anki: hari baru dimulai 04:00 lokal, bukan tengah malam.
+// Pengaturan flashcard per user yang berlaku untuk semua deck, dibuat malas saat
+// pertama dibutuhkan. Batas hari memakai `User.timeZone` (satu-satunya sumber
+// zona waktu user) dengan jam rollover Anki: hari baru dimulai 04:00 lokal,
+// bukan tengah malam. Penjadwalan diatur per deck di
+// `FlashcardDeckSubscription.config`.
 //
-// `config` (penjadwalan) dan `display` (tampilan kartu) divalidasi zod di
-// src/features/flashcard/schemas.ts dan tidak pernah dibaca tanpa parse; field
-// baru cukup diberi default di skema zod, tanpa migration.
+// `display` (tampilan kartu) divalidasi zod di src/features/flashcard/schemas.ts
+// dan tidak pernah dibaca tanpa parse; field baru cukup diberi default di skema
+// zod, tanpa migration.
 model FlashcardCollection {
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int  @id
 
   rolloverHour Int  @default(4)
-  config       Json @db.JsonB
   display      Json @db.JsonB
 
   createdAt DateTime @default(now())
@@ -418,8 +419,15 @@ model FlashcardDeck {
   @@index([isPublished, order])
 }
 
-// Deck yang ditambahkan user ke daftar belajarnya. Melepasnya tidak menyentuh
-// kartu: progres tetap tersimpan dan kembali utuh saat deck ditambahkan lagi.
+// Deck yang ditambahkan user ke daftar belajarnya, sekaligus pemilik kartu dan
+// pengaturan penjadwalannya (seperti deck options Anki, satu per deck).
+//
+// Melepas deck hanya mengisi `unsubscribedAt`: baris, kartu, dan pengaturannya
+// tetap ada, dan kembali utuh saat deck ditambahkan lagi. Baris ini tidak
+// pernah dihapus selama user ada — kartu ikut terhapus lewat cascade.
+//
+// `config` divalidasi zod (`FlashcardConfigSchema`) dan tidak pernah dibaca
+// tanpa parse.
 model FlashcardDeckSubscription {
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int
@@ -427,15 +435,23 @@ model FlashcardDeckSubscription {
   deck   FlashcardDeck @relation(fields: [deckId], references: [id], onDelete: Cascade)
   deckId Int
 
+  config         Json      @db.JsonB
+  unsubscribedAt DateTime?
+
+  cards FlashcardCard[]
+
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@id([userId, deckId])
   @@index([deckId])
 }
 
-// Progres satu user pada satu kata. Satu kata = satu kartu, dari deck mana pun
-// ia dipelajari. Baris dibuat saat kata pertama kali disentuh (dijawab, ditunda,
-// atau di-suspend); kata tanpa baris adalah kartu baru.
+// Progres satu user pada satu kata DI SATU DECK. Kata yang ada di dua deck
+// (mis. JLPT N5 dan Makanan) adalah dua kartu dengan jadwal masing-masing,
+// dijadwalkan dengan pengaturan deck pemiliknya. Baris dibuat saat kata pertama
+// kali disentuh di deck itu (dijawab, ditunda, atau di-suspend); kata tanpa
+// baris adalah kartu baru.
 //
 // `due` timestamp absolut, bukan integer relatif seperti Anki, sehingga satu
 // query melayani semua queue. Kartu tertunda muncul lagi begitu `buriedUntil`
@@ -443,6 +459,9 @@ model FlashcardDeckSubscription {
 model FlashcardCard {
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int
+
+  subscription FlashcardDeckSubscription @relation(fields: [userId, deckId], references: [userId, deckId], onDelete: Cascade)
+  deckId       Int
 
   vocab   FlashcardVocab @relation(fields: [vocabId], references: [id], onDelete: Restrict)
   vocabId Int
@@ -475,8 +494,8 @@ model FlashcardCard {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@id([userId, vocabId])
-  @@index([userId, queue, due])
+  @@id([userId, deckId, vocabId])
+  @@index([userId, deckId, queue, due])
   @@index([vocabId])
 }
 
@@ -490,7 +509,8 @@ model FlashcardRevlog {
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int
 
-  card    FlashcardCard @relation(fields: [userId, vocabId], references: [userId, vocabId], onDelete: Cascade)
+  card    FlashcardCard @relation(fields: [userId, deckId, vocabId], references: [userId, deckId, vocabId], onDelete: Cascade)
+  deckId  Int
   vocabId Int
 
   clientToken String? @db.VarChar(64)
@@ -498,7 +518,8 @@ model FlashcardRevlog {
   reviewedAt DateTime            @default(now())
   rating     FlashcardRating
   kind       FlashcardRevlogKind
-  // Review pertama sebuah kartu baru; dasar hitungan batas kartu baru per hari.
+  // Review pertama sebuah kartu baru; dasar hitungan batas kartu baru per hari
+  // (per deck, lewat `deckId`).
   wasNew     Boolean             @default(false)
 
   intervalDays     Int
@@ -512,7 +533,8 @@ model FlashcardRevlog {
 
   @@unique([userId, clientToken])
   @@index([userId, reviewedAt])
-  @@index([userId, vocabId, reviewedAt])
+  @@index([userId, deckId, reviewedAt])
+  @@index([userId, deckId, vocabId, reviewedAt])
 }
 
 // Jejak aksi admin. Role statis dua level berarti siapa pun yang dapat

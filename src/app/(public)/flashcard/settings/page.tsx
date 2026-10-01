@@ -3,12 +3,12 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import { getFlashcardSettings } from "@/features/flashcard/lib/collection";
-import { FlashcardSettingsForm } from "@/features/flashcard/components/flashcard-settings-form";
+import { FlashcardDisplayForm } from "@/features/flashcard/components/flashcard-display-form";
 import { privateMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = privateMetadata(
   "Pengaturan flashcard",
-  "Ukuran teks kartu, furigana, dan penjadwalan review seperti Anki.",
+  "Ukuran teks dan furigana kartu flashcard.",
 );
 
 export default async function FlashcardSettingsPage() {
@@ -24,11 +24,12 @@ export default async function FlashcardSettingsPage() {
       </Link>
       <h1 className="mt-4 text-3xl font-black">Pengaturan flashcard</h1>
       <p className="mt-2 font-bold text-muted-foreground">
-        Berlaku untuk semua deck. Tombol ↺ mengembalikan satu pengaturan ke nilai bawaannya.
+        Tampilan kartu berlaku untuk semua deck. Batas harian, learning steps, urutan, dan FSRS
+        diatur per deck lewat tombol Pengaturan di halaman deck.
       </p>
 
       <div className="mt-7">
-        <FlashcardSettingsForm config={settings.config} display={settings.display} />
+        <FlashcardDisplayForm display={settings.display} />
       </div>
     </main>
   );

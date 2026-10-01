@@ -52,15 +52,22 @@ export async function GET() {
         },
       },
       flashcardCollection: {
-        select: { rolloverHour: true, config: true, display: true, createdAt: true, updatedAt: true },
+        select: { rolloverHour: true, display: true, createdAt: true, updatedAt: true },
       },
       flashcardSubscriptions: {
         orderBy: { createdAt: "asc" },
-        select: { createdAt: true, deck: { select: { slug: true, name: true } } },
+        select: {
+          config: true,
+          unsubscribedAt: true,
+          createdAt: true,
+          updatedAt: true,
+          deck: { select: { slug: true, name: true } },
+        },
       },
       flashcardCards: {
-        orderBy: { vocabId: "asc" },
+        orderBy: [{ deckId: "asc" }, { vocabId: "asc" }],
         select: {
+          subscription: { select: { deck: { select: { slug: true } } } },
           type: true,
           queue: true,
           due: true,
@@ -93,7 +100,12 @@ export async function GET() {
           difficulty: true,
           easeFactor: true,
           takenMs: true,
-          card: { select: { vocab: { select: { key: true } } } },
+          card: {
+            select: {
+              subscription: { select: { deck: { select: { slug: true } } } },
+              vocab: { select: { key: true } },
+            },
+          },
         },
       },
       attempts: {

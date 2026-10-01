@@ -6,11 +6,14 @@ import {
   parseFlashcardDisplay,
 } from "./schemas";
 import {
-  SETTINGS_FORM_DEFAULTS,
-  SettingsFormSchema,
-  formToSettings,
+  DECK_CONFIG_FORM_DEFAULTS,
+  DISPLAY_FORM_DEFAULTS,
+  DeckConfigFormSchema,
+  configToForm,
+  displayToForm,
+  formToConfig,
+  formToDisplay,
   parseSteps,
-  settingsToForm,
 } from "./settings-form";
 import { describeTags } from "./taxonomy";
 
@@ -20,7 +23,10 @@ describe("learning steps", () => {
   });
 
   it("form menolak step tidak valid dengan pesan yang menunjuk step-nya", () => {
-    const result = SettingsFormSchema.safeParse({ ...SETTINGS_FORM_DEFAULTS, learningSteps: "1m 1d" });
+    const result = DeckConfigFormSchema.safeParse({
+      ...DECK_CONFIG_FORM_DEFAULTS,
+      learningSteps: "1m 1d",
+    });
     expect(result.success).toBe(false);
     expect(result.error?.issues[0]?.message).toContain('"1d"');
   });
@@ -28,25 +34,27 @@ describe("learning steps", () => {
 
 describe("konversi form", () => {
   it("default form mengikuti pengaturan bawaan", () => {
-    expect(SETTINGS_FORM_DEFAULTS).toMatchObject({
+    expect(DECK_CONFIG_FORM_DEFAULTS).toMatchObject({
       learningSteps: "1m 2h 3h",
       relearningSteps: "1m 1h",
       desiredRetentionPercent: 95,
-      textScale: 100,
-      showFuriganaOnBack: true,
     });
+    expect(DISPLAY_FORM_DEFAULTS).toEqual({ textScale: 100, showFuriganaOnBack: true });
   });
 
   it("bolak-balik tanpa kehilangan nilai", () => {
-    const { config, display } = formToSettings(SETTINGS_FORM_DEFAULTS, FLASHCARD_DEFAULT_CONFIG);
+    const config = formToConfig(DECK_CONFIG_FORM_DEFAULTS, FLASHCARD_DEFAULT_CONFIG);
     expect(config).toEqual(FLASHCARD_DEFAULT_CONFIG);
+    expect(configToForm(config)).toEqual(DECK_CONFIG_FORM_DEFAULTS);
+
+    const display = formToDisplay(DISPLAY_FORM_DEFAULTS);
     expect(display).toEqual(FLASHCARD_DEFAULT_DISPLAY);
-    expect(settingsToForm(config, display)).toEqual(SETTINGS_FORM_DEFAULTS);
+    expect(displayToForm(display)).toEqual(DISPLAY_FORM_DEFAULTS);
   });
 
-  it("mempertahankan setting yang tidak ada di form", () => {
+  it("mempertahankan setting deck yang tidak ada di form", () => {
     const base = { ...FLASHCARD_DEFAULT_CONFIG, leechThreshold: 4, startingEase: 2.1 };
-    const { config } = formToSettings({ ...SETTINGS_FORM_DEFAULTS, newCardsPerDay: 5 }, base);
+    const config = formToConfig({ ...DECK_CONFIG_FORM_DEFAULTS, newCardsPerDay: 5 }, base);
     expect(config).toMatchObject({ newCardsPerDay: 5, leechThreshold: 4, startingEase: 2.1 });
   });
 });

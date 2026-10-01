@@ -3,8 +3,10 @@ import {
   averageAnswerSeconds,
   buildForecast,
   buildIntervalDistribution,
+  buildMaturity,
   buildReviewHistory,
   computeTrueRetention,
+  type MaturitySample,
   type ReviewSample,
 } from "./stats";
 
@@ -129,5 +131,36 @@ describe("rata-rata waktu menjawab", () => {
 
   it("null bila tidak ada yang tercatat", () => {
     expect(averageAnswerSeconds([review({ takenMs: 0 })])).toBeNull();
+  });
+});
+
+describe("kematangan kartu", () => {
+  const card = (overrides: Partial<MaturitySample> = {}): MaturitySample => ({
+    type: "REVIEW",
+    intervalDays: 10,
+    isSuspended: false,
+    ...overrides,
+  });
+
+  it("memisahkan young dan mature di 21 hari", () => {
+    const counts = buildMaturity(
+      [card({ intervalDays: 20 }), card({ intervalDays: 21 }), card({ intervalDays: 400 })],
+      0,
+    );
+    expect(counts).toMatchObject({ young: 1, mature: 2 });
+  });
+
+  it("kata tanpa kartu dan kartu NEW sama-sama baru; suspend menang atas jenis", () => {
+    const counts = buildMaturity(
+      [
+        card({ type: "NEW", intervalDays: 0 }),
+        card({ type: "LEARNING", intervalDays: 0 }),
+        card({ type: "RELEARNING", intervalDays: 3 }),
+        card({ type: "NEW", isSuspended: true }),
+        card({ intervalDays: 50, isSuspended: true }),
+      ],
+      7,
+    );
+    expect(counts).toEqual({ new: 8, learning: 2, young: 0, mature: 0, suspended: 2 });
   });
 });

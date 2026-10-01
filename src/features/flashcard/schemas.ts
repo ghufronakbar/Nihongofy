@@ -3,13 +3,14 @@ import { z } from "zod";
 /**
  * Pengaturan flashcard, mengikuti deck options Anki.
  *
- * Disimpan sebagai JSONB per user (`FlashcardCollection.config` dan `.display`)
- * karena tidak ada satu pun setting yang perlu di-query. Skema ini satu-satunya
- * gerbang validasinya — jangan pernah membaca kolom itu tanpa parse.
+ * Penjadwalan disimpan per deck (`FlashcardDeckSubscription.config`), tampilan
+ * per user (`FlashcardCollection.display`), keduanya JSONB karena tidak ada satu
+ * pun setting yang perlu di-query. Skema ini satu-satunya gerbang validasinya —
+ * jangan pernah membaca kolom itu tanpa parse.
  *
- * Satu pengaturan berlaku untuk semua deck: deck bawaan saling tumpang tindih
- * (satu kata bisa ada di deck level dan deck topik), jadi batas harian per deck
- * akan membuat jumlah kartu baru harian bergantung pada deck mana yang dibuka.
+ * Kartu milik satu deck, jadi pengaturan deck tidak pernah bertabrakan: kata
+ * yang ada di dua deck adalah dua kartu, masing-masing dijadwalkan dengan
+ * pengaturan deck-nya dan dihitung ke batas harian deck-nya.
  */
 
 // --- Learning steps ----------------------------------------------------------
@@ -109,7 +110,7 @@ export const FLASHCARD_DEFAULT_FSRS_PARAMETERS = [
 // --- Pengaturan penjadwalan --------------------------------------------------
 
 export const FlashcardConfigSchema = z.object({
-  // Batas harian (semua deck sekaligus)
+  // Batas harian deck ini
   newCardsPerDay: z.number().int().min(0).max(9_999).default(20),
   maxReviewsPerDay: z.number().int().min(0).max(99_999).default(9_999),
 

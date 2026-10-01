@@ -4,25 +4,50 @@ import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Ban, EyeOff, Loader2, Undo2 } from "lucide-react";
+import { ArrowLeft, Ban, EyeOff, Loader2, Timer, Undo2 } from "lucide-react";
 import { ReportButton } from "@/features/report/components/report-button";
+import { cn } from "@/lib/utils";
 import type { FlashcardDisplay, FlashcardRatingInput } from "../schemas";
-import type { PendingLearningCard, ReviewerCard } from "../types";
+import type {
+  PendingLearningCard,
+  ReviewerCard,
+  ReviewerCardKind,
+  StudyCounts,
+  TomorrowWindow,
+} from "../types";
 import { LEARN_AHEAD_MS } from "../lib/learn-ahead";
+import {
+  countByKind,
+  countDueInWindow,
+  summarizeSession,
+  type SessionAnswer,
+} from "../lib/session-summary";
 import {
   answerCardAction,
   buryCardAction,
   setCardSuspendedAction,
   undoReviewAction,
 } from "../actions";
+import { RATING_OPTIONS } from "./rating-options";
+import { SessionSummaryPanel } from "./session-summary-panel";
 import { VocabCardView } from "./vocab-card-view";
 
 type Props = {
+  /** Deck pemilik kartu; setiap aksi kartu menyebutnya. */
+  deckSlug: string;
   deckName: string;
-  deckHref: string;
+  /** Tujuan tombol kembali, di atas reviewer dan di layar akhir sesi. */
+  back: { href: string; label: string };
   cards: ReviewerCard[];
   /** Kartu learning yang jatuh tempo nanti hari ini; ditampilkan saat waktunya tiba. */
   pendingLearning: PendingLearningCard[];
+  /**
+   * Kartu antrean yang tidak ikut dikirim karena batas potongan. Ditambahkan ke
+   * hitungan di layar supaya angkanya sama dengan halaman deck.
+   */
+  unloadedCounts: StudyCounts;
+  /** Bahan perkiraan "besok" di ringkasan; null di mode coba. */
+  tomorrow: TomorrowWindow | null;
   /** Antrean server lebih panjang dari potongan yang dikirim. */
   hasMore: boolean;
   display: FlashcardDisplay;
@@ -39,11 +64,10 @@ type Props = {
   reportEnabled: boolean;
 };
 
-const RATINGS: { value: FlashcardRatingInput; label: string; key: string; tone: string }[] = [
-  { value: "AGAIN", label: "Again", key: "1", tone: "bg-neo-coral text-black" },
-  { value: "HARD", label: "Hard", key: "2", tone: "bg-neo-yellow text-black" },
-  { value: "GOOD", label: "Good", key: "3", tone: "bg-neo-green text-black" },
-  { value: "EASY", label: "Easy", key: "4", tone: "bg-neo-blue text-black" },
+const COUNT_LABELS: { kind: ReviewerCardKind; label: string; tone: string }[] = [
+  { kind: "new", label: "Baru", tone: "text-neo-blue" },
+  { kind: "learning", label: "Belajar", tone: "text-neo-coral" },
+  { kind: "review", label: "Ulang", tone: "text-neo-green" },
 ];
 
 /** Token idempotency: dibuat sekali per kartu dan dipakai ulang saat retry. */
@@ -64,7 +88,8 @@ type QueueState = {
   learning: WaitingCard[];
   revealed: boolean;
   furiganaShown: boolean;
-  answered: number;
+  /** Jawaban sesi ini, berurutan; sumber hitungan progres dan ringkasan. */
+  answers: SessionAnswer[];
   /** Bertambah setiap kali kartu baru tampil; dipakai untuk mengukur waktu jawab. */
   turn: number;
 };
@@ -72,7 +97,7 @@ type QueueState = {
 type QueueAction =
   | { type: "reveal" }
   | { type: "showFurigana" }
-  | { type: "advance"; now: number; requeue?: WaitingCard; counted: boolean }
+  | { type: "advance"; now: number; requeue?: WaitingCard; answer?: SessionAnswer }
   | { type: "tick"; now: number }
   | { type: "undo"; card: ReviewerCard };
 
@@ -111,7 +136,7 @@ function reducer(state: QueueState, action: QueueAction): QueueState {
     case "advance": {
       const learning = action.requeue ? insertByDue(state.learning, action.requeue) : state.learning;
       const next = pickNext({ ...state, learning, current: null }, action.now);
-      return { ...next, answered: state.answered + (action.counted ? 1 : 0) };
+      return { ...next, answers: action.answer ? [...state.answers, action.answer] : state.answers };
     }
     case "tick":
       return state.current ? state : pickNext(state, action.now);
@@ -126,7 +151,8 @@ function reducer(state: QueueState, action: QueueAction): QueueState {
         learning: state.learning.filter((item) => item.card.vocabId !== action.card.vocabId),
         revealed: false,
         furiganaShown: false,
-        answered: Math.max(0, state.answered - 1),
+        // Undo selalu membatalkan jawaban terakhir sesi ini.
+        answers: state.answers.slice(0, -1),
         turn: state.turn + 1,
       };
     }
@@ -143,18 +169,51 @@ function initialState(cards: ReviewerCard[], pending: PendingLearningCard[]): Qu
       .sort((left, right) => left.dueAt - right.dueAt),
     revealed: false,
     furiganaShown: false,
-    answered: 0,
+    answers: [],
     turn: 0,
   };
+}
+
+/**
+ * Jam sesi berjalan. Komponen sendiri supaya detaknya tidak me-render ulang
+ * kartu. `startedAt` diturunkan dari jawaban pertama, sehingga jam tidak
+ * kembali ke nol saat reviewer muncul lagi setelah layar istirahat.
+ */
+function SessionClock({ startedAt }: { startedAt: number | null }) {
+  const [seconds, setSeconds] = useState(0);
+
+  useEffect(() => {
+    const origin = startedAt ?? Date.now();
+    const tick = () => setSeconds(Math.max(0, Math.floor((Date.now() - origin) / 1_000)));
+    const first = window.setTimeout(tick, 0);
+    const timer = window.setInterval(tick, 1_000);
+    return () => {
+      window.clearTimeout(first);
+      window.clearInterval(timer);
+    };
+  }, [startedAt]);
+
+  const minutes = Math.floor(seconds / 60);
+  return (
+    <span className="inline-flex items-center gap-1 font-bold tabular-nums text-muted-foreground">
+      <Timer className="size-4" aria-hidden />
+      <span aria-label="Durasi sesi">
+        {String(minutes).padStart(2, "0")}:{String(seconds % 60).padStart(2, "0")}
+      </span>
+    </span>
+  );
 }
 
 // --- Komponen -------------------------------------------------------------------
 
 export function FlashcardReviewer({
+  deckSlug,
   deckName,
-  deckHref,
+  back,
   cards,
   pendingLearning,
+  unloadedCounts,
+  tomorrow,
   hasMore,
   display,
   isGuest,
@@ -199,14 +258,29 @@ export function FlashcardReviewer({
     async (rating: FlashcardRatingInput) => {
       if (!current || pending) return;
 
+      const takenMs = shownAt.current ? Math.min(3_600_000, Date.now() - shownAt.current) : 0;
+      const record = (dueAt: number | null, becameLeech: boolean): SessionAnswer => ({
+        vocabId: current.vocabId,
+        wordPlain: current.content.wordPlain,
+        kind: current.kind,
+        rating,
+        takenMs,
+        answeredAt: Date.now(),
+        dueAt,
+        becameLeech,
+      });
+
       if (isGuest) {
         // Rating guest hanya menggerakkan antrean. `Again` mengembalikan kartu
         // ke belakang antrean supaya latihannya tetap terasa benar.
         dispatch({
           type: "advance",
           now: Date.now(),
-          counted: true,
-          requeue: rating === "AGAIN" ? { card: current, dueAt: Date.now() + 60_000 } : undefined,
+          answer: record(null, false),
+          requeue:
+            rating === "AGAIN"
+              ? { card: { ...current, kind: "learning" }, dueAt: Date.now() + 60_000 }
+              : undefined,
         });
         return;
       }
@@ -217,9 +291,10 @@ export function FlashcardReviewer({
       setPending(true);
       try {
         const result = await answerCardAction({
+          deckSlug,
           vocabId: current.vocabId,
           rating,
-          takenMs: shownAt.current ? Math.min(3_600_000, Date.now() - shownAt.current) : 0,
+          takenMs,
           clientToken: token,
         });
 
@@ -234,16 +309,14 @@ export function FlashcardReviewer({
         tokens.current.delete(current.vocabId);
         setLastReview({ token, card: current });
         const labels = result.data.nextPreviewLabels;
+        const dueAt = Date.parse(result.data.dueAt);
         dispatch({
           type: "advance",
           now: Date.now(),
-          counted: true,
+          answer: record(dueAt, result.data.becameLeech),
           // Kartu learning yang jatuh tempo lagi hari ini tetap di sesi ini.
           requeue: labels
-            ? {
-                card: { ...current, isNew: false, previewLabels: labels },
-                dueAt: Date.parse(result.data.dueAt),
-              }
+            ? { card: { ...current, kind: "learning", previewLabels: labels }, dueAt }
             : undefined,
         });
       } catch {
@@ -252,7 +325,7 @@ export function FlashcardReviewer({
         setPending(false);
       }
     },
-    [current, isGuest, pending],
+    [current, deckSlug, isGuest, pending],
   );
 
   const undo = useCallback(async () => {
@@ -280,22 +353,22 @@ export function FlashcardReviewer({
       try {
         const result =
           mode === "bury"
-            ? await buryCardAction({ vocabId: current.vocabId })
-            : await setCardSuspendedAction({ vocabId: current.vocabId, suspended: true });
+            ? await buryCardAction({ deckSlug, vocabId: current.vocabId })
+            : await setCardSuspendedAction({ deckSlug, vocabId: current.vocabId, suspended: true });
         if (!result.ok) {
           toast.error(result.message);
           return;
         }
         toast.success(mode === "bury" ? "Kartu ditunda sampai besok." : "Kartu di-suspend.");
         setLastReview(null);
-        dispatch({ type: "advance", now: Date.now(), counted: false });
+        dispatch({ type: "advance", now: Date.now() });
       } catch {
         toast.error("Gagal menyimpan. Coba lagi.");
       } finally {
         setPending(false);
       }
     },
-    [current, isGuest, pending],
+    [current, deckSlug, isGuest, pending],
   );
 
   // Pintasan keyboard Anki: spasi membuka jawaban, 1-4 memberi rating.
@@ -322,7 +395,7 @@ export function FlashcardReviewer({
         dispatch({ type: "showFurigana" });
         return;
       }
-      const rating = RATINGS.find((item) => item.key === event.key);
+      const rating = RATING_OPTIONS.find((item) => item.key === event.key);
       if (rating && revealed) {
         event.preventDefault();
         void answer(rating.value);
@@ -333,15 +406,35 @@ export function FlashcardReviewer({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [answer, revealed]);
 
-  const remaining = state.main.length + (current ? 1 : 0);
   // Kartu dilaporkan setelah sisi belakangnya terbaca: kesalahan isi (arti,
   // bacaan, contoh) baru terlihat di sana.
   const canReport = reportEnabled && revealed;
 
+  // Seperti Anki, kartu yang sedang tampil ikut dihitung, dan kartu learning
+  // yang menunggu jatuh tempo tetap masuk hitungan "Belajar".
+  const counts = countByKind(
+    [
+      ...(current ? [current] : []),
+      ...state.main,
+      ...state.learning.map((item) => item.card),
+    ],
+    unloadedCounts,
+  );
+  const answeredCount = state.answers.length;
+  const remainingCount = counts.new + counts.learning + counts.review;
+  const progress =
+    answeredCount + remainingCount === 0 ? 0 : answeredCount / (answeredCount + remainingCount);
+
   if (!current) {
     const waiting = state.learning[0];
+    const summary = summarizeSession(state.answers);
+    const tomorrowCount = tomorrow
+      ? tomorrow.base +
+        countDueInWindow(state.answers, Date.parse(tomorrow.start), Date.parse(tomorrow.end))
+      : null;
+
     return (
-      <div className="neo-surface mx-auto max-w-xl p-8 text-center">
+      <div className="neo-surface mx-auto max-w-2xl p-6 text-center sm:p-8">
         {waiting ? (
           <>
             <h2 className="text-2xl font-black">Istirahat sebentar</h2>
@@ -360,12 +453,19 @@ export function FlashcardReviewer({
           <>
             <h2 className="text-2xl font-black">Antrean selesai</h2>
             <p className="mt-3 font-bold text-muted-foreground">
-              {state.answered} kartu ditinjau di {deckName}.
+              {answeredCount} jawaban di {deckName}.
             </p>
           </>
         )}
         {isGuest ? (
           <p className="mt-4 font-bold text-neo-coral">Mode coba — progres tadi tidak disimpan.</p>
+        ) : null}
+        {answeredCount > 0 ? (
+          <SessionSummaryPanel
+            title={waiting ? "Sesi sejauh ini" : "Ringkasan sesi"}
+            summary={summary}
+            tomorrowCount={waiting ? null : tomorrowCount}
+          />
         ) : null}
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           {hasMore && !waiting ? (
@@ -377,8 +477,8 @@ export function FlashcardReviewer({
               Lanjutkan
             </button>
           ) : null}
-          <Link href={deckHref} className="neo-button bg-white">
-            Kembali ke deck
+          <Link href={back.href} className="neo-button bg-white">
+            {back.label}
           </Link>
         </div>
       </div>
@@ -387,16 +487,63 @@ export function FlashcardReviewer({
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-5">
-      <header className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-xl font-black">{deckName}</h1>
-        <p className="font-black tabular-nums">
-          {remaining} tersisa
-          {state.learning.length > 0 ? (
-            <span className="ml-2 text-sm font-bold text-muted-foreground">
-              +{state.learning.length} menunggu
-            </span>
-          ) : null}
-        </p>
+      <header className="flex flex-col gap-3">
+        <div className="flex items-center justify-between gap-3">
+          <Link
+            href={back.href}
+            className="inline-flex items-center gap-1 text-sm font-black underline"
+          >
+            <ArrowLeft className="size-4" aria-hidden /> {back.label}
+          </Link>
+          <SessionClock
+            startedAt={state.answers[0] ? state.answers[0].answeredAt - state.answers[0].takenMs : null}
+          />
+        </div>
+
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <h1 className="text-xl font-black">{deckName}</h1>
+          <dl className="flex items-baseline gap-4 font-black tabular-nums" aria-label="Sisa kartu">
+            {COUNT_LABELS.map((item) => (
+              <div
+                key={item.kind}
+                className="flex items-baseline gap-1"
+                title={
+                  item.kind === "learning" && state.learning.length > 0
+                    ? `Termasuk ${state.learning.length} kartu yang menunggu jatuh tempo`
+                    : undefined
+                }
+              >
+                <dt className="text-xs font-bold text-muted-foreground uppercase">{item.label}</dt>
+                <dd
+                  className={cn(
+                    "text-xl",
+                    item.tone,
+                    // Jenis kartu yang sedang tampil digaris bawah, seperti di Anki.
+                    current.kind === item.kind && "underline decoration-[3px] underline-offset-4",
+                  )}
+                >
+                  {counts[item.kind]}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <div
+            className="h-3 flex-1 overflow-hidden rounded-full border-2 border-neo-ink bg-card"
+            role="progressbar"
+            aria-label="Progres sesi"
+            aria-valuemin={0}
+            aria-valuemax={answeredCount + remainingCount}
+            aria-valuenow={answeredCount}
+          >
+            <div className="h-full bg-neo-yellow" style={{ width: `${Math.round(progress * 100)}%` }} />
+          </div>
+          <span className="shrink-0 text-xs font-bold text-muted-foreground tabular-nums">
+            {answeredCount} dijawab
+          </span>
+        </div>
       </header>
 
       {isGuest ? (
@@ -415,7 +562,7 @@ export function FlashcardReviewer({
       <VocabCardView
         content={current.content}
         revealed={revealed}
-        isNew={current.isNew}
+        isNew={current.kind === "new"}
         textScale={display.textScale}
         furiganaVisible={furiganaVisible}
         onShowFurigana={() => dispatch({ type: "showFurigana" })}
@@ -423,7 +570,7 @@ export function FlashcardReviewer({
 
       {revealed ? (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {RATINGS.map((rating) => (
+          {RATING_OPTIONS.map((rating) => (
             <button
               key={rating.value}
               type="button"

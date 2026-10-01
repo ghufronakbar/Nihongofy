@@ -4,20 +4,24 @@ import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getUserTimeZone } from "@/lib/user-time-zone";
 import {
-  FLASHCARD_DEFAULT_CONFIG,
   FLASHCARD_DEFAULT_DISPLAY,
-  parseFlashcardConfig,
   parseFlashcardDisplay,
   type FlashcardConfig,
   type FlashcardDisplay,
 } from "../schemas";
 import { FLASHCARD_DEFAULT_ROLLOVER_HOUR, type FlashcardDayContext } from "./scheduler/day";
 
-const COLLECTION_SELECT = { rolloverHour: true, config: true, display: true } as const;
+const COLLECTION_SELECT = { rolloverHour: true, display: true } as const;
 
+/** Pengaturan yang berlaku untuk semua deck: tampilan kartu dan batas hari. */
 export type FlashcardSettings = {
-  config: FlashcardConfig;
   display: FlashcardDisplay;
+  day: FlashcardDayContext;
+};
+
+/** Yang dibutuhkan scheduler untuk satu deck: pengaturan deck itu dan batas hari user. */
+export type DeckSchedulingContext = {
+  config: FlashcardConfig;
   day: FlashcardDayContext;
 };
 
@@ -28,6 +32,9 @@ export type FlashcardSettings = {
  * supaya user yang tidak memakai flashcard tidak menghasilkan baris kosong.
  * Zona waktu selalu dibaca dari `User.timeZone` (lewat cache profil), bukan
  * disalin: menyalinnya membuat batas hari salah begitu user pindah zona waktu.
+ *
+ * Penjadwalan TIDAK ada di sini: setiap deck punya pengaturannya sendiri di
+ * `FlashcardDeckSubscription.config`.
  */
 export const getFlashcardSettings = cache(async (userId: number): Promise<FlashcardSettings> => {
   const [existing, timeZone] = await Promise.all([
@@ -45,14 +52,12 @@ export const getFlashcardSettings = cache(async (userId: number): Promise<Flashc
       create: {
         userId,
         rolloverHour: FLASHCARD_DEFAULT_ROLLOVER_HOUR,
-        config: FLASHCARD_DEFAULT_CONFIG as unknown as Prisma.InputJsonValue,
         display: FLASHCARD_DEFAULT_DISPLAY as unknown as Prisma.InputJsonValue,
       },
       select: COLLECTION_SELECT,
     }));
 
   return {
-    config: parseFlashcardConfig(collection.config),
     display: parseFlashcardDisplay(collection.display),
     day: { timeZone, rolloverHour: collection.rolloverHour },
   };

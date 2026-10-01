@@ -2,7 +2,8 @@ import type { FlashcardCardQueue, FlashcardCardType } from "@prisma/client";
 
 /**
  * Kartu kandidat untuk antrean. Konten kata tidak ikut — antrean hanya butuh
- * jadwal. Satu kata = satu kartu, jadi `vocabId` sekaligus identitas kartu.
+ * jadwal. Antrean selalu untuk satu deck, dan di satu deck satu kata = satu
+ * kartu, jadi `vocabId` sekaligus identitas kartu.
  *
  * Kandidat yang di-suspend atau sedang ditunda sudah disaring di query, bukan
  * di sini.

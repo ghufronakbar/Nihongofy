@@ -35,10 +35,13 @@ export default async function StudyPage({ params }: Props) {
         // Kunci baru setiap kali server membangun antrean ("Lanjutkan" memanggil
         // router.refresh), supaya state sesi dimulai ulang dari antrean baru.
         key={`${study.cards.map((card) => card.vocabId).join(",")}|${study.pendingLearning.length}`}
+        deckSlug={slug}
         deckName={study.deck.name}
-        deckHref={`/flashcard/deck/${slug}`}
+        back={{ href: `/flashcard/deck/${slug}`, label: "Kembali ke deck" }}
         cards={study.cards}
         pendingLearning={study.pendingLearning}
+        unloadedCounts={study.unloadedCounts}
+        tomorrow={study.tomorrow}
         hasMore={study.hasMore}
         display={study.display}
         isGuest={false}

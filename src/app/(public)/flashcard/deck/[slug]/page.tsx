@@ -1,16 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { Play, Search } from "lucide-react";
+import { Play, Search, Settings2 } from "lucide-react";
 import { FEATURES } from "@/constants";
 import { getSession } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import {
   DECK_WORD_STATUSES,
   getDeckForUser,
+  getDeckStats,
   getDeckWords,
   type DeckWordFilter,
 } from "@/features/flashcard/data";
+import { DeckStatsPanel } from "@/features/flashcard/components/deck-stats-panel";
 import { DeckSubscribeButton } from "@/features/flashcard/components/deck-subscribe-button";
 import { DeckWordActions } from "@/features/flashcard/components/deck-word-actions";
 import { FlashcardDeckSlugSchema } from "@/features/flashcard/schemas";
@@ -65,8 +67,13 @@ export default async function DeckPage({ params, searchParams }: Props) {
   const access = await getDeckForUser(session.userId, slug);
   if (!access) notFound();
 
-  const { deck, subscribed, due } = access;
-  const list = await getDeckWords(session.userId, slug, { query, status, page });
+  const { deck, subscribed, due, allowance, config, settings } = access;
+  // Statistik hanya untuk deck yang sedang ditambahkan: deck yang dilepas
+  // dibekukan, dan deck yang belum ditambahkan belum punya kartu.
+  const [list, stats] = await Promise.all([
+    getDeckWords(session.userId, deck, { query, status, page }),
+    subscribed ? getDeckStats(session.userId, deck, settings.day) : null,
+  ]);
   const total = due.newCount + due.learningCount + due.reviewCount;
 
   const hrefWith = (next: { status?: DeckWordFilter; page?: number }) => {
@@ -115,8 +122,20 @@ export default async function DeckPage({ params, searchParams }: Props) {
             <Play className="size-4" aria-hidden /> Mulai belajar
           </Link>
         ) : null}
+        {subscribed ? (
+          <Link href={`/flashcard/deck/${slug}/settings`} className="neo-button bg-white">
+            <Settings2 className="size-4" aria-hidden /> Pengaturan
+          </Link>
+        ) : null}
         <DeckSubscribeButton slug={slug} subscribed={subscribed} />
       </div>
+
+      {subscribed ? (
+        <p className="mt-3 text-sm font-bold text-muted-foreground tabular-nums">
+          Hari ini di deck ini: {allowance.newStudiedToday} dari {config.newCardsPerDay} kartu baru,{" "}
+          {allowance.reviewsToday} dari {config.maxReviewsPerDay} review.
+        </p>
+      ) : null}
 
       {subscribed && total === 0 ? (
         <p className="mt-4 font-bold text-muted-foreground">
@@ -127,10 +146,12 @@ export default async function DeckPage({ params, searchParams }: Props) {
       ) : null}
       {!subscribed ? (
         <p className="mt-4 text-sm font-bold text-muted-foreground">
-          Tambahkan deck ini untuk mulai belajar. Kata yang sudah kamu pelajari dari deck lain
-          membawa progresnya ke sini.
+          Tambahkan deck ini untuk mulai belajar. Setiap deck punya kartu dan pengaturannya
+          sendiri: kata yang juga ada di deck lain dipelajari terpisah di sini.
         </p>
       ) : null}
+
+      {stats ? <DeckStatsPanel stats={stats} /> : null}
 
       <section className="mt-10" aria-labelledby="deck-words">
         <div className="flex flex-wrap items-end justify-between gap-3">
@@ -209,6 +230,10 @@ export default async function DeckPage({ params, searchParams }: Props) {
                     ) : null}
                   </span>
                   <DeckWordActions
+                    deckSlug={slug}
+                    // Kartu milik langganan deck ini; deck yang belum atau tidak
+                    // lagi ditambahkan hanya bisa dilaporkan isinya.
+                    cardActions={subscribed}
                     vocabId={word.vocabId}
                     word={word.wordPlain}
                     status={word.status}

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
-import { getDeckCatalog, getMyDecks } from "@/features/flashcard/data";
+import { getDeckCatalog, getSubscribedDecks } from "@/features/flashcard/data";
 import { DeckCatalog } from "@/features/flashcard/components/deck-catalog";
 import { FLASHCARD_LICENSE } from "@/features/flashcard/taxonomy";
 import { privateMetadata } from "@/lib/seo";
@@ -16,10 +16,11 @@ export default async function AddDeckPage() {
   const session = await getSession();
   if (!session) redirect("/login?next=/flashcard/add");
 
-  const [catalog, { subscribedIds }] = await Promise.all([
+  const [catalog, subscribed] = await Promise.all([
     getDeckCatalog(),
-    getMyDecks(session.userId),
+    getSubscribedDecks(session.userId),
   ]);
+  const subscribedIds = new Set(subscribed.map((deck) => deck.id));
 
   return (
     <main className="mx-auto w-full max-w-4xl px-4 py-10">
@@ -29,9 +30,8 @@ export default async function AddDeckPage() {
 
       <h1 className="mt-4 text-3xl font-black">Tambah deck</h1>
       <p className="mt-2 max-w-2xl font-bold text-muted-foreground">
-        Satu kata bisa ada di beberapa deck, misalnya 食事 di JLPT N5 dan Makanan &amp; minuman.
-        Progresnya tetap satu: kata yang sudah dipelajari di satu deck tidak muncul lagi sebagai
-        kartu baru di deck lain.
+        Setiap deck punya kartu dan pengaturannya sendiri. Kata yang ada di beberapa deck, misalnya
+        食事 di JLPT N5 dan Makanan &amp; minuman, dipelajari dan direview terpisah di tiap deck.
       </p>
 
       <div className="mt-8">

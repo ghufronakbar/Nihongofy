@@ -47,7 +47,7 @@ export default async function FlashcardPage() {
     );
   }
 
-  const { decks, allowance, settings } = await getMyDecks(session.userId);
+  const { decks, today } = await getMyDecks(session.userId);
 
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-10">
@@ -67,8 +67,8 @@ export default async function FlashcardPage() {
       </div>
 
       <p className="mt-3 text-sm font-bold text-muted-foreground">
-        Hari ini: {allowance.newStudiedToday} dari {settings.config.newCardsPerDay} kartu baru,{" "}
-        {allowance.reviewsToday} review. Batas harian berlaku untuk semua deck sekaligus.
+        Hari ini: {today.newStudied} kartu baru dan {today.reviews} review di semua deck. Batas
+        harian diatur per deck.
       </p>
 
       {decks.length === 0 ? (

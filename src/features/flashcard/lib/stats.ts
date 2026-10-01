@@ -125,3 +125,47 @@ export function averageAnswerSeconds(reviews: ReviewSample[]): number | null {
   if (timed.length === 0) return null;
   return timed.reduce((total, review) => total + review.takenMs, 0) / timed.length / 1_000;
 }
+
+/** Ambang kartu "mature" Anki: interval review 21 hari atau lebih. */
+export const MATURE_INTERVAL_DAYS = 21;
+
+export type MaturitySample = {
+  type: "NEW" | "LEARNING" | "REVIEW" | "RELEARNING";
+  intervalDays: number;
+  isSuspended: boolean;
+};
+
+export type MaturityCounts = {
+  new: number;
+  learning: number;
+  /** Review dengan interval di bawah 21 hari. */
+  young: number;
+  mature: number;
+  suspended: number;
+};
+
+/**
+ * Kematangan kartu seperti grafik "Card Counts" Anki. Kartu suspend dihitung
+ * terpisah apa pun jenisnya. `uncarded` adalah kata tanpa baris kartu — kartu
+ * baru yang belum pernah disentuh.
+ */
+export function buildMaturity(cards: MaturitySample[], uncarded: number): MaturityCounts {
+  const counts: MaturityCounts = {
+    new: Math.max(0, uncarded),
+    learning: 0,
+    young: 0,
+    mature: 0,
+    suspended: 0,
+  };
+
+  for (const card of cards) {
+    if (card.isSuspended) counts.suspended += 1;
+    else if (card.type === "NEW") counts.new += 1;
+    else if (card.type === "REVIEW") {
+      if (card.intervalDays >= MATURE_INTERVAL_DAYS) counts.mature += 1;
+      else counts.young += 1;
+    } else counts.learning += 1;
+  }
+
+  return counts;
+}

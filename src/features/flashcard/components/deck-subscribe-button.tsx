@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Check, Loader2, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -13,10 +14,13 @@ type Props = {
 };
 
 /**
- * Menambah atau melepas deck dari daftar belajar. Melepas tidak menghapus
- * progres: kartunya tetap tersimpan dan kembali saat deck ditambahkan lagi.
+ * Menambah atau melepas deck dari daftar belajar. Menambah langsung membuka
+ * pengaturan deck itu (deck sudah aktif dengan pengaturan bawaan). Melepas
+ * tidak menghapus progres: kartu dan pengaturannya kembali saat deck
+ * ditambahkan lagi.
  */
 export function DeckSubscribeButton({ slug, subscribed, className }: Props) {
+  const router = useRouter();
   const [pending, startTransition] = useTransition();
 
   const toggle = () => {
@@ -28,7 +32,11 @@ export function DeckSubscribeButton({ slug, subscribed, className }: Props) {
         toast.error(result.message);
         return;
       }
-      toast.success(subscribed ? "Deck dilepas. Progresnya tetap tersimpan." : "Deck ditambahkan.");
+      if (subscribed) {
+        toast.success("Deck dilepas. Progres dan pengaturannya tetap tersimpan.");
+        return;
+      }
+      router.push(`/flashcard/deck/${slug}/settings?new=1`);
     });
   };
 

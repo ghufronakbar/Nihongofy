@@ -17,8 +17,7 @@ type Props = {
 
 /**
  * Katalog deck bawaan. Satu kata bisa berada di beberapa deck sekaligus (deck
- * level dan deck topik), tetapi progresnya satu: belajar di satu deck ikut
- * memajukan kata yang sama di deck lain.
+ * level dan deck topik); setelah ditambahkan, tiap deck punya kartunya sendiri.
  */
 export function DeckCatalog({ decks, subscribedIds }: Props) {
   if (decks.length === 0) {

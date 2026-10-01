@@ -6,6 +6,7 @@ import { getSession } from "@/lib/auth";
 import { buildPreviewLabels, getCatalogDeck, getTrySession } from "@/features/flashcard/data";
 import { FlashcardReviewer } from "@/features/flashcard/components/flashcard-reviewer";
 import { createNewCardState } from "@/features/flashcard/lib/scheduler";
+import { EMPTY_STUDY_COUNTS } from "@/features/flashcard/lib/session-summary";
 import { FLASHCARD_DEFAULT_ROLLOVER_HOUR } from "@/features/flashcard/lib/scheduler/day";
 import {
   FLASHCARD_DEFAULT_CONFIG,
@@ -62,7 +63,7 @@ export default async function TryDeckPage({ params }: Props) {
   });
   const cards: ReviewerCard[] = trial.rows.map((row) => ({
     vocabId: row.vocabId,
-    isNew: true,
+    kind: "new",
     content: row.content,
     previewLabels,
   }));
@@ -79,10 +80,13 @@ export default async function TryDeckPage({ params }: Props) {
         </p>
       ) : null}
       <FlashcardReviewer
+        deckSlug={deck.slug}
         deckName={deck.name}
-        deckHref="/flashcard"
+        back={{ href: "/flashcard", label: "Kembali ke katalog" }}
         cards={cards}
         pendingLearning={[]}
+        unloadedCounts={EMPTY_STUDY_COUNTS}
+        tomorrow={null}
         hasMore={false}
         display={FLASHCARD_DEFAULT_DISPLAY}
         // SELALU ephemeral, termasuk untuk user yang sudah login: mode coba

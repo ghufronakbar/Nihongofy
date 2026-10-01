@@ -1102,8 +1102,25 @@ Keputusan desain dan alasannya ada di `docs/module/flashcard.md`; kontrak datany
   kata yang perlu percobaan ulang dari 10-14% ke ±2% (lihat tabel di `docs/seed-flashcard.md`).
   Bug ekstraksi bacaan ganda (お茶 → おおちゃ, 9 kata) diperbaiki dan key-nya dikoreksi sebelum
   seed pertama. Peringatan homograf tidak lagi salah lapor bila bacaan lain ditulis bermarkup.
+- [x] Layar belajar (1 Okt 2026): tombol kembali, hitungan Baru/Belajar/Ulang langsung, progress
+  bar, jam sesi, dan ringkasan akhir sesi (`lib/session-summary.ts`).
+- [x] Kartu dan pengaturan per deck (1 Okt 2026), menggantikan keputusan "satu kata = satu kartu"
+  dan "pengaturan per user" di atas: kartu ber-PK `userId + deckId + vocabId`, pengaturan
+  penjadwalan di `FlashcardDeckSubscription.config`, batas harian per deck tanpa batas gabungan,
+  melepas deck membekukan kartu dan pengaturannya. Migration
+  `20261001180000_flashcard_cards_per_deck` mengosongkan data user flashcard (hanya data uji).
+  Diuji terhadap Postgres lokal: migration di atas data berbentuk lama, lalu alur deck, jawab,
+  batas harian per deck, undo, tunda, suspend, reset, lepas/tambah ulang, dan pengaturan.
+- [x] Halaman pengaturan per deck `/flashcard/deck/[slug]/settings` dan alur "tambah deck → atur"
+  (1 Okt 2026): tombol Tambahkan membuka pengaturan deck dengan opsi "Pakai bawaan", salin
+  pengaturan dari deck lain, tombol Pengaturan dan pemakaian batas harian di halaman deck.
+- [x] Statistik per deck di halaman deck (progres, kematangan young/mature, retensi 30 hari,
+  perkiraan 7 hari, kata tersulit) dan filter deck di `/flashcard/stats` (1 Okt 2026).
 
 ### Langkah tersisa (dijalankan pemilik project)
+
+- [ ] `npx prisma migrate deploy` untuk `20261001180000_flashcard_cards_per_deck` (mengosongkan
+  kartu, revlog, langganan, dan pengaturan flashcard semua user).
 
 - [x] `npx prisma migrate deploy` (1 Okt 2026).
 - [x] Commit dan deploy kode flashcard baru dengan flag mati (sampai PR #50).
@@ -1111,8 +1128,10 @@ Keputusan desain dan alasannya ada di `docs/module/flashcard.md`; kontrak datany
 - [x] Kata bertanda ragu ditinjau lewat `npm run flashcard:doubts` dan `npm run fix:flashcard-doubts`
   (perbaiki, generate ulang, atau pensiunkan duplikat); tidak ada yang tersisa.
 - [x] `npm run seed:flashcard`: 6.720 kata aktif, 52 deck tampil (terkecil 13 kata).
-- [ ] Uji manual di browser dengan data asli: tambah deck, belajar (learning step 1m → 2h muncul
-  lagi tepat waktu), undo, tunda, suspend, reset, pengaturan, statistik, dan mode coba guest.
+- [ ] Uji manual di browser dengan data asli: tambah deck (langsung ke pengaturan deck), belajar
+  (learning step 1m → 2h muncul lagi tepat waktu), kata yang sama di dua deck sebagai dua kartu,
+  batas harian per deck, undo, tunda, suspend, reset, salin pengaturan antar deck, lepas dan
+  tambah ulang deck, statistik, ringkasan sesi, dan mode coba guest.
 - [ ] Nyalakan `FEATURES_FLASHCARD=true` di environment Vercel, lalu redeploy.
 
 ## Fase 8.13 — Modul Bunpou (文法)
