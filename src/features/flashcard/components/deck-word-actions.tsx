@@ -4,6 +4,7 @@ import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Ban, Loader2, RotateCcw, Undo2 } from "lucide-react";
+import { ReportButton } from "@/features/report/components/report-button";
 import { resetCardAction, setCardSuspendedAction } from "../actions";
 import type { DeckWordStatus } from "../types";
 
@@ -12,10 +13,15 @@ type Props = {
   word: string;
   status: DeckWordStatus;
   hasCard: boolean;
+  /** Status `FEATURES.report` dari halaman; komponen client tidak membaca `@/constants`. */
+  reportEnabled: boolean;
 };
 
-/** Aksi per kata di daftar kata: suspend/lepas suspend dan reset ke kartu baru. */
-export function DeckWordActions({ vocabId, word, status, hasCard }: Props) {
+/**
+ * Aksi per kata di daftar kata: suspend/lepas suspend, reset ke kartu baru, dan
+ * laporan bila isi kartunya keliru.
+ */
+export function DeckWordActions({ vocabId, word, status, hasCard, reportEnabled }: Props) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const suspended = status === "suspended";
@@ -66,6 +72,19 @@ export function DeckWordActions({ vocabId, word, status, hasCard }: Props) {
         >
           <RotateCcw className="size-4" aria-hidden />
         </button>
+      ) : null}
+      {reportEnabled ? (
+        <ReportButton
+          target={{ targetType: "FLASHCARD_VOCAB", vocabId }}
+          variant="neo-icon"
+          label={`Laporkan kartu ${word}`}
+          subject={
+            <span lang="ja" className="font-japanese">
+              {word}
+            </span>
+          }
+          className="min-h-9 px-2 py-1 text-xs"
+        />
       ) : null}
     </div>
   );

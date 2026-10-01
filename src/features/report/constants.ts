@@ -11,6 +11,7 @@ export const REPORT_TARGET_TYPES = [
   "QUESTION_EXPLANATION",
   "ARTICLE",
   "COMMENT",
+  "FLASHCARD_VOCAB",
 ] as const;
 
 export type ReportTargetTypeValue = (typeof REPORT_TARGET_TYPES)[number];
@@ -24,6 +25,10 @@ export const REPORT_CATEGORIES = [
   "ABUSE",
   "SUGGESTION",
   "OTHER",
+  "READING_ERROR",
+  "MEANING_ERROR",
+  "EXAMPLE_ERROR",
+  "TAG_ERROR",
 ] as const;
 
 export type ReportCategoryValue = (typeof REPORT_CATEGORIES)[number];
@@ -45,6 +50,12 @@ export type ReportStatusValue = (typeof REPORT_STATUSES)[number];
  * berikutnya tidak jalan di soal 12" akan memaksa laporannya masuk kategori yang
  * salah bila satu-satunya pilihan di halaman soal adalah kategori konten. Yang
  * dibatasi target adalah kategori kontennya.
+ *
+ * Kartu flashcard sengaja TIDAK memakai `CONTENT_ERROR`. Empat kategorinya
+ * menunjuk bagian fixture yang berbeda (bacaan, arti dan catatan, contoh kalimat,
+ * tag), dan satu di antaranya diperbaiki dengan cara lain: bacaan kata ikut
+ * membentuk `key`, jadi bacaan yang keliru tidak selesai dengan generate ulang.
+ * Kategori serba-mencakup akan menyembunyikan pembedaan itu di dalam teks bebas.
  */
 export const REPORT_CATEGORIES_BY_TARGET = {
   GENERAL: ["BUG", "SUGGESTION", "OTHER"],
@@ -52,6 +63,7 @@ export const REPORT_CATEGORIES_BY_TARGET = {
   QUESTION_EXPLANATION: ["EXPLANATION_ERROR", "ANSWER_KEY", "BUG", "OTHER"],
   ARTICLE: ["CONTENT_ERROR", "BUG", "OTHER"],
   COMMENT: ["ABUSE", "OTHER"],
+  FLASHCARD_VOCAB: ["READING_ERROR", "MEANING_ERROR", "EXAMPLE_ERROR", "TAG_ERROR", "BUG", "OTHER"],
 } as const satisfies Record<ReportTargetTypeValue, readonly ReportCategoryValue[]>;
 
 export const REPORT_TARGET_TYPE_LABELS: Record<ReportTargetTypeValue, string> = {
@@ -60,6 +72,7 @@ export const REPORT_TARGET_TYPE_LABELS: Record<ReportTargetTypeValue, string> = 
   QUESTION_EXPLANATION: "Pembahasan",
   ARTICLE: "Artikel",
   COMMENT: "Diskusi",
+  FLASHCARD_VOCAB: "Kartu flashcard",
 };
 
 export const REPORT_CATEGORY_LABELS: Record<ReportCategoryValue, string> = {
@@ -71,6 +84,10 @@ export const REPORT_CATEGORY_LABELS: Record<ReportCategoryValue, string> = {
   ABUSE: "Tidak pantas / melanggar",
   SUGGESTION: "Saran",
   OTHER: "Lainnya",
+  READING_ERROR: "Bacaan / furigana salah",
+  MEANING_ERROR: "Arti atau catatan keliru",
+  EXAMPLE_ERROR: "Contoh kalimat bermasalah",
+  TAG_ERROR: "Tag atau deck tidak cocok",
 };
 
 export const REPORT_CATEGORY_HINTS: Record<ReportCategoryValue, string> = {
@@ -82,6 +99,13 @@ export const REPORT_CATEGORY_HINTS: Record<ReportCategoryValue, string> = {
   ABUSE: "Kasar, spam, promosi, atau membocorkan data orang lain.",
   SUGGESTION: "Ide fitur atau perbaikan pengalaman belajar.",
   OTHER: "Tidak masuk kategori mana pun di atas.",
+  READING_ERROR: "Cara baca kata salah, atau furigana di kata maupun contoh kalimat tidak tepat.",
+  MEANING_ERROR:
+    "Arti Indonesia/Inggris salah atau menyesatkan, ada arti penting yang hilang, atau catatannya keliru.",
+  EXAMPLE_ERROR:
+    "Kalimat janggal atau tidak gramatikal, kata yang disorot salah, atau terjemahannya keliru.",
+  TAG_ERROR:
+    "Kelas kata, ragam, atau topiknya keliru, misalnya kata ini tidak seharusnya ada di deck tertentu.",
 };
 
 export const REPORT_STATUS_LABELS: Record<ReportStatusValue, string> = {

@@ -8,6 +8,7 @@ import {
   ReportQuerySchema,
   ReportStateFilterSchema,
 } from "@/features/admin/report/schemas";
+import { FlashcardReportPanel } from "@/features/admin/report/components/flashcard-report-panel";
 import { ReportActions } from "@/features/admin/report/components/report-actions";
 import { ReportReplyForm } from "@/features/admin/report/components/report-reply-form";
 import {
@@ -16,6 +17,8 @@ import {
   REPORT_STATUS_LABELS,
   REPORT_TARGET_TYPES,
   REPORT_TARGET_TYPE_LABELS,
+  isReportCategoryAllowed,
+  reportCategoriesFor,
   type ReportCategoryValue,
   type ReportStatusValue,
   type ReportTargetTypeValue,
@@ -58,25 +61,50 @@ export default async function AdminReportPage({
 
   const params = await searchParams;
   const parsedState = ReportStateFilterSchema.safeParse(params.state);
+  const targetType = isTargetType(params.target) ? params.target : undefined;
   const filter = ReportQuerySchema.parse({
     state: parsedState.success ? parsedState.data : "open",
-    targetType: isTargetType(params.target) ? params.target : undefined,
-    category: isCategory(params.category) ? params.category : undefined,
+    targetType,
+    // Kombinasi yang mustahil (mis. kategori bacaan pada target soal) dibuang,
+    // bukan dibiarkan menghasilkan daftar kosong yang tampak seperti tidak ada
+    // laporan.
+    category:
+      isCategory(params.category) &&
+      (!targetType || isReportCategoryAllowed(targetType, params.category))
+        ? params.category
+        : undefined,
     query: (params.q ?? "").trim(),
   });
 
   const { entries, counts, truncated } = await listReportQueue(filter);
 
-  function hrefFor(next: Partial<{ state: string; target: string; category: string }>) {
+  function hrefFor(
+    next: Partial<{ state: string; target: ReportTargetTypeValue; category: ReportCategoryValue }>,
+  ) {
     const search = new URLSearchParams();
     search.set("state", next.state ?? filter.state);
     const target = next.target ?? filter.targetType;
-    const category = next.category ?? filter.category;
+    let category = next.category ?? filter.category;
+    // Berpindah target membuang kategori yang tidak berlaku untuk target barunya.
+    if (target && category && !isReportCategoryAllowed(target, category)) category = undefined;
     if (target) search.set("target", target);
     if (category) search.set("category", category);
     if (filter.query) search.set("q", filter.query);
     return `/admin/report?${search.toString()}`;
   }
+
+  // Dengan target terpilih, hanya kategori yang berlaku untuk target itu yang
+  // ditawarkan: peta yang sama dengan form laporan dan `SubmitReportSchema`.
+  const categoryOptions = filter.targetType
+    ? reportCategoriesFor(filter.targetType)
+    : REPORT_CATEGORIES;
+
+  // Laporan kartu lama tetap ditindak dari sini walau modul flashcard dimatikan;
+  // yang berhenti hanya laporan baru, karena seluruh /flashcard menjadi 404.
+  const flashcardOff =
+    !FEATURES.flashcard &&
+    (filter.targetType === "FLASHCARD_VOCAB" ||
+      entries.some((entry) => entry.targetType === "FLASHCARD_VOCAB"));
 
   return (
     <div className="flex flex-col gap-6">
@@ -91,6 +119,13 @@ export default async function AdminReportPage({
         <p className="border-[3px] border-neo-ink bg-neo-yellow px-4 py-2.5 text-sm font-bold text-black shadow-neo-sm">
           Form laporan sedang nonaktif (FEATURES_REPORT=false). Tidak ada laporan baru yang dapat
           masuk, tetapi yang sudah ada tetap dapat ditindak dari sini.
+        </p>
+      )}
+
+      {flashcardOff && (
+        <p className="border-[3px] border-neo-ink bg-neo-yellow px-4 py-2.5 text-sm font-bold text-black shadow-neo-sm">
+          Modul flashcard sedang nonaktif (FEATURES_FLASHCARD=false). Tidak ada laporan kartu baru
+          yang dapat masuk, tetapi laporan kartu yang sudah ada tetap dapat ditindak dari sini.
         </p>
       )}
 
@@ -168,7 +203,7 @@ export default async function AdminReportPage({
           >
             Semua
           </Link>
-          {REPORT_CATEGORIES.map((category) => (
+          {categoryOptions.map((category) => (
             <Link
               key={category}
               href={hrefFor({ category })}
@@ -242,7 +277,7 @@ export default async function AdminReportPage({
                     Buka target
                   </Link>
                 )}
-                {entry.targetLabel && !entry.targetHref && (
+                {entry.targetMissing && (
                   <span className="font-mono text-[11px] font-bold text-neo-coral">
                     target sudah dihapus
                   </span>
@@ -258,6 +293,10 @@ export default async function AdminReportPage({
                   </span>
                 )}
               </div>
+
+              {entry.flashcard && (
+                <FlashcardReportPanel category={entry.category} flashcard={entry.flashcard} />
+              )}
 
               {(entry.adminNote || entry.handledBy || entry.repliedAt) && (
                 <div className="flex flex-col gap-1 border-2 border-neo-ink/15 bg-neo-paper p-2.5">

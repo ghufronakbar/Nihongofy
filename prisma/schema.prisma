@@ -155,12 +155,16 @@ enum CommentVisibility {
 //
 // GENERAL bukan "tanpa nilai", melainkan pilihan eksplisit — dengan begitu
 // filter antrean admin tidak perlu menebak dari kolom mana yang non-null.
+//
+// FLASHCARD_VOCAB menunjuk kata di katalog (FlashcardVocab), bukan kartu milik
+// user: isi kartu semua user berasal dari baris katalog yang sama.
 enum ReportTargetType {
   GENERAL
   QUESTION
   QUESTION_EXPLANATION
   ARTICLE
   COMMENT
+  FLASHCARD_VOCAB
 }
 
 // Kategori dibatasi oleh target: peta lengkapnya ada di
@@ -170,6 +174,11 @@ enum ReportTargetType {
 //
 // ANSWER_KEY dipisah dari CONTENT_ERROR karena sudah ada alur untuknya:
 // `QuestionExplanation.answerKeyDoubt`. Keduanya antrean yang sama.
+//
+// READING_ERROR s.d. TAG_ERROR adalah kategori konten kartu kosakata. Masing-
+// masing menunjuk bagian fixture yang berbeda, dan bacaan yang keliru perbaikannya
+// berbeda dari isi kartu lain (lihat docs/module/report.md). Urutannya mengikuti
+// ALTER TYPE ... ADD VALUE, yang selalu menambah di akhir.
 enum ReportCategory {
   BUG
   CONTENT_ERROR
@@ -179,6 +188,10 @@ enum ReportCategory {
   ABUSE
   SUGGESTION
   OTHER
+  READING_ERROR
+  MEANING_ERROR
+  EXAMPLE_ERROR
+  TAG_ERROR
 }
 
 enum ReportStatus {
@@ -374,7 +387,8 @@ model FlashcardVocab {
 
   retiredAt DateTime?
 
-  cards FlashcardCard[]
+  cards   FlashcardCard[]
+  reports Report[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1189,6 +1203,14 @@ model Report {
   comment   QuestionComment? @relation(fields: [commentId], references: [id], onDelete: SetNull)
   commentId Int?
 
+  // SetNull dengan alasan yang sama: laporan tidak boleh ikut terhapus bersama
+  // targetnya, dan juga tidak boleh menahan penghapusannya. Katalog memang tidak
+  // pernah menghapus kata (hanya `retiredAt`), dan penghapusan yang tidak
+  // disengaja sudah ditahan `FlashcardCard.vocabId` (Restrict). Isi kartu tidak
+  // diedit dari admin; perbaikannya lewat fixture lalu `seed:flashcard`.
+  vocab   FlashcardVocab? @relation(fields: [vocabId], references: [id], onDelete: SetNull)
+  vocabId Int?
+
   // Snapshot teks target saat laporan dibuat, mis. "N2 Juli 2025 · 文法 · soal 12".
   // Mengikuti pola `AdminAuditLog.actorName`: FK yang menjadi null karena
   // targetnya dihapus akan meninggalkan baris yang tidak terbaca tanpa ini.
@@ -1240,6 +1262,7 @@ model Report {
   @@index([questionId])
   @@index([articleId])
   @@index([commentId])
+  @@index([vocabId])
   @@index([reporterId])
   @@index([handledById])
   @@index([repliedById])

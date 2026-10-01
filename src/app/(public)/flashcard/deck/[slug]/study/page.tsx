@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
+import { FEATURES } from "@/constants";
 import { getSession } from "@/lib/auth";
 import { getStudySession } from "@/features/flashcard/data";
 import { FlashcardReviewer } from "@/features/flashcard/components/flashcard-reviewer";
@@ -41,6 +42,7 @@ export default async function StudyPage({ params }: Props) {
         hasMore={study.hasMore}
         display={study.display}
         isGuest={false}
+        reportEnabled={FEATURES.report}
       />
     </main>
   );

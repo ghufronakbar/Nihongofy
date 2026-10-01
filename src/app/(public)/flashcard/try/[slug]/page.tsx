@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { FEATURES } from "@/constants";
 import { getSession } from "@/lib/auth";
 import { buildPreviewLabels, getCatalogDeck, getTrySession } from "@/features/flashcard/data";
 import { FlashcardReviewer } from "@/features/flashcard/components/flashcard-reviewer";
@@ -87,6 +88,9 @@ export default async function TryDeckPage({ params }: Props) {
         // SELALU ephemeral, termasuk untuk user yang sudah login: mode coba
         // tidak boleh menyentuh jadwal siapa pun.
         isGuest
+        // Guest boleh melapor (docs/module/report.md): dialognya meminta
+        // Turnstile bila tidak ada session, sama seperti laporan dari ujian guest.
+        reportEnabled={FEATURES.report}
       />
     </main>
   );

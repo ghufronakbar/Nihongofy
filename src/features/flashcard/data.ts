@@ -60,7 +60,8 @@ type VocabContentRow = {
   tags: string[];
 };
 
-const VOCAB_CONTENT_SELECT = {
+/** Kolom yang dibutuhkan `toCardContent`; dipakai juga antrean laporan admin. */
+export const VOCAB_CONTENT_SELECT = {
   id: true,
   level: true,
   word: true,
@@ -73,7 +74,7 @@ const VOCAB_CONTENT_SELECT = {
   tags: true,
 } as const;
 
-function toCardContent(row: VocabContentRow): VocabCardContent {
+export function toCardContent(row: VocabContentRow): VocabCardContent {
   return {
     level: row.level,
     word: row.word,

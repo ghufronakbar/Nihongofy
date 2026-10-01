@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { TriangleAlert } from "lucide-react";
 import { PageContainer } from "@/components/marketing/page-container";
+import { FEATURES } from "@/constants";
 import { getReportFormContextAction } from "@/features/report/actions";
 import { ReportForm } from "@/features/report/components/report-form";
 import { pageMetadata } from "@/lib/seo";
@@ -30,10 +31,13 @@ export default async function ReportPage() {
           </h1>
           <p className="mt-3 text-base leading-7 text-foreground/70">
             Halaman ini untuk laporan umum: aplikasi error, tampilan rusak, atau saran fitur.
-            Untuk melaporkan satu soal, pembahasan, artikel, atau entri diskusi tertentu, pakai
-            tombol <strong className="font-extrabold">Laporkan</strong> yang ada di halamannya —
-            tombol itu ikut membawa identitas yang dilaporkan sehingga tidak perlu Anda tulis
-            manual.
+            Untuk melaporkan satu soal, pembahasan, artikel,{" "}
+            {/* Kartu flashcard disebut hanya bila modulnya hidup: saat mati, seluruh
+                /flashcard 404 dan tombol laporannya memang tidak ada. */}
+            {FEATURES.flashcard ? "entri diskusi, atau kartu flashcard" : "atau entri diskusi"}{" "}
+            tertentu, pakai tombol <strong className="font-extrabold">Laporkan</strong> yang ada
+            di halamannya — tombol itu ikut membawa identitas yang dilaporkan sehingga tidak perlu
+            Anda tulis manual.
           </p>
         </div>
 
