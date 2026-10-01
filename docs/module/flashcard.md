@@ -2,18 +2,15 @@
 
 ## Status Aktual
 
-**Dirombak 1 Oktober 2026; kode selesai, katalog belum terisi.** Modul ini tidak lagi meniru Anki
+**Dirombak 1 Oktober 2026; kode dan katalog selesai (6.720 kata, 52 deck di database), flag
+masih mati sampai uji manual.** Modul ini tidak lagi meniru Anki
 sebagai aplikasi koleksi pribadi. Isinya kini satu katalog kosakata JLPT bawaan yang
 digenerate AI, dan user hanya memilih deck lalu mengatur penjadwalan. Konten buatan user
 (deck sendiri, tambah kartu, impor/ekspor CSV, card browser yang bisa mengedit, preset per
 deck, editor deck bawaan di admin) sudah dihapus.
 
-Yang masih perlu dijalankan sebelum flag dinyalakan:
-
-1. `npx prisma migrate deploy` — migration `20261001120000_flashcard_vocab_catalog` menghapus
-   tabel flashcard lama lalu membuat yang baru.
-2. `npm run gen:flashcard` sampai semua kata terisi (lihat [seed-flashcard.md](../seed-flashcard.md)).
-3. `npm run seed:flashcard`.
+Yang masih perlu sebelum flag dinyalakan: uji manual di browser dengan data asli, lalu
+`FEATURES_FLASHCARD=true` di Vercel (checklist di Fase 8.12 `docs/plan.md`).
 
 Rancangan lama (paritas Anki penuh) tetap ada di
 [`docs/plan/anki-parity-flashcard.md`](../plan/anki-parity-flashcard.md) sebagai riwayat.
@@ -147,8 +144,8 @@ Kontrak lengkapnya di [seed-flashcard.md](../seed-flashcard.md):
 ## Yang Belum Ada
 
 - Audio atau tombol dengar (TTS browser seperti modul kana bisa ditambahkan tanpa file).
-- Halaman admin untuk meninjau kata bertanda ragu; sementara memakai `npm run flashcard:doubts`
-  dan perbaikan lewat fixture.
+- Halaman admin untuk meninjau kata bertanda ragu dari generator AI. Sementara memakai
+  `npm run flashcard:doubts` dan `npm run fix:flashcard-doubts` di terminal, lalu seed ulang.
 - Kartu flashcard sebagai target [laporan](report.md).
 
 ## File Utama

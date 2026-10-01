@@ -1064,13 +1064,15 @@ Keputusan desain dan alasannya ada di `docs/module/flashcard.md`; kontrak datany
 
 ### Langkah tersisa (dijalankan pemilik project)
 
-- [x] `npx prisma migrate deploy` (1 Okt 2026). Sampai kode baru ter-deploy, kode production lama
-  masih membaca tabel flashcard lama: overview admin, ekspor akun, dan penghapusan akun error.
-- [ ] Commit dan deploy kode flashcard baru (flag tetap mati).
-- [ ] `npm run gen:flashcard` sampai semua kata terisi (908 dari 6.697 per 1 Okt 2026).
-- [ ] Tinjau `npm run flashcard:doubts`.
-- [ ] `npm run seed:flashcard`.
-- [ ] Uji manual di browser, lalu nyalakan `FEATURES_FLASHCARD`.
+- [x] `npx prisma migrate deploy` (1 Okt 2026).
+- [x] Commit dan deploy kode flashcard baru dengan flag mati (sampai PR #50).
+- [x] `npm run gen:flashcard`: 6.722 kata terisi.
+- [x] Kata bertanda ragu ditinjau lewat `npm run flashcard:doubts` dan `npm run fix:flashcard-doubts`
+  (perbaiki, generate ulang, atau pensiunkan duplikat); tidak ada yang tersisa.
+- [x] `npm run seed:flashcard`: 6.720 kata aktif, 52 deck tampil (terkecil 13 kata).
+- [ ] Uji manual di browser dengan data asli: tambah deck, belajar (learning step 1m → 2h muncul
+  lagi tepat waktu), undo, tunda, suspend, reset, pengaturan, statistik, dan mode coba guest.
+- [ ] Nyalakan `FEATURES_FLASHCARD=true` di environment Vercel, lalu redeploy.
 
 ## Fase 9 — Verifikasi & Polish
 
