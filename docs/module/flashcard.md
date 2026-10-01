@@ -1,184 +1,165 @@
-# Modul Flashcard (paritas Anki)
+# Modul Flashcard (kosakata bawaan, penjadwalan ala Anki)
 
 ## Status Aktual
 
-**Fungsional. Fase A sampai G selesai, kecuali impor `.apkg`.** Modul vocabulary lama (SM-2 custom) sudah dihapus dan
-diganti fondasi baru yang meniru model data Anki. Belum ada route, UI, scheduler, atau konten;
-yang ada baru skema database dan definisi tipe.
+**Dirombak 1 Oktober 2026; kode selesai, katalog belum terisi.** Modul ini tidak lagi meniru Anki
+sebagai aplikasi koleksi pribadi. Isinya kini satu katalog kosakata JLPT bawaan yang
+digenerate AI, dan user hanya memilih deck lalu mengatur penjadwalan. Konten buatan user
+(deck sendiri, tambah kartu, impor/ekspor CSV, card browser yang bisa mengedit, preset per
+deck, editor deck bawaan di admin) sudah dihapus.
 
-Desain lengkap dan alasan tiap keputusan ada di [`docs/plan/anki-parity-flashcard.md`](../plan/anki-parity-flashcard.md).
+Yang masih perlu dijalankan sebelum flag dinyalakan:
+
+1. `npx prisma migrate deploy` — migration `20261001120000_flashcard_vocab_catalog` menghapus
+   tabel flashcard lama lalu membuat yang baru.
+2. `npm run gen:flashcard` sampai semua kata terisi (lihat [seed-flashcard.md](../seed-flashcard.md)).
+3. `npm run seed:flashcard`.
+
+Rancangan lama (paritas Anki penuh) tetap ada di
+[`docs/plan/anki-parity-flashcard.md`](../plan/anki-parity-flashcard.md) sebagai riwayat.
 
 ## Feature Flag
 
 `FEATURES_FLASHCARD` (default `true`). Saat `false`:
 
-- Seluruh `/flashcard/*`, termasuk mode coba guest `/flashcard/try/*`, mengembalikan 404 lewat guard `src/app/(public)/flashcard/layout.tsx`.
-- `GET /api/flashcard/export` mengembalikan 404 sebelum memeriksa session.
-- Menu Flashcard di header dan sidebar, kartu di home dan dashboard, quick action serta statistik "Kartu dipelajari" di profile tidak dirender.
+- Seluruh `/flashcard/*`, termasuk mode coba guest `/flashcard/try/*`, mengembalikan 404 lewat
+  guard `src/app/(public)/flashcard/layout.tsx`.
+- Menu Flashcard di header dan sidebar, kartu di home dan dashboard, serta quick action dan
+  statistik "Kartu dipelajari" di profile tidak dirender.
 - `/flashcard` keluar dari `sitemap.xml` dan `robots.txt`.
-- Server Action flashcard (`actions.ts`, `import-actions.ts`, dan lainnya) tidak mengecek flag; tab lama yang masih terbuka tetap dapat memanggilnya.
+- Server Action flashcard tidak mengecek flag; tab lama yang masih terbuka tetap dapat
+  memanggilnya.
 
-## Yang Sudah Ada (Fase A)
+## Konsep
 
-- Skema database `Flashcard*` baru: `FlashcardCollection`, `FlashcardPreset`, `FlashcardDeck`,
-  `FlashcardNote`, `FlashcardCard`, `FlashcardRevlog`, `FlashcardImportJob`.
-  Migration `20260903190000_flashcard_anki_parity_foundation`.
-- `src/features/flashcard/note-types.ts` — 5 note type yang didefinisikan aplikasi
-  (`BASIC`, `BASIC_REVERSED`, `VOCAB_JP`, `KANJI`, `CLOZE`), lengkap dengan field dan
-  template kartu, plus perhitungan jumlah kartu per note (termasuk cloze `{{c1::}}`).
-- `src/features/flashcard/schemas.ts` — validasi zod untuk seluruh deck options Anki,
-  parameter FSRS-6, nama deck hierarkis, dan rating.
-- Dependency `ts-fsrs@5.4.2` (FSRS-6.0) terpasang.
+- **Katalog** (`FlashcardVocab`): satu baris per kata, diisi `npm run seed:flashcard` dari
+  `src/flashcard-data/vocab/*.json`. Kata yang hilang dari fixture diberi `retiredAt`, tidak
+  pernah dihapus, karena progres user merujuknya.
+- **Satu kata = satu kartu per user** (`FlashcardCard`, primary key `userId + vocabId`). Baris
+  kartu baru dibuat saat kata pertama kali disentuh (dijawab, ditunda, atau di-suspend). Kata
+  tanpa baris adalah kartu baru.
+- **Deck = tag.** Deck bawaan (`FlashcardDeck`) dibentuk dari tag taxonomy yang bertanda
+  `deck: true`. Kata termasuk deck bila `tags`-nya memuat slug deck itu, sehingga 食事 bisa ada
+  di "JLPT N5" sekaligus "Makanan & minuman". Progresnya satu: kata yang dipelajari di satu deck
+  tidak muncul lagi sebagai kartu baru di deck lain.
+- **Langganan** (`FlashcardDeckSubscription`): deck yang dipilih user. Melepas langganan tidak
+  menghapus progres.
+- Deck dengan kata kurang dari `deckMinNotes` (10) tidak ditampilkan; ini juga membuat deck
+  topik yang kata-katanya belum digenerate tetap tersembunyi.
+- **Taxonomy** (`src/flashcard-data/taxonomy.json`) adalah satu-satunya daftar tag. Lima
+  dimensi: level (diisi otomatis dari daftar kata), kelas kata, ragam bahasa, kategori, dan
+  topik. Aplikasi, prompt AI, dan validator seed membaca file yang sama.
 
-## Yang Sudah Ada (Fase B)
+## Kartu
 
-- `lib/scheduler/day.ts` — batas hari dengan jam rollover (default 04:00), termasuk pembedaan
-  intraday vs interday dan selisih hari yang tahan transisi DST.
-- `lib/scheduler/fsrs.ts` — jembatan ke `ts-fsrs` (FSRS-6): konversi state kartu, resolusi queue,
-  deteksi leech, dan `getRetrievability()` untuk urutan queue Fase C.
-- `lib/scheduler/sm2.ts` — fallback SM-2 lengkap (learning steps, ease, easy bonus, interval
-  modifier, hard interval, new interval, bonus review telat), dipakai hanya saat
-  `fsrsEnabled: false`.
-- `lib/scheduler/index.ts` — `scheduleReview()` sebagai satu-satunya pintu masuk, plus
-  `previewSchedule()` untuk menampilkan interval di keempat tombol.
-- 49 unit test (`vitest`), script `npm run test`. `npm run verify` sekarang menjalankan test
-  di antara typecheck dan build.
+- **Sisi depan**: hanya tulisan kata tanpa furigana (`wordPlain`).
+- **Sisi belakang**: kata dengan furigana, arti Indonesia (utama) dan Inggris, 1-2 contoh
+  kalimat dengan kata target disorot, terjemahan ID/EN, catatan, dan tag (tanpa tag level).
+- Semua teks Jepang memakai markup `parseJapaneseMarkup` (`{漢字|かな}`, `__target__`). Di
+  flashcard, `__...__` dirender sebagai sorotan, bukan garis bawah 下線部.
+- Pengaturan tampilan per user: **ukuran teks** (80-160%, default 100%) dan **furigana langsung
+  di sisi belakang** (default aktif; bila mati, furigana disembunyikan dengan `visibility`
+  dan muncul saat diketuk atau tombol `F`).
 
-## Yang Sudah Ada (Fase C)
+## Penjadwalan
 
-- `lib/deck-tree.ts` — hierarki deck diturunkan dari nama ber-`::` (tanpa kolom `parentId`),
-  sehingga rename satu deck memindahkan seluruh subtree-nya.
-- `lib/queue/limits.ts` — daily limit per deck dengan pewarisan subtree. Menutup bug modul lama
-  yang menghitung limit global lintas deck.
-- `lib/queue/gather.ts` — urutan pengambilan v3 (intraday → interday → review → new), alokasi
-  review limit, dan penggabungan sesuai display order.
-- `lib/queue/sort.ts` — seluruh gather/sort order Anki, termasuk `relativeOverdueness` yang
-  dengan FSRS berarti ascending retrievability.
-- `lib/queue/bury.ts` — sibling burying.
-- `lib/render/sanitize.ts` + `lib/render/card-content.ts` — allowlist HTML ketat dan
-  penurunan isi kartu dari field note (termasuk cloze).
-- `data.ts` — pohon deck dengan hitungan roll-up, dan pembangunan antrean belajar.
-- `actions.ts` — answer (idempoten), bury, suspend/unsuspend, undo, leech, dan CRUD deck.
-- `components/flashcard-reviewer.tsx` — reviewer client-side dengan pintasan keyboard Anki.
-- Route `/flashcard`, `/flashcard/deck/[deckId]`, `/flashcard/deck/[deckId]/study`.
-- 91 unit test total.
+- FSRS-6 lewat `ts-fsrs`, dengan fallback SM-2 saat FSRS dimatikan. Scheduler (`lib/scheduler/`)
+  tidak berubah dari rancangan lama.
+- **Satu pengaturan per user** (`FlashcardCollection.config`), berlaku untuk semua deck. Deck
+  saling tumpang tindih, jadi batas harian per deck akan membuat jumlah kartu baru harian
+  bergantung pada deck yang dibuka.
+- Nilai bawaan mengikuti deck options Anki milik pemilik project:
 
-## Yang Sudah Ada (Fase E)
+  | Setting | Bawaan |
+  |---|---|
+  | Kartu baru per hari | 20 (semua deck sekaligus) |
+  | Maksimum review per hari | 9999 |
+  | Learning steps | `1m 2h 3h` |
+  | Insertion order | Sequential |
+  | Relearning steps | `1m 1h` |
+  | New card gather order | Random cards |
+  | New card sort order | Order gathered |
+  | New/review order | Show after reviews |
+  | Interday learning/review order | Show before reviews |
+  | Review sort order | Descending retrievability |
+  | FSRS | aktif |
+  | Desired retention | 95% |
 
-- Tabel katalog `FlashcardSystemDeck` + `FlashcardSystemNote` — konten milik aplikasi, tanpa
-  `userId`, tidak pernah dijadwalkan.
-- Kontrak data di [`docs/seed-flashcard.md`](../seed-flashcard.md), file di
-  `src/flashcard-deck-data/` (satu file per deck), script `npm run seed:flashcard-deck` dan
-  `npm run seed:flashcard-deck:check`.
-- Katalog awal: 4 deck, 335 note — Kana Hiragana (71), Kana Katakana (71), JLPT N5 Kosakata (113),
-  JLPT N5 Kanji (80).
-- Note type `KANA` ditambahkan supaya deck kana tidak dipaksa memakai label kosakata.
-- `system-deck-actions.ts` — menambahkan deck bawaan berarti MENYALIN isinya ke koleksi user.
-  Note yang sudah ada dilewati, sehingga menambahkan ulang deck yang diperbarui hanya membawa
-  note baru tanpa mereset progres.
-- `ensureDeckPath()` — deck induk dibuat otomatis, seperti Anki: menambahkan `Kana::Hiragana`
-  ikut membuat deck `Kana`.
-- Halaman `/flashcard/add` dengan katalog dan atribusi lisensi yang tampil di UI.
+  Setting lain (parameter FSRS, setting SM-2, leech) tidak ditampilkan dan memakai default Anki.
+  Setiap field di halaman pengaturan punya tombol ↺ ke nilai bawaannya.
+- Urutan pengambilan antrean mengikuti scheduler v3 Anki: intraday learning → interday learning
+  → review → new. Opsi urutan yang membedakan subdeck atau note bersaudara jatuh ke padanan
+  terdekatnya, karena deck tidak punya subdeck dan satu kata hanya punya satu kartu.
+- **Insertion order** dihitung, bukan disimpan: "sequential" mengikuti urutan katalog (level
+  termudah dulu, lalu urutan daftar sumber), "random" memakai hash per user yang stabil.
+  Mengganti opsi ini langsung berlaku untuk semua kartu baru, seperti di Anki.
+- **Learn ahead 20 menit.** Kartu learning hanya tampil saat jatuh tempo (atau dalam 20 menit ke
+  depan). Kartu dengan step 2 jam ditahan reviewer dan tampil tepat waktu dalam sesi yang sama;
+  bila tidak ada kartu lain, reviewer menampilkan jam tampil berikutnya. Kode lama memasukkan
+  semua kartu learning hari ini sekaligus, sehingga step jam tidak pernah dihormati.
+- **Tunda** menyimpan `buriedUntil` (awal hari berikutnya), **suspend** menyimpan
+  `isSuspended`. Keduanya tidak menimpa jadwal kartu, dan kartu tertunda muncul lagi tanpa job
+  unbury.
+- **Undo** memulihkan salinan kartu yang disimpan di `FlashcardRevlog.previousState`, sehingga
+  keadaannya kembali persis (termasuk learning step). Hanya review terakhir sebuah kartu yang
+  bisa dibatalkan.
+- **Idempotency** lewat `clientToken` per user. Retry dengan token yang sudah tercatat
+  mengembalikan hasil yang tersimpan, termasuk untuk kartu yang belum jatuh tempo lagi.
+- Server menolak menjawab kartu yang di-suspend, ditunda, belum jatuh tempo, atau melewati batas
+  kartu baru hari ini.
+- Leech: setelah 8 lapse kartu diberi `isLeech` (default `tagOnly`).
 
-## Yang Sudah Ada (Fase D)
+## Halaman
 
-- `/flashcard/deck/[deckId]/options` — 11 bagian deck options mengikuti struktur Anki: Preset,
-  Batas harian, Kartu baru, Lapse, Burying, FSRS, Urutan tampil, Timer, Auto advance, Audio,
-  dan Lanjutan (41 kontrol).
-- `preset-form.ts` — konversi form ↔ config untuk tiga field yang diketik sebagai teks
-  (learning steps, relearning steps, 21 parameter FSRS) plus retention yang ditampilkan sebagai
-  persen. Pesan error menyebut step atau jumlah parameter yang salah, bukan pesan generik.
-- `preset-actions.ts` — simpan preset, buat preset baru dari yang sedang dipakai, pindah preset
-  per deck (opsional termasuk subdeck), hapus preset (deck-nya dipindah ke Default lebih dulu).
-- **Reschedule cards on change** — interval kartu review dihitung ulang dari `stability` yang
-  tersimpan lewat `next_interval()` milik ts-fsrs, bukan dengan mengulang seluruh review history.
-  Ini yang dilakukan Anki dan jauh lebih murah. Dibatasi 5.000 kartu per penyimpanan supaya satu
-  request serverless tidak menyentuh puluhan ribu baris.
+| Route | Isi |
+|---|---|
+| `/flashcard` | Guest: katalog dengan tombol "Coba deck ini". Login: deck milik user dengan hitungan baru/belajar/ulang hari ini. |
+| `/flashcard/add` | Katalog per Level JLPT, Topik, dan Kategori dengan tombol tambah/lepas. |
+| `/flashcard/deck/[slug]` | Hitungan hari ini, tombol belajar, tambah/lepas deck, dan daftar kata read-only (pencarian kata/bacaan/arti, filter status, 50 per halaman, suspend dan reset per kata). |
+| `/flashcard/deck/[slug]/study` | Reviewer. Hanya untuk deck yang sudah ditambahkan. Antrean dikirim per 200 kartu; tombol "Lanjutkan" membangun antrean berikutnya. |
+| `/flashcard/settings` | Ukuran teks, furigana, dan penjadwalan. |
+| `/flashcard/stats` | True retention, perkiraan 30 hari, riwayat review, sebaran interval, status kartu. |
+| `/flashcard/try/[slug]` | Mode coba 20 kata pertama deck, selalu ephemeral. |
 
-## Yang Sudah Ada (Fase F)
+## Pipeline Konten
 
-- `lib/import/parse-text.ts` — parser format teks Anki: header `#key:value`, deteksi separator
-  otomatis, quoting dengan escape `""`, field multi-baris, BOM/CRLF, dan baris dengan jumlah
-  kolom tidak seragam.
-- `lib/import/mapping.ts` — pemetaan kolom ke field note type, pengenalan kolom
-  GUID/Tags/Deck dari namanya, validasi, dan konversi baris menjadi note.
-- `import-actions.ts` — job impor, penyimpanan per batch 500 baris, dedup, dan tiga mode Anki
-  (perbarui / lewati duplikat / impor sebagai baru).
-- `components/import-wizard.tsx` dan route `/flashcard/import` — parsing dan pemetaan berjalan
-  di browser; server hanya menerima baris yang sudah bersih.
+Kontrak lengkapnya di [seed-flashcard.md](../seed-flashcard.md):
 
-## Yang Sudah Ada (Fase G)
-
-- **Mode coba guest** — `/flashcard/try/[slug]`. Siapa pun bisa mencicipi deck bawaan tanpa akun.
-  Selalu ephemeral, termasuk untuk user yang sudah login, karena `cardId` di sana adalah guid
-  katalog dan bukan kartu milik siapa pun. Banner "progres tidak disimpan" tampil eksplisit —
-  memperbaiki gap modul lama yang copy-nya bisa menyiratkan progres guest tersimpan.
-- **Card browser** — `/flashcard/browse` dengan filter deck, status, tag, dan pencarian teks;
-  aksi massal suspend/lepas suspend, tunda, reset ke kartu baru, pindah deck, reposisi, dan
-  hapus note.
-- **Statistik** — `/flashcard/stats`: true retention, perkiraan 30 hari ke depan, riwayat review
-  30 hari, sebaran interval, status kartu, dan rata-rata waktu menjawab.
-- **Export** — `/api/flashcard/export?deck=<id>` menghasilkan teks format Anki yang bisa langsung
-  diimpor kembali lewat jalur impor yang sama, lengkap dengan kolom GUID sehingga impor ulang
-  memperbarui note alih-alih menggandakannya.
-
-## Yang Belum Ada
-
-- **Impor `.apkg`.** Desainnya sudah disiapkan (unzip + zstd + sql.js seluruhnya di browser, lalu
-  menumpang jalur batch impor yang sama), tapi belum diimplementasikan.
-- **Konten katalog** baru sampai N5. N4-N1 tinggal ditambahkan sebagai file baru sesuai kontrak,
-  tanpa mengubah kode. Route `/flashcard` belum ada, jadi tautan di sidebar,
-dashboard, profile, landing page, sitemap, dan public header saat ini menunjuk ke halaman yang
-belum dibuat.
+1. `npm run flashcard:extract` — daftar kata dari `data/anki/exported_anki.apkg` (file ini
+   tidak di-commit).
+2. `npm run gen:flashcard` — isi kartu oleh AI, hanya untuk kata yang belum terisi.
+3. `npm run seed:flashcard` — fixture ke database.
 
 ## Perbedaan dari Anki yang Disengaja
 
-- **Tidak ada custom card template.** Anki membiarkan user menulis `qfmt`/`afmt` HTML sendiri;
-  di sini tata letak milik aplikasi dan user hanya memetakan field. Ini menutup risiko XSS
-  lintas user sekaligus menjaga konsistensi desain. Konsekuensinya round-trip ke Anki tidak
-  sempurna: deck yang diimpor lalu diekspor tidak membawa template aslinya.
-- **`FlashcardCard.due` adalah timestamp absolut**, bukan integer relatif `col.crt` dengan
-  satuan berbeda per queue seperti di Anki. Satu query melayani semua queue.
-- **`FlashcardNote.fields` adalah `String[]`**, bukan string ber-separator `0x1F`.
-- **Tidak ada `custom scheduling`** (eval JavaScript arbitrer di scheduler).
-- **Learning steps dibatasi < 1 hari, dan satuan detik tidak didukung.** Anki menerima `30s`
-  dan step antar-hari seperti `1d`, tetapi keduanya rusak diam-diam bila diteruskan ke
-  `ts-fsrs`: `ConvertStepUnitToMinutes` menolak satuan detik dan membulatkan pecahan ke bawah
-  (`30s` → 0 menit → seluruh array step diabaikan dan kartu langsung lulus), sementara step
-  ≥ 1 hari dikembalikan sebagai `State.Review` dengan index step yang tidak konsisten sehingga
-  tak bisa dibedakan dari kartu review biasa. Batas ini ditegakkan di `FlashcardStepSchema`
-  dengan pesan error yang jelas, bukan dibiarkan gagal diam-diam. Panduan FSRS sendiri
-  menyarankan learning steps tetap pendek.
-- **Idempotency review memakai kolom terpisah, bukan primary key.** Revlog Anki memakai epoch ms
-  sebagai id, dan itu tetap dipertahankan. Tetapi primary key bersifat global: kalau client yang
-  menentukannya, satu user bisa mengklaim id di masa depan dan membuat review user lain ditolak
-  diam-diam sebagai "sudah tercatat". Karena itu idempotency memakai
-  `@@unique([userId, clientToken])` — tabrakan hanya mungkin di dalam satu akun, dan di situ
-  memang itu perilaku yang benar (submit ganda dari dua tab jadi no-op).
-- **Tidak ada `custom scheduling`.** Anki mengizinkan JavaScript arbitrer di scheduler; risikonya
-  tidak sebanding untuk aplikasi multi-user.
-- **Tidak ada optimizer parameter FSRS.** Anki melatih 21 parameter dari review history dengan
-  gradient descent di Rust; `ts-fsrs` tidak menyediakannya. Rencana: pakai default FSRS-6 dan
-  sediakan kolom paste parameter untuk user yang sudah punya hasil optimasi dari Anki.
+- Tidak ada konten buatan user, custom card template, maupun impor `.apkg` oleh user.
+- Satu pengaturan per user, bukan preset per deck; tidak ada tab "This deck" untuk desired
+  retention.
+- Satu template kartu (kata → arti), jadi tidak ada sibling burying.
+- `FlashcardCard.due` timestamp absolut, bukan integer relatif `col.crt`.
+- Learning steps dibatasi < 1 hari dan tanpa satuan detik, karena `ts-fsrs` merusak keduanya
+  diam-diam (lihat komentar di `schemas.ts`).
+- Tidak ada custom scheduling dan tidak ada optimizer parameter FSRS.
+- Tidak ada audio.
 
-## Data Aktual
+## Yang Belum Ada
 
-Kosong. Migration men-drop seluruh tabel vocabulary lama (32 kartu, 6 deck, 7 tag, 90 deck item,
-68 tag link, 2 progress, dan 2 review log — seluruhnya fixture dan data uji, bukan progres
-belajar nyata).
+- Audio atau tombol dengar (TTS browser seperti modul kana bisa ditambahkan tanpa file).
+- Halaman admin untuk meninjau kata bertanda ragu; sementara memakai `npm run flashcard:doubts`
+  dan perbaikan lewat fixture.
+- Kartu flashcard sebagai target [laporan](report.md).
 
 ## File Utama
 
 - `prisma/schema.prisma` — model `Flashcard*`
-- `src/features/flashcard/note-types.ts`
-- `src/features/flashcard/schemas.ts`
-- `src/features/flashcard/lib/scheduler/` — `index.ts`, `fsrs.ts`, `sm2.ts`, `day.ts`, `types.ts`
-- `src/features/flashcard/lib/queue/` — `gather.ts`, `limits.ts`, `sort.ts`, `bury.ts`
-- `src/features/flashcard/lib/deck-tree.ts`, `lib/render/`, `data.ts`, `actions.ts`
-- `src/features/flashcard/system-deck-actions.ts`, `src/flashcard-deck-data/`
-- `prisma/seed-flashcard-deck.mjs`
-- `src/features/flashcard/preset-actions.ts`, `preset-form.ts`, `components/deck-options-form.tsx`
-- `src/features/flashcard/import-actions.ts`, `lib/import/`, `components/import-wizard.tsx`
-- `src/features/flashcard/browse-actions.ts`, `browse-data.ts`, `lib/stats.ts`,
-  `lib/import/export-text.ts`, `components/card-browser.tsx`
-- `src/features/flashcard/**/*.test.ts` — 186 test
+- `src/flashcard-data/taxonomy.json`, `src/flashcard-data/vocab/*.json`
+- `prisma/flashcard-vocab.mjs`, `flashcard-anki.mjs`, `flashcard-vocab-prompt.mjs`,
+  `japanese-markup-check.mjs`
+- `prisma/extract-flashcard-anki.mjs`, `generate-flashcard-vocab.mjs`, `seed-flashcard.mjs`,
+  `report-flashcard-doubts.mjs`
+- `src/features/flashcard/data.ts` — query katalog, deck, daftar kata, sesi belajar
+- `src/features/flashcard/actions.ts` — jawab, undo, tunda, suspend, reset, langganan, pengaturan
+- `src/features/flashcard/lib/scheduler/`, `lib/queue/`, `lib/collection.ts`
+- `src/features/flashcard/schemas.ts`, `settings-form.ts`, `taxonomy.ts`, `types.ts`
+- `src/features/flashcard/components/` — reviewer, tampilan kartu, katalog, form pengaturan
+- `src/features/flashcard/**/*.test.ts` — scheduler, antrean, pipeline seed, pengaturan, statistik

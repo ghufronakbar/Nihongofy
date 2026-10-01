@@ -1,5 +1,5 @@
 import type { FlashcardCardType } from "@prisma/client";
-import type { FlashcardPresetConfig } from "../../schemas";
+import type { FlashcardConfig } from "../../schemas";
 import { isIntradayDue, type FlashcardDayContext } from "./day";
 import type { SchedulerCardState, SchedulerInput, SchedulerResult } from "./types";
 
@@ -37,7 +37,7 @@ function clampEase(value: number) {
   return Math.max(MINIMUM_EASE, Math.round(value * 100) / 100);
 }
 
-function clampInterval(days: number, config: FlashcardPresetConfig) {
+function clampInterval(days: number, config: FlashcardConfig) {
   return Math.min(config.maximumIntervalDays, Math.max(1, Math.round(days)));
 }
 

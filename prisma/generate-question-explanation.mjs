@@ -25,6 +25,7 @@ import {
   PROMPT_VERSION,
   SYSTEM_PROMPT,
 } from "./explanation-prompt.mjs";
+import { markupProblems } from "./japanese-markup-check.mjs";
 
 const REQUEST_TIMEOUT_MS = 300_000;
 const SDK_MAX_RETRIES = 2;
@@ -192,55 +193,6 @@ function parseLabelledReply(raw) {
 
 function isPlaceholder(value) {
   return !value || value === "-" || value === "—";
-}
-
-// Markup teks Jepang punya arti khusus di renderer (docs/text-parser.md), jadi
-// keluaran yang melanggarnya dianggap gagal dan diminta ulang, bukan disimpan
-// lalu merusak tampilan soal.
-function markupProblems(text) {
-  const problems = [];
-  if (/<\/?[a-z][a-z0-9-]*(\s[^>]*)?>/i.test(text)) problems.push("mengandung tag HTML");
-  if (/\*\*/.test(text)) problems.push("memakai markdown **tebal**");
-  if (/^#{1,6}\s/m.test(text)) problems.push("memakai judul markdown #");
-
-  const underlineCount = (text.match(/__/g) ?? []).length;
-  if (underlineCount % 2 !== 0) problems.push("penanda __ tidak berpasangan");
-
-  const openBraces = (text.match(/\{/g) ?? []).length;
-  const closeBraces = (text.match(/\}/g) ?? []).length;
-  const validFurigana = (text.match(/\{[^{}|]+\|[^{}|]+\}/g) ?? []).length;
-  if (openBraces !== closeBraces || openBraces !== validFurigana) {
-    // Pesan yang menunjuk potongan bermasalah, bukan sekadar menyatakan formatnya
-    // salah: tanpa itu percobaan ulang kerap mengulangi kesalahan yang sama.
-    const broken = (text.match(/\{[^{}]*\}/g) ?? []).filter(
-      (group) => !/^\{[^{}|]+\|[^{}|]+\}$/.test(group),
-    );
-    const detail =
-      broken.length > 0
-        ? `perbaiki menjadi {漢字|かんじ}: ${broken.slice(0, 3).join(", ")}`
-        : `kurung kurawal tidak berpasangan (${openBraces} buka, ${closeBraces} tutup)`;
-    problems.push(`format furigana salah — ${detail}`);
-  }
-
-  // Kanji di luar blok furigana tidak terbaca pelajar level bawah. Aturan ini
-  // yang paling sering dilanggar model saat menyebut istilah seperti 訓読み.
-  const redundant = [...text.matchAll(/\{([^{}|]+)\|[^{}|]+\}/g)]
-    .filter((m) => !/[\u4E00-\u9FFF]/.test(m[1]))
-    .map((m) => m[0]);
-  if (redundant.length > 0) {
-    problems.push(
-      `furigana hanya untuk kanji, hapus dari: ${[...new Set(redundant)].slice(0, 4).join(", ")}`,
-    );
-  }
-
-  const bareKanji = [
-    ...new Set(text.replace(/\{[^{}|]+\|[^{}|]+\}/g, "").match(/[\u4E00-\u9FFF]/g) ?? []),
-  ];
-  if (bareKanji.length > 0) {
-    problems.push(`kanji tanpa furigana: ${bareKanji.slice(0, 8).join("")}`);
-  }
-
-  return problems;
 }
 
 function buildExplanation(reply, question) {

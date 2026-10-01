@@ -8,7 +8,7 @@ import {
   type Grade,
 } from "ts-fsrs";
 import type { FlashcardCardQueue, FlashcardCardType } from "@prisma/client";
-import type { FlashcardPresetConfig, FlashcardRatingInput } from "../../schemas";
+import type { FlashcardConfig, FlashcardRatingInput } from "../../schemas";
 import { isIntradayDue, type FlashcardDayContext } from "./day";
 import type { SchedulerCardState, SchedulerInput, SchedulerResult } from "./types";
 
@@ -47,7 +47,7 @@ const TYPE_TO_STATE: Record<FlashcardCardType, State> = {
 // jadi cast ini aman dan tidak perlu konversi apa pun.
 type FsrsStep = `${number}${"m" | "h" | "d"}`;
 
-export function buildFsrsScheduler(config: FlashcardPresetConfig) {
+export function buildFsrsScheduler(config: FlashcardConfig) {
   return fsrs(
     generatorParameters({
       w: config.fsrsParameters,
@@ -161,12 +161,13 @@ export function scheduleWithFsrs(input: SchedulerInput): SchedulerResult {
 
 /**
  * Retrievability saat ini (0..1). Dipakai queue sorter untuk urutan
- * "ascending retrievability" — kartu yang paling berisiko lupa lebih dulu.
+ * "ascending/descending retrievability" — kartu yang paling berisiko lupa
+ * lebih dulu, atau sebaliknya.
  */
 export function getRetrievability(
   card: SchedulerCardState,
   now: Date,
-  config: FlashcardPresetConfig,
+  config: FlashcardConfig,
 ): number {
   if (card.type === "NEW" || card.stability === null || card.difficulty === null) {
     return 0;

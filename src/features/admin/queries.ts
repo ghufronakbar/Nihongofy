@@ -51,8 +51,9 @@ export type AdminOverview = {
     articlesPublished: number;
     articlesDraft: number;
     articlesArchived: number;
-    systemDecksPublished: number;
-    systemDecksHidden: number;
+    flashcardWords: number;
+    flashcardRetiredWords: number;
+    flashcardDecks: number;
   };
 };
 
@@ -77,7 +78,9 @@ export async function getAdminOverview(): Promise<AdminOverview> {
     completedAttempts,
     attemptsRecent,
     articlesByStatus,
-    systemDecksByPublished,
+    flashcardWordsByLevel,
+    flashcardRetiredWords,
+    flashcardDecks,
     reportsOpen,
     reportsRecent,
     reportsAwaitingReply,
@@ -107,7 +110,13 @@ export async function getAdminOverview(): Promise<AdminOverview> {
     prisma.attempt.count({ where: { status: "COMPLETED" } }),
     prisma.attempt.count({ where: { startedAt: { gte: sevenDaysAgo } } }),
     prisma.article.groupBy({ by: ["status"], _count: { _all: true } }),
-    prisma.flashcardSystemDeck.groupBy({ by: ["isPublished"], _count: { _all: true } }),
+    prisma.flashcardVocab.groupBy({
+      by: ["level"],
+      where: { retiredAt: null },
+      _count: { _all: true },
+    }),
+    prisma.flashcardVocab.count({ where: { retiredAt: { not: null } } }),
+    prisma.flashcardDeck.count({ where: { isPublished: true } }),
     prisma.report.count({ where: { status: { in: ["OPEN", "IN_REVIEW"] } } }),
     prisma.report.count({ where: { createdAt: { gte: sevenDaysAgo } } }),
     // Pelapor yang meninggalkan alamat dan belum pernah dibalas. Bukan kewajiban
@@ -137,8 +146,6 @@ export async function getAdminOverview(): Promise<AdminOverview> {
 
   const articleCount = (status: "PUBLISHED" | "DRAFT" | "ARCHIVED") =>
     articlesByStatus.find((row) => row.status === status)?._count._all ?? 0;
-  const deckCount = (isPublished: boolean) =>
-    systemDecksByPublished.find((row) => row.isPublished === isPublished)?._count._all ?? 0;
 
   return {
     content: {
@@ -180,8 +187,9 @@ export async function getAdminOverview(): Promise<AdminOverview> {
       articlesPublished: articleCount("PUBLISHED"),
       articlesDraft: articleCount("DRAFT"),
       articlesArchived: articleCount("ARCHIVED"),
-      systemDecksPublished: deckCount(true),
-      systemDecksHidden: deckCount(false),
+      flashcardWords: flashcardWordsByLevel.reduce((sum, row) => sum + row._count._all, 0),
+      flashcardRetiredWords,
+      flashcardDecks,
     },
   };
 }

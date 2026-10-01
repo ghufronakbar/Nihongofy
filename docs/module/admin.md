@@ -14,8 +14,8 @@ Tidak ada area yang masih berupa placeholder. Sisa pekerjaan yang tercatat terbu
 ditempel), rate limit posting dan notifikasi balasan di moderasi, serta aksi membersihkan
 retensi conversation yang sudah lewat.
 
-Operasi konten yang belum punya layar (pembahasan, deck bawaan) **masih dijalankan lewat script
-CLI** di `prisma/`. Untuk bank soal dan artikel, UI dan CLI kini berbagi jalur kode yang sama
+Operasi konten yang belum punya layar (pembahasan, katalog flashcard) **masih dijalankan lewat
+script CLI** di `prisma/`. Untuk bank soal dan artikel, UI dan CLI kini berbagi jalur kode yang sama
 sehingga keduanya tetap tersedia dan tidak dapat menyimpang satu sama lain — lihat
 [Berbagi kode dengan CLI](#berbagi-kode-dengan-cli).
 
@@ -61,7 +61,6 @@ dapat mengimpor TypeScript. Kedua salinannya diberi komentar silang.
 | Conversation | `src/features/admin/conversation/`, `src/app/admin/conversation/` |
 | Operasional | `src/features/admin/ops/`, `src/app/admin/ops/` |
 | Audit log | `src/features/admin/audit.ts`, migration `20260925210000_admin_audit_log` |
-| Deck bawaan | `src/features/admin/flashcard-deck/`, `src/app/admin/flashcard-deck/` |
 | Kontrak fixture dan jalur import bersama | `prisma/test-package-contract.mjs`, `prisma/import-test-package.mjs` |
 
 ## Prasyarat: Role Statis
@@ -144,7 +143,6 @@ area user.
 | `/admin/article` | Daftar artikel | selesai |
 | `/admin/article/[id]` | Editor artikel | selesai |
 | `/admin/article/new` | Artikel baru | selesai |
-| `/admin/flashcard-deck` | Deck bawaan sistem | selesai |
 | `/admin/user` | Daftar user | selesai |
 | `/admin/user/[id]` | Detail dan aksi akun | selesai |
 | `/admin/moderation` | Antrean diskusi publik dan catatan belajar | selesai |
@@ -233,18 +231,14 @@ memaksa `PUBLISHED` dan tidak ada UI yang memakai ketiganya.
 - Kelola `ArticleTag` dan `ArticleTagLink`, toggle `isFeatured`, dan atur `publishedAt`.
 - Transisi status draft → published → archived, akhirnya memakai enum yang sudah ada.
 
-### 5. Deck Flashcard Bawaan
+### 5. Katalog Flashcard
 
-- CRUD `FlashcardSystemDeck` dan `FlashcardSystemNote`.
-- Toggle `isPublished` dan atur `order` — keduanya sudah ada di schema tanpa UI.
-- Field `license` wajib diisi dan ditampilkan: sumber CC BY-SA mengikat atribusi.
-- Deck bawaan **disalin** saat user menambahkannya, jadi mengubah maupun menghapus deck sistem
-  tidak menyentuh koleksi user yang sudah ada. UI menyatakannya agar operator tidak salah mengira
-  editnya akan menyebar.
-- **Seed tetap sumber kebenaran.** `npm run seed:flashcard-deck` menghapus note yang tidak ada di
-  `src/flashcard-deck-data/<slug>.json`, jadi penyuntingan lewat UI akan hilang pada seed
-  berikutnya. Tombol Fixture mengunduh isi deck dalam bentuk file itu untuk ditimpakan ke
-  repository — tanpa langkah itu, kedua jalur akan saling menimpa.
+- Editor deck bawaan (`/admin/flashcard-deck`) **dihapus 1 Oktober 2026** bersama perombakan
+  modul flashcard. Katalog kini satu daftar kosakata yang digenerate AI, dengan fixture
+  `src/flashcard-data/` sebagai sumber kebenaran; editor di database akan tertimpa setiap seed.
+- Overview admin hanya menampilkan jumlah kata terbit, kata yang dipensiunkan, dan jumlah deck.
+- Perbaikan isi kata dilakukan di fixture lalu `npm run seed:flashcard`; kata bertanda ragu
+  ditinjau lewat `npm run flashcard:doubts`. Layar tinjauan untuk itu belum ada.
 
 ### 6. Moderasi Diskusi Publik
 

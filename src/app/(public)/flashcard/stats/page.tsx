@@ -4,7 +4,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { dayContextOf, ensureCollection } from "@/features/flashcard/lib/collection";
+import { countUnstudiedWords } from "@/features/flashcard/data";
+import { getFlashcardSettings } from "@/features/flashcard/lib/collection";
 import { getFlashcardDayRange } from "@/features/flashcard/lib/scheduler/day";
 import {
   averageAnswerSeconds,
@@ -62,41 +63,42 @@ export default async function StatsPage() {
   const session = await getSession();
   if (!session) redirect("/login?next=/flashcard/stats");
 
-  const collection = await ensureCollection(session.userId);
-  const day = dayContextOf(collection);
+  const { day } = await getFlashcardSettings(session.userId);
   const now = new Date();
   const { start: todayStart } = getFlashcardDayRange(now, day);
 
   const historyFrom = new Date(todayStart.getTime() - HISTORY_DAYS * 86_400_000);
 
-  const [cards, reviews, byQueue] = await Promise.all([
+  const [cards, reviews, unstudied] = await Promise.all([
     prisma.flashcardCard.findMany({
-      where: { userId: session.userId, queue: { in: ["REVIEW", "LEARNING", "DAY_LEARN"] } },
-      select: { due: true, intervalDays: true },
+      where: { userId: session.userId, type: { not: "NEW" } },
+      select: { due: true, intervalDays: true, type: true, isSuspended: true },
     }),
     prisma.flashcardRevlog.findMany({
       where: { userId: session.userId, reviewedAt: { gte: historyFrom } },
       select: { reviewedAt: true, rating: true, kind: true, takenMs: true },
     }),
-    prisma.flashcardCard.groupBy({
-      by: ["queue"],
-      where: { userId: session.userId },
-      _count: { _all: true },
-    }),
+    countUnstudiedWords(session.userId),
   ]);
 
-  const counts = Object.fromEntries(byQueue.map((row) => [row.queue, row._count._all]));
-  const totalCards = byQueue.reduce((total, row) => total + row._count._all, 0);
+  const active = cards.filter((card) => !card.isSuspended);
+  const counts = {
+    NEW: unstudied,
+    LEARNING: active.filter((card) => card.type === "LEARNING" || card.type === "RELEARNING").length,
+    REVIEW: active.filter((card) => card.type === "REVIEW").length,
+    SUSPENDED: cards.length - active.length,
+  };
+  const totalCards = cards.length;
 
   const forecast = buildForecast(
-    cards.map((card) => card.due),
+    active.map((card) => card.due),
     todayStart,
     FORECAST_DAYS,
   );
   const history = buildReviewHistory(reviews, todayStart, HISTORY_DAYS);
   const retention = computeTrueRetention(reviews);
   const intervals = buildIntervalDistribution(
-    cards.filter((card) => card.intervalDays > 0).map((card) => card.intervalDays),
+    active.filter((card) => card.intervalDays > 0).map((card) => card.intervalDays),
   );
   const averageSeconds = averageAnswerSeconds(reviews);
 
@@ -106,23 +108,23 @@ export default async function StatsPage() {
   return (
     <main className="mx-auto w-full max-w-4xl px-4 py-10">
       <Link href="/flashcard" className="text-sm font-black underline">
-        ← Semua deck
+        ← Deck saya
       </Link>
 
       <h1 className="mt-4 text-3xl font-black">Statistik</h1>
       <p className="mt-2 font-bold text-muted-foreground">
-        Hari dihitung mulai jam {collection.rolloverHour}:00 {collection.timeZone}, mengikuti
-        batas hari Anki.
+        Hari dihitung mulai jam {day.rolloverHour}:00 {day.timeZone}, mengikuti batas hari Anki.
       </p>
 
       {totalCards === 0 ? (
         <p className="neo-surface mt-7 p-6 text-center font-bold text-muted-foreground">
-          Belum ada kartu. Tambahkan deck dulu untuk melihat statistik.
+          Belum ada kartu yang dipelajari. Mulai belajar dari salah satu deck untuk melihat
+          statistik.
         </p>
       ) : (
         <>
           <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <Stat label="Total kartu" value={String(totalCards)} />
+            <Stat label="Kartu dipelajari" value={String(totalCards)} />
             <Stat
               label="True retention"
               value={retention.rate === null ? "—" : `${Math.round(retention.rate * 100)}%`}
@@ -143,18 +145,18 @@ export default async function StatsPage() {
             <h2 className="text-lg font-black">Status kartu</h2>
             <dl className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
               {[
-                { label: "Baru", key: "NEW", tone: "bg-neo-blue" },
-                { label: "Belajar", key: "LEARNING", tone: "bg-neo-coral" },
-                { label: "Ulang", key: "REVIEW", tone: "bg-neo-green" },
-                { label: "Suspend", key: "SUSPENDED", tone: "bg-neutral-300" },
+                { label: "Belum dipelajari", value: counts.NEW, tone: "bg-neo-blue" },
+                { label: "Belajar", value: counts.LEARNING, tone: "bg-neo-coral" },
+                { label: "Ulang", value: counts.REVIEW, tone: "bg-neo-green" },
+                { label: "Suspend", value: counts.SUSPENDED, tone: "bg-neutral-300" },
               ].map((item) => (
                 <div
-                  key={item.key}
+                  key={item.label}
                   className={`rounded border-[3px] border-neo-ink p-3 text-center ${item.tone}`}
                 >
                   <dt className="text-xs font-black uppercase text-black">{item.label}</dt>
                   <dd className="mt-1 text-2xl font-black tabular-nums text-black">
-                    {counts[item.key] ?? 0}
+                    {item.value}
                   </dd>
                 </div>
               ))}

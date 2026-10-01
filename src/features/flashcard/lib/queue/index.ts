@@ -1,5 +1,4 @@
 export * from "./types";
-export * from "./limits";
 export * from "./gather";
-export { applySiblingBurying } from "./bury";
-export { shuffle } from "./sort";
+export { insertionPosition, shuffle } from "./sort";
+export { LEARN_AHEAD_MS } from "../learn-ahead";

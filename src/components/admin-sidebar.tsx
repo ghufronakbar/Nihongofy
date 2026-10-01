@@ -7,7 +7,6 @@ import {
   FileText,
   Flag,
   LayoutDashboard,
-  Layers,
   LogOut,
   MessageSquareWarning,
   MessagesSquare,
@@ -52,7 +51,6 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
     label: "Konten",
     items: [
       { title: "Artikel", href: "/admin/article", icon: FileText },
-      { title: "Deck Bawaan", href: "/admin/flashcard-deck", icon: Layers },
     ],
   },
   {

@@ -14,9 +14,8 @@ export const INVALIDATABLE_TAGS = {
   articleFacets: CACHE_TAGS.articleFacets,
 } as const;
 
-// `flashcardSystemCatalog` sengaja TIDAK ada di sini. Tag-nya terdefinisi di
-// CACHE_TAGS, tetapi tidak ada query yang mengikatnya — halaman katalog publik
-// membaca `flashcardSystemDeck` langsung tanpa `unstable_cache`. Tombol untuk
-// tag itu akan tampak bekerja padahal tidak mengubah apa pun.
+// Katalog flashcard sengaja tidak punya tag di sini: halamannya membaca
+// `FlashcardDeck`/`FlashcardVocab` langsung tanpa `unstable_cache`, jadi hasil
+// `npm run seed:flashcard` langsung terlihat tanpa invalidasi.
 
 export type InvalidatableTag = keyof typeof INVALIDATABLE_TAGS;

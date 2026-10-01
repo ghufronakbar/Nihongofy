@@ -13,10 +13,9 @@ import { ChatProviderError, getChatProvider } from "@/features/conversation/lib/
 export const runtime = "nodejs";
 
 // Streaming tidak dapat dilayani Server Action, jadi jalur ini memakai Route
-// Handler — pengecualian yang sama seperti `/api/flashcard/export` dan
-// `/api/account/export`. Seluruh guard tetap dijalankan di sini: flag fitur,
-// session, kepemilikan, dan validasi Zod. Handler tidak pernah bersandar pada
-// pemeriksaan yang sudah dilakukan halaman.
+// Handler — pengecualian yang sama seperti `/api/account/export`. Seluruh guard
+// tetap dijalankan di sini: flag fitur, session, kepemilikan, dan validasi Zod.
+// Handler tidak pernah bersandar pada pemeriksaan yang sudah dilakukan halaman.
 //
 // Formatnya NDJSON: satu objek JSON per baris. Lebih sederhana daripada SSE dan
 // cukup untuk kebutuhan ini.

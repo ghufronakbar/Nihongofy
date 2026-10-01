@@ -10,7 +10,7 @@ Folder ini mendokumentasikan kondisi aplikasi berdasarkan kode, fixture, dan dat
 | [Authentication](auth.md) | Selesai | Login, register, verifikasi email, reset password, Redis session registry, revoke perangkat, rate limit, dan Turnstile aktif. |
 | [Dashboard](dashboard.md) | Selesai sederhana | Menampilkan attempt selesai dan attempt terakhir; kartu modul lain masih berupa shortcut statis. |
 | [Kana](kana.md) | Selesai dengan scope terbatas | Fixture kana terkurasi dan progress akun aktif; audio memakai Web Speech API, bukan rekaman. |
-| [Flashcard](flashcard.md) | Fungsional | Paritas Anki: FSRS-6, queue v3, deck options, deck bawaan, impor/export teks, card browser, statistik, dan mode coba guest (186 unit test). Impor `.apkg` dan konten N4-N1 belum ada. |
+| [Flashcard](flashcard.md) | Kode selesai, katalog belum terisi | Dirombak 1 Oktober 2026: katalog kosakata JLPT bawaan (6.697 kata N5-N1) dengan deck per level/topik/kategori, FSRS-6 dan antrean v3 Anki, pengaturan per user, dan mode coba guest. Menunggu migration, generate isi kartu AI, dan seed. |
 | [Latihan cepat](practice.md) | Fungsional dengan gap guest | Session akun persisten dan feedback langsung aktif; guest hanya state sementara. |
 | [Paket tes](test-package.md) | Fungsional, kini dikelola dari admin | 48 fixture dan 48 paket di database mencakup kelima level; import, editor soal, dan penghapusan tersedia di `/admin/test-package`. |
 | [Exam runner](exam.md) | Fungsional dengan hardening tersisa | State sesi dan submit aktif; belum ada timer, marker submit per sesi, dan validasi kelengkapan payload. |
@@ -24,9 +24,9 @@ Folder ini mendokumentasikan kondisi aplikasi berdasarkan kode, fixture, dan dat
 | [Japanese content rendering](japanese-content-rendering.md) | Fungsional dengan gap format | Furigana, underline, slot, tabel, dan multi-passage aktif; newline dan Markdown fixture belum selalu dirender dengan benar. |
 | [Shared study utilities](study.md) | Selesai sederhana | Saat ini hanya menyediakan TTS browser bersama untuk kana dan flashcard. |
 | [Conversation dan speaking](conversation-speaking.md) | Versi awal fungsional | Teks dan suara berjalan end-to-end dengan session tersimpan dan provider mock/OpenAI; quota belum ditegakkan, moderation dan retention belum ada. Rancangan: [conversation-speaking-design.md](conversation-speaking-design.md); aset karakter: [conversation-persona-assets.md](conversation-persona-assets.md). |
-| [Content data dan seeding](content-data.md) | Infrastruktur aktif, sebagian punya UI | Import tervalidasi tersedia lewat CLI maupun `/admin`; bank soal dan artikel berbagi jalur kode antara keduanya. Pembahasan dan deck bawaan masih CLI saja. |
+| [Content data dan seeding](content-data.md) | Infrastruktur aktif, sebagian punya UI | Import tervalidasi tersedia lewat CLI maupun `/admin`; bank soal dan artikel berbagi jalur kode antara keduanya. Pembahasan dan katalog flashcard masih CLI saja. |
 | [Report](report.md) | Selesai untuk scope v1 | Form publik (guest boleh, dengan Turnstile), tombol Laporkan pada soal/pembahasan/artikel/diskusi, antrean admin, dan balasan email opsional. Kartu deck bawaan belum termasuk. |
-| [Admin dashboard](admin.md) | Selesai | Role statis `USER`/`ADMIN`, guard, overview, bank soal, pembahasan, CMS artikel, deck bawaan, moderasi diskusi, pengelolaan user, observability conversation, feature flag read-only, invalidasi cache, dan audit log aktif. |
+| [Admin dashboard](admin.md) | Selesai | Role statis `USER`/`ADMIN`, guard, overview, bank soal, pembahasan, CMS artikel, moderasi diskusi, pengelolaan user, observability conversation, feature flag read-only, invalidasi cache, dan audit log aktif. Editor deck flashcard dihapus bersama perombakan modulnya. |
 
 ## Feature Flag
 
@@ -38,7 +38,7 @@ di-prerender saat build, jadi keduanya baru berubah setelah redeploy.
 | Key | Modul | Route yang menjadi 404 |
 |---|---|---|
 | `FEATURES_KANA` | [Kana](kana.md#feature-flag) | `/kana/*` |
-| `FEATURES_FLASHCARD` | [Flashcard](flashcard.md#feature-flag) | `/flashcard/*`, `/api/flashcard/export` |
+| `FEATURES_FLASHCARD` | [Flashcard](flashcard.md#feature-flag) | `/flashcard/*` |
 | `FEATURES_PRACTICE` | [Latihan cepat](practice.md#feature-flag) | `/exercises/*` |
 | `FEATURES_TEST_PACKAGE` | [Paket tes](test-package.md#feature-flag), [Exam](exam.md#feature-flag), [Result](result.md#feature-flag) | `/test-package/*`, `/exam/*`, `/result/*` |
 | `FEATURES_HISTORY` | [History](history.md#feature-flag) | `/history` |
@@ -65,8 +65,7 @@ Aturan umum:
   sendiri, dan mematikannya tidak ikut mematikan antrean admin-nya — lihat
   [Report](report.md#feature-flag).
 - Data milik modul yang mati tidak dihapus.
-- Hanya conversation, question comment, report, dan API export flashcard yang memeriksa flag di sisi
-  server action/API. Server Action modul lain belum dijaga, sehingga tab lama yang masih terbuka
+- Hanya conversation, question comment, dan report yang memeriksa flag di sisi server action/API. Server Action modul lain belum dijaga, sehingga tab lama yang masih terbuka
   tetap dapat memanggilnya.
 - Auth, dashboard, profile, dan shared utilities tidak punya flag. Admin juga tidak: aksesnya
   ditentukan role, dan mematikannya lewat env akan mengunci operator dari alat pemulihannya.
@@ -81,7 +80,7 @@ Snapshot ini bersifat lokal dan dapat berubah setelah seed/import berikutnya.
 | Database paket tes | 31 paket, 3.159 soal: N2 13, N3 10, N4 8. N1 dan N5 belum diimpor. |
 | Pembahasan soal | 20 dari 3.159 soal database memiliki `explanation`. |
 | Media bank soal | 147 context audio, 83 question image, 1 context image, dan 0 question audio pada database aktif. |
-| Flashcard | Katalog deck bawaan: 4 deck, 335 note (kana lengkap, N5 kosakata, N5 kanji). Koleksi user masih kosong. |
+| Flashcard | Dirombak 1 Oktober 2026. Fixture daftar kata berisi 6.697 kata, isi kartunya belum digenerate; database masih memakai tabel lama sampai migration `20261001120000_flashcard_vocab_catalog` diterapkan. |
 | Artikel | 6 artikel published, 16 tag, 1 featured, dan 2 interaction row. |
 | Aktivitas user | 1 user; belum ada attempt, practice session, flashcard review, atau question comment. Hanya ada 2 kana progress dan 2 article interaction, sehingga banyak halaman masih berada pada empty state saat audit. |
 
@@ -94,7 +93,7 @@ Snapshot ini bersifat lokal dan dapat berubah setelah seed/import berikutnya.
 
 ## Catatan Verifikasi
 
-- Test suite: 258 unit test pada 13 file (`npm run test`, vitest), mayoritas flashcard — scheduler, queue, deck tree, note type, sanitasi, deck options, parser impor/export, dan statistik. Exam dan result belum punya test.
+- Test suite: 197 unit test pada 11 file (`npm run test`, vitest, 1 Oktober 2026), mayoritas flashcard — scheduler, antrean, pipeline seed (normalisasi Anki, validator isi kartu AI), pengaturan, dan statistik. Exam dan result belum punya test.
 - `npm run build` lulus.
 - `npm run lint` lulus dengan `--max-warnings=0` (diverifikasi ulang 26 September 2026; error `no-explicit-any` pada guest exam yang tercatat saat audit awal sudah tidak ada).
 - `npm run seed:test-package:check` lulus untuk seluruh 50 fixture.

@@ -1,4 +1,3 @@
-import Link from "next/link";
 import {
   AlertTriangle,
   BookOpen,
@@ -237,20 +236,17 @@ export default async function AdminOverviewPage() {
 
       <section className="flex flex-col gap-3">
         <h2 className="font-mono text-xs font-black uppercase tracking-wider text-foreground/60">
-          Katalog Deck Bawaan
+          Katalog Flashcard
         </h2>
         <div className="neo-surface flex flex-wrap items-center gap-4 border-[3px] border-neo-ink bg-white p-5 shadow-neo">
           <Layers className="size-5 shrink-0 stroke-[2.5] text-neo-ink" />
           <p className="text-sm font-semibold text-foreground/80">
-            {editorial.systemDecksPublished} deck tampil untuk user,{" "}
-            {editorial.systemDecksHidden} disembunyikan.
+            {editorial.flashcardWords} kata terbit di {editorial.flashcardDecks} deck bawaan
+            {editorial.flashcardRetiredWords > 0
+              ? `, ${editorial.flashcardRetiredWords} kata dipensiunkan`
+              : ""}
+            . Isi katalog diatur lewat fixture dan <code>npm run seed:flashcard</code>.
           </p>
-          <Link
-            href="/admin/flashcard-deck"
-            className="neo-button ml-auto bg-white text-xs font-extrabold text-black"
-          >
-            Kelola
-          </Link>
         </div>
       </section>
     </div>

@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
-  FLASHCARD_DEFAULT_PRESET_CONFIG,
-  FlashcardPresetConfigSchema,
-  type FlashcardPresetConfig,
+  FLASHCARD_DEFAULT_CONFIG,
+  FlashcardConfigSchema,
+  type FlashcardConfig,
 } from "../../schemas";
 import { createNewCardState, previewSchedule, scheduleReview } from "./index";
 import type { SchedulerCardState } from "./types";
@@ -10,12 +10,17 @@ import type { SchedulerCardState } from "./types";
 const DAY = { timeZone: "Asia/Jakarta", rolloverHour: 4 };
 const NOW = new Date("2026-09-03T10:00:00+07:00");
 
-function config(overrides: Partial<FlashcardPresetConfig> = {}): FlashcardPresetConfig {
-  return FlashcardPresetConfigSchema.parse({
-    // Fuzz dimatikan lewat maximum interval? Tidak — fuzz selalu aktif di FSRS,
-    // jadi assertion memakai rentang, bukan angka persis.
-    ...overrides,
-  });
+// Test perilaku scheduler memakai nilai bawaan Anki, bukan default aplikasi:
+// default aplikasi boleh berubah tanpa membuat test algoritma ikut berubah.
+// Fuzz selalu aktif di FSRS, jadi assertion memakai rentang, bukan angka persis.
+const ANKI_BASELINE: Partial<FlashcardConfig> = {
+  learningSteps: ["1m", "10m"],
+  relearningSteps: ["10m"],
+  desiredRetention: 0.9,
+};
+
+function config(overrides: Partial<FlashcardConfig> = {}): FlashcardConfig {
+  return FlashcardConfigSchema.parse({ ...ANKI_BASELINE, ...overrides });
 }
 
 function reviewCard(overrides: Partial<SchedulerCardState> = {}): SchedulerCardState {
@@ -286,7 +291,7 @@ describe("deteksi leech", () => {
 // SM-2 (fallback saat FSRS dimatikan)
 // ---------------------------------------------------------------------------
 
-const sm2 = (overrides: Partial<FlashcardPresetConfig> = {}) =>
+const sm2 = (overrides: Partial<FlashcardConfig> = {}) =>
   config({ fsrsEnabled: false, ...overrides });
 
 describe("SM-2 — learning", () => {
@@ -507,27 +512,45 @@ describe("SM-2 — review", () => {
   });
 });
 
-describe("preset default", () => {
+describe("pengaturan bawaan", () => {
   it("memakai 21 parameter FSRS-6", () => {
-    expect(FLASHCARD_DEFAULT_PRESET_CONFIG.fsrsParameters).toHaveLength(21);
-    expect(FLASHCARD_DEFAULT_PRESET_CONFIG.fsrsEnabled).toBe(true);
-    expect(FLASHCARD_DEFAULT_PRESET_CONFIG.desiredRetention).toBe(0.9);
+    expect(FLASHCARD_DEFAULT_CONFIG.fsrsParameters).toHaveLength(21);
+    expect(FLASHCARD_DEFAULT_CONFIG.fsrsEnabled).toBe(true);
+  });
+
+  // Nilai bawaan aplikasi mengikuti deck options Anki milik pemilik project
+  // (lihat docs/module/flashcard.md), bukan default Anki.
+  it("mengikuti nilai bawaan yang disepakati", () => {
+    expect(FLASHCARD_DEFAULT_CONFIG).toMatchObject({
+      newCardsPerDay: 20,
+      maxReviewsPerDay: 9_999,
+      learningSteps: ["1m", "2h", "3h"],
+      insertionOrder: "sequential",
+      relearningSteps: ["1m", "1h"],
+      newCardGatherOrder: "randomCards",
+      newCardSortOrder: "gather",
+      newReviewOrder: "afterReviews",
+      interdayLearningReviewOrder: "beforeReviews",
+      reviewSortOrder: "descendingRetrievability",
+      fsrsEnabled: true,
+      desiredRetention: 0.95,
+    });
   });
 
   it("menolak jumlah parameter FSRS yang salah", () => {
     expect(
-      FlashcardPresetConfigSchema.safeParse({ fsrsParameters: [1, 2, 3] }).success,
+      FlashcardConfigSchema.safeParse({ fsrsParameters: [1, 2, 3] }).success,
     ).toBe(false);
   });
 
   it("menolak format learning step yang tidak valid", () => {
-    expect(FlashcardPresetConfigSchema.safeParse({ learningSteps: ["10x"] }).success).toBe(
+    expect(FlashcardConfigSchema.safeParse({ learningSteps: ["10x"] }).success).toBe(
       false,
     );
-    expect(FlashcardPresetConfigSchema.safeParse({ learningSteps: ["10m"] }).success).toBe(
+    expect(FlashcardConfigSchema.safeParse({ learningSteps: ["10m"] }).success).toBe(
       true,
     );
-    expect(FlashcardPresetConfigSchema.safeParse({ learningSteps: ["4h"] }).success).toBe(
+    expect(FlashcardConfigSchema.safeParse({ learningSteps: ["4h"] }).success).toBe(
       true,
     );
   });
@@ -537,19 +560,19 @@ describe("preset default", () => {
   // >= 1 hari dikembalikan sebagai State.Review sehingga tak bisa dibedakan
   // dari kartu review biasa. Test ini yang menahan keduanya.
   it("menolak step dalam detik", () => {
-    expect(FlashcardPresetConfigSchema.safeParse({ learningSteps: ["30s"] }).success).toBe(
+    expect(FlashcardConfigSchema.safeParse({ learningSteps: ["30s"] }).success).toBe(
       false,
     );
   });
 
   it("menolak step 1 hari atau lebih", () => {
-    expect(FlashcardPresetConfigSchema.safeParse({ learningSteps: ["1d"] }).success).toBe(
+    expect(FlashcardConfigSchema.safeParse({ learningSteps: ["1d"] }).success).toBe(
       false,
     );
-    expect(FlashcardPresetConfigSchema.safeParse({ learningSteps: ["24h"] }).success).toBe(
+    expect(FlashcardConfigSchema.safeParse({ learningSteps: ["24h"] }).success).toBe(
       false,
     );
-    expect(FlashcardPresetConfigSchema.safeParse({ learningSteps: ["23h"] }).success).toBe(
+    expect(FlashcardConfigSchema.safeParse({ learningSteps: ["23h"] }).success).toBe(
       true,
     );
   });

@@ -118,34 +118,53 @@ Article
 └── ArticleInteraction (save, favorite, dan last-view per user)
 ```
 
-### Kana dan vocabulary
+### Kana
 
 ```text
 KanaProgress (aktivitas kana per user + stable fixture key)
-
-FlashcardDeck
-└── FlashcardDeckItem ── Flashcard
-                         ├── FlashcardTagLink ── FlashcardTag
-                         ├── FlashcardProgress (satu row per user + kartu)
-                         └── FlashcardReviewLog (riwayat setiap rating)
-
-User
-└── FlashcardSetting (satu row preference scheduler per user)
 ```
 
-- `Flashcard.key`, `FlashcardDeck.slug`, dan `FlashcardTag.slug` adalah stable seed identity.
-- Progress vocabulary bersifat global per kartu, bukan per deck. Kartu yang sudah dipelajari dari satu deck tidak kembali dianggap baru di deck lain.
-- Queue review mengutamakan progress dengan `dueAt <= now()`, lalu kartu baru menurut `FlashcardDeckItem.order`.
-- Rating SRS hanya menerima `AGAIN`, `HARD`, `GOOD`, atau `EASY`. Mutation selalu membuat review log dan memperbarui progress dalam satu transaksi.
-- `FlashcardProgress.learningStep` menyimpan posisi kartu pada learning/relearning steps. `FlashcardReviewLog.wasNew` membedakan konsumsi batas kartu baru dan review harian.
-- `FlashcardSetting` menyimpan batas harian, learning/relearning steps dalam menit, interval lulus/Easy, ease awal, lapse retention, interval minimum/maksimum, serta multiplier Hard/Easy/global.
-- Learning/relearning steps harus berisi 1-4 nilai positif yang meningkat, maksimal 30 hari per langkah. Form string seperti `1m 10m 1h` diparse server-side sebelum masuk database.
-- Batas harian dihitung sejak pukul 00.00 pada `User.timeZone`. Action rating memeriksa ulang limit
-  dan `dueAt`; UI queue bukan satu-satunya guard.
-- Semua range scheduler dijaga oleh Zod dan CHECK constraint database. Setting invalid tidak boleh diteruskan ke `scheduleFlashcard`.
 - `KanaProgress` tidak menyimpan duplikat content kana; `kanaKey` harus cocok dengan fixture yang dikenal aplikasi.
-- Seluruh query progress/log wajib berawal dari `session.userId`. `userId` dari client tidak pernah diterima sebagai sumber otorisasi.
-- Seed vocabulary dijalankan melalui `npm run seed:learning` dan wajib tetap idempotent.
+
+### Flashcard
+
+```text
+FlashcardVocab (katalog kosakata bawaan, satu baris per kata)
+FlashcardDeck (deck bawaan = satu tag taxonomy)
+└── FlashcardDeckSubscription (deck yang dipilih user)
+
+User
+├── FlashcardCollection (pengaturan per user: config + display)
+└── FlashcardCard (progres satu kata, PK userId + vocabId) ── FlashcardVocab
+    └── FlashcardRevlog (riwayat setiap rating)
+```
+
+- Katalog milik aplikasi dan diisi `npm run seed:flashcard` dari `src/flashcard-data/`; tidak ada
+  konten buatan user. Kontraknya di [seed-flashcard.md](seed-flashcard.md).
+- `FlashcardVocab.key` adalah identitas stabil kata ("食事|しょくじ"). Kata yang hilang dari fixture
+  diberi `retiredAt` dan **tidak pernah dihapus**; FK `FlashcardCard.vocabId` memakai `Restrict`
+  supaya penghapusan yang tidak disengaja gagal alih-alih ikut menghapus progres user.
+- Keanggotaan deck tidak disimpan: kata termasuk deck bila `FlashcardVocab.tags` memuat
+  `FlashcardDeck.slug` (index GIN pada `tags`). Satu kata bisa berada di beberapa deck dengan
+  satu kartu dan satu progres.
+- `FlashcardVocab.word`, contoh kalimat (`examples[].jp`), dan `notes` memakai
+  [Markup Teks Jepang](#markup-teks-jepang); `__...__` di contoh kalimat menandai kata target.
+  `wordPlain` dan `reading` diturunkan dari `word` saat seed.
+- Baris `FlashcardCard` dibuat saat kata pertama kali disentuh; kata tanpa baris adalah kartu
+  baru. Suspend (`isSuspended`) dan tunda (`buriedUntil`) disimpan terpisah dari `queue`
+  sehingga jadwal asli tidak tertimpa.
+- `FlashcardCollection.config` dan `.display` adalah JSONB yang hanya dibaca lewat zod
+  (`src/features/flashcard/schemas.ts`). Field yang tidak valid lagi diganti default-nya sendiri,
+  bukan menghapus seluruh pengaturan.
+- Batas hari memakai `User.timeZone` dengan jam rollover Anki (`FlashcardCollection.rolloverHour`,
+  default 04:00), bukan tengah malam. Zona waktu tidak disalin ke koleksi.
+- Rating hanya `AGAIN`, `HARD`, `GOOD`, atau `EASY`. Jawaban selalu menulis kartu dan revlog dalam
+  satu transaksi. Idempotency memakai `@@unique([userId, clientToken])`, bukan primary key.
+- `FlashcardRevlog.wasNew` menandai review pertama kartu baru (dasar batas kartu baru per hari);
+  `previousState` menyimpan salinan kartu sebelum review untuk undo yang persis.
+- Batas harian berlaku untuk semua deck sekaligus. Action rating memeriksa ulang batas kartu baru,
+  jatuh tempo, suspend, dan tunda; antrean di client bukan satu-satunya penjaga.
+- Seluruh query progres wajib berawal dari `session.userId`.
 
 ### Latihan cepat
 
@@ -205,6 +224,8 @@ Aturan tambahan:
 - Markup boleh bersarang: `__{勉強|べんきょう}する__` valid.
 - `[_]` dan `[★]` TIDAK pernah punya isi — selalu literal persis seperti itu.
 - Pada mondai `MOJI_GOI_READ_KANJI`, furigana di dalam segmen `__...__` tidak boleh dirender (itu jawabannya) — ini urusan frontend, data tetap disimpan lengkap dengan furigananya.
+- Markup yang sama dipakai kolom flashcard (`FlashcardVocab.word`, `examples[].jp`, `notes`). Di
+  sana `__...__` menandai kata target contoh kalimat dan dirender sebagai sorotan, bukan garis bawah.
 
 ## Aturan Kunci Jawaban & Attempt
 

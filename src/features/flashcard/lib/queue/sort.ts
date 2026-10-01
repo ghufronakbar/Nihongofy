@@ -1,5 +1,6 @@
-import type { FlashcardPresetConfig } from "../../schemas";
+import type { FlashcardConfig } from "../../schemas";
 import { getRetrievability } from "../scheduler/fsrs";
+import { getFlashcardDayStart, type FlashcardDayContext } from "../scheduler/day";
 import type { QueueCandidate } from "./types";
 
 export type RandomFn = () => number;
@@ -14,120 +15,141 @@ export function shuffle<T>(items: T[], random: RandomFn): T[] {
   return result;
 }
 
-function groupByNote(cards: QueueCandidate[]): QueueCandidate[][] {
-  const byNote = new Map<string, QueueCandidate[]>();
-  for (const card of cards) {
-    const existing = byNote.get(card.noteId);
-    if (existing) existing.push(card);
-    else byNote.set(card.noteId, [card]);
+// --- Posisi kartu baru -------------------------------------------------------
+
+const LEVEL_RANK: Record<string, number> = { N5: 0, N4: 1, N3: 2, N2: 3, N1: 4 };
+const LEVEL_SPAN = 100_000;
+
+/**
+ * Posisi kartu baru menurut insertion order Anki.
+ *
+ * Kartu belum disimpan sampai pertama kali disentuh, jadi posisinya dihitung,
+ * bukan dibaca: "sequential" mengikuti urutan katalog (level termudah dulu,
+ * lalu urutan daftar sumbernya), "random" memakai hash per user sehingga
+ * acakannya stabil antar sesi — sama seperti Anki yang mengacak posisi sekali
+ * saat kartu ditambahkan. Mengganti opsi ini langsung berlaku untuk semua kartu
+ * baru, persis perilaku Anki saat insertion order preset diubah.
+ */
+export function insertionPosition(
+  insertionOrder: FlashcardConfig["insertionOrder"],
+  userId: number,
+  vocab: { id: number; level: string; order: number },
+): number {
+  if (insertionOrder === "random") {
+    // FNV-1a 32-bit atas "userId:vocabId".
+    let hash = 0x811c9dc5;
+    for (const char of `${userId}:${vocab.id}`) {
+      hash ^= char.charCodeAt(0);
+      hash = Math.imul(hash, 0x01000193);
+    }
+    return hash >>> 0;
   }
-  return [...byNote.values()];
+  return (LEVEL_RANK[vocab.level] ?? 5) * LEVEL_SPAN + vocab.order;
 }
 
 // --- Kartu baru --------------------------------------------------------------
 
+const byPosition = (left: QueueCandidate, right: QueueCandidate) =>
+  left.position - right.position || left.vocabId - right.vocabId;
+
 /**
- * Urutan pengambilan kartu baru. Perhatikan bahwa "deck" berarti subdeck diambil
- * berurutan dari atas, dan di dalam tiap subdeck memakai ascending position.
+ * Urutan pengambilan kartu baru. Deck bawaan tidak punya subdeck dan satu kata
+ * hanya menghasilkan satu kartu, jadi opsi Anki yang membedakan subdeck atau
+ * note bersaudara jatuh ke padanan terdekatnya.
  */
 export function gatherNewCards(
   cards: QueueCandidate[],
-  config: FlashcardPresetConfig,
-  deckOrder: Map<number, number>,
+  config: FlashcardConfig,
   random: RandomFn,
 ): QueueCandidate[] {
-  const byPosition = (left: QueueCandidate, right: QueueCandidate) =>
-    left.position - right.position || Number(left.cardId) - Number(right.cardId);
-  const deckRank = (card: QueueCandidate) => deckOrder.get(card.deckId) ?? Number.MAX_SAFE_INTEGER;
-
   switch (config.newCardGatherOrder) {
-    case "ascendingPosition":
-      return [...cards].sort(byPosition);
-
     case "descendingPosition":
       return [...cards].sort((left, right) => byPosition(right, left));
 
     case "randomCards":
+    case "randomNotes":
+    case "deckThenRandomNotes":
       return shuffle(cards, random);
 
-    case "randomNotes":
-      return shuffle(groupByNote(cards), random).flatMap((siblings) =>
-        [...siblings].sort((left, right) => left.ord - right.ord),
-      );
-
-    case "deckThenRandomNotes":
-      return shuffle(groupByNote(cards), random)
-        .flatMap((siblings) => [...siblings].sort((left, right) => left.ord - right.ord))
-        .sort((left, right) => deckRank(left) - deckRank(right));
-
     default:
-      // "deck": subdeck berurutan, di dalamnya ascending position.
-      return [...cards].sort(
-        (left, right) => deckRank(left) - deckRank(right) || byPosition(left, right),
-      );
+      // "deck" dan "ascendingPosition".
+      return [...cards].sort(byPosition);
   }
 }
 
 /** Urutan tampil kartu baru, diterapkan setelah pengambilan. */
 export function sortNewCards(
   gathered: QueueCandidate[],
-  config: FlashcardPresetConfig,
+  config: FlashcardConfig,
   random: RandomFn,
 ): QueueCandidate[] {
-  const gatherIndex = new Map(gathered.map((card, index) => [card.cardId, index]));
-  const byGather = (left: QueueCandidate, right: QueueCandidate) =>
-    (gatherIndex.get(left.cardId) ?? 0) - (gatherIndex.get(right.cardId) ?? 0);
-
   switch (config.newCardSortOrder) {
-    case "gather":
-      return [...gathered];
-
     case "random":
+    case "cardTemplateThenRandom":
+    case "randomNoteThenTemplate":
       return shuffle(gathered, random);
 
-    case "cardTemplateThenRandom": {
-      const byOrd = new Map<number, QueueCandidate[]>();
-      for (const card of gathered) {
-        const bucket = byOrd.get(card.ord);
-        if (bucket) bucket.push(card);
-        else byOrd.set(card.ord, [card]);
-      }
-      return [...byOrd.keys()]
-        .sort((left, right) => left - right)
-        .flatMap((ord) => shuffle(byOrd.get(ord)!, random));
-    }
-
-    case "randomNoteThenTemplate":
-      return shuffle(groupByNote(gathered), random).flatMap((siblings) =>
-        [...siblings].sort((left, right) => left.ord - right.ord),
-      );
-
     default:
-      // "templateThenGather": semua kartu template 0 lebih dulu, lalu template 1, dst.
-      return [...gathered].sort((left, right) => left.ord - right.ord || byGather(left, right));
+      // "gather" dan "templateThenGather" (hanya ada satu template kartu).
+      return [...gathered];
   }
 }
 
 // --- Kartu review ------------------------------------------------------------
 
+function retrievabilityScores(
+  cards: QueueCandidate[],
+  config: FlashcardConfig,
+  now: Date,
+): Map<number, number> {
+  return new Map(
+    cards.map((card) => [
+      card.vocabId,
+      getRetrievability(
+        {
+          type: card.type,
+          queue: card.queue,
+          due: card.due,
+          intervalDays: card.intervalDays,
+          reps: card.reps,
+          lapses: card.lapses,
+          learningStep: card.learningStep,
+          stability: card.stability,
+          difficulty: card.difficulty,
+          desiredRetention: null,
+          easeFactor: card.easeFactor,
+          lastReviewedAt: card.lastReviewedAt,
+        },
+        now,
+        config,
+      ),
+    ]),
+  );
+}
+
+/**
+ * "Ease" kartu untuk urutan ascending/descending ease. Dengan FSRS tidak ada
+ * ease factor; padanannya difficulty yang arahnya terbalik (makin sulit =
+ * makin kecil ease), seperti label "difficulty" di Anki saat FSRS aktif.
+ */
+function easeOf(card: QueueCandidate, config: FlashcardConfig) {
+  if (config.fsrsEnabled) return -(card.difficulty ?? 0);
+  return card.easeFactor ?? config.startingEase;
+}
+
 export function sortReviewCards(
   cards: QueueCandidate[],
-  config: FlashcardPresetConfig,
+  config: FlashcardConfig,
   now: Date,
-  deckOrder: Map<number, number>,
+  day: FlashcardDayContext,
   random: RandomFn,
 ): QueueCandidate[] {
-  const deckRank = (card: QueueCandidate) => deckOrder.get(card.deckId) ?? Number.MAX_SAFE_INTEGER;
-  const byDue = (left: QueueCandidate, right: QueueCandidate) =>
-    left.due.getTime() - right.due.getTime();
+  // Anki menyimpan due review sebagai nomor hari, jadi "due date" berarti hari
+  // jatuh tempo, bukan jam: kartu yang jatuh tempo di hari yang sama diacak.
+  const dueDay = (card: QueueCandidate) => getFlashcardDayStart(card.due, day).getTime();
+  const byDueDay = (left: QueueCandidate, right: QueueCandidate) => dueDay(left) - dueDay(right);
 
   switch (config.reviewSortOrder) {
-    case "dueDateThenDeck":
-      return [...cards].sort((left, right) => byDue(left, right) || deckRank(left) - deckRank(right));
-
-    case "deckThenDueDate":
-      return [...cards].sort((left, right) => deckRank(left) - deckRank(right) || byDue(left, right));
-
     case "ascendingIntervals":
       return [...cards].sort((left, right) => left.intervalDays - right.intervalDays);
 
@@ -135,50 +157,33 @@ export function sortReviewCards(
       return [...cards].sort((left, right) => right.intervalDays - left.intervalDays);
 
     case "ascendingEase":
-      return [...cards].sort(
-        (left, right) => (left.easeFactor ?? 0) - (right.easeFactor ?? 0),
-      );
+      return [...cards].sort((left, right) => easeOf(left, config) - easeOf(right, config));
 
     case "descendingEase":
-      return [...cards].sort(
-        (left, right) => (right.easeFactor ?? 0) - (left.easeFactor ?? 0),
-      );
+      return [...cards].sort((left, right) => easeOf(right, config) - easeOf(left, config));
 
-    case "relativeOverdueness": {
-      // Dengan FSRS aktif inilah "ascending retrievability": kartu yang paling
-      // berisiko sudah terlupakan ditampilkan lebih dulu.
-      const scores = new Map(
-        cards.map((card) => [
-          card.cardId,
-          getRetrievability(
-            {
-              type: card.type,
-              queue: card.queue,
-              due: card.due,
-              intervalDays: card.intervalDays,
-              reps: card.reps,
-              lapses: card.lapses,
-              learningStep: card.learningStep,
-              stability: card.stability,
-              difficulty: card.difficulty,
-              desiredRetention: null,
-              easeFactor: card.easeFactor,
-              lastReviewedAt: card.lastReviewedAt,
-            },
-            now,
-            config,
-          ),
-        ]),
-      );
+    case "ascendingRetrievability": {
+      // Kartu yang paling berisiko sudah terlupa lebih dulu.
+      const scores = retrievabilityScores(cards, config, now);
       return [...cards].sort(
-        (left, right) => (scores.get(left.cardId) ?? 0) - (scores.get(right.cardId) ?? 0),
+        (left, right) => (scores.get(left.vocabId) ?? 0) - (scores.get(right.vocabId) ?? 0),
       );
     }
 
-    default: {
-      // "dueDateThenRandom"
-      const shuffled = shuffle(cards, random);
-      return shuffled.sort(byDue);
+    case "descendingRetrievability": {
+      // Kartu yang paling mungkin masih diingat lebih dulu.
+      const scores = retrievabilityScores(cards, config, now);
+      return [...cards].sort(
+        (left, right) => (scores.get(right.vocabId) ?? 0) - (scores.get(left.vocabId) ?? 0),
+      );
     }
+
+    case "random":
+      return shuffle(cards, random);
+
+    default:
+      // "dueDateThenRandom", "dueDateThenDeck", dan "deckThenDueDate" — tanpa
+      // subdeck, ketiganya sama: hari jatuh tempo, lalu acak di dalam hari itu.
+      return shuffle(cards, random).sort(byDueDay);
   }
 }

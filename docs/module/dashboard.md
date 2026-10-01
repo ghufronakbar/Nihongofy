@@ -33,7 +33,8 @@ Dashboard tidak punya flag sendiri dan selalu tersedia bagi user login. Isinya m
 - Label "Attempt Mock Test" menghitung semua attempt completed, termasuk latihan per seksi.
 - Dashboard belum menampilkan due vocabulary, progress kana, latihan cepat terakhir, streak, rekomendasi, atau kelemahan utama.
 - Deskripsi kartu learning hub bersifat marketing/statis dan tidak menyesuaikan ketersediaan data live.
-- Copy "ribuan kosakata" belum sesuai dengan database yang baru memiliki 32 flashcard.
+- Copy "ribuan kosakata" baru akurat setelah katalog flashcard diisi (6.697 kata siap digenerate,
+  lihat [Flashcard](flashcard.md)).
 - Tidak ada grafik atau aktivitas terbaru; detail tersebut berada di Progress dan Analytics.
 
 ## File Utama

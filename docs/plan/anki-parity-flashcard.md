@@ -1,6 +1,13 @@
 # Analisa & Desain: Modul Flashcard Paritas Anki (FSRS)
 
-Status: **desain, belum ada implementasi.**
+> **Digantikan 1 Oktober 2026.** Rancangan ini (koleksi pribadi ala Anki: deck sendiri, impor,
+> preset per deck, deck bawaan yang disalin) diimplementasikan lalu dirombak menjadi katalog
+> kosakata bawaan yang digenerate AI. Desain yang berlaku ada di
+> [`docs/module/flashcard.md`](../module/flashcard.md) dan Fase 8.12 di `docs/plan.md`.
+> Scheduler FSRS/SM-2 dan batas hari dari rancangan ini tetap dipakai. Dokumen ini dipertahankan
+> sebagai riwayat keputusan.
+
+Status: **digantikan** (lihat catatan di atas).
 Revisi 2 — 3 September 2026 (keputusan scope sudah dikunci).
 Rujukan kode: `src/features/vocabulary/*`, `prisma/schema.prisma` (204-362), `docs/module/vocabulary.md`.
 

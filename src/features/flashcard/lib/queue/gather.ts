@@ -1,186 +1,123 @@
-import type { FlashcardPresetConfig } from "../../schemas";
+import type { FlashcardConfig } from "../../schemas";
+import { LEARN_AHEAD_MS } from "../learn-ahead";
 import { getFlashcardDayEnd, type FlashcardDayContext } from "../scheduler/day";
-import { applySiblingBurying } from "./bury";
 import { gatherNewCards, sortNewCards, sortReviewCards, type RandomFn } from "./sort";
-import type { DeckBudgetPlan } from "./limits";
-import type { DeckBudget, QueueCandidate, QueueCounts, QueueEntry } from "./types";
+import type { QueueBudget, QueueCandidate, QueueCounts, QueueEntry } from "./types";
 
 /**
  * Membangun antrean belajar sesuai scheduler v3 Anki.
  *
- * Urutan pengambilan tetap: intraday learning -> interday learning -> review -> new.
- * Urutan itu bukan sekadar preferensi tampilan — ia menentukan siapa yang boleh
- * mem-bury siapa, dan bagian mana dari review limit yang terpakai lebih dulu.
+ * Urutan pengambilan tetap: intraday learning -> interday learning -> review ->
+ * new. Urutan itu bukan sekadar preferensi tampilan — ia menentukan bagian
+ * mana dari review limit yang terpakai lebih dulu. Urutan tampil diterapkan
+ * sesudahnya lewat newReviewOrder dan interdayLearningReviewOrder.
  */
 
 export type BuildQueueInput = {
+  /** Sudah tanpa kartu suspended/tertunda; kartu baru dan kartu jatuh tempo. */
   candidates: QueueCandidate[];
-  /** Budget dan rantai deck dari `computeDeckBudgets`. */
-  plan: DeckBudgetPlan;
-  config: FlashcardPresetConfig;
+  budget: QueueBudget;
+  config: FlashcardConfig;
   now: Date;
   day: FlashcardDayContext;
-  /** Urutan tampil subdeck, dipakai gather/sort order yang berbasis deck. */
-  deckOrder: Map<number, number>;
+  learnAheadMs?: number;
   random?: RandomFn;
 };
 
 export type BuildQueueResult = {
   queue: QueueEntry[];
-  buried: QueueEntry[];
+  /** Kartu learning yang jatuh tempo nanti hari ini, urut dari yang terdekat. */
+  laterLearning: QueueEntry[];
   counts: QueueCounts;
 };
 
-function isStudiable(card: QueueCandidate) {
-  return (
-    card.queue !== "SUSPENDED" &&
-    card.queue !== "BURIED_USER" &&
-    card.queue !== "BURIED_SIBLING"
-  );
-}
-
-/**
- * Jatah yang bisa "dipakai habis" saat memilih kartu.
- *
- * Satu kartu memakan jatah deck-nya SEKALIGUS seluruh leluhurnya, karena limit
- * sebuah deck di Anki membatasi total kartu dari subtree-nya — bukan tiap
- * subdeck secara terpisah.
- */
-function makeAllocator(plan: DeckBudgetPlan, key: keyof DeckBudget) {
-  const remaining = new Map<number, number>();
-  for (const [deckId, budget] of plan.budgets) remaining.set(deckId, budget[key]);
-
-  const chainOf = (deckId: number) => plan.chains.get(deckId) ?? [deckId];
-
-  return {
-    take(cards: QueueEntry[]): { taken: QueueEntry[]; count: number } {
-      const taken: QueueEntry[] = [];
-      for (const card of cards) {
-        const chain = chainOf(card.deckId);
-        if (chain.some((deckId) => (remaining.get(deckId) ?? 0) <= 0)) continue;
-        for (const deckId of chain) {
-          remaining.set(deckId, (remaining.get(deckId) ?? 0) - 1);
-        }
-        taken.push(card);
-      }
-      return { taken, count: taken.length };
-    },
-  };
-}
-
 export function buildQueue(input: BuildQueueInput): BuildQueueResult {
-  const { candidates, plan, config, now, day, deckOrder } = input;
+  const { candidates, budget, config, now, day } = input;
   const random = input.random ?? Math.random;
-
   const dayEnd = getFlashcardDayEnd(now, day).getTime();
-  const studiable = candidates.filter(
-    (card) => isStudiable(card) && plan.budgets.has(card.deckId),
-  );
+  const learnAheadCutoff = now.getTime() + (input.learnAheadMs ?? LEARN_AHEAD_MS);
 
-  // --- Pemisahan kelompok ---------------------------------------------------
   const intraday: QueueEntry[] = [];
+  const laterLearning: QueueEntry[] = [];
   const interday: QueueEntry[] = [];
-  const review: QueueEntry[] = [];
+  const review: QueueCandidate[] = [];
   const fresh: QueueCandidate[] = [];
 
-  for (const card of studiable) {
+  for (const card of candidates) {
     if (card.queue === "NEW") {
       fresh.push(card);
       continue;
     }
-    // Kartu review dan learning yang jatuh tempo kapan pun hari ini ikut masuk,
-    // bukan hanya yang sudah lewat `now` — inilah yang membuat kartu ber-rating
-    // Again bisa kembali dalam sesi yang sama tanpa reload.
+    // Interday learning dan review jatuh tempo per HARI (seperti Anki yang
+    // menyimpannya sebagai nomor hari), jadi seluruh yang due hari ini ikut.
+    // Intraday learning jatuh tempo per MENIT: yang belum waktunya ditahan.
     if (card.due.getTime() >= dayEnd) continue;
 
-    if (card.queue === "LEARNING") intraday.push({ ...card, group: "intradayLearning" });
-    else if (card.queue === "DAY_LEARN") interday.push({ ...card, group: "interdayLearning" });
-    else review.push({ ...card, group: "review" });
+    if (card.queue === "LEARNING") {
+      const entry: QueueEntry = { ...card, group: "intradayLearning" };
+      if (card.due.getTime() <= learnAheadCutoff) intraday.push(entry);
+      else laterLearning.push(entry);
+    } else if (card.queue === "DAY_LEARN") {
+      interday.push({ ...card, group: "interdayLearning" });
+    } else {
+      review.push(card);
+    }
   }
 
   // --- Limit ----------------------------------------------------------------
-  // Kartu intraday learning tidak pernah dibatasi. Interday learning dan review
+  // Intraday learning tidak pernah dibatasi. Interday learning dan review
   // berbagi review limit, dengan interday learning diambil lebih dulu.
-  const reviewAllocator = makeAllocator(plan, "reviewLimit");
-  const newAllocator = makeAllocator(plan, "newLimit");
+  let reviewLeft = Math.max(0, budget.reviewLimit);
 
   intraday.sort((left, right) => left.due.getTime() - right.due.getTime());
+  laterLearning.sort((left, right) => left.due.getTime() - right.due.getTime());
 
-  const interdayTaken = reviewAllocator.take(
-    [...interday].sort((left, right) => left.due.getTime() - right.due.getTime()),
-  ).taken;
+  const interdayTaken = interday
+    .sort((left, right) => left.due.getTime() - right.due.getTime())
+    .slice(0, reviewLeft);
+  reviewLeft -= interdayTaken.length;
 
-  const reviewTaken = reviewAllocator.take(
-    sortReviewCards(review, config, now, deckOrder, random).map((card) => ({
-      ...card,
-      group: "review" as const,
-    })),
-  ).taken;
+  const reviewTaken: QueueEntry[] = sortReviewCards(review, config, now, day, random)
+    .slice(0, reviewLeft)
+    .map((card) => ({ ...card, group: "review" as const }));
+  reviewLeft -= reviewTaken.length;
 
-  const gatheredNew = gatherNewCards(fresh, config, deckOrder, random);
-  const sortedNew = sortNewCards(gatheredNew, config, random).map((card) => ({
-    ...card,
-    group: "new" as const,
-  }));
+  // Secara default kartu baru ikut memakan sisa review limit, sehingga
+  // tumpukan review otomatis menahan masuknya kartu baru.
+  const newAllowed = config.newCardsIgnoreReviewLimit
+    ? Math.max(0, budget.newLimit)
+    : Math.max(0, Math.min(budget.newLimit, reviewLeft));
 
-  let newTaken = newAllocator.take(sortedNew).taken;
-  if (!config.newCardsIgnoreReviewLimit) {
-    // Secara default kartu baru ikut memakan review limit, sehingga backlog review
-    // otomatis menahan masuknya kartu baru.
-    newTaken = reviewAllocator.take(newTaken).taken;
-  }
-
-  // --- Burying ---------------------------------------------------------------
-  // Penting: burying diputuskan pada URUTAN PENGAMBILAN, bukan urutan tampil.
-  // Kalau dijalankan setelah display order, kartu baru yang kebetulan tampil
-  // lebih dulu (mis. newReviewOrder "mix") akan mem-bury kartu review-nya —
-  // kebalikan dari aturan Anki bahwa tipe yang lebih belakang tidak bisa
-  // mem-bury tipe yang lebih depan.
-  const gatherOrdered: QueueEntry[] = [
-    ...intraday,
-    ...interdayTaken,
-    ...reviewTaken,
-    ...newTaken,
-  ];
-  const { queue: kept, buried } = applySiblingBurying(gatherOrdered, config);
-  const keptIds = new Set(kept.map((entry) => entry.cardId));
-  const survives = (entry: QueueEntry) => keptIds.has(entry.cardId);
-
-  const keptIntraday = intraday.filter(survives);
-  const keptInterday = interdayTaken.filter(survives);
-  const keptReview = reviewTaken.filter(survives);
-  const keptNew = newTaken.filter(survives);
+  const newTaken: QueueEntry[] = sortNewCards(
+    gatherNewCards(fresh, config, random).slice(0, newAllowed),
+    config,
+    random,
+  ).map((card) => ({ ...card, group: "new" as const }));
 
   // --- Penggabungan sesuai display order ------------------------------------
-  const reviewSection = mergeByOrder(
-    keptInterday,
-    keptReview,
-    config.interdayLearningReviewOrder,
-    random,
-  );
-  const merged = mergeByOrder(keptNew, reviewSection, config.newReviewOrder, random);
+  const reviewSection = mergeByOrder(interdayTaken, reviewTaken, config.interdayLearningReviewOrder);
+  const merged = mergeByOrder(newTaken, reviewSection, config.newReviewOrder);
 
   return {
-    queue: [...keptIntraday, ...merged],
-    buried,
+    queue: [...intraday, ...merged],
+    laterLearning,
     counts: {
-      intradayLearning: keptIntraday.length,
-      interdayLearning: keptInterday.length,
-      review: keptReview.length,
-      new: keptNew.length,
+      intradayLearning: intraday.length,
+      interdayLearning: interdayTaken.length,
+      review: reviewTaken.length,
+      new: newTaken.length,
     },
   };
 }
 
 /**
- * `first` adalah kelompok yang diatur opsinya (kartu baru, atau interday learning);
- * `second` adalah kartu review yang menjadi acuannya.
+ * `first` adalah kelompok yang diatur opsinya (kartu baru, atau interday
+ * learning); `second` adalah kartu review yang menjadi acuannya.
  */
 function mergeByOrder(
   first: QueueEntry[],
   second: QueueEntry[],
   order: "mix" | "afterReviews" | "beforeReviews",
-  random: RandomFn,
 ): QueueEntry[] {
   if (order === "beforeReviews") return [...first, ...second];
   if (order === "afterReviews") return [...second, ...first];
@@ -201,6 +138,5 @@ function mergeByOrder(
     result.push(takeFirst ? first[firstIndex++]! : second[secondIndex++]!);
   }
 
-  void random;
   return result;
 }

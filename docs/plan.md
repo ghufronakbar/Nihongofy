@@ -616,6 +616,8 @@ tahap lain, dan tahap 2–3 menutup gap konten yang paling menyakitkan bila scop
   daftar. Tanggal terbit pertama dipertahankan saat artikel diterbitkan ulang
 - [x] Hapus artikel tersedia tetapi konfirmasinya mengarahkan ke Archived, karena hard delete ikut
   menghapus interaction user lewat cascade
+- Butir `/admin/flashcard-deck` di bawah **dihapus 1 Oktober 2026** bersama perombakan flashcard
+  (Fase 8.12) dan dipertahankan sebagai riwayat.
 - [x] `/admin/flashcard-deck`, `/new`, `/[id]` — CRUD deck dan note, toggle `isPublished`, atur
   `order`, dan `license` wajib terisi dengan penjelasan kenapa (CC BY-SA mengikat atribusi)
 - [x] Field note dirender dari definisi kanonik `FLASHCARD_NOTE_TYPES`, bukan daftar yang ditulis
@@ -1005,13 +1007,70 @@ oleh target, dan balasan hanya lewat email serta opsional. Rancangan lengkap:
 
 ### Yang sengaja ditunda
 
-- [ ] Kartu deck bawaan flashcard sebagai target laporan — deck bawaan **disalin** ke
-  `FlashcardNote` milik user, jadi memperbaiki sumbernya tidak memperbaiki salinan yang sudah ada.
-  Butuh keputusan backfill tersendiri
+- [ ] Kartu flashcard sebagai target laporan. Hambatan backfill-nya hilang sejak Fase 8.12: kartu
+  user kini merujuk kata di katalog, jadi memperbaiki fixture langsung memperbaiki semua kartu
 - [ ] Notifikasi admin saat laporan masuk
 - [ ] Halaman status laporan untuk pelapor
 - [ ] Lampiran gambar pada laporan
 - [ ] `DUPLICATE` yang menunjuk laporan induknya
+
+## Fase 8.12 — Perombakan Flashcard: Katalog Kosakata Bawaan
+
+Flashcard tidak lagi meniru Anki sebagai koleksi pribadi. Isinya kini satu katalog kosakata JLPT
+yang digenerate AI dari daftar kata deck Anki, dengan deck per level, topik, dan kategori.
+Keputusan desain dan alasannya ada di `docs/module/flashcard.md`; kontrak datanya di
+`docs/seed-flashcard.md`.
+
+### Keputusan yang dikunci (1 Oktober 2026)
+
+- [x] Lisensi konten: Nihongofy. `.apkg` sumber dipakai hanya sebagai daftar kata; arti, contoh
+  kalimat, catatan, dan tag ditulis ulang AI; audio tidak dibawa.
+- [x] Konten buatan user dihapus (deck sendiri, impor/ekspor, card browser yang mengedit, preset
+  per deck, editor deck bawaan di admin).
+- [x] Kartu user merujuk katalog, tidak menyalin. Satu kata = satu kartu per user.
+- [x] Kata yang sama digabung (beberapa makna dalam satu kartu); kata lintas level masuk level
+  termudah; homograf tetap terpisah dan bacaan lainnya disebut di catatan.
+- [x] Satu kata boleh ada di beberapa deck (tag), progresnya satu.
+- [x] Pengaturan per user: ukuran teks, furigana sisi belakang, dan penjadwalan Anki dengan nilai
+  bawaan dari deck options pemilik project; batas harian 20 kartu baru / 9999 review untuk semua
+  deck.
+
+### Pekerjaan
+
+- [x] Taxonomy tag `src/flashcard-data/taxonomy.json`: 5 dimensi (level, kelas kata, ragam,
+  kategori, topik), 84 tag, 52 deck.
+- [x] `npm run flashcard:extract`: daftar kata dari `.apkg` (zip + zstd + SQLite), normalisasi
+  furigana Anki, penggabungan, key stabil. Hasil: 6.697 kata.
+- [x] `npm run gen:flashcard`: generator isi kartu per batch, validasi per kata dengan retry,
+  tanpa menimpa kata yang sudah terisi. Validator markup dipindah ke
+  `prisma/japanese-markup-check.mjs` dan dipakai bersama `gen:explanation`.
+- [x] `npm run seed:flashcard` (+ `:check`) dan `npm run flashcard:doubts`.
+- [x] Skema baru dan migration `20261001120000_flashcard_vocab_catalog` (drop + create, RLS dan
+  revoke grant Data API). Diuji di transaksi yang di-rollback dan di schema Postgres sementara.
+- [x] Antrean disederhanakan untuk deck datar, ditambah learn ahead 20 menit dan kartu learning
+  yang kembali dalam sesi yang sama; opsi review sort `descendingRetrievability` dan `random`.
+- [x] Tunda/suspend sebagai kolom (memperbaiki bug lama: kartu tertunda tidak pernah muncul lagi
+  dan jadwal aslinya tertimpa); undo memakai snapshot kartu.
+- [x] Halaman katalog, deck dengan daftar kata read-only, sesi belajar, pengaturan, statistik,
+  dan mode coba guest.
+- [x] `.apkg` di-ignore (`*.apkg`, 136 MB).
+- [x] Verifikasi: lint, typecheck, 197 unit test, `npm run build`; alur data dan server action
+  diuji terhadap Postgres di schema sementara.
+- [x] Percepatan generator (1 Okt 2026): satu pool lintas level, bawaan batch 20 dan paralel 6
+  (maks 16), progres dan perkiraan sisa waktu, log alasan percobaan ulang. Prompt v3 menurunkan
+  kata yang perlu percobaan ulang dari 10-14% ke ±2% (lihat tabel di `docs/seed-flashcard.md`).
+  Bug ekstraksi bacaan ganda (お茶 → おおちゃ, 9 kata) diperbaiki dan key-nya dikoreksi sebelum
+  seed pertama. Peringatan homograf tidak lagi salah lapor bila bacaan lain ditulis bermarkup.
+
+### Langkah tersisa (dijalankan pemilik project)
+
+- [x] `npx prisma migrate deploy` (1 Okt 2026). Sampai kode baru ter-deploy, kode production lama
+  masih membaca tabel flashcard lama: overview admin, ekspor akun, dan penghapusan akun error.
+- [ ] Commit dan deploy kode flashcard baru (flag tetap mati).
+- [ ] `npm run gen:flashcard` sampai semua kata terisi (908 dari 6.697 per 1 Okt 2026).
+- [ ] Tinjau `npm run flashcard:doubts`.
+- [ ] `npm run seed:flashcard`.
+- [ ] Uji manual di browser, lalu nyalakan `FEATURES_FLASHCARD`.
 
 ## Fase 9 — Verifikasi & Polish
 
