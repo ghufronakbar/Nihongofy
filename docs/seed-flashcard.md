@@ -145,7 +145,8 @@ lain dengan tulisan/bacaan sama, lalu memilih satu keputusan:
 | `keep` | Kartu sudah benar; hanya data sumbernya janggal (mis. bacaan frasa yang hanya mencatat kata kerjanya) | `doubt` dikosongkan |
 | `revise` | Tulisan tetap, isi kartu diperbaiki (bacaan, arti, catatan) | `content` diganti |
 | `replace` | Entri sumber rusak (mis. 空オケ, 介護士/介護士さん); kartu dibuat ulang untuk bentuk bakunya | `word`/`reading` note dan `content` diganti; key tetap |
-| `escalate` | Model tidak yakin, atau bentuk baku sudah ada sebagai kata lain | tidak ada; tinjau manual |
+| `retire` | Otomatis bila kartu yang benar (`keep`/`replace`) sudah ada sebagai kata lain yang sudah digenerate, mis. 鍛える。 → 鍛える (N2) | `doubt` dikosongkan, `doubtResolution.duplicateOf` diisi; seed tidak menerbitkannya dan memberi `retiredAt` |
+| `escalate` | Model tidak yakin | tidak ada; tinjau manual |
 
 ```bash
 npm run fix:flashcard-doubts                       # tinjau -> .flashcard-doubt-plan.json
@@ -159,7 +160,8 @@ npm run fix:flashcard-doubts -- --apply            # terapkan rencana ke fixture
 - Kartu `revise`/`replace` divalidasi dengan aturan yang sama seperti generator (dengan percobaan
   ulang). `revise`/`replace` ber-confidence `low` otomatis menjadi `escalate`.
 - Kartu kembar dicegah: `replace` (atau `keep`) yang menghasilkan tulisan + bacaan kata lain
-  menjadi `escalate`, dan `revise` yang begitu ditolak lalu diminta ulang (mis. 分別|ふんべつ
+  menjadi `retire` (atau `escalate` bila kata tujuannya belum digenerate), dan `revise` yang
+  begitu ditolak lalu diminta ulang (mis. 分別|ふんべつ
   tidak boleh menjadi kartu ぶんべつ karena 分別|ぶんべつ sudah ada).
 - `--apply` menolak entri rencana yang kartunya sudah berubah sejak ditinjau.
 - Hasilnya dicatat di `ai.doubtResolution` (keputusan, alasan, doubt lama, tulisan/bacaan sumber,
@@ -168,7 +170,9 @@ npm run fix:flashcard-doubts -- --apply            # terapkan rencana ke fixture
 - `flashcard:extract` mengembalikan `word`/`reading` ke data sumber, sehingga kartu hasil
   `replace` gagal `seed:flashcard:check`. Jalankan `npm run fix:flashcard-doubts -- --apply`
   (tanpa rencana pun) untuk memasangnya lagi dari `override`.
-- `gen:flashcard --overwrite` menimpa `ai`, termasuk `doubtResolution`.
+- `gen:flashcard --overwrite` menimpa `ai`, termasuk `doubtResolution`. Kata `retire` dilewati
+  `--overwrite` (kecuali dipilih dengan `--key`) supaya tidak terbit lagi.
+- `retire` bisa juga ditulis manual di rencana: `"action": "retire"` plus `"duplicateOf": "<key>"`.
 
 ## Langkah 3 — Seed
 
