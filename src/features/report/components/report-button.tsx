@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { TriangleAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,6 +25,8 @@ const TARGET_DESCRIPTIONS: Record<ReportTarget["targetType"], string> = {
     "Laporan ini otomatis membawa identitas soal yang pembahasannya sedang Anda baca.",
   ARTICLE: "Laporan ini otomatis membawa identitas artikel yang sedang Anda baca.",
   COMMENT: "Laporan ini otomatis membawa identitas entri diskusi yang Anda pilih.",
+  FLASHCARD_VOCAB:
+    "Laporan ini otomatis membawa identitas kartu yang Anda pilih, jadi kata dan levelnya tidak perlu ditulis ulang.",
 };
 
 /**
@@ -40,16 +42,35 @@ export function ReportButton({
   target,
   variant = "icon",
   label = "Laporkan",
+  subject,
+  disabled = false,
+  onOpenChange,
   className,
 }: {
   target: ReportTarget;
-  variant?: "icon" | "link" | "outline";
+  /** `neo` dan `neo-icon` mengikuti tombol aksi bergaya `neo-button` di sekitarnya. */
+  variant?: "icon" | "link" | "outline" | "neo" | "neo-icon";
   label?: string;
+  /**
+   * Nama singkat hal yang dilaporkan, ditampilkan di dialog (mis. kata pada kartu
+   * flashcard yang dipilih dari daftar). Hanya tampilan: tidak ikut dikirim, dan
+   * label target tetap disusun server dari databasenya sendiri. Elemen inline
+   * saja, karena dirender di dalam deskripsi dialog.
+   */
+  subject?: ReactNode;
+  disabled?: boolean;
+  /**
+   * Dipanggil setiap kali dialog terbuka atau tertutup, termasuk penutupan
+   * otomatis setelah laporan terkirim. Reviewer flashcard memakainya untuk
+   * mematikan pintasan keyboard selama dialog terbuka.
+   */
+  onOpenChange?: (open: boolean) => void;
   className?: string;
 }) {
   const [open, setOpen] = useState(false);
   const [context, setContext] = useState<ReportFormContext | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const closeTimer = useRef<number | null>(null);
 
   // Konteks form (perlu captcha atau tidak, ada email akun atau tidak) diambil
   // saat dialog dibuka. Kalau diteruskan sebagai props, setiap komponen induk
@@ -63,8 +84,20 @@ export function ReportButton({
     }
   }, []);
 
+  const clearCloseTimer = useCallback(() => {
+    if (closeTimer.current === null) return;
+    window.clearTimeout(closeTimer.current);
+    closeTimer.current = null;
+  }, []);
+
+  useEffect(() => clearCloseTimer, [clearCloseTimer]);
+
   function handleOpenChange(next: boolean) {
+    // Penutupan otomatis yang masih menunggu tidak boleh menutup dialog yang
+    // sudah ditutup lalu dibuka lagi oleh pengguna.
+    clearCloseTimer();
     setOpen(next);
+    onOpenChange?.(next);
     if (next && context === null) void load();
   }
 
@@ -81,6 +114,20 @@ export function ReportButton({
         <TriangleAlert className="size-3.5" aria-hidden="true" />
         {label}
       </Button>
+    ) : variant === "neo" ? (
+      <button type="button" className={cn("neo-button bg-white text-black", className)}>
+        <TriangleAlert className="size-4" aria-hidden="true" />
+        {label}
+      </button>
+    ) : variant === "neo-icon" ? (
+      <button
+        type="button"
+        aria-label={label}
+        title={label}
+        className={cn("neo-button bg-white text-black", className)}
+      >
+        <TriangleAlert className="size-4" aria-hidden="true" />
+      </button>
     ) : (
       <Button
         variant="ghost"
@@ -95,11 +142,16 @@ export function ReportButton({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger render={trigger} />
+      <DialogTrigger render={trigger} disabled={disabled} />
       <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Laporkan · {REPORT_TARGET_TYPE_LABELS[target.targetType]}</DialogTitle>
-          <DialogDescription>{TARGET_DESCRIPTIONS[target.targetType]}</DialogDescription>
+          <DialogDescription>
+            {subject ? (
+              <span className="mb-1 block text-base font-black text-foreground">{subject}</span>
+            ) : null}
+            {TARGET_DESCRIPTIONS[target.targetType]}
+          </DialogDescription>
         </DialogHeader>
 
         {context === null ? (
@@ -113,7 +165,7 @@ export function ReportButton({
             onSuccess={() => {
               // Dialog dibiarkan terbuka sebentar supaya pesan berhasilnya
               // terbaca; menutupnya seketika membuat laporan terasa hilang.
-              window.setTimeout(() => setOpen(false), 2500);
+              closeTimer.current = window.setTimeout(() => handleOpenChange(false), 2500);
             }}
           />
         )}

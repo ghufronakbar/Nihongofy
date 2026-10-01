@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { Play, Search } from "lucide-react";
+import { FEATURES } from "@/constants";
 import { getSession } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import {
@@ -212,6 +213,7 @@ export default async function DeckPage({ params, searchParams }: Props) {
                     word={word.wordPlain}
                     status={word.status}
                     hasCard={word.hasCard}
+                    reportEnabled={FEATURES.report}
                   />
                 </li>
               );

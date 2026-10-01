@@ -2,6 +2,8 @@ import "server-only";
 
 import type { Prisma, ReportStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { toCardContent, VOCAB_CONTENT_SELECT } from "@/features/flashcard/data";
+import type { VocabCardContent } from "@/features/flashcard/types";
 import type { ReportQueryInput } from "./schemas";
 
 // Tidak di-cache, sama seperti antrean moderasi: layar ini dibuka justru untuk
@@ -30,21 +32,42 @@ const reportSelect = {
   questionId: true,
   articleId: true,
   commentId: true,
+  vocabId: true,
   reporter: { select: { id: true, displayName: true, username: true } },
   handledBy: { select: { id: true, displayName: true } },
   repliedBy: { select: { id: true, displayName: true } },
   article: { select: { id: true, slug: true } },
   comment: { select: { id: true, userId: true, deletedAt: true } },
+  // Isi kartu dibaca langsung dari katalog, bukan disalin saat laporan dibuat:
+  // setelah fixture diperbaiki dan di-seed, admin melihat versi barunya sebelum
+  // menandai laporan selesai.
+  vocab: { select: { ...VOCAB_CONTENT_SELECT, key: true, retiredAt: true } },
 } satisfies Prisma.ReportSelect;
 
 type ReportRow = Prisma.ReportGetPayload<{ select: typeof reportSelect }>;
 
+/** Kata yang dilaporkan, dalam bentuk siap tampil untuk `VocabCardView`. */
+export type ReportFlashcardTarget = {
+  key: string;
+  level: string;
+  retiredAt: Date | null;
+  content: VocabCardContent;
+};
+
 export type ReportEntry = ReportRow & {
   /**
    * Tautan ke layar tempat laporan ini sebenarnya diperbaiki. `null` bila
-   * targetnya sudah dihapus — barisnya tetap terbaca lewat `targetLabel`.
+   * targetnya sudah dihapus — barisnya tetap terbaca lewat `targetLabel` — dan
+   * untuk kartu flashcard, yang tidak punya layar edit (lihat `flashcard`).
    */
   targetHref: string | null;
+  /** Target yang pernah ada tetapi baris FK-nya sudah hilang (SET NULL). */
+  targetMissing: boolean;
+  /**
+   * Kartu flashcard tidak diedit dari admin, jadi tidak ada tautan perbaikan;
+   * isi kartunya ditampilkan di tempat bersama petunjuk perbaikan lewat fixture.
+   */
+  flashcard: ReportFlashcardTarget | null;
   /** Laporan lain yang belum selesai pada target yang sama. */
   otherOpenOnTarget: number;
   canReply: boolean;
@@ -63,9 +86,38 @@ function buildTargetHref(row: ReportRow): string | null {
     // perlakuannya atas entri yang sama.
     case "COMMENT":
       return row.comment ? `/admin/moderation?state=all&user=${row.comment.userId}` : null;
+    // Katalog flashcard sengaja tidak punya editor admin: perbaikannya lewat
+    // fixture lalu `seed:flashcard`. Isi kartu ditampilkan di antrean ini.
+    case "FLASHCARD_VOCAB":
     case "GENERAL":
       return null;
   }
+}
+
+function isTargetMissing(row: ReportRow): boolean {
+  switch (row.targetType) {
+    case "QUESTION":
+    case "QUESTION_EXPLANATION":
+      return row.questionId === null;
+    case "ARTICLE":
+      return row.articleId === null;
+    case "COMMENT":
+      return row.comment === null;
+    case "FLASHCARD_VOCAB":
+      return row.vocab === null;
+    case "GENERAL":
+      return false;
+  }
+}
+
+function toFlashcardTarget(row: ReportRow): ReportFlashcardTarget | null {
+  if (!row.vocab) return null;
+  return {
+    key: row.vocab.key,
+    level: row.vocab.level,
+    retiredAt: row.vocab.retiredAt,
+    content: toCardContent(row.vocab),
+  };
 }
 
 function statusFilter(state: ReportQueryInput["state"]): Prisma.ReportWhereInput {
@@ -109,8 +161,9 @@ export async function listReportQueue(filter: ReportQueryInput) {
   const questionIds = [...new Set(rows.flatMap((row) => (row.questionId ? [row.questionId] : [])))];
   const articleIds = [...new Set(rows.flatMap((row) => (row.articleId ? [row.articleId] : [])))];
   const commentIds = [...new Set(rows.flatMap((row) => (row.commentId ? [row.commentId] : [])))];
+  const vocabIds = [...new Set(rows.flatMap((row) => (row.vocabId ? [row.vocabId] : [])))];
 
-  const [questionGroups, articleGroups, commentGroups] = await Promise.all([
+  const [questionGroups, articleGroups, commentGroups, vocabGroups] = await Promise.all([
     questionIds.length
       ? prisma.report.groupBy({
           by: ["questionId"],
@@ -132,6 +185,13 @@ export async function listReportQueue(filter: ReportQueryInput) {
           _count: { _all: true },
         })
       : Promise.resolve([]),
+    vocabIds.length
+      ? prisma.report.groupBy({
+          by: ["vocabId"],
+          where: { ...openWhere, vocabId: { in: vocabIds } },
+          _count: { _all: true },
+        })
+      : Promise.resolve([]),
   ]);
 
   const openByQuestion = new Map(
@@ -139,6 +199,7 @@ export async function listReportQueue(filter: ReportQueryInput) {
   );
   const openByArticle = new Map(articleGroups.map((group) => [group.articleId, group._count._all]));
   const openByComment = new Map(commentGroups.map((group) => [group.commentId, group._count._all]));
+  const openByVocab = new Map(vocabGroups.map((group) => [group.vocabId, group._count._all]));
 
   function otherOpenOnTarget(row: ReportRow) {
     const total = row.questionId
@@ -147,7 +208,9 @@ export async function listReportQueue(filter: ReportQueryInput) {
         ? openByArticle.get(row.articleId)
         : row.commentId
           ? openByComment.get(row.commentId)
-          : undefined;
+          : row.vocabId
+            ? openByVocab.get(row.vocabId)
+            : undefined;
     if (total === undefined) return 0;
     // Baris ini sendiri ikut terhitung hanya bila statusnya masih terbuka.
     const includesSelf = OPEN_STATUSES.includes(row.status);
@@ -157,6 +220,8 @@ export async function listReportQueue(filter: ReportQueryInput) {
   const entries: ReportEntry[] = rows.map((row) => ({
     ...row,
     targetHref: buildTargetHref(row),
+    targetMissing: isTargetMissing(row),
+    flashcard: toFlashcardTarget(row),
     otherOpenOnTarget: otherOpenOnTarget(row),
     // Balasan hanya satu kali, dan hanya bila pelapor memang meninggalkan alamat.
     canReply: Boolean(row.replyEmail) && row.repliedAt === null,

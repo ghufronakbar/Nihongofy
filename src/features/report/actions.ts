@@ -19,6 +19,7 @@ import {
   REPORT_TARGET_LABEL_MAX_LENGTH,
   REPORT_USER_AGENT_MAX_LENGTH,
 } from "./constants";
+import { flashcardReportLabel } from "./lib/flashcard-target";
 import {
   SubmitReportSchema,
   type ReportSubmitResult,
@@ -39,6 +40,7 @@ const TURNSTILE_FAILED_MESSAGE =
   "Verifikasi keamanan gagal. Coba ulangi verifikasinya, lalu kirim lagi.";
 const DUPLICATE_MESSAGE =
   "Anda sudah mengirim laporan untuk hal yang sama dan masih kami tinjau.";
+const VOCAB_NOT_FOUND_MESSAGE = "Kartu yang dilaporkan tidak ditemukan.";
 
 /**
  * Konteks form yang hanya diketahui server: apakah pengirimnya perlu melewati
@@ -106,7 +108,7 @@ function createReportRateLimitBuckets(
 /** Hanya kolom FK target; sisa baris disusun oleh `submitReportAction`. */
 type TargetColumns = Pick<
   Prisma.ReportUncheckedCreateInput,
-  "questionId" | "articleId" | "commentId"
+  "questionId" | "articleId" | "commentId" | "vocabId"
 >;
 
 type ResolvedTarget =
@@ -192,6 +194,25 @@ async function resolveTarget(
     };
   }
 
+  if (values.targetType === "FLASHCARD_VOCAB") {
+    const vocab = await prisma.flashcardVocab.findUnique({
+      where: { id: values.vocabId },
+      select: { id: true, key: true, level: true, retiredAt: true },
+    });
+    if (!vocab) return { ok: false, message: VOCAB_NOT_FOUND_MESSAGE };
+    // Kata yang dipensiunkan sudah keluar dari semua deck. Laporannya hanya
+    // mungkin datang dari tab lama, dan tidak ada lagi yang perlu diperbaiki.
+    if (vocab.retiredAt) {
+      return { ok: false, message: "Kartu ini sudah tidak dipakai lagi, jadi tidak perlu dilaporkan." };
+    }
+
+    return {
+      ok: true,
+      targetLabel: truncate(flashcardReportLabel(vocab), REPORT_TARGET_LABEL_MAX_LENGTH),
+      data: { vocabId: vocab.id },
+    };
+  }
+
   const question = await prisma.question.findUnique({
     where: { id: values.questionId },
     select: {
@@ -239,6 +260,15 @@ export async function submitReportAction(
   }
 
   const values = validated.data;
+
+  // Tombol "Laporkan kartu" hanya ada di bawah /flashcard, yang 404 saat modulnya
+  // mati. Action ini dipanggil di luar segmen itu, jadi flag-nya dicek sendiri:
+  // tab lama yang masih terbuka tidak boleh tetap dapat mengirim. Dicek sebelum
+  // Turnstile dan rate limit supaya penolakan ini tidak memakan jatah pelapor.
+  if (values.targetType === "FLASHCARD_VOCAB" && !FEATURES.flashcard) {
+    return { ok: false, message: VOCAB_NOT_FOUND_MESSAGE };
+  }
+
   const session = await getSession();
   const ipAddress = await getRequestIpAddress();
 

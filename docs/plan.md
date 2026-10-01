@@ -1007,12 +1007,53 @@ oleh target, dan balasan hanya lewat email serta opsional. Rancangan lengkap:
 
 ### Yang sengaja ditunda
 
-- [ ] Kartu flashcard sebagai target laporan. Hambatan backfill-nya hilang sejak Fase 8.12: kartu
-  user kini merujuk kata di katalog, jadi memperbaiki fixture langsung memperbaiki semua kartu
+- [x] Kartu flashcard sebagai target laporan (1 Oktober 2026), lihat subbagian berikut
 - [ ] Notifikasi admin saat laporan masuk
 - [ ] Halaman status laporan untuk pelapor
 - [ ] Lampiran gambar pada laporan
 - [ ] `DUPLICATE` yang menunjuk laporan induknya
+
+### Lanjutan: kartu flashcard sebagai target laporan (1 Oktober 2026)
+
+Hambatan lamanya hilang sejak Fase 8.12: kartu user merujuk kata di katalog, jadi satu perbaikan
+fixture lalu seed memperbaiki kartu semua user. Keputusan desain (kategori, `onDelete`, dua
+migration) ada di [docs/module/report.md](module/report.md).
+
+- [x] Target `FLASHCARD_VOCAB` dan kategori `READING_ERROR`, `MEANING_ERROR`, `EXAMPLE_ERROR`,
+  `TAG_ERROR` di migration `20261001150000_report_flashcard_vocab_enum`. Dipisah dari migration
+  berikutnya karena nilai enum tidak boleh dipakai di transaksi yang menambahkannya (55P04); diuji
+  dengan satu file gabungan yang memang gagal di `migrate deploy`
+- [x] Migration `20261001150100_report_flashcard_vocab_target`: kolom `vocabId` (FK ke
+  `FlashcardVocab`, `ON DELETE SET NULL` seperti target lain), index, `Report_target_columns_check`
+  didefinisikan ulang, dan partial unique index anti-banjir per pelapor
+- [x] Peta kategori di `constants.ts`: kartu memakai empat kategori kontennya sendiri plus `BUG` dan
+  `OTHER`, tanpa `CONTENT_ERROR`
+- [x] `submitReportAction`: label target dibangun server (`Flashcard · <level> · <key>`), kata
+  yang dipensiunkan ditolak, dan `FEATURES_FLASHCARD` dicek sebelum Turnstile dan rate limit
+- [x] Tombol "Laporkan kartu" di reviewer (hanya setelah sisi belakang dibuka; pintasan keyboard
+  mati selama dialog terbuka; sesi belajar tidak ter-reset), daftar kata `/flashcard/deck/[slug]`,
+  dan mode coba guest `/flashcard/try/[slug]` dengan Turnstile
+- [x] `/admin/report`: chip target kartu flashcard, kategori menyempit sesuai target, panel isi
+  kartu sekarang (`VocabCardView`), level, key, dan perintah perbaikan lewat fixture atau
+  `gen:flashcard --key --overwrite`, lalu seed; peringatan saat `FEATURES_FLASHCARD` mati
+- [x] Ekspor akun kini memuat laporan semua target (sebelumnya tidak memuat laporan sama sekali),
+  tanpa status, catatan internal, maupun identitas admin; `anonymizeAccount` sudah mencakup semua
+  target
+- [x] Unit test: peta kategori dan konstanta sama dengan enum Prisma, `SubmitReportSchema` untuk
+  setiap target dan kategori, kontrak migration (CHECK, FK `SET NULL`, dan index anti-banjir untuk
+  setiap FK target; nilai `ADD VALUE` tidak dipakai di file yang sama), privasi ekspor dan
+  anonymize, serta petunjuk perbaikan (script dan flag yang disebut benar-benar ada)
+- [x] Migration dan constraint diuji di PostgreSQL 16 lokal (bukan production): `migrate deploy`
+  dari nol, `prisma validate`, `migrate diff` tanpa drift baru, uji CHECK/unique/SET NULL langsung,
+  serta antrean admin dan `anonymizeAccount` terhadap data uji
+- [x] `npm run lint`, `npm run typecheck`, `npm run test`, `npm run build` lulus
+- [ ] `npx prisma migrate deploy` (pemilik project), lalu redeploy agar Prisma Client baru aktif
+- [ ] Verifikasi manual (user): di reviewer, buka sisi belakang lalu "Laporkan kartu"; pastikan
+  Space/Enter/1-4/F di dalam dialog tidak menilai kartu, dan setelah dialog ditutup sesi berlanjut
+  dengan hitungan dan Undo yang sama. Laporkan juga dari daftar kata dan dari mode coba sebagai
+  guest (Turnstile). Di `/admin/report`, filter "Kartu flashcard", buka isi kartu, ubah status, dan
+  coba satu balasan email. Dengan `FEATURES_FLASHCARD=false`, laporan kartu lama tetap terbuka di
+  admin
 
 ## Fase 8.12 — Perombakan Flashcard: Katalog Kosakata Bawaan
 

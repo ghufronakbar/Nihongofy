@@ -186,6 +186,30 @@ export async function GET() {
           article: { select: { id: true, slug: true, title: true } },
         },
       },
+      // Laporan yang dikirim akun ini, untuk semua jenis target. Isinya hanya yang
+      // ditulis pelapor dan yang memang dikirim kepadanya (balasan email). Status,
+      // catatan internal, dan identitas admin yang menangani tidak ikut: catatan
+      // itu tidak pernah dikirim ke pelapor (docs/module/report.md).
+      reports: {
+        orderBy: { createdAt: "asc" },
+        select: {
+          id: true,
+          targetType: true,
+          category: true,
+          targetLabel: true,
+          questionId: true,
+          articleId: true,
+          commentId: true,
+          vocabId: true,
+          message: true,
+          pagePath: true,
+          userAgent: true,
+          replyEmail: true,
+          repliedAt: true,
+          replyMessage: true,
+          createdAt: true,
+        },
+      },
     },
   });
 

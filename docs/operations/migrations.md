@@ -33,6 +33,35 @@ contract wajib memiliki migration dan catatan ringkas di dokumen/PR perubahan. J
 
 ## Ledger
 
+### 1 Oktober 2026 - Kartu flashcard sebagai target laporan
+
+- Status: required (belum di-deploy)
+- Migration: `prisma/migrations/20261001150000_report_flashcard_vocab_enum/migration.sql`, lalu
+  `prisma/migrations/20261001150100_report_flashcard_vocab_target/migration.sql`. Ditulis tangan;
+  `prisma migrate dev` tidak dipakai karena shadow database Supabase.
+- Alasan: isi 6.720 kartu kosakata ditulis AI dan perlu jalur laporan dari user yang menunjuk kata
+  di katalog. Rancangan di [report.md](../module/report.md).
+- Object terdampak: nilai enum `ReportTargetType.FLASHCARD_VOCAB` dan
+  `ReportCategory.READING_ERROR`/`MEANING_ERROR`/`EXAMPLE_ERROR`/`TAG_ERROR`; kolom
+  `Report.vocabId` dengan FK `Report_vocabId_fkey` ke `FlashcardVocab` (`ON DELETE SET NULL`),
+  index `Report_vocabId_idx`, `Report_target_columns_check` didefinisikan ulang dengan klausa
+  `vocabId`, dan partial unique index `Report_open_vocab_per_reporter_key`.
+- Data existing: tidak ada backfill. Kolom baru `NULL` di seluruh baris lama, sehingga CHECK baru
+  langsung terpenuhi.
+- Risiko operasi: dua migration WAJIB tetap terpisah. Nilai enum baru tidak boleh dipakai di
+  transaksi yang menambahkannya (`55P04 unsafe use of new value`), dan `migrate deploy` menjalankan
+  satu file sebagai satu transaksi; versi satu file sudah dicoba dan gagal dengan `P3018`. Tabel
+  `Report` dikunci sebentar saat CHECK diganti dan divalidasi ulang (tabel kecil). Aplikasi lama
+  tetap jalan setelah migration karena tidak pernah menulis nilai atau kolom baru; deploy migration
+  dulu, baru kode.
+- Validasi: `npx prisma validate`; `migrate deploy` dari nol ke PostgreSQL 16 lokal dengan role
+  Supabase tiruan; `migrate diff` dari database itu ke `schema.prisma` hanya menyisakan drift lama
+  (`Report.updatedAt` default); CHECK, unique index, dan `SET NULL` diuji langsung dengan transaksi
+  yang di-rollback; `npm run lint`, `typecheck`, `test`, dan `build` lulus.
+- Refresh setelah deploy: redeploy agar Prisma Client terbaru aktif. Tidak ada cache yang perlu
+  diinvalidasi dan tidak perlu seed ulang.
+- Owner: Engineering Owner.
+
 ### 26 September 2026 - Kotak masuk laporan pengguna (Report)
 
 - Status: deployed

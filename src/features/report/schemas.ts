@@ -90,6 +90,13 @@ export const SubmitReportSchema = z
       commentId: z.number().int().positive(),
       ...sharedFields,
     }),
+    z.object({
+      targetType: z.literal("FLASHCARD_VOCAB"),
+      // Id kata di katalog (FlashcardVocab), bukan kartu milik user: isi kartu
+      // semua user berasal dari baris yang sama.
+      vocabId: z.number().int().positive(),
+      ...sharedFields,
+    }),
   ])
   .superRefine((value, context) => {
     if (isReportCategoryAllowed(value.targetType, value.category)) return;
@@ -109,7 +116,8 @@ export type ReportTarget =
   | { targetType: "QUESTION"; questionId: number }
   | { targetType: "QUESTION_EXPLANATION"; questionId: number }
   | { targetType: "ARTICLE"; articleId: number }
-  | { targetType: "COMMENT"; commentId: number };
+  | { targetType: "COMMENT"; commentId: number }
+  | { targetType: "FLASHCARD_VOCAB"; vocabId: number };
 
 export type ReportSubmitResult = { ok: boolean; message: string };
 

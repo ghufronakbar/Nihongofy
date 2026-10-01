@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Ban, EyeOff, Loader2, Undo2 } from "lucide-react";
+import { ReportButton } from "@/features/report/components/report-button";
 import type { FlashcardDisplay, FlashcardRatingInput } from "../schemas";
 import type { PendingLearningCard, ReviewerCard } from "../types";
 import { LEARN_AHEAD_MS } from "../lib/learn-ahead";
@@ -30,6 +31,12 @@ type Props = {
    * penjadwalan yang disimpan dan tidak ada baris riwayat yang dibuat.
    */
   isGuest: boolean;
+  /**
+   * Status `FEATURES.report` dari halaman: komponen client tidak boleh menarik
+   * `@/constants` ke bundle browser. Flag flashcard tidak perlu diteruskan —
+   * reviewer hanya dirender di bawah /flashcard, yang 404 saat modulnya mati.
+   */
+  reportEnabled: boolean;
 };
 
 const RATINGS: { value: FlashcardRatingInput; label: string; key: string; tone: string }[] = [
@@ -151,6 +158,7 @@ export function FlashcardReviewer({
   hasMore,
   display,
   isGuest,
+  reportEnabled,
 }: Props) {
   const router = useRouter();
   const [state, dispatch] = useReducer(reducer, undefined, () =>
@@ -163,12 +171,18 @@ export function FlashcardReviewer({
   // dan tidak boleh memicu render.
   const shownAt = useRef(0);
   const tokens = useRef(new Map<number, string>());
+  // Dialog laporan sedang terbuka: keyboard milik dialog, bukan reviewer. Ref,
+  // bukan state, supaya membuka dialog tidak me-render ulang sesi.
+  const reportOpen = useRef(false);
 
   const { current, revealed } = state;
   const furiganaVisible = display.showFuriganaOnBack || state.furiganaShown;
 
   useEffect(() => {
     shownAt.current = Date.now();
+    // Tombol laporan hanya ada selama kartu terbuka, jadi kartu baru berarti
+    // dialog kartu sebelumnya sudah tidak ada.
+    reportOpen.current = false;
   }, [state.turn]);
 
   // Tidak ada kartu yang bisa tampil sekarang, tetapi ada kartu learning yang
@@ -288,8 +302,15 @@ export function FlashcardReviewer({
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.metaKey || event.ctrlKey || event.altKey) return;
+      // Tanpa dua penjaga ini, Space/Enter pada tombol atau checkbox di dalam
+      // dialog laporan ikut menilai kartu di belakangnya (dan preventDefault-nya
+      // membatalkan klik tombol itu). Status dialog dicek lebih dulu karena fokus
+      // tidak selalu berada di dalam dialog, mis. saat tombol kirim di-disable
+      // selama laporan dikirim.
+      if (reportOpen.current) return;
       const target = event.target as HTMLElement | null;
       if (target && ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName)) return;
+      if (target instanceof Element && target.closest('[role="dialog"], [role="alertdialog"]')) return;
 
       if (event.key === " " || event.key === "Enter") {
         event.preventDefault();
@@ -313,6 +334,9 @@ export function FlashcardReviewer({
   }, [answer, revealed]);
 
   const remaining = state.main.length + (current ? 1 : 0);
+  // Kartu dilaporkan setelah sisi belakangnya terbaca: kesalahan isi (arti,
+  // bacaan, contoh) baru terlihat di sana.
+  const canReport = reportEnabled && revealed;
 
   if (!current) {
     const waiting = state.learning[0];
@@ -425,32 +449,57 @@ export function FlashcardReviewer({
         </button>
       )}
 
-      {!isGuest ? (
+      {!isGuest || canReport ? (
         <div className="flex flex-wrap items-center justify-center gap-2">
-          <button
-            type="button"
-            onClick={() => void undo()}
-            disabled={!lastReview || pending}
-            className="neo-button bg-white px-3 py-2 text-xs"
-          >
-            <Undo2 className="size-4" aria-hidden /> Undo
-          </button>
-          <button
-            type="button"
-            onClick={() => void hide("bury")}
-            disabled={pending}
-            className="neo-button bg-white px-3 py-2 text-xs"
-          >
-            <EyeOff className="size-4" aria-hidden /> Tunda
-          </button>
-          <button
-            type="button"
-            onClick={() => void hide("suspend")}
-            disabled={pending}
-            className="neo-button bg-white px-3 py-2 text-xs"
-          >
-            <Ban className="size-4" aria-hidden /> Suspend
-          </button>
+          {!isGuest ? (
+            <>
+              <button
+                type="button"
+                onClick={() => void undo()}
+                disabled={!lastReview || pending}
+                className="neo-button bg-white px-3 py-2 text-xs"
+              >
+                <Undo2 className="size-4" aria-hidden /> Undo
+              </button>
+              <button
+                type="button"
+                onClick={() => void hide("bury")}
+                disabled={pending}
+                className="neo-button bg-white px-3 py-2 text-xs"
+              >
+                <EyeOff className="size-4" aria-hidden /> Tunda
+              </button>
+              <button
+                type="button"
+                onClick={() => void hide("suspend")}
+                disabled={pending}
+                className="neo-button bg-white px-3 py-2 text-xs"
+              >
+                <Ban className="size-4" aria-hidden /> Suspend
+              </button>
+            </>
+          ) : null}
+          {canReport ? (
+            // Dialognya terbuka di tempat dan action laporan tidak me-revalidate
+            // route apa pun, jadi antrean, undo, dan hitungan sesi tidak tersentuh.
+            // Di-disable selama jawaban disimpan: kartu berganti begitu jawaban
+            // selesai, dan dialog yang sedang diisi akan ikut hilang.
+            <ReportButton
+              target={{ targetType: "FLASHCARD_VOCAB", vocabId: current.vocabId }}
+              variant="neo"
+              label="Laporkan kartu"
+              subject={
+                <span lang="ja" className="font-japanese">
+                  {current.content.wordPlain}
+                </span>
+              }
+              disabled={pending}
+              onOpenChange={(open) => {
+                reportOpen.current = open;
+              }}
+              className="px-3 py-2 text-xs"
+            />
+          ) : null}
           {pending ? <Loader2 className="size-4 animate-spin" aria-label="Menyimpan" /> : null}
         </div>
       ) : null}
