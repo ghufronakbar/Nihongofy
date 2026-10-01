@@ -1,85 +1,80 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { Prisma, type FlashcardCard } from "@prisma/client";
 import { z } from "zod";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import {
-  dayContextOf,
-  ensureCollection,
-  ensureDeckPath,
-  nextEntityId,
-} from "./lib/collection";
-import { getFlashcardDayEnd } from "./lib/scheduler/day";
-import { scheduleReview } from "./lib/scheduler";
+import { buildPreviewLabels } from "./data";
+import { getFlashcardSettings } from "./lib/collection";
+import { LEARN_AHEAD_MS } from "./lib/queue";
+import { createNewCardState, scheduleReview } from "./lib/scheduler";
+import { getFlashcardDayEnd, getFlashcardDayRange } from "./lib/scheduler/day";
 import type { SchedulerCardState } from "./lib/scheduler/types";
-import { parsePresetConfig, FlashcardRatingSchema } from "./schemas";
-
-const CardIdSchema = z.string().regex(/^\d+$/, "Kartu tidak valid.");
-
-const AnswerSchema = z.object({
-  cardId: CardIdSchema,
-  rating: FlashcardRatingSchema,
-  takenMs: z.number().int().min(0).max(3_600_000).default(0),
-  /**
-   * Token idempotency yang dibuat client sekali per kartu, dan DIPAKAI ULANG
-   * saat retry. Unik per user (bukan primary key global), sehingga submit ganda
-   * dari dua tab menjadi no-op alih-alih menggandakan review dan menembus
-   * daily limit — tanpa membuka celah satu user memblokir user lain.
-   */
-  clientToken: z.string().trim().min(8).max(64),
-});
-
-export type AnswerCardInput = z.infer<typeof AnswerSchema>;
+import {
+  FlashcardConfigSchema,
+  FlashcardDeckSlugSchema,
+  FlashcardDisplaySchema,
+  FlashcardRatingSchema,
+  FlashcardVocabIdSchema,
+} from "./schemas";
+import type { PreviewLabels } from "./types";
 
 type ActionResult<T = undefined> =
   | ({ ok: true } & (T extends undefined ? { data?: undefined } : { data: T }))
   | { ok: false; message: string };
 
-async function loadCardForUser(userId: number, cardId: bigint) {
-  return prisma.flashcardCard.findFirst({
-    where: { id: cardId, userId },
-    select: {
-      id: true,
-      deckId: true,
-      noteId: true,
-      type: true,
-      queue: true,
-      due: true,
-      intervalDays: true,
-      reps: true,
-      lapses: true,
-      learningStep: true,
-      stability: true,
-      difficulty: true,
-      desiredRetention: true,
-      easeFactor: true,
-      lastReviewedAt: true,
-      deck: { select: { name: true, preset: { select: { config: true } } } },
-    },
-  });
+const SIGN_IN_MESSAGE = "Masuk dulu untuk menyimpan progres.";
+
+function isUniqueViolation(error: unknown) {
+  return error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002";
 }
 
-export async function answerCardAction(
-  input: AnswerCardInput,
-): Promise<ActionResult<{ dueAt: string; intervalDays: number; becameLeech: boolean }>> {
-  const session = await getSession();
-  // Guest memakai mode coba: penjadwalan hanya hidup di state client dan tidak
-  // pernah menyentuh database, jadi tidak ada yang dikerjakan di sini.
-  if (!session) return { ok: false, message: "Masuk dulu untuk menyimpan progres." };
+// --- Snapshot kartu ----------------------------------------------------------
 
-  const parsed = AnswerSchema.safeParse(input);
-  if (!parsed.success) return { ok: false, message: "Jawaban tidak valid." };
+// Salinan kartu sebelum review, disimpan di revlog supaya undo memulihkan
+// keadaan persis — termasuk learning step yang tidak bisa direkonstruksi dari
+// riwayat review.
+const CardSnapshotSchema = z.object({
+  type: z.enum(["NEW", "LEARNING", "REVIEW", "RELEARNING"]),
+  queue: z.enum(["NEW", "LEARNING", "DAY_LEARN", "REVIEW"]),
+  due: z.iso.datetime(),
+  intervalDays: z.number().int(),
+  reps: z.number().int(),
+  lapses: z.number().int(),
+  learningStep: z.number().int(),
+  stability: z.number().nullable(),
+  difficulty: z.number().nullable(),
+  desiredRetention: z.number().nullable(),
+  easeFactor: z.number().nullable(),
+  lastReviewedAt: z.iso.datetime().nullable(),
+  isSuspended: z.boolean(),
+  buriedUntil: z.iso.datetime().nullable(),
+  isLeech: z.boolean(),
+});
 
-  const { cardId, rating, takenMs, clientToken } = parsed.data;
-  const collection = await ensureCollection(session.userId);
-  const card = await loadCardForUser(session.userId, BigInt(cardId));
-  if (!card) return { ok: false, message: "Kartu tidak ditemukan." };
+function snapshotOf(card: FlashcardCard): z.infer<typeof CardSnapshotSchema> {
+  return {
+    type: card.type,
+    queue: card.queue,
+    due: card.due.toISOString(),
+    intervalDays: card.intervalDays,
+    reps: card.reps,
+    lapses: card.lapses,
+    learningStep: card.learningStep,
+    stability: card.stability,
+    difficulty: card.difficulty,
+    desiredRetention: card.desiredRetention,
+    easeFactor: card.easeFactor,
+    lastReviewedAt: card.lastReviewedAt?.toISOString() ?? null,
+    isSuspended: card.isSuspended,
+    buriedUntil: card.buriedUntil?.toISOString() ?? null,
+    isLeech: card.isLeech,
+  };
+}
 
-  const config = parsePresetConfig(card.deck.preset.config);
-  const now = new Date();
-
-  const state: SchedulerCardState = {
+function stateOf(card: FlashcardCard): SchedulerCardState {
+  return {
     type: card.type,
     queue: card.queue,
     due: card.due,
@@ -93,408 +88,421 @@ export async function answerCardAction(
     easeFactor: card.easeFactor,
     lastReviewedAt: card.lastReviewedAt,
   };
+}
+
+// --- Menjawab ----------------------------------------------------------------
+
+const AnswerSchema = z.object({
+  vocabId: FlashcardVocabIdSchema,
+  rating: FlashcardRatingSchema,
+  takenMs: z.number().int().min(0).max(3_600_000).default(0),
+  /**
+   * Token idempotency yang dibuat client sekali per kartu, dan DIPAKAI ULANG
+   * saat retry. Unik per user, sehingga submit ganda dari dua tab menjadi
+   * no-op alih-alih menggandakan review dan menembus batas harian.
+   */
+  clientToken: z.string().trim().min(8).max(64),
+});
+
+export type AnswerCardInput = z.input<typeof AnswerSchema>;
+
+export type AnswerResult = {
+  dueAt: string;
+  queue: "LEARNING" | "DAY_LEARN" | "REVIEW" | "NEW";
+  becameLeech: boolean;
+  /** Hanya untuk kartu yang kembali hari ini: label tombol saat ia tampil lagi. */
+  nextPreviewLabels: PreviewLabels | null;
+};
+
+export async function answerCardAction(input: AnswerCardInput): Promise<ActionResult<AnswerResult>> {
+  const session = await getSession();
+  // Guest memakai mode coba: penjadwalan hanya hidup di state client.
+  if (!session) return { ok: false, message: SIGN_IN_MESSAGE };
+
+  const parsed = AnswerSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, message: "Jawaban tidak valid." };
+
+  const { vocabId, rating, takenMs, clientToken } = parsed.data;
+  const userId = session.userId;
+  const settings = await getFlashcardSettings(userId);
+  const now = new Date();
+  const { start: dayStart, endExclusive: dayEnd } = getFlashcardDayRange(now, settings.day);
+
+  const [vocab, card, recorded] = await Promise.all([
+    prisma.flashcardVocab.findUnique({ where: { id: vocabId }, select: { retiredAt: true } }),
+    prisma.flashcardCard.findUnique({ where: { userId_vocabId: { userId, vocabId } } }),
+    prisma.flashcardRevlog.findUnique({
+      where: { userId_clientToken: { userId, clientToken } },
+      select: { vocabId: true },
+    }),
+  ]);
+
+  // Retry dari jawaban yang sebenarnya sudah tersimpan (mis. respons pertama
+  // hilang di jaringan): kembalikan hasil yang tercatat. Harus diperiksa
+  // SEBELUM penjaga jatuh tempo di bawah — kartu yang baru dijawab memang
+  // belum jatuh tempo lagi, dan menolaknya akan membuat reviewer macet.
+  if (recorded) {
+    if (recorded.vocabId !== vocabId || !card) return { ok: false, message: "Jawaban tidak valid." };
+    const returnsToday = card.queue === "LEARNING" && !card.isSuspended && card.due < dayEnd;
+    return {
+      ok: true,
+      data: {
+        dueAt: card.due.toISOString(),
+        queue: card.queue,
+        becameLeech: false,
+        nextPreviewLabels: returnsToday ? buildPreviewLabels(stateOf(card), card.due, settings) : null,
+      },
+    };
+  }
+
+  if (!vocab || vocab.retiredAt) return { ok: false, message: "Kata ini sudah tidak tersedia." };
+
+  // Antrean di client bukan satu-satunya penjaga: kartu yang disembunyikan,
+  // belum jatuh tempo, atau melewati batas kartu baru ditolak di sini juga.
+  if (card?.isSuspended) return { ok: false, message: "Kartu ini sedang di-suspend." };
+  if (card?.buriedUntil && card.buriedUntil > now) {
+    return { ok: false, message: "Kartu ini sedang ditunda sampai besok." };
+  }
+
+  const isNew = !card || card.type === "NEW";
+  if (isNew) {
+    const newToday = await prisma.flashcardRevlog.count({
+      where: { userId, wasNew: true, reviewedAt: { gte: dayStart, lt: dayEnd } },
+    });
+    if (newToday >= settings.config.newCardsPerDay) {
+      return { ok: false, message: "Batas kartu baru hari ini sudah tercapai." };
+    }
+  } else {
+    const dueLimit =
+      card.queue === "LEARNING" ? now.getTime() + LEARN_AHEAD_MS : dayEnd.getTime();
+    if (card.due.getTime() > dueLimit) {
+      return { ok: false, message: "Kartu ini belum jatuh tempo." };
+    }
+  }
 
   const result = scheduleReview({
-    card: state,
+    card: card && card.type !== "NEW" ? stateOf(card) : createNewCardState(now),
     rating,
     now,
-    config,
-    day: dayContextOf(collection),
+    config: settings.config,
+    day: settings.day,
   });
-
-  const leechSuspends = result.becameLeech && config.leechAction === "suspend";
+  const leechSuspends = result.becameLeech && settings.config.leechAction === "suspend";
+  const cardData = {
+    type: result.card.type,
+    queue: result.card.queue,
+    due: result.card.due,
+    intervalDays: result.card.intervalDays,
+    reps: result.card.reps,
+    lapses: result.card.lapses,
+    learningStep: result.card.learningStep,
+    stability: result.card.stability,
+    difficulty: result.card.difficulty,
+    desiredRetention: result.card.desiredRetention,
+    easeFactor: result.card.easeFactor,
+    lastReviewedAt: result.card.lastReviewedAt,
+    buriedUntil: null,
+  };
 
   try {
+    // Kartu lebih dulu karena revlog merujuknya. Kalau revlog bentrok di
+    // clientToken, seluruh transaksi batal — termasuk perubahan kartu.
     await prisma.$transaction([
+      prisma.flashcardCard.upsert({
+        where: { userId_vocabId: { userId, vocabId } },
+        create: { userId, vocabId, ...cardData, isSuspended: leechSuspends, isLeech: result.becameLeech },
+        update: {
+          ...cardData,
+          isSuspended: leechSuspends,
+          ...(result.becameLeech ? { isLeech: true } : {}),
+        },
+      }),
       prisma.flashcardRevlog.create({
         data: {
-          id: nextEntityId(now),
-          userId: session.userId,
+          userId,
+          vocabId,
           clientToken,
-          cardId: card.id,
-          deckId: card.deckId,
           reviewedAt: now,
           rating,
           kind: result.revlog.kind,
+          wasNew: isNew,
           intervalDays: result.revlog.intervalDays,
           lastIntervalDays: result.revlog.lastIntervalDays,
           stability: result.revlog.stability,
           difficulty: result.revlog.difficulty,
           easeFactor: result.revlog.easeFactor,
           takenMs,
-        },
-      }),
-      prisma.flashcardCard.update({
-        where: { id: card.id },
-        data: {
-          type: result.card.type,
-          queue: leechSuspends ? "SUSPENDED" : result.card.queue,
-          due: result.card.due,
-          intervalDays: result.card.intervalDays,
-          reps: result.card.reps,
-          lapses: result.card.lapses,
-          learningStep: result.card.learningStep,
-          stability: result.card.stability,
-          difficulty: result.card.difficulty,
-          desiredRetention: result.card.desiredRetention,
-          easeFactor: result.card.easeFactor,
-          lastReviewedAt: result.card.lastReviewedAt,
+          previousState: card ? snapshotOf(card) : Prisma.DbNull,
         },
       }),
     ]);
   } catch (error) {
-    // P2002 pada (userId, clientToken) = review ini sudah tercatat. Itu justru
-    // hasil yang diinginkan dari idempotency key, bukan kegagalan.
-    if (isUniqueViolation(error)) {
-      return {
-        ok: true,
-        data: {
-          dueAt: result.card.due.toISOString(),
-          intervalDays: result.card.intervalDays,
-          becameLeech: false,
-        },
-      };
-    }
-    throw error;
+    // P2002 pada (userId, clientToken) = review ini sudah tercatat oleh
+    // permintaan sebelumnya. Itu hasil yang diinginkan, bukan kegagalan.
+    if (!isUniqueViolation(error)) throw error;
   }
 
-  if (result.becameLeech && config.leechAction === "tagOnly") {
-    await tagAsLeech(session.userId, card.noteId);
-  }
+  const returnsToday =
+    result.card.queue === "LEARNING" && !leechSuspends && result.card.due < dayEnd;
 
   revalidatePath("/flashcard");
   return {
     ok: true,
     data: {
       dueAt: result.card.due.toISOString(),
-      intervalDays: result.card.intervalDays,
+      queue: result.card.queue,
       becameLeech: result.becameLeech,
+      nextPreviewLabels: returnsToday
+        ? buildPreviewLabels(result.card, result.card.due, settings)
+        : null,
     },
   };
 }
 
-function isUniqueViolation(error: unknown) {
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    "code" in error &&
-    (error as { code?: string }).code === "P2002"
-  );
-}
+// --- Undo --------------------------------------------------------------------
 
-const LEECH_TAG = "leech";
-
-async function tagAsLeech(userId: number, noteId: bigint) {
-  const note = await prisma.flashcardNote.findFirst({
-    where: { id: noteId, userId },
-    select: { tags: true },
-  });
-  if (!note || note.tags.includes(LEECH_TAG)) return;
-
-  await prisma.flashcardNote.update({
-    where: { id: noteId },
-    data: { tags: { set: [...note.tags, LEECH_TAG] } },
-  });
-}
-
-// --- Suspend / bury ---------------------------------------------------------
-
-const CardActionSchema = z.object({ cardId: CardIdSchema });
-
-export async function suspendCardAction(input: { cardId: string }): Promise<ActionResult> {
+export async function undoReviewAction(input: { clientToken: string }): Promise<ActionResult> {
   const session = await getSession();
-  if (!session) return { ok: false, message: "Masuk dulu." };
+  if (!session) return { ok: false, message: SIGN_IN_MESSAGE };
 
-  const parsed = CardActionSchema.safeParse(input);
-  if (!parsed.success) return { ok: false, message: "Kartu tidak valid." };
-
-  const updated = await prisma.flashcardCard.updateMany({
-    where: { id: BigInt(parsed.data.cardId), userId: session.userId },
-    data: { queue: "SUSPENDED" },
-  });
-  if (updated.count === 0) return { ok: false, message: "Kartu tidak ditemukan." };
-
-  revalidatePath("/flashcard");
-  return { ok: true };
-}
-
-export async function unsuspendCardAction(input: { cardId: string }): Promise<ActionResult> {
-  const session = await getSession();
-  if (!session) return { ok: false, message: "Masuk dulu." };
-
-  const parsed = CardActionSchema.safeParse(input);
-  if (!parsed.success) return { ok: false, message: "Kartu tidak valid." };
-
-  const card = await prisma.flashcardCard.findFirst({
-    where: { id: BigInt(parsed.data.cardId), userId: session.userId },
-    select: { id: true, type: true },
-  });
-  if (!card) return { ok: false, message: "Kartu tidak ditemukan." };
-
-  // Queue dikembalikan dari `type`, karena `queue` sudah tertimpa SUSPENDED.
-  const queue =
-    card.type === "NEW" ? "NEW" : card.type === "REVIEW" ? "REVIEW" : "LEARNING";
-
-  await prisma.flashcardCard.update({ where: { id: card.id }, data: { queue } });
-  revalidatePath("/flashcard");
-  return { ok: true };
-}
-
-/**
- * Bury manual: kartu disembunyikan sampai batas hari berikutnya. Anki menyimpan
- * ini sebagai queue khusus, bukan sebagai perubahan jadwal, sehingga interval
- * dan memory state kartu tidak tersentuh.
- */
-export async function buryCardAction(input: { cardId: string }): Promise<ActionResult> {
-  const session = await getSession();
-  if (!session) return { ok: false, message: "Masuk dulu." };
-
-  const parsed = CardActionSchema.safeParse(input);
-  if (!parsed.success) return { ok: false, message: "Kartu tidak valid." };
-
-  const collection = await ensureCollection(session.userId);
-  const nextDay = getFlashcardDayEnd(new Date(), dayContextOf(collection));
-
-  const updated = await prisma.flashcardCard.updateMany({
-    where: { id: BigInt(parsed.data.cardId), userId: session.userId },
-    data: { queue: "BURIED_USER", due: nextDay },
-  });
-  if (updated.count === 0) return { ok: false, message: "Kartu tidak ditemukan." };
-
-  revalidatePath("/flashcard");
-  return { ok: true };
-}
-
-/** Menandai sibling yang di-bury queue builder. Dijalankan sekali per sesi belajar. */
-export async function markBuriedSiblingsAction(input: {
-  cardIds: string[];
-}): Promise<ActionResult> {
-  const session = await getSession();
-  if (!session) return { ok: false, message: "Masuk dulu." };
-
-  const ids = z.array(CardIdSchema).max(2_000).safeParse(input.cardIds);
-  if (!ids.success) return { ok: false, message: "Daftar kartu tidak valid." };
-  if (ids.data.length === 0) return { ok: true };
-
-  const collection = await ensureCollection(session.userId);
-  const nextDay = getFlashcardDayEnd(new Date(), dayContextOf(collection));
-
-  await prisma.flashcardCard.updateMany({
-    where: {
-      id: { in: ids.data.map((value) => BigInt(value)) },
-      userId: session.userId,
-      queue: { notIn: ["SUSPENDED", "BURIED_USER"] },
-    },
-    data: { queue: "BURIED_SIBLING", due: nextDay },
-  });
-
-  return { ok: true };
-}
-
-// --- Undo -------------------------------------------------------------------
-
-/**
- * Undo mengembalikan kartu ke keadaan sebelum review terakhir.
- *
- * Nilai "sebelum" diambil dari revlog itu sendiri (`lastIntervalDays`, stability
- * dan difficulty sebelum review disimpan di baris sebelumnya), sehingga tidak
- * perlu tabel snapshot terpisah.
- */
-export async function undoReviewAction(input: {
-  clientToken: string;
-}): Promise<ActionResult> {
-  const session = await getSession();
-  if (!session) return { ok: false, message: "Masuk dulu." };
-
-  const parsed = z
-    .object({ clientToken: z.string().trim().min(8).max(64) })
-    .safeParse(input);
+  const parsed = z.object({ clientToken: z.string().trim().min(8).max(64) }).safeParse(input);
   if (!parsed.success) return { ok: false, message: "Review tidak valid." };
 
-  // Dicari lewat token yang sama dengan yang dipakai saat menjawab, bukan lewat
-  // id revlog — client tidak pernah melihat id itu.
+  const userId = session.userId;
+  // Dicari lewat token yang sama dengan yang dipakai saat menjawab — client
+  // tidak pernah melihat id revlog.
   const revlog = await prisma.flashcardRevlog.findUnique({
-    where: {
-      userId_clientToken: { userId: session.userId, clientToken: parsed.data.clientToken },
-    },
-    select: { id: true, cardId: true, lastIntervalDays: true, reviewedAt: true },
+    where: { userId_clientToken: { userId, clientToken: parsed.data.clientToken } },
+    select: { id: true, vocabId: true, previousState: true },
   });
   if (!revlog) return { ok: false, message: "Review tidak ditemukan." };
 
-  const previous = await prisma.flashcardRevlog.findFirst({
-    where: { cardId: revlog.cardId, reviewedAt: { lt: revlog.reviewedAt } },
-    orderBy: { reviewedAt: "desc" },
-    select: {
-      reviewedAt: true,
-      intervalDays: true,
-      stability: true,
-      difficulty: true,
-      easeFactor: true,
-    },
+  // Hanya review terakhir sebuah kartu yang boleh dibatalkan; memulihkan
+  // snapshot yang lebih lama akan menghapus review sesudahnya.
+  const latest = await prisma.flashcardRevlog.findFirst({
+    where: { userId, vocabId: revlog.vocabId },
+    orderBy: [{ reviewedAt: "desc" }, { id: "desc" }],
+    select: { id: true },
   });
+  if (latest?.id !== revlog.id) {
+    return { ok: false, message: "Hanya review terakhir kartu ini yang bisa dibatalkan." };
+  }
 
-  const card = await prisma.flashcardCard.findUnique({
-    where: { id: revlog.cardId },
-    select: { reps: true, lapses: true },
-  });
-  if (!card) return { ok: false, message: "Kartu tidak ditemukan." };
+  const key = { userId_vocabId: { userId, vocabId: revlog.vocabId } };
 
-  await prisma.$transaction([
-    prisma.flashcardCard.update({
-      where: { id: revlog.cardId },
-      data: {
-        // Tanpa review sebelumnya, kartu kembali menjadi kartu baru.
-        type: previous ? "REVIEW" : "NEW",
-        queue: previous ? "REVIEW" : "NEW",
-        due: previous
-          ? new Date(previous.reviewedAt.getTime() + previous.intervalDays * 86_400_000)
-          : revlog.reviewedAt,
-        intervalDays: revlog.lastIntervalDays,
-        reps: Math.max(0, card.reps - 1),
-        lapses: card.lapses,
-        learningStep: 0,
-        stability: previous?.stability ?? null,
-        difficulty: previous?.difficulty ?? null,
-        easeFactor: previous?.easeFactor ?? null,
-        lastReviewedAt: previous?.reviewedAt ?? null,
-      },
-    }),
-    prisma.flashcardRevlog.delete({ where: { id: revlog.id } }),
-  ]);
+  if (revlog.previousState === null) {
+    // Kartu baru dibuat oleh review ini; menghapusnya mengembalikan kata ke
+    // status baru. Revlog ikut terhapus lewat cascade.
+    await prisma.flashcardCard.delete({ where: key });
+  } else {
+    const snapshot = CardSnapshotSchema.safeParse(revlog.previousState);
+    if (!snapshot.success) return { ok: false, message: "Riwayat review ini tidak bisa dibatalkan." };
+    const previous = snapshot.data;
+
+    await prisma.$transaction([
+      prisma.flashcardCard.update({
+        where: key,
+        data: {
+          ...previous,
+          due: new Date(previous.due),
+          lastReviewedAt: previous.lastReviewedAt ? new Date(previous.lastReviewedAt) : null,
+          buriedUntil: previous.buriedUntil ? new Date(previous.buriedUntil) : null,
+        },
+      }),
+      prisma.flashcardRevlog.delete({ where: { id: revlog.id } }),
+    ]);
+  }
 
   revalidatePath("/flashcard");
   return { ok: true };
 }
 
-// --- Deck -------------------------------------------------------------------
+// --- Tunda, suspend, reset ---------------------------------------------------
 
-const DeckNameSchema = z
-  .string()
-  .trim()
-  .min(1)
-  .max(500)
-  .refine(
-    (value) => value.split("::").every((segment) => segment.trim().length > 0),
-    "Setiap bagian nama deck (dipisah ::) tidak boleh kosong.",
-  );
+const CardActionSchema = z.object({ vocabId: FlashcardVocabIdSchema });
 
-export async function createDeckAction(input: {
-  name: string;
-  description?: string;
-}): Promise<ActionResult<{ deckId: number }>> {
-  const session = await getSession();
-  if (!session) return { ok: false, message: "Masuk dulu." };
-
-  const parsed = z
-    .object({ name: DeckNameSchema, description: z.string().trim().max(1_000).default("") })
-    .safeParse(input);
-  if (!parsed.success) {
-    return { ok: false, message: parsed.error.issues[0]?.message ?? "Nama deck tidak valid." };
-  }
-
-  await ensureCollection(session.userId);
-  const preset = await prisma.flashcardPreset.findFirst({
-    where: { userId: session.userId },
-    orderBy: { id: "asc" },
-    select: { id: true },
+async function ensureVocab(vocabId: number) {
+  const vocab = await prisma.flashcardVocab.findUnique({
+    where: { id: vocabId },
+    select: { retiredAt: true },
   });
-  if (!preset) return { ok: false, message: "Preset default belum tersedia." };
-
-  const existing = await prisma.flashcardDeck.findUnique({
-    where: { userId_name: { userId: session.userId, name: parsed.data.name } },
-    select: { id: true },
-  });
-  if (existing) return { ok: false, message: "Deck dengan nama itu sudah ada." };
-
-  const deckId = await ensureDeckPath(session.userId, parsed.data.name, preset.id, {
-    description: parsed.data.description,
-    sourceKind: "MANUAL",
-  });
-
-  revalidatePath("/flashcard");
-  return { ok: true, data: { deckId } };
+  return vocab !== null && vocab.retiredAt === null;
 }
 
 /**
- * Rename memindahkan seluruh subtree, karena hierarki diturunkan dari nama.
- * Kalau hanya deck itu sendiri yang diganti, anak-anaknya akan menjadi yatim.
+ * Tunda: kartu disembunyikan sampai batas hari berikutnya. Jadwalnya tidak
+ * disentuh — kartu muncul lagi begitu `buriedUntil` terlewati.
  */
-export async function renameDeckAction(input: {
-  deckId: number;
-  name: string;
+export async function buryCardAction(input: { vocabId: number }): Promise<ActionResult> {
+  const session = await getSession();
+  if (!session) return { ok: false, message: SIGN_IN_MESSAGE };
+
+  const parsed = CardActionSchema.safeParse(input);
+  if (!parsed.success || !(await ensureVocab(parsed.data.vocabId))) {
+    return { ok: false, message: "Kartu tidak valid." };
+  }
+
+  const userId = session.userId;
+  const settings = await getFlashcardSettings(userId);
+  const now = new Date();
+  const buriedUntil = getFlashcardDayEnd(now, settings.day);
+
+  await prisma.flashcardCard.upsert({
+    where: { userId_vocabId: { userId, vocabId: parsed.data.vocabId } },
+    create: { userId, vocabId: parsed.data.vocabId, due: now, buriedUntil },
+    update: { buriedUntil },
+  });
+
+  // Hanya beranda: me-revalidate layout ikut me-render ulang halaman belajar,
+  // yang akan membangun antrean baru dan mereset sesi yang sedang berjalan.
+  // Halaman lain yang memanggil aksi ini me-refresh dirinya sendiri.
+  revalidatePath("/flashcard");
+  return { ok: true };
+}
+
+export async function setCardSuspendedAction(input: {
+  vocabId: number;
+  suspended: boolean;
+}): Promise<ActionResult> {
+  const session = await getSession();
+  if (!session) return { ok: false, message: SIGN_IN_MESSAGE };
+
+  const parsed = CardActionSchema.extend({ suspended: z.boolean() }).safeParse(input);
+  if (!parsed.success || !(await ensureVocab(parsed.data.vocabId))) {
+    return { ok: false, message: "Kartu tidak valid." };
+  }
+
+  const userId = session.userId;
+  const { vocabId, suspended } = parsed.data;
+  if (suspended) {
+    await prisma.flashcardCard.upsert({
+      where: { userId_vocabId: { userId, vocabId } },
+      create: { userId, vocabId, due: new Date(), isSuspended: true },
+      update: { isSuspended: true },
+    });
+  } else {
+    await prisma.flashcardCard.updateMany({
+      where: { userId, vocabId },
+      data: { isSuspended: false },
+    });
+  }
+
+  // Lihat catatan di buryCardAction.
+  revalidatePath("/flashcard");
+  return { ok: true };
+}
+
+/**
+ * Reset ke kartu baru (Forget di Anki). Riwayat review dipertahankan supaya
+ * statistik tetap jujur; hanya jadwal dan memory state yang dikosongkan.
+ */
+export async function resetCardAction(input: { vocabId: number }): Promise<ActionResult> {
+  const session = await getSession();
+  if (!session) return { ok: false, message: SIGN_IN_MESSAGE };
+
+  const parsed = CardActionSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, message: "Kartu tidak valid." };
+
+  const fresh = createNewCardState(new Date());
+  await prisma.flashcardCard.updateMany({
+    where: { userId: session.userId, vocabId: parsed.data.vocabId },
+    data: {
+      type: fresh.type,
+      queue: fresh.queue,
+      due: fresh.due,
+      intervalDays: 0,
+      reps: 0,
+      lapses: 0,
+      learningStep: 0,
+      stability: null,
+      difficulty: null,
+      desiredRetention: null,
+      easeFactor: null,
+      lastReviewedAt: null,
+      buriedUntil: null,
+      isLeech: false,
+    },
+  });
+
+  revalidatePath("/flashcard", "layout");
+  return { ok: true };
+}
+
+// --- Deck ---------------------------------------------------------------------
+
+const DeckActionSchema = z.object({ slug: FlashcardDeckSlugSchema });
+
+/**
+ * Menambahkan deck bawaan ke daftar belajar. Tidak ada yang disalin: kartu
+ * baru muncul langsung dari katalog, dan kata yang sudah dipelajari dari deck
+ * lain membawa progresnya.
+ */
+export async function subscribeDeckAction(input: { slug: string }): Promise<ActionResult> {
+  const session = await getSession();
+  if (!session) return { ok: false, message: "Masuk dulu untuk menambahkan deck." };
+
+  const parsed = DeckActionSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, message: "Deck tidak valid." };
+
+  const deck = await prisma.flashcardDeck.findFirst({
+    where: { slug: parsed.data.slug, isPublished: true },
+    select: { id: true },
+  });
+  if (!deck) return { ok: false, message: "Deck tidak ditemukan." };
+
+  await prisma.flashcardDeckSubscription.upsert({
+    where: { userId_deckId: { userId: session.userId, deckId: deck.id } },
+    create: { userId: session.userId, deckId: deck.id },
+    update: {},
+  });
+
+  revalidatePath("/flashcard", "layout");
+  return { ok: true };
+}
+
+/** Melepas deck dari daftar belajar. Progres kartunya tetap tersimpan. */
+export async function unsubscribeDeckAction(input: { slug: string }): Promise<ActionResult> {
+  const session = await getSession();
+  if (!session) return { ok: false, message: "Masuk dulu." };
+
+  const parsed = DeckActionSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, message: "Deck tidak valid." };
+
+  await prisma.flashcardDeckSubscription.deleteMany({
+    where: { userId: session.userId, deck: { slug: parsed.data.slug } },
+  });
+
+  revalidatePath("/flashcard", "layout");
+  return { ok: true };
+}
+
+// --- Pengaturan ---------------------------------------------------------------
+
+const SaveSettingsSchema = z.object({
+  config: FlashcardConfigSchema,
+  display: FlashcardDisplaySchema,
+});
+
+export async function saveFlashcardSettingsAction(input: {
+  config: unknown;
+  display: unknown;
 }): Promise<ActionResult> {
   const session = await getSession();
   if (!session) return { ok: false, message: "Masuk dulu." };
 
-  const parsed = z
-    .object({ deckId: z.number().int().positive(), name: DeckNameSchema })
-    .safeParse(input);
+  const parsed = SaveSettingsSchema.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, message: parsed.error.issues[0]?.message ?? "Nama deck tidak valid." };
+    return { ok: false, message: parsed.error.issues[0]?.message ?? "Pengaturan tidak valid." };
   }
 
-  const deck = await prisma.flashcardDeck.findFirst({
-    where: { id: parsed.data.deckId, userId: session.userId },
-    select: { id: true, name: true },
-  });
-  if (!deck) return { ok: false, message: "Deck tidak ditemukan." };
-  if (deck.name === parsed.data.name) return { ok: true };
-
-  const descendants = await prisma.flashcardDeck.findMany({
-    where: { userId: session.userId, name: { startsWith: `${deck.name}::` } },
-    select: { id: true, name: true },
+  const config = parsed.data.config as unknown as Prisma.InputJsonValue;
+  const display = parsed.data.display as unknown as Prisma.InputJsonValue;
+  await prisma.flashcardCollection.upsert({
+    where: { userId: session.userId },
+    create: { userId: session.userId, config, display },
+    update: { config, display },
   });
 
-  const renames = [
-    prisma.flashcardDeck.update({
-      where: { id: deck.id },
-      data: { name: parsed.data.name },
-    }),
-    ...descendants.map((child) =>
-      prisma.flashcardDeck.update({
-        where: { id: child.id },
-        data: { name: `${parsed.data.name}${child.name.slice(deck.name.length)}` },
-      }),
-    ),
-  ];
-
-  try {
-    await prisma.$transaction(renames);
-  } catch (error) {
-    if (isUniqueViolation(error)) {
-      return { ok: false, message: "Nama itu bentrok dengan deck yang sudah ada." };
-    }
-    throw error;
-  }
-
-  revalidatePath("/flashcard");
+  revalidatePath("/flashcard", "layout");
   return { ok: true };
-}
-
-export async function deleteDeckAction(input: {
-  deckId: number;
-}): Promise<ActionResult<{ deletedDecks: number }>> {
-  const session = await getSession();
-  if (!session) return { ok: false, message: "Masuk dulu." };
-
-  const parsed = z.object({ deckId: z.number().int().positive() }).safeParse(input);
-  if (!parsed.success) return { ok: false, message: "Deck tidak valid." };
-
-  const deck = await prisma.flashcardDeck.findFirst({
-    where: { id: parsed.data.deckId, userId: session.userId },
-    select: { id: true, name: true },
-  });
-  if (!deck) return { ok: false, message: "Deck tidak ditemukan." };
-
-  // Menghapus deck ikut menghapus kartunya (cascade), tapi note-nya sengaja
-  // dibiarkan: note bisa punya kartu di deck lain.
-  const deleted = await prisma.flashcardDeck.deleteMany({
-    where: {
-      userId: session.userId,
-      OR: [{ id: deck.id }, { name: { startsWith: `${deck.name}::` } }],
-    },
-  });
-
-  revalidatePath("/flashcard");
-  return { ok: true, data: { deletedDecks: deleted.count } };
 }

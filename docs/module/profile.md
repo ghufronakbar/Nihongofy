@@ -21,7 +21,8 @@ Profile tidak punya flag sendiri. Section "Aktivitas belajar" dan "Lanjut belaja
 - `/profile/info`
 - `/profile/security`
 - `/profile/privacy`
-- `/flashcard-settings` sebagai pengaturan belajar mandiri di sidebar.
+- `/flashcard/settings` sebagai pengaturan flashcard mandiri, di luar profile (lihat
+  [Flashcard](flashcard.md)).
 - `/profile/auth` sebagai redirect kompatibilitas ke security.
 
 ## Fitur Aktif
@@ -38,7 +39,8 @@ Profile tidak punya flag sendiri. Section "Aktivitas belajar" dan "Lanjut belaja
 - Lihat status koneksi Google, hubungkan identity dengan email yang sama, atau putuskan koneksi
   setelah verifikasi password agar akun tidak terkunci.
 - Daftar perangkat aktif, revoke satu perangkat, dan logout seluruh perangkat lain.
-- Edit/reset preferensi scheduler flashcard melalui route mandiri di luar profile.
+- Pengaturan flashcard (ukuran teks, furigana, penjadwalan) ada di `/flashcard/settings`, di luar
+  profile.
 - Privacy opt-in terpisah untuk penyimpanan audio dan conversation; default keduanya nonaktif.
   Toggle audio hanya tampil bila `FEATURES_SPEAKING` aktif, toggle conversation bila
   `FEATURES_CONVERSATION` aktif, dan seluruh box "Izin penyimpanan AI" hilang bila keduanya mati.
@@ -56,12 +58,12 @@ Profile tidak punya flag sendiri. Section "Aktivitas belajar" dan "Lanjut belaja
 - Account dan overview dicache per user.
 - Update profile menginvalidasi account/timezone cache dan layout dashboard.
 - Aktivitas kana, vocabulary, practice, dan exam menginvalidasi overview cache.
-- Flashcard settings memiliki cache/tag per user.
+- Pengaturan flashcard dibaca langsung dari `FlashcardCollection` tanpa cache tag.
 
 ## Definisi Statistik Profile
 
 - Kana dipelajari: stable kana key dengan minimal satu jawaban benar.
-- Vocabulary dimulai: flashcard unik yang sudah memiliki progress.
+- Kartu dipelajari: kata flashcard dengan minimal satu review (`FlashcardCard.reps > 0`).
 - Latihan cepat selesai: `PracticeSession.status = COMPLETED`.
 - Latihan seksi selesai: `Attempt.status = COMPLETED` dan `sectionScope IS NOT NULL`.
 - Mock JLPT selesai: `Attempt.status = COMPLETED` dan `sectionScope IS NULL`.

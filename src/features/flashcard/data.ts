@@ -1,309 +1,582 @@
 import "server-only";
 import { cache } from "react";
+import { Prisma, type FlashcardCardQueue, type FlashcardCardType } from "@prisma/client";
+import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import {
-  buildDeckTree,
-  collectSubtreeDeckIds,
-  deckAncestorNames,
-  flattenDeckTree,
-  isDeckInSubtree,
-  type DeckTreeNode,
-} from "./lib/deck-tree";
-import {
-  budgetFromAncestors,
-  buildQueue,
-  computeDeckBudgets,
-  UNLIMITED_BUDGET,
-  type DeckLimitNode,
-  type QueueCandidate,
-} from "./lib/queue";
-import { dayContextOf, ensureCollection, ensureDefaultPreset } from "./lib/collection";
-import { renderCard } from "./lib/render/card-content";
+import { getFlashcardSettings, type FlashcardSettings } from "./lib/collection";
+import { buildQueue, insertionPosition, LEARN_AHEAD_MS, type QueueCandidate } from "./lib/queue";
+import { formatIntervalLabel } from "./lib/preview-interval";
+import { createNewCardState, previewSchedule, type SchedulerCardState } from "./lib/scheduler";
 import { getFlashcardDayRange } from "./lib/scheduler/day";
-import { parsePresetConfig, type FlashcardPresetConfig } from "./schemas";
+import { FLASHCARD_RATINGS } from "./lib/scheduler/types";
+import { describeTags, FLASHCARD_DECK_MIN_NOTES } from "./taxonomy";
+import type {
+  DeckDueCounts,
+  DeckKind,
+  DeckSummary,
+  DeckWord,
+  DeckWordStatus,
+  PendingLearningCard,
+  PreviewLabels,
+  ReviewerCard,
+  VocabCardContent,
+} from "./types";
 
-export type FlashcardDeckSummary = {
+/**
+ * Query flashcard. Satu kata = satu kartu per user, dan deck hanyalah tag:
+ * kata termasuk deck bila `FlashcardVocab.tags` memuat slug deck itu. Karena
+ * itu hampir semua hitungan ditulis sebagai SQL mentah — relasi "deck memuat
+ * kata" tidak bisa diekspresikan Prisma tanpa memuat seluruh katalog ke memori.
+ */
+
+/** Sesi belajar dikirim ke client per potongan supaya payload tetap kecil. */
+const STUDY_BATCH_SIZE = 200;
+const WORDS_PAGE_SIZE = 50;
+const TRY_CARD_LIMIT = 20;
+
+/** Timestamp untuk kolom `timestamp(3)` yang disimpan Prisma dalam UTC. */
+function utc(date: Date) {
+  return Prisma.sql`(${date.toISOString()}::timestamptz AT TIME ZONE 'UTC')`;
+}
+
+/** Kartu yang tidak sedang di-suspend maupun ditunda. */
+function available(now: Date) {
+  return Prisma.sql`(NOT c."isSuspended" AND (c."buriedUntil" IS NULL OR c."buriedUntil" <= ${utc(now)}))`;
+}
+
+const ExamplesSchema = z
+  .array(z.object({ jp: z.string(), id: z.string(), en: z.string() }))
+  .catch([]);
+
+type VocabContentRow = {
+  level: string;
+  word: string;
+  wordPlain: string;
+  reading: string;
+  meaningsId: string[];
+  meaningsEn: string[];
+  examples: unknown;
+  notes: string;
+  tags: string[];
+};
+
+const VOCAB_CONTENT_SELECT = {
+  id: true,
+  level: true,
+  word: true,
+  wordPlain: true,
+  reading: true,
+  meaningsId: true,
+  meaningsEn: true,
+  examples: true,
+  notes: true,
+  tags: true,
+} as const;
+
+function toCardContent(row: VocabContentRow): VocabCardContent {
+  return {
+    level: row.level,
+    word: row.word,
+    wordPlain: row.wordPlain,
+    reading: row.reading,
+    meaningsId: row.meaningsId,
+    meaningsEn: row.meaningsEn,
+    examples: ExamplesSchema.parse(row.examples),
+    notes: row.notes,
+    tags: describeTags(row.tags),
+  };
+}
+
+/**
+ * Label interval untuk keempat tombol. Dihitung server supaya client tidak
+ * perlu memuat ts-fsrs. Fuzz membuat angka ini bisa meleset beberapa persen
+ * dari hasil akhir — perilaku yang sama dengan Anki.
+ */
+export function buildPreviewLabels(
+  state: SchedulerCardState,
+  now: Date,
+  settings: Pick<FlashcardSettings, "config" | "day">,
+): PreviewLabels {
+  const preview = previewSchedule({ card: state, now, config: settings.config, day: settings.day });
+  return Object.fromEntries(
+    FLASHCARD_RATINGS.map((rating) => [rating, formatIntervalLabel(now, preview[rating].card.due)]),
+  ) as PreviewLabels;
+}
+
+// ---------------------------------------------------------------------------
+// Katalog
+// ---------------------------------------------------------------------------
+
+type DeckRow = {
   id: number;
+  slug: string;
+  kind: DeckKind;
   name: string;
+  nameJa: string;
   description: string;
-  presetId: number;
-  presetName: string;
-  sourceKind: "SYSTEM" | "IMPORTED" | "MANUAL";
-  /** Hitungan untuk deck ini saja; roll-up subtree dilakukan di UI lewat pohon. */
+  wordCount: number;
+};
+
+/**
+ * Deck bawaan yang tampil. Deck dengan kata kurang dari batas minimum taxonomy
+ * disembunyikan — biasanya karena kata-katanya belum selesai digenerate.
+ */
+export const getDeckCatalog = cache(async (): Promise<DeckSummary[]> => {
+  const rows = await prisma.$queryRaw<DeckRow[]>`
+    SELECT d.id, d.slug, d.kind::text AS kind, d.name, d."nameJa", d.description,
+      (
+        SELECT count(*)::int FROM "FlashcardVocab" v
+        WHERE v.tags @> ARRAY[d.slug]::text[] AND v."retiredAt" IS NULL
+      ) AS "wordCount"
+    FROM "FlashcardDeck" d
+    WHERE d."isPublished"
+    ORDER BY d."order" ASC
+  `;
+  return rows.filter((row) => row.wordCount >= FLASHCARD_DECK_MIN_NOTES);
+});
+
+export async function getCatalogDeck(slug: string): Promise<DeckSummary | null> {
+  const catalog = await getDeckCatalog();
+  return catalog.find((deck) => deck.slug === slug) ?? null;
+}
+
+// ---------------------------------------------------------------------------
+// Hitungan harian
+// ---------------------------------------------------------------------------
+
+export type DailyAllowance = {
+  newStudiedToday: number;
+  reviewsToday: number;
+  newLeft: number;
+  reviewLeft: number;
+};
+
+/** Sisa jatah hari ini. Batas berlaku untuk semua deck sekaligus. */
+async function getDailyAllowance(
+  userId: number,
+  settings: FlashcardSettings,
+  now: Date,
+): Promise<DailyAllowance> {
+  const { start, endExclusive } = getFlashcardDayRange(now, settings.day);
+  const today = { gte: start, lt: endExclusive };
+  const [newStudiedToday, reviewsToday] = await Promise.all([
+    prisma.flashcardRevlog.count({ where: { userId, wasNew: true, reviewedAt: today } }),
+    prisma.flashcardRevlog.count({ where: { userId, kind: "REVIEW", reviewedAt: today } }),
+  ]);
+
+  return {
+    newStudiedToday,
+    reviewsToday,
+    newLeft: Math.max(0, settings.config.newCardsPerDay - newStudiedToday),
+    reviewLeft: Math.max(0, settings.config.maxReviewsPerDay - reviewsToday),
+  };
+}
+
+type ProgressRow = {
+  slug: string;
   newCount: number;
-  learningCount: number;
+  learningNow: number;
+  learningLater: number;
   reviewCount: number;
 };
 
-/**
- * Semua deck user beserta preset dan hitungan due-nya.
- *
- * Sengaja satu query agregat, bukan per deck: jumlah deck bisa ratusan setelah
- * import, dan N+1 di sini akan langsung terasa.
- */
-export const getDeckOverview = cache(async (userId: number) => {
-  const collection = await ensureCollection(userId);
-  await ensureDefaultPreset(userId);
+async function countDeckProgress(userId: number, slugs: string[], now: Date, dayEnd: Date) {
+  if (slugs.length === 0) return new Map<string, ProgressRow>();
 
-  const day = dayContextOf(collection);
-  const now = new Date();
-  const { start: dayStart, endExclusive: dayEnd } = getFlashcardDayRange(now, day);
+  const cutoff = new Date(now.getTime() + LEARN_AHEAD_MS);
+  const rows = await prisma.$queryRaw<ProgressRow[]>`
+    SELECT d.slug,
+      count(*) FILTER (
+        WHERE c."vocabId" IS NULL OR (c.queue = 'NEW' AND ${available(now)})
+      )::int AS "newCount",
+      count(*) FILTER (
+        WHERE ${available(now)} AND (
+          (c.queue = 'LEARNING' AND c.due <= ${utc(cutoff)})
+          OR (c.queue = 'DAY_LEARN' AND c.due < ${utc(dayEnd)})
+        )
+      )::int AS "learningNow",
+      count(*) FILTER (
+        WHERE ${available(now)} AND c.queue = 'LEARNING'
+          AND c.due > ${utc(cutoff)} AND c.due < ${utc(dayEnd)}
+      )::int AS "learningLater",
+      count(*) FILTER (
+        WHERE ${available(now)} AND c.queue = 'REVIEW' AND c.due < ${utc(dayEnd)}
+      )::int AS "reviewCount"
+    FROM "FlashcardDeck" d
+    JOIN "FlashcardVocab" v ON v.tags @> ARRAY[d.slug]::text[] AND v."retiredAt" IS NULL
+    LEFT JOIN "FlashcardCard" c ON c."vocabId" = v.id AND c."userId" = ${userId}
+    WHERE d.slug = ANY(${slugs}::text[])
+    GROUP BY d.slug
+  `;
+  return new Map(rows.map((row) => [row.slug, row]));
+}
 
-  const [decks, cardCounts, studiedToday] = await Promise.all([
-    prisma.flashcardDeck.findMany({
+/** Hitungan yang ditampilkan: kartu jatuh tempo dipotong sisa jatah hari ini. */
+function toDueCounts(
+  progress: ProgressRow | undefined,
+  allowance: DailyAllowance,
+  settings: FlashcardSettings,
+): DeckDueCounts {
+  const reviewCount = Math.min(progress?.reviewCount ?? 0, allowance.reviewLeft);
+  const newCap = settings.config.newCardsIgnoreReviewLimit
+    ? allowance.newLeft
+    : Math.min(allowance.newLeft, Math.max(0, allowance.reviewLeft - reviewCount));
+  return {
+    newCount: Math.min(progress?.newCount ?? 0, newCap),
+    learningCount: progress?.learningNow ?? 0,
+    reviewCount,
+    learningLaterCount: progress?.learningLater ?? 0,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Deck milik user
+// ---------------------------------------------------------------------------
+
+export type MyDeck = DeckSummary & { due: DeckDueCounts };
+
+export async function getMyDecks(userId: number) {
+  const [settings, catalog, subscriptions] = await Promise.all([
+    getFlashcardSettings(userId),
+    getDeckCatalog(),
+    prisma.flashcardDeckSubscription.findMany({
       where: { userId },
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        presetId: true,
-        sourceKind: true,
-        preset: { select: { name: true, config: true } },
-      },
-    }),
-    prisma.flashcardCard.groupBy({
-      by: ["deckId", "queue"],
-      where: {
-        userId,
-        OR: [{ queue: "NEW" }, { due: { lt: dayEnd } }],
-      },
-      _count: { _all: true },
-    }),
-    prisma.flashcardRevlog.groupBy({
-      by: ["deckId", "kind"],
-      where: { userId, reviewedAt: { gte: dayStart, lt: dayEnd } },
-      _count: { _all: true },
+      select: { deckId: true },
     }),
   ]);
 
-  const countOf = (deckId: number, queues: string[]) =>
-    cardCounts
-      .filter((row) => row.deckId === deckId && queues.includes(row.queue))
-      .reduce((total, row) => total + row._count._all, 0);
+  const subscribed = new Set(subscriptions.map((row) => row.deckId));
+  const decks = catalog.filter((deck) => subscribed.has(deck.id));
 
-  const summaries: FlashcardDeckSummary[] = decks.map((deck) => ({
-    id: deck.id,
-    name: deck.name,
-    description: deck.description,
-    presetId: deck.presetId,
-    presetName: deck.preset.name,
-    sourceKind: deck.sourceKind,
-    newCount: countOf(deck.id, ["NEW"]),
-    learningCount: countOf(deck.id, ["LEARNING", "DAY_LEARN"]),
-    reviewCount: countOf(deck.id, ["REVIEW"]),
-  }));
-
-  const configByDeck = new Map<number, FlashcardPresetConfig>(
-    decks.map((deck) => [deck.id, parsePresetConfig(deck.preset.config)]),
-  );
-
-  // `LEARN` tidak dihitung sebagai "kartu baru hari ini" — satu kartu baru bisa
-  // menghasilkan beberapa revlog LEARN saat melewati learning steps.
-  const studiedNewByDeck = new Map<number, number>();
-  const studiedReviewByDeck = new Map<number, number>();
-  for (const row of studiedToday) {
-    const target = row.kind === "REVIEW" ? studiedReviewByDeck : studiedNewByDeck;
-    if (row.kind === "RELEARN" || row.kind === "LEARN" || row.kind === "REVIEW") {
-      target.set(row.deckId, (target.get(row.deckId) ?? 0) + row._count._all);
-    }
-  }
+  const now = new Date();
+  const { endExclusive: dayEnd } = getFlashcardDayRange(now, settings.day);
+  const [allowance, progress] = await Promise.all([
+    getDailyAllowance(userId, settings, now),
+    countDeckProgress(userId, decks.map((deck) => deck.slug), now, dayEnd),
+  ]);
 
   return {
-    collection,
-    day,
-    now,
-    decks: summaries,
-    tree: buildDeckTree(summaries),
-    configByDeck,
-    studiedNewByDeck,
-    studiedReviewByDeck,
+    settings,
+    allowance,
+    subscribedIds: subscribed,
+    decks: decks.map(
+      (deck): MyDeck => ({ ...deck, due: toDueCounts(progress.get(deck.slug), allowance, settings) }),
+    ),
   };
-});
-
-export type DeckOverview = Awaited<ReturnType<typeof getDeckOverview>>;
-
-/** Hitungan deck termasuk seluruh subdeck-nya, seperti yang ditampilkan Anki. */
-export function rollUpCounts(node: DeckTreeNode<FlashcardDeckSummary>) {
-  return flattenDeckTree([node]).reduce(
-    (total, current) => ({
-      newCount: total.newCount + current.deck.newCount,
-      learningCount: total.learningCount + current.deck.learningCount,
-      reviewCount: total.reviewCount + current.deck.reviewCount,
-    }),
-    { newCount: 0, learningCount: 0, reviewCount: 0 },
-  );
 }
 
-function toLimitTree(
-  overview: DeckOverview,
-  rootName: string,
-): DeckLimitNode | null {
-  const subtree = overview.decks.filter((deck) => isDeckInSubtree(deck.name, rootName));
-  const nodes = new Map<number, DeckLimitNode>(
-    subtree.map((deck) => [
-      deck.id,
-      {
-        deckId: deck.id,
-        config: overview.configByDeck.get(deck.id)!,
-        studiedNewToday: overview.studiedNewByDeck.get(deck.id) ?? 0,
-        studiedReviewsToday: overview.studiedReviewByDeck.get(deck.id) ?? 0,
-        children: [],
-      },
-    ]),
-  );
-
-  const byName = new Map(subtree.map((deck) => [deck.name, deck]));
-  let root: DeckLimitNode | null = null;
-
-  for (const deck of subtree) {
-    const node = nodes.get(deck.id)!;
-    if (deck.name === rootName) {
-      root = node;
-      continue;
-    }
-    const parentName = deck.name.slice(0, deck.name.lastIndexOf("::"));
-    const parent = byName.get(parentName);
-    // Deck yatim digantung langsung ke root supaya kartunya tetap bisa dipelajari.
-    const parentNode = parent ? nodes.get(parent.id) : nodes.get(byName.get(rootName)!.id);
-    parentNode?.children.push(node);
-  }
-
-  return root;
-}
-
-export type StudyCard = {
-  cardId: string;
-  noteId: string;
-  deckId: number;
-  deckName: string;
-  ord: number;
-  content: ReturnType<typeof renderCard>;
-  state: QueueCandidate;
-};
-
-/**
- * Antrean belajar untuk satu deck beserta subdeck-nya.
- *
- * Dibangun sekali lalu dikirim utuh ke reviewer client. Modul lama membangun
- * queue saat server render per kartu, sehingga kartu ber-rating `Again` tidak
- * pernah kembali tanpa reload.
- */
-export async function getStudyQueue(userId: number, deckId: number) {
-  const overview = await getDeckOverview(userId);
-  const deck = overview.decks.find((item) => item.id === deckId);
+export async function getDeckForUser(userId: number, slug: string) {
+  const deck = await getCatalogDeck(slug);
   if (!deck) return null;
 
-  const subtreeIds = collectSubtreeDeckIds(overview.decks, deck.name);
-  const config = overview.configByDeck.get(deck.id)!;
+  const [settings, subscription] = await Promise.all([
+    getFlashcardSettings(userId),
+    prisma.flashcardDeckSubscription.findUnique({
+      where: { userId_deckId: { userId, deckId: deck.id } },
+      select: { createdAt: true },
+    }),
+  ]);
 
-  const limitRoot = toLimitTree(overview, deck.name);
-  if (!limitRoot) return null;
-
-  const ancestorBudget = config.limitsStartFromTop
-    ? budgetFromAncestors(
-        deckAncestorNames(deck.name)
-          .map((name) => overview.decks.find((item) => item.name === name))
-          .filter((item): item is FlashcardDeckSummary => item !== undefined)
-          .map((item) => ({
-            config: overview.configByDeck.get(item.id)!,
-            studiedNewToday: overview.studiedNewByDeck.get(item.id) ?? 0,
-            studiedReviewsToday: overview.studiedReviewByDeck.get(item.id) ?? 0,
-          })),
-      )
-    : UNLIMITED_BUDGET;
-
-  const plan = computeDeckBudgets(limitRoot, ancestorBudget);
-
-  const { endExclusive: dayEnd } = getFlashcardDayRange(overview.now, overview.day);
-  const rows = await prisma.flashcardCard.findMany({
-    where: {
-      userId,
-      deckId: { in: subtreeIds },
-      queue: { notIn: ["SUSPENDED", "BURIED_USER", "BURIED_SIBLING"] },
-      OR: [{ queue: "NEW" }, { due: { lt: dayEnd } }],
-    },
-    select: {
-      id: true,
-      noteId: true,
-      deckId: true,
-      ord: true,
-      type: true,
-      queue: true,
-      due: true,
-      position: true,
-      intervalDays: true,
-      easeFactor: true,
-      stability: true,
-      difficulty: true,
-      lastReviewedAt: true,
-      reps: true,
-      lapses: true,
-      learningStep: true,
-      note: { select: { noteType: true, fields: true } },
-      deck: { select: { name: true } },
-    },
-    // Batas aman: queue harian tidak akan sebesar ini, tapi deck hasil import
-    // bisa berisi puluhan ribu kartu baru.
-    take: 2_000,
-  });
-
-  const candidates: QueueCandidate[] = rows.map((row) => ({
-    cardId: row.id.toString(),
-    noteId: row.noteId.toString(),
-    deckId: row.deckId,
-    ord: row.ord,
-    type: row.type,
-    queue: row.queue,
-    due: row.due,
-    position: row.position,
-    intervalDays: row.intervalDays,
-    easeFactor: row.easeFactor,
-    stability: row.stability,
-    difficulty: row.difficulty,
-    lastReviewedAt: row.lastReviewedAt,
-    reps: row.reps,
-    lapses: row.lapses,
-    learningStep: row.learningStep,
-  }));
-
-  const deckOrder = new Map(
-    overview.decks
-      .filter((item) => subtreeIds.includes(item.id))
-      .sort((left, right) => left.name.localeCompare(right.name))
-      .map((item, index) => [item.id, index] as const),
-  );
-
-  const built = buildQueue({
-    candidates,
-    plan,
-    config,
-    now: overview.now,
-    day: overview.day,
-    deckOrder,
-  });
-
-  const rowById = new Map(rows.map((row) => [row.id.toString(), row]));
-  const cards: StudyCard[] = built.queue.map((entry) => {
-    const row = rowById.get(entry.cardId)!;
-    return {
-      cardId: entry.cardId,
-      noteId: entry.noteId,
-      deckId: entry.deckId,
-      deckName: row.deck.name,
-      ord: entry.ord,
-      content: renderCard(row.note.noteType, row.note.fields, entry.ord),
-      state: entry,
-    };
-  });
+  const now = new Date();
+  const { endExclusive: dayEnd } = getFlashcardDayRange(now, settings.day);
+  const [allowance, progress] = await Promise.all([
+    getDailyAllowance(userId, settings, now),
+    countDeckProgress(userId, [deck.slug], now, dayEnd),
+  ]);
 
   return {
     deck,
-    config,
-    day: overview.day,
-    counts: built.counts,
-    buriedCardIds: built.buried.map((entry) => entry.cardId),
-    cards,
+    subscribed: subscription !== null,
+    allowance,
+    due: toDueCounts(progress.get(deck.slug), allowance, settings),
   };
 }
 
-export type StudyQueue = NonNullable<Awaited<ReturnType<typeof getStudyQueue>>>;
+// ---------------------------------------------------------------------------
+// Daftar kata (read-only)
+// ---------------------------------------------------------------------------
+
+export const DECK_WORD_STATUSES = ["all", "new", "learning", "review", "suspended"] as const;
+export type DeckWordFilter = (typeof DECK_WORD_STATUSES)[number];
+
+type WordRow = {
+  id: number;
+  level: string;
+  word: string;
+  wordPlain: string;
+  reading: string;
+  meaningsId: string[];
+  type: FlashcardCardType | null;
+  isSuspended: boolean | null;
+  buriedUntil: Date | null;
+  isLeech: boolean | null;
+  due: Date | null;
+  intervalDays: number | null;
+};
+
+function statusFilter(status: DeckWordFilter) {
+  switch (status) {
+    case "new":
+      return Prisma.sql`AND (c."vocabId" IS NULL OR (c.type = 'NEW' AND NOT c."isSuspended"))`;
+    case "learning":
+      return Prisma.sql`AND c.type IN ('LEARNING', 'RELEARNING') AND NOT c."isSuspended"`;
+    case "review":
+      return Prisma.sql`AND c.type = 'REVIEW' AND NOT c."isSuspended"`;
+    case "suspended":
+      return Prisma.sql`AND c."isSuspended"`;
+    default:
+      return Prisma.empty;
+  }
+}
+
+function wordStatus(row: WordRow): DeckWordStatus {
+  if (row.isSuspended) return "suspended";
+  if (row.type === "REVIEW") return "review";
+  if (row.type === "LEARNING" || row.type === "RELEARNING") return "learning";
+  return "new";
+}
+
+export async function getDeckWords(
+  userId: number,
+  slug: string,
+  filters: { query: string; status: DeckWordFilter; page: number },
+) {
+  const now = new Date();
+  const query = filters.query.trim().slice(0, 50);
+  const pattern = `%${query.replace(/[\\%_]/g, (char) => `\\${char}`)}%`;
+  const search = query
+    ? Prisma.sql`AND (
+        v."wordPlain" ILIKE ${pattern} OR v.reading ILIKE ${pattern}
+        OR array_to_string(v."meaningsId", ' ') ILIKE ${pattern}
+        OR array_to_string(v."meaningsEn", ' ') ILIKE ${pattern}
+      )`
+    : Prisma.empty;
+
+  const base = Prisma.sql`
+    FROM "FlashcardVocab" v
+    LEFT JOIN "FlashcardCard" c ON c."vocabId" = v.id AND c."userId" = ${userId}
+    WHERE v.tags @> ARRAY[${slug}]::text[] AND v."retiredAt" IS NULL
+    ${search}
+    ${statusFilter(filters.status)}
+  `;
+
+  const page = Math.max(1, filters.page);
+  const [rows, totals] = await Promise.all([
+    prisma.$queryRaw<WordRow[]>`
+      SELECT v.id, v.level::text AS level, v.word, v."wordPlain", v.reading, v."meaningsId",
+        c.type, c."isSuspended", c."buriedUntil", c."isLeech", c.due, c."intervalDays"
+      ${base}
+      ORDER BY v.level ASC, v."order" ASC
+      LIMIT ${WORDS_PAGE_SIZE} OFFSET ${(page - 1) * WORDS_PAGE_SIZE}
+    `,
+    prisma.$queryRaw<{ total: number }[]>`SELECT count(*)::int AS total ${base}`,
+  ]);
+
+  const total = totals[0]?.total ?? 0;
+  const words: DeckWord[] = rows.map((row) => ({
+    vocabId: row.id,
+    level: row.level,
+    wordPlain: row.wordPlain,
+    word: row.word,
+    reading: row.reading,
+    meaningsId: row.meaningsId,
+    status: wordStatus(row),
+    isBuried: row.buriedUntil !== null && row.buriedUntil.getTime() > now.getTime(),
+    isLeech: row.isLeech ?? false,
+    hasCard: row.type !== null,
+    due: row.type && row.type !== "NEW" && row.due ? row.due.toISOString() : null,
+    intervalDays: row.intervalDays ?? 0,
+  }));
+
+  return {
+    words,
+    total,
+    page,
+    pageCount: Math.max(1, Math.ceil(total / WORDS_PAGE_SIZE)),
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Sesi belajar
+// ---------------------------------------------------------------------------
+
+type DueRow = {
+  vocabId: number;
+  type: FlashcardCardType;
+  queue: FlashcardCardQueue;
+  due: Date;
+  intervalDays: number;
+  easeFactor: number | null;
+  stability: number | null;
+  difficulty: number | null;
+  lastReviewedAt: Date | null;
+  reps: number;
+  lapses: number;
+  learningStep: number;
+};
+
+type NewRow = {
+  id: number;
+  level: string;
+  order: number;
+};
+
+function toSchedulerState(candidate: QueueCandidate): SchedulerCardState {
+  return {
+    type: candidate.type,
+    queue: candidate.queue,
+    due: candidate.due,
+    intervalDays: candidate.intervalDays,
+    reps: candidate.reps,
+    lapses: candidate.lapses,
+    learningStep: candidate.learningStep,
+    stability: candidate.stability,
+    difficulty: candidate.difficulty,
+    desiredRetention: null,
+    easeFactor: candidate.easeFactor,
+    lastReviewedAt: candidate.lastReviewedAt,
+  };
+}
+
+/**
+ * Antrean belajar satu deck, dibangun sekali lalu dikirim ke reviewer client.
+ * Kartu learning yang jatuh tempo nanti hari ini ikut dikirim terpisah supaya
+ * reviewer bisa menampilkannya tepat waktu dalam sesi yang sama.
+ */
+export async function getStudySession(userId: number, slug: string) {
+  const access = await getDeckForUser(userId, slug);
+  if (!access || !access.subscribed) return access ? { deck: access.deck, subscribed: false as const } : null;
+
+  const settings = await getFlashcardSettings(userId);
+  const now = new Date();
+  const { endExclusive: dayEnd } = getFlashcardDayRange(now, settings.day);
+
+  const [dueRows, newRows] = await Promise.all([
+    prisma.$queryRaw<DueRow[]>`
+      SELECT c."vocabId", c.type, c.queue, c.due, c."intervalDays", c."easeFactor",
+        c.stability, c.difficulty, c."lastReviewedAt", c.reps, c.lapses, c."learningStep"
+      FROM "FlashcardCard" c
+      JOIN "FlashcardVocab" v ON v.id = c."vocabId"
+      WHERE c."userId" = ${userId}
+        AND v.tags @> ARRAY[${slug}]::text[] AND v."retiredAt" IS NULL
+        AND c.queue <> 'NEW' AND c.due < ${utc(dayEnd)} AND ${available(now)}
+    `,
+    // Kolom ringan saja: deck N3 punya hampir 1.800 kata baru, dan urutan
+    // pengambilannya (termasuk acak) harus dihitung dari seluruhnya.
+    prisma.$queryRaw<NewRow[]>`
+      SELECT v.id, v.level::text AS level, v."order"
+      FROM "FlashcardVocab" v
+      LEFT JOIN "FlashcardCard" c ON c."vocabId" = v.id AND c."userId" = ${userId}
+      WHERE v.tags @> ARRAY[${slug}]::text[] AND v."retiredAt" IS NULL
+        AND (c."vocabId" IS NULL OR (c.queue = 'NEW' AND ${available(now)}))
+    `,
+  ]);
+
+  const fresh = createNewCardState(now);
+  const candidates: QueueCandidate[] = [
+    ...dueRows.map((row) => ({ ...row, position: 0 })),
+    ...newRows.map((row) => ({
+      vocabId: row.id,
+      type: fresh.type,
+      queue: fresh.queue,
+      due: now,
+      position: insertionPosition(settings.config.insertionOrder, userId, row),
+      intervalDays: 0,
+      easeFactor: null,
+      stability: null,
+      difficulty: null,
+      lastReviewedAt: null,
+      reps: 0,
+      lapses: 0,
+      learningStep: 0,
+    })),
+  ];
+
+  const built = buildQueue({
+    candidates,
+    budget: { newLimit: access.allowance.newLeft, reviewLimit: access.allowance.reviewLeft },
+    config: settings.config,
+    now,
+    day: settings.day,
+  });
+
+  const selected = built.queue.slice(0, STUDY_BATCH_SIZE);
+  const later = built.laterLearning.slice(0, STUDY_BATCH_SIZE);
+  const ids = [...selected, ...later].map((entry) => entry.vocabId);
+  const contents = new Map(
+    (
+      await prisma.flashcardVocab.findMany({
+        where: { id: { in: ids } },
+        select: VOCAB_CONTENT_SELECT,
+      })
+    ).map((row) => [row.id, toCardContent(row)]),
+  );
+
+  const toReviewerCard = (entry: QueueCandidate, shownAt: Date): ReviewerCard | null => {
+    const content = contents.get(entry.vocabId);
+    if (!content) return null;
+    return {
+      vocabId: entry.vocabId,
+      isNew: entry.type === "NEW",
+      content,
+      previewLabels: buildPreviewLabels(toSchedulerState(entry), shownAt, settings),
+    };
+  };
+
+  const cards = selected
+    .map((entry) => toReviewerCard(entry, now))
+    .filter((card): card is ReviewerCard => card !== null);
+  const pendingLearning = later.flatMap((entry): PendingLearningCard[] => {
+    // Interval tombol dihitung untuk saat kartu itu benar-benar tampil.
+    const card = toReviewerCard(entry, entry.due);
+    return card ? [{ ...card, dueAt: entry.due.toISOString() }] : [];
+  });
+
+  return {
+    deck: access.deck,
+    subscribed: true as const,
+    display: settings.display,
+    counts: built.counts,
+    cards,
+    pendingLearning,
+    hasMore: built.queue.length > selected.length,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Mode coba (guest)
+// ---------------------------------------------------------------------------
+
+export async function getTrySession(slug: string) {
+  const deck = await getCatalogDeck(slug);
+  if (!deck) return null;
+
+  const rows = await prisma.flashcardVocab.findMany({
+    where: { tags: { has: slug }, retiredAt: null },
+    orderBy: [{ level: "asc" }, { order: "asc" }],
+    take: TRY_CARD_LIMIT,
+    select: VOCAB_CONTENT_SELECT,
+  });
+
+  return { deck, rows: rows.map((row) => ({ vocabId: row.id, content: toCardContent(row) })) };
+}
+
+// ---------------------------------------------------------------------------
+// Statistik
+// ---------------------------------------------------------------------------
+
+/**
+ * Kata di deck-deck milik user yang belum pernah dipelajari. Dihitung unik:
+ * kata yang ada di dua deck langganan hanya dihitung sekali.
+ */
+export async function countUnstudiedWords(userId: number): Promise<number> {
+  const rows = await prisma.$queryRaw<{ total: number }[]>`
+    SELECT count(DISTINCT v.id)::int AS total
+    FROM "FlashcardDeckSubscription" s
+    JOIN "FlashcardDeck" d ON d.id = s."deckId" AND d."isPublished"
+    JOIN "FlashcardVocab" v ON v.tags @> ARRAY[d.slug]::text[] AND v."retiredAt" IS NULL
+    LEFT JOIN "FlashcardCard" c ON c."vocabId" = v.id AND c."userId" = ${userId}
+    WHERE s."userId" = ${userId} AND (c."vocabId" IS NULL OR c.type = 'NEW')
+  `;
+  return rows[0]?.total ?? 0;
+}

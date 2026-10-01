@@ -1,41 +1,37 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
+import { buildPreviewLabels, getCatalogDeck, getTrySession } from "@/features/flashcard/data";
+import { FlashcardReviewer } from "@/features/flashcard/components/flashcard-reviewer";
+import { createNewCardState } from "@/features/flashcard/lib/scheduler";
+import { FLASHCARD_DEFAULT_ROLLOVER_HOUR } from "@/features/flashcard/lib/scheduler/day";
 import {
-  FlashcardReviewer,
-  type ReviewerCard,
-} from "@/features/flashcard/components/flashcard-reviewer";
-import { renderCard } from "@/features/flashcard/lib/render/card-content";
-import { formatIntervalLabel } from "@/features/flashcard/lib/preview-interval";
-import { createNewCardState, previewSchedule } from "@/features/flashcard/lib/scheduler";
-import { countCardsForNote } from "@/features/flashcard/note-types";
-import {
-  FLASHCARD_DEFAULT_PRESET_CONFIG,
-  type FlashcardRatingInput,
+  FLASHCARD_DEFAULT_CONFIG,
+  FLASHCARD_DEFAULT_DISPLAY,
+  FlashcardDeckSlugSchema,
 } from "@/features/flashcard/schemas";
+import type { ReviewerCard } from "@/features/flashcard/types";
+import { DEFAULT_TIME_ZONE } from "@/lib/time-zone";
 import { pageMetadata, privateMetadata } from "@/lib/seo";
 
 /**
  * Mode coba: siapa pun boleh mencicipi deck bawaan tanpa akun.
  *
- * Tidak ada koleksi, tidak ada revlog, tidak ada penjadwalan yang disimpan —
- * seluruh antrean hidup di state React reviewer. Modul vocabulary lama pernah
- * memberi kesan progres guest tersimpan padahal tidak; di sini statusnya
- * dinyatakan eksplisit lewat banner di reviewer.
+ * Tidak ada pengaturan, revlog, atau jadwal yang disimpan — seluruh antrean
+ * hidup di state React reviewer, dan statusnya dinyatakan eksplisit lewat
+ * banner di reviewer.
  */
-
-const TRY_CARD_LIMIT = 20;
 
 type Props = { params: Promise<{ slug: string }> };
 
+async function deckFromParams(params: Props["params"]) {
+  const parsed = FlashcardDeckSlugSchema.safeParse((await params).slug);
+  return parsed.success ? getCatalogDeck(parsed.data) : null;
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const deck = await prisma.flashcardSystemDeck.findFirst({
-    where: { slug, isPublished: true },
-    select: { name: true, description: true },
-  });
+  const deck = await deckFromParams(params);
   if (!deck) {
     return privateMetadata("Deck tidak ditemukan", "Deck yang kamu cari sudah tidak tersedia.");
   }
@@ -43,77 +39,53 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return pageMetadata({
     title: `Coba deck ${deck.name}`,
     description: deck.description,
-    path: `/flashcard/try/${slug}`,
-    ogTitle: `Coba deck flashcard ${deck.name} | Nihongofy`,
+    path: `/flashcard/try/${deck.slug}`,
+    ogTitle: `Coba flashcard ${deck.name} | Nihongofy`,
   });
 }
 
 export default async function TryDeckPage({ params }: Props) {
-  const { slug } = await params;
-
-  const deck = await prisma.flashcardSystemDeck.findFirst({
-    where: { slug, isPublished: true },
-    select: {
-      name: true,
-      noteType: true,
-      notes: {
-        orderBy: { order: "asc" },
-        take: TRY_CARD_LIMIT,
-        select: { guid: true, fields: true },
-      },
-    },
-  });
+  const deck = await deckFromParams(params);
   if (!deck) notFound();
+
+  const trial = await getTrySession(deck.slug);
+  if (!trial || trial.rows.length === 0) notFound();
 
   const session = await getSession();
   const now = new Date();
 
-
-  // Guest selalu bertemu kartu baru, jadi preview cukup dihitung sekali.
-  const preview = previewSchedule({
-    card: createNewCardState(now),
-    now,
-    config: FLASHCARD_DEFAULT_PRESET_CONFIG,
-    day: { timeZone: "Asia/Jakarta", rolloverHour: 4 },
+  // Guest selalu bertemu kartu baru, jadi label tombol cukup dihitung sekali.
+  const previewLabels = buildPreviewLabels(createNewCardState(now), now, {
+    config: FLASHCARD_DEFAULT_CONFIG,
+    day: { timeZone: DEFAULT_TIME_ZONE, rolloverHour: FLASHCARD_DEFAULT_ROLLOVER_HOUR },
   });
-  const previewLabels = Object.fromEntries(
-    (["AGAIN", "HARD", "GOOD", "EASY"] as FlashcardRatingInput[]).map((rating) => [
-      rating,
-      formatIntervalLabel(now, preview[rating].card.due),
-    ]),
-  ) as Record<FlashcardRatingInput, string>;
-
-  const cards: ReviewerCard[] = deck.notes.flatMap((note) =>
-    Array.from({ length: countCardsForNote(deck.noteType, note.fields) }, (_, ord) => ({
-      cardId: `${note.guid}:${ord}`,
-      noteId: note.guid,
-      deckName: deck.name,
-      content: renderCard(deck.noteType, note.fields, ord),
-      previewLabels,
-      isNew: true,
-    })),
-  );
-
-  if (cards.length === 0) notFound();
+  const cards: ReviewerCard[] = trial.rows.map((row) => ({
+    vocabId: row.vocabId,
+    isNew: true,
+    content: row.content,
+    previewLabels,
+  }));
 
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-10">
       {session ? (
         <p className="neo-surface mb-5 p-4 text-sm font-bold">
-          Kamu sudah punya akun — tambahkan deck ini lewat{" "}
-          <Link href="/flashcard/add" className="underline">
-            Tambah deck
+          Kamu sudah punya akun —{" "}
+          <Link href={`/flashcard/deck/${deck.slug}`} className="underline">
+            tambahkan deck ini
           </Link>{" "}
           supaya progresnya tersimpan dan dijadwalkan FSRS.
         </p>
       ) : null}
       <FlashcardReviewer
         deckName={deck.name}
+        deckHref="/flashcard"
         cards={cards}
-        buriedCardIds={[]}
-        // SELALU ephemeral, termasuk untuk user yang sudah login: `cardId` di sini
-        // adalah guid katalog, bukan kartu milik siapa pun, jadi tidak ada yang
-        // bisa (atau boleh) disimpan.
+        pendingLearning={[]}
+        hasMore={false}
+        display={FLASHCARD_DEFAULT_DISPLAY}
+        // SELALU ephemeral, termasuk untuk user yang sudah login: mode coba
+        // tidak boleh menyentuh jadwal siapa pun.
         isGuest
       />
     </main>

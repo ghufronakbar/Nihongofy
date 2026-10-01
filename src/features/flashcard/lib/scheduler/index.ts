@@ -15,7 +15,7 @@ export { parseStepToMs } from "./sm2";
 
 /**
  * Satu-satunya pintu masuk penjadwalan. Pemilihan FSRS vs SM-2 ditentukan
- * preset deck, bukan pemanggil.
+ * pengaturan user, bukan pemanggil.
  */
 export function scheduleReview(input: SchedulerInput): SchedulerResult {
   return input.config.fsrsEnabled ? scheduleWithFsrs(input) : scheduleWithSm2(input);

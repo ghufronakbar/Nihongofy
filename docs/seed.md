@@ -14,18 +14,19 @@ npm run seed:articles
 - Seed aman dijalankan ulang dan tidak mereset `viewCount`, `favoriteCount`, atau interaction user.
 - Baseline Fase 5 berisi 6 artikel terbit dan 16 tag terkurasi.
 
-## Deck flashcard bawaan
+## Katalog flashcard
 
-Kontrak lengkapnya ada di [`seed-flashcard.md`](seed-flashcard.md). Ringkasnya: satu file JSON
-per deck di `src/flashcard-deck-data/`, diimpor dengan:
+Kontrak lengkapnya ada di [`seed-flashcard.md`](seed-flashcard.md). Ringkasnya: daftar kata dari
+`.apkg` diekstrak ke `src/flashcard-data/vocab/<level>.json`, isi kartunya digenerate AI, lalu
+diimpor dengan:
 
 ```bash
-npm run seed:flashcard-deck
+npm run seed:flashcard
 ```
 
-- Idempoten by `slug`; note yang dihapus dari file ikut hilang dari katalog.
-- Tidak menyentuh koleksi user, karena deck bawaan **disalin** saat user menambahkannya.
-- `npm run seed:flashcard-deck:check` memvalidasi tanpa menulis ke database.
+- Idempoten by `key` kata; hanya kata yang sudah digenerate yang diterbitkan.
+- Kata yang hilang dari fixture diberi `retiredAt`, tidak dihapus, karena kartu user merujuknya.
+- `npm run seed:flashcard:check` memvalidasi tanpa menulis ke database.
 
 ## Import bank soal dari scraping
 

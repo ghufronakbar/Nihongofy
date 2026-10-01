@@ -1,34 +1,30 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Undo2, EyeOff, Ban, Loader2 } from "lucide-react";
-import type { FlashcardRatingInput } from "../schemas";
-import type { RenderedCard } from "../lib/render/card-content";
+import { Ban, EyeOff, Loader2, Undo2 } from "lucide-react";
+import type { FlashcardDisplay, FlashcardRatingInput } from "../schemas";
+import type { PendingLearningCard, ReviewerCard } from "../types";
+import { LEARN_AHEAD_MS } from "../lib/learn-ahead";
 import {
   answerCardAction,
   buryCardAction,
-  markBuriedSiblingsAction,
-  suspendCardAction,
+  setCardSuspendedAction,
   undoReviewAction,
 } from "../actions";
-
-export type ReviewerCard = {
-  cardId: string;
-  noteId: string;
-  deckName: string;
-  content: RenderedCard;
-  /** Interval yang akan didapat tiap tombol, sudah dihitung server. */
-  previewLabels: Record<FlashcardRatingInput, string>;
-  isNew: boolean;
-};
+import { VocabCardView } from "./vocab-card-view";
 
 type Props = {
   deckName: string;
+  deckHref: string;
   cards: ReviewerCard[];
-  buriedCardIds: string[];
+  /** Kartu learning yang jatuh tempo nanti hari ini; ditampilkan saat waktunya tiba. */
+  pendingLearning: PendingLearningCard[];
+  /** Antrean server lebih panjang dari potongan yang dikirim. */
+  hasMore: boolean;
+  display: FlashcardDisplay;
   /**
    * Guest memakai mode coba: antrean berjalan penuh di client, tidak ada
    * penjadwalan yang disimpan dan tidak ada baris riwayat yang dibuat.
@@ -50,47 +46,140 @@ function createToken() {
     : `${Date.now()}-${Math.random().toString(36).slice(2, 12)}`;
 }
 
+// --- State antrean -------------------------------------------------------------
+
+type WaitingCard = { card: ReviewerCard; dueAt: number };
+
+type QueueState = {
+  current: ReviewerCard | null;
+  main: ReviewerCard[];
+  /** Kartu learning yang menunggu jatuh tempo, urut dari yang terdekat. */
+  learning: WaitingCard[];
+  revealed: boolean;
+  furiganaShown: boolean;
+  answered: number;
+  /** Bertambah setiap kali kartu baru tampil; dipakai untuk mengukur waktu jawab. */
+  turn: number;
+};
+
+type QueueAction =
+  | { type: "reveal" }
+  | { type: "showFurigana" }
+  | { type: "advance"; now: number; requeue?: WaitingCard; counted: boolean }
+  | { type: "tick"; now: number }
+  | { type: "undo"; card: ReviewerCard };
+
+function insertByDue(list: WaitingCard[], entry: WaitingCard) {
+  const next = list.filter((item) => item.card.vocabId !== entry.card.vocabId);
+  const index = next.findIndex((item) => item.dueAt > entry.dueAt);
+  return index === -1 ? [...next, entry] : [...next.slice(0, index), entry, ...next.slice(index)];
+}
+
+/**
+ * Kartu berikutnya mengikuti Anki: kartu learning yang sudah jatuh tempo lebih
+ * dulu, lalu antrean utama, lalu kartu learning yang jatuh tempo dalam batas
+ * learn ahead. Selebihnya reviewer menunggu.
+ */
+function pickNext(state: QueueState, now: number): QueueState {
+  const [first, ...restLearning] = state.learning;
+  const base = { ...state, revealed: false, furiganaShown: false, turn: state.turn + 1 };
+
+  if (first && first.dueAt <= now) return { ...base, current: first.card, learning: restLearning };
+  if (state.main.length > 0) {
+    const [next, ...rest] = state.main;
+    return { ...base, current: next!, main: rest };
+  }
+  if (first && first.dueAt <= now + LEARN_AHEAD_MS) {
+    return { ...base, current: first.card, learning: restLearning };
+  }
+  return { ...base, current: null };
+}
+
+function reducer(state: QueueState, action: QueueAction): QueueState {
+  switch (action.type) {
+    case "reveal":
+      return { ...state, revealed: true };
+    case "showFurigana":
+      return { ...state, furiganaShown: true };
+    case "advance": {
+      const learning = action.requeue ? insertByDue(state.learning, action.requeue) : state.learning;
+      const next = pickNext({ ...state, learning, current: null }, action.now);
+      return { ...next, answered: state.answered + (action.counted ? 1 : 0) };
+    }
+    case "tick":
+      return state.current ? state : pickNext(state, action.now);
+    case "undo": {
+      // Kartu yang sedang tampil dikembalikan ke depan antrean; kartu yang
+      // dibatalkan tampil lagi dengan label tombol aslinya.
+      const main = state.current ? [state.current, ...state.main] : state.main;
+      return {
+        ...state,
+        current: action.card,
+        main,
+        learning: state.learning.filter((item) => item.card.vocabId !== action.card.vocabId),
+        revealed: false,
+        furiganaShown: false,
+        answered: Math.max(0, state.answered - 1),
+        turn: state.turn + 1,
+      };
+    }
+  }
+}
+
+function initialState(cards: ReviewerCard[], pending: PendingLearningCard[]): QueueState {
+  const [first, ...rest] = cards;
+  return {
+    current: first ?? null,
+    main: rest,
+    learning: pending
+      .map(({ dueAt, ...card }) => ({ card, dueAt: Date.parse(dueAt) }))
+      .sort((left, right) => left.dueAt - right.dueAt),
+    revealed: false,
+    furiganaShown: false,
+    answered: 0,
+    turn: 0,
+  };
+}
+
+// --- Komponen -------------------------------------------------------------------
+
 export function FlashcardReviewer({
   deckName,
+  deckHref,
   cards,
-  buriedCardIds,
+  pendingLearning,
+  hasMore,
+  display,
   isGuest,
 }: Props) {
   const router = useRouter();
-  const [queue, setQueue] = useState(cards);
-  const [index, setIndex] = useState(0);
-  const [revealed, setRevealed] = useState(false);
+  const [state, dispatch] = useReducer(reducer, undefined, () =>
+    initialState(cards, pendingLearning),
+  );
   const [pending, setPending] = useState(false);
-  const [lastReview, setLastReview] = useState<{ token: string; cardId: string } | null>(null);
-  const [answered, setAnswered] = useState(0);
+  const [lastReview, setLastReview] = useState<{ token: string; card: ReviewerCard } | null>(null);
 
   // Ref, bukan state: waktu tampil hanya dipakai untuk mengukur durasi jawaban
-  // dan tidak boleh memicu render. 0 berarti kartu belum sempat ditandai.
+  // dan tidak boleh memicu render.
   const shownAt = useRef(0);
-  const tokens = useRef(new Map<string, string>());
-  const buriedMarked = useRef(false);
+  const tokens = useRef(new Map<number, string>());
 
-  const current = queue[index];
+  const { current, revealed } = state;
+  const furiganaVisible = display.showFuriganaOnBack || state.furiganaShown;
 
   useEffect(() => {
     shownAt.current = Date.now();
-  }, [index]);
+  }, [state.turn]);
 
-  // Sibling yang di-bury queue builder baru ditandai saat sesi benar-benar
-  // dimulai, supaya membuka halaman deck lalu keluar tidak menyembunyikan kartu.
+  // Tidak ada kartu yang bisa tampil sekarang, tetapi ada kartu learning yang
+  // akan jatuh tempo: bangunkan reviewer begitu kartu itu masuk batas learn ahead.
+  const nextDueAt = state.current ? null : (state.learning[0]?.dueAt ?? null);
   useEffect(() => {
-    if (isGuest || buriedMarked.current || buriedCardIds.length === 0) return;
-    buriedMarked.current = true;
-    void markBuriedSiblingsAction({ cardIds: buriedCardIds });
-  }, [buriedCardIds, isGuest]);
-
-  // Reset sisi kartu dilakukan di sini, bukan lewat effect yang mengamati
-  // `index` — setState di dalam effect memicu render bertingkat.
-  const advance = useCallback(() => {
-    setIndex((value) => value + 1);
-    setAnswered((value) => value + 1);
-    setRevealed(false);
-  }, []);
+    if (nextDueAt === null) return;
+    const delay = Math.max(0, nextDueAt - LEARN_AHEAD_MS - Date.now()) + 250;
+    const timer = window.setTimeout(() => dispatch({ type: "tick", now: Date.now() }), delay);
+    return () => window.clearTimeout(timer);
+  }, [nextDueAt]);
 
   const answer = useCallback(
     async (rating: FlashcardRatingInput) => {
@@ -99,24 +188,24 @@ export function FlashcardReviewer({
       if (isGuest) {
         // Rating guest hanya menggerakkan antrean. `Again` mengembalikan kartu
         // ke belakang antrean supaya latihannya tetap terasa benar.
-        if (rating === "AGAIN") {
-          setQueue((items) => [...items, current]);
-        }
-        advance();
+        dispatch({
+          type: "advance",
+          now: Date.now(),
+          counted: true,
+          requeue: rating === "AGAIN" ? { card: current, dueAt: Date.now() + 60_000 } : undefined,
+        });
         return;
       }
 
-      const token = tokens.current.get(current.cardId) ?? createToken();
-      tokens.current.set(current.cardId, token);
+      const token = tokens.current.get(current.vocabId) ?? createToken();
+      tokens.current.set(current.vocabId, token);
 
       setPending(true);
       try {
         const result = await answerCardAction({
-          cardId: current.cardId,
+          vocabId: current.vocabId,
           rating,
-          takenMs: shownAt.current
-            ? Math.min(3_600_000, Date.now() - shownAt.current)
-            : 0,
+          takenMs: shownAt.current ? Math.min(3_600_000, Date.now() - shownAt.current) : 0,
           clientToken: token,
         });
 
@@ -128,20 +217,32 @@ export function FlashcardReviewer({
           toast.warning("Kartu ini ditandai leech karena sering terlupa.");
         }
 
-        setLastReview({ token, cardId: current.cardId });
-        tokens.current.delete(current.cardId);
-        advance();
+        tokens.current.delete(current.vocabId);
+        setLastReview({ token, card: current });
+        const labels = result.data.nextPreviewLabels;
+        dispatch({
+          type: "advance",
+          now: Date.now(),
+          counted: true,
+          // Kartu learning yang jatuh tempo lagi hari ini tetap di sesi ini.
+          requeue: labels
+            ? {
+                card: { ...current, isNew: false, previewLabels: labels },
+                dueAt: Date.parse(result.data.dueAt),
+              }
+            : undefined,
+        });
       } catch {
         toast.error("Gagal menyimpan jawaban. Coba lagi.");
       } finally {
         setPending(false);
       }
     },
-    [advance, current, isGuest, pending],
+    [current, isGuest, pending],
   );
 
   const undo = useCallback(async () => {
-    if (!lastReview || isGuest) return;
+    if (!lastReview || isGuest || pending) return;
     setPending(true);
     try {
       const result = await undoReviewAction({ clientToken: lastReview.token });
@@ -149,14 +250,14 @@ export function FlashcardReviewer({
         toast.error(result.message);
         return;
       }
+      dispatch({ type: "undo", card: lastReview.card });
       setLastReview(null);
-      setIndex((value) => Math.max(0, value - 1));
-      setAnswered((value) => Math.max(0, value - 1));
-      router.refresh();
+    } catch {
+      toast.error("Gagal membatalkan. Coba lagi.");
     } finally {
       setPending(false);
     }
-  }, [isGuest, lastReview, router]);
+  }, [isGuest, lastReview, pending]);
 
   const hide = useCallback(
     async (mode: "bury" | "suspend") => {
@@ -165,19 +266,22 @@ export function FlashcardReviewer({
       try {
         const result =
           mode === "bury"
-            ? await buryCardAction({ cardId: current.cardId })
-            : await suspendCardAction({ cardId: current.cardId });
+            ? await buryCardAction({ vocabId: current.vocabId })
+            : await setCardSuspendedAction({ vocabId: current.vocabId, suspended: true });
         if (!result.ok) {
           toast.error(result.message);
           return;
         }
         toast.success(mode === "bury" ? "Kartu ditunda sampai besok." : "Kartu di-suspend.");
-        advance();
+        setLastReview(null);
+        dispatch({ type: "advance", now: Date.now(), counted: false });
+      } catch {
+        toast.error("Gagal menyimpan. Coba lagi.");
       } finally {
         setPending(false);
       }
     },
-    [advance, current, isGuest, pending],
+    [current, isGuest, pending],
   );
 
   // Pintasan keyboard Anki: spasi membuka jawaban, 1-4 memberi rating.
@@ -185,12 +289,16 @@ export function FlashcardReviewer({
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.metaKey || event.ctrlKey || event.altKey) return;
       const target = event.target as HTMLElement | null;
-      if (target && ["INPUT", "TEXTAREA"].includes(target.tagName)) return;
+      if (target && ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName)) return;
 
       if (event.key === " " || event.key === "Enter") {
         event.preventDefault();
-        if (!revealed) setRevealed(true);
+        if (!revealed) dispatch({ type: "reveal" });
         else void answer("GOOD");
+        return;
+      }
+      if ((event.key === "f" || event.key === "F") && revealed) {
+        dispatch({ type: "showFurigana" });
         return;
       }
       const rating = RATINGS.find((item) => item.key === event.key);
@@ -204,23 +312,51 @@ export function FlashcardReviewer({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [answer, revealed]);
 
-  const remaining = useMemo(() => queue.length - index, [index, queue.length]);
+  const remaining = state.main.length + (current ? 1 : 0);
 
   if (!current) {
+    const waiting = state.learning[0];
     return (
       <div className="neo-surface mx-auto max-w-xl p-8 text-center">
-        <h2 className="text-2xl font-black">Antrean selesai</h2>
-        <p className="mt-3 font-bold text-muted-foreground">
-          {answered} kartu ditinjau di {deckName}.
-        </p>
+        {waiting ? (
+          <>
+            <h2 className="text-2xl font-black">Istirahat sebentar</h2>
+            <p className="mt-3 font-bold text-muted-foreground">
+              {state.learning.length} kartu learning tampil lagi mulai pukul{" "}
+              <time suppressHydrationWarning dateTime={new Date(waiting.dueAt).toISOString()}>
+                {new Date(waiting.dueAt).toLocaleTimeString("id-ID", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </time>
+              . Biarkan halaman ini terbuka, atau kembali nanti.
+            </p>
+          </>
+        ) : (
+          <>
+            <h2 className="text-2xl font-black">Antrean selesai</h2>
+            <p className="mt-3 font-bold text-muted-foreground">
+              {state.answered} kartu ditinjau di {deckName}.
+            </p>
+          </>
+        )}
         {isGuest ? (
-          <p className="mt-4 font-bold text-neo-coral">
-            Mode coba — progres tadi tidak disimpan.
-          </p>
+          <p className="mt-4 font-bold text-neo-coral">Mode coba — progres tadi tidak disimpan.</p>
         ) : null}
-        <Link href="/flashcard" className="neo-button mt-6 bg-neo-yellow">
-          Kembali ke daftar deck
-        </Link>
+        <div className="mt-6 flex flex-wrap justify-center gap-3">
+          {hasMore && !waiting ? (
+            <button
+              type="button"
+              onClick={() => router.refresh()}
+              className="neo-button bg-neo-yellow"
+            >
+              Lanjutkan
+            </button>
+          ) : null}
+          <Link href={deckHref} className="neo-button bg-white">
+            Kembali ke deck
+          </Link>
+        </div>
       </div>
     );
   }
@@ -228,13 +364,15 @@ export function FlashcardReviewer({
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-5">
       <header className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <p className="text-xs font-black tracking-wide uppercase text-muted-foreground">
-            {current.deckName}
-          </p>
-          <h1 className="text-xl font-black">{deckName}</h1>
-        </div>
-        <p className="font-black tabular-nums">{remaining} tersisa</p>
+        <h1 className="text-xl font-black">{deckName}</h1>
+        <p className="font-black tabular-nums">
+          {remaining} tersisa
+          {state.learning.length > 0 ? (
+            <span className="ml-2 text-sm font-bold text-muted-foreground">
+              +{state.learning.length} menunggu
+            </span>
+          ) : null}
+        </p>
       </header>
 
       {isGuest ? (
@@ -250,44 +388,14 @@ export function FlashcardReviewer({
         </p>
       ) : null}
 
-      <article className="neo-surface min-h-64 p-7">
-        <p className="text-xs font-black tracking-wide uppercase text-muted-foreground">
-          {current.content.templateName}
-        </p>
-
-        <div className="mt-5 space-y-4">
-          {current.content.front.map((field) => (
-            <div key={field.key}>
-              <p
-                className={
-                  field.japanese
-                    ? "text-3xl leading-relaxed font-black sm:text-4xl"
-                    : "text-xl font-bold"
-                }
-                dangerouslySetInnerHTML={{ __html: field.html }}
-              />
-            </div>
-          ))}
-        </div>
-
-        {revealed ? (
-          <div className="mt-6 space-y-4 border-t-[3px] border-dashed border-neo-ink pt-6">
-            {current.content.back.map((field) => (
-              <div key={field.key}>
-                <p className="text-xs font-black tracking-wide uppercase text-muted-foreground">
-                  {field.label}
-                </p>
-                <p
-                  className={
-                    field.japanese ? "text-2xl font-bold" : "text-lg font-semibold"
-                  }
-                  dangerouslySetInnerHTML={{ __html: field.html }}
-                />
-              </div>
-            ))}
-          </div>
-        ) : null}
-      </article>
+      <VocabCardView
+        content={current.content}
+        revealed={revealed}
+        isNew={current.isNew}
+        textScale={display.textScale}
+        furiganaVisible={furiganaVisible}
+        onShowFurigana={() => dispatch({ type: "showFurigana" })}
+      />
 
       {revealed ? (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -309,7 +417,7 @@ export function FlashcardReviewer({
       ) : (
         <button
           type="button"
-          onClick={() => setRevealed(true)}
+          onClick={() => dispatch({ type: "reveal" })}
           className="neo-button w-full bg-neo-yellow py-4 text-base"
         >
           Tampilkan jawaban{" "}
@@ -343,9 +451,7 @@ export function FlashcardReviewer({
           >
             <Ban className="size-4" aria-hidden /> Suspend
           </button>
-          {pending ? (
-            <Loader2 className="size-4 animate-spin" aria-label="Menyimpan" />
-          ) : null}
+          {pending ? <Loader2 className="size-4 animate-spin" aria-label="Menyimpan" /> : null}
         </div>
       ) : null}
     </div>

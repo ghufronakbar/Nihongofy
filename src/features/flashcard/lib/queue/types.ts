@@ -1,14 +1,18 @@
 import type { FlashcardCardQueue, FlashcardCardType } from "@prisma/client";
 
-/** Kartu kandidat untuk queue. Kolom konten note tidak ikut — queue hanya butuh jadwal. */
+/**
+ * Kartu kandidat untuk antrean. Konten kata tidak ikut — antrean hanya butuh
+ * jadwal. Satu kata = satu kartu, jadi `vocabId` sekaligus identitas kartu.
+ *
+ * Kandidat yang di-suspend atau sedang ditunda sudah disaring di query, bukan
+ * di sini.
+ */
 export type QueueCandidate = {
-  cardId: string;
-  noteId: string;
-  deckId: number;
-  ord: number;
+  vocabId: number;
   type: FlashcardCardType;
   queue: FlashcardCardQueue;
   due: Date;
+  /** Posisi kartu baru menurut insertion order; tidak dipakai kartu lain. */
   position: number;
   intervalDays: number;
   easeFactor: number | null;
@@ -20,10 +24,7 @@ export type QueueCandidate = {
   learningStep: number;
 };
 
-/**
- * Kelompok pengambilan Anki. Urutannya menentukan prioritas: kelompok yang lebih
- * awal tidak bisa di-bury oleh kelompok yang lebih belakang.
- */
+/** Kelompok pengambilan Anki v3, berurutan dari prioritas tertinggi. */
 export const QUEUE_GROUPS = [
   "intradayLearning",
   "interdayLearning",
@@ -35,7 +36,8 @@ export type QueueGroup = (typeof QUEUE_GROUPS)[number];
 
 export type QueueEntry = QueueCandidate & { group: QueueGroup };
 
-export type DeckBudget = {
+/** Sisa jatah hari ini (sudah dikurangi yang dipelajari hari ini). */
+export type QueueBudget = {
   newLimit: number;
   reviewLimit: number;
 };

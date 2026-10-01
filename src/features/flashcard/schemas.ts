@@ -1,14 +1,15 @@
 import { z } from "zod";
-import { FLASHCARD_NOTE_TYPE_KINDS } from "./note-types";
 
 /**
- * Deck options, mengikuti Anki.
+ * Pengaturan flashcard, mengikuti deck options Anki.
  *
- * Di Anki ini adalah "preset" yang dipakai bersama banyak deck, bukan setting
- * global per user. Disimpan sebagai JSONB (`FlashcardPreset.config`) karena
- * tidak ada satu pun setting di sini yang perlu di-query atau di-index,
- * sementara daftarnya akan terus bertambah. Skema ini adalah satu-satunya
- * gerbang validasinya — jangan pernah membaca `config` tanpa `.parse()`.
+ * Disimpan sebagai JSONB per user (`FlashcardCollection.config` dan `.display`)
+ * karena tidak ada satu pun setting yang perlu di-query. Skema ini satu-satunya
+ * gerbang validasinya — jangan pernah membaca kolom itu tanpa parse.
+ *
+ * Satu pengaturan berlaku untuk semua deck: deck bawaan saling tumpang tindih
+ * (satu kata bisa ada di deck level dan deck topik), jadi batas harian per deck
+ * akan membuat jumlah kartu baru harian bergantung pada deck mana yang dibuka.
  */
 
 // --- Learning steps ----------------------------------------------------------
@@ -82,24 +83,18 @@ export const ReviewSortOrderSchema = z.enum([
   "descendingIntervals",
   "ascendingEase",
   "descendingEase",
-  "relativeOverdueness",
+  "ascendingRetrievability",
+  "descendingRetrievability",
+  "random",
 ]);
 
-export const LeechActionSchema = z.enum(["suspend", "tagOnly"]);
 export const InsertionOrderSchema = z.enum(["sequential", "random"]);
-export const AnswerActionSchema = z.enum([
-  "buryCard",
-  "answerAgain",
-  "answerGood",
-  "answerHard",
-  "showReminder",
-]);
+export const LeechActionSchema = z.enum(["suspend", "tagOnly"]);
 
 // --- FSRS --------------------------------------------------------------------
 
-// FSRS-6 memakai tepat 21 parameter. Kita tidak menyediakan optimizer (Anki
-// melatihnya dengan gradient descent di Rust), jadi user memakai default atau
-// mem-paste parameter hasil optimasi dari Anki mereka sendiri.
+// FSRS-6 memakai tepat 21 parameter. Tidak ada optimizer di sini (Anki
+// melatihnya dengan gradient descent di Rust), jadi semua user memakai default.
 export const FSRS_PARAMETER_COUNT = 21;
 
 export const FsrsParametersSchema = z
@@ -111,62 +106,42 @@ export const FLASHCARD_DEFAULT_FSRS_PARAMETERS = [
   1.4835, 0.0614, 0.2629, 1.6483, 0.6014, 1.8729, 0.5425, 0.0912, 0.0658, 0.1542,
 ] as const;
 
-// --- Preset ------------------------------------------------------------------
+// --- Pengaturan penjadwalan --------------------------------------------------
 
-export const FlashcardPresetConfigSchema = z.object({
-  // Daily limits
+export const FlashcardConfigSchema = z.object({
+  // Batas harian (semua deck sekaligus)
   newCardsPerDay: z.number().int().min(0).max(9_999).default(20),
-  maxReviewsPerDay: z.number().int().min(0).max(99_999).default(200),
-  newCardsIgnoreReviewLimit: z.boolean().default(false),
-  limitsStartFromTop: z.boolean().default(false),
+  maxReviewsPerDay: z.number().int().min(0).max(99_999).default(9_999),
 
-  // New cards
-  learningSteps: learningSteps.default(["1m", "10m"]),
-  graduatingIntervalDays: z.number().int().min(1).max(9_999).default(1),
-  easyIntervalDays: z.number().int().min(1).max(9_999).default(4),
+  // Kartu baru
+  learningSteps: learningSteps.default(["1m", "2h", "3h"]),
   insertionOrder: InsertionOrderSchema.default("sequential"),
 
-  // Lapses
-  relearningSteps: learningSteps.default(["10m"]),
-  minimumIntervalDays: z.number().int().min(1).max(9_999).default(1),
-  leechThreshold: z.number().int().min(0).max(9_999).default(8),
-  leechAction: LeechActionSchema.default("tagOnly"),
+  // Lapse
+  relearningSteps: learningSteps.default(["1m", "1h"]),
 
-  // Burying
-  buryNewSiblings: z.boolean().default(false),
-  buryReviewSiblings: z.boolean().default(false),
-  buryInterdayLearningSiblings: z.boolean().default(false),
+  // Urutan tampil
+  newCardGatherOrder: NewCardGatherOrderSchema.default("randomCards"),
+  newCardSortOrder: NewCardSortOrderSchema.default("gather"),
+  newReviewOrder: NewReviewOrderSchema.default("afterReviews"),
+  interdayLearningReviewOrder: InterdayLearningReviewOrderSchema.default("beforeReviews"),
+  reviewSortOrder: ReviewSortOrderSchema.default("descendingRetrievability"),
 
   // FSRS
   fsrsEnabled: z.boolean().default(true),
-  desiredRetention: z.number().min(0.7).max(0.99).default(0.9),
+  desiredRetention: z.number().min(0.7).max(0.99).default(0.95),
+
+  // Tidak ditampilkan di halaman pengaturan, tetapi tetap dipakai scheduler.
+  // Nilainya default Anki.
   fsrsParameters: FsrsParametersSchema.default([...FLASHCARD_DEFAULT_FSRS_PARAMETERS]),
-  rescheduleCardsOnChange: z.boolean().default(false),
-  historicalRetention: z.number().min(0.7).max(0.99).default(0.9),
-
-  // Display order
-  newCardGatherOrder: NewCardGatherOrderSchema.default("deck"),
-  newCardSortOrder: NewCardSortOrderSchema.default("templateThenGather"),
-  newReviewOrder: NewReviewOrderSchema.default("mix"),
-  interdayLearningReviewOrder: InterdayLearningReviewOrderSchema.default("mix"),
-  reviewSortOrder: ReviewSortOrderSchema.default("dueDateThenRandom"),
-
-  // Timers
-  maximumAnswerSeconds: z.number().int().min(1).max(3_600).default(60),
-  showOnScreenTimer: z.boolean().default(false),
-  stopTimerOnAnswer: z.boolean().default(false),
-
-  // Auto advance (0 = mati)
-  secondsToShowQuestion: z.number().min(0).max(600).default(0),
-  secondsToShowAnswer: z.number().min(0).max(600).default(0),
-  answerAction: AnswerActionSchema.default("buryCard"),
-
-  // Audio
-  disableAutoPlayAudio: z.boolean().default(false),
-  skipQuestionWhenReplayingAnswer: z.boolean().default(false),
-
-  // Advanced — hanya dipakai saat fsrsEnabled = false (fallback SM-2).
+  newCardsIgnoreReviewLimit: z.boolean().default(false),
   maximumIntervalDays: z.number().int().min(1).max(36_500).default(36_500),
+  leechThreshold: z.number().int().min(0).max(9_999).default(8),
+  leechAction: LeechActionSchema.default("tagOnly"),
+  // Hanya dipakai saat FSRS dimatikan (fallback SM-2).
+  graduatingIntervalDays: z.number().int().min(1).max(9_999).default(1),
+  easyIntervalDays: z.number().int().min(1).max(9_999).default(4),
+  minimumIntervalDays: z.number().int().min(1).max(9_999).default(1),
   startingEase: z.number().min(1.31).max(5).default(2.5),
   easyBonus: z.number().min(1).max(5).default(1.3),
   intervalModifier: z.number().min(0.5).max(2).default(1),
@@ -174,21 +149,60 @@ export const FlashcardPresetConfigSchema = z.object({
   newInterval: z.number().min(0).max(1).default(0),
 });
 
-export type FlashcardPresetConfig = z.infer<typeof FlashcardPresetConfigSchema>;
+export type FlashcardConfig = z.infer<typeof FlashcardConfigSchema>;
 
-/** Nilai default lengkap; dipakai saat membuat preset "Default" untuk user baru. */
-export const FLASHCARD_DEFAULT_PRESET_CONFIG: FlashcardPresetConfig =
-  FlashcardPresetConfigSchema.parse({});
+export const FLASHCARD_DEFAULT_CONFIG: FlashcardConfig = FlashcardConfigSchema.parse({});
 
-export const FLASHCARD_DEFAULT_PRESET_NAME = "Default";
+// --- Pengaturan tampilan -----------------------------------------------------
+
+export const FLASHCARD_TEXT_SCALE = { min: 80, max: 160, step: 10 } as const;
+
+export const FlashcardDisplaySchema = z.object({
+  /** Ukuran teks kartu dalam persen. */
+  textScale: z
+    .number()
+    .int()
+    .min(FLASHCARD_TEXT_SCALE.min)
+    .max(FLASHCARD_TEXT_SCALE.max)
+    .default(100),
+  /** Furigana langsung terlihat saat jawaban dibuka; bila mati, muncul saat diketuk. */
+  showFuriganaOnBack: z.boolean().default(true),
+});
+
+export type FlashcardDisplay = z.infer<typeof FlashcardDisplaySchema>;
+
+export const FLASHCARD_DEFAULT_DISPLAY: FlashcardDisplay = FlashcardDisplaySchema.parse({});
 
 /**
- * Config yang tersimpan bisa berasal dari versi skema lama. Karena setiap field
- * punya default, parse akan mengisi field baru tanpa perlu migration data.
+ * Nilai tersimpan bisa berasal dari versi skema lama. Setiap field punya
+ * default, jadi field baru terisi tanpa migration; field yang tidak valid lagi
+ * (mis. pilihan yang sudah dihapus) diganti default-nya sendiri, bukan
+ * menghapus seluruh pengaturan user.
  */
-export function parsePresetConfig(value: unknown): FlashcardPresetConfig {
-  const result = FlashcardPresetConfigSchema.safeParse(value);
-  return result.success ? result.data : FLASHCARD_DEFAULT_PRESET_CONFIG;
+function parseLenient<T extends z.ZodObject>(schema: T, fallback: z.infer<T>, value: unknown) {
+  const result = schema.safeParse(value);
+  if (result.success) return result.data;
+
+  const source =
+    typeof value === "object" && value !== null && !Array.isArray(value)
+      ? (value as Record<string, unknown>)
+      : {};
+  const repaired: Record<string, unknown> = {};
+  for (const [key, fieldSchema] of Object.entries(schema.shape)) {
+    const field = (fieldSchema as z.ZodType).safeParse(source[key]);
+    if (field.success) repaired[key] = field.data;
+  }
+
+  const second = schema.safeParse(repaired);
+  return second.success ? second.data : fallback;
+}
+
+export function parseFlashcardConfig(value: unknown): FlashcardConfig {
+  return parseLenient(FlashcardConfigSchema, FLASHCARD_DEFAULT_CONFIG, value);
+}
+
+export function parseFlashcardDisplay(value: unknown): FlashcardDisplay {
+  return parseLenient(FlashcardDisplaySchema, FLASHCARD_DEFAULT_DISPLAY, value);
 }
 
 // --- Input lain --------------------------------------------------------------
@@ -196,19 +210,10 @@ export function parsePresetConfig(value: unknown): FlashcardPresetConfig {
 export const FlashcardRatingSchema = z.enum(["AGAIN", "HARD", "GOOD", "EASY"]);
 export type FlashcardRatingInput = z.infer<typeof FlashcardRatingSchema>;
 
-export const FlashcardNoteTypeKindSchema = z.enum(
-  FLASHCARD_NOTE_TYPE_KINDS as [string, ...string[]],
-);
-
-// Nama deck hierarkis Anki: segmen dipisah "::", tiap segmen tidak boleh kosong.
-export const FlashcardDeckNameSchema = z
+export const FlashcardDeckSlugSchema = z
   .string()
   .trim()
-  .min(1)
-  .max(500)
-  .refine(
-    (value) => value.split("::").every((segment) => segment.trim().length > 0),
-    "Setiap bagian nama deck (dipisah ::) tidak boleh kosong.",
-  );
+  .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, "Deck tidak valid.")
+  .max(60);
 
-export const FlashcardPresetNameSchema = z.string().trim().min(1).max(120);
+export const FlashcardVocabIdSchema = z.number().int().positive();

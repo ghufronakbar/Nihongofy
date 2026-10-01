@@ -66,7 +66,7 @@ Mencakup juga `/exam` dan `/result` (awalnya direncanakan tanpa sidebar untuk mo
 | `/profile` | Overview akun dengan statistik kana, vocabulary, latihan cepat, dan mock exam dari data user nyata. |
 | `/profile/info` | Edit display name, normalized email, dan avatar R2; username legacy tampil read-only. |
 | `/profile/security` | Ganti password, daftar perangkat aktif, revoke session, dan logout perangkat lain. |
-| `/flashcard-settings` | Preference SRS persisten dengan daily limits, learning/relearning steps, interval, dan reset default via Server Action; entry point tersedia langsung di sidebar. |
+| `/flashcard/settings` | Pengaturan flashcard per user: ukuran teks kartu, furigana sisi belakang, batas harian, learning/relearning steps, urutan tampil, dan FSRS, masing-masing dengan reset ke nilai bawaan. |
 | `/profile/auth` | Redirect kompatibilitas menuju `/profile/security`. |
 
 ### Pengerjaan
@@ -95,9 +95,8 @@ Aturan halaman exam:
 - Global state jawaban exam sebaiknya di-persist (mis. sessionStorage/localStorage) agar refresh halaman tidak menghilangkan jawaban yang belum disubmit.
 - Submit sesi bersifat final untuk sesi tersebut — setelah submit, sesi tidak bisa dikerjakan ulang di attempt yang sama. Attempt menjadi `COMPLETED` setelah sesi terakhir disubmit.
 - Konten kana memakai fixture terkurasi dengan stable key. Hanya aktivitas per-user yang disimpan di `KanaProgress`.
-- Konten vocabulary disimpan dalam deck, kartu global, tag, dan join table. Satu kartu dapat muncul di beberapa deck tanpa menduplikasi `FlashcardProgress`.
-- Review vocabulary memakai antrean deterministik: kartu due diurutkan berdasarkan `dueAt`, kemudian kartu baru berdasarkan urutan deck, masing-masing dibatasi preference harian user.
-- Scheduler vocabulary menyimpan learning step dan membaca seluruh preference dari `FlashcardSetting`; setting invalid ditahan oleh Zod dan CHECK constraint.
+- Kosakata flashcard adalah katalog bawaan (`FlashcardVocab`) yang digenerate AI; deck bawaan dibentuk dari tag, sehingga satu kata bisa muncul di beberapa deck dengan satu kartu dan satu progres per user (`FlashcardCard`).
+- Penjadwalan flashcard memakai FSRS-6 dengan antrean scheduler v3 Anki dan batas harian yang berlaku untuk semua deck sekaligus. Pengaturan disimpan per user (`FlashcardCollection`) dan selalu dibaca lewat Zod. Rincian: `docs/module/flashcard.md`.
 - Profile overview dicache per user dan diinvalidasi saat progress kana, vocabulary, practice, atau mock exam berubah.
 - Latihan cepat membuat assignment `PracticeAnswer` di awal session. Refresh melanjutkan soal pertama yang belum dijawab.
 - Feedback practice hanya membuka kunci dan explanation soal yang sudah disubmit. Seluruh soal lain tetap tidak membawa answer key ke client.

@@ -3,7 +3,7 @@ import type {
   FlashcardCardType,
   FlashcardRevlogKind,
 } from "@prisma/client";
-import type { FlashcardPresetConfig, FlashcardRatingInput } from "../../schemas";
+import type { FlashcardConfig, FlashcardRatingInput } from "../../schemas";
 import type { FlashcardDayContext } from "./day";
 
 /** Bagian `FlashcardCard` yang dibutuhkan scheduler — sengaja bukan row Prisma utuh. */
@@ -26,7 +26,7 @@ export type SchedulerInput = {
   card: SchedulerCardState;
   rating: FlashcardRatingInput;
   now: Date;
-  config: FlashcardPresetConfig;
+  config: FlashcardConfig;
   day: FlashcardDayContext;
 };
 

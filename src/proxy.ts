@@ -6,8 +6,9 @@ import { getSession } from "@/lib/auth";
 // the session because Proxy must not be the only authorization boundary.
 //
 // `/flashcard` dan `/flashcard/try/*` sengaja publik: guest boleh mencoba deck
-// bawaan tanpa akun (progres tidak disimpan). Yang dilindungi hanya koleksi
-// milik user: /flashcard/deck/*, /flashcard/add, /flashcard/import.
+// bawaan tanpa akun (progres tidak disimpan). Yang dilindungi hanya halaman
+// milik user: /flashcard/deck/*, /flashcard/add, /flashcard/settings,
+// /flashcard/stats.
 //
 // `/conversation/*` juga sengaja tidak di sini: halamannya boleh dibuka tanpa
 // akun supaya guest melihat penjelasan dan CTA masuk, bukan langsung dilempar
@@ -23,7 +24,8 @@ const PROTECTED_ROUTES = [
   "/analytics",
   "/dashboard",
   "/flashcard/add",
-  "/flashcard/import",
+  "/flashcard/settings",
+  "/flashcard/stats",
   "/history",
   "/profile",
   "/progress",
@@ -35,7 +37,6 @@ const PROTECTED_PREFIXES = [
   "/dashboard/",
   "/flashcard/add/",
   "/flashcard/deck/",
-  "/flashcard/import/",
   "/history/",
   "/profile/",
   "/progress/",

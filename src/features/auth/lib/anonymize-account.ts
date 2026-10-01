@@ -53,10 +53,7 @@ export async function anonymizeAccount(userId: number) {
     // Anak dihapus lebih dulu agar tidak bergantung pada urutan cascade.
     await tx.flashcardRevlog.deleteMany({ where: { userId } });
     await tx.flashcardCard.deleteMany({ where: { userId } });
-    await tx.flashcardNote.deleteMany({ where: { userId } });
-    await tx.flashcardImportJob.deleteMany({ where: { userId } });
-    await tx.flashcardDeck.deleteMany({ where: { userId } });
-    await tx.flashcardPreset.deleteMany({ where: { userId } });
+    await tx.flashcardDeckSubscription.deleteMany({ where: { userId } });
     await tx.flashcardCollection.deleteMany({ where: { userId } });
 
     await tx.practiceSession.deleteMany({ where: { userId } });

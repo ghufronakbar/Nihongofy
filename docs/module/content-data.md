@@ -22,13 +22,17 @@
 - N1, N5, serta satu fixture N2 belum ada di database development, sehingga UI/runtime belum mencerminkan seluruh fixture repository.
 - Hanya 20 soal database yang mempunyai `explanation`; mayoritas review hanya dapat menampilkan kunci tanpa pembahasan.
 
-## Vocabulary
+## Kosakata flashcard
 
-- Fixture berisi 32 kartu: mayoritas N5 dan satu kartu N4.
-- Script membuat 6 deck yang saling overlap berdasarkan level/tag, bukan 6 kumpulan kartu independen.
-- Semua deck di-seed sebagai published.
-- `audioText` tersedia, tetapi `audioUrl` database masih kosong; playback mengandalkan browser TTS.
-- Seed membangun ulang deck item dan tag link, tetapi progress user terhubung langsung ke `Flashcard` sehingga tidak ikut dihapus.
+- Katalog kosakata bawaan diisi lewat tiga langkah: daftar kata dari `.apkg` (`flashcard:extract`),
+  isi kartu oleh AI (`gen:flashcard`), lalu `seed:flashcard`. Kontraknya di
+  [seed-flashcard.md](../seed-flashcard.md).
+- Daftar kata sumber: 6.697 kata N5-N1. Isi kartu belum digenerate saat perombakan
+  1 Oktober 2026.
+- Deck bawaan dibentuk dari tag taxonomy (`src/flashcard-data/taxonomy.json`), bukan disimpan
+  per deck. Satu kata bisa ada di beberapa deck dengan satu progres.
+- Seed tidak pernah menghapus kata: kata yang hilang dari fixture diberi `retiredAt`, sehingga
+  progres user tetap aman.
 
 ## Artikel
 
@@ -39,9 +43,7 @@
 
 ## Keterbatasan dan Risiko
 
-- Deck bawaan dapat dikelola dari `/admin/flashcard-deck` maupun script seed, tetapi keduanya
-  belum saling sinkron otomatis: seed menghapus note yang tidak ada di file, jadi penyuntingan
-  lewat UI perlu diekspor kembali ke `src/flashcard-deck-data/` lewat tombol Fixture.
+- Katalog flashcard hanya bisa diubah lewat fixture dan seed; editor admin-nya sudah dihapus.
 - Pembuatan pembahasan tetap lewat `npm run gen:explanation` karena generator menulis ke file
   fixture di repository, bukan ke database. Peninjauan dan persetujuannya sudah ada di
   `/admin/explanation`.

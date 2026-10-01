@@ -190,10 +190,11 @@ Sitekey Turnstile memang nilai publik — yang rahasia adalah secret key-nya.
 
 ## Keterbatasan dan Keputusan yang Ditunda
 
-- **Kartu deck bawaan flashcard belum dapat dilaporkan.** Bukan karena sulit dipasang: deck bawaan
-  **disalin** menjadi `FlashcardNote` milik user (guid berprefiks `sys:<slug>:`), sehingga memperbaiki
-  `FlashcardSystemNote` tidak memperbaiki salinan yang sudah ada di deck user. Menyelesaikan laporan
-  jenis ini butuh keputusan backfill tersendiri.
+- **Kartu flashcard belum dapat dilaporkan.** Sejak perombakan 1 Oktober 2026 hambatan lamanya
+  hilang: kartu user kini MERUJUK kata di katalog (`FlashcardVocab`), tidak lagi menyalinnya,
+  jadi memperbaiki satu kata di fixture lalu seed langsung memperbaiki kartu semua user. Yang
+  belum ada hanya target laporan dan tombolnya; perbaikannya sendiri tetap lewat fixture karena
+  katalog tidak punya editor admin.
 - Tidak ada notifikasi ke admin saat laporan masuk; angkanya muncul di overview dan sidebar saja.
 - Pelapor tidak punya halaman status. Satu-satunya jalur umpan balik adalah balasan email opsional.
 - Tidak ada lampiran gambar.

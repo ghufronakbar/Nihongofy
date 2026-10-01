@@ -20,8 +20,7 @@ export default function robots(): MetadataRoute.Robots {
         // lebih spesifik mengalahkan `allow` di atasnya.
         "/exercises/",
         "/flashcard/add",
-        "/flashcard/browse",
-        "/flashcard/import",
+        "/flashcard/settings",
         "/flashcard/stats",
         "/flashcard/deck/",
         // Catatan buatan pengguna, belum ada moderasi. Dibuka untuk diindeks

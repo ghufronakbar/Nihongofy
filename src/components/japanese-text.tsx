@@ -1,9 +1,11 @@
 import { Fragment, type ReactNode } from "react";
 import { parseJapaneseMarkup, type MarkupSegment } from "@/lib/japanese-markup";
 
+const DEFAULT_UNDERLINE_CLASS = "underline underline-offset-4";
+
 function renderSegments(
   segments: MarkupSegment[],
-  opts: { hideFuriganaInUnderline: boolean; insideUnderline: boolean },
+  opts: { hideFuriganaInUnderline: boolean; insideUnderline: boolean; underlineClassName: string },
 ): ReactNode {
   return segments.map((segment, index) => {
     switch (segment.type) {
@@ -25,7 +27,7 @@ function renderSegments(
 
       case "underline":
         return (
-          <span key={index} className="underline underline-offset-4">
+          <span key={index} className={opts.underlineClassName}>
             {renderSegments(segment.children, { ...opts, insideUnderline: true })}
           </span>
         );
@@ -44,19 +46,36 @@ function renderSegments(
 }
 
 // Shared with JapanesePassage (japanese-passage.tsx), which renders one line/cell at a time.
-export function renderInlineJapanese(text: string, hideFuriganaInUnderline = false): ReactNode {
+// `underlineClassName` lets contexts that use __...__ as a highlight (flashcard
+// example sentences mark the target word) style it differently from exam
+// questions, where it is the literal 下線部 underline.
+export function renderInlineJapanese(
+  text: string,
+  hideFuriganaInUnderline = false,
+  underlineClassName = DEFAULT_UNDERLINE_CLASS,
+): ReactNode {
   const segments = parseJapaneseMarkup(text);
-  return renderSegments(segments, { hideFuriganaInUnderline, insideUnderline: false });
+  return renderSegments(segments, {
+    hideFuriganaInUnderline,
+    insideUnderline: false,
+    underlineClassName,
+  });
 }
 
 export function JapaneseText({
   text,
   hideFuriganaInUnderline = false,
+  underlineClassName,
   className,
 }: {
   text: string;
   hideFuriganaInUnderline?: boolean;
+  underlineClassName?: string;
   className?: string;
 }) {
-  return <span className={className}>{renderInlineJapanese(text, hideFuriganaInUnderline)}</span>;
+  return (
+    <span className={className}>
+      {renderInlineJapanese(text, hideFuriganaInUnderline, underlineClassName)}
+    </span>
+  );
 }
