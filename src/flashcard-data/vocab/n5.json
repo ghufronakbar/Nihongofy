@@ -734,7 +734,20 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v1",
         "generatedAt": "2026-10-01T00:32:07.192Z",
-        "doubt": "Bacaan pada masukan tertulis '2、3にち', bacaan yang benar adalah 'にさんにち'."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "keep",
+          "reason": "Kartu saat ini sudah tepat dengan bacaan にさんにち dan contoh kalimat yang natural; kejanggalan hanya terdapat pada data bacaan sumber.",
+          "previousDoubt": "Bacaan pada masukan tertulis '2、3にち', bacaan yang benar adalah 'にさんにち'.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.525Z",
+          "source": {
+            "word": "2、3日",
+            "reading": "2、3にち",
+            "readingUncertain": true
+          },
+          "override": null
+        }
       }
     },
     {
@@ -12225,7 +12238,20 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v2",
         "generatedAt": "2026-10-01T00:53:55.381Z",
-        "doubt": "Bacaan standar modern untuk sembilan orang adalah きゅうにん. Bacaan くにん sangat jarang digunakan."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "keep",
+          "reason": "Bacaan standar modern untuk 九人 adalah きゅうにん, dan kartu yang ada sudah memuat bacaan serta contoh yang tepat untuk level N5.",
+          "previousDoubt": "Bacaan standar modern untuk sembilan orang adalah きゅうにん. Bacaan くにん sangat jarang digunakan.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.530Z",
+          "source": {
+            "word": "九人",
+            "reading": "くにん",
+            "readingUncertain": true
+          },
+          "override": null
+        }
       }
     },
     {
@@ -13752,9 +13778,9 @@
     {
       "key": "介護士/介護士さん|かいごし・かいごしさん",
       "order": 292,
-      "word": "介護士/介護士さん",
-      "reading": "かいごし・かいごしさん",
-      "readingUncertain": true,
+      "word": "介護士",
+      "reading": "かいごし",
+      "readingUncertain": false,
       "hints": [
         "Nurse / CareWorker"
       ],
@@ -13766,34 +13792,51 @@
         "ms~9n!w6|m"
       ],
       "content": {
-        "word": "{介護士|かいごし}/{介護士|かいごし}さん",
+        "word": "{介護士|かいごし}",
         "meaningsId": [
           "perawat lansia",
           "pengasuh lansia"
         ],
         "meaningsEn": [
-          "caregiver",
-          "care worker"
+          "care worker",
+          "caregiver"
         ],
         "examples": [
           {
-            "jp": "__{介護士|かいごし}さん__はとても{親切|しんせつ}です。",
-            "id": "Perawat lansia itu sangat ramah.",
-            "en": "The care worker is very kind."
+            "jp": "{姉|あね}は__{介護士|かいごし}__として{働|はたら}いています。",
+            "id": "Kakak perempuan saya bekerja sebagai perawat lansia.",
+            "en": "My older sister works as a care worker."
           }
         ],
-        "notes": "Gabungan dari bentuk standar {介護士|かいごし} dan bentuk sapaan akrab {介護士|かいごし}さん.",
+        "notes": "Dalam percakapan sehari-hari sering disapa atau disebut {介護士|かいごし}さん.",
         "tags": [
           "noun",
           "people",
-          "work"
+          "work",
+          "health"
         ]
       },
       "ai": {
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v2",
         "generatedAt": "2026-10-01T00:53:54.058Z",
-        "doubt": "Entri menggabungkan dua bentuk sekaligus (介護士 dan 介護士さん) dengan garis miring."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "replace",
+          "reason": "Entri sumber menggabungkan bentuk dasar dan bentuk sapaan dengan garis miring; bentuk baku yang tepat adalah 介護士.",
+          "previousDoubt": "Entri menggabungkan dua bentuk sekaligus (介護士 dan 介護士さん) dengan garis miring.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.530Z",
+          "source": {
+            "word": "介護士/介護士さん",
+            "reading": "かいごし・かいごしさん",
+            "readingUncertain": true
+          },
+          "override": {
+            "word": "介護士",
+            "reading": "かいごし"
+          }
+        }
       }
     },
     {
@@ -38852,7 +38895,7 @@
     {
       "key": "空オケ|からおけ",
       "order": 827,
-      "word": "空オケ",
+      "word": "カラオケ",
       "reading": "からおけ",
       "readingUncertain": false,
       "hints": [
@@ -38866,7 +38909,7 @@
         "EVJS}9/AI."
       ],
       "content": {
-        "word": "{空|から}オケ",
+        "word": "カラオケ",
         "meaningsId": [
           "karaoke"
         ],
@@ -38875,15 +38918,15 @@
         ],
         "examples": [
           {
-            "jp": "{友達|ともだち}と__{空|から}オケ__に{行|い}きました。",
+            "jp": "{友達|ともだち}と__カラオケ__に{行|い}きました。",
             "id": "Saya pergi karaoke bersama teman.",
             "en": "I went to karaoke with my friend."
           }
         ],
-        "notes": "Umumnya ditulis sepenuhnya dengan katakana yaitu カラオケ. Singkatan dari {空|から} (kosong) dan オーケストラ (orkestra).",
+        "notes": "Berasal dari gabungan kata {空|から} (kosong) dan singkatan オーケストラ (orkestra).",
         "tags": [
           "noun",
-          "usually-kana",
+          "abbreviation",
           "hobby"
         ]
       },
@@ -38891,7 +38934,23 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:03:07.131Z",
-        "doubt": "Penulisan kanji-katakana campuran ini sangat tidak lazim; kata ini hampir selalu ditulis murni dengan katakana カラオケ."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "replace",
+          "reason": "Penulisan 空オケ praktis tidak pernah dipakai dalam bahasa Jepang sehari-hari dan selalu ditulis murni dengan katakana カラオケ.",
+          "previousDoubt": "Penulisan kanji-katakana campuran ini sangat tidak lazim; kata ini hampir selalu ditulis murni dengan katakana カラオケ.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.530Z",
+          "source": {
+            "word": "空オケ",
+            "reading": "からおけ",
+            "readingUncertain": false
+          },
+          "override": {
+            "word": "カラオケ",
+            "reading": "からおけ"
+          }
+        }
       }
     },
     {

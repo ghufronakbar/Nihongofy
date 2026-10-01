@@ -15670,7 +15670,7 @@
     {
       "key": "使える|つかえる",
       "order": 327,
-      "word": "使える",
+      "word": "仕える",
       "reading": "つかえる",
       "readingUncertain": false,
       "hints": [
@@ -15684,7 +15684,7 @@
         "CEMJ}%a*wp"
       ],
       "content": {
-        "word": "{使|つか}える",
+        "word": "{仕|つか}える",
         "meaningsId": [
           "mengabdi",
           "melayani",
@@ -15696,12 +15696,12 @@
         ],
         "examples": [
           {
-            "jp": "{長年|ながねん}{同|おな}じ{主君|しゅくん}に__{使|つか}えて__きた{武士|ぶし}の{物語|ものがたり}を{読|よ}んだ。",
+            "jp": "{長年|ながねん}{同|おな}じ{主君|しゅくん}に__{仕|つか}えて__きた{武士|ぶし}の{物語|ものがたり}を{読|よ}んだ。",
             "id": "Saya membaca kisah tentang samurai yang mengabdi pada tuan yang sama selama bertahun-tahun.",
             "en": "I read a story about a samurai who served the same lord for many years."
           }
         ],
-        "notes": "Untuk arti mengabdi atau melayani, kata ini jauh lebih umum ditulis {仕|つか}える. Berbeda dengan {使|つか}える sebagai bentuk potensial dari {使|つか}う yang berarti bisa dipakai.",
+        "notes": "Umumnya memakai partikel に ({主君|しゅくん}に{仕|つか}える). Jangan keliru dengan {使|つか}える (bentuk potensial dari {使|つか}う yang berarti bisa digunakan).",
         "tags": [
           "verb-ichidan"
         ]
@@ -15710,7 +15710,23 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:33:32.205Z",
-        "doubt": "Makna melayani atau bekerja untuk umumnya ditulis {仕|つか}える, meski {使|つか}える kadang digunakan sebagai varian penulisan."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "replace",
+          "reason": "Bentuk baku untuk arti melayani atau mengabdi adalah {仕|つか}える, sedangkan {使|つか}える hampir selalu dipahami sebagai bentuk potensial dari {使|つか}う.",
+          "previousDoubt": "Makna melayani atau bekerja untuk umumnya ditulis {仕|つか}える, meski {使|つか}える kadang digunakan sebagai varian penulisan.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.666Z",
+          "source": {
+            "word": "使える",
+            "reading": "つかえる",
+            "readingUncertain": false
+          },
+          "override": {
+            "word": "仕える",
+            "reading": "つかえる"
+          }
+        }
       }
     },
     {
@@ -21446,9 +21462,9 @@
     {
       "key": "剥ぐ・剝ぐ|はぐ・剝ぐ",
       "order": 448,
-      "word": "剥ぐ・剝ぐ",
-      "reading": "はぐ・剝ぐ",
-      "readingUncertain": true,
+      "word": "剥ぐ",
+      "reading": "はぐ",
+      "readingUncertain": false,
       "hints": [
         "tear away"
       ],
@@ -21460,7 +21476,7 @@
         "KK[8Tsi;TY"
       ],
       "content": {
-        "word": "{剥|は}ぐ・{剝|は}ぐ",
+        "word": "{剥|は}ぐ",
         "meaningsId": [
           "mengelupas",
           "menguliti",
@@ -21473,12 +21489,12 @@
         ],
         "examples": [
           {
-            "jp": "{壁|かべ}の{古|ふる}いペンキをきれいに___{剥|は}いだ___。",
+            "jp": "{壁|かべ}の{古|ふる}いペンキをきれいに__{剥|は}いだ__。",
             "id": "Saya mengelupas cat lama di dinding hingga bersih.",
             "en": "I stripped the old paint cleanly off the wall."
           }
         ],
-        "notes": "Karakter {剝|は} adalah varian bentuk kanji dari {剥|は}. Keduanya dibaca はぐ.",
+        "notes": "Terkadang juga ditulis dengan varian kanji {剝|は}ぐ。",
         "tags": [
           "verb-godan"
         ]
@@ -21487,7 +21503,23 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:33:54.222Z",
-        "doubt": "Tulisan masukan mencantumkan dua varian kanji sekaligus (bentuk standar dan varian JIS/lama); keduanya dibaca はぐ."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "replace",
+          "reason": "Masukan menggabungkan bentuk standar dan varian kanji dengan titik tengah; bentuk baku tunggal yang umum adalah 剥ぐ.",
+          "previousDoubt": "Tulisan masukan mencantumkan dua varian kanji sekaligus (bentuk standar dan varian JIS/lama); keduanya dibaca はぐ.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.666Z",
+          "source": {
+            "word": "剥ぐ・剝ぐ",
+            "reading": "はぐ・剝ぐ",
+            "readingUncertain": true
+          },
+          "override": {
+            "word": "剥ぐ",
+            "reading": "はぐ"
+          }
+        }
       }
     },
     {
@@ -27919,7 +27951,7 @@
       "key": "声明|しょうみょう",
       "order": 583,
       "word": "声明",
-      "reading": "しょうみょう",
+      "reading": "せいめい",
       "readingUncertain": false,
       "hints": [
         "statement"
@@ -27944,24 +27976,41 @@
         ],
         "examples": [
           {
-            "jp": "{政府|せいふ}は{公式|こうしき}な___{声明|せいめい}___を{発表|はっぴょう}した。",
+            "jp": "{政府|せいふ}は{公式|こうしき}な__{声明|せいめい}__を{発表|はっぴょう}した。",
             "id": "Pemerintah merilis pernyataan resmi.",
             "en": "The government released an official statement."
           }
         ],
-        "notes": "Untuk arti pernyataan, kata ini dibaca せいめい. Bacaan しょうみょう merujuk pada seni melantunkan teks liturgi {仏教|ぶっきょう} (Buddha).",
+        "notes": "Untuk arti pernyataan resmi, kata ini dibaca せいめい. Bacaan しょうみょう merujuk pada seni melantunkan teks liturgi {仏教|ぶっきょう}.",
         "tags": [
           "noun",
           "verb-suru",
           "formal",
-          "politics"
+          "politics",
+          "communication"
         ]
       },
       "ai": {
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:34:26.068Z",
-        "doubt": "Bacaan sumber tertulis しょうみょう (senandung liturgi Buddha), tetapi petunjuk arti adalah statement yang seharusnya dibaca せいめい."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "revise",
+          "reason": "Tulisan kata sudah benar, tetapi bacaan disesuaikan menjadi せいめい sesuai arti yang dimaksud (statement) dan penanda target pada contoh diperbaiki.",
+          "previousDoubt": "Bacaan sumber tertulis しょうみょう (senandung liturgi Buddha), tetapi petunjuk arti adalah statement yang seharusnya dibaca せいめい.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.666Z",
+          "source": {
+            "word": "声明",
+            "reading": "しょうみょう",
+            "readingUncertain": false
+          },
+          "override": {
+            "word": "声明",
+            "reading": "せいめい"
+          }
+        }
       }
     },
     {
@@ -29244,7 +29293,20 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:34:22.484Z",
-        "doubt": "Bacaan standar dalam bahasa modern adalah にょうぼう. Bentuk にょうぼ jarang dan biasanya varian lisan arkais."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "keep",
+          "reason": "Kartu yang ada sudah tepat menggunakan bacaan standar にょうぼう dengan contoh dan catatan yang akurat; kejanggalan hanya terletak pada data bacaan sumber.",
+          "previousDoubt": "Bacaan standar dalam bahasa modern adalah にょうぼう. Bentuk にょうぼ jarang dan biasanya varian lisan arkais.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.666Z",
+          "source": {
+            "word": "女房",
+            "reading": "にょうぼ",
+            "readingUncertain": true
+          },
+          "override": null
+        }
       }
     },
     {
@@ -35907,9 +35969,9 @@
     {
       "key": "御袋,お袋|おふくろ",
       "order": 750,
-      "word": "御袋,お袋",
+      "word": "お袋",
       "reading": "おふくろ",
-      "readingUncertain": true,
+      "readingUncertain": false,
       "hints": [
         "mom"
       ],
@@ -35921,7 +35983,7 @@
         "AduZ8AFibH"
       ],
       "content": {
-        "word": "{御袋|おふくろ},お{袋|ふくろ}",
+        "word": "お{袋|ふくろ}",
         "meaningsId": [
           "ibu",
           "emak",
@@ -35929,19 +35991,20 @@
         ],
         "meaningsEn": [
           "mom",
-          "one's mother"
+          "mother"
         ],
         "examples": [
           {
-            "jp": "__{御袋|おふくろ}__が{作|つく}ってくれた{料理|りょうり}が{無性|むしょう}に{食|た}べたい。",
+            "jp": "__{お袋|ふくろ}__が{作|つく}ってくれた{料理|りょうり}が{無性|むしょう}に{食|た}べたい。",
             "id": "Saya tiba-tiba sangat ingin makan masakan ibu.",
             "en": "I suddenly really want to eat my mom's home cooking."
           }
         ],
-        "notes": "Sebutan akrab untuk ibu kandung sendiri yang umumnya dipakai oleh laki-laki dalam percakapan kasual.",
+        "notes": "Sebutan akrab untuk ibu sendiri yang umumnya dipakai laki-laki dalam percakapan kasual. Dapat juga ditulis {御袋|おふくろ}.",
         "tags": [
           "noun",
           "casual",
+          "masculine",
           "family"
         ]
       },
@@ -35949,7 +36012,23 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:35:31.955Z",
-        "doubt": "Tulisan masukan menggabungkan dua varian penulisan dengan tanda koma."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "replace",
+          "reason": "Entri sumber menggabungkan dua varian penulisan dengan tanda koma. Dipilih bentuk yang paling umum digunakan, yaitu お袋.",
+          "previousDoubt": "Tulisan masukan menggabungkan dua varian penulisan dengan tanda koma.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.666Z",
+          "source": {
+            "word": "御袋,お袋",
+            "reading": "おふくろ",
+            "readingUncertain": true
+          },
+          "override": {
+            "word": "お袋",
+            "reading": "おふくろ"
+          }
+        }
       }
     },
     {
@@ -46296,8 +46375,8 @@
         "examples": [
           {
             "jp": "{激|はげ}しい__{暴風雨|ぼうふうう}__で{木|き}が{倒|たお}れ、{電車|でんしゃ}が{止|と}まった。",
-            "id": "Akibat badai yang dahsyat, pohon tumbang dan kereta berhenti beroperasi.",
-            "en": "Due to the heavy rainstorm, trees fell and trains stopped running."
+            "id": "Akibat badai dahsyat, pohon tumbang dan kereta berhenti beroperasi.",
+            "en": "Due to the violent rainstorm, trees fell and trains stopped running."
           }
         ],
         "notes": "Secara umum dibaca ぼうふうう. Tulisan ini kadang dibaca あらし dalam konteks sastra, tetapi kata あらし biasanya ditulis {嵐|あらし}.",
@@ -46311,7 +46390,20 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:36:04.699Z",
-        "doubt": "Bacaan standar untuk level JLPT adalah ぼうふうう. Bacaan あらし biasanya ditulis dengan kanji 嵐, meski kadang dipakai sebagai jukujikun untuk 暴風雨 dalam ragam sastra."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "revise",
+          "reason": "Tulisan kanji sudah benar tetapi bacaan standar untuk kosakata N1 adalah ぼうふうう, sedangkan あらし adalah jukujikun sastra.",
+          "previousDoubt": "Bacaan standar untuk level JLPT adalah ぼうふうう. Bacaan あらし biasanya ditulis dengan kanji 嵐, meski kadang dipakai sebagai jukujikun untuk 暴風雨 dalam ragam sastra.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.666Z",
+          "source": {
+            "word": "暴風雨",
+            "reading": "あらし",
+            "readingUncertain": true
+          },
+          "override": null
+        }
       }
     },
     {
@@ -65912,7 +66004,7 @@
       "key": "至れり尽くせり|いたれりことごとくせり",
       "order": 1377,
       "word": "至れり尽くせり",
-      "reading": "いたれりことごとくせり",
+      "reading": "いたれりつくせり",
       "readingUncertain": false,
       "hints": [
         "perfect, complete, thorough, leaving nothing to be desired, more than satisfactory"
@@ -65952,7 +66044,23 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:37:41.320Z",
-        "doubt": "Bacaan sumber 'いたれりことごとくせり' keliru; bacaan yang benar adalah いたれりつくせり."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "keep",
+          "reason": "Bacaan sumber keliru memasukkan bacaan ことごとくせり padahal bacaan ungkapan yang benar adalah いたれりつくせり, dan kartu yang ada sudah memakai furigana yang tepat.",
+          "previousDoubt": "Bacaan sumber 'いたれりことごとくせり' keliru; bacaan yang benar adalah いたれりつくせり.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.667Z",
+          "source": {
+            "word": "至れり尽くせり",
+            "reading": "いたれりことごとくせり",
+            "readingUncertain": false
+          },
+          "override": {
+            "word": "至れり尽くせり",
+            "reading": "いたれりつくせり"
+          }
+        }
       }
     },
     {
@@ -66595,7 +66703,7 @@
       "key": "荷造り|にずくり",
       "order": 1391,
       "word": "荷造り",
-      "reading": "にずくり",
+      "reading": "にづくり",
       "readingUncertain": false,
       "hints": [
         "packing"
@@ -66637,7 +66745,23 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:37:47.144Z",
-        "doubt": "Bacaan sumber にずくり keliru; ejaan baku dalam bahasa Jepang modern adalah にづくり."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "keep",
+          "reason": "Kartu saat ini sudah benar menggunakan bacaan baku {荷|に}{造|づく}り, dan kesalahan penulisan にずくり murni berasal dari data sumber.",
+          "previousDoubt": "Bacaan sumber にずくり keliru; ejaan baku dalam bahasa Jepang modern adalah にづくり.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.667Z",
+          "source": {
+            "word": "荷造り",
+            "reading": "にずくり",
+            "readingUncertain": false
+          },
+          "override": {
+            "word": "荷造り",
+            "reading": "にづくり"
+          }
+        }
       }
     },
     {
@@ -67553,7 +67677,7 @@
       "key": "行き詰まる|いきずまる",
       "order": 1411,
       "word": "行き詰まる",
-      "reading": "いきずまる",
+      "reading": "いきづまる",
       "readingUncertain": false,
       "hints": [
         "reach a dead end"
@@ -67593,7 +67717,23 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:37:45.085Z",
-        "doubt": "Bacaan standar kanji 詰まる pada kata majemuk ini adalah づまる."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "keep",
+          "reason": "Kartu yang ada sudah benar memperbaiki furigana ke bacaan baku づまる sesuai aturan gendai kanazukai dan menjelaskannya di catatan.",
+          "previousDoubt": "Bacaan standar kanji 詰まる pada kata majemuk ini adalah づまる.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.667Z",
+          "source": {
+            "word": "行き詰まる",
+            "reading": "いきずまる",
+            "readingUncertain": false
+          },
+          "override": {
+            "word": "行き詰まる",
+            "reading": "いきづまる"
+          }
+        }
       }
     },
     {
@@ -68827,7 +68967,7 @@
       "key": "見所|けんじょ",
       "order": 1438,
       "word": "見所",
-      "reading": "けんじょ",
+      "reading": "みどころ",
       "readingUncertain": false,
       "hints": [
         "point worthy of note; highlight; high point; main attraction; thing to note"
@@ -68840,35 +68980,52 @@
         "NEq,w0?q|k"
       ],
       "content": {
-        "word": "{見所|けんじょ}",
+        "word": "{見所|みどころ}",
         "meaningsId": [
           "sorotan utama",
           "daya tarik utama",
-          "tempat menarik"
+          "bagian menarik",
+          "prospek baik"
         ],
         "meaningsEn": [
           "highlight",
+          "main attraction",
           "point of interest",
-          "main attraction"
+          "promise"
         ],
         "examples": [
           {
-            "jp": "この{伝統|でんとう}{芸能|げいのう}の__{見所|けんじょ}__は{後半|こうはん}の{踊|おど}りだ。",
-            "id": "Sorotan utama dari seni pertunjukan tradisional ini adalah tarian pada bagian kedua.",
-            "en": "The highlight of this traditional performing art is the dance in the second half."
+            "jp": "この{映画|えいが}の__{見所|みどころ}__は{最後|さいご}のアクションシーンだ。",
+            "id": "Sorotan utama film ini adalah adegan aksi terakhirnya.",
+            "en": "The highlight of this movie is the final action scene."
           }
         ],
-        "notes": "Kata ini jauh lebih umum dibaca {見所|みどころ}. Dalam konteks teater Noh, bacaan {見所|けんじょ} juga merujuk pada tempat duduk penonton.",
+        "notes": "Sering juga ditulis {見|み}どころ. Selain sorotan utama, kata ini juga dapat bermakna prospek atau masa depan yang menjanjikan ({見所|みどころ}がある).",
         "tags": [
-          "noun",
-          "art"
+          "noun"
         ]
       },
       "ai": {
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:38:00.492Z",
-        "doubt": "Bacaan sumber けんじょ tergolong arkais/khusus (dan ragam teater Noh); dalam bahasa Jepang modern dan JLPT kata ini hampir selalu dibaca みどころ."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "revise",
+          "reason": "Tulisan kanji sudah benar, tetapi bacaan sumber けんじょ keliru untuk arti yang dimaksud hints. Bacaan baku modern untuk arti sorotan utama adalah みどころ.",
+          "previousDoubt": "Bacaan sumber けんじょ tergolong arkais/khusus (dan ragam teater Noh); dalam bahasa Jepang modern dan JLPT kata ini hampir selalu dibaca みどころ.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.667Z",
+          "source": {
+            "word": "見所",
+            "reading": "けんじょ",
+            "readingUncertain": false
+          },
+          "override": {
+            "word": "見所",
+            "reading": "みどころ"
+          }
+        }
       }
     },
     {
@@ -69260,8 +69417,8 @@
     {
       "key": "見覚ましい|みさましい",
       "order": 1447,
-      "word": "見覚ましい",
-      "reading": "みさましい",
+      "word": "目覚ましい",
+      "reading": "めざましい",
       "readingUncertain": false,
       "hints": [
         "amazing"
@@ -69274,25 +69431,27 @@
         "mfPv${VW/C"
       ],
       "content": {
-        "word": "{見覚|みさ}ましい",
+        "word": "{目覚|めざ}ましい",
         "meaningsId": [
           "luar biasa",
           "mengagumkan",
-          "mencolok"
+          "mencolok",
+          "hebat"
         ],
         "meaningsEn": [
           "remarkable",
           "splendid",
-          "amazing"
+          "brilliant",
+          "striking"
         ],
         "examples": [
           {
-            "jp": "{彼|かれ}の{日本語|にほんご}の{上達|じょうたつ}には__{見覚|みさ}ましい__ものがある。",
-            "id": "Kemajuan bahasa Jepangnya sangat mengagumkan.",
-            "en": "His progress in Japanese is remarkable."
+            "jp": "{彼|かれ}の{成長|せいちょう}には__{目覚|めざ}ましい__ものがある。",
+            "id": "Perkembangannya sangat mengagumkan.",
+            "en": "His growth is remarkable."
           }
         ],
-        "notes": "Kata ini hampir selalu ditulis {目覚|めざ}ましい dan dibaca めざましい; bentuk dengan kanji {見|み} dan bacaan みさましい di sumber merupakan kesalahan.",
+        "notes": "Sering dipakai dalam pola ～には{目覚|めざ}ましいものがある untuk mengungkapkan perkembangan atau kemajuan yang luar biasa.",
         "tags": [
           "i-adjective"
         ]
@@ -69301,7 +69460,23 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:38:04.726Z",
-        "doubt": "Bentuk standar dan lazim adalah {目覚|めざ}ましい (めざましい, luar biasa/mengagumkan). Entri sumber 見覚ましい (みさましい) merupakan kesalahan ketik dari kata tersebut."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "replace",
+          "reason": "Kata 見覚ましい (みさましい) tidak ada dalam bahasa Jepang dan merupakan salah ketik dari kata N1 目覚ましい (めざましい) yang bermakna mengagumkan atau luar biasa.",
+          "previousDoubt": "Bentuk standar dan lazim adalah {目覚|めざ}ましい (めざましい, luar biasa/mengagumkan). Entri sumber 見覚ましい (みさましい) merupakan kesalahan ketik dari kata tersebut.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.667Z",
+          "source": {
+            "word": "見覚ましい",
+            "reading": "みさましい",
+            "readingUncertain": false
+          },
+          "override": {
+            "word": "目覚ましい",
+            "reading": "めざましい"
+          }
+        }
       }
     },
     {
@@ -77289,7 +77464,21 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:38:53.826Z",
-        "doubt": "Masukan mengandung tanda titik (句点) yang tidak lazim pada entri kosakata; kata yang benar adalah 鍛える."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "retire",
+          "reason": "Entri sumber keliru menyertakan tanda titik (句点); bentuk kosakata yang benar adalah 鍛える.",
+          "previousDoubt": "Masukan mengandung tanda titik (句点) yang tidak lazim pada entri kosakata; kata yang benar adalah 鍛える.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T02:01:49.009Z",
+          "source": {
+            "word": "鍛える。",
+            "reading": "きたえる。",
+            "readingUncertain": false
+          },
+          "override": null,
+          "duplicateOf": "鍛える|きたえる"
+        }
       }
     },
     {
@@ -77439,7 +77628,7 @@
       "key": "長続き|ながつずき",
       "order": 1618,
       "word": "長続き",
-      "reading": "ながつずき",
+      "reading": "ながつづき",
       "readingUncertain": false,
       "hints": [
         "lasting long"
@@ -77452,11 +77641,11 @@
         "h`&OXz%~R:"
       ],
       "content": {
-        "word": "{長続|ながつづ}き",
+        "word": "{長|なが}{続|つづ}き",
         "meaningsId": [
           "bertahan lama",
           "awet",
-          "berlangsung lama"
+          "berlanjut lama"
         ],
         "meaningsEn": [
           "lasting long",
@@ -77464,12 +77653,12 @@
         ],
         "examples": [
           {
-            "jp": "{無理|むり}なダイエットはなかなか__{長続|ながつづ}きしない__。",
+            "jp": "{無理|むり}なダイエットはなかなか__{長|なが}{続|つづ}きしない__。",
             "id": "Diet yang memaksakan diri biasanya sulit bertahan lama.",
             "en": "An unreasonable diet rarely lasts long."
           }
         ],
-        "notes": "Sering digunakan dalam bentuk negatif seperti {長続|ながつづ}きしない (tidak bertahan lama)。",
+        "notes": "Sering digunakan dalam bentuk negatif seperti {長|なが}{続|つづ}きしない (tidak bertahan lama).",
         "tags": [
           "noun",
           "verb-suru"
@@ -77479,7 +77668,23 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:38:53.826Z",
-        "doubt": "Bacaan sumber ながつずき keliru; ejaan kana standar adalah ながつづき (dari kata kerja 続く/つづく)."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "revise",
+          "reason": "Tulisan kata 長続き sudah benar, tetapi furigana diperbaiki menjadi pemisahan per kanji {長|なが}{続|つづ}き dengan bacaan baku ながつづき.",
+          "previousDoubt": "Bacaan sumber ながつずき keliru; ejaan kana standar adalah ながつづき (dari kata kerja 続く/つづく).",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.667Z",
+          "source": {
+            "word": "長続き",
+            "reading": "ながつずき",
+            "readingUncertain": false
+          },
+          "override": {
+            "word": "長続き",
+            "reading": "ながつづき"
+          }
+        }
       }
     },
     {
