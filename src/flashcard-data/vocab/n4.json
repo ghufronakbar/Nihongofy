@@ -3602,7 +3602,20 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:12:10.406Z",
-        "doubt": "Bacaan sumber hanya つく untuk entri frasa テレビがつく (seharusnya てれびがつく)."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "keep",
+          "reason": "Kartu sudah tepat dan bermanfaat bagi pelajar sebagai frasa ungkapan; kejanggalan bacaan sumber hanya karena format sumber mencatat kata kerja つく beserta kolokasinyanya.",
+          "previousDoubt": "Bacaan sumber hanya つく untuk entri frasa テレビがつく (seharusnya てれびがつく).",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.555Z",
+          "source": {
+            "word": "テレビがつく",
+            "reading": "つく",
+            "readingUncertain": true
+          },
+          "override": null
+        }
       }
     },
     {
@@ -6869,7 +6882,20 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:12:12.713Z",
-        "doubt": "Bacaan sumber hanya あう karena diambil dari bagian kata kerjanya saja, bacaan lengkapnya adalah じこにあう."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "keep",
+          "reason": "Kartu sudah tepat dan lengkap; data sumber hanya mencatat bacaan kata kerjanya saja karena berasal dari format buku teks, sementara furigana kartu sudah melengkapinya dengan benar.",
+          "previousDoubt": "Bacaan sumber hanya あう karena diambil dari bagian kata kerjanya saja, bacaan lengkapnya adalah じこにあう.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.555Z",
+          "source": {
+            "word": "事故に遭う",
+            "reading": "あう",
+            "readingUncertain": true
+          },
+          "override": null
+        }
       }
     },
     {
@@ -9523,11 +9549,11 @@
         ],
         "meaningsEn": [
           "to stamp a seal",
-          "to stamp one's seal"
+          "to affix a seal"
         ],
         "examples": [
           {
-            "jp": "この{書類|しょるい}に___{判子|はんこ}を{押|お}して___ください。",
+            "jp": "この{書類|しょるい}に__{判子|はんこ}を{押|お}して__ください。",
             "id": "Tolong bubuhkan cap stempel pada dokumen ini.",
             "en": "Please stamp your seal on this document."
           }
@@ -9535,14 +9561,28 @@
         "notes": "",
         "tags": [
           "expression",
-          "verb-godan"
+          "verb-godan",
+          "work"
         ]
       },
       "ai": {
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:12:06.529Z",
-        "doubt": "Bacaan masukan hanya tertulis おす (bagian kata kerjanya saja), seharusnya はんこをおす secara utuh."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "revise",
+          "reason": "Tulisan kata sudah tepat sebagai ungkapan dan bacaan lengkapnya adalah はんこをおす, tetapi contoh kalimat pada kartu sebelumnya memakai tiga garis bawah sehingga perlu diperbaiki.",
+          "previousDoubt": "Bacaan masukan hanya tertulis おす (bagian kata kerjanya saja), seharusnya はんこをおす secara utuh.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.555Z",
+          "source": {
+            "word": "判子を押す",
+            "reading": "おす",
+            "readingUncertain": true
+          },
+          "override": null
+        }
       }
     },
     {
@@ -10071,7 +10111,20 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:14:32.994Z",
-        "doubt": "Petunjuk sumber menyebut 'to be employed' yang umumnya menggunakan kanji {勤|つと}める; {務|つと}める lazimnya berarti menjabat atau menjalankan peran."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "keep",
+          "reason": "Isi kartu sudah akurat untuk kanji 務める (menjabat/bertugas) dan catatannya sudah menjelaskan perbedaan dengan 勤める.",
+          "previousDoubt": "Petunjuk sumber menyebut 'to be employed' yang umumnya menggunakan kanji {勤|つと}める; {務|つと}める lazimnya berarti menjabat atau menjalankan peran.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.555Z",
+          "source": {
+            "word": "務める",
+            "reading": "つとめる",
+            "readingUncertain": false
+          },
+          "override": null
+        }
       }
     },
     {
@@ -11223,7 +11276,20 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:14:36.956Z",
-        "doubt": "Di tingkat N4 kata ini lazimnya dibaca びっくり; bacaan sumber きっきょう adalah bacaan kanji (on'yomi) yang sangat jarang dipakai."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "keep",
+          "reason": "Entri sumber N4 jelas merujuk pada kata びっくり yang ditulis kanji 吃驚 (ateji). Kartu saat ini sudah mengoreksi bacaan ke びっくり dengan contoh dan penjelasan yang tepat.",
+          "previousDoubt": "Di tingkat N4 kata ini lazimnya dibaca びっくり; bacaan sumber きっきょう adalah bacaan kanji (on'yomi) yang sangat jarang dipakai.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.555Z",
+          "source": {
+            "word": "吃驚",
+            "reading": "きっきょう",
+            "readingUncertain": true
+          },
+          "override": null
+        }
       }
     },
     {
@@ -19313,7 +19379,20 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:14:36.062Z",
-        "doubt": "Bacaan pada masukan hanya かける, dilengkapi menjadi いすにかける."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "keep",
+          "reason": "Kartu sudah akurat dan natural untuk level N4; ketidaklengkapan bacaan sumber yang hanya mencatat かける sudah diatasi dengan benar pada furigana kartu.",
+          "previousDoubt": "Bacaan pada masukan hanya かける, dilengkapi menjadi いすにかける.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.556Z",
+          "source": {
+            "word": "椅子に掛ける",
+            "reading": "かける",
+            "readingUncertain": true
+          },
+          "override": null
+        }
       }
     },
     {
@@ -25692,7 +25771,20 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:15:03.521Z",
-        "doubt": "Bacaan pada sumber hanya mencatat まもる karena mengacu pada kata kerja dasarnya; bacaan lengkap frasa ini adalah やくそくをまもる."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "keep",
+          "reason": "Bacaan sumber hanya mencatat kata kerja まもる karena berasal dari catatan kolokasi, tetapi kartu sudah memuat furigana lengkap dan tepat untuk frasa ini.",
+          "previousDoubt": "Bacaan pada sumber hanya mencatat まもる karena mengacu pada kata kerja dasarnya; bacaan lengkap frasa ini adalah やくそくをまもる.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.556Z",
+          "source": {
+            "word": "約束を守る",
+            "reading": "まもる",
+            "readingUncertain": true
+          },
+          "override": null
+        }
       }
     },
     {
@@ -25739,7 +25831,20 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:15:01.048Z",
-        "doubt": "Bacaan pada masukan hanya やぶる; bentuk lengkapnya dibaca やくそくをやぶる."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "keep",
+          "reason": "Kartu sudah lengkap dan tepat; ketidaksesuaian hanya pada data sumber yang hanya mencatat bacaan kata kerjanya saja.",
+          "previousDoubt": "Bacaan pada masukan hanya やぶる; bentuk lengkapnya dibaca やくそくをやぶる.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.556Z",
+          "source": {
+            "word": "約束を破る",
+            "reading": "やぶる",
+            "readingUncertain": true
+          },
+          "override": null
+        }
       }
     },
     {

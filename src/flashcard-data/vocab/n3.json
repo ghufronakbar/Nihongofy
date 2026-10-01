@@ -23866,7 +23866,7 @@
       "key": "最善|ざいぜん",
       "order": 503,
       "word": "最善",
-      "reading": "ざいぜん",
+      "reading": "さいぜん",
       "readingUncertain": false,
       "hints": [
         "the very best最もよいこと。"
@@ -23905,7 +23905,23 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:19:53.060Z",
-        "doubt": "Bacaan pada sumber tertulis ざいぜん (keliru); bacaan yang benar adalah さいぜん."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "revise",
+          "reason": "Tulisan kata sudah tepat, tetapi bacaan sumber keliru (ざいぜん seharusnya さいぜん). Furigana kartu dipastikan menggunakan bacaan baku さいぜん.",
+          "previousDoubt": "Bacaan pada sumber tertulis ざいぜん (keliru); bacaan yang benar adalah さいぜん.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.585Z",
+          "source": {
+            "word": "最善",
+            "reading": "ざいぜん",
+            "readingUncertain": false
+          },
+          "override": {
+            "word": "最善",
+            "reading": "さいぜん"
+          }
+        }
       }
     },
     {
@@ -30170,7 +30186,20 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:19:58.667Z",
-        "doubt": "Bacaan masukan mengandung kesalahan cetak '可能かのうせい'; bacaan yang tepat adalah かのうせい."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "keep",
+          "reason": "Kesalahan cetak hanya ada pada bacaan sumber, sedangkan isi kartu saat ini sudah menggunakan bacaan dan furigana yang benar serta alami.",
+          "previousDoubt": "Bacaan masukan mengandung kesalahan cetak '可能かのうせい'; bacaan yang tepat adalah かのうせい.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.585Z",
+          "source": {
+            "word": "可能性",
+            "reading": "可能かのうせい",
+            "readingUncertain": true
+          },
+          "override": null
+        }
       }
     },
     {
@@ -32594,7 +32623,7 @@
       "key": "国際化|こくさいてき",
       "order": 687,
       "word": "国際化",
-      "reading": "こくさいてき",
+      "reading": "こくさいか",
       "readingUncertain": false,
       "hints": [
         "globalization国際的な規模に広がること。"
@@ -32634,7 +32663,23 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:20:11.429Z",
-        "doubt": "Bacaan pada sumber tertulis こくさいてき, kemungkinan tertukar dengan {国際的|こくさいてき}. Bacaan yang tepat untuk {国際化|こくさいか} adalah こくさいか."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "keep",
+          "reason": "Bacaan pada data sumber keliru (tertukar dengan {国際的|こくさいてき}), sedangkan kartu yang ada sudah memuat bacaan furigana dan arti yang benar untuk {国際化|こくさいか}.",
+          "previousDoubt": "Bacaan pada sumber tertulis こくさいてき, kemungkinan tertukar dengan {国際的|こくさいてき}. Bacaan yang tepat untuk {国際化|こくさいか} adalah こくさいか.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.585Z",
+          "source": {
+            "word": "国際化",
+            "reading": "こくさいてき",
+            "readingUncertain": false
+          },
+          "override": {
+            "word": "国際化",
+            "reading": "こくさいか"
+          }
+        }
       }
     },
     {
@@ -37761,7 +37806,7 @@
             "en": "Since a light rain started falling, I put up an umbrella."
           }
         ],
-        "notes": "Bacaan {小雨|しょうう} juga ada, tetapi biasanya hanya dipakai dalam istilah meteorologi resmi.",
+        "notes": "Dapat juga dibaca {小雨|しょうう} dalam istilah teknis meteorologi, tetapi bacaan umum sehari-hari dan untuk JLPT adalah こさめ.",
         "tags": [
           "noun",
           "weather"
@@ -37771,7 +37816,20 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:20:19.871Z",
-        "doubt": "Bacaan yang umum dan diujikan di JLPT adalah こさめ. Bacaan しょうう adalah istilah teknis meteorologi."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "revise",
+          "reason": "Tulisan kanji sudah benar, tetapi bacaan sumber しょうう merupakan istilah teknis meteorologi sehingga furigana diperbaiki ke bacaan umum こさめ.",
+          "previousDoubt": "Bacaan yang umum dan diujikan di JLPT adalah こさめ. Bacaan しょうう adalah istilah teknis meteorologi.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.585Z",
+          "source": {
+            "word": "小雨",
+            "reading": "しょうう",
+            "readingUncertain": true
+          },
+          "override": null
+        }
       }
     },
     {
@@ -39657,7 +39715,7 @@
       "key": "幼馴染み|おさななじみみ",
       "order": 837,
       "word": "幼馴染み",
-      "reading": "おさななじみみ",
+      "reading": "おさななじみ",
       "readingUncertain": false,
       "hints": [
         "childhood friend"
@@ -39694,7 +39752,23 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:20:31.305Z",
-        "doubt": "Bacaan pada masukan tertulis おさななじみみ (kelebihan satu kana み); bacaan yang benar adalah おさななじみ."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "keep",
+          "reason": "Tulisan kata sudah baku dan kartu saat ini sudah memakai bacaan yang benar (おさななじみ); kelebihan kana み hanya kesalahan ketik pada data sumber.",
+          "previousDoubt": "Bacaan pada masukan tertulis おさななじみみ (kelebihan satu kana み); bacaan yang benar adalah おさななじみ.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.586Z",
+          "source": {
+            "word": "幼馴染み",
+            "reading": "おさななじみみ",
+            "readingUncertain": false
+          },
+          "override": {
+            "word": "幼馴染み",
+            "reading": "おさななじみ"
+          }
+        }
       }
     },
     {
@@ -45881,9 +45955,9 @@
     {
       "key": "折り畳み傘/折り畳み|おりたたみがさ",
       "order": 968,
-      "word": "折り畳み傘/折り畳み",
+      "word": "折り畳み傘",
       "reading": "おりたたみがさ",
-      "readingUncertain": true,
+      "readingUncertain": false,
       "hints": [
         "folding umbrella"
       ],
@@ -45895,23 +45969,22 @@
         "Rfrm}&}g=g"
       ],
       "content": {
-        "word": "{折|お}り{畳|たた}み{傘|がさ}/{折|お}り{畳|たた}み",
+        "word": "{折|お}り{畳|たた}み{傘|がさ}",
         "meaningsId": [
-          "payung lipat",
-          "lipatan"
+          "payung lipat"
         ],
         "meaningsEn": [
           "folding umbrella",
-          "folding"
+          "collapsible umbrella"
         ],
         "examples": [
           {
             "jp": "{雨|あめ}が{降|ふ}りそうなので、__{折|お}り{畳|たた}み{傘|がさ}__を{持|も}っていきます。",
             "id": "Karena sepertinya akan hujan, saya membawa payung lipat.",
-            "en": "It looks like rain, so I will take a folding umbrella."
+            "en": "It looks like it might rain, so I will take a folding umbrella."
           }
         ],
-        "notes": "Tulisan ini menggabungkan dua kata: {折|お}り{畳|たた}み{傘|がさ} (payung lipat) dan {折|お}り{畳|たた}み (hal melipat atau dapat dilipat).",
+        "notes": "Sering juga ditulis dengan kana pada bagian tengahnya: {折|お}りたたみ{傘|がさ}。",
         "tags": [
           "noun",
           "weather"
@@ -45921,7 +45994,23 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:20:53.958Z",
-        "doubt": "Masukan menggabungkan dua entri dengan garis miring (折り畳み傘 dan 折り畳み), sedangkan reading sumber hanya mencakup yang pertama."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "replace",
+          "reason": "Entri sumber menggabungkan dua kata dengan garis miring. Berdasarkan bacaan dan arti folding umbrella, bentuk yang tepat adalah 折り畳み傘.",
+          "previousDoubt": "Masukan menggabungkan dua entri dengan garis miring (折り畳み傘 dan 折り畳み), sedangkan reading sumber hanya mencakup yang pertama.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.586Z",
+          "source": {
+            "word": "折り畳み傘/折り畳み",
+            "reading": "おりたたみがさ",
+            "readingUncertain": true
+          },
+          "override": {
+            "word": "折り畳み傘",
+            "reading": "おりたたみがさ"
+          }
+        }
       }
     },
     {
@@ -64617,7 +64706,20 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:21:32.528Z",
-        "doubt": "Tulisan kanji untuk まさか tergolong ateji dan jauh lebih lazim ditulis dengan kana. Tulisan yang sama juga lazim dibaca まぎゃく (kebalikan total)."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "keep",
+          "reason": "Kartu sudah akurat dan sesuai untuk bacaan まさか, lengkap dengan catatan bahwa kata ini biasanya ditulis kana dan dapat dibaca まぎゃく.",
+          "previousDoubt": "Tulisan kanji untuk まさか tergolong ateji dan jauh lebih lazim ditulis dengan kana. Tulisan yang sama juga lazim dibaca まぎゃく (kebalikan total).",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.586Z",
+          "source": {
+            "word": "真逆",
+            "reading": "まさか",
+            "readingUncertain": true
+          },
+          "override": null
+        }
       }
     },
     {
@@ -71843,9 +71945,9 @@
     {
       "key": "行き先/行き先|いきさき",
       "order": 1519,
-      "word": "行き先/行き先",
+      "word": "行き先",
       "reading": "いきさき",
-      "readingUncertain": true,
+      "readingUncertain": false,
       "hints": [
         "destination"
       ],
@@ -71857,22 +71959,23 @@
         "gO:Ggnj-u%"
       ],
       "content": {
-        "word": "{行き先|いきさき}/{行き先|いきさき}",
+        "word": "{行|い}き{先|さき}",
         "meaningsId": [
           "destinasi",
-          "tujuan perjalanan"
+          "tujuan perjalanan",
+          "tempat tujuan"
         ],
         "meaningsEn": [
           "destination"
         ],
         "examples": [
           {
-            "jp": "タクシーの{運転手|うんてんしゅ}に__{行き先|いきさき}__を{伝|つた}えました。",
-            "id": "Saya memberi tahu destinasi tujuan kepada sopir taksi.",
+            "jp": "タクシーの{運転手|うんてんしゅ}に__{行|い}き{先|さき}__を{伝|つた}えた。",
+            "id": "Saya memberi tahu tempat tujuan kepada sopir taksi.",
             "en": "I told the taxi driver my destination."
           }
         ],
-        "notes": "Sering juga ditulis {行先|いきさき} dan umum dibaca ゆきさき.",
+        "notes": "Bisa juga ditulis {行先|いきさき} dan sering dibaca ゆきさき.",
         "tags": [
           "noun",
           "transport",
@@ -71883,7 +71986,23 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:21:46.904Z",
-        "doubt": "Tulisan sumber memiliki duplikasi persis '行き先/行き先'; salah satunya biasanya ditulis '行先'."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "replace",
+          "reason": "Entri sumber mengalami salah ketik duplikasi '行き先/行き先', bentuk baku tunggal yang dimaksud adalah '行き先'.",
+          "previousDoubt": "Tulisan sumber memiliki duplikasi persis '行き先/行き先'; salah satunya biasanya ditulis '行先'.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.586Z",
+          "source": {
+            "word": "行き先/行き先",
+            "reading": "いきさき",
+            "readingUncertain": true
+          },
+          "override": {
+            "word": "行き先",
+            "reading": "いきさき"
+          }
+        }
       }
     },
     {
@@ -77703,25 +77822,25 @@
         "GXB0j!,=,i"
       ],
       "content": {
-        "word": "{退|の}ける",
+        "word": "{退|ど}ける",
         "meaningsId": [
           "menyingkirkan",
-          "menyisihkan",
-          "menggeser"
+          "menggeser",
+          "menyisihkan"
         ],
         "meaningsEn": [
           "to move out of the way",
-          "to put aside",
+          "to set aside",
           "to take away"
         ],
         "examples": [
           {
-            "jp": "{机|つくえ}の{上|うえ}の{本|ほん}を__{退|の}けて__、ノートを{広|ひろ}げた。",
+            "jp": "{机|つくえ}の{上|うえ}の{本|ほん}を__{退|ど}けて__、ノートを{広|ひろ}げた。",
             "id": "Saya menyingkirkan buku di atas meja lalu membuka buku catatan.",
             "en": "I moved the books on the desk out of the way and opened my notebook."
           }
         ],
-        "notes": "Bila dibaca {退|しりぞ}ける, artinya menolak atau memukul mundur musuh. Lebih sering ditulis dengan kana {退|の}ける.",
+        "notes": "Dapat juga dibaca のける. Bila dibaca {退|しりぞ}ける, artinya menolak atau memukul mundur musuh. Lebih sering ditulis dengan hiragana.",
         "tags": [
           "verb-ichidan",
           "usually-kana"
@@ -77731,7 +77850,20 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:22:01.727Z",
-        "doubt": "Bacaan sumber しりぞける memiliki arti menolak/memukul mundur, sedangkan arti pada petunjuk 'to move out of the way' dibaca のける (atau どける). Diselaraskan ke bacaan {退|の}ける."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "revise",
+          "reason": "Petunjuk arti di level N3 merujuk pada {退|ど}ける (atau のける), bukan {退|しりぞ}ける yang berarti memukul mundur atau menolak. Catatan kartu lama juga perlu diperbaiki karena keliru menyebut bentuk berkanji sebagai kana.",
+          "previousDoubt": "Bacaan sumber しりぞける memiliki arti menolak/memukul mundur, sedangkan arti pada petunjuk 'to move out of the way' dibaca のける (atau どける). Diselaraskan ke bacaan {退|の}ける.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.586Z",
+          "source": {
+            "word": "退ける",
+            "reading": "しりぞける",
+            "readingUncertain": true
+          },
+          "override": null
+        }
       }
     },
     {
@@ -82337,7 +82469,7 @@
       "key": "預ける|あづける",
       "order": 1742,
       "word": "預ける",
-      "reading": "あづける",
+      "reading": "あずける",
       "readingUncertain": false,
       "hints": [
         "to deposit, to entrust to"
@@ -82377,7 +82509,23 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:22:11.784Z",
-        "doubt": "Bacaan standar modern adalah あずける; sumber mencantumkan ejaan historis あづける."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "keep",
+          "reason": "Tulisan kata sudah benar dan kartu saat ini sudah tepat menggunakan bacaan modern あずける beserta contoh dan catatan yang sesuai.",
+          "previousDoubt": "Bacaan standar modern adalah あずける; sumber mencantumkan ejaan historis あづける.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.586Z",
+          "source": {
+            "word": "預ける",
+            "reading": "あづける",
+            "readingUncertain": false
+          },
+          "override": {
+            "word": "預ける",
+            "reading": "あずける"
+          }
+        }
       }
     },
     {

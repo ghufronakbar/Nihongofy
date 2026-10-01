@@ -1669,7 +1669,20 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:24:04.853Z",
-        "doubt": "Bacaan sumber ウェスト merupakan variasi penulisan atau pelafalan dari ウエスト."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "keep",
+          "reason": "Kartu yang ada sudah akurat dan tepat; perbedaan ウエスト dan ウェスト hanyalah variasi penulisan katakana untuk kata yang sama.",
+          "previousDoubt": "Bacaan sumber ウェスト merupakan variasi penulisan atau pelafalan dari ウエスト.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.626Z",
+          "source": {
+            "word": "ウエスト",
+            "reading": "ウェスト",
+            "readingUncertain": true
+          },
+          "override": null
+        }
       }
     },
     {
@@ -11054,8 +11067,8 @@
     {
       "key": "中断〈|ちゅうだん〈",
       "order": 232,
-      "word": "中断〈",
-      "reading": "ちゅうだん〈",
+      "word": "中断",
+      "reading": "ちゅうだん",
       "readingUncertain": false,
       "hints": [
         "interruption, suspension"
@@ -11068,11 +11081,11 @@
         "hPe5}79k4G"
       ],
       "content": {
-        "word": "{中断|ちゅうだん}〈",
+        "word": "{中断|ちゅうだん}",
         "meaningsId": [
           "penghentian sementara",
-          "terhenti",
-          "penundaan"
+          "penundaan",
+          "terhenti"
         ],
         "meaningsEn": [
           "interruption",
@@ -11081,12 +11094,12 @@
         ],
         "examples": [
           {
-            "jp": "{激|はげ}しい{雨|あめ}のために{試合|しあい}が__{中断|ちゅうだん}__した。",
-            "id": "Pertandingan terhenti sementara karena hujan lebat.",
+            "jp": "{激|はげ}しい{雨|あめ}のため、{試合|しあい}が__{中断|ちゅうだん}__された。",
+            "id": "Pertandingan dihentikan sementara karena hujan deras.",
             "en": "The match was suspended due to heavy rain."
           }
         ],
-        "notes": "Mengacu pada penghentian suatu kegiatan untuk sementara waktu dengan maksud dilanjutkan kembali nantinya.",
+        "notes": "Bermakna penghentian suatu kegiatan untuk sementara waktu dengan maksud untuk dilanjutkan kembali nantinya.",
         "tags": [
           "noun",
           "verb-suru"
@@ -11096,7 +11109,23 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:25:04.432Z",
-        "doubt": "Terdapat tanda kurung siku buka 〈 di akhir kata dan bacaan pada daftar sumber, yang tampaknya salah ketik dari 中断."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "replace",
+          "reason": "Karakter 〈 pada tulisan dan bacaan sumber merupakan kesalahan ketik dari kata baku 中断.",
+          "previousDoubt": "Terdapat tanda kurung siku buka 〈 di akhir kata dan bacaan pada daftar sumber, yang tampaknya salah ketik dari 中断.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.626Z",
+          "source": {
+            "word": "中断〈",
+            "reading": "ちゅうだん〈",
+            "readingUncertain": false
+          },
+          "override": {
+            "word": "中断",
+            "reading": "ちゅうだん"
+          }
+        }
       }
     },
     {
@@ -18360,7 +18389,20 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:25:07.776Z",
-        "doubt": "Petunjuk sumber ('to sort') merujuk pada bacaan ぶんべつ; bacaan ふんべつ bermakna akal sehat atau kebijaksanaan."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "keep",
+          "reason": "Kartu sudah tepat memuat makna untuk bacaan ふんべつ (akal sehat/kebijaksanaan) tingkat N2, sedangkan makna memilah sudah ada di entri 分別|ぶんべつ.",
+          "previousDoubt": "Petunjuk sumber ('to sort') merujuk pada bacaan ぶんべつ; bacaan ふんべつ bermakna akal sehat atau kebijaksanaan.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.626Z",
+          "source": {
+            "word": "分別",
+            "reading": "ふんべつ",
+            "readingUncertain": false
+          },
+          "override": null
+        }
       }
     },
     {
@@ -24183,7 +24225,7 @@
       "key": "品|しな",
       "order": 505,
       "word": "品",
-      "reading": "しな",
+      "reading": "ひん",
       "readingUncertain": false,
       "hints": [
         "elegance; grace; refinement; class; dignity"
@@ -24196,36 +24238,52 @@
         "G^1w[6xvZK"
       ],
       "content": {
-        "word": "{品|しな}",
+        "word": "{品|ひん}",
         "meaningsId": [
-          "barang",
-          "benda",
-          "kualitas"
+          "keanggunan",
+          "martabat",
+          "wibawa"
         ],
         "meaningsEn": [
-          "goods",
-          "item",
-          "article",
-          "quality"
+          "elegance",
+          "grace",
+          "refinement",
+          "dignity"
         ],
         "examples": [
           {
-            "jp": "デパートには{高級|こうきゅう}な__{品|しな}__がたくさん{並|なら}んでいる。",
-            "id": "Di toserba banyak berjejer barang-barang mewah.",
-            "en": "Many high-end goods are lined up in the department store."
+            "jp": "{彼女|かのじょ}の{話|はな}し{方|かた}には__{品|ひん}__がある。",
+            "id": "Cara bicaranya memiliki keanggunan.",
+            "en": "There is elegance in the way she speaks."
           }
         ],
-        "notes": "Bila dibaca {品|ひん}, artinya keanggunan atau martabat, seperti dalam ungkapan {品|ひん}がある.",
+        "notes": "Sering dipakai dalam ungkapan {品|ひん}がある (anggun) atau {品|ひん}がいい. Tulisan yang sama juga dibaca {品|しな} yang berarti barang.",
         "tags": [
           "noun",
-          "shopping"
+          "personality"
         ]
       },
       "ai": {
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:25:42.079Z",
-        "doubt": "Petunjuk arti ('elegance') merujuk pada bacaan {品|ひん}. Jika dibaca {品|しな}, arti utamanya adalah barang atau komoditas."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "revise",
+          "reason": "Tulisan kanji sudah benar, tetapi bacaan sumber keliru memasukkan しな padahal petunjuk arti merujuk ke {品|ひん} (keanggunan). Kartu diperbaiki ke bacaan ひん.",
+          "previousDoubt": "Petunjuk arti ('elegance') merujuk pada bacaan {品|ひん}. Jika dibaca {品|しな}, arti utamanya adalah barang atau komoditas.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.626Z",
+          "source": {
+            "word": "品",
+            "reading": "しな",
+            "readingUncertain": false
+          },
+          "override": {
+            "word": "品",
+            "reading": "ひん"
+          }
+        }
       }
     },
     {
@@ -43668,7 +43726,7 @@
       "key": "段ボール|だんぼる",
       "order": 910,
       "word": "段ボール",
-      "reading": "だんぼる",
+      "reading": "だんぼーる",
       "readingUncertain": false,
       "hints": [
         "cardboard box"
@@ -43706,7 +43764,23 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:27:13.730Z",
-        "doubt": "Bacaan sumber tertulis だんぼる tanpa tanda panjang; bacaan yang benar adalah だんボール (だんぼーる)."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "keep",
+          "reason": "Kartu yang ada sudah benar dan tepat; kejanggalan hanya ada pada data sumber yang menghilangkan bunyi panjang pada bacaan.",
+          "previousDoubt": "Bacaan sumber tertulis だんぼる tanpa tanda panjang; bacaan yang benar adalah だんボール (だんぼーる).",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.626Z",
+          "source": {
+            "word": "段ボール",
+            "reading": "だんぼる",
+            "readingUncertain": false
+          },
+          "override": {
+            "word": "段ボール",
+            "reading": "だんぼーる"
+          }
+        }
       }
     },
     {
@@ -47691,7 +47765,20 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:27:31.511Z",
-        "doubt": "Sumber mencatat bacaan つくつく[づく]; bacaan standar yang lazim digunakan adalah つくづく."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "keep",
+          "reason": "Format bacaan sumber つくつく[づく] mencatat variasi bacaan, dan kartu sudah tepat menggunakan bacaan baku つくづく beserta contoh yang natural.",
+          "previousDoubt": "Sumber mencatat bacaan つくつく[づく]; bacaan standar yang lazim digunakan adalah つくづく.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.626Z",
+          "source": {
+            "word": "熟々",
+            "reading": "つくつく[づく]",
+            "readingUncertain": true
+          },
+          "override": null
+        }
       }
     },
     {
@@ -55730,7 +55817,20 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:28:24.579Z",
-        "doubt": "Bacaan pada sumber tertulis むねが一はいになる, bacaan yang baku dan lazim adalah むねがいっぱいになる."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "keep",
+          "reason": "Bacaan sumber keliru karena kesalahan parsing (一はい), tetapi kartu yang ada sudah menggunakan furigana yang benar yaitu むねがいっぱいになる beserta arti dan contoh yang tepat.",
+          "previousDoubt": "Bacaan pada sumber tertulis むねが一はいになる, bacaan yang baku dan lazim adalah むねがいっぱいになる.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T01:57:22.626Z",
+          "source": {
+            "word": "胸が一杯になる",
+            "reading": "むねが一はいになる",
+            "readingUncertain": true
+          },
+          "override": null
+        }
       }
     },
     {
