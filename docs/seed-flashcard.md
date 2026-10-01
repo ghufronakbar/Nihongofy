@@ -99,9 +99,11 @@ yang `content`-nya masih `null` yang diproses, jadi script aman dijalankan berul
   Kata yang gagal diminta ulang dengan daftar masalahnya (maksimal 3 percobaan); kata lain dalam
   batch tetap disimpan.
 - Fixture ditulis atomik setelah setiap batch, jadi proses boleh dihentikan kapan saja.
-- Log per batch menampilkan progres dan perkiraan sisa waktu. Baris `RETRY` berisi alasan kata
-  diminta ulang; setiap percobaan ulang menambah satu request penuh, jadi alasan yang sering
-  muncul adalah tanda aturan prompt perlu dipertegas.
+- Log per batch menampilkan progres dan perkiraan sisa waktu. Baris `DITOLAK` berisi alasan kata
+  ditolak validator dan diminta ulang otomatis dalam run yang sama; baris `LOLOS` menandai kata
+  yang akhirnya lolos dan sudah tersimpan, sedangkan `FAIL` menandai kata yang tetap gagal setelah
+  3 percobaan (hanya kata ini yang perlu run ulang). Setiap percobaan ulang menambah satu request
+  penuh, jadi alasan yang sering muncul adalah tanda aturan prompt perlu dipertegas.
 - Batch yang gagal (mis. 429 dari gateway setelah 4 kali dicoba ulang oleh SDK) hanya membuat
   katanya tetap kosong. Jalankan ulang perintah yang sama, atau turunkan `--concurrency`.
 - `doubt` diisi AI bila masukan janggal (bacaan sumber keliru, salah ketik). Tinjau dengan

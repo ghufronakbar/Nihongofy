@@ -188,6 +188,7 @@ async function generateBatch({ client, model, reasoningEffort, systemPrompt, tax
           content: generated.content,
           doubt: generated.doubt,
           warnings: vocabContentWarnings(note, generated.content),
+          attempt,
         });
         pending.delete(key);
       } else {
@@ -321,7 +322,10 @@ async function main() {
 
   if (options.dryRun) return;
   if (tasks.length === 0) {
-    log("Tidak ada kata yang perlu digenerate.");
+    log(
+      "Tidak ada kata yang perlu digenerate: semua kata yang dipilih sudah punya konten. " +
+        "Pakai --overwrite untuk membuat ulang.",
+    );
     return;
   }
 
@@ -331,7 +335,7 @@ async function main() {
       `batch-size ${options.batchSize}, concurrency ${options.concurrency}`,
   );
 
-  const summary = { generated: 0, failed: 0, retried: 0, doubts: 0, warnings: 0, input: 0, output: 0 };
+  const summary = { generated: 0, failed: 0, recovered: 0, doubts: 0, warnings: 0, input: 0, output: 0 };
   const startedAt = Date.now();
   let processedWords = 0;
   let finishedBatches = 0;
@@ -353,10 +357,21 @@ async function main() {
       });
       summary.input += result.usage.input;
       summary.output += result.usage.output;
-      summary.retried += new Set(result.retries.map((retry) => retry.key)).size;
 
+      // Penolakan di tengah jalan diulang otomatis dalam run ini. Status
+      // akhirnya ditulis eksplisit (LOLOS atau FAIL) supaya baris DITOLAK
+      // tidak terbaca seolah kata itu masih harus digenerate ulang.
       for (const retry of result.retries) {
-        details.push(`  RETRY ${retry.key} (percobaan ${retry.attempt}) - ${retry.problems.join("; ")}`);
+        details.push(
+          `  DITOLAK ${retry.key} (percobaan ${retry.attempt}/${MAX_ATTEMPTS}, diminta ulang otomatis) - ` +
+            retry.problems.join("; "),
+        );
+      }
+      for (const key of new Set(result.retries.map((retry) => retry.key))) {
+        const generated = result.results.get(key);
+        if (!generated) continue;
+        summary.recovered += 1;
+        details.push(`  LOLOS ${key} di percobaan ${generated.attempt}/${MAX_ATTEMPTS} - sudah tersimpan`);
       }
 
       const generatedAt = new Date().toISOString();
@@ -408,8 +423,8 @@ async function main() {
   await Promise.all(writers.map((writer) => writer.queue));
 
   log(
-    `DONE dalam ${formatDuration(Date.now() - startedAt)} - ${summary.generated} kata dibuat, ` +
-      `${summary.failed} gagal, ${summary.retried} perlu percobaan ulang, ` +
+    `DONE dalam ${formatDuration(Date.now() - startedAt)} - ${summary.generated} kata dibuat ` +
+      `(${summary.recovered} di antaranya lolos setelah diminta ulang otomatis), ${summary.failed} gagal, ` +
       `${summary.doubts} ditandai ragu, ${summary.warnings} peringatan, ` +
       `${summary.input}/${summary.output} token`,
   );
