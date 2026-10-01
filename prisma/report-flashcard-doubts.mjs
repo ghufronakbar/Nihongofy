@@ -8,7 +8,7 @@
 // Setelah sumbernya diperbaiki (atau diputuskan benar), generate ulang dengan:
 //   npm run gen:flashcard -- --only-doubts --overwrite
 
-import { LEVELS, readVocabFile, vocabContentWarnings } from "./flashcard-vocab.mjs";
+import { isRetiredNote, LEVELS, readVocabFile, vocabContentWarnings } from "./flashcard-vocab.mjs";
 
 const levelIndex = process.argv.indexOf("--level");
 const onlyLevel = levelIndex === -1 ? null : process.argv[levelIndex + 1]?.toUpperCase();
@@ -25,6 +25,7 @@ for (const level of LEVELS) {
   const file = await readVocabFile(level);
 
   for (const note of file.notes) {
+    if (isRetiredNote(note)) continue;
     if (note.ai?.doubt) {
       doubts += 1;
       console.log(`RAGU [${level}] ${note.key} — ${note.ai.doubt}`);

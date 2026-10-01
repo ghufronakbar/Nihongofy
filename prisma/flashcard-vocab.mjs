@@ -163,18 +163,23 @@ const aiMetaSchema = z.object({
   // Diisi prisma/fix-flashcard-doubts.mjs setelah doubt ditinjau. `override`
   // berisi tulisan/bacaan pengganti sumber (keputusan replace, atau bacaan
   // sumber yang keliru) yang dipasang ulang setelah flashcard:extract.
+  // `retire` berarti kata ini duplikat `duplicateOf` dan tidak diterbitkan.
   doubtResolution: z
     .object({
-      action: z.enum(["keep", "revise", "replace"]),
+      action: z.enum(["keep", "revise", "replace", "retire"]),
       reason: z.string(),
       previousDoubt: z.string(),
       model: z.string(),
       resolvedAt: z.iso.datetime({ offset: true }),
       source: z.object({ word: z.string(), reading: z.string(), readingUncertain: z.boolean() }),
       override: z.object({ word: z.string(), reading: z.string() }).nullable(),
+      duplicateOf: z.string().optional(),
     })
     .optional(),
 });
+
+/** Kata yang dipensiunkan sebagai duplikat oleh fix:flashcard-doubts. */
+export const isRetiredNote = (note) => note.ai?.doubtResolution?.action === "retire";
 
 const vocabNoteSchema = z.object({
   key: z.string().min(3).max(160),
