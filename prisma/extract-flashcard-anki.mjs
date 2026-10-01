@@ -11,6 +11,10 @@
 // dan dalam kasus itu key LAMA yang dipakai: key adalah identitas yang
 // dirujuk progres belajar user, jadi tidak boleh berganti.
 //
+// Kata kurasi manual (bukan dari Anki) ditandai `sourceGuids: []` dan selalu
+// dipertahankan di levelnya, di belakang kata dari Anki. Bila suatu saat deck
+// Anki memuat key yang sama, entri Anki yang dipakai (isi kartunya ikut).
+//
 // Script ini tidak menyentuh database.
 
 import path from "node:path";
@@ -55,10 +59,12 @@ async function main() {
   // --- Pertahankan hasil generate yang sudah ada ------------------------------
   const existing = new Map();
   const keyByGuid = new Map();
+  const curatedByLevel = new Map(LEVELS.map((level) => [level, []]));
   for (const level of LEVELS) {
     for (const note of (await readVocabFile(level)).notes) {
       existing.set(note.key, note);
       for (const guid of note.sourceGuids) keyByGuid.set(guid, note.key);
+      if (note.sourceGuids.length === 0) curatedByLevel.get(level).push(note);
     }
   }
 
@@ -90,7 +96,12 @@ async function main() {
     }
   }
 
-  const dropped = [...existing.values()].filter((note) => !used.has(note.key));
+  // Kata kurasi yang tidak diambil alih entri Anki tetap di levelnya.
+  for (const [level, notes] of curatedByLevel) {
+    curatedByLevel.set(level, notes.filter((note) => !used.has(note.key)));
+  }
+  const curatedKeys = new Set([...curatedByLevel.values()].flat().map((note) => note.key));
+  const dropped = [...existing.values()].filter((note) => !used.has(note.key) && !curatedKeys.has(note.key));
   const droppedGenerated = dropped.filter((note) => note.content);
 
   // --- Tulis per level --------------------------------------------------------
@@ -120,6 +131,7 @@ async function main() {
           ai: entry.ai,
         };
       });
+    for (const note of curatedByLevel.get(level)) notes.push({ ...note, order: notes.length + 1 });
 
     const generated = notes.filter((note) => note.content).length;
     log(`${level}: ${notes.length} kata (${generated} sudah digenerate)`);
@@ -131,7 +143,10 @@ async function main() {
       `${multiLevel} kata muncul di >1 level (masuk ke level termudah), ` +
       `${homographs} homograf, ${uncertain} bacaan sumber tidak pasti`,
   );
-  log(`hasil generate dipertahankan: ${carried}, key dipertahankan lewat guid: ${rekeyed}`);
+  log(
+    `hasil generate dipertahankan: ${carried}, key dipertahankan lewat guid: ${rekeyed}, ` +
+      `kata kurasi dipertahankan: ${curatedKeys.size}`,
+  );
   if (droppedGenerated.length > 0) {
     log(
       `PERINGATAN: ${droppedGenerated.length} kata yang sudah digenerate tidak ada lagi di sumber ` +
