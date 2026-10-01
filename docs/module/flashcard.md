@@ -118,10 +118,30 @@ Rancangan lama (paritas Anki penuh) tetap ada di
 | `/flashcard` | Guest: katalog dengan tombol "Coba deck ini". Login: deck milik user dengan hitungan baru/belajar/ulang hari ini. |
 | `/flashcard/add` | Katalog per Level JLPT, Topik, dan Kategori dengan tombol tambah/lepas. |
 | `/flashcard/deck/[slug]` | Hitungan hari ini, tombol belajar, tambah/lepas deck, dan daftar kata read-only (pencarian kata/bacaan/arti, filter status, 50 per halaman, suspend, reset, dan laporkan per kata). |
-| `/flashcard/deck/[slug]/study` | Reviewer. Hanya untuk deck yang sudah ditambahkan. Antrean dikirim per 200 kartu; tombol "Lanjutkan" membangun antrean berikutnya. |
+| `/flashcard/deck/[slug]/study` | Reviewer. Hanya untuk deck yang sudah ditambahkan. Antrean dikirim per 200 kartu; tombol "Lanjutkan" membangun antrean berikutnya. Lihat [Layar belajar](#layar-belajar). |
 | `/flashcard/settings` | Ukuran teks, furigana, dan penjadwalan. |
 | `/flashcard/stats` | True retention, perkiraan 30 hari, riwayat review, sebaran interval, status kartu. |
 | `/flashcard/try/[slug]` | Mode coba 20 kata pertama deck, selalu ephemeral. Guest boleh melaporkan kartu (dengan Turnstile). |
+
+## Layar Belajar
+
+- **Tombol kembali** di atas reviewer menuju halaman deck (mode coba: katalog). Keluar di tengah
+  sesi aman karena setiap jawaban langsung tersimpan.
+- **Hitungan Baru · Belajar · Ulang** berkurang langsung selama sesi, seperti di Anki: kartu yang
+  sedang tampil ikut dihitung dan jenisnya digaris bawah, kartu baru yang dijawab lalu kembali
+  hari ini pindah ke "Belajar", dan kartu learning yang menunggu jatuh tempo tetap masuk hitungan
+  "Belajar". Kartu di luar potongan 200 yang dikirim ikut dihitung (`unloadedCounts`), jadi
+  angkanya sama dengan halaman deck.
+- **Progress bar** (dijawab / dijawab + sisa) dan **jam sesi**.
+- **Ringkasan sesi** di layar akhir (dan "Sesi sejauh ini" di layar istirahat): jumlah jawaban,
+  kartu unik dan kartu baru, persentase benar (selain Again), rata-rata detik per jawaban, durasi,
+  sebaran Again/Hard/Good/Easy, lima kartu yang paling sering terlupa, leech baru, dan perkiraan
+  kartu deck ini yang jatuh tempo besok.
+- Semua angka diturunkan di client dari daftar jawaban sesi (`lib/session-summary.ts`), sehingga
+  undo cukup membuang jawaban terakhir. Perkiraan besok = kartu deck yang memang jatuh tempo besok
+  saat antrean dibangun (dihitung server) + kartu sesi ini yang jadwal terakhirnya jatuh besok.
+- Ringkasan tidak disimpan: tombol "Lanjutkan" memulai potongan antrean baru dengan ringkasan
+  baru, dan statistik jangka panjang tetap di `/flashcard/stats`.
 
 ## Laporan Kartu
 
@@ -178,7 +198,10 @@ Kontrak lengkapnya di [seed-flashcard.md](../seed-flashcard.md):
   `report-flashcard-doubts.mjs`
 - `src/features/flashcard/data.ts` — query katalog, deck, daftar kata, sesi belajar
 - `src/features/flashcard/actions.ts` — jawab, undo, tunda, suspend, reset, langganan, pengaturan
-- `src/features/flashcard/lib/scheduler/`, `lib/queue/`, `lib/collection.ts`
+- `src/features/flashcard/lib/scheduler/`, `lib/queue/`, `lib/collection.ts`,
+  `lib/session-summary.ts`
 - `src/features/flashcard/schemas.ts`, `settings-form.ts`, `taxonomy.ts`, `types.ts`
-- `src/features/flashcard/components/` — reviewer, tampilan kartu, katalog, form pengaturan
-- `src/features/flashcard/**/*.test.ts` — scheduler, antrean, pipeline seed, pengaturan, statistik
+- `src/features/flashcard/components/` — reviewer, ringkasan sesi, tampilan kartu, katalog, form
+  pengaturan
+- `src/features/flashcard/**/*.test.ts` — scheduler, antrean, pipeline seed, pengaturan, statistik,
+  ringkasan sesi

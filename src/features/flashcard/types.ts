@@ -24,9 +24,14 @@ export type VocabCardContent = {
 
 export type PreviewLabels = Record<FlashcardRatingInput, string>;
 
+/** Tiga hitungan Anki di layar belajar: baru, learning/relearning, dan review. */
+export type ReviewerCardKind = "new" | "learning" | "review";
+
+export type StudyCounts = Record<ReviewerCardKind, number>;
+
 export type ReviewerCard = {
   vocabId: number;
-  isNew: boolean;
+  kind: ReviewerCardKind;
   content: VocabCardContent;
   /** Interval yang akan didapat tiap tombol, sudah dihitung server. */
   previewLabels: PreviewLabels;
@@ -34,6 +39,19 @@ export type ReviewerCard = {
 
 /** Kartu learning yang jatuh tempo nanti hari ini, ditahan reviewer sampai waktunya. */
 export type PendingLearningCard = ReviewerCard & { dueAt: string };
+
+/**
+ * Bahan perkiraan "besok" di ringkasan sesi. `base` dihitung server saat
+ * antrean dibangun (kartu deck yang memang jatuh tempo besok); reviewer
+ * menambahkan kartu yang dijawab di sesi ini dan jatuh tempo di rentang yang sama.
+ */
+export type TomorrowWindow = {
+  base: number;
+  /** ISO, inklusif. */
+  start: string;
+  /** ISO, eksklusif. */
+  end: string;
+};
 
 export type DeckKind = "LEVEL" | "TOPIC" | "CATEGORY";
 

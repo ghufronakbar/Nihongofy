@@ -4,7 +4,13 @@ import { Prisma, type FlashcardCardQueue, type FlashcardCardType } from "@prisma
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getFlashcardSettings, type FlashcardSettings } from "./lib/collection";
-import { buildQueue, insertionPosition, LEARN_AHEAD_MS, type QueueCandidate } from "./lib/queue";
+import {
+  buildQueue,
+  insertionPosition,
+  LEARN_AHEAD_MS,
+  type QueueCandidate,
+  type QueueEntry,
+} from "./lib/queue";
 import { formatIntervalLabel } from "./lib/preview-interval";
 import { createNewCardState, previewSchedule, type SchedulerCardState } from "./lib/scheduler";
 import { getFlashcardDayRange } from "./lib/scheduler/day";
@@ -19,6 +25,9 @@ import type {
   PendingLearningCard,
   PreviewLabels,
   ReviewerCard,
+  ReviewerCardKind,
+  StudyCounts,
+  TomorrowWindow,
   VocabCardContent,
 } from "./types";
 
@@ -439,6 +448,13 @@ function toSchedulerState(candidate: QueueCandidate): SchedulerCardState {
   };
 }
 
+/** Kelompok antrean v3 dipadatkan ke tiga hitungan yang tampil di layar belajar. */
+function reviewerKind(entry: QueueEntry): ReviewerCardKind {
+  if (entry.group === "new") return "new";
+  if (entry.group === "review") return "review";
+  return "learning";
+}
+
 /**
  * Antrean belajar satu deck, dibangun sekali lalu dikirim ke reviewer client.
  * Kartu learning yang jatuh tempo nanti hari ini ikut dikirim terpisah supaya
@@ -451,8 +467,9 @@ export async function getStudySession(userId: number, slug: string) {
   const settings = await getFlashcardSettings(userId);
   const now = new Date();
   const { endExclusive: dayEnd } = getFlashcardDayRange(now, settings.day);
+  const { endExclusive: tomorrowEnd } = getFlashcardDayRange(dayEnd, settings.day);
 
-  const [dueRows, newRows] = await Promise.all([
+  const [dueRows, newRows, tomorrowRows] = await Promise.all([
     prisma.$queryRaw<DueRow[]>`
       SELECT c."vocabId", c.type, c.queue, c.due, c."intervalDays", c."easeFactor",
         c.stability, c.difficulty, c."lastReviewedAt", c.reps, c.lapses, c."learningStep"
@@ -470,6 +487,17 @@ export async function getStudySession(userId: number, slug: string) {
       LEFT JOIN "FlashcardCard" c ON c."vocabId" = v.id AND c."userId" = ${userId}
       WHERE v.tags @> ARRAY[${slug}]::text[] AND v."retiredAt" IS NULL
         AND (c."vocabId" IS NULL OR (c.queue = 'NEW' AND ${available(now)}))
+    `,
+    // Kartu yang jatuh tempo besok tanpa ikut sesi ini. Kartu yang dijawab di
+    // sesi ini ditambahkan reviewer dari hasil jawabannya.
+    prisma.$queryRaw<{ total: number }[]>`
+      SELECT count(*)::int AS total
+      FROM "FlashcardCard" c
+      JOIN "FlashcardVocab" v ON v.id = c."vocabId"
+      WHERE c."userId" = ${userId}
+        AND v.tags @> ARRAY[${slug}]::text[] AND v."retiredAt" IS NULL
+        AND c.queue <> 'NEW' AND NOT c."isSuspended"
+        AND c.due >= ${utc(dayEnd)} AND c.due < ${utc(tomorrowEnd)}
     `,
   ]);
 
@@ -513,12 +541,12 @@ export async function getStudySession(userId: number, slug: string) {
     ).map((row) => [row.id, toCardContent(row)]),
   );
 
-  const toReviewerCard = (entry: QueueCandidate, shownAt: Date): ReviewerCard | null => {
+  const toReviewerCard = (entry: QueueEntry, shownAt: Date): ReviewerCard | null => {
     const content = contents.get(entry.vocabId);
     if (!content) return null;
     return {
       vocabId: entry.vocabId,
-      isNew: entry.type === "NEW",
+      kind: reviewerKind(entry),
       content,
       previewLabels: buildPreviewLabels(toSchedulerState(entry), shownAt, settings),
     };
@@ -533,13 +561,30 @@ export async function getStudySession(userId: number, slug: string) {
     return card ? [{ ...card, dueAt: entry.due.toISOString() }] : [];
   });
 
+  // Hitungan di layar belajar mencakup seluruh antrean, bukan hanya potongan
+  // yang dikirim, supaya angkanya sama dengan yang tampil di halaman deck.
+  const unloadedCounts: StudyCounts = { new: 0, learning: 0, review: 0 };
+  for (const entry of [
+    ...built.queue.slice(STUDY_BATCH_SIZE),
+    ...built.laterLearning.slice(STUDY_BATCH_SIZE),
+  ]) {
+    unloadedCounts[reviewerKind(entry)] += 1;
+  }
+
+  const tomorrow: TomorrowWindow = {
+    base: tomorrowRows[0]?.total ?? 0,
+    start: dayEnd.toISOString(),
+    end: tomorrowEnd.toISOString(),
+  };
+
   return {
     deck: access.deck,
     subscribed: true as const,
     display: settings.display,
-    counts: built.counts,
     cards,
     pendingLearning,
+    unloadedCounts,
+    tomorrow,
     hasMore: built.queue.length > selected.length,
   };
 }
