@@ -45,7 +45,9 @@ Rancangan lama (paritas Anki penuh) tetap ada di
 - **Langganan** (`FlashcardDeckSubscription`): deck yang dipilih user. Melepas langganan tidak
   menghapus progres.
 - Deck dengan kata kurang dari `deckMinNotes` (10) tidak ditampilkan; ini juga membuat deck
-  topik yang kata-katanya belum digenerate tetap tersembunyi.
+  topik yang kata-katanya belum digenerate tetap tersembunyi. Halaman deck, mode coba, belajar,
+  dan tombol tambah deck memakai katalog yang sama, jadi deck tersembunyi tidak bisa dibuka
+  atau ditambahkan lewat URL langsung.
 - **Taxonomy** (`src/flashcard-data/taxonomy.json`) adalah satu-satunya daftar tag. Lima
   dimensi: level (diisi otomatis dari daftar kata), kelas kata, ragam bahasa, kategori, dan
   topik. Aplikasi, prompt AI, dan validator seed membaca file yang sama.
