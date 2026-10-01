@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { Play, Search } from "lucide-react";
+import { Play, Search, Settings2 } from "lucide-react";
 import { FEATURES } from "@/constants";
 import { getSession } from "@/lib/auth";
 import { cn } from "@/lib/utils";
@@ -65,7 +65,7 @@ export default async function DeckPage({ params, searchParams }: Props) {
   const access = await getDeckForUser(session.userId, slug);
   if (!access) notFound();
 
-  const { deck, subscribed, due } = access;
+  const { deck, subscribed, due, allowance, config } = access;
   const list = await getDeckWords(session.userId, deck, { query, status, page });
   const total = due.newCount + due.learningCount + due.reviewCount;
 
@@ -115,8 +115,20 @@ export default async function DeckPage({ params, searchParams }: Props) {
             <Play className="size-4" aria-hidden /> Mulai belajar
           </Link>
         ) : null}
+        {subscribed ? (
+          <Link href={`/flashcard/deck/${slug}/settings`} className="neo-button bg-white">
+            <Settings2 className="size-4" aria-hidden /> Pengaturan
+          </Link>
+        ) : null}
         <DeckSubscribeButton slug={slug} subscribed={subscribed} />
       </div>
+
+      {subscribed ? (
+        <p className="mt-3 text-sm font-bold text-muted-foreground tabular-nums">
+          Hari ini di deck ini: {allowance.newStudiedToday} dari {config.newCardsPerDay} kartu baru,{" "}
+          {allowance.reviewsToday} dari {config.maxReviewsPerDay} review.
+        </p>
+      ) : null}
 
       {subscribed && total === 0 ? (
         <p className="mt-4 font-bold text-muted-foreground">

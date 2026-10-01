@@ -1,13 +1,14 @@
 "use client";
 
-import { useMemo, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
-import { Loader2, RotateCcw, Save } from "lucide-react";
+import { Copy, Loader2, RotateCcw, Save } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { saveDeckSettingsAction } from "../actions";
-import type { FlashcardConfig } from "../schemas";
+import { FLASHCARD_DEFAULT_CONFIG, type FlashcardConfig } from "../schemas";
 import {
   DECK_CONFIG_FORM_DEFAULTS,
   DeckConfigFormSchema,
@@ -25,17 +26,24 @@ import {
 } from "../settings-form";
 import { numberInput, ResetButton, Row, Section, Select, textInput } from "./settings-fields";
 
+export type DeckConfigSource = { slug: string; name: string; config: FlashcardConfig };
+
 type Props = {
   slug: string;
   config: FlashcardConfig;
-  /** Dipanggil setelah tersimpan, mis. untuk kembali ke halaman deck. */
-  onSaved?: () => void;
+  /** Deck lain milik user yang pengaturannya bisa disalin ke deck ini. */
+  copySources: DeckConfigSource[];
+  /** Tujuan setelah tersimpan, seperti dialog deck options Anki yang tertutup saat disimpan. */
+  doneHref: string;
 };
 
 /** Pengaturan penjadwalan satu deck, mengikuti deck options Anki. */
-export function DeckConfigForm({ slug, config, onSaved }: Props) {
+export function DeckConfigForm({ slug, config, copySources, doneHref }: Props) {
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const initial = useMemo(() => configToForm(config), [config]);
+  // Field config yang tidak ada di form ikut tersalin dari deck sumber.
+  const [base, setBase] = useState(config);
 
   const {
     register,
@@ -64,22 +72,59 @@ export function DeckConfigForm({ slug, config, onSaved }: Props) {
     />
   );
 
+  function copyFrom(sourceSlug: string) {
+    const source = copySources.find((item) => item.slug === sourceSlug);
+    if (!source) return;
+    // Nilai awal form tetap pengaturan tersimpan, jadi salinan terhitung
+    // perubahan dan baru berlaku setelah disimpan.
+    reset(configToForm(source.config), { keepDefaultValues: true });
+    setBase(source.config);
+    toast.success(`Pengaturan ${source.name} disalin. Simpan untuk menerapkannya.`);
+  }
+
   function onSubmit(output: DeckConfigFormOutput) {
     startTransition(async () => {
-      const result = await saveDeckSettingsAction({ slug, config: formToConfig(output, config) });
+      const result = await saveDeckSettingsAction({ slug, config: formToConfig(output, base) });
       if (!result.ok) {
         toast.error(result.message);
         return;
       }
       reset(output);
       toast.success("Pengaturan deck tersimpan.");
-      onSaved?.();
+      router.push(doneHref);
     });
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="grid gap-5">
       <fieldset disabled={isPending} className="contents">
+        {copySources.length > 0 ? (
+          <Section title="Salin dari deck lain" note="Isi form dengan pengaturan deck lain milikmu.">
+            <div className="flex items-center gap-2">
+              <Copy className="size-4 shrink-0" aria-hidden />
+              <label htmlFor="deck-config-copy" className="sr-only">
+                Salin pengaturan dari deck
+              </label>
+              <select
+                id="deck-config-copy"
+                // Tidak terdaftar di form: pilihan ini hanya pemicu, bukan nilai.
+                value=""
+                onChange={(event) => copyFrom(event.target.value)}
+                className="h-11 w-full rounded-lg border-[3px] border-neo-ink bg-white px-3 font-bold text-black shadow-neo-sm outline-none sm:w-72"
+              >
+                <option value="" disabled>
+                  Pilih deck…
+                </option>
+                {copySources.map((source) => (
+                  <option key={source.slug} value={source.slug}>
+                    {source.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </Section>
+        ) : null}
+
         <Section title="Batas harian" note="Hanya untuk deck ini.">
           <Row
             label="Kartu baru per hari"
@@ -189,7 +234,10 @@ export function DeckConfigForm({ slug, config, onSaved }: Props) {
           </button>
           <button
             type="button"
-            onClick={() => reset(DECK_CONFIG_FORM_DEFAULTS, { keepDefaultValues: true })}
+            onClick={() => {
+              reset(DECK_CONFIG_FORM_DEFAULTS, { keepDefaultValues: true });
+              setBase(FLASHCARD_DEFAULT_CONFIG);
+            }}
             className="neo-button bg-white"
           >
             <RotateCcw className="size-4" aria-hidden /> Kembalikan semua ke bawaan

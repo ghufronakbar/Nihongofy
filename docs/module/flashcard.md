@@ -71,8 +71,11 @@ Rancangan lama (paritas Anki penuh) tetap ada di
   tidak berubah dari rancangan lama.
 - **Pengaturan penjadwalan per deck** (`FlashcardDeckSubscription.config`), seperti deck options
   Anki: batas harian, learning/relearning steps, urutan, FSRS, dan desired retention. Kartu
-  selalu dijadwalkan dengan pengaturan deck pemiliknya, jadi tidak pernah ambigu. Deck yang baru
-  ditambahkan memakai nilai bawaan.
+  selalu dijadwalkan dengan pengaturan deck pemiliknya, jadi tidak pernah ambigu.
+- **Alur tambah deck:** tombol Tambahkan langsung mengaktifkan deck dengan nilai bawaan lalu membuka
+  `/flashcard/deck/[slug]/settings?new=1`, yang menawarkan "Pakai bawaan" atau mengubahnya dulu.
+  Form bisa diisi dari pengaturan deck lain milik user ("Salin dari deck lain"); salinan baru
+  berlaku setelah disimpan. Menyimpan kembali ke halaman deck, seperti dialog deck options Anki.
 - **Batas harian per deck, tanpa batas gabungan.** Kartu baru dan review hari ini dihitung dari
   `FlashcardRevlog.deckId`. Sepuluh deck dengan 20 kartu baru berarti sampai 200 kartu baru per
   hari; itu disengaja.
@@ -125,7 +128,8 @@ Rancangan lama (paritas Anki penuh) tetap ada di
 |---|---|
 | `/flashcard` | Guest: katalog dengan tombol "Coba deck ini". Login: deck milik user dengan hitungan baru/belajar/ulang hari ini. |
 | `/flashcard/add` | Katalog per Level JLPT, Topik, dan Kategori dengan tombol tambah/lepas. |
-| `/flashcard/deck/[slug]` | Hitungan hari ini, tombol belajar, tambah/lepas deck, dan daftar kata read-only (pencarian kata/bacaan/arti, filter status, 50 per halaman, suspend, reset, dan laporkan per kata). |
+| `/flashcard/deck/[slug]` | Hitungan hari ini dan pemakaian batas harian deck, tombol belajar, pengaturan deck, tambah/lepas deck, dan daftar kata read-only (pencarian kata/bacaan/arti, filter status, 50 per halaman, suspend, reset, dan laporkan per kata). |
+| `/flashcard/deck/[slug]/settings` | Pengaturan penjadwalan deck ini (deck options Anki). Hanya untuk deck yang sedang ditambahkan; selain itu dialihkan ke halaman deck. |
 | `/flashcard/deck/[slug]/study` | Reviewer. Hanya untuk deck yang sudah ditambahkan. Antrean dikirim per 200 kartu; tombol "Lanjutkan" membangun antrean berikutnya. Lihat [Layar belajar](#layar-belajar). |
 | `/flashcard/settings` | Tampilan kartu untuk semua deck: ukuran teks dan furigana. |
 | `/flashcard/stats` | True retention, perkiraan 30 hari, riwayat review, sebaran interval, status kartu. |
@@ -212,6 +216,6 @@ Kontrak lengkapnya di [seed-flashcard.md](../seed-flashcard.md):
   `lib/session-summary.ts`
 - `src/features/flashcard/schemas.ts`, `settings-form.ts`, `taxonomy.ts`, `types.ts`
 - `src/features/flashcard/components/` — reviewer, ringkasan sesi, tampilan kartu, katalog, form
-  pengaturan
+  tampilan (`flashcard-display-form.tsx`) dan form pengaturan deck (`deck-config-form.tsx`)
 - `src/features/flashcard/**/*.test.ts` — scheduler, antrean, pipeline seed, pengaturan, statistik,
   ringkasan sesi

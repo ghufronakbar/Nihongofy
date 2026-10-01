@@ -277,10 +277,14 @@ export type MyDeck = DeckSummary & {
   due: DeckDueCounts;
 };
 
-/** Deck yang sedang ditambahkan user (deck yang dilepas tidak ikut). */
-export async function getMyDecks(userId: number) {
-  const [settings, catalog, subscriptions] = await Promise.all([
-    getFlashcardSettings(userId),
+export type SubscribedDeck = DeckSummary & { config: FlashcardConfig };
+
+/**
+ * Deck yang sedang ditambahkan user beserta pengaturannya, tanpa hitungan
+ * antrean. Deck yang dilepas, atau yang tidak lagi tampil di katalog, tidak ikut.
+ */
+export async function getSubscribedDecks(userId: number): Promise<SubscribedDeck[]> {
+  const [catalog, subscriptions] = await Promise.all([
     getDeckCatalog(),
     prisma.flashcardDeckSubscription.findMany({
       where: { userId, unsubscribedAt: null },
@@ -291,7 +295,18 @@ export async function getMyDecks(userId: number) {
   const configs = new Map(
     subscriptions.map((row) => [row.deckId, parseFlashcardConfig(row.config)]),
   );
-  const decks = catalog.filter((deck) => configs.has(deck.id));
+  return catalog.flatMap((deck) => {
+    const config = configs.get(deck.id);
+    return config ? [{ ...deck, config }] : [];
+  });
+}
+
+/** Deck yang sedang ditambahkan user beserta hitungan hari ini. */
+export async function getMyDecks(userId: number) {
+  const [settings, decks] = await Promise.all([
+    getFlashcardSettings(userId),
+    getSubscribedDecks(userId),
+  ]);
   const deckIds = decks.map((deck) => deck.id);
 
   const now = new Date();
@@ -302,14 +317,12 @@ export async function getMyDecks(userId: number) {
   ]);
 
   const myDecks = decks.map((deck): MyDeck => {
-    const config = configs.get(deck.id)!;
-    const allowance = toAllowance(today.get(deck.id), config);
-    return { ...deck, config, allowance, due: toDueCounts(progress.get(deck.id), allowance, config) };
+    const allowance = toAllowance(today.get(deck.id), deck.config);
+    return { ...deck, allowance, due: toDueCounts(progress.get(deck.id), allowance, deck.config) };
   });
 
   return {
     settings,
-    subscribedIds: new Set(configs.keys()),
     /** Jumlah semua deck hari ini; hanya informasi, bukan batas. */
     today: {
       newStudied: myDecks.reduce((total, deck) => total + deck.allowance.newStudiedToday, 0),
