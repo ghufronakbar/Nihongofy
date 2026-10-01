@@ -80,6 +80,7 @@ export default async function TryDeckPage({ params }: Props) {
         </p>
       ) : null}
       <FlashcardReviewer
+        deckSlug={deck.slug}
         deckName={deck.name}
         back={{ href: "/flashcard", label: "Kembali ke katalog" }}
         cards={cards}

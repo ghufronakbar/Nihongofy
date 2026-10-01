@@ -35,15 +35,17 @@ Rancangan lama (paritas Anki penuh) tetap ada di
 - **Katalog** (`FlashcardVocab`): satu baris per kata, diisi `npm run seed:flashcard` dari
   `src/flashcard-data/vocab/*.json`. Kata yang hilang dari fixture diberi `retiredAt`, tidak
   pernah dihapus, karena progres user merujuknya.
-- **Satu kata = satu kartu per user** (`FlashcardCard`, primary key `userId + vocabId`). Baris
-  kartu baru dibuat saat kata pertama kali disentuh (dijawab, ditunda, atau di-suspend). Kata
-  tanpa baris adalah kartu baru.
 - **Deck = tag.** Deck bawaan (`FlashcardDeck`) dibentuk dari tag taxonomy yang bertanda
   `deck: true`. Kata termasuk deck bila `tags`-nya memuat slug deck itu, sehingga 食事 bisa ada
-  di "JLPT N5" sekaligus "Makanan & minuman". Progresnya satu: kata yang dipelajari di satu deck
-  tidak muncul lagi sebagai kartu baru di deck lain.
-- **Langganan** (`FlashcardDeckSubscription`): deck yang dipilih user. Melepas langganan tidak
-  menghapus progres.
+  di "JLPT N5" sekaligus "Makanan & minuman". 71% kata ada di dua deck atau lebih.
+- **Kartu milik satu deck** (`FlashcardCard`, primary key `userId + deckId + vocabId`), seperti
+  di Anki. Kata yang ada di dua deck adalah dua kartu dengan jadwal masing-masing, sehingga
+  direview terpisah di tiap deck. Baris kartu dibuat saat kata pertama kali disentuh di deck itu
+  (dijawab, ditunda, atau di-suspend); kata tanpa baris adalah kartu baru di deck itu.
+- **Langganan** (`FlashcardDeckSubscription`): deck yang dipilih user, sekaligus pemilik kartu
+  dan pengaturan penjadwalan deck itu. Melepas deck hanya mengisi `unsubscribedAt`: kartu dan
+  pengaturannya dibekukan (tidak masuk statistik beban review) dan kembali utuh saat deck
+  ditambahkan lagi. Barisnya tidak pernah dihapus selama user ada.
 - Deck dengan kata kurang dari `deckMinNotes` (10) tidak ditampilkan; ini juga membuat deck
   topik yang kata-katanya belum digenerate tetap tersembunyi. Halaman deck, mode coba, belajar,
   dan tombol tambah deck memakai katalog yang sama, jadi deck tersembunyi tidak bisa dibuka
@@ -67,14 +69,20 @@ Rancangan lama (paritas Anki penuh) tetap ada di
 
 - FSRS-6 lewat `ts-fsrs`, dengan fallback SM-2 saat FSRS dimatikan. Scheduler (`lib/scheduler/`)
   tidak berubah dari rancangan lama.
-- **Satu pengaturan per user** (`FlashcardCollection.config`), berlaku untuk semua deck. Deck
-  saling tumpang tindih, jadi batas harian per deck akan membuat jumlah kartu baru harian
-  bergantung pada deck yang dibuka.
+- **Pengaturan penjadwalan per deck** (`FlashcardDeckSubscription.config`), seperti deck options
+  Anki: batas harian, learning/relearning steps, urutan, FSRS, dan desired retention. Kartu
+  selalu dijadwalkan dengan pengaturan deck pemiliknya, jadi tidak pernah ambigu. Deck yang baru
+  ditambahkan memakai nilai bawaan.
+- **Batas harian per deck, tanpa batas gabungan.** Kartu baru dan review hari ini dihitung dari
+  `FlashcardRevlog.deckId`. Sepuluh deck dengan 20 kartu baru berarti sampai 200 kartu baru per
+  hari; itu disengaja.
+- **Tampilan** (ukuran teks, furigana) dan jam pergantian hari tetap satu per user
+  (`FlashcardCollection`).
 - Nilai bawaan mengikuti deck options Anki milik pemilik project:
 
   | Setting | Bawaan |
   |---|---|
-  | Kartu baru per hari | 20 (semua deck sekaligus) |
+  | Kartu baru per hari | 20 (per deck) |
   | Maksimum review per hari | 9999 |
   | Learning steps | `1m 2h 3h` |
   | Insertion order | Sequential |
@@ -88,7 +96,7 @@ Rancangan lama (paritas Anki penuh) tetap ada di
   | Desired retention | 95% |
 
   Setting lain (parameter FSRS, setting SM-2, leech) tidak ditampilkan dan memakai default Anki.
-  Setiap field di halaman pengaturan punya tombol ↺ ke nilai bawaannya.
+  Setiap field di form pengaturan deck punya tombol ↺ ke nilai bawaannya.
 - Urutan pengambilan antrean mengikuti scheduler v3 Anki: intraday learning → interday learning
   → review → new. Opsi urutan yang membedakan subdeck atau note bersaudara jatuh ke padanan
   terdekatnya, karena deck tidak punya subdeck dan satu kata hanya punya satu kartu.
@@ -119,7 +127,7 @@ Rancangan lama (paritas Anki penuh) tetap ada di
 | `/flashcard/add` | Katalog per Level JLPT, Topik, dan Kategori dengan tombol tambah/lepas. |
 | `/flashcard/deck/[slug]` | Hitungan hari ini, tombol belajar, tambah/lepas deck, dan daftar kata read-only (pencarian kata/bacaan/arti, filter status, 50 per halaman, suspend, reset, dan laporkan per kata). |
 | `/flashcard/deck/[slug]/study` | Reviewer. Hanya untuk deck yang sudah ditambahkan. Antrean dikirim per 200 kartu; tombol "Lanjutkan" membangun antrean berikutnya. Lihat [Layar belajar](#layar-belajar). |
-| `/flashcard/settings` | Ukuran teks, furigana, dan penjadwalan. |
+| `/flashcard/settings` | Tampilan kartu untuk semua deck: ukuran teks dan furigana. |
 | `/flashcard/stats` | True retention, perkiraan 30 hari, riwayat review, sebaran interval, status kartu. |
 | `/flashcard/try/[slug]` | Mode coba 20 kata pertama deck, selalu ephemeral. Guest boleh melaporkan kartu (dengan Turnstile). |
 
@@ -173,8 +181,10 @@ Kontrak lengkapnya di [seed-flashcard.md](../seed-flashcard.md):
 ## Perbedaan dari Anki yang Disengaja
 
 - Tidak ada konten buatan user, custom card template, maupun impor `.apkg` oleh user.
-- Satu pengaturan per user, bukan preset per deck; tidak ada tab "This deck" untuk desired
-  retention.
+- Pengaturan melekat ke deck, bukan preset yang bisa dipakai bersama beberapa deck; tidak ada
+  tab "This deck" untuk desired retention. Tampilan kartu tetap satu per user.
+- Kata yang ada di beberapa deck bawaan menjadi kartu terpisah di tiap deck (di Anki, deck yang
+  diimpor terpisah juga punya kartu masing-masing).
 - Satu template kartu (kata → arti), jadi tidak ada sibling burying.
 - `FlashcardCard.due` timestamp absolut, bukan integer relatif `col.crt`.
 - Learning steps dibatasi < 1 hari dan tanpa satuan detik, karena `ts-fsrs` merusak keduanya

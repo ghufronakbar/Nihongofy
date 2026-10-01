@@ -17,12 +17,13 @@ import {
 } from "./schemas";
 
 /**
- * Jembatan antara halaman pengaturan dan `FlashcardConfig`/`FlashcardDisplay`.
+ * Jembatan antara form pengaturan dan `FlashcardConfig`/`FlashcardDisplay`.
  *
- * Learning steps diketik sebagai teks seperti di Anki ("1m 2h 3h") dan desired
- * retention sebagai persen. Konversinya dipisah ke sini supaya bisa diuji tanpa
- * merender form. Field config yang tidak ada di form (parameter FSRS, setting
- * SM-2, dsb.) dipertahankan dari nilai tersimpan.
+ * Ada dua form: tampilan kartu (satu untuk semua deck) dan penjadwalan (satu
+ * per deck). Learning steps diketik sebagai teks seperti di Anki ("1m 2h 3h")
+ * dan desired retention sebagai persen. Konversinya dipisah ke sini supaya bisa
+ * diuji tanpa merender form. Field config yang tidak ada di form (parameter
+ * FSRS, setting SM-2, dsb.) dipertahankan dari nilai tersimpan.
  */
 
 // --- Steps -------------------------------------------------------------------
@@ -60,14 +61,33 @@ const StepsFieldSchema = z
     }
   });
 
-// --- Skema form --------------------------------------------------------------
+// --- Tampilan (semua deck) ---------------------------------------------------
+
+export const DisplayFormSchema = z.object({
+  textScale: z.coerce.number().int().min(FLASHCARD_TEXT_SCALE.min).max(FLASHCARD_TEXT_SCALE.max),
+  showFuriganaOnBack: z.boolean(),
+});
+
+export type DisplayFormValues = z.input<typeof DisplayFormSchema>;
+export type DisplayFormOutput = z.output<typeof DisplayFormSchema>;
+export type DisplayFieldName = keyof DisplayFormOutput;
+
+export function displayToForm(display: FlashcardDisplay): DisplayFormOutput {
+  return { textScale: display.textScale, showFuriganaOnBack: display.showFuriganaOnBack };
+}
+
+export function formToDisplay(values: DisplayFormOutput): FlashcardDisplay {
+  return FlashcardDisplaySchema.parse(values);
+}
+
+/** Nilai bawaan tiap field, dipakai tombol reset per field dan "kembalikan semua". */
+export const DISPLAY_FORM_DEFAULTS: DisplayFormOutput = displayToForm(FLASHCARD_DEFAULT_DISPLAY);
+
+// --- Penjadwalan (per deck) --------------------------------------------------
 
 const count = (max: number) => z.coerce.number().int().min(0).max(max);
 
-export const SettingsFormSchema = z.object({
-  textScale: z.coerce.number().int().min(FLASHCARD_TEXT_SCALE.min).max(FLASHCARD_TEXT_SCALE.max),
-  showFuriganaOnBack: z.boolean(),
-
+export const DeckConfigFormSchema = z.object({
   newCardsPerDay: count(9_999),
   maxReviewsPerDay: count(99_999),
 
@@ -87,14 +107,12 @@ export const SettingsFormSchema = z.object({
   desiredRetentionPercent: z.coerce.number().int().min(70).max(99),
 });
 
-export type SettingsFormValues = z.input<typeof SettingsFormSchema>;
-export type SettingsFormOutput = z.output<typeof SettingsFormSchema>;
-export type SettingsFieldName = keyof SettingsFormOutput;
+export type DeckConfigFormValues = z.input<typeof DeckConfigFormSchema>;
+export type DeckConfigFormOutput = z.output<typeof DeckConfigFormSchema>;
+export type DeckConfigFieldName = keyof DeckConfigFormOutput;
 
-export function settingsToForm(config: FlashcardConfig, display: FlashcardDisplay): SettingsFormOutput {
+export function configToForm(config: FlashcardConfig): DeckConfigFormOutput {
   return {
-    textScale: display.textScale,
-    showFuriganaOnBack: display.showFuriganaOnBack,
     newCardsPerDay: config.newCardsPerDay,
     maxReviewsPerDay: config.maxReviewsPerDay,
     learningSteps: formatSteps(config.learningSteps),
@@ -110,38 +128,26 @@ export function settingsToForm(config: FlashcardConfig, display: FlashcardDispla
   };
 }
 
-export function formToSettings(
-  values: SettingsFormOutput,
-  base: FlashcardConfig,
-): { config: FlashcardConfig; display: FlashcardDisplay } {
-  return {
-    config: FlashcardConfigSchema.parse({
-      ...base,
-      newCardsPerDay: values.newCardsPerDay,
-      maxReviewsPerDay: values.maxReviewsPerDay,
-      learningSteps: parseSteps(values.learningSteps),
-      insertionOrder: values.insertionOrder,
-      relearningSteps: parseSteps(values.relearningSteps),
-      newCardGatherOrder: values.newCardGatherOrder,
-      newCardSortOrder: values.newCardSortOrder,
-      newReviewOrder: values.newReviewOrder,
-      interdayLearningReviewOrder: values.interdayLearningReviewOrder,
-      reviewSortOrder: values.reviewSortOrder,
-      fsrsEnabled: values.fsrsEnabled,
-      desiredRetention: values.desiredRetentionPercent / 100,
-    }),
-    display: FlashcardDisplaySchema.parse({
-      textScale: values.textScale,
-      showFuriganaOnBack: values.showFuriganaOnBack,
-    }),
-  };
+export function formToConfig(values: DeckConfigFormOutput, base: FlashcardConfig): FlashcardConfig {
+  return FlashcardConfigSchema.parse({
+    ...base,
+    newCardsPerDay: values.newCardsPerDay,
+    maxReviewsPerDay: values.maxReviewsPerDay,
+    learningSteps: parseSteps(values.learningSteps),
+    insertionOrder: values.insertionOrder,
+    relearningSteps: parseSteps(values.relearningSteps),
+    newCardGatherOrder: values.newCardGatherOrder,
+    newCardSortOrder: values.newCardSortOrder,
+    newReviewOrder: values.newReviewOrder,
+    interdayLearningReviewOrder: values.interdayLearningReviewOrder,
+    reviewSortOrder: values.reviewSortOrder,
+    fsrsEnabled: values.fsrsEnabled,
+    desiredRetention: values.desiredRetentionPercent / 100,
+  });
 }
 
 /** Nilai bawaan tiap field, dipakai tombol reset per field dan "kembalikan semua". */
-export const SETTINGS_FORM_DEFAULTS: SettingsFormOutput = settingsToForm(
-  FLASHCARD_DEFAULT_CONFIG,
-  FLASHCARD_DEFAULT_DISPLAY,
-);
+export const DECK_CONFIG_FORM_DEFAULTS: DeckConfigFormOutput = configToForm(FLASHCARD_DEFAULT_CONFIG);
 
 // --- Label pilihan -----------------------------------------------------------
 

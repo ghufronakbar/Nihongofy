@@ -1102,8 +1102,22 @@ Keputusan desain dan alasannya ada di `docs/module/flashcard.md`; kontrak datany
   kata yang perlu percobaan ulang dari 10-14% ke ±2% (lihat tabel di `docs/seed-flashcard.md`).
   Bug ekstraksi bacaan ganda (お茶 → おおちゃ, 9 kata) diperbaiki dan key-nya dikoreksi sebelum
   seed pertama. Peringatan homograf tidak lagi salah lapor bila bacaan lain ditulis bermarkup.
+- [x] Layar belajar (1 Okt 2026): tombol kembali, hitungan Baru/Belajar/Ulang langsung, progress
+  bar, jam sesi, dan ringkasan akhir sesi (`lib/session-summary.ts`).
+- [x] Kartu dan pengaturan per deck (1 Okt 2026), menggantikan keputusan "satu kata = satu kartu"
+  dan "pengaturan per user" di atas: kartu ber-PK `userId + deckId + vocabId`, pengaturan
+  penjadwalan di `FlashcardDeckSubscription.config`, batas harian per deck tanpa batas gabungan,
+  melepas deck membekukan kartu dan pengaturannya. Migration
+  `20261001180000_flashcard_cards_per_deck` mengosongkan data user flashcard (hanya data uji).
+  Diuji terhadap Postgres lokal: migration di atas data berbentuk lama, lalu alur deck, jawab,
+  batas harian per deck, undo, tunda, suspend, reset, lepas/tambah ulang, dan pengaturan.
+- [ ] Halaman pengaturan per deck dan alur "tambah deck → atur" (langkah 3).
+- [ ] Statistik per deck di halaman deck dan filter deck di `/flashcard/stats` (langkah 4).
 
 ### Langkah tersisa (dijalankan pemilik project)
+
+- [ ] `npx prisma migrate deploy` untuk `20261001180000_flashcard_cards_per_deck` (mengosongkan
+  kartu, revlog, langganan, dan pengaturan flashcard semua user).
 
 - [x] `npx prisma migrate deploy` (1 Okt 2026).
 - [x] Commit dan deploy kode flashcard baru dengan flag mati (sampai PR #50).

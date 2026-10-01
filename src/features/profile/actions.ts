@@ -86,7 +86,11 @@ const getCachedProfileOverview = (userId: number) =>
       ] =
         await Promise.all([
           prisma.kanaProgress.count({ where: { userId: id, correctCount: { gt: 0 } } }),
-          prisma.flashcardCard.count({ where: { userId: id, reps: { gt: 0 } } }),
+          // Kata unik: kata yang dipelajari di dua deck adalah dua kartu.
+          prisma.$queryRaw<{ total: number }[]>`
+            SELECT count(DISTINCT "vocabId")::int AS total
+            FROM "FlashcardCard" WHERE "userId" = ${id} AND reps > 0
+          `.then((rows) => rows[0]?.total ?? 0),
           prisma.practiceSession.count({ where: completedQuickPracticeWhere(id) }),
           prisma.attempt.count({ where: completedSectionAttemptWhere(id) }),
           prisma.attempt.count({ where: completedMockAttemptWhere(id) }),

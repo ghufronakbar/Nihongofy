@@ -142,9 +142,10 @@ FlashcardDeck (deck bawaan = satu tag taxonomy)
 └── FlashcardDeckSubscription (deck yang dipilih user)
 
 User
-├── FlashcardCollection (pengaturan per user: config + display)
-└── FlashcardCard (progres satu kata, PK userId + vocabId) ── FlashcardVocab
-    └── FlashcardRevlog (riwayat setiap rating)
+├── FlashcardCollection (pengaturan per user: display + rolloverHour)
+└── FlashcardDeckSubscription (PK userId + deckId; config penjadwalan deck, unsubscribedAt)
+    └── FlashcardCard (progres satu kata di satu deck, PK userId + deckId + vocabId) ── FlashcardVocab
+        └── FlashcardRevlog (riwayat setiap rating, membawa deckId)
 ```
 
 - Katalog milik aplikasi dan diisi `npm run seed:flashcard` dari `src/flashcard-data/`; tidak ada
@@ -153,24 +154,29 @@ User
   diberi `retiredAt` dan **tidak pernah dihapus**; FK `FlashcardCard.vocabId` memakai `Restrict`
   supaya penghapusan yang tidak disengaja gagal alih-alih ikut menghapus progres user.
 - Keanggotaan deck tidak disimpan: kata termasuk deck bila `FlashcardVocab.tags` memuat
-  `FlashcardDeck.slug` (index GIN pada `tags`). Satu kata bisa berada di beberapa deck dengan
-  satu kartu dan satu progres.
+  `FlashcardDeck.slug` (index GIN pada `tags`). Satu kata bisa berada di beberapa deck, dan di
+  tiap deck yang ditambahkan user ia punya kartu sendiri.
+- `FlashcardCard` ber-FK komposit ke `FlashcardDeckSubscription (userId, deckId)` dengan cascade,
+  dan `FlashcardRevlog` ke kartu `(userId, deckId, vocabId)`. Langganan karena itu tidak pernah
+  dihapus saat deck dilepas — hanya `unsubscribedAt` yang diisi — supaya kartu tetap ada. Kartu
+  hanya dibuat untuk deck yang sedang ditambahkan dan kata yang memang termasuk deck itu.
 - `FlashcardVocab.word`, contoh kalimat (`examples[].jp`), dan `notes` memakai
   [Markup Teks Jepang](#markup-teks-jepang); `__...__` di contoh kalimat menandai kata target.
   `wordPlain` dan `reading` diturunkan dari `word` saat seed.
 - Baris `FlashcardCard` dibuat saat kata pertama kali disentuh; kata tanpa baris adalah kartu
   baru. Suspend (`isSuspended`) dan tunda (`buriedUntil`) disimpan terpisah dari `queue`
   sehingga jadwal asli tidak tertimpa.
-- `FlashcardCollection.config` dan `.display` adalah JSONB yang hanya dibaca lewat zod
-  (`src/features/flashcard/schemas.ts`). Field yang tidak valid lagi diganti default-nya sendiri,
-  bukan menghapus seluruh pengaturan.
+- `FlashcardDeckSubscription.config` (penjadwalan per deck) dan `FlashcardCollection.display`
+  (tampilan per user) adalah JSONB yang hanya dibaca lewat zod (`src/features/flashcard/schemas.ts`).
+  Field yang tidak valid lagi diganti default-nya sendiri, bukan menghapus seluruh pengaturan.
 - Batas hari memakai `User.timeZone` dengan jam rollover Anki (`FlashcardCollection.rolloverHour`,
   default 04:00), bukan tengah malam. Zona waktu tidak disalin ke koleksi.
 - Rating hanya `AGAIN`, `HARD`, `GOOD`, atau `EASY`. Jawaban selalu menulis kartu dan revlog dalam
   satu transaksi. Idempotency memakai `@@unique([userId, clientToken])`, bukan primary key.
-- `FlashcardRevlog.wasNew` menandai review pertama kartu baru (dasar batas kartu baru per hari);
+- `FlashcardRevlog.wasNew` menandai review pertama kartu baru (dasar batas kartu baru per hari,
+  dihitung per `deckId`);
   `previousState` menyimpan salinan kartu sebelum review untuk undo yang persis.
-- Batas harian berlaku untuk semua deck sekaligus. Action rating memeriksa ulang batas kartu baru,
+- Batas harian berlaku per deck, tanpa batas gabungan. Action rating memeriksa ulang batas kartu baru,
   jatuh tempo, suspend, dan tunda; antrean di client bukan satu-satunya penjaga.
 - Seluruh query progres wajib berawal dari `session.userId`.
 

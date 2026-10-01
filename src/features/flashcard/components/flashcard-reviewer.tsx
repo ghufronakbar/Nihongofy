@@ -33,6 +33,8 @@ import { SessionSummaryPanel } from "./session-summary-panel";
 import { VocabCardView } from "./vocab-card-view";
 
 type Props = {
+  /** Deck pemilik kartu; setiap aksi kartu menyebutnya. */
+  deckSlug: string;
   deckName: string;
   /** Tujuan tombol kembali, di atas reviewer dan di layar akhir sesi. */
   back: { href: string; label: string };
@@ -205,6 +207,7 @@ function SessionClock({ startedAt }: { startedAt: number | null }) {
 // --- Komponen -------------------------------------------------------------------
 
 export function FlashcardReviewer({
+  deckSlug,
   deckName,
   back,
   cards,
@@ -288,6 +291,7 @@ export function FlashcardReviewer({
       setPending(true);
       try {
         const result = await answerCardAction({
+          deckSlug,
           vocabId: current.vocabId,
           rating,
           takenMs,
@@ -321,7 +325,7 @@ export function FlashcardReviewer({
         setPending(false);
       }
     },
-    [current, isGuest, pending],
+    [current, deckSlug, isGuest, pending],
   );
 
   const undo = useCallback(async () => {
@@ -349,8 +353,8 @@ export function FlashcardReviewer({
       try {
         const result =
           mode === "bury"
-            ? await buryCardAction({ vocabId: current.vocabId })
-            : await setCardSuspendedAction({ vocabId: current.vocabId, suspended: true });
+            ? await buryCardAction({ deckSlug, vocabId: current.vocabId })
+            : await setCardSuspendedAction({ deckSlug, vocabId: current.vocabId, suspended: true });
         if (!result.ok) {
           toast.error(result.message);
           return;
@@ -364,7 +368,7 @@ export function FlashcardReviewer({
         setPending(false);
       }
     },
-    [current, isGuest, pending],
+    [current, deckSlug, isGuest, pending],
   );
 
   // Pintasan keyboard Anki: spasi membuka jawaban, 1-4 memberi rating.

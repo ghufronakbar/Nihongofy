@@ -66,7 +66,7 @@ export default async function DeckPage({ params, searchParams }: Props) {
   if (!access) notFound();
 
   const { deck, subscribed, due } = access;
-  const list = await getDeckWords(session.userId, slug, { query, status, page });
+  const list = await getDeckWords(session.userId, deck, { query, status, page });
   const total = due.newCount + due.learningCount + due.reviewCount;
 
   const hrefWith = (next: { status?: DeckWordFilter; page?: number }) => {
@@ -127,8 +127,8 @@ export default async function DeckPage({ params, searchParams }: Props) {
       ) : null}
       {!subscribed ? (
         <p className="mt-4 text-sm font-bold text-muted-foreground">
-          Tambahkan deck ini untuk mulai belajar. Kata yang sudah kamu pelajari dari deck lain
-          membawa progresnya ke sini.
+          Tambahkan deck ini untuk mulai belajar. Setiap deck punya kartu dan pengaturannya
+          sendiri: kata yang juga ada di deck lain dipelajari terpisah di sini.
         </p>
       ) : null}
 
@@ -209,6 +209,10 @@ export default async function DeckPage({ params, searchParams }: Props) {
                     ) : null}
                   </span>
                   <DeckWordActions
+                    deckSlug={slug}
+                    // Kartu milik langganan deck ini; deck yang belum atau tidak
+                    // lagi ditambahkan hanya bisa dilaporkan isinya.
+                    cardActions={subscribed}
                     vocabId={word.vocabId}
                     word={word.wordPlain}
                     status={word.status}

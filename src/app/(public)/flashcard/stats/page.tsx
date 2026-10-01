@@ -70,8 +70,13 @@ export default async function StatsPage() {
   const historyFrom = new Date(todayStart.getTime() - HISTORY_DAYS * 86_400_000);
 
   const [cards, reviews, unstudied] = await Promise.all([
+    // Kartu deck yang sudah dilepas dibekukan, jadi tidak ikut beban review.
     prisma.flashcardCard.findMany({
-      where: { userId: session.userId, type: { not: "NEW" } },
+      where: {
+        userId: session.userId,
+        type: { not: "NEW" },
+        subscription: { unsubscribedAt: null },
+      },
       select: { due: true, intervalDays: true, type: true, isSuspended: true },
     }),
     prisma.flashcardRevlog.findMany({

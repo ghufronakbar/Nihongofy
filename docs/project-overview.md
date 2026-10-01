@@ -96,7 +96,7 @@ Aturan halaman exam:
 - Submit sesi bersifat final untuk sesi tersebut — setelah submit, sesi tidak bisa dikerjakan ulang di attempt yang sama. Attempt menjadi `COMPLETED` setelah sesi terakhir disubmit.
 - Konten kana memakai fixture terkurasi dengan stable key. Hanya aktivitas per-user yang disimpan di `KanaProgress`.
 - Kosakata flashcard adalah katalog bawaan (`FlashcardVocab`) yang digenerate AI; deck bawaan dibentuk dari tag, sehingga satu kata bisa muncul di beberapa deck dengan satu kartu dan satu progres per user (`FlashcardCard`).
-- Penjadwalan flashcard memakai FSRS-6 dengan antrean scheduler v3 Anki dan batas harian yang berlaku untuk semua deck sekaligus. Pengaturan disimpan per user (`FlashcardCollection`) dan selalu dibaca lewat Zod. Rincian: `docs/module/flashcard.md`.
+- Penjadwalan flashcard memakai FSRS-6 dengan antrean scheduler v3 Anki. Kartu milik satu deck (kata yang ada di dua deck adalah dua kartu), dan pengaturan penjadwalan serta batas harian disimpan per deck (`FlashcardDeckSubscription.config`); tampilan kartu per user (`FlashcardCollection`). Semua pengaturan selalu dibaca lewat Zod. Rincian: `docs/module/flashcard.md`.
 - Profile overview dicache per user dan diinvalidasi saat progress kana, vocabulary, practice, atau mock exam berubah.
 - Latihan cepat membuat assignment `PracticeAnswer` di awal session. Refresh melanjutkan soal pertama yang belum dijawab.
 - Feedback practice hanya membuka kunci dan explanation soal yang sudah disubmit. Seluruh soal lain tetap tidak membawa answer key ke client.
