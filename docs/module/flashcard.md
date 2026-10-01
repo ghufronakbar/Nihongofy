@@ -128,11 +128,11 @@ Rancangan lama (paritas Anki penuh) tetap ada di
 |---|---|
 | `/flashcard` | Guest: katalog dengan tombol "Coba deck ini". Login: deck milik user dengan hitungan baru/belajar/ulang hari ini. |
 | `/flashcard/add` | Katalog per Level JLPT, Topik, dan Kategori dengan tombol tambah/lepas. |
-| `/flashcard/deck/[slug]` | Hitungan hari ini dan pemakaian batas harian deck, tombol belajar, pengaturan deck, tambah/lepas deck, dan daftar kata read-only (pencarian kata/bacaan/arti, filter status, 50 per halaman, suspend, reset, dan laporkan per kata). |
+| `/flashcard/deck/[slug]` | Hitungan hari ini dan pemakaian batas harian deck, tombol belajar, pengaturan deck, tambah/lepas deck, [statistik deck](#statistik), dan daftar kata read-only (pencarian kata/bacaan/arti, filter status, 50 per halaman, suspend, reset, dan laporkan per kata). |
 | `/flashcard/deck/[slug]/settings` | Pengaturan penjadwalan deck ini (deck options Anki). Hanya untuk deck yang sedang ditambahkan; selain itu dialihkan ke halaman deck. |
 | `/flashcard/deck/[slug]/study` | Reviewer. Hanya untuk deck yang sudah ditambahkan. Antrean dikirim per 200 kartu; tombol "Lanjutkan" membangun antrean berikutnya. Lihat [Layar belajar](#layar-belajar). |
 | `/flashcard/settings` | Tampilan kartu untuk semua deck: ukuran teks dan furigana. |
-| `/flashcard/stats` | True retention, perkiraan 30 hari, riwayat review, sebaran interval, status kartu. |
+| `/flashcard/stats` | True retention, kematangan kartu, perkiraan 30 hari, riwayat review, dan sebaran interval; semua deck atau satu deck (`?deck=slug`). |
 | `/flashcard/try/[slug]` | Mode coba 20 kata pertama deck, selalu ephemeral. Guest boleh melaporkan kartu (dengan Turnstile). |
 
 ## Layar Belajar
@@ -154,6 +154,21 @@ Rancangan lama (paritas Anki penuh) tetap ada di
   saat antrean dibangun (dihitung server) + kartu sesi ini yang jadwal terakhirnya jatuh besok.
 - Ringkasan tidak disimpan: tombol "Lanjutkan" memulai potongan antrean baru dengan ringkasan
   baru, dan statistik jangka panjang tetap di `/flashcard/stats`.
+
+## Statistik
+
+- **Halaman deck** (hanya deck yang sedang ditambahkan): progres "X dari Y kata dipelajari",
+  kematangan kartu (baru / belajar / young / mature / suspend, ambang mature 21 hari seperti
+  Anki), true retention dan jumlah jawaban 30 hari, perkiraan jatuh tempo 7 hari, dan lima kata
+  dengan lapse terbanyak beserta tanda leech. Semuanya hanya kartu deck itu, untuk kata yang
+  masih termasuk deck dan belum pensiun (`getDeckStats`).
+- **`/flashcard/stats`**: agregat semua deck yang sedang ditambahkan, atau satu deck lewat filter
+  `?deck=slug` (nilai lain berarti semua deck). Kata yang ada di beberapa deck dihitung sebagai
+  kartu di tiap deck. Kartu deck yang dilepas tidak ikut beban review dan kematangan; riwayat
+  review tetap memuatnya.
+- Rumus (`lib/stats.ts`): true retention hanya review kartu matang (`kind = REVIEW`, selain
+  Again), kartu lewat due dihitung di hari ini pada perkiraan, dan kartu suspend dihitung
+  terpisah apa pun jenisnya.
 
 ## Laporan Kartu
 

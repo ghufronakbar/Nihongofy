@@ -16,6 +16,14 @@ import { createNewCardState, previewSchedule, type SchedulerCardState } from "./
 import { getFlashcardDayRange, type FlashcardDayContext } from "./lib/scheduler/day";
 import { FLASHCARD_RATINGS } from "./lib/scheduler/types";
 import {
+  buildForecast,
+  buildMaturity,
+  computeTrueRetention,
+  type DailyBucket,
+  type MaturityCounts,
+  type RetentionSummary,
+} from "./lib/stats";
+import {
   FLASHCARD_DEFAULT_CONFIG,
   parseFlashcardConfig,
   type FlashcardConfig,
@@ -685,10 +693,12 @@ export async function getTrySession(slug: string) {
 // ---------------------------------------------------------------------------
 
 /**
- * Kartu baru di deck-deck yang sedang ditambahkan user. Dihitung per deck:
- * kata yang ada di dua deck adalah dua kartu baru, sama seperti di antreannya.
+ * Kartu baru (belum pernah dijawab dan tidak di-suspend) di deck yang sedang
+ * ditambahkan user, atau di satu deck saja. Dihitung per deck: kata yang ada di
+ * dua deck adalah dua kartu baru, sama seperti di antreannya.
  */
-export async function countUnstudiedWords(userId: number): Promise<number> {
+export async function countUnstudiedWords(userId: number, deckId?: number): Promise<number> {
+  const onlyDeck = deckId === undefined ? Prisma.empty : Prisma.sql`AND s."deckId" = ${deckId}`;
   const rows = await prisma.$queryRaw<{ total: number }[]>`
     SELECT count(*)::int AS total
     FROM "FlashcardDeckSubscription" s
@@ -696,8 +706,97 @@ export async function countUnstudiedWords(userId: number): Promise<number> {
     JOIN "FlashcardVocab" v ON v.tags @> ARRAY[d.slug]::text[] AND v."retiredAt" IS NULL
     LEFT JOIN "FlashcardCard" c
       ON c."vocabId" = v.id AND c."userId" = s."userId" AND c."deckId" = s."deckId"
-    WHERE s."userId" = ${userId} AND s."unsubscribedAt" IS NULL
-      AND (c."vocabId" IS NULL OR c.type = 'NEW')
+    WHERE s."userId" = ${userId} AND s."unsubscribedAt" IS NULL ${onlyDeck}
+      AND (c."vocabId" IS NULL OR (c.type = 'NEW' AND NOT c."isSuspended"))
   `;
   return rows[0]?.total ?? 0;
+}
+
+const DECK_STATS_DAYS = 30;
+const DECK_FORECAST_DAYS = 7;
+const HARDEST_LIMIT = 5;
+
+export type HardWord = {
+  vocabId: number;
+  wordPlain: string;
+  reading: string;
+  lapses: number;
+  isLeech: boolean;
+};
+
+export type DeckStats = {
+  wordCount: number;
+  maturity: MaturityCounts;
+  /** Kartu yang sudah keluar dari status baru dan tidak di-suspend. */
+  studied: number;
+  /** True retention review kartu matang deck ini, 30 hari terakhir. */
+  retention: RetentionSummary;
+  reviews30d: number;
+  forecast: DailyBucket[];
+  /** Lapse terbanyak; hanya kartu yang pernah terlupa. */
+  hardest: HardWord[];
+};
+
+/**
+ * Statistik satu deck untuk halaman deck. Hanya kartu deck ini, untuk kata yang
+ * masih termasuk deck dan belum pensiun — sama dengan yang dihitung antreannya.
+ */
+export async function getDeckStats(
+  userId: number,
+  deck: Pick<DeckSummary, "id" | "slug" | "wordCount">,
+  day: FlashcardDayContext,
+): Promise<DeckStats> {
+  const now = new Date();
+  const { start: todayStart } = getFlashcardDayRange(now, day);
+  const since = new Date(todayStart.getTime() - DECK_STATS_DAYS * 86_400_000);
+  const inDeck = {
+    userId,
+    deckId: deck.id,
+    vocab: { retiredAt: null, tags: { has: deck.slug } },
+  } satisfies Prisma.FlashcardCardWhereInput;
+
+  const [cards, reviews, hardest] = await Promise.all([
+    prisma.flashcardCard.findMany({
+      where: inDeck,
+      select: { type: true, intervalDays: true, isSuspended: true, due: true },
+    }),
+    prisma.flashcardRevlog.findMany({
+      where: { userId, deckId: deck.id, reviewedAt: { gte: since } },
+      select: { reviewedAt: true, rating: true, kind: true, takenMs: true },
+    }),
+    prisma.flashcardCard.findMany({
+      where: { ...inDeck, lapses: { gt: 0 } },
+      orderBy: [{ lapses: "desc" }, { vocabId: "asc" }],
+      take: HARDEST_LIMIT,
+      select: {
+        vocabId: true,
+        lapses: true,
+        isLeech: true,
+        vocab: { select: { wordPlain: true, reading: true } },
+      },
+    }),
+  ]);
+
+  const maturity = buildMaturity(cards, deck.wordCount - cards.length);
+  const scheduled = cards.filter((card) => !card.isSuspended && card.type !== "NEW");
+
+  return {
+    wordCount: deck.wordCount,
+    maturity,
+    studied: maturity.learning + maturity.young + maturity.mature,
+    retention: computeTrueRetention(reviews),
+    reviews30d: reviews.length,
+    forecast: buildForecast(
+      scheduled.map((card) => card.due),
+      todayStart,
+      DECK_FORECAST_DAYS,
+    ),
+    hardest: hardest.map((card) => ({
+      vocabId: card.vocabId,
+      wordPlain: card.vocab.wordPlain,
+      reading: card.vocab.reading,
+      lapses: card.lapses,
+      isLeech: card.isLeech,
+    })),
+  };
 }

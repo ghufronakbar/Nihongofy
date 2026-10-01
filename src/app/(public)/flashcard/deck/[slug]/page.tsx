@@ -8,9 +8,11 @@ import { cn } from "@/lib/utils";
 import {
   DECK_WORD_STATUSES,
   getDeckForUser,
+  getDeckStats,
   getDeckWords,
   type DeckWordFilter,
 } from "@/features/flashcard/data";
+import { DeckStatsPanel } from "@/features/flashcard/components/deck-stats-panel";
 import { DeckSubscribeButton } from "@/features/flashcard/components/deck-subscribe-button";
 import { DeckWordActions } from "@/features/flashcard/components/deck-word-actions";
 import { FlashcardDeckSlugSchema } from "@/features/flashcard/schemas";
@@ -65,8 +67,13 @@ export default async function DeckPage({ params, searchParams }: Props) {
   const access = await getDeckForUser(session.userId, slug);
   if (!access) notFound();
 
-  const { deck, subscribed, due, allowance, config } = access;
-  const list = await getDeckWords(session.userId, deck, { query, status, page });
+  const { deck, subscribed, due, allowance, config, settings } = access;
+  // Statistik hanya untuk deck yang sedang ditambahkan: deck yang dilepas
+  // dibekukan, dan deck yang belum ditambahkan belum punya kartu.
+  const [list, stats] = await Promise.all([
+    getDeckWords(session.userId, deck, { query, status, page }),
+    subscribed ? getDeckStats(session.userId, deck, settings.day) : null,
+  ]);
   const total = due.newCount + due.learningCount + due.reviewCount;
 
   const hrefWith = (next: { status?: DeckWordFilter; page?: number }) => {
@@ -143,6 +150,8 @@ export default async function DeckPage({ params, searchParams }: Props) {
           sendiri: kata yang juga ada di deck lain dipelajari terpisah di sini.
         </p>
       ) : null}
+
+      {stats ? <DeckStatsPanel stats={stats} /> : null}
 
       <section className="mt-10" aria-labelledby="deck-words">
         <div className="flex flex-wrap items-end justify-between gap-3">

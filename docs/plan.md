@@ -1114,7 +1114,8 @@ Keputusan desain dan alasannya ada di `docs/module/flashcard.md`; kontrak datany
 - [x] Halaman pengaturan per deck `/flashcard/deck/[slug]/settings` dan alur "tambah deck → atur"
   (1 Okt 2026): tombol Tambahkan membuka pengaturan deck dengan opsi "Pakai bawaan", salin
   pengaturan dari deck lain, tombol Pengaturan dan pemakaian batas harian di halaman deck.
-- [ ] Statistik per deck di halaman deck dan filter deck di `/flashcard/stats` (langkah 4).
+- [x] Statistik per deck di halaman deck (progres, kematangan young/mature, retensi 30 hari,
+  perkiraan 7 hari, kata tersulit) dan filter deck di `/flashcard/stats` (1 Okt 2026).
 
 ### Langkah tersisa (dijalankan pemilik project)
 
