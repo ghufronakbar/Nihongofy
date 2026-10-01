@@ -1074,6 +1074,41 @@ Keputusan desain dan alasannya ada di `docs/module/flashcard.md`; kontrak datany
   lagi tepat waktu), undo, tunda, suspend, reset, pengaturan, statistik, dan mode coba guest.
 - [ ] Nyalakan `FEATURES_FLASHCARD=true` di environment Vercel, lalu redeploy.
 
+## Fase 8.13 — Modul Bunpou (文法)
+
+Katalog pola kalimat bawaan di `/bunpou`, diisi dari slide yang dikumpulkan pemilik project.
+Rancangan: `docs/module/bunpou.md`; kontrak data: `docs/seed-bunpou.md`.
+
+### Keputusan yang dikunci (1 Oktober 2026)
+
+- [x] Route `/bunpou`, publik untuk guest, flag `FEATURES_BUNPOU`.
+- [x] Slide hanya acuan daftar pola dan level (level = folder slide); penjelasan dan contoh
+  ditulis ulang AI. Pipeline dua langkah: ekstraksi vision (`ag/gemini-3.8-flash`, high) lalu
+  generate isi (`cx/gpt-5.6-terra`, high).
+- [x] Satu entri per makna, dengan level per makna; makna lain dari bentuk yang sama
+  dikelompokkan lewat `family` dan tampil sebagai tab.
+- [x] Perbandingan pola mirip disimpan sebagai data terpisah. Anggota kelompok ditentukan
+  manusia, isinya dirancang AI, dan hanya yang sudah ditinjau yang terbit.
+- [x] Sambungan terstruktur memakai bentuk baku dari taxonomy.
+- [x] Fase B: tautan soal bunpou JLPT → pola lewat AI, diperlakukan seperti pembahasan (tidak
+  terkirim di mode ujian).
+- [x] Fase C: SRS bunpou terpisah dari tabel flashcard dengan batas harian sendiri, memakai
+  ulang scheduler FSRS; kartu kalimat rumpang dari contoh kalimat.
+
+### Pekerjaan
+
+- [x] Kontrak data `docs/seed-bunpou.md` dan rancangan `docs/module/bunpou.md`.
+- [x] `data/bunpou/` di-gitignore.
+- [ ] Kumpulkan slide ke `data/bunpou/slides/<level>/<deck>/` (pemilik project).
+- [ ] Uji gateway: `BUNPOU_EXTRACT_MODEL` menerima input gambar (2-3 slide contoh).
+- [ ] `src/bunpou-data/taxonomy.json` dari draf di kontrak.
+- [ ] `npm run bunpou:extract`, `gen:bunpou`, `bunpou:doubts`, `seed:bunpou` (+ `:check`).
+- [ ] `npm run gen:bunpou-comparisons`.
+- [ ] Skema + migration Fase A, ditambah `BUNPOU_POINT`/`BUNPOU_COMPARISON` di `ReportTargetType`.
+- [ ] Halaman `/bunpou`, `/bunpou/[key]`, `/bunpou/compare/[key]`, SEO, dan flag.
+- [ ] Fase B: `gen:bunpou-links`, tabel `QuestionBunpouLink`, tampilan di halaman pola dan review.
+- [ ] Fase C: SRS bunpou.
+
 ## Fase 9 — Verifikasi & Polish
 
 - [ ] `npm run build` setelah tiap perubahan struktural/server action/caching
