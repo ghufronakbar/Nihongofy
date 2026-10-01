@@ -140,11 +140,23 @@ async function main() {
   for (const row of rows) {
     for (const tag of row.tags) if (counts.has(tag)) counts.set(tag, counts.get(tag) + 1);
   }
-  const hidden = decks.filter((deck) => counts.get(deck.slug) < taxonomy.deckMinNotes);
-  log(
-    `${decks.length} deck bawaan; ${decks.length - hidden.length} tampil, ` +
-      `${hidden.length} disembunyikan karena kurang dari ${taxonomy.deckMinNotes} kata`,
-  );
+  const minNotes = taxonomy.deckMinNotes;
+  const hidden = decks.filter((deck) => counts.get(deck.slug) < minNotes);
+  const describe = (deck) => `${deck.name} (${counts.get(deck.slug)} kata)`;
+  if (hidden.length === 0) {
+    log(`${decks.length} deck bawaan, semua tampil (syarat tampil: minimal ${minNotes} kata per deck)`);
+  } else {
+    log(
+      `${decks.length} deck bawaan; ${decks.length - hidden.length} tampil, ` +
+        `${hidden.length} disembunyikan karena katanya kurang dari ${minNotes}: ${hidden.map(describe).join(", ")}`,
+    );
+  }
+  // Deck tampil yang paling kecil, supaya terlihat seberapa dekat ke batas.
+  const smallest = decks
+    .filter((deck) => counts.get(deck.slug) >= minNotes)
+    .sort((left, right) => counts.get(left.slug) - counts.get(right.slug))
+    .slice(0, 3);
+  if (smallest.length > 0) log(`deck tampil terkecil: ${smallest.map(describe).join(", ")}`);
 
   if (warnings.length > 0) {
     log(`${warnings.length} peringatan (tidak menggagalkan seed):`);
@@ -163,6 +175,9 @@ async function main() {
     return;
   }
 
+  // Seed tidak berjalan dalam satu transaksi. Bila terhenti di tengah jalan,
+  // jalankan ulang sampai baris "selesai" muncul; semua langkahnya idempoten.
+  log("menulis ke database... jangan dihentikan sampai baris \"selesai\" muncul");
   const prisma = new PrismaClient();
   try {
     for (const deck of decks) {
@@ -179,6 +194,7 @@ async function main() {
 
     for (let index = 0; index < rows.length; index += CHUNK_SIZE) {
       await prisma.$executeRawUnsafe(UPSERT_VOCAB, JSON.stringify(rows.slice(index, index + CHUNK_SIZE)));
+      log(`  kata ${Math.min(index + CHUNK_SIZE, rows.length)}/${rows.length}`);
     }
 
     // Selalu dijalankan setelah semua upsert berhasil. Dengan fixture yang
