@@ -160,6 +160,20 @@ const aiMetaSchema = z.object({
   promptVersion: z.string().min(1),
   generatedAt: z.iso.datetime({ offset: true }),
   doubt: z.string().nullable(),
+  // Diisi prisma/fix-flashcard-doubts.mjs setelah doubt ditinjau. `override`
+  // berisi tulisan/bacaan pengganti sumber (keputusan replace, atau bacaan
+  // sumber yang keliru) yang dipasang ulang setelah flashcard:extract.
+  doubtResolution: z
+    .object({
+      action: z.enum(["keep", "revise", "replace"]),
+      reason: z.string(),
+      previousDoubt: z.string(),
+      model: z.string(),
+      resolvedAt: z.iso.datetime({ offset: true }),
+      source: z.object({ word: z.string(), reading: z.string(), readingUncertain: z.boolean() }),
+      override: z.object({ word: z.string(), reading: z.string() }).nullable(),
+    })
+    .optional(),
 });
 
 const vocabNoteSchema = z.object({

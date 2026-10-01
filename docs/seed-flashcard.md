@@ -25,6 +25,7 @@ npm run seed:flashcard
 | `flashcard:extract` | `data/anki/exported_anki.apkg` | `src/flashcard-data/vocab/<level>.json` | tidak |
 | `gen:flashcard` | fixture + taxonomy | fixture (field `content` dan `ai`) | tidak |
 | `flashcard:doubts` | fixture | — | tidak |
+| `fix:flashcard-doubts` | fixture + taxonomy | rencana, lalu fixture (`--apply`) | tidak |
 | `seed:flashcard` | fixture + taxonomy | — | ya |
 
 ## Taxonomy Tag
@@ -107,7 +108,7 @@ yang `content`-nya masih `null` yang diproses, jadi script aman dijalankan berul
 - Batch yang gagal (mis. 429 dari gateway setelah 4 kali dicoba ulang oleh SDK) hanya membuat
   katanya tetap kosong. Jalankan ulang perintah yang sama, atau turunkan `--concurrency`.
 - `doubt` diisi AI bila masukan janggal (bacaan sumber keliru, salah ketik). Tinjau dengan
-  `npm run flashcard:doubts`, lalu generate ulang dengan `--only-doubts --overwrite` bila perlu.
+  `npm run flashcard:doubts`, lalu selesaikan dengan `fix:flashcard-doubts` (di bawah).
 
 ### Kecepatan dan Percobaan Ulang
 
@@ -132,6 +133,40 @@ mengulang. Diukur 1 Oktober 2026 dengan `ag/gemini-3.8-flash`:
   aturan untuk masing-masing, daftar periksa di akhir system prompt, dan pengingat di setiap
   prompt batch.
 - Dengan bawaan (batch 20, paralel 6), seluruh katalog diperkirakan selesai dalam ±20-30 menit.
+
+### Meninjau Kata Ragu
+
+`prisma/fix-flashcard-doubts.mjs` meninjau setiap kata ber-`doubt` satu per satu (bawaan
+`--reasoning-effort high`). Model membaca data sumber, kartu yang ada, alasan ragunya, dan entri
+lain dengan tulisan/bacaan sama, lalu memilih satu keputusan:
+
+| Keputusan | Arti | Yang berubah saat `--apply` |
+|---|---|---|
+| `keep` | Kartu sudah benar; hanya data sumbernya janggal (mis. bacaan frasa yang hanya mencatat kata kerjanya) | `doubt` dikosongkan |
+| `revise` | Tulisan tetap, isi kartu diperbaiki (bacaan, arti, catatan) | `content` diganti |
+| `replace` | Entri sumber rusak (mis. 空オケ, 介護士/介護士さん); kartu dibuat ulang untuk bentuk bakunya | `word`/`reading` note dan `content` diganti; key tetap |
+| `escalate` | Model tidak yakin, atau bentuk baku sudah ada sebagai kata lain | tidak ada; tinjau manual |
+
+```bash
+npm run fix:flashcard-doubts                       # tinjau -> .flashcard-doubt-plan.json
+npm run fix:flashcard-doubts -- --level N4 --key "吃驚|きっきょう" --model <model lain>
+npm run fix:flashcard-doubts -- --apply            # terapkan rencana ke fixture
+```
+
+- Peninjauan hanya menulis rencana (`.flashcard-doubt-plan.json`, tidak di-commit). Baca dulu;
+  hapus entri yang tidak disetujui atau ubah `action`-nya menjadi `escalate`, lalu `--apply`.
+  Peninjauan per level/key digabung ke rencana yang sama.
+- Kartu `revise`/`replace` divalidasi dengan aturan yang sama seperti generator (dengan percobaan
+  ulang). `revise`/`replace` ber-confidence `low` otomatis menjadi `escalate`, dan `replace` ke
+  bentuk yang sudah ada sebagai kata lain juga menjadi `escalate` supaya tidak ada kartu kembar.
+- `--apply` menolak entri rencana yang kartunya sudah berubah sejak ditinjau.
+- Hasilnya dicatat di `ai.doubtResolution` (keputusan, alasan, doubt lama, tulisan/bacaan sumber,
+  dan `override`). Bila bacaan sumber yang pasti ternyata keliru, `reading` note disesuaikan dan
+  ikut dicatat sebagai `override`.
+- `flashcard:extract` mengembalikan `word`/`reading` ke data sumber, sehingga kartu hasil
+  `replace` gagal `seed:flashcard:check`. Jalankan `npm run fix:flashcard-doubts -- --apply`
+  (tanpa rencana pun) untuk memasangnya lagi dari `override`.
+- `gen:flashcard --overwrite` menimpa `ai`, termasuk `doubtResolution`.
 
 ## Langkah 3 — Seed
 
