@@ -8,6 +8,9 @@
 //   replace   entri sumbernya sendiri rusak (mis. 空オケ, 介護士/介護士さん);
 //             tulisan + bacaan diganti dan kartunya dibuat ulang dari konteks
 //   escalate  model tidak yakin; diputuskan manusia
+//   retire    (otomatis, bukan pilihan model) kartu yang benar ternyata sudah
+//             ada sebagai kata lain (mis. 鍛える。 -> 鍛える di N2); entri ini
+//             tidak diterbitkan lagi dan seed memberinya retiredAt
 //
 // Dua tahap, supaya keputusan bisa dibaca (dan diedit) sebelum menyentuh
 // fixture tanpa membayar model dua kali:
@@ -50,6 +53,7 @@ const MAX_CONCURRENCY = 8;
 // Gateway menolak User-Agent bawaan SDK OpenAI dengan 403.
 const USER_AGENT = "nihongofy/1.0";
 const ACTIONS = ["keep", "revise", "replace", "escalate"];
+const PLAN_ACTIONS = [...ACTIONS, "retire"];
 
 const envSchema = z.object({
   EXPLANATION_BASE_URL: z.url(),
@@ -127,7 +131,7 @@ Abaikan FORMAT KELUARAN di atas. Kali ini Anda menerima SATU kata yang sebelumny
 
 - keep: kartu yang ada sudah benar dan berguna bagi pelajar; kejanggalannya hanya di data sumber (mis. bacaan sumber hanya mencatat kata kerjanya padahal kata berupa frasa, dan furigana kartu sudah lengkap).
 - revise: tulisan kata sudah benar (atau cukup lazim untuk dipertahankan), tetapi isi kartu perlu diperbaiki — bacaan furigana, arti, contoh, atau catatan. Tulis kartu lengkap yang baru. Tulisan tanpa furigana HARUS persis sama dengan word masukan. Bila hints menunjuk bacaan lain yang sudah ada di "entriMirip" sebagai kata terpisah (mis. key 分別|ふんべつ dengan hints "to sort", sementara 分別|ぶんべつ sudah ada), JANGAN menyalin kata itu: tulis kartu untuk makna bacaan key bila bacaan itu benar dan lazim, atau pilih escalate.
-- replace: entri sumber rusak sehingga kartu dengan tulisan itu menyesatkan pelajar (salah ketik, gabungan dua bentuk, penulisan yang praktis tidak dipakai). Tentukan tulisan dan bacaan baku yang dimaksud sumber, lalu tulis kartu lengkap untuk bentuk baku itu. Bentuk baku HARUS sesuai dengan hints dan level. Bila bentuk baku itu sudah ada di "entriMirip" sebagai kata terpisah, JANGAN replace — pilih escalate.
+- replace: entri sumber rusak sehingga kartu dengan tulisan itu menyesatkan pelajar (salah ketik, gabungan dua bentuk, penulisan yang praktis tidak dipakai). Tentukan tulisan dan bacaan baku yang dimaksud sumber, lalu tulis kartu lengkap untuk bentuk baku itu. Bentuk baku HARUS sesuai dengan hints dan level. Bila bentuk baku itu sudah ada di "entriMirip" sebagai kata terpisah, tetap pilih replace dengan word/reading bentuk baku itu; script akan memensiunkan entri ini sebagai duplikat.
 - escalate: Anda tidak yakin apa maksud sumber, atau ada lebih dari satu perbaikan yang masuk akal. Jangan menebak.
 
 Isi confidence dengan high, medium, atau low. revise dan replace dengan confidence low tidak akan diterapkan.
@@ -248,6 +252,19 @@ function findDuplicate(index, key, word, reading) {
 const describeDuplicate = (duplicate) => `${duplicate.level} ${duplicate.note.key}`;
 
 /**
+ * Kartu yang benar untuk entri ini sudah ada sebagai kata lain, jadi entri ini
+ * dipensiunkan alih-alih dibuat kembar. Hanya bila kata tujuannya sudah punya
+ * kartu; bila belum, manusia yang memutuskan.
+ */
+function retirePlan(duplicate, prefix) {
+  const note = `${prefix} ${describeDuplicate(duplicate)}`;
+  if (!duplicate.note.content) {
+    return { action: "escalate", content: null, replacement: null, note: `${note} (belum digenerate)` };
+  }
+  return { action: "retire", content: null, replacement: null, duplicateOf: duplicate.note.key, note };
+}
+
+/**
  * Validasi satu keputusan model. Mengembalikan rencana atau daftar masalah
  * yang dikirim balik ke model.
  */
@@ -263,16 +280,7 @@ function evaluateDecision(item, decision, taxonomy, index) {
         return { problems: [`kartu saat ini tidak lolos validasi, jadi tidak bisa keep: ${problems.join("; ")}`] };
       }
       const duplicate = findDuplicate(index, note.key, note.word, wordReadingOf(note));
-      if (duplicate) {
-        return {
-          plan: {
-            action: "escalate",
-            content: null,
-            replacement: null,
-            note: `kartu saat ini kembar dengan ${describeDuplicate(duplicate)}`,
-          },
-        };
-      }
+      if (duplicate) return { plan: retirePlan(duplicate, "kartu saat ini kembar dengan") };
     }
     return { plan: { action: decision.action, content: null, replacement: null } };
   }
@@ -289,16 +297,7 @@ function evaluateDecision(item, decision, taxonomy, index) {
     if (word === note.word) return { problems: ["word sama dengan sumber; pakai revise, bukan replace"] };
     replacement = { word, reading };
     const duplicate = findDuplicate(index, note.key, word, reading);
-    if (duplicate) {
-      return {
-        plan: {
-          action: "escalate",
-          content: null,
-          replacement: null,
-          note: `bentuk baku ${word}|${reading} sudah ada sebagai ${describeDuplicate(duplicate)}`,
-        },
-      };
-    }
+    if (duplicate) return { plan: retirePlan(duplicate, `bentuk baku ${word}|${reading} sudah ada sebagai`) };
   } else {
     // revise boleh mengganti bacaan, tetapi tidak boleh menjadi salinan kata
     // lain. Model diberi kesempatan memperbaikinya (mis. menulis kartu sesuai
@@ -418,7 +417,7 @@ function restoreOverrides(file) {
   return restored;
 }
 
-function applyPlanItem(note, item, taxonomy) {
+function applyPlanItem(note, item, taxonomy, notesByKey) {
   if (!note) return "key tidak ditemukan";
   if (!note.ai || !note.content) return "kata belum digenerate";
   if (note.ai.doubt === null && note.ai.doubtResolution?.previousDoubt === item.previousDoubt) {
@@ -428,12 +427,32 @@ function applyPlanItem(note, item, taxonomy) {
     return "kartu berubah sejak rencana dibuat; jalankan peninjauan ulang";
   }
 
+  const source = { word: note.word, reading: note.reading, readingUncertain: note.readingUncertain };
+  const resolution = {
+    action: item.action,
+    reason: item.reason,
+    previousDoubt: item.previousDoubt,
+    model: item.model,
+    resolvedAt: new Date().toISOString(),
+    source,
+    override: null,
+  };
+
+  if (item.action === "retire") {
+    const target = notesByKey.get(item.duplicateOf);
+    if (!target) return `duplicateOf "${item.duplicateOf}" tidak ditemukan`;
+    if (!target.content || target.ai?.doubtResolution?.action === "retire") {
+      return `${item.duplicateOf} belum digenerate atau ikut dipensiunkan`;
+    }
+    note.ai = { ...note.ai, doubt: null, doubtResolution: { ...resolution, duplicateOf: item.duplicateOf } };
+    return null;
+  }
+
   const content = item.action === "keep" ? note.content : item.content;
   const target = resolvedNote(note, item.action, content, item.replacement);
   const problems = vocabContentProblems(target, content, taxonomy, { doubt: null });
   if (problems.length > 0) return `tidak lolos validasi: ${problems.join("; ")}`;
 
-  const source = { word: note.word, reading: note.reading, readingUncertain: note.readingUncertain };
   const changed = target.word !== note.word || target.reading !== note.reading;
   note.word = target.word;
   note.reading = target.reading;
@@ -443,12 +462,7 @@ function applyPlanItem(note, item, taxonomy) {
     ...note.ai,
     doubt: null,
     doubtResolution: {
-      action: item.action,
-      reason: item.reason,
-      previousDoubt: item.previousDoubt,
-      model: item.model,
-      resolvedAt: new Date().toISOString(),
-      source,
+      ...resolution,
       override: changed ? { word: target.word, reading: target.reading } : null,
     },
   };
@@ -464,34 +478,39 @@ async function applyPlan(options, taxonomy) {
     log(`${path.basename(PLAN_FILE)} tidak ada; hanya memasang ulang hasil replace sebelumnya.`);
   }
 
+  // Semua level dibaca dulu: retire merujuk kata tujuan yang bisa ada di level lain.
+  const files = [];
+  for (const level of LEVELS) files.push(await readVocabFile(level));
+  const notesByKey = new Map(files.flatMap((file) => file.notes.map((note) => [note.key, note])));
+
   const summary = { applied: 0, skipped: 0, escalated: 0, restored: 0 };
-  for (const level of LEVELS) {
+  for (const file of files) {
+    const { level } = file;
     if (options.level && level !== options.level) continue;
-    const file = await readVocabFile(level);
     const restored = restoreOverrides(file);
     summary.restored += restored;
     let changed = restored > 0;
 
-    const notesByKey = new Map(file.notes.map((note) => [note.key, note]));
     for (const item of plan.filter((entry) => entry.level === level)) {
       if (options.keys.length > 0 && !options.keys.includes(item.key)) continue;
       if (item.action === "escalate") {
         summary.escalated += 1;
         continue;
       }
-      if (!ACTIONS.includes(item.action)) {
+      if (!PLAN_ACTIONS.includes(item.action)) {
         summary.skipped += 1;
         log(`  LEWATI ${level} ${item.key} - action tidak dikenal: ${item.action}`);
         continue;
       }
-      const error = applyPlanItem(notesByKey.get(item.key), item, taxonomy);
+      const error = applyPlanItem(notesByKey.get(item.key), item, taxonomy, notesByKey);
       if (error) {
         summary.skipped += 1;
         log(`  LEWATI ${level} ${item.key} - ${error}`);
       } else {
         summary.applied += 1;
         changed = true;
-        log(`  ${item.action.toUpperCase()} ${level} ${item.key}`);
+        const suffix = item.action === "retire" ? ` (duplikat ${item.duplicateOf})` : "";
+        log(`  ${item.action.toUpperCase()} ${level} ${item.key}${suffix}`);
       }
     }
     if (changed) await writeVocabFile(file);
@@ -632,7 +651,7 @@ async function review(options, taxonomy) {
   const count = (action) => results.filter((item) => item.action === action).length;
   log(
     `DONE - keep ${count("keep")}, revise ${count("revise")}, replace ${count("replace")}, ` +
-      `escalate ${count("escalate")}; ${usage.input}/${usage.output} token`,
+      `retire ${count("retire")}, escalate ${count("escalate")}; ${usage.input}/${usage.output} token`,
   );
   log(`Rencana ditulis ke ${path.basename(PLAN_FILE)}. Baca/edit dulu, lalu: npm run fix:flashcard-doubts -- --apply`);
 }

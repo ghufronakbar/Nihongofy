@@ -17,6 +17,7 @@
 import OpenAI from "openai";
 import { z } from "zod";
 import {
+  isRetiredNote,
   LEVELS,
   loadTaxonomy,
   readVocabFile,
@@ -224,7 +225,9 @@ function selectNotes(notes, options) {
   if (options.onlyDoubts) {
     return notes.filter((note) => note.ai?.doubt && (options.overwrite || !note.content));
   }
-  return options.overwrite ? notes : notes.filter((note) => !note.content);
+  // Duplikat yang dipensiunkan tidak ikut --overwrite: generate ulang akan
+  // menghapus tanda pensiunnya.
+  return options.overwrite ? notes.filter((note) => !isRetiredNote(note)) : notes.filter((note) => !note.content);
 }
 
 function chunk(items, size) {

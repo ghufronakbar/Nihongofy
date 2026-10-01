@@ -8,13 +8,15 @@
 //   user masih merujuknya.
 // - Hanya kata yang sudah digenerate AI (`content` + `ai` terisi) yang
 //   diterbitkan. Kata yang belum digenerate dilewati dan dilaporkan.
-// - Kata yang hilang dari fixture diberi `retiredAt`, TIDAK dihapus: kartu dan
+// - Kata yang hilang dari fixture, atau dipensiunkan sebagai duplikat oleh
+//   fix:flashcard-doubts, diberi `retiredAt`, TIDAK dihapus: kartu dan
 //   riwayat belajar user merujuk kata itu.
 //
 // Idempoten: menjalankan ulang memperbarui isi kata yang berubah.
 
 import { PrismaClient } from "@prisma/client";
 import {
+  isRetiredNote,
   LEVELS,
   loadTaxonomy,
   readVocabFile,
@@ -90,6 +92,7 @@ async function collect(taxonomy) {
       }
       seenKeys.set(note.key, level);
 
+      if (isRetiredNote(note)) continue;
       if (!note.content || !note.ai) {
         if (note.content || note.ai) errors.push(`${where}: content dan ai harus terisi bersama`);
         pending += 1;
