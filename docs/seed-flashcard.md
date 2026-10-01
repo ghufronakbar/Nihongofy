@@ -157,8 +157,10 @@ npm run fix:flashcard-doubts -- --apply            # terapkan rencana ke fixture
   hapus entri yang tidak disetujui atau ubah `action`-nya menjadi `escalate`, lalu `--apply`.
   Peninjauan per level/key digabung ke rencana yang sama.
 - Kartu `revise`/`replace` divalidasi dengan aturan yang sama seperti generator (dengan percobaan
-  ulang). `revise`/`replace` ber-confidence `low` otomatis menjadi `escalate`, dan `replace` ke
-  bentuk yang sudah ada sebagai kata lain juga menjadi `escalate` supaya tidak ada kartu kembar.
+  ulang). `revise`/`replace` ber-confidence `low` otomatis menjadi `escalate`.
+- Kartu kembar dicegah: `replace` (atau `keep`) yang menghasilkan tulisan + bacaan kata lain
+  menjadi `escalate`, dan `revise` yang begitu ditolak lalu diminta ulang (mis. 分別|ふんべつ
+  tidak boleh menjadi kartu ぶんべつ karena 分別|ぶんべつ sudah ada).
 - `--apply` menolak entri rencana yang kartunya sudah berubah sejak ditinjau.
 - Hasilnya dicatat di `ai.doubtResolution` (keputusan, alasan, doubt lama, tulisan/bacaan sumber,
   dan `override`). Bila bacaan sumber yang pasti ternyata keliru, `reading` note disesuaikan dan

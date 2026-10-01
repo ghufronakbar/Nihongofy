@@ -126,7 +126,7 @@ function buildReviewSystemPrompt(taxonomy) {
 Abaikan FORMAT KELUARAN di atas. Kali ini Anda menerima SATU kata yang sebelumnya ditandai ragu (doubt) saat kartunya dibuat. Pikirkan dengan teliti apa yang sebenarnya dimaksud daftar sumber: baca tulisan, bacaan, hints, level, dan kartu yang sudah ada. Lalu pilih SATU keputusan:
 
 - keep: kartu yang ada sudah benar dan berguna bagi pelajar; kejanggalannya hanya di data sumber (mis. bacaan sumber hanya mencatat kata kerjanya padahal kata berupa frasa, dan furigana kartu sudah lengkap).
-- revise: tulisan kata sudah benar (atau cukup lazim untuk dipertahankan), tetapi isi kartu perlu diperbaiki — bacaan furigana, arti, contoh, atau catatan. Tulis kartu lengkap yang baru. Tulisan tanpa furigana HARUS persis sama dengan word masukan.
+- revise: tulisan kata sudah benar (atau cukup lazim untuk dipertahankan), tetapi isi kartu perlu diperbaiki — bacaan furigana, arti, contoh, atau catatan. Tulis kartu lengkap yang baru. Tulisan tanpa furigana HARUS persis sama dengan word masukan. Bila hints menunjuk bacaan lain yang sudah ada di "entriMirip" sebagai kata terpisah (mis. key 分別|ふんべつ dengan hints "to sort", sementara 分別|ぶんべつ sudah ada), JANGAN menyalin kata itu: tulis kartu untuk makna bacaan key bila bacaan itu benar dan lazim, atau pilih escalate.
 - replace: entri sumber rusak sehingga kartu dengan tulisan itu menyesatkan pelajar (salah ketik, gabungan dua bentuk, penulisan yang praktis tidak dipakai). Tentukan tulisan dan bacaan baku yang dimaksud sumber, lalu tulis kartu lengkap untuk bentuk baku itu. Bentuk baku HARUS sesuai dengan hints dan level. Bila bentuk baku itu sudah ada di "entriMirip" sebagai kata terpisah, JANGAN replace — pilih escalate.
 - escalate: Anda tidak yakin apa maksud sumber, atau ada lebih dari satu perbaikan yang masuk akal. Jangan menebak.
 
@@ -227,6 +227,27 @@ function similarEntries(index, key, words, readings) {
 }
 
 /**
+ * Note lain yang menghasilkan kartu dengan tulisan + bacaan yang sama. Dicek
+ * terhadap data sumber maupun kartu yang sudah digenerate, karena bacaan kartu
+ * bisa berbeda dari bacaan sumber (mis. 分別|ふんべつ yang kartunya dibaca
+ * ぶんべつ akan kembar dengan 分別|ぶんべつ).
+ */
+function findDuplicate(index, key, word, reading) {
+  const target = plainReading(reading);
+  return index.find(({ note: other }) => {
+    if (other.key === key) return false;
+    const sameSource = other.word === word && plainReading(other.reading) === target;
+    const sameCard =
+      other.content !== null &&
+      stripJapaneseMarkup(other.content.word) === word &&
+      wordReadingOf(other) === target;
+    return sameSource || sameCard;
+  });
+}
+
+const describeDuplicate = (duplicate) => `${duplicate.level} ${duplicate.note.key}`;
+
+/**
  * Validasi satu keputusan model. Mengembalikan rencana atau daftar masalah
  * yang dikirim balik ke model.
  */
@@ -240,6 +261,17 @@ function evaluateDecision(item, decision, taxonomy, index) {
       const problems = vocabContentProblems(target, note.content, taxonomy, { doubt: null });
       if (problems.length > 0) {
         return { problems: [`kartu saat ini tidak lolos validasi, jadi tidak bisa keep: ${problems.join("; ")}`] };
+      }
+      const duplicate = findDuplicate(index, note.key, note.word, wordReadingOf(note));
+      if (duplicate) {
+        return {
+          plan: {
+            action: "escalate",
+            content: null,
+            replacement: null,
+            note: `kartu saat ini kembar dengan ${describeDuplicate(duplicate)}`,
+          },
+        };
       }
     }
     return { plan: { action: decision.action, content: null, replacement: null } };
@@ -256,18 +288,29 @@ function evaluateDecision(item, decision, taxonomy, index) {
     if (!word || !reading) return { problems: ["replace wajib mengisi word dan reading"] };
     if (word === note.word) return { problems: ["word sama dengan sumber; pakai revise, bukan replace"] };
     replacement = { word, reading };
-    const duplicate = index.find(
-      ({ note: other }) =>
-        other.key !== note.key && other.word === word && plainReading(other.reading) === plainReading(reading),
-    );
+    const duplicate = findDuplicate(index, note.key, word, reading);
     if (duplicate) {
       return {
         plan: {
           action: "escalate",
           content: null,
           replacement: null,
-          note: `bentuk baku ${word}|${reading} sudah ada sebagai ${duplicate.level} ${duplicate.note.key}`,
+          note: `bentuk baku ${word}|${reading} sudah ada sebagai ${describeDuplicate(duplicate)}`,
         },
+      };
+    }
+  } else {
+    // revise boleh mengganti bacaan, tetapi tidak boleh menjadi salinan kata
+    // lain. Model diberi kesempatan memperbaikinya (mis. menulis kartu sesuai
+    // bacaan key) sebelum akhirnya escalate.
+    const reading = plainReading(readingFromMarkup(generated.content.word));
+    const duplicate = findDuplicate(index, note.key, note.word, reading);
+    if (duplicate) {
+      return {
+        problems: [
+          `kartu ${note.word} dibaca ${reading} sudah ada sebagai kata terpisah ${describeDuplicate(duplicate)}. ` +
+            `Tulis kartu untuk makna bacaan ${note.reading} bila bacaan itu benar dan lazim, atau pilih escalate`,
+        ],
       };
     }
   }
