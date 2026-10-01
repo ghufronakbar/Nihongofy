@@ -5,7 +5,7 @@ import { Prisma, type FlashcardCard } from "@prisma/client";
 import { z } from "zod";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { buildPreviewLabels } from "./data";
+import { buildPreviewLabels, getCatalogDeck } from "./data";
 import { getFlashcardSettings } from "./lib/collection";
 import { LEARN_AHEAD_MS } from "./lib/queue";
 import { createNewCardState, scheduleReview } from "./lib/scheduler";
@@ -444,10 +444,9 @@ export async function subscribeDeckAction(input: { slug: string }): Promise<Acti
   const parsed = DeckActionSchema.safeParse(input);
   if (!parsed.success) return { ok: false, message: "Deck tidak valid." };
 
-  const deck = await prisma.flashcardDeck.findFirst({
-    where: { slug: parsed.data.slug, isPublished: true },
-    select: { id: true },
-  });
+  // Katalog yang sama dengan yang ditampilkan: deck yang disembunyikan karena
+  // katanya kurang dari batas minimum tidak bisa ditambahkan lewat URL langsung.
+  const deck = await getCatalogDeck(parsed.data.slug);
   if (!deck) return { ok: false, message: "Deck tidak ditemukan." };
 
   await prisma.flashcardDeckSubscription.upsert({

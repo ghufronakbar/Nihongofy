@@ -72,6 +72,13 @@ ke AI sebagai `hints` untuk menunjukkan makna mana yang dimaksud.
 - **Key** (`"食事|しょくじ"`) adalah identitas kata yang dirujuk progres user. Ekstraksi ulang
   mempertahankan `content`/`ai` kata yang sama, dan bila key berubah, key lama dipakai lagi lewat
   `sourceGuids`. Jangan mengubah key secara manual.
+- **Kata kurasi** (bukan dari Anki) ditandai `sourceGuids: []` dan ditulis langsung lengkap dengan
+  `content`/`ai` (`ai.model: "manual"`). Ekstraksi ulang selalu mempertahankannya di belakang
+  kata Anki pada levelnya; bila deck Anki kelak memuat key yang sama, entri Anki mengambil alih
+  dan isi kartunya ikut. Saat ini: 25 peribahasa (13 di N2, 12 di N1, `promptVersion`
+  `manual-proverb-v1`) supaya deck Peribahasa memenuhi `deckMinNotes`. Peribahasa tidak punya
+  daftar JLPT resmi; level dipilih dari kesulitan kosakata dan tata bahasanya (bentuk klasik
+  seperti 如かず, 得ず, 苦し masuk N1).
 
 Hasil ekstraksi deck sumber (7.718 note): 6.697 kata — N5 1.051, N4 703, N3 1.788, N2 1.453,
 N1 1.702; 594 kata muncul di lebih dari satu level, 76 entri homograf, 140 bacaan tidak pasti.
