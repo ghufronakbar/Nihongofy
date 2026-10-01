@@ -14,6 +14,7 @@
     "flashcard:extract": "node prisma/extract-flashcard-anki.mjs",
     "gen:flashcard": "node --env-file-if-exists=.env prisma/generate-flashcard-vocab.mjs",
     "flashcard:doubts": "node prisma/report-flashcard-doubts.mjs",
+    "fix:flashcard-doubts": "node --env-file-if-exists=.env prisma/fix-flashcard-doubts.mjs",
     "seed:flashcard": "node --env-file-if-exists=.env prisma/seed-flashcard.mjs",
     "seed:flashcard:check": "node --env-file-if-exists=.env prisma/seed-flashcard.mjs --validate-only",
     "seed:articles": "node --env-file-if-exists=.env prisma/seed-articles.mjs",
