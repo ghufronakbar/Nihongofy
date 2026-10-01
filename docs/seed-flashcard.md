@@ -145,7 +145,7 @@ lain dengan tulisan/bacaan sama, lalu memilih satu keputusan:
 | `keep` | Kartu sudah benar; hanya data sumbernya janggal (mis. bacaan frasa yang hanya mencatat kata kerjanya) | `doubt` dikosongkan |
 | `revise` | Tulisan tetap, isi kartu diperbaiki (bacaan, arti, catatan) | `content` diganti |
 | `replace` | Entri sumber rusak (mis. 空オケ, 介護士/介護士さん); kartu dibuat ulang untuk bentuk bakunya | `word`/`reading` note dan `content` diganti; key tetap |
-| `retire` | Otomatis bila kartu yang benar (`keep`/`replace`) sudah ada sebagai kata lain yang sudah digenerate, mis. 鍛える。 → 鍛える (N2) | `doubt` dikosongkan, `doubtResolution.duplicateOf` diisi; seed tidak menerbitkannya dan memberi `retiredAt` |
+| `retire` | Entri ini duplikat rusak dari kata lain yang sudah punya kartu (mis. 鼻が高い\|はながたい → 鼻が高い\|はながたかい). Dipilih model dengan `duplicateOf`, atau otomatis bila `keep`/`replace` menghasilkan kartu kembar (mis. 鍛える。 → 鍛える di N2) | `doubt` dikosongkan, `doubtResolution.duplicateOf` diisi; seed tidak menerbitkannya dan memberi `retiredAt` |
 | `escalate` | Model tidak yakin | tidak ada; tinjau manual |
 
 ```bash
