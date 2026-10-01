@@ -45,6 +45,8 @@ Profile tidak punya flag sendiri. Section "Aktivitas belajar" dan "Lanjut belaja
   Toggle audio hanya tampil bila `FEATURES_SPEAKING` aktif, toggle conversation bila
   `FEATURES_CONVERSATION` aktif, dan seluruh box "Izin penyimpanan AI" hilang bila keduanya mati.
 - Export JSON untuk data akun dan aktivitas user tanpa password, token, session, atau rate-limit.
+  Laporan yang pernah dikirim ikut, untuk semua jenis target, tanpa status dan catatan internal
+  admin.
 - Penghapusan akun dengan re-authentication, logout semua perangkat, grace period 7 hari, login
   recovery, pembatalan, dan hard-delete batch melalui cron.
 - Avatar baru memakai object key unik pada folder user (`jlpt-exam/avatars/{userId}/<uuid>.webp`),

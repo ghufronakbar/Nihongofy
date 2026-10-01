@@ -26,6 +26,9 @@ Rancangan lama (paritas Anki penuh) tetap ada di
 - `/flashcard` keluar dari `sitemap.xml` dan `robots.txt`.
 - Server Action flashcard tidak mengecek flag; tab lama yang masih terbuka tetap dapat
   memanggilnya.
+- Kartu tidak dapat dilaporkan: tombol "Laporkan kartu" hanya ada di bawah `/flashcard`, dan
+  `submitReportAction` (modul report, di luar segmen ini) mengecek flag ini sendiri untuk target
+  `FLASHCARD_VOCAB`. Laporan kartu yang sudah masuk tetap dapat ditindak di `/admin/report`.
 
 ## Konsep
 
@@ -114,11 +117,29 @@ Rancangan lama (paritas Anki penuh) tetap ada di
 |---|---|
 | `/flashcard` | Guest: katalog dengan tombol "Coba deck ini". Login: deck milik user dengan hitungan baru/belajar/ulang hari ini. |
 | `/flashcard/add` | Katalog per Level JLPT, Topik, dan Kategori dengan tombol tambah/lepas. |
-| `/flashcard/deck/[slug]` | Hitungan hari ini, tombol belajar, tambah/lepas deck, dan daftar kata read-only (pencarian kata/bacaan/arti, filter status, 50 per halaman, suspend dan reset per kata). |
+| `/flashcard/deck/[slug]` | Hitungan hari ini, tombol belajar, tambah/lepas deck, dan daftar kata read-only (pencarian kata/bacaan/arti, filter status, 50 per halaman, suspend, reset, dan laporkan per kata). |
 | `/flashcard/deck/[slug]/study` | Reviewer. Hanya untuk deck yang sudah ditambahkan. Antrean dikirim per 200 kartu; tombol "Lanjutkan" membangun antrean berikutnya. |
 | `/flashcard/settings` | Ukuran teks, furigana, dan penjadwalan. |
 | `/flashcard/stats` | True retention, perkiraan 30 hari, riwayat review, sebaran interval, status kartu. |
-| `/flashcard/try/[slug]` | Mode coba 20 kata pertama deck, selalu ephemeral. |
+| `/flashcard/try/[slug]` | Mode coba 20 kata pertama deck, selalu ephemeral. Guest boleh melaporkan kartu (dengan Turnstile). |
+
+## Laporan Kartu
+
+Isi kartu ditulis AI, jadi bisa saja ada yang salah. Kartu dilaporkan lewat
+[modul report](report.md) dengan target `FLASHCARD_VOCAB`, yang menunjuk kata di katalog
+(`vocabId`), bukan kartu milik user.
+
+- Tombol "Laporkan kartu" ada di reviewer (hanya setelah sisi belakang dibuka), daftar kata
+  `/flashcard/deck/[slug]`, dan mode coba guest. Dialognya sama dengan laporan soal dan terbuka di
+  tempat; laporan tidak me-render ulang halaman, jadi sesi belajar tidak ter-reset, dan pintasan
+  keyboard reviewer mati selama dialog terbuka.
+- Kategori: bacaan/furigana salah, arti atau catatan keliru, contoh kalimat bermasalah, tag atau
+  deck tidak cocok, ada yang error, dan lainnya. Alasan pemisahannya di
+  [report.md](report.md#kategori-dibatasi-target).
+- Kartu **tidak** diedit dari admin. `/admin/report` menampilkan isi kartu sekarang, level, dan
+  key-nya beserta perintah perbaikan: sunting `content` di fixture atau
+  `npm run gen:flashcard -- --key "<key>" --overwrite`, lalu `npm run seed:flashcard`. Bacaan kata
+  yang keliru diselesaikan lewat peninjau kata ragu, karena bacaan itu bagian dari key.
 
 ## Pipeline Konten
 
@@ -146,7 +167,6 @@ Kontrak lengkapnya di [seed-flashcard.md](../seed-flashcard.md):
 - Audio atau tombol dengar (TTS browser seperti modul kana bisa ditambahkan tanpa file).
 - Halaman admin untuk meninjau kata bertanda ragu dari generator AI. Sementara memakai
   `npm run flashcard:doubts` dan `npm run fix:flashcard-doubts` di terminal, lalu seed ulang.
-- Kartu flashcard sebagai target [laporan](report.md).
 
 ## File Utama
 

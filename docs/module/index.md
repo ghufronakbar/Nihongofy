@@ -26,7 +26,7 @@ Folder ini mendokumentasikan kondisi aplikasi berdasarkan kode, fixture, dan dat
 | [Shared study utilities](study.md) | Selesai sederhana | Saat ini hanya menyediakan TTS browser bersama untuk kana dan flashcard. |
 | [Conversation dan speaking](conversation-speaking.md) | Versi awal fungsional | Teks dan suara berjalan end-to-end dengan session tersimpan dan provider mock/OpenAI; quota belum ditegakkan, moderation dan retention belum ada. Rancangan: [conversation-speaking-design.md](conversation-speaking-design.md); aset karakter: [conversation-persona-assets.md](conversation-persona-assets.md). |
 | [Content data dan seeding](content-data.md) | Infrastruktur aktif, sebagian punya UI | Import tervalidasi tersedia lewat CLI maupun `/admin`; bank soal dan artikel berbagi jalur kode antara keduanya. Pembahasan dan katalog flashcard masih CLI saja. |
-| [Report](report.md) | Selesai untuk scope v1 | Form publik (guest boleh, dengan Turnstile), tombol Laporkan pada soal/pembahasan/artikel/diskusi, antrean admin, dan balasan email opsional. Kartu deck bawaan belum termasuk. |
+| [Report](report.md) | Selesai untuk scope v1, kini termasuk kartu flashcard | Form publik (guest boleh, dengan Turnstile), tombol Laporkan pada soal/pembahasan/artikel/diskusi/kartu flashcard, antrean admin, dan balasan email opsional. Target kartu flashcard menunggu `migrate deploy`. |
 | [Admin dashboard](admin.md) | Selesai | Role statis `USER`/`ADMIN`, guard, overview, bank soal, pembahasan, CMS artikel, moderasi diskusi, pengelolaan user, observability conversation, feature flag read-only, invalidasi cache, dan audit log aktif. Editor deck flashcard dihapus bersama perombakan modulnya. |
 
 ## Feature Flag
@@ -39,7 +39,7 @@ di-prerender saat build, jadi keduanya baru berubah setelah redeploy.
 | Key | Modul | Route yang menjadi 404 |
 |---|---|---|
 | `FEATURES_KANA` | [Kana](kana.md#feature-flag) | `/kana/*` |
-| `FEATURES_FLASHCARD` | [Flashcard](flashcard.md#feature-flag) | `/flashcard/*` |
+| `FEATURES_FLASHCARD` | [Flashcard](flashcard.md#feature-flag) | `/flashcard/*`; laporan kartu baru ditolak, laporan lama tetap di `/admin/report` |
 | `FEATURES_PRACTICE` | [Latihan cepat](practice.md#feature-flag) | `/exercises/*` |
 | `FEATURES_TEST_PACKAGE` | [Paket tes](test-package.md#feature-flag), [Exam](exam.md#feature-flag), [Result](result.md#feature-flag) | `/test-package/*`, `/exam/*`, `/result/*` |
 | `FEATURES_HISTORY` | [History](history.md#feature-flag) | `/history` |
@@ -66,8 +66,9 @@ Aturan umum:
   sendiri, dan mematikannya tidak ikut mematikan antrean admin-nya — lihat
   [Report](report.md#feature-flag).
 - Data milik modul yang mati tidak dihapus.
-- Hanya conversation, question comment, dan report yang memeriksa flag di sisi server action/API. Server Action modul lain belum dijaga, sehingga tab lama yang masih terbuka
-  tetap dapat memanggilnya.
+- Hanya conversation, question comment, dan report yang memeriksa flag di sisi server action/API;
+  action laporan juga memeriksa `FEATURES_FLASHCARD` untuk laporan kartu. Server Action modul lain
+  belum dijaga, sehingga tab lama yang masih terbuka tetap dapat memanggilnya.
 - Auth, dashboard, profile, dan shared utilities tidak punya flag. Admin juga tidak: aksesnya
   ditentukan role, dan mematikannya lewat env akan mengunci operator dari alat pemulihannya.
 
