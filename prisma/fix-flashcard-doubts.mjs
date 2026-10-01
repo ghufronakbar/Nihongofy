@@ -8,9 +8,10 @@
 //   replace   entri sumbernya sendiri rusak (mis. 空オケ, 介護士/介護士さん);
 //             tulisan + bacaan diganti dan kartunya dibuat ulang dari konteks
 //   escalate  model tidak yakin; diputuskan manusia
-//   retire    (otomatis, bukan pilihan model) kartu yang benar ternyata sudah
-//             ada sebagai kata lain (mis. 鍛える。 -> 鍛える di N2); entri ini
-//             tidak diterbitkan lagi dan seed memberinya retiredAt
+//   retire    entri ini duplikat kata lain yang sudah punya kartu (mis.
+//             鍛える。 -> 鍛える di N2); tidak diterbitkan lagi dan seed
+//             memberinya retiredAt. Dipilih model, atau otomatis bila keep/
+//             replace ternyata menghasilkan kartu kembar
 //
 // Dua tahap, supaya keputusan bisa dibaca (dan diedit) sebelum menyentuh
 // fixture tanpa membayar model dua kali:
@@ -52,8 +53,7 @@ const MAX_ATTEMPTS = 3;
 const MAX_CONCURRENCY = 8;
 // Gateway menolak User-Agent bawaan SDK OpenAI dengan 403.
 const USER_AGENT = "nihongofy/1.0";
-const ACTIONS = ["keep", "revise", "replace", "escalate"];
-const PLAN_ACTIONS = [...ACTIONS, "retire"];
+const ACTIONS = ["keep", "revise", "replace", "retire", "escalate"];
 
 const envSchema = z.object({
   EXPLANATION_BASE_URL: z.url(),
@@ -132,14 +132,15 @@ Abaikan FORMAT KELUARAN di atas. Kali ini Anda menerima SATU kata yang sebelumny
 - keep: kartu yang ada sudah benar dan berguna bagi pelajar; kejanggalannya hanya di data sumber (mis. bacaan sumber hanya mencatat kata kerjanya padahal kata berupa frasa, dan furigana kartu sudah lengkap).
 - revise: tulisan kata sudah benar (atau cukup lazim untuk dipertahankan), tetapi isi kartu perlu diperbaiki — bacaan furigana, arti, contoh, atau catatan. Tulis kartu lengkap yang baru. Tulisan tanpa furigana HARUS persis sama dengan word masukan. Bila hints menunjuk bacaan lain yang sudah ada di "entriMirip" sebagai kata terpisah (mis. key 分別|ふんべつ dengan hints "to sort", sementara 分別|ぶんべつ sudah ada), JANGAN menyalin kata itu: tulis kartu untuk makna bacaan key bila bacaan itu benar dan lazim, atau pilih escalate.
 - replace: entri sumber rusak sehingga kartu dengan tulisan itu menyesatkan pelajar (salah ketik, gabungan dua bentuk, penulisan yang praktis tidak dipakai). Tentukan tulisan dan bacaan baku yang dimaksud sumber, lalu tulis kartu lengkap untuk bentuk baku itu. Bentuk baku HARUS sesuai dengan hints dan level. Bila bentuk baku itu sudah ada di "entriMirip" sebagai kata terpisah, tetap pilih replace dengan word/reading bentuk baku itu; script akan memensiunkan entri ini sebagai duplikat.
+- retire: entri ini hanya salinan rusak dari kata yang SUDAH ADA di "entriMirip" (mis. 鼻が高い|はながたい adalah salah ketik dari 鼻が高い|はながたかい yang sudah ada). Isi duplicateOf dengan key kata itu persis seperti di entriMirip. Entri ini tidak akan diterbitkan lagi.
 - escalate: Anda tidak yakin apa maksud sumber, atau ada lebih dari satu perbaikan yang masuk akal. Jangan menebak.
 
 Isi confidence dengan high, medium, atau low. revise dan replace dengan confidence low tidak akan diterapkan.
 
 FORMAT KELUARAN TUGAS INI
 Hanya JSON, tanpa teks lain dan tanpa blok kode:
-{"key":"...","action":"keep|revise|replace|escalate","confidence":"high|medium|low","reason":"alasan singkat bahasa Indonesia, maksimal 2 kalimat","word":"tulisan baku tanpa furigana (hanya replace)","reading":"bacaan baku hiragana/katakana (hanya replace)","card":{"word":"...","meaningsId":["..."],"meaningsEn":["..."],"examples":[{"jp":"...","id":"...","en":"..."}],"notes":"","tags":["..."]}}
-card wajib untuk revise dan replace, dan harus null untuk keep dan escalate. card.word adalah tulisan (baru, untuk replace) ditambah furigana; semua aturan teks Jepang dan tag di atas tetap berlaku.`;
+{"key":"...","action":"keep|revise|replace|retire|escalate","duplicateOf":"key kata tujuan (hanya retire)","confidence":"high|medium|low","reason":"alasan singkat bahasa Indonesia, maksimal 2 kalimat","word":"tulisan baku tanpa furigana (hanya replace)","reading":"bacaan baku hiragana/katakana (hanya replace)","card":{"word":"...","meaningsId":["..."],"meaningsEn":["..."],"examples":[{"jp":"...","id":"...","en":"..."}],"notes":"","tags":["..."]}}
+card wajib untuk revise dan replace, dan harus null untuk keep, retire, dan escalate. card.word adalah tulisan (baru, untuk replace) ditambah furigana; semua aturan teks Jepang dan tag di atas tetap berlaku.`;
 }
 
 function buildReviewPrompt(item, similar) {
@@ -180,6 +181,7 @@ const decisionSchema = z.object({
   word: z.string().nullish(),
   reading: z.string().nullish(),
   card: z.record(z.string(), z.unknown()).nullish(),
+  duplicateOf: z.string().nullish(),
 });
 
 /** Objek JSON dari jawaban model; blok kode dan teks pengantar ditoleransi. */
@@ -271,6 +273,14 @@ function retirePlan(duplicate, prefix) {
 function evaluateDecision(item, decision, taxonomy, index) {
   const { note } = item;
   if (decision.key !== note.key) return { problems: [`key harus "${note.key}"`] };
+
+  if (decision.action === "retire") {
+    const entry = index.find(({ note: other }) => other.key === decision.duplicateOf?.trim());
+    if (!entry || entry.note.key === note.key) {
+      return { problems: ["retire wajib mengisi duplicateOf dengan key kata lain dari entriMirip"] };
+    }
+    return { plan: retirePlan(entry, "duplikat dari") };
+  }
 
   if (decision.action === "keep" || decision.action === "escalate") {
     if (decision.action === "keep") {
@@ -417,12 +427,12 @@ function restoreOverrides(file) {
   return restored;
 }
 
+const alreadyApplied = (note, item) =>
+  note?.ai?.doubt === null && note.ai.doubtResolution?.previousDoubt === item.previousDoubt;
+
 function applyPlanItem(note, item, taxonomy, notesByKey) {
   if (!note) return "key tidak ditemukan";
   if (!note.ai || !note.content) return "kata belum digenerate";
-  if (note.ai.doubt === null && note.ai.doubtResolution?.previousDoubt === item.previousDoubt) {
-    return "sudah diterapkan sebelumnya";
-  }
   if (note.ai.generatedAt !== item.generatedAt || note.ai.doubt !== item.previousDoubt) {
     return "kartu berubah sejak rencana dibuat; jalankan peninjauan ulang";
   }
@@ -483,7 +493,7 @@ async function applyPlan(options, taxonomy) {
   for (const level of LEVELS) files.push(await readVocabFile(level));
   const notesByKey = new Map(files.flatMap((file) => file.notes.map((note) => [note.key, note])));
 
-  const summary = { applied: 0, skipped: 0, escalated: 0, restored: 0 };
+  const summary = { applied: 0, already: 0, skipped: 0, escalated: 0, restored: 0 };
   for (const file of files) {
     const { level } = file;
     if (options.level && level !== options.level) continue;
@@ -493,11 +503,18 @@ async function applyPlan(options, taxonomy) {
 
     for (const item of plan.filter((entry) => entry.level === level)) {
       if (options.keys.length > 0 && !options.keys.includes(item.key)) continue;
-      if (item.action === "escalate") {
-        summary.escalated += 1;
+      // Rencana bisa dicicil dan --apply diulang; entri yang sudah diterapkan
+      // hanya dihitung supaya log tidak penuh baris yang tidak perlu dibaca.
+      if (alreadyApplied(notesByKey.get(item.key), item)) {
+        summary.already += 1;
         continue;
       }
-      if (!PLAN_ACTIONS.includes(item.action)) {
+      if (item.action === "escalate") {
+        summary.escalated += 1;
+        log(`  ESCALATE ${level} ${item.key} - ${item.note ?? item.reason}`);
+        continue;
+      }
+      if (!ACTIONS.includes(item.action)) {
         summary.skipped += 1;
         log(`  LEWATI ${level} ${item.key} - action tidak dikenal: ${item.action}`);
         continue;
@@ -517,8 +534,9 @@ async function applyPlan(options, taxonomy) {
   }
 
   log(
-    `DONE - ${summary.applied} diterapkan, ${summary.escalated} escalate (tetap ragu, tinjau manual), ` +
-      `${summary.skipped} dilewati, ${summary.restored} replace dipasang ulang`,
+    `DONE - ${summary.applied} diterapkan, ${summary.already} sudah diterapkan sebelumnya, ` +
+      `${summary.escalated} escalate (tetap ragu, tinjau manual), ${summary.skipped} dilewati, ` +
+      `${summary.restored} replace dipasang ulang`,
   );
   if (summary.applied + summary.restored > 0) log("Lanjutkan dengan: npm run seed:flashcard:check");
 }
