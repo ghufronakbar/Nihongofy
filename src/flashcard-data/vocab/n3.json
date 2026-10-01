@@ -84666,7 +84666,21 @@
         "model": "ag/gemini-3.8-flash",
         "promptVersion": "flashcard-vocab-v3",
         "generatedAt": "2026-10-01T01:22:05.051Z",
-        "doubt": "Bacaan sumber はながたい keliru, seharusnya はながたかい."
+        "doubt": null,
+        "doubtResolution": {
+          "action": "retire",
+          "reason": "Bacaan はながたい bukan bacaan yang sahih dalam bahasa Jepang melainkan salah ketik dari はながたかい. Karena entri 鼻が高い|はながたかい sudah ada tersendiri di level N1, entri duplikat ini memerlukan penanganan manual.",
+          "previousDoubt": "Bacaan sumber はながたい keliru, seharusnya はながたかい.",
+          "model": "ag/gemini-3.8-flash",
+          "resolvedAt": "2026-10-01T02:05:34.150Z",
+          "source": {
+            "word": "鼻が高い",
+            "reading": "はながたい",
+            "readingUncertain": false
+          },
+          "override": null,
+          "duplicateOf": "鼻が高い|はながたかい"
+        }
       }
     },
     {
