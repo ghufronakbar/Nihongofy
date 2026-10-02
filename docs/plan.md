@@ -1225,9 +1225,13 @@ query dan tanpa flag. Rincian di [public-shell.md](module/public-shell.md#dokume
   disclaimer Japan Foundation/JEES, batasan tanggung jawab, hukum Indonesia
 - [x] Tautan di footer publik, `/profile/privacy`, form daftar, dan dekat tombol Google login/register
 - [x] Sitemap dan robots memuat `/privacy` dan `/terms`
-- [ ] Isi placeholder `[[ISI:` di `src/features/legal/constants.ts` (`LEGAL_FACTS`) dan
-  `EFFECTIVE_DATE` di kedua file konten, sebelum deploy publik
-- [ ] Putuskan penjaga placeholder (test atau guard build produksi) supaya `[[ISI:` tidak ter-deploy
+- [x] Isi `LEGAL_FACTS` dan `EFFECTIVE_DATE` (2 Oktober 2026): Pengelola Nihongofy,
+  contact@lans.my.id, usia minimal 13 tahun (di bawah 18 dengan persetujuan orang tua/wali), Supabase
+  Singapura, SMTP Gmail, OpenAI lewat gateway. Region, SMTP, dan AI diambil dari `.env` lokal
+- [x] Guard build produksi (`src/features/legal/guard.ts`): `VERCEL_ENV=production` dengan
+  placeholder `[[ISI:` menggagalkan build; diverifikasi dengan build gagal dan lulus
+- [ ] Pastikan mailbox `contact@lans.my.id` aktif, dan region/SMTP/penyedia AI di env Vercel
+  produksi sama dengan `.env` lokal
 - [ ] Daftarkan URL `/privacy` dan `/terms` di OAuth consent screen Google Cloud Console
 - [ ] Tinjauan hukum isi S&K dan Kebijakan Privasi, terutama status bank soal JLPT, transfer data
   ke luar negeri, dan batasan tanggung jawab

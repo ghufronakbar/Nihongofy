@@ -17,7 +17,7 @@ import type { LegalDocument } from "../types";
 // relevan, naikkan VERSION, dan ganti LAST_UPDATED. Riwayatnya cukup lewat git.
 export const VERSION = "1.0";
 export const LAST_UPDATED = "2026-10-02";
-export const EFFECTIVE_DATE = "[[ISI: tanggal mulai berlaku, format YYYY-MM-DD]]";
+export const EFFECTIVE_DATE = "2026-10-02";
 
 const operator = <LegalValue value={LEGAL_FACTS.operatorName} />;
 
@@ -299,8 +299,7 @@ export const PRIVACY_POLICY: LegalDocument = {
           <LegalP>
             Untuk menghasilkan balasan, server kami mengirim pesan Anda, riwayat percakapan pada sesi
             tersebut (teks bahasa Jepang), serta instruksi persona, level, dan topik ke penyedia
-            model AI <LegalValue value={LEGAL_FACTS.aiProvider} /> melalui API yang kompatibel
-            dengan OpenAI. Untuk umpan balik koreksi, yang dikirim adalah kalimat yang ingin Anda
+            model AI (<LegalValue value={LEGAL_FACTS.aiProvider} />). Untuk umpan balik koreksi, yang dikirim adalah kalimat yang ingin Anda
             periksa. Nama, email, username, dan ID akun Anda tidak ikut dikirim. Pemrosesan di sisi
             penyedia tunduk pada ketentuan penyedia tersebut. Jangan menuliskan data pribadi di
             percakapan.
@@ -771,10 +770,12 @@ export const PRIVACY_POLICY: LegalDocument = {
       content: (
         <LegalP>
           Layanan ini ditujukan untuk pengguna berusia minimal{" "}
-          <LegalValue value={LEGAL_FACTS.minimumAge} />. Sesuai UU PDP, pemrosesan data pribadi anak
-          memerlukan persetujuan orang tua atau wali. Bila Anda orang tua atau wali dan mengetahui
-          anak Anda memakai layanan ini tanpa persetujuan, hubungi <ContactEmail /> agar akunnya
-          dapat kami tindak lanjuti.
+          <LegalValue value={LEGAL_FACTS.minimumAge} />. Pengguna yang belum berusia 18 tahun
+          tergolong anak menurut hukum Indonesia, dan sesuai UU PDP pemrosesan data pribadi anak
+          memerlukan persetujuan orang tua atau wali. Karena itu pengguna berusia di bawah 18 tahun
+          hanya boleh mendaftar dan memakai layanan dengan persetujuan orang tua atau wali. Bila
+          Anda orang tua atau wali dan mengetahui anak Anda memakai layanan ini tanpa persetujuan,
+          hubungi <ContactEmail /> agar akunnya dapat kami tindak lanjuti, termasuk dihapus.
         </LegalP>
       ),
     },

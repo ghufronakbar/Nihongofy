@@ -69,10 +69,17 @@ Kebijakan Privasi (`/privacy`) dan Syarat & Ketentuan (`/terms`) ditambahkan 2 O
 - **Tanpa flag dan tanpa query.** Halaman memakai `export const dynamic = "force-static"` sehingga
   di-prerender saat build (○ di output build). Konsekuensinya `cookies()` di layout `(public)`
   kosong, jadi header di kedua halaman selalu tampil sebagai tamu (tombol Masuk, bukan Dashboard).
-- **Isian yang belum diketahui** (nama pengelola, email kontak, alamat, usia minimum, region
-  Supabase, penyedia SMTP dan AI) dikumpulkan di `LEGAL_FACTS` (`src/features/legal/constants.ts`)
-  dengan awalan `[[ISI:` dan dirender sebagai penanda merah. Tanggal berlaku ada di masing-masing
-  file konten. Jangan deploy ke publik selama masih ada `[[ISI:`.
+- **Fakta pengelola dan infrastruktur** (nama pengelola, email kontak, alamat, usia minimum,
+  region Supabase, penyedia SMTP dan AI) dikumpulkan di `LEGAL_FACTS`
+  (`src/features/legal/constants.ts`); tanggal berlaku ada di `EFFECTIVE_DATE` tiap file konten.
+  Ubah `LEGAL_FACTS` bersamaan dengan infrastrukturnya (mis. ganti penyedia SMTP).
+- **Guard placeholder.** Nilai yang belum diketahui ditulis berawalan `[[ISI:` dan dirender sebagai
+  penanda merah. `assertLegalDocumentPublishable` (`src/features/legal/guard.ts`) dipanggil di
+  module scope kedua halaman: saat `VERCEL_ENV=production` dan masih ada placeholder di
+  `LEGAL_FACTS`, `EFFECTIVE_DATE`, `LAST_UPDATED`, atau `VERSION`, build gagal ("Failed to collect
+  configuration for /terms"). Build lokal dan preview tetap jalan. `guard.test.ts` melarang
+  placeholder literal di isi TSX (yang tidak terjangkau guard) dan gagal selama `LEGAL_FACTS`
+  belum lengkap.
 - **Akurat terhadap kode.** Setiap klaim kebijakan merujuk alur data yang ada (cookie, retensi,
   pemroses, anonimisasi). Saat menambah cookie, pemroses, atau aturan retensi baru, perbarui
   dokumen ini di commit yang sama.

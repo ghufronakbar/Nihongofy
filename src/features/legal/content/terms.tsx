@@ -14,7 +14,7 @@ import type { LegalDocument } from "../types";
 // secara berarti. Riwayatnya cukup lewat git.
 export const VERSION = "1.0";
 export const LAST_UPDATED = "2026-10-02";
-export const EFFECTIVE_DATE = "[[ISI: tanggal mulai berlaku, format YYYY-MM-DD]]";
+export const EFFECTIVE_DATE = "2026-10-02";
 
 const operator = <LegalValue value={LEGAL_FACTS.operatorName} />;
 
@@ -63,8 +63,9 @@ export const TERMS: LegalDocument = {
           <LegalList
             items={[
               <>
-                Anda harus berusia minimal <LegalValue value={LEGAL_FACTS.minimumAge} />, atau
-                mendapat persetujuan orang tua atau wali sesuai ketentuan hukum yang berlaku.
+                Anda harus berusia minimal <LegalValue value={LEGAL_FACTS.minimumAge} />. Bila
+                belum berusia 18 tahun, Anda wajib mendapat persetujuan orang tua atau wali untuk
+                mendaftar dan memakai layanan.
               </>,
               <>
                 <strong>Satu orang, satu akun.</strong> Jangan membuat akun tambahan untuk
