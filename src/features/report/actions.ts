@@ -171,6 +171,7 @@ async function resolveTarget(
           },
         },
         vocab: { select: { level: true, wordPlain: true } },
+        bunpouPoint: { select: { level: true, key: true } },
       },
     });
 
@@ -186,12 +187,14 @@ async function resolveTarget(
       };
     }
 
-    // Tepat satu target terisi (CHECK di database): soal atau kata flashcard.
+    // Tepat satu target terisi (CHECK di database): soal, kata flashcard, atau pola.
     const where = comment.question
       ? `${comment.question.testPackageItem.testPackage.jlptLevel} ${comment.question.testPackageItem.testPackage.name} · soal ${comment.question.order}`
       : comment.vocab
         ? `kata ${comment.vocab.level} ${comment.vocab.wordPlain}`
-        : "target tidak dikenal";
+        : comment.bunpouPoint
+          ? `pola ${comment.bunpouPoint.level} ${comment.bunpouPoint.key}`
+          : "target tidak dikenal";
     return {
       ok: true,
       targetLabel: truncate(

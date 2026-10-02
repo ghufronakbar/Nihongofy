@@ -15,6 +15,7 @@ const moderationSelect = {
   id: true,
   questionId: true,
   vocabId: true,
+  bunpouPointId: true,
   parentId: true,
   commentText: true,
   commentImages: true,
@@ -38,8 +39,9 @@ const moderationSelect = {
       },
     },
   },
-  // Catatan kata flashcard: tepat satu dari `question`/`vocab` terisi.
+  // Tepat satu dari `question`/`vocab`/`bunpouPoint` terisi.
   vocab: { select: { id: true, level: true, wordPlain: true, reading: true } },
+  bunpouPoint: { select: { id: true, key: true, level: true, titlePlain: true } },
 } satisfies Prisma.QuestionCommentSelect;
 
 type ModerationRow = Prisma.QuestionCommentGetPayload<{ select: typeof moderationSelect }>;

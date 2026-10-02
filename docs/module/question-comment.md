@@ -4,7 +4,9 @@
 
 **Catatan belajar pribadi selesai; berbagi catatan ke diskusi publik dan balasan satu tingkat sudah aktif.** User login dapat menambah, mengedit, menghapus, dan melampirkan gambar pada soal di mode baca dan result detail, lalu membagikan catatan itu ke diskusi yang dapat dibaca semua orang termasuk guest.
 
-**Sejak 2 Oktober 2026 modul ini melayani dua target: soal JLPT dan kata flashcard.** Tabel, action, query, komponen, moderasi, dan laporannya sama; permukaan flashcard-nya dijelaskan di [flashcard.md](flashcard.md#catatan-dan-diskusi-kata). Semua tulisan dibatasi rate limit Redis.
+**Sejak 2 Oktober 2026 modul ini melayani tiga target: soal JLPT, kata flashcard, dan pola bunpou.** Tabel, action, query, komponen, moderasi, dan laporannya sama; permukaan flashcard-nya dijelaskan di [flashcard.md](flashcard.md#catatan-dan-diskusi-kata) dan permukaan bunpou di [bunpou.md](bunpou.md#catatan-dan-diskusi-pola). Semua tulisan dibatasi rate limit Redis.
+
+**Diskusi diindeks mesin pencari sejak 2 Oktober 2026** — lihat [Indexing](#indexing).
 
 ## Feature Flag
 
@@ -23,6 +25,10 @@ Dua flag terpisah.
 - `setQuestionCommentVisibilityAction`, `replyToQuestionCommentAction`, dan `getQuestionDiscussionAction` memanggil `notFound()`.
 - `addQuestionCommentAction` menolak `visibility: "PUBLIC"`, tetapi catatan privat tetap bisa ditulis.
 - Catatan yang sudah publik tidak diubah menjadi privat; hanya tidak ada permukaan yang menampilkannya.
+
+`FEATURES_BUNPOU_DISCUSSION` (default `true`, otomatis mati bila `FEATURES_BUNPOU` mati) berperan sama
+untuk pola bunpou: Catatanku dan section Diskusi di `/bunpou/[key]`, tombol Diskusi (n), serta
+`/bunpou/discussion/*` hilang (404), dan seluruh action dengan target pola memanggil `notFound()`.
 
 `FEATURES_FLASHCARD_DISCUSSION` (default `true`, otomatis mati bila `FEATURES_FLASHCARD` mati) menjadi
 satu-satunya flag untuk catatan **dan** diskusi kata flashcard. Kedua flag soal di atas tidak
@@ -43,11 +49,14 @@ atau `FEATURES_FLASHCARD_DISCUSSION` hidup.
 
 Satu tabel `QuestionComment` untuk catatan pribadi dan thread publik — yang dibagikan adalah record yang sama, bukan salinannya, sehingga edit tidak perlu disinkronkan antar tabel.
 
-- **Target:** tepat satu dari `questionId` (soal) atau `vocabId` (kata flashcard di katalog, bukan
-  kartu milik user) terisi. CHECK `QuestionComment_target_check` (`num_nonnulls(...) = 1`) hanya ada
-  di SQL migration. Balasan selalu mewarisi target root-nya, jadi satu thread tidak pernah bercampur.
+- **Target:** tepat satu dari `questionId` (soal), `vocabId` (kata flashcard di katalog, bukan
+  kartu milik user), atau `bunpouPointId` (pola bunpou, per entri katalog) terisi. CHECK
+  `QuestionComment_target_check` (`num_nonnulls(...) = 1`) hanya ada di SQL migration dan dijaga
+  `target.test.ts`. Balasan selalu mewarisi target root-nya, jadi satu thread tidak pernah bercampur.
   Di kode, target diwakili `CommentTarget` (`target.ts`), yang juga membentuk tautan:
-  thread soal → `/discussion/<rootId>`, thread kata → `/flashcard/discussion/<vocabId>#comment-<id>`.
+  thread soal → `/discussion/<rootId>`, thread kata → `/flashcard/discussion/<vocabId>#comment-<id>`,
+  thread pola → `/bunpou/discussion/<pointId>?comment=<id>`, pengalih yang menerjemahkan id ke
+  `/bunpou/<key>#comment-<id>` (baris catatan tidak membawa key pola).
 
 - `visibility` (`PRIVATE` | `PUBLIC`) — status saat ini.
 - `sharedAt` — terisi saat pertama kali dibagikan, **tidak pernah dikosongkan lagi**. Ini penentu keanggotaan thread publik, bukan `visibility`.
@@ -111,7 +120,26 @@ Ketiganya memakai `DiscussionQuestionCard` yang sama untuk merender soal, kunci,
 
 - `commentId` berupa balasan akan di-redirect ke permalink root dengan anchor `#comment-<id>`.
 - Catatan privat yang belum pernah dibagikan tidak punya permalink (404).
-- Route ini `noindex` lewat metadata layout dan masuk `disallow` di `robots.ts`. Alasan semula "menunggu dashboard admin"; moderasinya kini ada, jadi membuka indexing tinggal keputusan produk — lihat Tahap 5 di `docs/plan.md`. Ingat `robots.txt` di-prerender saat build.
+- Canonical permalink menunjuk `/discussion/question/<questionId>`, karena thread ini bagian dari
+  halaman diskusi soalnya.
+
+## Indexing
+
+Diskusi dibuka untuk mesin pencari (2 Oktober 2026) supaya catatan pengguna ikut membantu orang
+yang mencari soal, kata, atau pola tertentu. Moderasi `/admin/moderation`, laporan `COMMENT`, dan
+rate limit tulis sudah aktif sebagai penahannya.
+
+- `robots.ts` meng-`allow` `/discussion` dan `/flashcard/discussion` selama flag-nya hidup; `/bunpou/`
+  sudah terbuka. `robots.txt` di-prerender saat build, jadi perubahan flag butuh redeploy.
+- Metadata per halaman disusun `src/features/question-comment/seo.ts`: judul dan deskripsi dari soal
+  atau kata, canonical ke halaman diskusi target.
+- Halaman diskusi soal atau kata **tanpa entri tampil** diberi `noindex, follow`, karena isinya hanya
+  duplikat soal/kartu yang sudah terindeks di tempat lain. Halaman indeks lanjutan (`?page=2`, dst.)
+  juga `noindex, follow`.
+- Sitemap memuat ketiga halaman indeks dan halaman diskusi soal/kata yang punya entri
+  (`getDiscussionSitemapTargets`, di-cache 1 jam). Diskusi pola tidak didaftarkan terpisah karena
+  dirender di halaman pola, yang sudah ada di sitemap.
+- Isi komentar adalah teks polos tanpa tautan, jadi tidak ada `rel="ugc"` yang perlu dipasang.
 
 ## Data dan Security
 
@@ -174,6 +202,8 @@ Belum dikerjakan; dicatat di sini supaya rancangannya tidak hilang. Berlaku untu
 - `src/features/question-comment/components/reply-form.tsx`
 - `src/app/(public)/discussion/layout.tsx`
 - `src/app/(public)/discussion/[commentId]/page.tsx`
-- `src/features/question-comment/components/discussion-tabs.tsx` — tab Soal | Kosakata
+- `src/features/question-comment/components/discussion-tabs.tsx` — tab Soal | Kosakata | Bunpou
+- `src/features/question-comment/components/discussion-composer.tsx` — form tulis langsung ke diskusi di halaman target
+- `src/features/question-comment/seo.ts` — metadata halaman diskusi
 - `src/lib/rate-limit.ts`, `src/lib/redis-rate-limit.ts` — rate limit fixed window
 - `src/features/admin/moderation/` — antrean dan action takedown milik admin (menampilkan konteks soal atau kata), terpisah dari action user di atas yang tetap menolak non-pemilik

@@ -84,9 +84,33 @@ Metadata memakai `pageMetadata()`, structured data `LearningResource`, dan halam
   Sebelum/sesudah hanya dalam level yang sama.
 - Perbandingan yang salah satu polanya sudah dipensiunkan dianggap tidak ada (404), karena
   tabelnya tidak lagi utuh.
+- Catatan dan diskusi pola dijelaskan di [Catatan dan Diskusi Pola](#catatan-dan-diskusi-pola).
 - Tombol "Laporkan pola ini" dan "Laporkan perbandingan ini" (target `BUNPOU_POINT` dan
   `BUNPOU_COMPARISON`) tampil bila `FEATURES_REPORT` aktif; detailnya di
   [report.md](report.md). Home menampilkan kartu Bunpou yang mengikuti flag.
+
+## Catatan dan Diskusi Pola
+
+Memakai modul catatan soal ([question-comment.md](question-comment.md)) dengan target
+`bunpouPointId`, di balik flag `FEATURES_BUNPOU_DISCUSSION`. Tabel, tombstone, balasan, mention,
+moderasi, laporan `COMMENT`, anonimisasi akun, dan rate limit-nya sama.
+
+- **Target per pola** (entri katalog = satu makna di satu level). Makna yang sama di level berbeda
+  (`de-tempat` N5, `de-tempat-aktivitas` N4) punya diskusi masing-masing.
+- **Halaman pola:** tombol **Diskusi (n)** di samping "Laporkan pola ini" melompat ke section
+  Diskusi; **Catatanku** tampil setelah bagian "Perhatikan"; section **Diskusi** tampil setelah pola
+  terkait. Guest melihat ajakan masuk; `next` membawa anchor `#catatanku`/`#diskusi`.
+- **Dirender server dan diindeks.** Thread publik ikut di HTML halaman supaya terindeks bersama isi
+  polanya. Karena halaman sudah membaca session untuk thread (tombol milik sendiri), Catatanku ikut
+  dirender server, bukan dimuat client seperti rencana awal. Katalognya tetap di-cache;
+  catatan dan thread tidak.
+- **Indeks** `/bunpou/discussion`: pola dengan aktivitas diskusi terbaru, juga tab ketiga di
+  `/discussion` dan `/flashcard/discussion`.
+- **Pengalih** `/bunpou/discussion/<pointId>[?comment=<id>]` menerjemahkan id ke
+  `/bunpou/<key>#diskusi` atau `#comment-<id>`, untuk tautan dari moderasi, Catatanku, dan permalink
+  lama `/discussion/<id>`.
+- Pola yang dipensiunkan 404 beserta diskusinya; catatannya tetap tersimpan.
+- Perbandingan belum punya catatan/diskusi; ditambahkan setelah data perbandingan ada.
 
 ## Fase B — Tautan ke Soal JLPT Asli
 

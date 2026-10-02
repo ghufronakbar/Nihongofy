@@ -42,6 +42,13 @@ const COPY: Record<
     placeholder: "Bagikan jembatan keledai, nuansa, atau pertanyaan tentang kata ini...",
     empty: "Belum ada diskusi untuk kata ini.",
   },
+  bunpou: {
+    title: "Diskusi Pola",
+    description:
+      "Contoh lain, nuansa, dan pertanyaan pengguna lain tentang pola ini. Isi pola keliru? Pakai tombol Laporkan pola ini.",
+    placeholder: "Bagikan contoh kalimat, tips mengingat, atau pertanyaan tentang pola ini...",
+    empty: "Belum ada diskusi untuk pola ini.",
+  },
 };
 
 export function NewPublicNoteForm({

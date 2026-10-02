@@ -1,29 +1,32 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
+type DiscussionKind = "question" | "vocab" | "bunpou";
+
+const TABS: { key: DiscussionKind; label: string; href: string }[] = [
+  { key: "question", label: "Soal", href: "/discussion" },
+  { key: "vocab", label: "Kosakata", href: "/flashcard/discussion" },
+  { key: "bunpou", label: "Bunpou", href: "/bunpou/discussion" },
+];
+
 /**
- * Penghubung dua indeks diskusi: soal (/discussion) dan kata flashcard
- * (/flashcard/discussion). Keduanya punya flag sendiri, jadi tab hanya tampil
- * bila keduanya hidup — tautan ke modul yang mati tidak boleh dirender.
+ * Penghubung indeks diskusi: soal (/discussion), kata flashcard
+ * (/flashcard/discussion), dan pola bunpou (/bunpou/discussion). Masing-masing
+ * punya flag sendiri; tab yang modulnya mati tidak dirender, dan navigasi
+ * hilang sama sekali bila tinggal satu jenis.
  */
 export function DiscussionTabs({
   active,
-  questionEnabled,
-  vocabEnabled,
+  enabled,
 }: {
-  active: "question" | "vocab";
-  questionEnabled: boolean;
-  vocabEnabled: boolean;
+  active: DiscussionKind;
+  enabled: Record<DiscussionKind, boolean>;
 }) {
-  if (!questionEnabled || !vocabEnabled) return null;
-
-  const tabs = [
-    { key: "question" as const, label: "Soal", href: "/discussion" },
-    { key: "vocab" as const, label: "Kosakata", href: "/flashcard/discussion" },
-  ];
+  const tabs = TABS.filter((tab) => enabled[tab.key]);
+  if (tabs.length < 2) return null;
 
   return (
-    <nav className="flex gap-2" aria-label="Jenis diskusi">
+    <nav className="flex flex-wrap gap-2" aria-label="Jenis diskusi">
       {tabs.map((tab) => (
         <Link
           key={tab.key}

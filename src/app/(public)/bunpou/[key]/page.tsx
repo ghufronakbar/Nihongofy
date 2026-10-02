@@ -4,6 +4,13 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { FEATURES } from "@/constants";
 import { BunpouPointView } from "@/features/bunpou/components/bunpou-point-view";
 import { getBunpouPointDetail } from "@/features/bunpou/queries";
+import type { BunpouCommunity } from "@/features/bunpou/components/bunpou-point-community";
+import {
+  countDiscussionEntries,
+  getDiscussion,
+  getOwnBunpouNotes,
+} from "@/features/question-comment/queries";
+import { getSession } from "@/lib/auth";
 import { BunpouKeySchema } from "@/features/bunpou/schemas";
 import { breadcrumbJsonLd, learningResourceJsonLd } from "@/lib/json-ld";
 import { pageMetadata, privateMetadata } from "@/lib/seo";
@@ -31,11 +38,33 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 }
 
+/**
+ * Catatan pribadi dan diskusi publik. Tidak di-cache, sama seperti diskusi di
+ * tempat lain: isinya berubah setiap ada balasan. Thread ikut dirender server
+ * supaya terindeks bersama isi polanya.
+ */
+async function loadCommunity(pointId: number, pointKey: string): Promise<BunpouCommunity | null> {
+  if (!FEATURES.bunpouDiscussion) return null;
+  const target = { type: "bunpou" as const, bunpouPointId: pointId };
+  const [session, roots] = await Promise.all([getSession(), getDiscussion(target)]);
+  const notes = session ? await getOwnBunpouNotes(session.userId, pointId) : [];
+  return {
+    pointId,
+    pointKey,
+    viewerId: session?.userId ?? null,
+    notes,
+    roots,
+    entryCount: countDiscussionEntries(roots),
+    reportEnabled: FEATURES.report,
+  };
+}
+
 export default async function BunpouPointPage({ params }: Props) {
   const detail = await detailFromParams(params);
   if (!detail) notFound();
 
   const { point, content } = detail;
+  const community = await loadCommunity(detail.id, point.key);
   const path = `/bunpou/${point.key}`;
 
   return (
@@ -56,7 +85,7 @@ export default async function BunpouPointPage({ params }: Props) {
           ]),
         ]}
       />
-      <BunpouPointView detail={detail} reportEnabled={FEATURES.report} />
+      <BunpouPointView detail={detail} reportEnabled={FEATURES.report} community={community} />
     </main>
   );
 }

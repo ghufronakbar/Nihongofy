@@ -49,6 +49,9 @@ export const CACHE_KEYS = {
   bunpouComparison: (key: string) => ["bunpou-comparison", key],
   bunpouComparisonList: ["bunpou-comparison-list"] as string[],
   bunpouSitemap: ["bunpou-sitemap"] as string[],
+  // Tanpa tag: diskusi tidak punya invalidasi per mutasi (docs/module/question-comment.md),
+  // jadi sitemap-nya cukup diperbarui oleh `revalidate`.
+  discussionSitemap: ["discussion-sitemap"] as string[],
   // Shares CACHE_TAGS.analytics for invalidation — both derive from the same
   // source (completed attempts), so one updateTag on submit refreshes both.
   progress: (userId: number) => ["progress", String(userId)],

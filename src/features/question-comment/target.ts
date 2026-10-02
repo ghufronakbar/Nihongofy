@@ -1,52 +1,89 @@
 import { z } from "zod";
 
 /**
- * Sasaran sebuah catatan: soal JLPT atau kata flashcard. Satu tabel
- * (`QuestionComment`) melayani keduanya, dengan tepat satu kolom target terisi.
+ * Sasaran sebuah catatan: soal JLPT, kata flashcard, atau pola bunpou. Satu
+ * tabel (`QuestionComment`) melayani ketiganya, dengan tepat satu kolom target
+ * terisi.
  *
  * Aman untuk client — dipakai form dan pembentuk tautan.
  */
 export const CommentTargetSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("question"), questionId: z.number().int().positive() }),
   z.object({ type: z.literal("vocab"), vocabId: z.number().int().positive() }),
+  z.object({ type: z.literal("bunpou"), bunpouPointId: z.number().int().positive() }),
 ]);
 
 export type CommentTarget = z.infer<typeof CommentTargetSchema>;
 
-type TargetColumns = { questionId: number | null; vocabId: number | null };
+export type CommentTargetColumns = {
+  questionId: number | null;
+  vocabId: number | null;
+  bunpouPointId: number | null;
+};
 
 /** Target dari kolom baris database; null hanya bila CHECK di database dilanggar. */
-export function targetOf(row: TargetColumns): CommentTarget | null {
+export function targetOf(row: CommentTargetColumns): CommentTarget | null {
   if (row.questionId !== null) return { type: "question", questionId: row.questionId };
   if (row.vocabId !== null) return { type: "vocab", vocabId: row.vocabId };
+  if (row.bunpouPointId !== null) return { type: "bunpou", bunpouPointId: row.bunpouPointId };
   return null;
+}
+
+/** Kolom target untuk baris baru; tepat satu terisi. */
+export function targetColumns(target: CommentTarget): CommentTargetColumns {
+  return {
+    questionId: target.type === "question" ? target.questionId : null,
+    vocabId: target.type === "vocab" ? target.vocabId : null,
+    bunpouPointId: target.type === "bunpou" ? target.bunpouPointId : null,
+  };
 }
 
 /** Filter Prisma untuk seluruh catatan pada satu target. */
 export function targetWhere(target: CommentTarget) {
-  return target.type === "question"
-    ? { questionId: target.questionId }
-    : { vocabId: target.vocabId };
+  switch (target.type) {
+    case "question":
+      return { questionId: target.questionId };
+    case "vocab":
+      return { vocabId: target.vocabId };
+    case "bunpou":
+      return { bunpouPointId: target.bunpouPointId };
+  }
+}
+
+/**
+ * Halaman pola memakai `key` di URL, sedangkan baris catatan hanya membawa id.
+ * Route ini mengalihkan id ke `/bunpou/<key>#diskusi` (atau ke satu entri bila
+ * `comment` diisi), supaya pembentuk tautan di sini tidak perlu ikut memuat key.
+ */
+function bunpouDiscussionHref(bunpouPointId: number, commentId?: number) {
+  const base = `/bunpou/discussion/${bunpouPointId}`;
+  return commentId === undefined ? base : `${base}?comment=${commentId}`;
 }
 
 /** Halaman penuh seluruh thread pada satu target. */
 export function discussionPageHref(target: CommentTarget) {
-  return target.type === "question"
-    ? `/discussion/question/${target.questionId}`
-    : `/flashcard/discussion/${target.vocabId}`;
+  switch (target.type) {
+    case "question":
+      return `/discussion/question/${target.questionId}`;
+    case "vocab":
+      return `/flashcard/discussion/${target.vocabId}`;
+    case "bunpou":
+      return bunpouDiscussionHref(target.bunpouPointId);
+  }
 }
 
 /**
  * Tautan ke satu thread, opsional langsung ke salah satu balasannya. Thread soal
- * punya permalink sendiri; thread kata dibaca di halaman kata dengan anchor,
- * karena satu kata jarang punya banyak thread dan halaman itu juga memuat isi
- * kartunya.
+ * punya permalink sendiri; thread kata dan pola dibaca di halaman target dengan
+ * anchor, karena satu target jarang punya banyak thread dan halaman itu juga
+ * memuat isinya.
  */
 export function discussionThreadHref(
-  root: { id: number } & TargetColumns,
+  root: { id: number } & CommentTargetColumns,
   commentId: number = root.id,
 ) {
   if (root.vocabId !== null) return `/flashcard/discussion/${root.vocabId}#comment-${commentId}`;
+  if (root.bunpouPointId !== null) return bunpouDiscussionHref(root.bunpouPointId, commentId);
   return commentId === root.id
     ? `/discussion/${root.id}`
     : `/discussion/${root.id}#comment-${commentId}`;

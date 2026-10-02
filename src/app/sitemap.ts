@@ -1,7 +1,10 @@
 import type { MetadataRoute } from "next";
+import { unstable_cache } from "next/cache";
 import { FEATURES, SITE_URL, type FeatureName } from "@/constants";
 import { getArticleSitemapEntries } from "@/features/article/queries";
 import { getBunpouSitemapEntries } from "@/features/bunpou/queries";
+import { getDiscussionSitemapTargets } from "@/features/question-comment/queries";
+import { CACHE_KEYS } from "@/constants/cache-key";
 import { getTestPackageSitemapEntries } from "@/features/test-package/queries";
 
 type StaticEntry = {
@@ -20,13 +23,44 @@ const STATIC_ENTRIES: StaticEntry[] = [
   { path: "/flashcard", changeFrequency: "weekly", priority: 0.8, feature: "flashcard" },
   { path: "/bunpou", changeFrequency: "weekly", priority: 0.8, feature: "bunpou" },
   { path: "/article", changeFrequency: "weekly", priority: 0.8, feature: "article" },
+  { path: "/discussion", changeFrequency: "weekly", priority: 0.5, feature: "questionDiscussion" },
+  {
+    path: "/flashcard/discussion",
+    changeFrequency: "weekly",
+    priority: 0.5,
+    feature: "flashcardDiscussion",
+  },
+  { path: "/bunpou/discussion", changeFrequency: "weekly", priority: 0.5, feature: "bunpouDiscussion" },
 ];
 
+// Hanya halaman diskusi yang punya entri tampil; halaman kosong diberi `noindex`.
+// Diskusi pola tidak perlu: pola sudah masuk sitemap dan diskusinya ada di halaman itu.
+const getCachedDiscussionTargets = unstable_cache(
+  async () => {
+    const targets = await getDiscussionSitemapTargets();
+    return {
+      questions: targets.questions.map((row) => ({
+        id: row.id,
+        lastActivityAt: row.lastActivityAt.toISOString(),
+      })),
+      vocabs: targets.vocabs.map((row) => ({
+        id: row.id,
+        lastActivityAt: row.lastActivityAt.toISOString(),
+      })),
+    };
+  },
+  CACHE_KEYS.discussionSitemap,
+  { revalidate: 3600 },
+);
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [articles, testPackages, bunpou] = await Promise.all([
+  const [articles, testPackages, bunpou, discussions] = await Promise.all([
     FEATURES.article ? getArticleSitemapEntries() : [],
     FEATURES.testPackage ? getTestPackageSitemapEntries() : [],
     FEATURES.bunpou ? getBunpouSitemapEntries() : { points: [], comparisons: [] },
+    FEATURES.questionDiscussion || FEATURES.flashcardDiscussion
+      ? getCachedDiscussionTargets()
+      : { questions: [], vocabs: [] },
   ]);
 
   return [
@@ -65,6 +99,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: comparison.updatedAt,
       changeFrequency: "monthly" as const,
       priority: 0.65,
+    })),
+    ...(FEATURES.questionDiscussion ? discussions.questions : []).map((question) => ({
+      url: new URL(`/discussion/question/${question.id}`, SITE_URL).toString(),
+      lastModified: new Date(question.lastActivityAt),
+      changeFrequency: "weekly" as const,
+      priority: 0.5,
+    })),
+    ...(FEATURES.flashcardDiscussion ? discussions.vocabs : []).map((vocab) => ({
+      url: new URL(`/flashcard/discussion/${vocab.id}`, SITE_URL).toString(),
+      lastModified: new Date(vocab.lastActivityAt),
+      changeFrequency: "weekly" as const,
+      priority: 0.5,
     })),
     ...articles.map((article) => ({
       url: new URL(`/article/${article.slug}`, SITE_URL).toString(),

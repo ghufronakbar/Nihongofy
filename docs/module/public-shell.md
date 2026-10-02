@@ -50,7 +50,7 @@ Route milik modul yang mati mengembalikan 404 lewat `layout.tsx` guard di segmen
 ## Keterbatasan
 
 - Tidak ada halaman publik khusus overview product selain home.
-- Sitemap memuat home, test package, latihan cepat, kana, flashcard, bunpou (katalog, tiap pola, dan tiap perbandingan), dan artikel untuk modul yang aktif. `robots.ts` hanya meng-`allow` path modul aktif; route akun, exam, result, conversation, dan speaking selalu di-`disallow`.
+- Sitemap memuat home, test package, latihan cepat, kana, flashcard, bunpou (katalog, tiap pola, dan tiap perbandingan), dan artikel untuk modul yang aktif. `robots.ts` hanya meng-`allow` path modul aktif; route akun, exam, result, conversation, dan speaking selalu di-`disallow`. Diskusi (`/discussion`, `/flashcard/discussion`, dan diskusi di halaman pola) diindeks sejak 2 Oktober 2026; halaman diskusi tanpa entri diberi `noindex`.
 - `robots.txt` dan `sitemap.xml` di-prerender saat build, sehingga perubahan flag baru tercermin di keduanya setelah redeploy.
 - Header publik tidak menyediakan shortcut langsung ke history/progress/analytics; aksesnya melalui dashboard.
 - Routing tidak mewajibkan login untuk prefix belajar/exam/result. Proteksi akun dan ownership diterapkan secara selektif di page/action terkait; mode guest memang tersedia pada beberapa modul.

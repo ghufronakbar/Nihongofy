@@ -1,6 +1,7 @@
 import "server-only";
 
 import type { JlptLevel, MondaiType, Prisma } from "@prisma/client";
+import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { QUESTION_EXPLANATION_SELECT } from "@/lib/question-explanation";
 import { targetWhere, type CommentTarget } from "./target";
@@ -41,9 +42,10 @@ export type DiscussionRootState = "VISIBLE" | "HIDDEN" | "DELETED";
 
 export type DiscussionRoot = {
   id: number;
-  // Tepat satu terisi: soal JLPT atau kata flashcard.
+  // Tepat satu terisi: soal JLPT, kata flashcard, atau pola bunpou.
   questionId: number | null;
   vocabId: number | null;
+  bunpouPointId: number | null;
   state: DiscussionRootState;
   createdAt: Date;
   // Empat field di bawah hanya terisi saat state === "VISIBLE". Untuk tombstone
@@ -67,6 +69,7 @@ const discussionRootSelect = {
   id: true,
   questionId: true,
   vocabId: true,
+  bunpouPointId: true,
   commentText: true,
   commentImages: true,
   visibility: true,
@@ -130,6 +133,7 @@ function toDiscussionRoot(row: RawDiscussionRoot): DiscussionRoot {
       id: row.id,
       questionId: row.questionId,
       vocabId: row.vocabId,
+      bunpouPointId: row.bunpouPointId,
       state,
       createdAt: row.createdAt,
       commentText: null,
@@ -144,6 +148,7 @@ function toDiscussionRoot(row: RawDiscussionRoot): DiscussionRoot {
     id: row.id,
     questionId: row.questionId,
     vocabId: row.vocabId,
+    bunpouPointId: row.bunpouPointId,
     state,
     createdAt: row.createdAt,
     commentText: row.commentText,
@@ -230,6 +235,7 @@ export const ownNoteSelect = {
   id: true,
   questionId: true,
   vocabId: true,
+  bunpouPointId: true,
   commentText: true,
   commentImages: true,
   visibility: true,
@@ -266,6 +272,23 @@ export async function getOwnVocabNotes(
   }
 
   return notes;
+}
+
+/** Catatan milik user pada satu pola bunpou, termasuk yang sudah dibagikan. */
+export async function getOwnBunpouNotes(userId: number, bunpouPointId: number): Promise<OwnNote[]> {
+  return prisma.questionComment.findMany({
+    where: { userId, bunpouPointId, parentId: null, deletedAt: null },
+    orderBy: { createdAt: "desc" },
+    select: ownNoteSelect,
+  });
+}
+
+/** Jumlah entri yang benar-benar tampil di thread, sama dengan definisi `countedEntryWhere`. */
+export function countDiscussionEntries(roots: DiscussionRoot[]) {
+  return roots.reduce(
+    (total, root) => total + root.replies.length + (root.state === "VISIBLE" ? 1 : 0),
+    0,
+  );
 }
 
 // ============================================================
@@ -312,11 +335,22 @@ const permalinkQuestionSelect = {
 export async function resolveDiscussionRootId(commentId: number) {
   const comment = await prisma.questionComment.findUnique({
     where: { id: commentId },
-    select: { id: true, parentId: true, sharedAt: true, questionId: true, vocabId: true },
+    select: {
+      id: true,
+      parentId: true,
+      sharedAt: true,
+      questionId: true,
+      vocabId: true,
+      bunpouPointId: true,
+    },
   });
 
   if (!comment) return null;
-  const target = { questionId: comment.questionId, vocabId: comment.vocabId };
+  const target = {
+    questionId: comment.questionId,
+    vocabId: comment.vocabId,
+    bunpouPointId: comment.bunpouPointId,
+  };
   if (comment.parentId) return { rootId: comment.parentId, isReply: true as const, ...target };
   if (!comment.sharedAt) return null; // catatan pribadi tidak punya permalink
   return { rootId: comment.id, isReply: false as const, ...target };
@@ -502,4 +536,115 @@ export async function getVocabDiscussionIndex(page: number): Promise<{
   }
 
   return { entries, hasMore };
+}
+
+// ============================================================
+// INDEKS DISKUSI POLA BUNPOU
+// ============================================================
+
+export type BunpouDiscussionIndexEntry = {
+  key: string;
+  level: JlptLevel;
+  title: string;
+  senseLabel: string | null;
+  meaningId: string;
+  entryCount: number;
+  lastActivityAt: Date;
+};
+
+// `content` pola divalidasi ketat oleh seed; di sini cukup label maknanya.
+const SenseLabelSchema = z
+  .object({ senseLabel: z.string().nullable().catch(null) })
+  .catch({ senseLabel: null });
+
+/** Padanan `getDiscussionIndex` untuk pola bunpou: satu baris per pola. */
+export async function getBunpouDiscussionIndex(page: number): Promise<{
+  entries: BunpouDiscussionIndexEntry[];
+  hasMore: boolean;
+}> {
+  const skip = Math.max(0, page - 1) * DISCUSSION_INDEX_PAGE_SIZE;
+
+  const grouped = await prisma.questionComment.groupBy({
+    by: ["bunpouPointId"],
+    where: { bunpouPointId: { not: null }, ...visibleDiscussionEntryWhere },
+    _count: { _all: true },
+    _max: { createdAt: true },
+    orderBy: { _max: { createdAt: "desc" } },
+    take: DISCUSSION_INDEX_PAGE_SIZE + 1,
+    skip,
+  });
+
+  const hasMore = grouped.length > DISCUSSION_INDEX_PAGE_SIZE;
+  const rows = hasMore ? grouped.slice(0, DISCUSSION_INDEX_PAGE_SIZE) : grouped;
+  const pointIds = rows.flatMap((row) => (row.bunpouPointId === null ? [] : [row.bunpouPointId]));
+  if (pointIds.length === 0) return { entries: [], hasMore: false };
+
+  // Pola yang sudah dipensiunkan 404 di /bunpou, jadi tidak ditautkan dari sini.
+  const points = await prisma.bunpouPoint.findMany({
+    where: { id: { in: pointIds }, retiredAt: null },
+    select: {
+      id: true,
+      key: true,
+      level: true,
+      title: true,
+      meaningId: true,
+      content: true,
+    },
+  });
+  const pointById = new Map(points.map((point) => [point.id, point]));
+
+  const entries: BunpouDiscussionIndexEntry[] = [];
+  for (const row of rows) {
+    const point = row.bunpouPointId === null ? undefined : pointById.get(row.bunpouPointId);
+    if (!point || !row._max.createdAt) continue;
+    entries.push({
+      key: point.key,
+      level: point.level,
+      title: point.title,
+      senseLabel: SenseLabelSchema.parse(point.content).senseLabel,
+      meaningId: point.meaningId,
+      entryCount: row._count._all,
+      lastActivityAt: row._max.createdAt,
+    });
+  }
+
+  return { entries, hasMore };
+}
+
+// ============================================================
+// SITEMAP
+// ============================================================
+
+/**
+ * Soal dan kata yang punya minimal satu entri diskusi tampil, beserta waktu
+ * aktivitas terakhirnya. Hanya halaman diskusi inilah yang layak diindeks;
+ * halaman diskusi kosong diberi `noindex`. Diskusi pola tidak perlu ikut: pola
+ * sudah masuk sitemap sebagai halaman katalog.
+ */
+export async function getDiscussionSitemapTargets() {
+  const [questions, vocabs] = await Promise.all([
+    prisma.questionComment.groupBy({
+      by: ["questionId"],
+      where: { questionId: { not: null }, ...visibleDiscussionEntryWhere },
+      _max: { createdAt: true },
+    }),
+    prisma.questionComment.groupBy({
+      by: ["vocabId"],
+      where: { vocabId: { not: null }, ...visibleDiscussionEntryWhere },
+      _max: { createdAt: true },
+    }),
+  ]);
+
+  return {
+    questions: questions.flatMap((row) =>
+      row.questionId !== null && row._max.createdAt
+        ? [{ id: row.questionId, lastActivityAt: row._max.createdAt }]
+        : [],
+    ),
+    vocabs: vocabs.flatMap((row) =>
+      row.vocabId !== null && row._max.createdAt
+        ? [{ id: row.vocabId, lastActivityAt: row._max.createdAt }]
+        : [],
+    ),
+  };
 }

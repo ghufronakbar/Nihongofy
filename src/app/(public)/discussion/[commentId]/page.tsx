@@ -2,10 +2,13 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { getSession } from "@/lib/auth";
+import { cache } from "react";
 import {
+  countDiscussionEntries,
   getDiscussionPermalink,
   resolveDiscussionRootId,
 } from "@/features/question-comment/queries";
+import { questionDiscussionMetadata } from "@/features/question-comment/seo";
 import { DiscussionPermalinkThread } from "@/features/question-comment/components/discussion-permalink-thread";
 import { DiscussionQuestionCard } from "@/features/question-comment/components/discussion-question-card";
 import { FEATURES } from "@/constants";
@@ -14,10 +17,25 @@ import { mondaiTypeFullLabel } from "@/constants/jlpt";
 import type { Metadata } from "next";
 import { privateMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = privateMetadata(
-  "Utas diskusi",
-  "Utas diskusi pada satu soal JLPT.",
-);
+// Thread soal saja; balasan dan thread kata/pola dialihkan oleh halaman ini.
+const loadPermalink = cache(async (rawCommentId: string) => {
+  const commentId = Number(rawCommentId);
+  if (!Number.isInteger(commentId) || commentId <= 0) return null;
+  const resolved = await resolveDiscussionRootId(commentId);
+  if (!resolved || resolved.isReply || resolved.questionId === null) return null;
+  return getDiscussionPermalink(resolved.rootId);
+});
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ commentId: string }>;
+}): Promise<Metadata> {
+  const permalink = await loadPermalink((await params).commentId);
+  if (!permalink) return privateMetadata("Utas diskusi", "Utas diskusi pada satu soal JLPT.");
+  // Canonical ke halaman diskusi soalnya: thread ini bagian dari halaman itu.
+  return questionDiscussionMetadata(permalink.question, countDiscussionEntries([permalink.root]));
+}
 
 export default async function DiscussionPermalinkPage({
   params,
@@ -40,7 +58,23 @@ export default async function DiscussionPermalinkPage({
     if (!FEATURES.flashcardDiscussion) notFound();
     redirect(
       discussionThreadHref(
-        { id: resolved.rootId, questionId: null, vocabId: resolved.vocabId },
+        { id: resolved.rootId, questionId: null, vocabId: resolved.vocabId, bunpouPointId: null },
+        commentIdNum,
+      ),
+    );
+  }
+
+  // Sama untuk thread pola bunpou, yang dibaca di halaman polanya.
+  if (resolved.bunpouPointId !== null) {
+    if (!FEATURES.bunpouDiscussion) notFound();
+    redirect(
+      discussionThreadHref(
+        {
+          id: resolved.rootId,
+          questionId: null,
+          vocabId: null,
+          bunpouPointId: resolved.bunpouPointId,
+        },
         commentIdNum,
       ),
     );
@@ -52,10 +86,7 @@ export default async function DiscussionPermalinkPage({
     redirect(`/discussion/${resolved.rootId}#comment-${commentIdNum}`);
   }
 
-  const [permalink, authSession] = await Promise.all([
-    getDiscussionPermalink(resolved.rootId),
-    getSession(),
-  ]);
+  const [permalink, authSession] = await Promise.all([loadPermalink(commentId), getSession()]);
   if (!permalink) notFound();
 
   const { root, question } = permalink;

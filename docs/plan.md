@@ -658,9 +658,9 @@ satu-satunya konten buatan user yang terlihat publik, termasuk oleh guest.
   ringkasan (jumlah catatan, balasan, dan berapa kali kena takedown)
 - [ ] Rate limit pembuatan catatan/balasan — sekarang tidak ada sama sekali (hanya batas 2.000
   karakter dan 4 gambar); pakai ulang pola bucket atomik `AuthRateLimit`
-- [ ] Buka `/discussion` untuk mesin pencari setelah moderasi aktif: hapus `disallow` di
-  `src/app/robots.ts` **dan** balik `robots: { index: false }` di
-  `src/app/(public)/discussion/layout.tsx`. `robots.txt` di-prerender saat build → butuh redeploy
+- [x] Buka `/discussion` untuk mesin pencari (2 Oktober 2026), sekaligus `/flashcard/discussion` dan
+  diskusi di halaman pola bunpou. Halaman diskusi tanpa entri `noindex, follow`; halaman yang
+  berisi masuk sitemap. `robots.txt` di-prerender saat build → butuh redeploy
 - [ ] Notifikasi balasan (diserahkan dari Fase 8.7, tetapi bukan fitur admin — aplikasi belum
   punya sistem notifikasi sama sekali; putuskan apakah masuk scope atau jadi fase tersendiri)
 - [x] `QuestionComment.deletedById` — migration `20260925180000_comment_deleted_by`. Bukan opsional
@@ -1188,12 +1188,26 @@ Rancangan: `docs/module/bunpou.md`; kontrak data: `docs/seed-bunpou.md`.
 - [ ] `npx prisma migrate deploy` untuk `20261002120000_report_bunpou_enum` dan
   `20261002120100_report_bunpou_target`, lalu uji kirim laporan pola sebagai guest dan user.
 - [x] Kartu Bunpou di home (susunan grid lima kartu).
+- [x] Catatan pribadi dan diskusi per pola (`QuestionComment.bunpouPointId`, flag
+  `FEATURES_BUNPOU_DISCUSSION`), indeks `/bunpou/discussion`, tab Bunpou di indeks diskusi.
+- [ ] `npx prisma migrate deploy` untuk `20261002130000_comment_bunpou_point_target` **sebelum**
+  deploy kode (seluruh query diskusi kini memilih kolom `bunpouPointId`), lalu uji tulis catatan,
+  bagikan, balas, dan hapus di halaman pola.
 - [x] Halaman `/bunpou`, `/bunpou/[key]`, `/bunpou/compare/[key]`, SEO, dan flag.
 - [x] `npx prisma migrate deploy` untuk `20261001200000_bunpou_catalog` (2 Oktober 2026).
 - [x] `npm run seed:bunpou`: 227 point terbit (N5 90, N4 137); 2 point N4 masih pending
   (`nakereba-naranai`, `mitai`).
 - [ ] Uji manual `/bunpou` lalu nyalakan flag di Vercel.
+- [ ] Isi `comparisons.json` setelah katalog N5-N1 lengkap (ditunda 2 Oktober 2026). Calon kelompok
+  dari N5/N4: alasan (`kara-karena`, `node`, `de-alasan`); pengandaian (`tara`, `nara`,
+  `to-kondisi`); に vs で tempat (`ni-tempat`, `de-tempat`); topik vs subjek (`wa-topik`,
+  `ga-kata-tanya`); kesan (`sou-kelihatannya`, `mitai`); そう kesan vs kabar
+  (`sou-kelihatannya`, `sou-katanya`); pertentangan (`noni-padahal`, `kedo-ga`); keinginan
+  (`tai`, `ga-hoshii`).
 - [ ] Fase B: `gen:bunpou-links`, tabel `QuestionBunpouLink`, tampilan di halaman pola dan review.
+  Ditunda sampai katalog N5-N1 lengkap. Keputusan yang diusulkan: mulai dari paket yang levelnya
+  punya katalog; `distractors` hanya bila maknanya jelas dan tidak ditampilkan ke user; hanya
+  tautan `confidence: high` yang tampil; tautan tidak terkirim di mode ujian.
 - [ ] Fase C: SRS bunpou.
 
 ## Fase 9 — Verifikasi & Polish

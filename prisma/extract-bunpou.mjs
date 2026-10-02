@@ -7,6 +7,7 @@ import { z } from "zod";
 import {
   LEVELS,
   bunpouPointSchema,
+  contextSlidesBeforeBatch,
   discoverRawDecks,
   fileToDataUrl,
   loadTaxonomy,
@@ -31,6 +32,7 @@ const REQUEST_TIMEOUT_MS = 300_000;
 const SDK_MAX_RETRIES = 4;
 const MAX_ATTEMPTS = 3;
 const MAX_BATCH_SIZE = 10;
+const MAX_CONTEXT_SIZE = 10;
 const MAX_CONCURRENCY = 8;
 const USER_AGENT = "nihongofy/1.0";
 
@@ -56,6 +58,7 @@ function parseArguments(argv) {
     deck: null,
     limit: Infinity,
     batchSize: 6,
+    contextSize: 0,
     concurrency: 4,
     dryRun: false,
     reasoningEffort: "high",
@@ -89,6 +92,13 @@ function parseArguments(argv) {
         throw new Error(`--batch-size harus bilangan bulat 1-${MAX_BATCH_SIZE}`);
       }
       options.batchSize = value;
+      if (consumesNext) index += 1;
+    } else if (argument.startsWith("--context-size")) {
+      const value = Number(readValue(argument, "--context-size", index));
+      if (!Number.isInteger(value) || value < 0 || value > MAX_CONTEXT_SIZE) {
+        throw new Error(`--context-size harus bilangan bulat 0-${MAX_CONTEXT_SIZE}`);
+      }
+      options.contextSize = value;
       if (consumesNext) index += 1;
     } else if (argument.startsWith("--concurrency")) {
       const value = Number(readValue(argument, "--concurrency", index));
@@ -199,12 +209,18 @@ function extractionProblems(value, batch, taxonomy, pointsByKey, level) {
   return problems;
 }
 
-async function extractBatch({ client, model, reasoningEffort, systemPrompt, taxonomy, level, deck, batch, existing, pointsByKey }) {
-  const userPrompt = buildUserPrompt({ level, deck, slides: batch, existingPoints: existing });
+async function extractBatch({ client, model, reasoningEffort, systemPrompt, taxonomy, level, deck, contextSlides, batch, existing, pointsByKey }) {
+  const userPrompt = buildUserPrompt({
+    level,
+    deck,
+    contextSlides,
+    slides: batch,
+    existingPoints: existing,
+  });
   const userContent = [
     { type: "text", text: userPrompt },
     ...(await Promise.all(
-      batch.map(async (slide) => ({
+      [...contextSlides, ...batch].map(async (slide) => ({
         type: "image_url",
         image_url: { url: await fileToDataUrl(slide.absolutePath, slide.extension) },
       })),
@@ -388,15 +404,22 @@ async function main() {
 
   if (options.dryRun) {
     log(`${jobs.reduce((sum, job) => sum + job.batches.flat().length, 0)} slide belum diekstraksi`);
-    const first = jobs[0]?.batches[0];
-    if (first) {
+    const exampleJob = jobs[0];
+    const exampleBatchIndex = options.contextSize > 0 && exampleJob?.batches.length > 1 ? 1 : 0;
+    const exampleBatch = exampleJob?.batches[exampleBatchIndex];
+    if (exampleBatch) {
       log(`DRY-RUN system prompt (${PROMPT_VERSION}):\n${systemPrompt}\n---`);
       log(
-        `DRY-RUN prompt batch pertama:\n${buildUserPrompt({
-          level: jobs[0].deck.level,
-          deck: jobs[0].deck.key,
-          slides: first,
-          existingPoints: existingDeckPoints(jobs[0].deck.key, manifest, pointsByKey),
+        `DRY-RUN prompt contoh batch:\n${buildUserPrompt({
+          level: exampleJob.deck.level,
+          deck: exampleJob.deck.key,
+          contextSlides: contextSlidesBeforeBatch(
+            exampleJob.deck.files,
+            exampleBatch,
+            options.contextSize,
+          ),
+          slides: exampleBatch,
+          existingPoints: existingDeckPoints(exampleJob.deck.key, manifest, pointsByKey),
         })}\n---`,
       );
     }
@@ -434,6 +457,7 @@ async function main() {
   await runPool(jobs, options.concurrency, async ({ deck, batches }) => {
     for (const batch of batches) {
       const existing = existingDeckPoints(deck.key, manifest, pointsByKey);
+      const contextSlides = contextSlidesBeforeBatch(deck.files, batch, options.contextSize);
       try {
         const result = await extractBatch({
           client,
@@ -443,6 +467,7 @@ async function main() {
           taxonomy,
           level: deck.level,
           deck: deck.key,
+          contextSlides,
           batch,
           existing,
           pointsByKey,

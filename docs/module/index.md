@@ -41,6 +41,7 @@ di-prerender saat build, jadi keduanya baru berubah setelah redeploy.
 | `FEATURES_KANA` | [Kana](kana.md#feature-flag) | `/kana/*` |
 | `FEATURES_FLASHCARD` | [Flashcard](flashcard.md#feature-flag) | `/flashcard/*`; laporan kartu baru ditolak, laporan lama tetap di `/admin/report` |
 | `FEATURES_BUNPOU` | [Bunpou](bunpou.md#feature-flag) | `/bunpou/*` |
+| `FEATURES_BUNPOU_DISCUSSION` | [Question comments](question-comment.md#feature-flag) | `/bunpou/discussion/*`; Catatanku dan Diskusi di halaman pola tidak dirender. Ikut mati bila `FEATURES_BUNPOU` mati |
 | `FEATURES_PRACTICE` | [Latihan cepat](practice.md#feature-flag) | `/exercises/*` |
 | `FEATURES_TEST_PACKAGE` | [Paket tes](test-package.md#feature-flag), [Exam](exam.md#feature-flag), [Result](result.md#feature-flag) | `/test-package/*`, `/exam/*`, `/result/*` |
 | `FEATURES_HISTORY` | [History](history.md#feature-flag) | `/history` |

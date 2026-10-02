@@ -33,6 +33,26 @@ contract wajib memiliki migration dan catatan ringkas di dokumen/PR perubahan. J
 
 ## Ledger
 
+### 2 Oktober 2026 - Pola bunpou sebagai target catatan dan diskusi
+
+- Status: required (belum di-deploy)
+- Migration: `prisma/migrations/20261002130000_comment_bunpou_point_target/migration.sql`.
+- Alasan: catatan pribadi dan diskusi publik per pola bunpou memakai tabel `QuestionComment` yang
+  sama dengan soal dan kata flashcard.
+- Object terdampak: kolom `QuestionComment.bunpouPointId` dengan FK `ON DELETE RESTRICT`, tiga index,
+  dan CHECK `QuestionComment_target_check` yang didefinisikan ulang menjadi
+  `num_nonnulls("questionId", "vocabId", "bunpouPointId") = 1`.
+- Data existing: tidak ada backfill; seluruh baris lama punya kolom baru NULL dan tepat satu target
+  lama, jadi CHECK baru langsung terpenuhi.
+- Risiko operasi: `DROP`/`ADD CONSTRAINT` memindai `QuestionComment`. **Wajib diterapkan sebelum
+  deploy kode**: seluruh query diskusi dan catatan (soal dan kata juga) kini memilih kolom
+  `bunpouPointId`, jadi kode baru tanpa migration ini membuat halaman diskusi error.
+- Validasi: `npx prisma validate`, `src/features/question-comment/target.test.ts`, typecheck, lint,
+  test, build.
+- Refresh setelah deploy: `npx prisma generate` lalu redeploy (juga memperbarui `robots.txt` dan
+  sitemap untuk diskusi yang kini diindeks).
+- Owner: Engineering Owner.
+
 ### 2 Oktober 2026 - Pola dan perbandingan bunpou sebagai target laporan
 
 - Status: required (belum di-deploy)

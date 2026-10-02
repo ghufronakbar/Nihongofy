@@ -168,12 +168,14 @@ export async function GET() {
           id: true,
           questionId: true,
           vocabId: true,
+          bunpouPointId: true,
           commentText: true,
           commentImages: true,
           createdAt: true,
           updatedAt: true,
-          // Catatan kata flashcard; tepat satu dari `question`/`vocab` terisi.
+          // Tepat satu dari `question`/`vocab`/`bunpouPoint` terisi.
           vocab: { select: { key: true, wordPlain: true, reading: true } },
+          bunpouPoint: { select: { key: true, level: true, titlePlain: true } },
           question: {
             select: {
               order: true,
@@ -216,6 +218,8 @@ export async function GET() {
           articleId: true,
           commentId: true,
           vocabId: true,
+          bunpouPointId: true,
+          bunpouComparisonId: true,
           message: true,
           pagePath: true,
           userAgent: true,

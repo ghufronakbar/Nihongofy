@@ -3,57 +3,52 @@ import type { Metadata } from "next";
 import { ArrowLeft, ArrowRight, MessagesSquare } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { id as idLocale } from "date-fns/locale";
+import { JapaneseText } from "@/components/japanese-text";
 import { FEATURES } from "@/constants";
-import { getVocabDiscussionIndex } from "@/features/question-comment/queries";
+import { getBunpouDiscussionIndex } from "@/features/question-comment/queries";
 import { DiscussionTabs } from "@/features/question-comment/components/discussion-tabs";
 import { discussionIndexMetadata } from "@/features/question-comment/seo";
 
-export async function generateMetadata({
-  searchParams,
-}: {
-  searchParams: Promise<{ page?: string }>;
-}): Promise<Metadata> {
+type Props = { searchParams: Promise<{ page?: string }> };
+
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const { page } = await searchParams;
   return discussionIndexMetadata(
     {
-      title: "Diskusi Kosakata JLPT",
+      title: "Diskusi Bunpou",
       description:
-        "Jembatan keledai, nuansa, dan pertanyaan pengguna seputar kosakata JLPT N5 sampai N1.",
-      path: "/flashcard/discussion",
+        "Catatan, contoh kalimat, dan pertanyaan pengguna seputar pola kalimat (文法) JLPT N5 sampai N1.",
+      path: "/bunpou/discussion",
     },
     page,
   );
 }
 
-export default async function FlashcardDiscussionIndexPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ page?: string }>;
-}) {
+export default async function BunpouDiscussionIndexPage({ searchParams }: Props) {
   const { page } = await searchParams;
   const parsedPage = Number(page);
   const currentPage = Number.isInteger(parsedPage) && parsedPage > 0 ? parsedPage : 1;
 
-  const { entries, hasMore } = await getVocabDiscussionIndex(currentPage);
-  const pageHref = (target: number) => `/flashcard/discussion?page=${target}`;
+  const { entries, hasMore } = await getBunpouDiscussionIndex(currentPage);
+  const pageHref = (target: number) => `/bunpou/discussion?page=${target}`;
 
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-10">
-      <Link href="/flashcard" className="text-sm font-black underline">
-        ← Deck saya
+      <Link href="/bunpou" className="text-sm font-black underline">
+        ← Katalog bunpou
       </Link>
 
       <div className="neo-surface flex flex-col gap-2 p-6">
         <span className="neo-kicker self-start bg-white">DISKUSI</span>
-        <h1 className="text-2xl font-black sm:text-3xl">Diskusi Kosakata</h1>
+        <h1 className="text-2xl font-black sm:text-3xl">Diskusi Bunpou</h1>
         <p className="text-sm font-semibold text-muted-foreground">
-          Catatan yang dibagikan pengguna untuk kata flashcard, diurutkan dari aktivitas terbaru.
-          Buka jawaban sebuah kartu saat belajar lalu tekan Diskusi untuk ikut menulis.
+          Catatan yang dibagikan pengguna untuk pola kalimat, diurutkan dari aktivitas terbaru. Buka
+          halaman sebuah pola untuk ikut menulis.
         </p>
       </div>
 
       <DiscussionTabs
-        active="vocab"
+        active="bunpou"
         enabled={{
           question: FEATURES.questionDiscussion,
           vocab: FEATURES.flashcardDiscussion,
@@ -67,31 +62,28 @@ export default async function FlashcardDiscussionIndexPage({
           <p className="mt-3 text-sm font-bold text-muted-foreground">
             {currentPage > 1
               ? "Tidak ada diskusi lagi di halaman ini."
-              : "Belum ada catatan kata yang dibagikan ke diskusi."}
+              : "Belum ada catatan pola yang dibagikan ke diskusi."}
           </p>
         </div>
       ) : (
         <ul className="flex flex-col gap-3">
           {entries.map((entry) => (
-            <li key={entry.vocabId}>
-              <Link
-                href={`/flashcard/discussion/${entry.vocabId}`}
-                className="neo-surface neo-interactive block p-4"
-              >
+            <li key={entry.key}>
+              <Link href={`/bunpou/${entry.key}#diskusi`} className="neo-surface neo-interactive block p-4">
                 <div className="flex flex-wrap items-baseline gap-x-2">
                   <span className="rounded border-2 border-neo-ink bg-neo-yellow px-1.5 font-mono text-[10px] font-black text-black uppercase">
                     {entry.level}
                   </span>
                   <span lang="ja" className="font-japanese text-xl font-black">
-                    {entry.wordPlain}
+                    <JapaneseText text={entry.title} />
                   </span>
-                  {entry.reading !== entry.wordPlain ? (
-                    <span lang="ja" className="font-japanese text-sm font-bold text-muted-foreground">
-                      {entry.reading}
+                  {entry.senseLabel ? (
+                    <span className="text-xs font-black tracking-wide text-neo-blue uppercase">
+                      {entry.senseLabel}
                     </span>
                   ) : null}
                 </div>
-                <p className="mt-1 truncate text-sm font-semibold">{entry.meaningsId.join("; ")}</p>
+                <p className="mt-1 truncate text-sm font-semibold">{entry.meaningId}</p>
                 <div className="mt-2 flex flex-wrap items-center gap-2 text-xs font-bold text-muted-foreground">
                   <span className="inline-flex items-center gap-1.5 text-foreground">
                     <MessagesSquare className="size-3.5" aria-hidden />

@@ -2,7 +2,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { getSession } from "@/lib/auth";
-import { getQuestionDiscussionPage } from "@/features/question-comment/queries";
+import { cache } from "react";
+import {
+  countDiscussionEntries,
+  getQuestionDiscussionPage,
+} from "@/features/question-comment/queries";
+import { questionDiscussionMetadata } from "@/features/question-comment/seo";
 import { DiscussionPageThreads } from "@/features/question-comment/components/discussion-permalink-thread";
 import { DiscussionQuestionCard } from "@/features/question-comment/components/discussion-question-card";
 import { FEATURES } from "@/constants";
@@ -10,37 +15,34 @@ import { mondaiTypeFullLabel } from "@/constants/jlpt";
 import type { Metadata } from "next";
 import { privateMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = privateMetadata(
-  "Diskusi soal",
-  "Seluruh utas diskusi pada satu soal JLPT.",
-);
+type Props = { params: Promise<{ questionId: string }> };
 
-export default async function QuestionDiscussionPage({
-  params,
-}: {
-  params: Promise<{ questionId: string }>;
-}) {
-  const { questionId } = await params;
-  const questionIdNum = Number(questionId);
+// Dipakai metadata dan halaman dalam satu request; `cache` mencegah query ganda.
+const loadDiscussion = cache(async (rawQuestionId: string) => {
+  const questionId = Number(rawQuestionId);
+  if (!Number.isInteger(questionId) || questionId <= 0) return null;
+  return getQuestionDiscussionPage(questionId);
+});
 
-  if (!Number.isInteger(questionIdNum) || questionIdNum <= 0) {
-    notFound();
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const discussion = await loadDiscussion((await params).questionId);
+  if (!discussion) {
+    return privateMetadata("Diskusi soal", "Soal yang dicari tidak ditemukan.");
   }
+  return questionDiscussionMetadata(discussion.question, countDiscussionEntries(discussion.roots));
+}
 
-  const [discussion, authSession] = await Promise.all([
-    getQuestionDiscussionPage(questionIdNum),
-    getSession(),
-  ]);
+export default async function QuestionDiscussionPage({ params }: Props) {
+  const { questionId } = await params;
+
+  const [discussion, authSession] = await Promise.all([loadDiscussion(questionId), getSession()]);
   if (!discussion) notFound();
 
   const { question, roots } = discussion;
   const { testPackageItem } = question;
   const { testPackage } = testPackageItem;
 
-  const entryCount = roots.reduce(
-    (total, root) => total + root.replies.length + (root.state === "VISIBLE" ? 1 : 0),
-    0,
-  );
+  const entryCount = countDiscussionEntries(roots);
 
   return (
     <div className="mx-auto w-full max-w-3xl px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-6">

@@ -282,3 +282,15 @@ export async function getBunpouSitemapEntries() {
     })),
   };
 }
+
+/**
+ * Key pola terbit dari id-nya, untuk tautan diskusi yang hanya membawa
+ * `bunpouPointId`. Tidak di-cache: dipakai pengalih yang jarang dibuka.
+ */
+export async function getPublishedBunpouKey(pointId: number): Promise<string | null> {
+  const point = await prisma.bunpouPoint.findFirst({
+    where: { id: pointId, retiredAt: null },
+    select: { key: true },
+  });
+  return point?.key ?? null;
+}

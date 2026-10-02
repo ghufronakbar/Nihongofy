@@ -217,6 +217,14 @@ export default async function AdminModerationPage({
                             : ""}
                         </span>
                       </>
+                    ) : entry.bunpouPoint ? (
+                      <>
+                        Bunpou · {entry.bunpouPoint.level} ·{" "}
+                        <span lang="ja" className="font-japanese">
+                          {entry.bunpouPoint.titlePlain}
+                        </span>{" "}
+                        · {entry.bunpouPoint.key}
+                      </>
                     ) : null}
                   </span>
                   <Link
@@ -225,6 +233,7 @@ export default async function AdminModerationPage({
                         id: entry.parentId ?? entry.id,
                         questionId: entry.questionId,
                         vocabId: entry.vocabId,
+                        bunpouPointId: entry.bunpouPointId,
                       },
                       entry.id,
                     )}

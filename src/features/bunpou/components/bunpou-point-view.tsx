@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, ChevronRight, Scale } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronRight, MessagesSquare, Scale } from "lucide-react";
 import { FuriganaScope } from "@/components/furigana-scope";
 import { JapaneseText } from "@/components/japanese-text";
 import { ReportButton } from "@/features/report/components/report-button";
@@ -12,6 +12,7 @@ import {
   sectionLabel,
 } from "../taxonomy";
 import type { BunpouConnection, BunpouPointDetail, BunpouPointSummary } from "../types";
+import { BunpouDiscussion, BunpouOwnNotes, type BunpouCommunity } from "./bunpou-point-community";
 import { ExampleList } from "./example-list";
 import { PointLinkList } from "./point-link-list";
 
@@ -78,9 +79,12 @@ function FamilyTabs({ family, current }: { family: BunpouPointSummary[]; current
 export function BunpouPointView({
   detail,
   reportEnabled,
+  community,
 }: {
   detail: BunpouPointDetail;
   reportEnabled: boolean;
+  /** Null saat `FEATURES_BUNPOU_DISCUSSION` mati. */
+  community: BunpouCommunity | null;
 }) {
   const { point, content } = detail;
   const kindLabel = BUNPOU_KIND_LABEL[point.kind];
@@ -140,6 +144,25 @@ export function BunpouPointView({
             <FamilyTabs family={detail.family} current={point.key} />
           ) : null}
         </header>
+
+        {community || reportEnabled ? (
+          <div className="mt-5 flex flex-wrap items-center gap-2">
+            {community ? (
+              <a href="#diskusi" className="neo-button bg-white px-3 py-2 text-xs text-black">
+                <MessagesSquare className="size-4" aria-hidden /> Diskusi ({community.entryCount})
+              </a>
+            ) : null}
+            {reportEnabled ? (
+              <ReportButton
+                target={{ targetType: "BUNPOU_POINT", bunpouPointId: detail.id }}
+                variant="neo"
+                label="Laporkan pola ini"
+                subject={<span lang="ja">{point.titlePlain}</span>}
+                className="px-3 py-2 text-xs"
+              />
+            ) : null}
+          </div>
+        ) : null}
 
         <div className="mt-8 space-y-8">
           {content.connections.length > 0 ? (
@@ -242,6 +265,12 @@ export function BunpouPointView({
         </div>
       </FuriganaScope>
 
+      {community ? (
+        <div className="mt-8">
+          <BunpouOwnNotes community={community} />
+        </div>
+      ) : null}
+
       {detail.comparisons.length > 0 ? (
         <section className="mt-10">
           <SectionHeading>Dibandingkan dengan pola mirip</SectionHeading>
@@ -278,6 +307,12 @@ export function BunpouPointView({
         </section>
       ) : null}
 
+      {community ? (
+        <div className="mt-10">
+          <BunpouDiscussion community={community} />
+        </div>
+      ) : null}
+
       <nav aria-label={`Pola ${point.level} sebelum dan sesudahnya`} className="mt-10 grid gap-3 sm:grid-cols-2">
         {detail.previous ? (
           <Link
@@ -311,17 +346,7 @@ export function BunpouPointView({
         ) : null}
       </nav>
 
-      <footer className="mt-8 flex flex-wrap items-center justify-between gap-3">
-        <p className="text-xs font-semibold text-muted-foreground">Konten: {BUNPOU_LICENSE}</p>
-        {reportEnabled ? (
-          <ReportButton
-            target={{ targetType: "BUNPOU_POINT", bunpouPointId: detail.id }}
-            variant="outline"
-            label="Laporkan pola ini"
-            subject={<span lang="ja">{point.titlePlain}</span>}
-          />
-        ) : null}
-      </footer>
+      <p className="mt-8 text-xs font-semibold text-muted-foreground">Konten: {BUNPOU_LICENSE}</p>
     </article>
   );
 }

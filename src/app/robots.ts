@@ -13,6 +13,11 @@ export default function robots(): MetadataRoute.Robots {
         ...(FEATURES.kana ? ["/kana", "/kana/"] : []),
         ...(FEATURES.flashcard ? ["/flashcard", "/flashcard/try/"] : []),
         ...(FEATURES.bunpou ? ["/bunpou", "/bunpou/"] : []),
+        // Diskusi pengguna diindeks sejak 2 Oktober 2026 supaya ikut membantu
+        // orang yang mencari soal, kata, atau pola tertentu. `allow` yang lebih
+        // spesifik mengalahkan `disallow: /flashcard/...` di bawah.
+        ...(FEATURES.questionDiscussion ? ["/discussion"] : []),
+        ...(FEATURES.flashcardDiscussion ? ["/flashcard/discussion"] : []),
       ],
       disallow: [
         "/api/",
@@ -24,11 +29,6 @@ export default function robots(): MetadataRoute.Robots {
         "/flashcard/settings",
         "/flashcard/stats",
         "/flashcard/deck/",
-        // Catatan dan diskusi kata flashcard, sama seperti /discussion.
-        "/flashcard/discussion",
-        // Catatan buatan pengguna, belum ada moderasi. Dibuka untuk diindeks
-        // nanti bersamaan dengan dashboard admin.
-        "/discussion",
         "/conversation",
         "/speaking",
         // Form laporan publik. `noindex` di halamannya yang menjadi penjaga utama;

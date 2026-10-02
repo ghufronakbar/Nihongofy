@@ -444,6 +444,7 @@ model BunpouPoint {
 
   comparisons BunpouComparisonPoint[]
   reports     Report[]
+  comments    QuestionComment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -880,10 +881,10 @@ model QuestionExplanationChoice {
 // Tidak pernah hard delete: `deletedAt` membuat root tampil sebagai tombstone
 // supaya balasan orang lain tidak ikut hilang. Isi teks/gambar comment yang
 // deletedAt-nya terisi tidak boleh ikut dikirim ke client.
-// Catatan belajar dan diskusi publik. Satu tabel melayani dua target — soal
-// (`questionId`) dan kata flashcard (`vocabId`) — supaya aturan tombstone,
-// balasan, mention, moderasi, laporan, dan anonimisasi akun berlaku sama untuk
-// keduanya. Tepat satu target terisi; CHECK-nya hanya ada di SQL migration
+// Catatan belajar dan diskusi publik. Satu tabel melayani tiga target — soal
+// (`questionId`), kata flashcard (`vocabId`), dan pola bunpou (`bunpouPointId`) —
+// supaya aturan tombstone, balasan, mention, moderasi, laporan, dan anonimisasi
+// akun berlaku sama untuk ketiganya. Tepat satu target terisi; CHECK-nya hanya ada di SQL migration
 // (`QuestionComment_target_check`) karena Prisma tidak dapat mengekspresikannya.
 model QuestionComment {
   id Int @id @default(autoincrement())
@@ -897,6 +898,11 @@ model QuestionComment {
   // disengaja tidak boleh ikut memusnahkan percakapan.
   vocab   FlashcardVocab? @relation(fields: [vocabId], references: [id], onDelete: Restrict)
   vocabId Int?
+
+  // Pola bunpou, per entri katalog (satu makna di satu level). Restrict dengan
+  // alasan yang sama seperti `vocab`: katalog tidak pernah menghapus pola.
+  bunpouPoint   BunpouPoint? @relation(fields: [bunpouPointId], references: [id], onDelete: Restrict)
+  bunpouPointId Int?
 
   // Restrict, bukan Cascade: menghapus baris user akan ikut menghancurkan
   // balasan orang lain pada thread miliknya. Penghapusan akun menganonimkan
@@ -958,6 +964,10 @@ model QuestionComment {
   @@index([vocabId])
   @@index([vocabId, userId, deletedAt])
   @@index([vocabId, parentId, sharedAt])
+  // Padanan untuk catatan dan diskusi pola bunpou.
+  @@index([bunpouPointId])
+  @@index([bunpouPointId, userId, deletedAt])
+  @@index([bunpouPointId, parentId, sharedAt])
   @@index([deletedById])
   @@index([repliedToId])
 }

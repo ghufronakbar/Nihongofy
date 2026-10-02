@@ -9,12 +9,24 @@ import { JapaneseText } from "@/components/japanese-text";
 import { FuriganaScope } from "@/components/furigana-scope";
 import { mondaiTypeFullLabel } from "@/constants/jlpt";
 import type { Metadata } from "next";
-import { privateMetadata } from "@/lib/seo";
+import { discussionIndexMetadata } from "@/features/question-comment/seo";
 
-export const metadata: Metadata = privateMetadata(
-  "Diskusi Soal",
-  "Diskusi publik seputar soal-soal JLPT.",
-);
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}): Promise<Metadata> {
+  const { page } = await searchParams;
+  return discussionIndexMetadata(
+    {
+      title: "Diskusi Soal JLPT",
+      description:
+        "Catatan, pembahasan alternatif, dan pertanyaan pengguna seputar soal-soal JLPT N5 sampai N1.",
+      path: "/discussion",
+    },
+    page,
+  );
+}
 
 export default async function DiscussionIndexPage({
   searchParams,
@@ -42,8 +54,11 @@ export default async function DiscussionIndexPage({
 
       <DiscussionTabs
         active="question"
-        questionEnabled={FEATURES.questionDiscussion}
-        vocabEnabled={FEATURES.flashcardDiscussion}
+        enabled={{
+          question: FEATURES.questionDiscussion,
+          vocab: FEATURES.flashcardDiscussion,
+          bunpou: FEATURES.bunpouDiscussion,
+        }}
       />
 
       {entries.length === 0 ? (

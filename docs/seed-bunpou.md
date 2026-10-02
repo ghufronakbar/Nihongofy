@@ -77,8 +77,8 @@ src/bunpou-data/
   Lebar minimal ±1280 px supaya furigana kecil tetap terbaca.
 - Slide sampul, daftar isi, latihan soal, atau kuis boleh ikut. Ekstraksi melewatinya dan
   mencatat alasannya di `slides.json`.
-- Pola yang sama di dua deck atau dua level tidak masalah; ekstraksi menandainya sebagai calon
-  duplikat untuk ditinjau.
+- Pola yang sama di dua deck atau dua level tidak masalah. Duplikasi dalam level yang sama diaudit,
+  sedangkan kemunculan lintas level boleh tetap menjadi entri terpisah.
 - Folder `data/bunpou/raw_images/` tidak di-commit. Path yang disimpan di fixture selalu relatif
   dari root tersebut, mis. `n5-bunpou/n5-bunpou-7.png`.
 
@@ -86,10 +86,11 @@ src/bunpou-data/
 
 Model vision menyalin isi slide **apa adanya** ke `source`, lalu memecahnya menjadi entri pola.
 
-- Satu request berisi beberapa slide berurutan dari satu deck (bawaan 6). Deck diproses paralel,
-  sedangkan slide di dalam satu deck berurutan, dan model menerima daftar pola yang sudah
-  diekstraksi dari deck itu. Dengan begitu pola yang berlanjut ke slide berikutnya digabung ke
-  entri yang sama alih-alih menjadi entri baru.
+- Satu request berisi beberapa slide target berurutan dari satu deck (bawaan 6). Deck diproses
+  paralel, sedangkan slide di dalam satu deck berurutan, dan model menerima daftar pola yang sudah
+  diekstraksi dari deck itu. Opsi `--context-size` turut mengirim beberapa slide tepat sebelum
+  batch sebagai referensi visual tanpa mengekstraknya ulang. Dengan begitu pola yang melintasi
+  batas batch tetap dapat memakai key dan entri yang sama.
 - Satu slide boleh menghasilkan beberapa entri (mis. ながら "sambil" dan "meskipun" dalam satu
   slide), dan satu entri boleh berasal dari beberapa slide.
 - Slide yang hanya berupa daftar kosakata tidak dipaksakan menjadi pola. Slide sistem dasar
@@ -121,6 +122,7 @@ Model vision menyalin isi slide **apa adanya** ke `source`, lalu memecahnya menj
 | `--deck n5-bunpou` | Satu deck saja |
 | `--limit 3` | Maksimal jumlah slide baru; berguna untuk uji gateway awal |
 | `--batch-size 6` | Slide per request (1-10) |
+| `--context-size 0` | Slide sebelumnya sebagai konteks visual (0-10); tidak diekstrak ulang |
 | `--concurrency 4` | Deck yang diproses paralel |
 | `--dry-run` | Cetak prompt dan daftar slide tanpa memanggil model |
 | `--reasoning-effort high` | Diteruskan ke model |

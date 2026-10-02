@@ -52,6 +52,7 @@ const envSchema = z
     FEATURES_FLASHCARD: featureFlag,
     FEATURES_FLASHCARD_DISCUSSION: featureFlag,
     FEATURES_BUNPOU: featureFlag,
+    FEATURES_BUNPOU_DISCUSSION: featureFlag,
     FEATURES_PRACTICE: featureFlag,
     FEATURES_TEST_PACKAGE: featureFlag,
     FEATURES_HISTORY: featureFlag,
@@ -180,6 +181,8 @@ export const FEATURES = {
   // menyentuh modul soal, dan ikut mati bila modul flashcard mati.
   flashcardDiscussion: env.FEATURES_FLASHCARD_DISCUSSION && env.FEATURES_FLASHCARD,
   bunpou: env.FEATURES_BUNPOU,
+  // Catatan dan diskusi pola bunpou; ikut mati bersama modul bunpou.
+  bunpouDiscussion: env.FEATURES_BUNPOU_DISCUSSION && env.FEATURES_BUNPOU,
   practice: env.FEATURES_PRACTICE,
   testPackage: env.FEATURES_TEST_PACKAGE,
   history: env.FEATURES_HISTORY,

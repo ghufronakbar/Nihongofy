@@ -6,6 +6,7 @@ import {
   LEVELS,
   bunpouContentProblems,
   comparisonProblems,
+  contextSlidesBeforeBatch,
   discoverRawDecks,
   loadTaxonomy,
   normalizeBunpouContent,
@@ -14,6 +15,7 @@ import {
   toRomaji,
   validateCatalog,
 } from "../../prisma/bunpou-data.mjs";
+import { buildUserPrompt as buildExtractionUserPrompt } from "../../prisma/bunpou-extract-prompt.mjs";
 
 const temporaryDirectories: string[] = [];
 
@@ -89,6 +91,28 @@ describe("penemuan source Bunpou", () => {
 
     const [found] = await discoverRawDecks(root);
     expect(found.files.map((file: { sequence: number }) => file.sequence)).toEqual([1, 2, 10]);
+  });
+
+  it("mengambil slide konteks tepat sebelum batch target", () => {
+    const slides = Array.from({ length: 8 }, (_, index) => ({ path: `n3-bunpou/n3-bunpou-${index + 1}.png` }));
+    expect(contextSlidesBeforeBatch(slides, slides.slice(6, 8), 5).map((slide) => slide.path)).toEqual(
+      slides.slice(1, 6).map((slide) => slide.path),
+    );
+    expect(contextSlidesBeforeBatch(slides, slides.slice(0, 2), 5)).toEqual([]);
+  });
+
+  it("membedakan gambar konteks dan target dalam prompt ekstraksi", () => {
+    const prompt = buildExtractionUserPrompt({
+      level: "N3",
+      deck: "n3-bunpou",
+      contextSlides: [{ path: "n3-bunpou/n3-bunpou-2.png" }],
+      slides: [{ path: "n3-bunpou/n3-bunpou-3.png" }],
+      existingPoints: [],
+    });
+    expect(prompt).toContain("1. n3-bunpou/n3-bunpou-2.png");
+    expect(prompt).toContain("2. n3-bunpou/n3-bunpou-3.png");
+    expect(prompt).toContain("jangan keluarkan path ini");
+    expect(prompt).toContain("wajib diekstrak");
   });
 });
 

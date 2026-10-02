@@ -26,7 +26,7 @@ import {
   type GetOwnVocabNotesInput,
   type CreateCommentImageUploadInput,
 } from "./schemas";
-import { targetOf, type CommentTarget } from "./target";
+import { targetColumns, targetOf, type CommentTarget } from "./target";
 
 /**
  * Hasil aksi tulis. Penolakan yang perlu dibaca user (rate limit) dikembalikan
@@ -39,14 +39,29 @@ export type CommentActionResult = { ok: true } | { ok: false; message: string };
 // FLAG PER TARGET
 // ============================================================
 
-// Catatan dan diskusi soal punya dua flag; untuk kata flashcard keduanya
-// menumpang satu flag (`FEATURES_FLASHCARD_DISCUSSION`).
+// Catatan dan diskusi soal punya dua flag; untuk kata flashcard dan pola
+// bunpou keduanya menumpang satu flag per modul (`FEATURES_FLASHCARD_DISCUSSION`,
+// `FEATURES_BUNPOU_DISCUSSION`).
 function notesEnabled(target: CommentTarget) {
-  return target.type === "question" ? FEATURES.questionComment : FEATURES.flashcardDiscussion;
+  switch (target.type) {
+    case "question":
+      return FEATURES.questionComment;
+    case "vocab":
+      return FEATURES.flashcardDiscussion;
+    case "bunpou":
+      return FEATURES.bunpouDiscussion;
+  }
 }
 
 function discussionEnabled(target: CommentTarget) {
-  return target.type === "question" ? FEATURES.questionDiscussion : FEATURES.flashcardDiscussion;
+  switch (target.type) {
+    case "question":
+      return FEATURES.questionDiscussion;
+    case "vocab":
+      return FEATURES.flashcardDiscussion;
+    case "bunpou":
+      return FEATURES.bunpouDiscussion;
+  }
 }
 
 // ============================================================
@@ -62,26 +77,38 @@ function requireOwnedCommentImages(commentImages: string[], userId: number) {
   }
 }
 
-// Kata yang sudah pensiun dari katalog tetap menyimpan catatan lamanya, tetapi
-// tidak menerima catatan baru.
+// Kata dan pola yang sudah pensiun dari katalog tetap menyimpan catatan lamanya,
+// tetapi tidak menerima catatan baru.
 async function ensureTargetExists(target: CommentTarget) {
-  if (target.type === "question") {
-    const question = await prisma.question.findUnique({
-      where: { id: target.questionId },
-      select: { id: true },
-    });
-    if (!question) notFound();
-    return;
+  switch (target.type) {
+    case "question": {
+      const question = await prisma.question.findUnique({
+        where: { id: target.questionId },
+        select: { id: true },
+      });
+      if (!question) notFound();
+      return;
+    }
+    case "vocab": {
+      const vocab = await prisma.flashcardVocab.findUnique({
+        where: { id: target.vocabId },
+        select: { retiredAt: true },
+      });
+      if (!vocab || vocab.retiredAt) notFound();
+      return;
+    }
+    case "bunpou": {
+      const point = await prisma.bunpouPoint.findUnique({
+        where: { id: target.bunpouPointId },
+        select: { retiredAt: true },
+      });
+      if (!point || point.retiredAt) notFound();
+      return;
+    }
   }
-
-  const vocab = await prisma.flashcardVocab.findUnique({
-    where: { id: target.vocabId },
-    select: { retiredAt: true },
-  });
-  if (!vocab || vocab.retiredAt) notFound();
 }
 
-const commentTargetSelect = { questionId: true, vocabId: true } as const;
+const commentTargetSelect = { questionId: true, vocabId: true, bunpouPointId: true } as const;
 
 // Comment yang sudah di-soft delete diperlakukan seperti tidak ada: hanya
 // tombstone-nya yang dirender, dan tidak boleh diedit, dibagikan, atau dibalas.
@@ -142,8 +169,7 @@ export async function addQuestionCommentAction(
 
   await prisma.questionComment.create({
     data: {
-      questionId: target.type === "question" ? target.questionId : null,
-      vocabId: target.type === "vocab" ? target.vocabId : null,
+      ...targetColumns(target),
       userId: authSession.userId,
       commentText,
       commentImages,
@@ -330,6 +356,7 @@ export async function replyToQuestionCommentAction(
       // Balasan mewarisi target root, sehingga thread tidak pernah bercampur.
       questionId: root.questionId,
       vocabId: root.vocabId,
+      bunpouPointId: root.bunpouPointId,
       userId: authSession.userId,
       parentId: root.id,
       repliedToId: mentionId,

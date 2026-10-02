@@ -9,7 +9,13 @@ import { getFlashcardSettings } from "@/features/flashcard/lib/collection";
 import { FLASHCARD_DEFAULT_DISPLAY } from "@/features/flashcard/schemas";
 import { VocabCardView } from "@/features/flashcard/components/vocab-card-view";
 import { VocabDiscussionComposer } from "@/features/flashcard/components/vocab-discussion-composer";
-import { getDiscussion, getOwnVocabNotes } from "@/features/question-comment/queries";
+import { cache } from "react";
+import {
+  countDiscussionEntries,
+  getDiscussion,
+  getOwnVocabNotes,
+} from "@/features/question-comment/queries";
+import { vocabDiscussionMetadata } from "@/features/question-comment/seo";
 import { CommentItem } from "@/features/question-comment/components/comment-item";
 import { DiscussionPageThreads } from "@/features/question-comment/components/discussion-permalink-thread";
 import { QuestionCommentForm } from "@/features/question-comment/components/question-comment-form";
@@ -18,10 +24,31 @@ import { privateMetadata } from "@/lib/seo";
 
 type Props = { params: Promise<{ vocabId: string }> };
 
-export const metadata: Metadata = privateMetadata(
-  "Diskusi kata",
-  "Catatan pribadi dan diskusi publik untuk satu kata flashcard.",
-);
+// Dipakai metadata dan halaman dalam satu request; `cache` mencegah query ganda.
+const loadVocab = cache(async (rawVocabId: string) => {
+  const vocabId = Number(rawVocabId);
+  if (!Number.isInteger(vocabId) || vocabId <= 0) return null;
+  const vocab = await getVocabForDiscussion(vocabId);
+  if (!vocab) return null;
+  const roots = await getDiscussion({ type: "vocab", vocabId });
+  return { vocab, roots };
+});
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const loaded = await loadVocab((await params).vocabId);
+  if (!loaded) return privateMetadata("Diskusi kata", "Kata yang dicari tidak ditemukan.");
+  const { vocab, roots } = loaded;
+  return vocabDiscussionMetadata(
+    {
+      id: vocab.vocabId,
+      level: vocab.content.level,
+      wordPlain: vocab.content.wordPlain,
+      reading: vocab.content.reading,
+      meaningsId: vocab.content.meaningsId,
+    },
+    countDiscussionEntries(roots),
+  );
+}
 
 /**
  * Satu kata: isi kartu lengkap, catatan pribadi user, dan seluruh thread
@@ -30,24 +57,19 @@ export const metadata: Metadata = privateMetadata(
  */
 export default async function VocabDiscussionPage({ params }: Props) {
   const { vocabId: rawVocabId } = await params;
-  const vocabId = Number(rawVocabId);
-  if (!Number.isInteger(vocabId) || vocabId <= 0) notFound();
-
-  const [vocab, session] = await Promise.all([getVocabForDiscussion(vocabId), getSession()]);
-  if (!vocab) notFound();
+  const [loaded, session] = await Promise.all([loadVocab(rawVocabId), getSession()]);
+  if (!loaded) notFound();
+  const { vocab, roots } = loaded;
+  const vocabId = vocab.vocabId;
 
   const target = { type: "vocab" as const, vocabId };
-  const [roots, ownNotes, settings] = await Promise.all([
-    getDiscussion(target),
+  const [ownNotes, settings] = await Promise.all([
     session ? getOwnVocabNotes(session.userId, [vocabId]) : null,
     session ? getFlashcardSettings(session.userId) : null,
   ]);
   const notes = ownNotes?.get(vocabId) ?? [];
   const display = settings?.display ?? FLASHCARD_DEFAULT_DISPLAY;
-  const entryCount = roots.reduce(
-    (total, root) => total + root.replies.length + (root.state === "VISIBLE" ? 1 : 0),
-    0,
-  );
+  const entryCount = countDiscussionEntries(roots);
 
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-10">

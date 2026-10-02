@@ -1,12 +1,9 @@
 import { notFound } from "next/navigation";
-import type { Metadata } from "next";
 import { FEATURES } from "@/constants";
 
-// Konten buatan pengguna tanpa moderasi. Selama dashboard admin belum ada,
-// halaman ini sengaja tidak diindeks mesin pencari (lihat juga `robots.ts`).
-export const metadata: Metadata = {
-  robots: { index: false, follow: false },
-};
+// Konten buatan pengguna, diindeks mesin pencari sejak 2 Oktober 2026 (moderasi
+// ada di /admin/moderation). Tiap halaman menentukan metadata dan `noindex`-nya
+// sendiri lewat src/features/question-comment/seo.ts.
 
 export default function DiscussionLayout({
   children,

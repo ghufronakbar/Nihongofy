@@ -865,6 +865,22 @@ export function recomputePointOrders(pointFiles, manifest) {
   }
 }
 
+/**
+ * @template {{ path: string }} T
+ * @param {T[]} deckSlides
+ * @param {T[]} batch
+ * @param {number} contextSize
+ * @returns {T[]}
+ */
+export function contextSlidesBeforeBatch(deckSlides, batch, contextSize) {
+  if (contextSize <= 0 || batch.length === 0) return [];
+  const firstTargetIndex = deckSlides.findIndex((slide) => slide.path === batch[0].path);
+  if (firstTargetIndex < 0) {
+    throw new Error(`slide target tidak ditemukan dalam deck: ${batch[0].path}`);
+  }
+  return deckSlides.slice(Math.max(0, firstTargetIndex - contextSize), firstTargetIndex);
+}
+
 const ROMAJI_DIGRAPHS = {
   きゃ: "kya", きゅ: "kyu", きょ: "kyo", ぎゃ: "gya", ぎゅ: "gyu", ぎょ: "gyo",
   しゃ: "sha", しゅ: "shu", しょ: "sho", じゃ: "ja", じゅ: "ju", じょ: "jo",

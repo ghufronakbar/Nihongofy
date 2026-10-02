@@ -4,7 +4,7 @@
 import { z } from "zod";
 import { DECK_PATTERN, KEY_PATTERN, KINDS } from "./bunpou-data.mjs";
 
-export const PROMPT_VERSION = "bunpou-extract-v2";
+export const PROMPT_VERSION = "bunpou-extract-v3";
 
 const keySchema = z.string().max(80).regex(KEY_PATTERN);
 const formationRowSchema = z.object({
@@ -102,7 +102,8 @@ IDENTITAS:
 - key memakai romaji bentuk + makna Indonesia singkat bila perlu membedakan sense. Jangan memakai istilah Inggris seperti "conjugation"; gunakan "konjugasi" atau "perubahan".
 - title adalah bentuk baku Jepang teks polos, gunakan 〜 bila merupakan pola dengan slot.
 - formation hanya memuat transformasi yang benar-benar terlihat: label kelas, input, rule, output, note opsional.
-- source.slides hanya boleh berisi path slide dari batch ini.
+- source.slides hanya boleh berisi path slide target dari batch ini. Slide konteks tidak boleh
+  muncul di slides atau source.slides keluaran.
 
 KELUARAN WAJIB JSON MURNI:
 {
@@ -132,18 +133,39 @@ KELUARAN WAJIB JSON MURNI:
   ]
 }
 
-Setiap slide input harus muncul tepat sekali di slides. Slide yang dilewati memakai pointKeys [] dan skipped berisi alasan. Jangan menulis teks apa pun di luar JSON.`;
+Setiap slide target harus muncul tepat sekali di slides. Slide yang dilewati memakai pointKeys [] dan skipped berisi alasan. Slide konteks tidak boleh muncul dalam keluaran. Jangan menulis teks apa pun di luar JSON.`;
 }
 
-export function buildUserPrompt({ level, deck, slides, existingPoints }) {
+/**
+ * @param {{
+ *   level: string,
+ *   deck: string,
+ *   contextSlides?: Array<{ path: string }>,
+ *   slides: Array<{ path: string }>,
+ *   existingPoints: unknown[]
+ * }} input
+ */
+export function buildUserPrompt({ level, deck, contextSlides = [], slides, existingPoints }) {
   if (!DECK_PATTERN.test(deck)) throw new Error(`deck tidak valid: ${deck}`);
+  let attachmentIndex = 1;
   const lines = [
     `Level sumber: ${level}`,
     `Deck: ${deck}`,
-    "",
-    "Gambar dilampirkan berurutan dan masing-masing diberi path berikut:",
-    ...slides.map((slide, index) => `${index + 1}. ${slide.path}`),
   ];
+
+  if (contextSlides.length > 0) {
+    lines.push(
+      "",
+      "Gambar konteks dari slide sebelumnya (hanya referensi; jangan keluarkan path ini):",
+      ...contextSlides.map((slide) => `${attachmentIndex++}. ${slide.path}`),
+    );
+  }
+
+  lines.push(
+    "",
+    "Gambar target yang wajib diekstrak dan muncul tepat sekali dalam slides keluaran:",
+    ...slides.map((slide) => `${attachmentIndex++}. ${slide.path}`),
+  );
 
   if (existingPoints.length > 0) {
     lines.push(
@@ -157,7 +179,7 @@ export function buildUserPrompt({ level, deck, slides, existingPoints }) {
 
   lines.push(
     "",
-    "Ekstrak semua informasi grammar yang terlihat. Jangan menyimpulkan isi gambar lain atau materi di luar batch.",
+    "Gunakan gambar konteks hanya untuk memahami kelanjutan materi dan mempertahankan key entri yang sama. Ekstrak source hanya dari gambar target; jangan menyalin evidence yang hanya terlihat pada gambar konteks.",
   );
   return lines.join("\n");
 }
@@ -165,6 +187,6 @@ export function buildUserPrompt({ level, deck, slides, existingPoints }) {
 export function buildRetryPrompt(problems) {
   return (
     `Keluaran tadi ditolak: ${problems.join("; ")}. ` +
-    "Tulis ulang SELURUH JSON dari awal. Pastikan setiap path slide input muncul tepat sekali dan tidak ada teks di luar JSON."
+    "Tulis ulang SELURUH JSON dari awal. Pastikan setiap path slide target muncul tepat sekali, slide konteks tidak muncul, dan tidak ada teks di luar JSON."
   );
 }

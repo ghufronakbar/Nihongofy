@@ -1,17 +1,13 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { NewPublicNoteForm } from "@/features/question-comment/components/discussion-sheet";
+import { DiscussionComposer } from "@/features/question-comment/components/discussion-composer";
 
-/** Form tulis langsung ke diskusi publik di halaman kata; halaman di-refresh setelahnya. */
+/** Form tulis langsung ke diskusi publik di halaman kata. */
 export function VocabDiscussionComposer({ vocabId }: { vocabId: number }) {
-  const router = useRouter();
-
   return (
-    <NewPublicNoteForm
+    <DiscussionComposer
       target={{ type: "vocab", vocabId }}
       placeholder="Bagikan jembatan keledai, nuansa, atau pertanyaan tentang kata ini..."
-      onDone={() => router.refresh()}
     />
   );
 }

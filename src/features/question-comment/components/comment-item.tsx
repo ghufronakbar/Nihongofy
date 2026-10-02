@@ -38,6 +38,7 @@ type CommentData = {
   // membawa kolom ini dianggap catatan soal.
   questionId?: number | null;
   vocabId?: number | null;
+  bunpouPointId?: number | null;
   commentText: string;
   commentImages: string[];
   visibility: "PRIVATE" | "PUBLIC";
@@ -195,6 +196,7 @@ export function CommentItem({
                     id: comment.id,
                     questionId: comment.questionId ?? null,
                     vocabId: comment.vocabId ?? null,
+                    bunpouPointId: comment.bunpouPointId ?? null,
                   })}
                   className="text-xs text-muted-foreground hover:underline"
                 >
