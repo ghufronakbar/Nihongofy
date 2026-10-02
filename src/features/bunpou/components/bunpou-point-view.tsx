@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight, ChevronRight, Scale } from "lucide-react";
 import { FuriganaScope } from "@/components/furigana-scope";
 import { JapaneseText } from "@/components/japanese-text";
+import { ReportButton } from "@/features/report/components/report-button";
 import { cn } from "@/lib/utils";
 import {
   BUNPOU_CONNECTION_FORM_BY_SLUG,
@@ -74,9 +75,17 @@ function FamilyTabs({ family, current }: { family: BunpouPointSummary[]; current
   );
 }
 
-export function BunpouPointView({ detail }: { detail: BunpouPointDetail }) {
+export function BunpouPointView({
+  detail,
+  reportEnabled,
+}: {
+  detail: BunpouPointDetail;
+  reportEnabled: boolean;
+}) {
   const { point, content } = detail;
-  const tags = describeBunpouTags(content.tags);
+  const kindLabel = BUNPOU_KIND_LABEL[point.kind];
+  // Tag fungsi "Partikel" pada entri berjenis partikel hanya mengulang badge jenis.
+  const tags = describeBunpouTags(content.tags).filter((tag) => tag.label !== kindLabel);
 
   return (
     <article>
@@ -99,7 +108,7 @@ export function BunpouPointView({ detail }: { detail: BunpouPointDetail }) {
               {point.level}
             </span>
             <span className="rounded border-2 border-neo-ink px-1.5">
-              {BUNPOU_KIND_LABEL[point.kind]}
+              {kindLabel}
             </span>
             {tags.map((tag) => (
               <span
@@ -302,7 +311,17 @@ export function BunpouPointView({ detail }: { detail: BunpouPointDetail }) {
         ) : null}
       </nav>
 
-      <p className="mt-8 text-xs font-semibold text-muted-foreground">Konten: {BUNPOU_LICENSE}</p>
+      <footer className="mt-8 flex flex-wrap items-center justify-between gap-3">
+        <p className="text-xs font-semibold text-muted-foreground">Konten: {BUNPOU_LICENSE}</p>
+        {reportEnabled ? (
+          <ReportButton
+            target={{ targetType: "BUNPOU_POINT", bunpouPointId: detail.id }}
+            variant="outline"
+            label="Laporkan pola ini"
+            subject={<span lang="ja">{point.titlePlain}</span>}
+          />
+        ) : null}
+      </footer>
     </article>
   );
 }

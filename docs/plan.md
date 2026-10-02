@@ -1183,11 +1183,15 @@ Rancangan: `docs/module/bunpou.md`; kontrak data: `docs/seed-bunpou.md`.
 - [x] `npm run bunpou:extract`, `gen:bunpou`, `bunpou:doubts`, `seed:bunpou` (+ `:check`).
 - [x] `npm run gen:bunpou-comparisons`.
 - [x] Skema + migration katalog dan perbandingan Fase A.
-- [ ] Tambahkan `BUNPOU_POINT`/`BUNPOU_COMPARISON` ke `ReportTargetType` saat UI laporan dikerjakan.
+- [x] Laporan konten: target `BUNPOU_POINT`/`BUNPOU_COMPARISON`, kategori `CONNECTION_ERROR`,
+  tombol di halaman pola dan perbandingan, panel perbaikan di `/admin/report`.
+- [ ] `npx prisma migrate deploy` untuk `20261002120000_report_bunpou_enum` dan
+  `20261002120100_report_bunpou_target`, lalu uji kirim laporan pola sebagai guest dan user.
+- [x] Kartu Bunpou di home (susunan grid lima kartu).
 - [x] Halaman `/bunpou`, `/bunpou/[key]`, `/bunpou/compare/[key]`, SEO, dan flag.
-- [ ] `npx prisma migrate deploy` untuk `20261001200000_bunpou_catalog` sebelum deploy kode UI
-  (`sitemap.xml` membaca tabelnya saat build), atau deploy dengan `FEATURES_BUNPOU=false`.
-- [ ] Bereskan fixture sampai `npm run seed:bunpou:check` lulus, lalu `npm run seed:bunpou`.
+- [x] `npx prisma migrate deploy` untuk `20261001200000_bunpou_catalog` (2 Oktober 2026).
+- [x] `npm run seed:bunpou`: 227 point terbit (N5 90, N4 137); 2 point N4 masih pending
+  (`nakereba-naranai`, `mitai`).
 - [ ] Uji manual `/bunpou` lalu nyalakan flag di Vercel.
 - [ ] Fase B: `gen:bunpou-links`, tabel `QuestionBunpouLink`, tampilan di halaman pola dan review.
 - [ ] Fase C: SRS bunpou.

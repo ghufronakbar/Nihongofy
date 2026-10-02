@@ -67,14 +67,17 @@ function FeatureStatus({ children, available = false }: { children: React.ReactN
   );
 }
 
+// Urutan di sini sama dengan urutan kartu di section "fitur"; `cardSpan`
+// membagi kolom berdasarkan posisi kartu dalam daftar yang aktif.
 const LEARNING_MODULES: { label: string; feature: FeatureName }[] = [
   { label: "kana", feature: "kana" },
   { label: "kosakata", feature: "flashcard" },
+  { label: "pola kalimat", feature: "bunpou" },
   { label: "latihan cepat", feature: "practice" },
   { label: "mock JLPT", feature: "testPackage" },
 ];
 
-const MODULE_COUNT_WORDS = ["", "SATU", "DUA", "TIGA", "EMPAT"];
+const MODULE_COUNT_WORDS = ["", "SATU", "DUA", "TIGA", "EMPAT", "LIMA"];
 
 function learningModulesTitle(count: number) {
   return count === 1
@@ -91,13 +94,22 @@ function capitalize(text: string) {
   return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
-// Grid 12 kolom: susunan 5/7/7/5 hanya pas bila keempat kartu tampil. Bila ada
-// modul yang mati, kartu dibagi rata supaya tidak ada celah kosong.
-function cardSpan(fullLayoutSpan: string, visibleCount: number) {
-  if (visibleCount === 4) return fullLayoutSpan;
-  if (visibleCount === 3) return "md:col-span-4";
-  if (visibleCount === 2) return "md:col-span-6";
-  return "md:col-span-12";
+// Grid 12 kolom. Lima kartu tersusun 5/7, 12, 7/5 (kartu tengah selebar penuh);
+// empat kartu 5/7/7/5. Bila lebih sedikit, kartu dibagi rata supaya tidak ada
+// celah kosong.
+const CARD_SPANS: Record<number, string[]> = {
+  5: ["md:col-span-5", "md:col-span-7", "md:col-span-12", "md:col-span-7", "md:col-span-5"],
+  4: ["md:col-span-5", "md:col-span-7", "md:col-span-7", "md:col-span-5"],
+  3: ["md:col-span-4", "md:col-span-4", "md:col-span-4"],
+  2: ["md:col-span-6", "md:col-span-6"],
+  1: ["md:col-span-12"],
+};
+
+const ACTIVE_MODULES = LEARNING_MODULES.filter((item) => FEATURES[item.feature]);
+
+function cardSpan(feature: FeatureName) {
+  const spans = CARD_SPANS[ACTIVE_MODULES.length] ?? [];
+  return spans[ACTIVE_MODULES.findIndex((item) => item.feature === feature)] ?? "md:col-span-12";
 }
 
 export default async function HomePage() {
@@ -106,9 +118,7 @@ export default async function HomePage() {
     FEATURES.article ? getArticleIndexData() : null,
   ]);
   const isAuthenticated = Boolean(session);
-  const learningModules = LEARNING_MODULES.filter((item) => FEATURES[item.feature]).map(
-    (item) => item.label,
-  );
+  const learningModules = ACTIVE_MODULES.map((item) => item.label);
 
   return (
     <>
@@ -249,7 +259,7 @@ export default async function HomePage() {
 
             <div className="mt-12 grid gap-6 md:grid-cols-12">
               {FEATURES.kana && (
-                <article className={`neo-surface overflow-hidden bg-neo-blue p-6 ${cardSpan("md:col-span-5", learningModules.length)} md:p-8`}>
+                <article className={`neo-surface overflow-hidden bg-neo-blue p-6 ${cardSpan("kana")} md:p-8`}>
                   <div className="flex items-start justify-between gap-4">
                     <Languages className="size-10" strokeWidth={2.5} aria-hidden="true" />
                     <FeatureStatus available>Tersedia</FeatureStatus>
@@ -278,7 +288,7 @@ export default async function HomePage() {
               )}
 
               {FEATURES.flashcard && (
-                <article className={`neo-surface bg-neo-coral p-6 ${cardSpan("md:col-span-7", learningModules.length)} md:p-8`}>
+                <article className={`neo-surface bg-neo-coral p-6 ${cardSpan("flashcard")} md:p-8`}>
                   <div className="flex items-start justify-between gap-4">
                     <BookOpenText className="size-10" strokeWidth={2.5} aria-hidden="true" />
                     <FeatureStatus available>Tersedia</FeatureStatus>
@@ -307,8 +317,51 @@ export default async function HomePage() {
                 </article>
               )}
 
+              {FEATURES.bunpou && (
+                <article className={`@container neo-surface bg-neo-paper p-6 ${cardSpan("bunpou")} md:p-8`}>
+                  <div className="flex items-start justify-between gap-4">
+                    <NotebookTabs className="size-10" strokeWidth={2.5} aria-hidden="true" />
+                    <FeatureStatus available>Tersedia</FeatureStatus>
+                  </div>
+                  <div className="mt-8 grid items-center gap-7 @2xl:grid-cols-[1fr_1fr]">
+                    <div>
+                      <h3 className="text-3xl">Pola kalimat (文法)</h3>
+                      <p className="mt-3 max-w-[46ch] leading-7 text-foreground/70">
+                        Setiap pola JLPT dijelaskan dalam bahasa Indonesia: artinya, cara menyambungnya,
+                        dan contoh kalimat yang bisa kamu dengarkan.
+                      </p>
+                    </div>
+                    <div className="border-[3px] border-neo-ink bg-background p-5 shadow-neo-sm">
+                      <div className="flex items-center gap-2 text-xs font-black">
+                        <span className="border-2 border-neo-ink bg-neo-yellow px-1.5 text-black">N4</span>
+                        <span className="tracking-wide text-neo-blue uppercase">sambil</span>
+                      </div>
+                      <p lang="ja" className="font-japanese mt-2 text-4xl font-black">〜ながら</p>
+                      <p className="mt-3 flex flex-wrap items-center gap-2 text-sm font-bold">
+                        <span lang="ja" className="font-japanese border-2 border-neo-ink bg-neo-blue/30 px-2">
+                          Vます形
+                        </span>
+                        ＋ <span lang="ja" className="font-japanese">ながら</span>
+                      </p>
+                      <p lang="ja" className="font-japanese mt-3 text-lg font-bold">
+                        音楽を聞き
+                        <span className="rounded-sm bg-neo-yellow/70 px-0.5 font-black text-black">ながら</span>
+                        勉強します。
+                      </p>
+                      <p className="mt-1 text-sm text-foreground/65">
+                        Saya belajar sambil mendengarkan musik.
+                      </p>
+                    </div>
+                  </div>
+                  <Link href="/bunpou" className="neo-button mt-7 bg-white px-5 py-3 sm:w-fit">
+                    Buka pola kalimat
+                    <ArrowRight className="size-5" aria-hidden="true" />
+                  </Link>
+                </article>
+              )}
+
               {FEATURES.practice && (
-                <article className={`neo-surface bg-neo-yellow p-6 ${cardSpan("md:col-span-7", learningModules.length)} md:p-8`}>
+                <article className={`neo-surface bg-neo-yellow p-6 ${cardSpan("practice")} md:p-8`}>
                   <div className="flex items-start justify-between gap-4">
                     <PenLine className="size-10" strokeWidth={2.5} aria-hidden="true" />
                     <FeatureStatus available>Tersedia</FeatureStatus>
@@ -338,7 +391,7 @@ export default async function HomePage() {
               )}
 
               {FEATURES.testPackage && (
-                <article className={`neo-surface flex flex-col bg-neo-green p-6 ${cardSpan("md:col-span-5", learningModules.length)} md:p-8`}>
+                <article className={`neo-surface flex flex-col bg-neo-green p-6 ${cardSpan("testPackage")} md:p-8`}>
                   <div className="flex items-start justify-between gap-4">
                     <Trophy className="size-10" strokeWidth={2.5} aria-hidden="true" />
                     <FeatureStatus available>Tersedia</FeatureStatus>

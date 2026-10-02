@@ -13,10 +13,10 @@ import { TURNSTILE_ACTIONS } from "@/features/auth/lib/turnstile-config";
 import { cn } from "@/lib/utils";
 import { submitReportAction, type ReportFormContext } from "../actions";
 import {
-  REPORT_CATEGORY_HINTS,
   REPORT_CATEGORY_LABELS,
   REPORT_MESSAGE_MAX_LENGTH,
   reportCategoriesFor,
+  reportCategoryHint,
 } from "../constants";
 import { ReportFormSchema, type ReportFormValues, type ReportTarget } from "../schemas";
 
@@ -129,7 +129,7 @@ export function ReportForm({
                       {REPORT_CATEGORY_LABELS[option]}
                     </span>
                     <span className="block text-xs font-semibold text-foreground/65">
-                      {REPORT_CATEGORY_HINTS[option]}
+                      {reportCategoryHint(target.targetType, option)}
                     </span>
                   </span>
                 </label>

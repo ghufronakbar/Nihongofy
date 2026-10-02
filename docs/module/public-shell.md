@@ -13,7 +13,7 @@
 
 - Header desktop/mobile menuju Kana, Flashcard, Bunpou, Latihan Cepat, Mock JLPT, Artikel, Percakapan, dan Bicara, masing-masing hanya bila flag modulnya aktif.
 - CTA berubah antara login/register dan dashboard/test package berdasarkan session.
-- Landing page menampilkan kartu kana, flashcard, latihan cepat, dan mock JLPT untuk modul yang aktif, serta section conversation dan speaking bila flag-nya aktif.
+- Landing page menampilkan kartu kana, flashcard, bunpou, latihan cepat, dan mock JLPT untuk modul yang aktif, serta section conversation dan speaking bila flag-nya aktif.
 - Featured article berasal dari query artikel published, dengan empty state jika database kosong.
 - Metadata Open Graph dasar tersedia.
 
@@ -26,7 +26,7 @@ Public shell tidak punya flag sendiri, tetapi menjadi tempat utama flag modul di
 | Header dan footer | Menu modul tidak dirender |
 | Home: hero | Tanpa `FEATURES_TEST_PACKAGE`, kicker, subjudul, dan CTA memakai copy tanpa mock test |
 | Home: "Cara belajar" | Tidak dirender bila `FEATURES_TEST_PACKAGE=false` |
-| Home: kartu modul | Kartu modul yang mati tidak dirender; kartu tersisa dibagi rata di grid, dan judul serta intro menyebut jumlah dan nama modul yang aktif. Section hilang bila keempatnya mati |
+| Home: kartu modul | Kartu modul yang mati tidak dirender. Lima kartu tersusun 5/7, 12 (bunpou), 7/5; empat kartu 5/7/7/5; selebihnya dibagi rata di grid. Judul serta intro menyebut jumlah dan nama modul yang aktif. Section hilang bila kelimanya mati |
 | Home: conversation/speaking | Section tidak dirender |
 | Home: artikel | Section tidak dirender dan query artikel dilewati |
 | Halaman 404 | Tombol "Cari paket JLPT" hilang tanpa `FEATURES_TEST_PACKAGE` |

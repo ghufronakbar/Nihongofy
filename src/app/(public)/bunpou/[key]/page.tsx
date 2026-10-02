@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/seo/json-ld";
+import { FEATURES } from "@/constants";
 import { BunpouPointView } from "@/features/bunpou/components/bunpou-point-view";
 import { getBunpouPointDetail } from "@/features/bunpou/queries";
 import { BunpouKeySchema } from "@/features/bunpou/schemas";
@@ -55,7 +56,7 @@ export default async function BunpouPointPage({ params }: Props) {
           ]),
         ]}
       />
-      <BunpouPointView detail={detail} />
+      <BunpouPointView detail={detail} reportEnabled={FEATURES.report} />
     </main>
   );
 }

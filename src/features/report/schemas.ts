@@ -97,6 +97,16 @@ export const SubmitReportSchema = z
       vocabId: z.number().int().positive(),
       ...sharedFields,
     }),
+    z.object({
+      targetType: z.literal("BUNPOU_POINT"),
+      bunpouPointId: z.number().int().positive(),
+      ...sharedFields,
+    }),
+    z.object({
+      targetType: z.literal("BUNPOU_COMPARISON"),
+      bunpouComparisonId: z.number().int().positive(),
+      ...sharedFields,
+    }),
   ])
   .superRefine((value, context) => {
     if (isReportCategoryAllowed(value.targetType, value.category)) return;
@@ -117,7 +127,9 @@ export type ReportTarget =
   | { targetType: "QUESTION_EXPLANATION"; questionId: number }
   | { targetType: "ARTICLE"; articleId: number }
   | { targetType: "COMMENT"; commentId: number }
-  | { targetType: "FLASHCARD_VOCAB"; vocabId: number };
+  | { targetType: "FLASHCARD_VOCAB"; vocabId: number }
+  | { targetType: "BUNPOU_POINT"; bunpouPointId: number }
+  | { targetType: "BUNPOU_COMPARISON"; bunpouComparisonId: number };
 
 export type ReportSubmitResult = { ok: boolean; message: string };
 

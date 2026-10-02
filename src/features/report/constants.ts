@@ -12,6 +12,8 @@ export const REPORT_TARGET_TYPES = [
   "ARTICLE",
   "COMMENT",
   "FLASHCARD_VOCAB",
+  "BUNPOU_POINT",
+  "BUNPOU_COMPARISON",
 ] as const;
 
 export type ReportTargetTypeValue = (typeof REPORT_TARGET_TYPES)[number];
@@ -29,6 +31,7 @@ export const REPORT_CATEGORIES = [
   "MEANING_ERROR",
   "EXAMPLE_ERROR",
   "TAG_ERROR",
+  "CONNECTION_ERROR",
 ] as const;
 
 export type ReportCategoryValue = (typeof REPORT_CATEGORIES)[number];
@@ -56,6 +59,12 @@ export type ReportStatusValue = (typeof REPORT_STATUSES)[number];
  * tag), dan satu di antaranya diperbaiki dengan cara lain: bacaan kata ikut
  * membentuk `key`, jadi bacaan yang keliru tidak selesai dengan generate ulang.
  * Kategori serba-mencakup akan menyembunyikan pembedaan itu di dalam teks bebas.
+ *
+ * Pola bunpou memakai ulang kategori arti, contoh, dan furigana dari kartu
+ * flashcard (petunjuknya disesuaikan lewat `REPORT_CATEGORY_HINT_OVERRIDES`),
+ * ditambah `CONNECTION_ERROR` untuk sambungan dan tabel pembentukan. Perbandingan
+ * cukup `CONTENT_ERROR`: isinya satu kesatuan (tabel dan kalimat kontras) yang
+ * ditinjau ulang bersama.
  */
 export const REPORT_CATEGORIES_BY_TARGET = {
   GENERAL: ["BUG", "SUGGESTION", "OTHER"],
@@ -64,6 +73,15 @@ export const REPORT_CATEGORIES_BY_TARGET = {
   ARTICLE: ["CONTENT_ERROR", "BUG", "OTHER"],
   COMMENT: ["ABUSE", "OTHER"],
   FLASHCARD_VOCAB: ["READING_ERROR", "MEANING_ERROR", "EXAMPLE_ERROR", "TAG_ERROR", "BUG", "OTHER"],
+  BUNPOU_POINT: [
+    "MEANING_ERROR",
+    "CONNECTION_ERROR",
+    "EXAMPLE_ERROR",
+    "READING_ERROR",
+    "BUG",
+    "OTHER",
+  ],
+  BUNPOU_COMPARISON: ["CONTENT_ERROR", "BUG", "OTHER"],
 } as const satisfies Record<ReportTargetTypeValue, readonly ReportCategoryValue[]>;
 
 export const REPORT_TARGET_TYPE_LABELS: Record<ReportTargetTypeValue, string> = {
@@ -73,6 +91,8 @@ export const REPORT_TARGET_TYPE_LABELS: Record<ReportTargetTypeValue, string> = 
   ARTICLE: "Artikel",
   COMMENT: "Diskusi",
   FLASHCARD_VOCAB: "Kartu flashcard",
+  BUNPOU_POINT: "Pola bunpou",
+  BUNPOU_COMPARISON: "Perbandingan bunpou",
 };
 
 export const REPORT_CATEGORY_LABELS: Record<ReportCategoryValue, string> = {
@@ -88,6 +108,7 @@ export const REPORT_CATEGORY_LABELS: Record<ReportCategoryValue, string> = {
   MEANING_ERROR: "Arti atau catatan keliru",
   EXAMPLE_ERROR: "Contoh kalimat bermasalah",
   TAG_ERROR: "Tag atau deck tidak cocok",
+  CONNECTION_ERROR: "Sambungan / pembentukan salah",
 };
 
 export const REPORT_CATEGORY_HINTS: Record<ReportCategoryValue, string> = {
@@ -106,7 +127,37 @@ export const REPORT_CATEGORY_HINTS: Record<ReportCategoryValue, string> = {
     "Kalimat janggal atau tidak gramatikal, kata yang disorot salah, atau terjemahannya keliru.",
   TAG_ERROR:
     "Kelas kata, ragam, atau topiknya keliru, misalnya kata ini tidak seharusnya ada di deck tertentu.",
+  CONNECTION_ERROR:
+    "Bentuk yang disambungkan (mis. Vて形, Nの) keliru, atau tabel pembentukannya salah.",
 };
+
+/**
+ * Petunjuk kategori yang berbeda untuk target tertentu. Kategori yang dipakai
+ * ulang lintas target menunjuk bagian isi yang berbeda; petunjuk bawaan di atas
+ * ditulis untuk kartu flashcard.
+ */
+const REPORT_CATEGORY_HINT_OVERRIDES: Partial<
+  Record<ReportTargetTypeValue, Partial<Record<ReportCategoryValue, string>>>
+> = {
+  BUNPOU_POINT: {
+    MEANING_ERROR:
+      "Arti atau penjelasan pola keliru atau menyesatkan, atau ada pemakaian penting yang hilang.",
+    EXAMPLE_ERROR:
+      "Kalimat janggal atau tidak gramatikal, bagian pola yang disorot salah, atau terjemahannya keliru.",
+    READING_ERROR: "Furigana di judul, contoh kalimat, atau penjelasan tidak tepat.",
+  },
+  BUNPOU_COMPARISON: {
+    CONTENT_ERROR:
+      "Tabel nuansa, ragam, atau batasan keliru, atau penilaian ○/△/✕ pada kalimat kontras salah.",
+  },
+};
+
+export function reportCategoryHint(
+  targetType: ReportTargetTypeValue,
+  category: ReportCategoryValue,
+) {
+  return REPORT_CATEGORY_HINT_OVERRIDES[targetType]?.[category] ?? REPORT_CATEGORY_HINTS[category];
+}
 
 export const REPORT_STATUS_LABELS: Record<ReportStatusValue, string> = {
   OPEN: "Baru",

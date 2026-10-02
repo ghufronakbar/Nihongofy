@@ -48,7 +48,14 @@ function latestTargetCheck() {
 describe("FK target laporan", () => {
   it("dikenali dari schema.prisma, termasuk kartu flashcard", () => {
     expect(targetColumns).toEqual(
-      expect.arrayContaining(["questionId", "articleId", "commentId", "vocabId"]),
+      expect.arrayContaining([
+        "questionId",
+        "articleId",
+        "commentId",
+        "vocabId",
+        "bunpouPointId",
+        "bunpouComparisonId",
+      ]),
     );
   });
 
@@ -77,6 +84,14 @@ describe("FK target laporan", () => {
   it("laporan kartu hanya boleh membawa vocabId", () => {
     expect(latestTargetCheck()).toMatch(
       /\("targetType" = 'FLASHCARD_VOCAB' OR "vocabId" IS NULL\)/,
+    );
+  });
+
+  it("laporan bunpou hanya boleh membawa FK pola atau perbandingannya", () => {
+    const check = latestTargetCheck();
+    expect(check).toMatch(/\("targetType" = 'BUNPOU_POINT' OR "bunpouPointId" IS NULL\)/);
+    expect(check).toMatch(
+      /\("targetType" = 'BUNPOU_COMPARISON' OR "bunpouComparisonId" IS NULL\)/,
     );
   });
 
@@ -111,14 +126,17 @@ describe("migration enum", () => {
     }
   });
 
-  it("nilai enum laporan kartu ditambahkan sebelum dipakai", () => {
-    const addedAt = migrations.findIndex((migration) =>
-      migration.sql.includes(`ALTER TYPE "ReportTargetType" ADD VALUE 'FLASHCARD_VOCAB'`),
-    );
-    const usedAt = migrations.findIndex((migration) =>
-      /"targetType" = 'FLASHCARD_VOCAB'/.test(migration.sql),
-    );
-    expect(addedAt).toBeGreaterThanOrEqual(0);
-    expect(usedAt).toBeGreaterThan(addedAt);
-  });
+  it.each(["FLASHCARD_VOCAB", "BUNPOU_POINT", "BUNPOU_COMPARISON"])(
+    "nilai enum laporan %s ditambahkan sebelum dipakai",
+    (value) => {
+      const addedAt = migrations.findIndex((migration) =>
+        migration.sql.includes(`ALTER TYPE "ReportTargetType" ADD VALUE '${value}'`),
+      );
+      const usedAt = migrations.findIndex((migration) =>
+        new RegExp(`"targetType" = '${value}'`).test(migration.sql),
+      );
+      expect(addedAt).toBeGreaterThanOrEqual(0);
+      expect(usedAt).toBeGreaterThan(addedAt);
+    },
+  );
 });

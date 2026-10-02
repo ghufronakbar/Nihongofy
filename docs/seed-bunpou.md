@@ -134,8 +134,10 @@ Model teks menulis `content` dari identitas pola, `source`, dan taxonomy. Hanya 
 `content`-nya masih `null` yang diproses.
 
 - Model juga menerima entri lain dengan `family` yang sama atau judul ternormalisasi yang sama
-  (key, judul, level, `source.meaning`). Tujuannya supaya setiap makna ditulis berbeda dan
-  `senseLabel`-nya tidak tumpang tindih.
+  (key, judul, level, `source.meaning`). Anggota dengan makna berbeda harus memiliki penjelasan dan
+  `senseLabel` yang tidak tumpang tindih. Entri pada level berbeda boleh menjelaskan sense yang
+  sama dan memakai `senseLabel` yang sama; model tidak boleh menciptakan perbedaan tanpa dukungan
+  source.
 - Jawaban divalidasi per entri ([Aturan Isi](#aturan-isi)). Entri yang gagal diminta ulang dengan
   daftar masalahnya (maksimal 3 percobaan); entri lain dalam batch tetap disimpan.
 - Fixture ditulis atomik setelah setiap batch, jadi proses boleh dihentikan kapan saja.
@@ -461,7 +463,8 @@ Nama file sama dengan fixture paketnya, mis. `question-links/n3-2019-12.json`.
   diberi `family`.
 - **`family`**: format sama dengan key. Diisi bila ada entri lain dengan bentuk sama tetapi
   makna berbeda; satu family boleh melintasi level. Family yang hanya berisi satu entri memicu
-  peringatan.
+  peringatan. `senseLabel` wajib unik dalam family pada level yang sama, tetapi boleh sama pada
+  level berbeda ketika slide memang mengulang sense yang sama.
 - **`kind`**: bentuk materi dan kontrak rendering detail:
   - `pattern`: pola kalimat atau ungkapan dengan sambungan tertentu.
   - `particle`: satu fungsi dari sebuah partikel; fungsi lain menjadi entri lain dalam `family`

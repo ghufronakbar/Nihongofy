@@ -172,6 +172,8 @@ enum ReportTargetType {
   ARTICLE
   COMMENT
   FLASHCARD_VOCAB
+  BUNPOU_POINT
+  BUNPOU_COMPARISON
 }
 
 // Kategori dibatasi oleh target: peta lengkapnya ada di
@@ -199,6 +201,7 @@ enum ReportCategory {
   MEANING_ERROR
   EXAMPLE_ERROR
   TAG_ERROR
+  CONNECTION_ERROR
 }
 
 enum ReportStatus {
@@ -440,6 +443,7 @@ model BunpouPoint {
   retiredAt DateTime?
 
   comparisons BunpouComparisonPoint[]
+  reports     Report[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -462,7 +466,8 @@ model BunpouComparison {
   reviewedAt    DateTime
   retiredAt     DateTime?
 
-  points BunpouComparisonPoint[]
+  points  BunpouComparisonPoint[]
+  reports Report[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1332,6 +1337,13 @@ model Report {
   vocab   FlashcardVocab? @relation(fields: [vocabId], references: [id], onDelete: SetNull)
   vocabId Int?
 
+  // Katalog bunpou, alasan SetNull sama dengan `vocab`: pola tidak pernah
+  // dihapus (hanya `retiredAt`) dan perbaikannya lewat fixture lalu `seed:bunpou`.
+  bunpouPoint        BunpouPoint?      @relation(fields: [bunpouPointId], references: [id], onDelete: SetNull)
+  bunpouPointId      Int?
+  bunpouComparison   BunpouComparison? @relation(fields: [bunpouComparisonId], references: [id], onDelete: SetNull)
+  bunpouComparisonId Int?
+
   // Snapshot teks target saat laporan dibuat, mis. "N2 Juli 2025 · 文法 · soal 12".
   // Mengikuti pola `AdminAuditLog.actorName`: FK yang menjadi null karena
   // targetnya dihapus akan meninggalkan baris yang tidak terbaca tanpa ini.
@@ -1384,6 +1396,8 @@ model Report {
   @@index([articleId])
   @@index([commentId])
   @@index([vocabId])
+  @@index([bunpouPointId])
+  @@index([bunpouComparisonId])
   @@index([reporterId])
   @@index([handledById])
   @@index([repliedById])

@@ -10,12 +10,16 @@ Target kartu flashcard menunggu `npx prisma migrate deploy` untuk dua migration
 `20261001150000_report_flashcard_vocab_enum` dan `20261001150100_report_flashcard_vocab_target`,
 lalu uji manual di browser (checklist di Fase 8.11 `docs/plan.md`).
 
+Target pola dan perbandingan bunpou (2 Oktober 2026) menunggu `npx prisma migrate deploy` untuk
+`20261002120000_report_bunpou_enum` dan `20261002120100_report_bunpou_target`.
+
 ## Feature Flag
 
 | Key | Efek saat `false` |
 |---|---|
 | `FEATURES_REPORT` | `/report` menjadi 404, seluruh tombol "Laporkan" tidak dirender, dan kedua Server Action publik menolak dengan `notFound()`. Antrean `/admin/report` **tetap hidup** |
 | `FEATURES_FLASHCARD` | Target kartu flashcard hilang dari sisi user: tombol "Laporkan kartu" hanya ada di bawah `/flashcard`, yang menjadi 404, dan `/report` tidak lagi menyebut kartu flashcard. `submitReportAction` menolak laporan kartu dari tab lama sebelum Turnstile dan rate limit. Laporan kartu yang sudah masuk **tetap** dapat dibuka dan ditindak di `/admin/report` |
+| `FEATURES_BUNPOU` | Sama seperti flashcard: tombol laporan hanya ada di bawah `/bunpou`, yang menjadi 404, dan `submitReportAction` menolak laporan `BUNPOU_POINT`/`BUNPOU_COMPARISON` dari tab lama sebelum Turnstile dan rate limit. Laporan yang sudah masuk tetap ditindak di `/admin/report` |
 
 Antrean admin sengaja tidak ikut mati. Alasan utama mematikan `FEATURES_REPORT` adalah
 penyalahgunaan form, dan justru pada saat itulah laporan yang sudah masuk perlu ditindak. Halaman
@@ -34,6 +38,8 @@ Dilaporkan:
 | `ARTICLE` | Halaman artikel publik | `articleId` |
 | `COMMENT` | Thread diskusi soal dan kata flashcard (root dan balasan), permalink, sheet diskusi | `commentId` |
 | `FLASHCARD_VOCAB` | Reviewer (setelah sisi belakang dibuka), daftar kata `/flashcard/deck/[slug]`, mode coba `/flashcard/try/[slug]` | `vocabId` |
+| `BUNPOU_POINT` | Halaman pola `/bunpou/[key]` | `bunpouPointId` |
+| `BUNPOU_COMPARISON` | Halaman perbandingan `/bunpou/compare/[key]` | `bunpouComparisonId` |
 
 Pembahasan dilaporkan lewat `questionId`, **bukan** id pembahasannya. Pembahasan di-upsert oleh
 `seed:question-explanation` dan layar perbaikannya memang `/admin/explanation/[questionId]`, jadi
@@ -87,7 +93,8 @@ penghapusan soal itu sendiri. Kewajiban itu ditegakkan `SubmitReportSchema` di
 
 ### Anti-banjir dari satu pelapor
 
-Empat partial unique index (`questionId`, `articleId`, `commentId`, `vocabId`) melarang satu
+Partial unique index per kolom target (`questionId`, `articleId`, `commentId`, `vocabId`,
+`bunpouPointId`, `bunpouComparisonId`) melarang satu
 pelapor yang dikenal punya lebih dari satu laporan `OPEN` pada target yang sama. Beberapa keluhan
 pada satu kartu (mis. bacaan dan contoh kalimat) ditulis dalam satu laporan; begitu admin menyentuh
 laporannya, pelapor yang sama boleh mengirim laporan baru. Guest tidak punya identitas yang
@@ -101,8 +108,9 @@ PostgreSQL menolak memakai nilai enum di transaksi yang menambahkannya (`55P04 u
 value`), dan `prisma migrate deploy` menjalankan satu file sebagai satu transaksi; kegagalannya di
 production meninggalkan status migrasi gagal (`P3018`) yang harus di-resolve manual. Karena itu
 target kartu memakai dua migration: `..._enum` hanya menambah nilai, `..._target` menambah kolom,
-FK, index, dan CHECK yang menyebut `'FLASHCARD_VOCAB'`. Target berikutnya (mis. bunpou) perlu pola
-yang sama; `src/features/report/report-migrations.test.ts` menjaganya.
+FK, index, dan CHECK yang menyebut `'FLASHCARD_VOCAB'`. Target bunpou mengikuti pola yang sama
+(`20261002120000_report_bunpou_enum` lalu `20261002120100_report_bunpou_target`);
+`src/features/report/report-migrations.test.ts` menjaganya.
 
 ## Kategori Dibatasi Target
 
@@ -117,6 +125,8 @@ form, `SubmitReportSchema`, serta layar admin.
 | `ARTICLE` | `CONTENT_ERROR`, `BUG`, `OTHER` |
 | `COMMENT` | `ABUSE`, `OTHER` |
 | `FLASHCARD_VOCAB` | `READING_ERROR`, `MEANING_ERROR`, `EXAMPLE_ERROR`, `TAG_ERROR`, `BUG`, `OTHER` |
+| `BUNPOU_POINT` | `MEANING_ERROR`, `CONNECTION_ERROR`, `EXAMPLE_ERROR`, `READING_ERROR`, `BUG`, `OTHER` |
+| `BUNPOU_COMPARISON` | `CONTENT_ERROR`, `BUG`, `OTHER` |
 
 Keputusan di dalam peta itu:
 
@@ -124,6 +134,11 @@ Keputusan di dalam peta itu:
   `OTHER`). User yang menemukan "tombol berikutnya tidak jalan di soal 12" akan memaksa laporannya
   masuk kategori yang salah bila satu-satunya pilihan di halaman soal adalah kategori konten. Yang
   dibatasi target adalah kategori *konten*.
+- **Pola bunpou memakai ulang kategori arti, contoh, dan furigana dari kartu flashcard**, ditambah
+  `CONNECTION_ERROR` untuk sambungan dan tabel pembentukan. Petunjuk kategori yang dipakai ulang
+  ditulis untuk kartu, jadi `reportCategoryHint(targetType, category)` memberi petunjuk khusus pola.
+  `TAG_ERROR` tidak dipakai karena pola tidak punya deck. Perbandingan cukup `CONTENT_ERROR`:
+  tabel dan kalimat kontrasnya ditinjau ulang sebagai satu kesatuan.
 - **`ANSWER_KEY` dipisah dari `CONTENT_ERROR`** karena sudah ada alur untuknya:
   `QuestionExplanation.answerKeyDoubt` beserta index-nya. Laporan kunci jawaban dari user dan
   keraguan dari generator adalah antrean yang sama.
@@ -280,6 +295,9 @@ Sitekey Turnstile memang nilai publik — yang rahasia adalah secret key-nya.
 
 ## Keterbatasan dan Keputusan yang Ditunda
 
+- Laporan bunpou juga tidak punya editor admin. Tautan "Buka target" mengarah ke halaman publik
+  pola atau perbandingannya (selama belum dipensiunkan), dan `BunpouReportPanel` menampilkan key,
+  fixture, perintah generate ulang, serta pengingat invalidasi tag `bunpouCatalog` setelah seed.
 - Laporan kartu flashcard tidak dapat ditindak dari browser: perbaikannya tetap lewat fixture dan
   `seed:flashcard` di terminal, karena katalog tidak punya editor admin. Laporan juga tidak otomatis
   menandai `ai.doubt` di fixture; admin yang memutuskan.
@@ -297,6 +315,7 @@ Sitekey Turnstile memang nilai publik — yang rahasia adalah secret key-nya.
 | Model, enum, constraint | `prisma/schema.prisma`, migration `20260926230000_report_inbox`, `20261001150000_report_flashcard_vocab_enum`, `20261001150100_report_flashcard_vocab_target` |
 | Peta kategori dan label | `src/features/report/constants.ts` |
 | Label dan petunjuk perbaikan kartu flashcard | `src/features/report/lib/flashcard-target.ts`, `src/features/admin/report/components/flashcard-report-panel.tsx` |
+| Label dan petunjuk perbaikan bunpou | `src/features/report/lib/bunpou-target.ts`, `src/features/admin/report/components/bunpou-report-panel.tsx` |
 | Tombol laporan kartu | `src/features/flashcard/components/flashcard-reviewer.tsx`, `deck-word-actions.tsx` |
 | Unit test peta, skema, migration, privasi | `src/features/report/*.test.ts`, `src/features/report/lib/flashcard-target.test.ts` |
 | Validasi submit dan form | `src/features/report/schemas.ts` |

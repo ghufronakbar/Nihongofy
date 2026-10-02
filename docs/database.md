@@ -78,15 +78,17 @@ Stack: Next.js + Prisma + PostgreSQL (Supabase).
 ## Laporan Pengguna
 
 - `Report` adalah kotak masuk laporan: bug, typo soal, kunci jawaban keliru, penyalahgunaan diskusi,
-  isi kartu flashcard yang keliru, dan saran. Target opsional dan memakai **FK nyata**
-  (`questionId`, `articleId`, `commentId`, `vocabId`), bukan pasangan `(targetType, targetId)`
+  isi kartu flashcard atau pola bunpou yang keliru, dan saran. Target opsional dan memakai **FK nyata**
+  (`questionId`, `articleId`, `commentId`, `vocabId`, `bunpouPointId`, `bunpouComparisonId`), bukan pasangan `(targetType, targetId)`
   seperti `AdminAuditLog`. Baris audit harus bertahan setelah
   targetnya hilang; laporan justru ada untuk membuka targetnya dan memperbaikinya.
-- Keempat FK target memakai `ON DELETE SET NULL`. Menghapus satu soal tidak boleh ikut menghapus
+- Seluruh FK target memakai `ON DELETE SET NULL`. Menghapus satu soal tidak boleh ikut menghapus
   laporan yang belum ditindak, dan laporan juga tidak boleh menahan penghapusan targetnya.
 - `targetType = FLASHCARD_VOCAB` memakai `vocabId`, yaitu kata di katalog `FlashcardVocab`, bukan
   baris `FlashcardCard` milik user. Katalog tidak pernah menghapus kata (hanya `retiredAt`), dan
   penahan penghapusannya sudah ada di `FlashcardCard.vocabId` (`Restrict`); laporan tetap `SET NULL`.
+- `targetType = BUNPOU_POINT`/`BUNPOU_COMPARISON` memakai `bunpouPointId`/`bunpouComparisonId` ke
+  katalog bunpou, yang juga tidak pernah dihapus (hanya `retiredAt`).
 - `targetLabel` adalah snapshot teks target saat laporan dibuat. **Selalu** dibangun di server dari
   baris target — label kiriman client dapat dipalsukan dan akan menyuntikkan teks ke layar admin.
   Tanpa kolom ini, FK yang menjadi null meninggalkan baris yang tidak terbaca.

@@ -99,13 +99,38 @@ const getCachedPointRow = (key: string) =>
     async (pointKey: string) => {
       const row = await prisma.bunpouPoint.findFirst({
         where: { key: pointKey, retiredAt: null },
-        select: { content: true, updatedAt: true },
+        select: { id: true, content: true, updatedAt: true },
       });
-      return row ? { content: row.content, updatedAt: row.updatedAt.toISOString() } : null;
+      return row
+        ? { id: row.id, content: row.content, updatedAt: row.updatedAt.toISOString() }
+        : null;
     },
     CACHE_KEYS.bunpouPoint(key),
     CACHE_OPTIONS,
   )(key);
+
+/**
+ * Satu entri per makna dalam family. Makna yang sama boleh terbit di beberapa
+ * level (level mengikuti slide sumber), tetapi sebagai tab cukup sekali: pola
+ * yang sedang dibuka, atau entri dari level terdekat.
+ */
+function distinctSenses(point: BunpouPointSummary, catalog: BunpouPointSummary[]) {
+  if (!point.family) return [point];
+  const bySense = new Map<string, BunpouPointSummary>();
+  for (const candidate of catalog) {
+    if (candidate.family !== point.family) continue;
+    const sense = candidate.senseLabel ?? candidate.key;
+    const current = bySense.get(sense);
+    const better =
+      !current ||
+      candidate.key === point.key ||
+      (current.key !== point.key &&
+        Math.abs(levelRank(candidate.level) - levelRank(point.level)) <
+          Math.abs(levelRank(current.level) - levelRank(point.level)));
+    if (better) bySense.set(sense, candidate);
+  }
+  return [...bySense.values()].sort(compareBunpouPoints);
+}
 
 /**
  * Pola dengan fungsi yang sama di luar family-nya. Level yang sama didahulukan,
@@ -162,10 +187,11 @@ export const getBunpouPointDetail = cache(
       }));
 
     return {
+      id: row.id,
       point,
       content: content.data,
       updatedAt: new Date(row.updatedAt),
-      family: point.family ? catalog.filter((item) => item.family === point.family) : [point],
+      family: distinctSenses(point, catalog),
       comparisons: comparisonLinks,
       related: findRelated(point, catalog),
       previous: previous?.level === point.level ? previous : null,
@@ -180,6 +206,7 @@ const getCachedComparisonRow = (key: string) =>
       const row = await prisma.bunpouComparison.findFirst({
         where: { key: comparisonKey, retiredAt: null },
         select: {
+          id: true,
           key: true,
           title: true,
           content: true,
@@ -189,6 +216,7 @@ const getCachedComparisonRow = (key: string) =>
       });
       if (!row) return null;
       return {
+        id: row.id,
         key: row.key,
         title: row.title,
         content: row.content,
@@ -218,6 +246,7 @@ export const getBunpouComparisonDetail = cache(
     if (points.length !== row.pointKeys.length || points.length < 2) return null;
 
     return {
+      id: row.id,
       key: row.key,
       title: row.title,
       content: content.data,

@@ -33,6 +33,8 @@ const reportSelect = {
   articleId: true,
   commentId: true,
   vocabId: true,
+  bunpouPointId: true,
+  bunpouComparisonId: true,
   reporter: { select: { id: true, displayName: true, username: true } },
   handledBy: { select: { id: true, displayName: true } },
   repliedBy: { select: { id: true, displayName: true } },
@@ -42,6 +44,8 @@ const reportSelect = {
   // setelah fixture diperbaiki dan di-seed, admin melihat versi barunya sebelum
   // menandai laporan selesai.
   vocab: { select: { ...VOCAB_CONTENT_SELECT, key: true, retiredAt: true } },
+  bunpouPoint: { select: { key: true, level: true, retiredAt: true } },
+  bunpouComparison: { select: { key: true, retiredAt: true } },
 } satisfies Prisma.ReportSelect;
 
 type ReportRow = Prisma.ReportGetPayload<{ select: typeof reportSelect }>;
@@ -53,6 +57,11 @@ export type ReportFlashcardTarget = {
   retiredAt: Date | null;
   content: VocabCardContent;
 };
+
+/** Pola atau perbandingan bunpou yang dilaporkan; isinya dilihat di halaman publiknya. */
+export type ReportBunpouTarget =
+  | { kind: "point"; key: string; level: string; retiredAt: Date | null }
+  | { kind: "comparison"; key: string; retiredAt: Date | null };
 
 export type ReportEntry = ReportRow & {
   /**
@@ -68,6 +77,8 @@ export type ReportEntry = ReportRow & {
    * isi kartunya ditampilkan di tempat bersama petunjuk perbaikan lewat fixture.
    */
   flashcard: ReportFlashcardTarget | null;
+  /** Sama seperti `flashcard`: katalog bunpou diperbaiki lewat fixture, bukan admin. */
+  bunpou: ReportBunpouTarget | null;
   /** Laporan lain yang belum selesai pada target yang sama. */
   otherOpenOnTarget: number;
   canReply: boolean;
@@ -88,6 +99,16 @@ function buildTargetHref(row: ReportRow): string | null {
       return row.comment ? `/admin/moderation?state=all&user=${row.comment.userId}` : null;
     // Katalog flashcard sengaja tidak punya editor admin: perbaikannya lewat
     // fixture lalu `seed:flashcard`. Isi kartu ditampilkan di antrean ini.
+    // Bunpou juga tanpa editor admin; tautannya ke halaman publik supaya isi yang
+    // sedang tayang bisa dibaca. Pola yang dipensiunkan sudah 404 di sana.
+    case "BUNPOU_POINT":
+      return row.bunpouPoint && !row.bunpouPoint.retiredAt
+        ? `/bunpou/${row.bunpouPoint.key}`
+        : null;
+    case "BUNPOU_COMPARISON":
+      return row.bunpouComparison && !row.bunpouComparison.retiredAt
+        ? `/bunpou/compare/${row.bunpouComparison.key}`
+        : null;
     case "FLASHCARD_VOCAB":
     case "GENERAL":
       return null;
@@ -105,6 +126,10 @@ function isTargetMissing(row: ReportRow): boolean {
       return row.comment === null;
     case "FLASHCARD_VOCAB":
       return row.vocab === null;
+    case "BUNPOU_POINT":
+      return row.bunpouPoint === null;
+    case "BUNPOU_COMPARISON":
+      return row.bunpouComparison === null;
     case "GENERAL":
       return false;
   }
@@ -118,6 +143,18 @@ function toFlashcardTarget(row: ReportRow): ReportFlashcardTarget | null {
     retiredAt: row.vocab.retiredAt,
     content: toCardContent(row.vocab),
   };
+}
+
+function toBunpouTarget(row: ReportRow): ReportBunpouTarget | null {
+  if (row.bunpouPoint) {
+    const { key, level, retiredAt } = row.bunpouPoint;
+    return { kind: "point", key, level, retiredAt };
+  }
+  if (row.bunpouComparison) {
+    const { key, retiredAt } = row.bunpouComparison;
+    return { kind: "comparison", key, retiredAt };
+  }
+  return null;
 }
 
 function statusFilter(state: ReportQueryInput["state"]): Prisma.ReportWhereInput {
@@ -162,8 +199,21 @@ export async function listReportQueue(filter: ReportQueryInput) {
   const articleIds = [...new Set(rows.flatMap((row) => (row.articleId ? [row.articleId] : [])))];
   const commentIds = [...new Set(rows.flatMap((row) => (row.commentId ? [row.commentId] : [])))];
   const vocabIds = [...new Set(rows.flatMap((row) => (row.vocabId ? [row.vocabId] : [])))];
+  const bunpouPointIds = [
+    ...new Set(rows.flatMap((row) => (row.bunpouPointId ? [row.bunpouPointId] : []))),
+  ];
+  const bunpouComparisonIds = [
+    ...new Set(rows.flatMap((row) => (row.bunpouComparisonId ? [row.bunpouComparisonId] : []))),
+  ];
 
-  const [questionGroups, articleGroups, commentGroups, vocabGroups] = await Promise.all([
+  const [
+    questionGroups,
+    articleGroups,
+    commentGroups,
+    vocabGroups,
+    bunpouPointGroups,
+    bunpouComparisonGroups,
+  ] = await Promise.all([
     questionIds.length
       ? prisma.report.groupBy({
           by: ["questionId"],
@@ -192,6 +242,20 @@ export async function listReportQueue(filter: ReportQueryInput) {
           _count: { _all: true },
         })
       : Promise.resolve([]),
+    bunpouPointIds.length
+      ? prisma.report.groupBy({
+          by: ["bunpouPointId"],
+          where: { ...openWhere, bunpouPointId: { in: bunpouPointIds } },
+          _count: { _all: true },
+        })
+      : Promise.resolve([]),
+    bunpouComparisonIds.length
+      ? prisma.report.groupBy({
+          by: ["bunpouComparisonId"],
+          where: { ...openWhere, bunpouComparisonId: { in: bunpouComparisonIds } },
+          _count: { _all: true },
+        })
+      : Promise.resolve([]),
   ]);
 
   const openByQuestion = new Map(
@@ -200,6 +264,12 @@ export async function listReportQueue(filter: ReportQueryInput) {
   const openByArticle = new Map(articleGroups.map((group) => [group.articleId, group._count._all]));
   const openByComment = new Map(commentGroups.map((group) => [group.commentId, group._count._all]));
   const openByVocab = new Map(vocabGroups.map((group) => [group.vocabId, group._count._all]));
+  const openByBunpouPoint = new Map(
+    bunpouPointGroups.map((group) => [group.bunpouPointId, group._count._all]),
+  );
+  const openByBunpouComparison = new Map(
+    bunpouComparisonGroups.map((group) => [group.bunpouComparisonId, group._count._all]),
+  );
 
   function otherOpenOnTarget(row: ReportRow) {
     const total = row.questionId
@@ -210,7 +280,11 @@ export async function listReportQueue(filter: ReportQueryInput) {
           ? openByComment.get(row.commentId)
           : row.vocabId
             ? openByVocab.get(row.vocabId)
-            : undefined;
+            : row.bunpouPointId
+              ? openByBunpouPoint.get(row.bunpouPointId)
+              : row.bunpouComparisonId
+                ? openByBunpouComparison.get(row.bunpouComparisonId)
+                : undefined;
     if (total === undefined) return 0;
     // Baris ini sendiri ikut terhitung hanya bila statusnya masih terbuka.
     const includesSelf = OPEN_STATUSES.includes(row.status);
@@ -222,6 +296,7 @@ export async function listReportQueue(filter: ReportQueryInput) {
     targetHref: buildTargetHref(row),
     targetMissing: isTargetMissing(row),
     flashcard: toFlashcardTarget(row),
+    bunpou: toBunpouTarget(row),
     otherOpenOnTarget: otherOpenOnTarget(row),
     // Balasan hanya satu kali, dan hanya bila pelapor memang meninggalkan alamat.
     canReply: Boolean(row.replyEmail) && row.repliedAt === null,

@@ -33,9 +33,31 @@ contract wajib memiliki migration dan catatan ringkas di dokumen/PR perubahan. J
 
 ## Ledger
 
-### 1 Oktober 2026 - Katalog Bunpou Phase A
+### 2 Oktober 2026 - Pola dan perbandingan bunpou sebagai target laporan
 
 - Status: required (belum di-deploy)
+- Migration: `prisma/migrations/20261002120000_report_bunpou_enum/migration.sql` lalu
+  `prisma/migrations/20261002120100_report_bunpou_target/migration.sql`. Dipisah dua karena nilai
+  enum baru tidak boleh dipakai di transaksi yang menambahkannya (SQLSTATE 55P04).
+- Alasan: isi pola dan perbandingan ditulis AI, jadi user perlu jalur untuk melaporkan yang keliru.
+- Object terdampak: enum `ReportTargetType` (+`BUNPOU_POINT`, `BUNPOU_COMPARISON`), enum
+  `ReportCategory` (+`CONNECTION_ERROR`); kolom `Report.bunpouPointId` dan
+  `Report.bunpouComparisonId` dengan FK `ON DELETE SET NULL`, index, CHECK
+  `Report_target_columns_check` yang didefinisikan ulang, dan dua partial unique index anti-banjir.
+- Data existing: tidak ada backfill; seluruh baris lama punya kedua kolom NULL sehingga CHECK baru
+  langsung terpenuhi.
+- Risiko operasi: `DROP`/`ADD CONSTRAINT` CHECK memindai tabel `Report` yang kecil. Kode baru
+  membaca kolom ini di antrean `/admin/report`, jadi migration wajib diterapkan **sebelum** deploy
+  kode; kode lama tidak terpengaruh kolom baru.
+- Validasi: `npx prisma validate`, `src/features/report/report-migrations.test.ts`, typecheck,
+  lint, test, build.
+- Refresh setelah deploy: `npx prisma generate` lalu redeploy. Tidak ada cache yang perlu
+  diinvalidasi.
+- Owner: Engineering Owner.
+
+### 1 Oktober 2026 - Katalog Bunpou Phase A
+
+- Status: deployed (2 Oktober 2026; seed 227 point)
 - Migration: `prisma/migrations/20261001200000_bunpou_catalog/migration.sql`. Ditulis tangan;
   `prisma migrate dev` tidak dipakai karena shadow database Supabase tidak tersedia untuk project
   ini.

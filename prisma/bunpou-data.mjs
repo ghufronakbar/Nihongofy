@@ -729,7 +729,7 @@ export function validateCatalog(pointFiles, manifest, taxonomy) {
       orders.add(point.order);
       if (point.family) {
         const members = families.get(point.family) ?? [];
-        members.push(point);
+        members.push({ level, point });
         families.set(point.family, members);
       }
       for (const problem of pointIdentityProblems(level, point, taxonomy)) {
@@ -744,11 +744,14 @@ export function validateCatalog(pointFiles, manifest, taxonomy) {
   for (const [family, members] of families) {
     if (members.length < 2) warnings.push(`family "${family}" hanya memiliki satu anggota`);
     const labels = new Set();
-    for (const member of members) {
+    for (const { level, point: member } of members) {
       const label = member.content?.senseLabel?.toLowerCase();
       if (!label) continue;
-      if (labels.has(label)) errors.push(`family "${family}": senseLabel "${label}" ganda`);
-      labels.add(label);
+      const identity = `${level}:${label}`;
+      if (labels.has(identity)) {
+        errors.push(`family "${family}": senseLabel "${label}" ganda di ${level}`);
+      }
+      labels.add(identity);
     }
   }
 

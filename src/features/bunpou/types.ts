@@ -58,10 +58,15 @@ export type BunpouContent = {
 export type BunpouComparisonLink = { key: string; title: string; summary: string };
 
 export type BunpouPointDetail = {
+  /** `BunpouPoint.id`, untuk target laporan. */
+  id: number;
   point: BunpouPointSummary;
   content: BunpouContent;
   updatedAt: Date;
-  /** Makna lain dari bentuk yang sama, termasuk pola ini sendiri, urut level lalu `order`. */
+  /**
+   * Makna dari bentuk yang sama, termasuk pola ini sendiri, satu entri per
+   * makna, urut level lalu `order`.
+   */
   family: BunpouPointSummary[];
   comparisons: BunpouComparisonLink[];
   /** Pola lain dengan fungsi yang sama, di luar family. */
@@ -83,6 +88,8 @@ export type BunpouComparisonContent = {
 };
 
 export type BunpouComparisonDetail = {
+  /** `BunpouComparison.id`, untuk target laporan. */
+  id: number;
   key: string;
   title: string;
   content: BunpouComparisonContent;

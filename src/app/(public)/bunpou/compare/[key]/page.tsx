@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/seo/json-ld";
+import { FEATURES } from "@/constants";
 import { BunpouComparisonView } from "@/features/bunpou/components/bunpou-comparison-view";
 import { getBunpouComparisonDetail } from "@/features/bunpou/queries";
 import { BunpouKeySchema } from "@/features/bunpou/schemas";
@@ -62,7 +63,7 @@ export default async function BunpouComparisonPage({ params }: Props) {
           ]),
         ]}
       />
-      <BunpouComparisonView detail={detail} />
+      <BunpouComparisonView detail={detail} reportEnabled={FEATURES.report} />
     </main>
   );
 }

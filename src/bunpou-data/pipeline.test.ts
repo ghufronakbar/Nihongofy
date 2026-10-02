@@ -12,6 +12,7 @@ import {
   pointPublicationFlags,
   recomputePointOrders,
   toRomaji,
+  validateCatalog,
 } from "../../prisma/bunpou-data.mjs";
 
 const temporaryDirectories: string[] = [];
@@ -156,6 +157,62 @@ describe("urutan dan pencarian", () => {
 
   it("mengubah kana, sokuon, dan katakana menjadi romaji pencarian", () => {
     expect(toRomaji("ガッコウ・で・べんきょうする")).toBe("gakkou de benkyousuru");
+  });
+});
+
+describe("validasi family lintas level", async () => {
+  const taxonomy = await loadTaxonomy();
+
+  function familyPoint(level: "N5" | "N4", key: string, order: number) {
+    const deck = `${level.toLowerCase()}-bunpou`;
+    return point({
+      key,
+      order,
+      family: "de",
+      title: "〜で",
+      source: {
+        ...point().source,
+        slides: [`${deck}/${deck}-1.png`],
+      },
+      content: { ...validContent(), title: "〜で", senseLabel: "tempat tindakan" },
+      ai: { model: "text-model", promptVersion: "bunpou-content-v4", generatedAt: "2026-10-01T00:00:00.000Z", doubt: null },
+    });
+  }
+
+  it("mengizinkan senseLabel yang sama pada level berbeda", () => {
+    const files = emptyPointFiles();
+    files.get("N5")!.points = [familyPoint("N5", "de-tempat-n5", 1)];
+    files.get("N4")!.points = [familyPoint("N4", "de-tempat-n4", 1)];
+    const manifest = {
+      decks: [
+        { key: "n5-bunpou", level: "N5", order: 1 },
+        { key: "n4-bunpou", level: "N4", order: 1 },
+      ],
+      slides: [
+        { path: "n5-bunpou/n5-bunpou-1.png", sha256: "n5", level: "N5", deck: "n5-bunpou", sequence: 1, points: ["de-tempat-n5"], skipped: null },
+        { path: "n4-bunpou/n4-bunpou-1.png", sha256: "n4", level: "N4", deck: "n4-bunpou", sequence: 1, points: ["de-tempat-n4"], skipped: null },
+      ],
+    };
+
+    expect(validateCatalog(files, manifest, taxonomy).errors.join(" ")).not.toContain("senseLabel");
+  });
+
+  it("tetap menolak senseLabel yang sama dalam satu level", () => {
+    const files = emptyPointFiles();
+    files.get("N4")!.points = [
+      familyPoint("N4", "de-tempat-a", 1),
+      familyPoint("N4", "de-tempat-b", 2),
+    ];
+    const manifest = {
+      decks: [{ key: "n4-bunpou", level: "N4", order: 1 }],
+      slides: [
+        { path: "n4-bunpou/n4-bunpou-1.png", sha256: "n4", level: "N4", deck: "n4-bunpou", sequence: 1, points: ["de-tempat-a", "de-tempat-b"], skipped: null },
+      ],
+    };
+
+    expect(validateCatalog(files, manifest, taxonomy).errors.join(" ")).toContain(
+      'family "de": senseLabel "tempat tindakan" ganda di N4',
+    );
   });
 });
 

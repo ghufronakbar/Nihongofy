@@ -9,6 +9,7 @@ import {
   REPORT_TARGET_TYPE_LABELS,
   isReportCategoryAllowed,
   reportCategoriesFor,
+  reportCategoryHint,
   type ReportCategoryValue,
   type ReportTargetTypeValue,
 } from "./constants";
@@ -31,6 +32,8 @@ const TARGET_SAMPLES = {
   ARTICLE: { articleId: 3 },
   COMMENT: { commentId: 5 },
   FLASHCARD_VOCAB: { vocabId: 12 },
+  BUNPOU_POINT: { bunpouPointId: 4 },
+  BUNPOU_COMPARISON: { bunpouComparisonId: 2 },
 } satisfies Record<ReportTargetTypeValue, Record<string, number>>;
 
 function submission(
@@ -94,13 +97,48 @@ describe("peta kategori per target", () => {
     expect(isReportCategoryAllowed("FLASHCARD_VOCAB", "CONTENT_ERROR")).toBe(false);
   });
 
-  it("kategori kosakata hanya berlaku untuk kartu flashcard", () => {
+  // Kategori isi katalog menunjuk bagian fixture tertentu, jadi hanya berlaku
+  // untuk target katalog: kartu flashcard dan pola bunpou.
+  it("kategori isi katalog hanya berlaku untuk kartu flashcard dan pola bunpou", () => {
     for (const targetType of REPORT_TARGET_TYPES) {
-      if (targetType === "FLASHCARD_VOCAB") continue;
-      for (const category of VOCAB_CATEGORIES) {
+      if (targetType === "FLASHCARD_VOCAB" || targetType === "BUNPOU_POINT") continue;
+      for (const category of [...VOCAB_CATEGORIES, "CONNECTION_ERROR"] as const) {
         expect(isReportCategoryAllowed(targetType, category), `${targetType}/${category}`).toBe(
           false,
         );
+      }
+    }
+  });
+
+  it("pola bunpou memakai kategori isi pola, BUG, dan OTHER", () => {
+    expect(reportCategoriesFor("BUNPOU_POINT")).toEqual([
+      "MEANING_ERROR",
+      "CONNECTION_ERROR",
+      "EXAMPLE_ERROR",
+      "READING_ERROR",
+      "BUG",
+      "OTHER",
+    ]);
+    // Tag menentukan deck flashcard; pola bunpou tidak punya deck.
+    expect(isReportCategoryAllowed("BUNPOU_POINT", "TAG_ERROR")).toBe(false);
+    expect(isReportCategoryAllowed("FLASHCARD_VOCAB", "CONNECTION_ERROR")).toBe(false);
+  });
+
+  it("perbandingan bunpou cukup CONTENT_ERROR, BUG, dan OTHER", () => {
+    expect(reportCategoriesFor("BUNPOU_COMPARISON")).toEqual(["CONTENT_ERROR", "BUG", "OTHER"]);
+  });
+
+  it("petunjuk kategori bisa berbeda per target, dengan petunjuk bawaan sebagai cadangan", () => {
+    expect(reportCategoryHint("FLASHCARD_VOCAB", "EXAMPLE_ERROR")).toBe(
+      REPORT_CATEGORY_HINTS.EXAMPLE_ERROR,
+    );
+    expect(reportCategoryHint("BUNPOU_POINT", "EXAMPLE_ERROR")).not.toBe(
+      REPORT_CATEGORY_HINTS.EXAMPLE_ERROR,
+    );
+    expect(reportCategoryHint("BUNPOU_POINT", "BUG")).toBe(REPORT_CATEGORY_HINTS.BUG);
+    for (const targetType of REPORT_TARGET_TYPES) {
+      for (const category of reportCategoriesFor(targetType)) {
+        expect(reportCategoryHint(targetType, category).trim(), `${targetType}/${category}`).toBeTruthy();
       }
     }
   });
@@ -177,6 +215,29 @@ describe("SubmitReportSchema", () => {
     );
     expect(result.success).toBe(true);
     expect(result.data).not.toHaveProperty("vocabId");
+  });
+
+  it.each([
+    ["BUNPOU_POINT", "bunpouPointId", "MEANING_ERROR"],
+    ["BUNPOU_COMPARISON", "bunpouComparisonId", "CONTENT_ERROR"],
+  ] as const)("menolak laporan %s tanpa %s", (targetType, idField, category) => {
+    const result = SubmitReportSchema.safeParse({
+      targetType,
+      category,
+      message: "Penjelasan pola ini bertentangan dengan contoh kalimatnya.",
+    });
+    expect(result.success).toBe(false);
+    expect(result.error?.issues[0]?.path).toEqual([idField]);
+  });
+
+  it("tidak meneruskan FK target lain dari laporan bunpou", () => {
+    const result = SubmitReportSchema.safeParse(
+      submission("BUNPOU_POINT", "CONNECTION_ERROR", { vocabId: 12, bunpouComparisonId: 2 }),
+    );
+    expect(result.success).toBe(true);
+    expect(result.data).toMatchObject({ bunpouPointId: 4 });
+    expect(result.data).not.toHaveProperty("vocabId");
+    expect(result.data).not.toHaveProperty("bunpouComparisonId");
   });
 
   it("menolak target yang tidak dikenal", () => {

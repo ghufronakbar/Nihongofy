@@ -2216,7 +2216,7 @@
       "content": {
         "title": "〜し（〜し）",
         "senseLabel": "alasan berganda",
-        "meaningId": "Menyebutkan beberapa alasan yang mendukung keputusan atau hasil.",
+        "meaningId": "menyebutkan beberapa alasan yang mendukung keputusan atau hasil",
         "meaningEn": "Lists several reasons that support a decision or result.",
         "connections": [
           {
@@ -3110,7 +3110,7 @@
         ],
         "pitfalls": [
           "Dalam pemakaian dasar ini, klausa setelah て／で umumnya tidak berupa permintaan, perintah, ajakan, atau keinginan. Untuk itu, gunakan bentuk alasan lain seperti から atau ので.",
-          "○ {暑|あつ}いから、{窓|まど}を{開|あ}けてください。 ✕ {暑|あつ}くて、{窓|まど}を{開|あ}けてください。",
+          "○ {暑|あつ}いから、{窓|まど}を{開|あ}けてください. ✕ {暑|あつ}くて、{窓|まど}を{開|あ}けてください.",
           "Jangan menganggap semua で setelah nomina berarti alasan. Nomina + で juga dapat memiliki fungsi lain, misalnya menunjukkan tempat atau sarana."
         ],
         "tags": [
@@ -4189,8 +4189,76 @@
         "extractedAt": "2026-10-02T02:00:31.176Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜なければならない",
+        "senseLabel": null,
+        "meaningId": "harus melakukan",
+        "meaningEn": "must; have to",
+        "connections": [
+          {
+            "form": "v-nai-stem",
+            "pattern": "なければならない",
+            "note": "Tambahkan setelah Vない tanpa ない."
+          }
+        ],
+        "formation": [
+          {
+            "label": "kata kerja",
+            "input": "bentuk Vない",
+            "rule": "Hapus ない, lalu tambahkan なければならない.",
+            "output": "Vなければならない",
+            "note": null
+          }
+        ],
+      "variants": [
+        "〜なくてはいけない",
+        "〜ないといけない",
+        "〜なきゃ（いけない）",
+        "〜なくちゃ（いけない）",
+        "〜ないと（いけない）"
+      ],
+        "explanation": [
+          "〜なければならない menyatakan kewajiban atau hal yang wajib dilakukan. Dalam bahasa Indonesia, pola ini biasanya berarti \"harus\" atau \"wajib\".",
+          "Pola ini melekat pada bentuk negatif kata kerja tanpa ない. Walaupun memakai bentuk negatif, arti keseluruhannya bukan \"tidak boleh\", melainkan \"harus melakukan\" tindakan tersebut.",
+        "Untuk ragam sopan, ならない dapat menjadi なりません. Bentuk 〜なくてはいけない dan 〜ないといけない juga menyatakan kewajiban. Dalam percakapan santai, bagian akhir sering dihilangkan menjadi 〜なきゃ, 〜なくちゃ, atau 〜ないと."
+        ],
+        "examples": [
+          {
+            "jp": "{申込書|もうしこみしょ}を{金曜日|きんようび}までに{提出|ていしゅつ}し__なければならない__。",
+            "id": "Formulir pendaftaran harus diserahkan paling lambat hari Jumat.",
+            "en": "The application form must be submitted by Friday."
+          },
+          {
+            "jp": "{海外|かいがい}へ{行|い}く{前|まえ}に、{保険|ほけん}に{入|はい}ら__なければならない__。",
+            "id": "Sebelum pergi ke luar negeri, harus mengambil asuransi.",
+            "en": "You must get insurance before going abroad."
+          },
+          {
+            "jp": "{図書館|としょかん}の{本|ほん}は、{期限|きげん}までに{返|かえ}さ__なければならない__。",
+            "id": "Buku perpustakaan harus dikembalikan sebelum batas waktu.",
+            "en": "Library books must be returned by the deadline."
+          },
+          {
+            "jp": "{運転|うんてん}するときは、{全員|ぜんいん}がシートベルトを{締|し}め__なければならない__。",
+            "id": "Saat berkendara, semua orang harus mengenakan sabuk pengaman.",
+            "en": "When driving, everyone must fasten their seat belt."
+          }
+        ],
+        "pitfalls": [
+          "Gunakan bentuk Vない tanpa ない. ○ {行|い}かなければならない. ✕ {行|い}くなければならない.",
+          "Pola ini menyatakan kewajiban untuk melakukan tindakan, bukan larangan melakukan tindakan.",
+          "Dalam bentuk sopan, gunakan 〜なければなりません, bukan mengganti bagian sebelum なければ."
+        ],
+        "tags": [
+          "obligation"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v4",
+        "generatedAt": "2026-10-02T06:43:19.828Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -7245,7 +7313,7 @@
       "content": {
         "title": "〜たほうがいい",
         "senseLabel": null,
-        "meaningId": "Sebaiknya melakukan sesuatu.",
+        "meaningId": "sebaiknya melakukan sesuatu",
         "meaningEn": "It is better to do something.",
         "connections": [
           {
@@ -7563,7 +7631,7 @@
       "content": {
         "title": "{命令形|めいれいけい}",
         "senseLabel": null,
-        "meaningId": "Perintah langsung yang tegas",
+        "meaningId": "perintah langsung yang tegas",
         "meaningEn": "Direct, forceful command",
         "connections": [
           {
@@ -11823,8 +11891,99 @@
         "extractedAt": "2026-10-02T02:09:15.637Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜みたい",
+        "senseLabel": null,
+        "meaningId": "tampaknya; dugaan berdasarkan petunjuk",
+        "meaningEn": "seems; an inference based on available clues",
+        "connections": [
+          {
+            "form": "v-plain",
+            "pattern": "みたい(だ)",
+            "note": "Dapat mengikuti bentuk positif atau negatif kata kerja."
+          },
+          {
+            "form": "i-adj-plain",
+            "pattern": "みたい(だ)",
+            "note": "Dapat mengikuti bentuk positif atau negatif kata sifat-i."
+          },
+          {
+            "form": "na-adj-stem",
+            "pattern": "みたい(だ)",
+            "note": "Untuk bentuk positif, jangan memakai だ sebelum みたい."
+          },
+          {
+            "form": "n",
+            "pattern": "みたい(だ)",
+            "note": "Untuk nomina positif, jangan memakai だ sebelum みたい."
+          }
+        ],
+        "formation": [
+          {
+            "label": "kata kerja",
+            "input": "bentuk biasa",
+            "rule": "Tambahkan みたい, lalu tambahkan だ atau です bila diperlukan.",
+            "output": "V biasa + みたい(だ)",
+            "note": "Bentuk masu tidak langsung diikuti みたい."
+          },
+          {
+            "label": "kata sifat-i",
+            "input": "bentuk biasa",
+            "rule": "Tambahkan みたい setelah bentuk biasa kata sifat-i.",
+            "output": "i-adj biasa + みたい(だ)",
+            "note": "Bentuk negatif juga dapat dipakai, misalnya おいしくないみたいだ."
+          },
+          {
+            "label": "kata sifat-na dan nomina",
+            "input": "bentuk positif",
+            "rule": "Hilangkan だ, kemudian tambahkan みたい.",
+            "output": "na-adj / N + みたい(だ)",
+            "note": "Bentuk negatif dapat memakai ではないみたいだ."
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜みたい digunakan ketika pembicara menyimpulkan bahwa sesuatu tampaknya benar berdasarkan keadaan, tanda, atau informasi yang ada. Pernyataan ini tidak menyatakan kepastian penuh.",
+          "Pola ini lebih kasual daripada 〜ようだ dan lazim dipakai dalam percakapan. Setelah kata sifat-na dan nomina positif, だ tidak diletakkan sebelum みたい."
+        ],
+        "examples": [
+          {
+            "jp": "{空|そら}が{暗|くら}いから、もうすぐ{雨|あめ}が{降|ふ}る__みたいだ__。",
+            "id": "Langitnya gelap, jadi sepertinya akan segera hujan.",
+            "en": "The sky is dark, so it seems that it will rain soon."
+          },
+          {
+            "jp": "{田中|たなか}さんはまだ{返事|へんじ}がないので、{今日|きょう}は{来|こ}ない__みたいです__。",
+            "id": "Karena Tanaka belum membalas, sepertinya dia tidak datang hari ini.",
+            "en": "Tanaka has not replied yet, so it seems that he will not come today."
+          },
+          {
+        "jp": "あの{人|ひと}は{制服|せいふく}を{着|き}ている。{高校生|こうこうせい}__みたいだ__。",
+        "id": "Orang itu memakai seragam. Sepertinya dia siswa SMA.",
+        "en": "That person is wearing a uniform. They seem to be a high school student."
+          },
+          {
+            "jp": "{電車|でんしゃ}がまだ{来|こ}ない。{事故|じこ}で{遅|おく}れている__みたいだ__。",
+            "id": "Kereta belum datang. Sepertinya terlambat karena kecelakaan.",
+            "en": "The train has not arrived yet. It seems to be delayed because of an accident."
+          }
+        ],
+        "pitfalls": [
+          "Untuk kata sifat-na dan nomina positif, gunakan ○ {元気|げんき}みたいだ, bukan ✕ {元気|げんき}だみたいだ.",
+          "〜みたい menyatakan dugaan atau kesan, bukan fakta yang sudah dipastikan.",
+          "Dalam tulisan resmi atau situasi sangat formal, 〜ようだ sering lebih sesuai daripada 〜みたい."
+        ],
+        "tags": [
+          "conjecture",
+          "casual"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v4",
+        "generatedAt": "2026-10-02T06:45:58.634Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -14424,21 +14583,19 @@
       "order": 138,
       "kind": "particle",
       "sectionKey": "particles",
-      "family": null,
+      "family": "kana-kashira",
       "title": "〜かな／〜かしら",
       "source": {
         "slides": [
           "n4-bunpou/n4-bunpou-77.png"
         ],
         "title": "〜かな　〜かしら",
-        "meaning": "① digunakan ketika pembicara merasa tidak pasti\n② digunakan bersama bentuk negatif untuk menyatakan keinginan",
+        "meaning": "digunakan ketika pembicara merasa tidak pasti",
         "connection": "",
         "formation": [],
         "notes": "",
         "examples": [
-          "試験に 受からないかなあ。",
           "ここは どこかな。",
-          "早く 夏休みが 来ないかなあ。",
           "明日、雨が 降るかしら。"
         ]
       },
@@ -14450,7 +14607,7 @@
       },
       "content": {
         "title": "〜かな／〜かしら",
-        "senseLabel": null,
+        "senseLabel": "ketidakpastian",
         "meaningId": "bertanya-tanya dengan tidak pasti",
         "meaningEn": "wondering with uncertainty",
         "connections": [
@@ -14514,7 +14671,94 @@
         "model": "cx/gpt-5.6-terra",
         "promptVersion": "bunpou-content-v4",
         "generatedAt": "2026-10-02T05:27:38.101Z",
-        "doubt": "Source juga mencantumkan penggunaan dengan bentuk negatif untuk menyatakan harapan. Itu merupakan sense berbeda dan tidak dicampurkan ke content ini agar satu point hanya membahas satu sense."
+        "doubt": null
+      },
+      "review": null
+    },
+    {
+      "key": "nai-kana-kashira-harapan",
+      "order": 139,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": "kana-kashira",
+      "title": "〜ないかな／〜ないかしら",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-77.png"
+        ],
+        "title": "〜かな　〜かしら",
+        "meaning": "digunakan bersama bentuk negatif untuk menyatakan keinginan",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "試験に 受からないかなあ。",
+          "早く 夏休みが 来ないかなあ。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:13:14.940Z",
+        "doubt": null
+      },
+      "content": {
+        "title": "〜ないかな／〜ないかしら",
+        "senseLabel": "harapan",
+        "meaningId": "berharap sesuatu terjadi",
+        "meaningEn": "hoping that something will happen",
+        "connections": [
+          {
+            "form": "v-nai",
+            "pattern": "かな／かしら",
+            "note": "Dipakai setelah bentuk negatif untuk menyatakan harapan pembicara."
+          }
+        ],
+        "formation": [
+          {
+            "label": "kata kerja negatif",
+            "input": "Vない",
+            "rule": "Tambahkan かな atau かしら setelah bentuk ない.",
+            "output": "Vないかな／Vないかしら",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜ないかな dan 〜ないかしら dipakai ketika pembicara mengharapkan suatu keadaan atau peristiwa terjadi. Secara harfiah bentuknya berupa pertanyaan negatif kepada diri sendiri, tetapi maksud utamanya adalah “semoga” atau “andaikan”.",
+          "Pola ini sering digunakan untuk harapan yang tidak dapat langsung dikendalikan pembicara, seperti menunggu seseorang datang, cuaca berubah, atau barang tiba. かな terdengar umum dalam percakapan, sedangkan かしら memberi kesan lebih lembut dan secara tradisional lebih sering dikaitkan dengan tutur perempuan.",
+          "Pola ini bukan permintaan langsung kepada lawan bicara. Walaupun subjeknya dapat berupa orang lain, pembicara hanya mengungkapkan harapan, bukan secara tegas menyuruh orang itu bertindak."
+        ],
+        "examples": [
+          {
+            "jp": "{誰|だれ}か{手伝|てつだ}ってくれ__ないかな__。",
+            "id": "Semoga ada yang mau membantuku.",
+            "en": "I hope someone will help me."
+          },
+          {
+            "jp": "{注文|ちゅうもん}した{本|ほん}が、{今日中|きょうじゅう}に{届|とど}か__ないかな__。",
+            "id": "Semoga buku yang kupesan tiba hari ini.",
+            "en": "I hope the book I ordered arrives today."
+          },
+          {
+            "jp": "{駅前|えきまえ}に{安|やす}い{定食屋|ていしょくや}ができ__ないかしら__。",
+            "id": "Semoga ada rumah makan set menu yang murah di depan stasiun.",
+            "en": "I hope a reasonably priced set-meal restaurant opens near the station."
+          }
+        ],
+        "pitfalls": [
+          "Jangan menafsirkan pola ini sebagai pertanyaan informasi biasa. Dalam konteks ini, pembicara terutama sedang menyatakan harapan.",
+          "〜ないかしら dapat terdengar lebih lembut dan lebih feminin daripada 〜ないかな dalam penggunaan modern."
+        ],
+        "tags": [
+          "desire"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v4",
+        "generatedAt": "2026-10-02T06:46:32.791Z",
+        "doubt": null
       },
       "review": null
     }

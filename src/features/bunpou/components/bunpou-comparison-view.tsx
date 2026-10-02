@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { FuriganaScope } from "@/components/furigana-scope";
 import { JapaneseText } from "@/components/japanese-text";
+import { ReportButton } from "@/features/report/components/report-button";
 import { cn } from "@/lib/utils";
 import { BUNPOU_LICENSE } from "../taxonomy";
 import type { BunpouComparisonDetail, BunpouVerdict } from "../types";
@@ -13,7 +14,13 @@ const VERDICT: Record<BunpouVerdict, { mark: string; label: string; className: s
   wrong: { mark: "✕", label: "Salah", className: "bg-neo-coral/25" },
 };
 
-export function BunpouComparisonView({ detail }: { detail: BunpouComparisonDetail }) {
+export function BunpouComparisonView({
+  detail,
+  reportEnabled,
+}: {
+  detail: BunpouComparisonDetail;
+  reportEnabled: boolean;
+}) {
   const { content } = detail;
   const pointByKey = new Map(detail.points.map((point) => [point.key, point]));
 
@@ -128,7 +135,16 @@ export function BunpouComparisonView({ detail }: { detail: BunpouComparisonDetai
         </div>
       </section>
 
-      <p className="mt-8 text-xs font-semibold text-muted-foreground">Konten: {BUNPOU_LICENSE}</p>
+      <footer className="mt-8 flex flex-wrap items-center justify-between gap-3">
+        <p className="text-xs font-semibold text-muted-foreground">Konten: {BUNPOU_LICENSE}</p>
+        {reportEnabled ? (
+          <ReportButton
+            target={{ targetType: "BUNPOU_COMPARISON", bunpouComparisonId: detail.id }}
+            variant="outline"
+            label="Laporkan perbandingan ini"
+          />
+        ) : null}
+      </footer>
     </article>
   );
 }

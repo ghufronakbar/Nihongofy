@@ -19,6 +19,7 @@ import {
   REPORT_TARGET_LABEL_MAX_LENGTH,
   REPORT_USER_AGENT_MAX_LENGTH,
 } from "./constants";
+import { bunpouComparisonReportLabel, bunpouPointReportLabel } from "./lib/bunpou-target";
 import { flashcardReportLabel } from "./lib/flashcard-target";
 import {
   SubmitReportSchema,
@@ -41,6 +42,7 @@ const TURNSTILE_FAILED_MESSAGE =
 const DUPLICATE_MESSAGE =
   "Anda sudah mengirim laporan untuk hal yang sama dan masih kami tinjau.";
 const VOCAB_NOT_FOUND_MESSAGE = "Kartu yang dilaporkan tidak ditemukan.";
+const BUNPOU_NOT_FOUND_MESSAGE = "Pola yang dilaporkan tidak ditemukan.";
 
 /**
  * Konteks form yang hanya diketahui server: apakah pengirimnya perlu melewati
@@ -108,7 +110,7 @@ function createReportRateLimitBuckets(
 /** Hanya kolom FK target; sisa baris disusun oleh `submitReportAction`. */
 type TargetColumns = Pick<
   Prisma.ReportUncheckedCreateInput,
-  "questionId" | "articleId" | "commentId" | "vocabId"
+  "questionId" | "articleId" | "commentId" | "vocabId" | "bunpouPointId" | "bunpouComparisonId"
 >;
 
 type ResolvedTarget =
@@ -219,6 +221,41 @@ async function resolveTarget(
     };
   }
 
+  if (values.targetType === "BUNPOU_POINT") {
+    const point = await prisma.bunpouPoint.findUnique({
+      where: { id: values.bunpouPointId },
+      select: { id: true, key: true, level: true, retiredAt: true },
+    });
+    if (!point) return { ok: false, message: BUNPOU_NOT_FOUND_MESSAGE };
+    // Pola yang dipensiunkan sudah 404 di /bunpou; laporannya hanya mungkin
+    // datang dari tab lama.
+    if (point.retiredAt) {
+      return { ok: false, message: "Pola ini sudah tidak diterbitkan, jadi tidak perlu dilaporkan." };
+    }
+
+    return {
+      ok: true,
+      targetLabel: truncate(bunpouPointReportLabel(point), REPORT_TARGET_LABEL_MAX_LENGTH),
+      data: { bunpouPointId: point.id },
+    };
+  }
+
+  if (values.targetType === "BUNPOU_COMPARISON") {
+    const comparison = await prisma.bunpouComparison.findUnique({
+      where: { id: values.bunpouComparisonId },
+      select: { id: true, key: true, retiredAt: true },
+    });
+    if (!comparison || comparison.retiredAt) {
+      return { ok: false, message: "Perbandingan yang dilaporkan sudah tidak diterbitkan." };
+    }
+
+    return {
+      ok: true,
+      targetLabel: truncate(bunpouComparisonReportLabel(comparison), REPORT_TARGET_LABEL_MAX_LENGTH),
+      data: { bunpouComparisonId: comparison.id },
+    };
+  }
+
   const question = await prisma.question.findUnique({
     where: { id: values.questionId },
     select: {
@@ -273,6 +310,13 @@ export async function submitReportAction(
   // Turnstile dan rate limit supaya penolakan ini tidak memakan jatah pelapor.
   if (values.targetType === "FLASHCARD_VOCAB" && !FEATURES.flashcard) {
     return { ok: false, message: VOCAB_NOT_FOUND_MESSAGE };
+  }
+  // Alasan yang sama untuk tombol laporan di bawah /bunpou.
+  if (
+    (values.targetType === "BUNPOU_POINT" || values.targetType === "BUNPOU_COMPARISON") &&
+    !FEATURES.bunpou
+  ) {
+    return { ok: false, message: BUNPOU_NOT_FOUND_MESSAGE };
   }
 
   const session = await getSession();

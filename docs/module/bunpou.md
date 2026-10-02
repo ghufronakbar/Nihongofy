@@ -5,9 +5,9 @@
 **Fase A: data dan UI publik selesai di kode, belum live (2 Oktober 2026).** Kontrak, taxonomy,
 generator, validator, schema, dan migration katalog tersedia. Fixture berisi 90 point N5 (36
 slide) dan 138 point N4 (77 slide). Halaman `/bunpou`, `/bunpou/[key]`, dan
-`/bunpou/compare/[key]` beserta SEO dan flag `FEATURES_BUNPOU` sudah dibuat. Yang tersisa sebelum
-live: `migrate deploy`, perbaikan fixture sampai `seed:bunpou:check` lulus, `seed:bunpou`, lalu
-uji manual. Kontrak datanya ada di [seed-bunpou.md](../seed-bunpou.md).
+`/bunpou/compare/[key]` beserta SEO dan flag `FEATURES_BUNPOU` sudah dibuat. Migration sudah
+diterapkan dan seed menerbitkan 227 pola (2 pola N4 masih pending). Yang tersisa sebelum live:
+uji manual lalu deploy. Kontrak datanya ada di [seed-bunpou.md](../seed-bunpou.md).
 
 ## Feature Flag
 
@@ -76,14 +76,17 @@ Metadata memakai `pageMetadata()`, structured data `LearningResource`, dan halam
   `?level=` dengan `history.replaceState`, sehingga tautan breadcrumb dari halaman detail kembali
   ke level yang sama. Saat ada kata kunci, pencarian berlaku di semua level. Pencocokan dan filter
   ada di `lib/catalog-filter.ts`; katakana pada kata kunci diubah ke hiragana.
+- Tab family menampilkan satu entri per `senseLabel`. Makna yang sama di beberapa level diwakili
+  pola yang sedang dibuka, atau entri dari level terdekat.
 - Halaman detail menampilkan family sebagai tab, sambungan sebagai badge bentuk baku, tabel
   `formation`, penjelasan, contoh dengan sorotan pola dan TTS browser, pitfalls, perbandingan yang
   memuat pola ini, dan sampai enam pola lain dengan tag fungsi yang sama (level terdekat dulu).
   Sebelum/sesudah hanya dalam level yang sama.
 - Perbandingan yang salah satu polanya sudah dipensiunkan dianggap tidak ada (404), karena
   tabelnya tidak lagi utuh.
-- Belum ada: tombol laporan (menunggu `BUNPOU_POINT`/`BUNPOU_COMPARISON` di `ReportTargetType`)
-  dan kartu bunpou di home.
+- Tombol "Laporkan pola ini" dan "Laporkan perbandingan ini" (target `BUNPOU_POINT` dan
+  `BUNPOU_COMPARISON`) tampil bila `FEATURES_REPORT` aktif; detailnya di
+  [report.md](report.md). Home menampilkan kartu Bunpou yang mengikuti flag.
 
 ## Fase B — Tautan ke Soal JLPT Asli
 

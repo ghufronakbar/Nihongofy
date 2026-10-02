@@ -8,6 +8,7 @@ import {
   ReportQuerySchema,
   ReportStateFilterSchema,
 } from "@/features/admin/report/schemas";
+import { BunpouReportPanel } from "@/features/admin/report/components/bunpou-report-panel";
 import { FlashcardReportPanel } from "@/features/admin/report/components/flashcard-report-panel";
 import { ReportActions } from "@/features/admin/report/components/report-actions";
 import { ReportReplyForm } from "@/features/admin/report/components/report-reply-form";
@@ -106,6 +107,12 @@ export default async function AdminReportPage({
     (filter.targetType === "FLASHCARD_VOCAB" ||
       entries.some((entry) => entry.targetType === "FLASHCARD_VOCAB"));
 
+  const isBunpouTarget = (targetType: string | undefined) =>
+    targetType === "BUNPOU_POINT" || targetType === "BUNPOU_COMPARISON";
+  const bunpouOff =
+    !FEATURES.bunpou &&
+    (isBunpouTarget(filter.targetType) || entries.some((entry) => isBunpouTarget(entry.targetType)));
+
   return (
     <div className="flex flex-col gap-6">
       <div>
@@ -126,6 +133,13 @@ export default async function AdminReportPage({
         <p className="border-[3px] border-neo-ink bg-neo-yellow px-4 py-2.5 text-sm font-bold text-black shadow-neo-sm">
           Modul flashcard sedang nonaktif (FEATURES_FLASHCARD=false). Tidak ada laporan kartu baru
           yang dapat masuk, tetapi laporan kartu yang sudah ada tetap dapat ditindak dari sini.
+        </p>
+      )}
+
+      {bunpouOff && (
+        <p className="border-[3px] border-neo-ink bg-neo-yellow px-4 py-2.5 text-sm font-bold text-black shadow-neo-sm">
+          Modul bunpou sedang nonaktif (FEATURES_BUNPOU=false). Tidak ada laporan pola baru yang
+          dapat masuk, tetapi laporan yang sudah ada tetap dapat ditindak dari sini.
         </p>
       )}
 
@@ -297,6 +311,8 @@ export default async function AdminReportPage({
               {entry.flashcard && (
                 <FlashcardReportPanel category={entry.category} flashcard={entry.flashcard} />
               )}
+
+              {entry.bunpou && <BunpouReportPanel category={entry.category} bunpou={entry.bunpou} />}
 
               {(entry.adminNote || entry.handledBy || entry.repliedAt) && (
                 <div className="flex flex-col gap-1 border-2 border-neo-ink/15 bg-neo-paper p-2.5">
