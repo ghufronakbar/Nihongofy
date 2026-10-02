@@ -88,6 +88,7 @@ export default async function TryDeckPage({ params }: Props) {
         unloadedCounts={EMPTY_STUDY_COUNTS}
         tomorrow={null}
         hasMore={false}
+        generatedAt={now.toISOString()}
         display={FLASHCARD_DEFAULT_DISPLAY}
         // SELALU ephemeral, termasuk untuk user yang sudah login: mode coba
         // tidak boleh menyentuh jadwal siapa pun.

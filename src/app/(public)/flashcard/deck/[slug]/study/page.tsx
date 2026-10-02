@@ -43,6 +43,7 @@ export default async function StudyPage({ params }: Props) {
         unloadedCounts={study.unloadedCounts}
         tomorrow={study.tomorrow}
         hasMore={study.hasMore}
+        generatedAt={study.generatedAt}
         display={study.display}
         isGuest={false}
         reportEnabled={FEATURES.report}

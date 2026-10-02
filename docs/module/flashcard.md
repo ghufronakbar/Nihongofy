@@ -106,10 +106,17 @@ Rancangan lama (paritas Anki penuh) tetap ada di
 - **Insertion order** dihitung, bukan disimpan: "sequential" mengikuti urutan katalog (level
   termudah dulu, lalu urutan daftar sumber), "random" memakai hash per user yang stabil.
   Mengganti opsi ini langsung berlaku untuk semua kartu baru, seperti di Anki.
-- **Learn ahead 20 menit.** Kartu learning hanya tampil saat jatuh tempo (atau dalam 20 menit ke
-  depan). Kartu dengan step 2 jam ditahan reviewer dan tampil tepat waktu dalam sesi yang sama;
-  bila tidak ada kartu lain, reviewer menampilkan jam tampil berikutnya. Kode lama memasukkan
-  semua kartu learning hari ini sekaligus, sehingga step jam tidak pernah dihormati.
+- **Learn ahead 20 menit.** Kartu learning tampil saat jatuh tempo, dan lebih awal (sampai 20 menit)
+  hanya bila tidak ada kartu lain, seperti Anki. Kartu yang dijawab Again (1m) karena itu tidak
+  langsung tampil lagi: kartu lain lebih dulu, lalu ia kembali begitu 1 menit lewat. Antrean server
+  hanya memuat kartu learning yang sudah jatuh tempo; sisanya dikirim terpisah dan ditahan
+  reviewer, termasuk step jam yang tampil tepat waktu dalam sesi yang sama. Bila tidak ada kartu
+  lain, reviewer menampilkan jam tampil berikutnya.
+- **Aksi belajar tidak me-revalidate halaman.** Jawab, undo, tunda, dan suspend tidak memanggil
+  `revalidatePath`: Server Action yang me-revalidate membuat halaman belajar dirender ulang,
+  antrean dibangun ulang (urutan acak berubah), dan sesi ter-reset — kartu yang baru di-Again
+  tampil lagi dan hitungan kembali ke nol. Halaman flashcard dinamis dan tidak disimpan router
+  (`staleTimes.dynamic = 0`), jadi halaman lain tetap segar saat dibuka.
 - **Tunda** menyimpan `buriedUntil` (awal hari berikutnya), **suspend** menyimpan
   `isSuspended`. Keduanya tidak menimpa jadwal kartu, dan kartu tertunda muncul lagi tanpa job
   unbury.

@@ -667,6 +667,7 @@ export async function getStudySession(userId: number, slug: string) {
     unloadedCounts,
     tomorrow,
     hasMore: built.queue.length > selected.length,
+    generatedAt: now.toISOString(),
   };
 }
 

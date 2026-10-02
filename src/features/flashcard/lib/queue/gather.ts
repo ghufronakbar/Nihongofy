@@ -1,5 +1,4 @@
 import type { FlashcardConfig } from "../../schemas";
-import { LEARN_AHEAD_MS } from "../learn-ahead";
 import { getFlashcardDayEnd, type FlashcardDayContext } from "../scheduler/day";
 import { gatherNewCards, sortNewCards, sortReviewCards, type RandomFn } from "./sort";
 import type { QueueBudget, QueueCandidate, QueueCounts, QueueEntry } from "./types";
@@ -20,13 +19,16 @@ export type BuildQueueInput = {
   config: FlashcardConfig;
   now: Date;
   day: FlashcardDayContext;
-  learnAheadMs?: number;
   random?: RandomFn;
 };
 
 export type BuildQueueResult = {
   queue: QueueEntry[];
-  /** Kartu learning yang jatuh tempo nanti hari ini, urut dari yang terdekat. */
+  /**
+   * Kartu learning yang belum jatuh tempo tetapi masih hari ini, urut dari yang
+   * terdekat. Reviewer menampilkannya saat jatuh tempo, atau lebih awal (learn
+   * ahead) hanya bila tidak ada kartu lain.
+   */
   laterLearning: QueueEntry[];
   counts: QueueCounts;
 };
@@ -35,7 +37,6 @@ export function buildQueue(input: BuildQueueInput): BuildQueueResult {
   const { candidates, budget, config, now, day } = input;
   const random = input.random ?? Math.random;
   const dayEnd = getFlashcardDayEnd(now, day).getTime();
-  const learnAheadCutoff = now.getTime() + (input.learnAheadMs ?? LEARN_AHEAD_MS);
 
   const intraday: QueueEntry[] = [];
   const laterLearning: QueueEntry[] = [];
@@ -50,12 +51,16 @@ export function buildQueue(input: BuildQueueInput): BuildQueueResult {
     }
     // Interday learning dan review jatuh tempo per HARI (seperti Anki yang
     // menyimpannya sebagai nomor hari), jadi seluruh yang due hari ini ikut.
-    // Intraday learning jatuh tempo per MENIT: yang belum waktunya ditahan.
+    // Intraday learning jatuh tempo per MENIT: yang belum waktunya ditahan,
+    // termasuk yang masih di dalam batas learn ahead. Learn ahead hanya berlaku
+    // saat tidak ada kartu lain (Anki: "when there is nothing left to study"),
+    // dan itu keputusan reviewer, bukan urutan antrean. Menaruhnya di depan
+    // antrean membuat kartu yang baru dijawab Again (1m) langsung tampil lagi.
     if (card.due.getTime() >= dayEnd) continue;
 
     if (card.queue === "LEARNING") {
       const entry: QueueEntry = { ...card, group: "intradayLearning" };
-      if (card.due.getTime() <= learnAheadCutoff) intraday.push(entry);
+      if (card.due.getTime() <= now.getTime()) intraday.push(entry);
       else laterLearning.push(entry);
     } else if (card.queue === "DAY_LEARN") {
       interday.push({ ...card, group: "interdayLearning" });

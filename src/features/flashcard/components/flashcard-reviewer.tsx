@@ -50,6 +50,8 @@ type Props = {
   tomorrow: TomorrowWindow | null;
   /** Antrean server lebih panjang dari potongan yang dikirim. */
   hasMore: boolean;
+  /** ISO, saat antrean dibangun; dasar pilihan kartu pertama (tanpa jam client saat render). */
+  generatedAt: string;
   display: FlashcardDisplay;
   /**
    * Guest memakai mode coba: antrean berjalan penuh di client, tidak ada
@@ -159,19 +161,31 @@ function reducer(state: QueueState, action: QueueAction): QueueState {
   }
 }
 
-function initialState(cards: ReviewerCard[], pending: PendingLearningCard[]): QueueState {
-  const [first, ...rest] = cards;
-  return {
-    current: first ?? null,
-    main: rest,
-    learning: pending
-      .map(({ dueAt, ...card }) => ({ card, dueAt: Date.parse(dueAt) }))
-      .sort((left, right) => left.dueAt - right.dueAt),
-    revealed: false,
-    furiganaShown: false,
-    answers: [],
-    turn: 0,
-  };
+/**
+ * Kartu pertama dipilih dengan aturan yang sama dengan sepanjang sesi: bila
+ * antrean utama kosong tetapi ada kartu learning dalam batas learn ahead, kartu
+ * itu langsung tampil alih-alih layar istirahat.
+ */
+function initialState(
+  cards: ReviewerCard[],
+  pending: PendingLearningCard[],
+  now: number,
+): QueueState {
+  return pickNext(
+    {
+      current: null,
+      main: cards,
+      learning: pending
+        .map(({ dueAt, ...card }) => ({ card, dueAt: Date.parse(dueAt) }))
+        .sort((left, right) => left.dueAt - right.dueAt),
+      revealed: false,
+      furiganaShown: false,
+      answers: [],
+      // pickNext menaikkannya menjadi 0 untuk kartu pertama.
+      turn: -1,
+    },
+    now,
+  );
 }
 
 /**
@@ -215,13 +229,14 @@ export function FlashcardReviewer({
   unloadedCounts,
   tomorrow,
   hasMore,
+  generatedAt,
   display,
   isGuest,
   reportEnabled,
 }: Props) {
   const router = useRouter();
   const [state, dispatch] = useReducer(reducer, undefined, () =>
-    initialState(cards, pendingLearning),
+    initialState(cards, pendingLearning, Date.parse(generatedAt)),
   );
   const [pending, setPending] = useState(false);
   const [lastReview, setLastReview] = useState<{ token: string; card: ReviewerCard } | null>(null);

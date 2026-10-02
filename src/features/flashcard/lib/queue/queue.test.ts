@@ -138,11 +138,21 @@ describe("urutan pengambilan", () => {
 });
 
 describe("learn ahead", () => {
-  it("kartu learning dalam 20 menit ke depan ikut tampil", () => {
+  it("kartu learning yang belum jatuh tempo ditahan, meski masih dalam batas learn ahead", () => {
+    // Learn ahead hanya berlaku saat tidak ada kartu lain; itu urusan reviewer.
     const soon = learningCard(10);
     const { queue, laterLearning } = build([soon]);
-    expect(ids(queue)).toEqual([soon.vocabId]);
-    expect(laterLearning).toHaveLength(0);
+    expect(queue).toHaveLength(0);
+    expect(ids(laterLearning)).toEqual([soon.vocabId]);
+  });
+
+  it("kartu yang baru dijawab Again (1m) tidak mendahului kartu lain", () => {
+    const again = learningCard(1);
+    const fresh = card();
+    const review = reviewCard();
+    const { queue, laterLearning } = build([again, fresh, review]);
+    expect(ids(queue)).toEqual([review.vocabId, fresh.vocabId]);
+    expect(ids(laterLearning)).toEqual([again.vocabId]);
   });
 
   it("kartu learning dengan step 2 jam ditahan, tidak tampil seketika", () => {
