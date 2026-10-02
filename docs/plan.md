@@ -499,7 +499,8 @@ supaya edit tidak perlu disinkronkan antar tabel.
 - [ ] Verifikasi manual dua akun (user): bagikan catatan dari akun A, baca dan balas dari akun B,
   lalu uji unshare dan hapus — pastikan balasan tetap ada dan isi root tidak bocor
 - [x] Moderasi — selesai di Admin Dashboard tahap 5
-- [ ] Notifikasi balasan dan rate limit posting — masih terbuka, lihat Admin Dashboard tahap 5
+- [x] Rate limit posting — Redis fixed window (8/menit, 60/jam, 300/hari per user) sejak 2 Oktober 2026
+- [ ] Notifikasi balasan — masih terbuka, lihat Admin Dashboard tahap 5
 - [x] Pembersihan asset Cloudinary — diputuskan **di luar scope**: takedown hanya mengubah record
   database, file asli tidak dihapus
 
@@ -656,8 +657,8 @@ satu-satunya konten buatan user yang terlihat publik, termasuk oleh guest.
   keterangan ini
 - [x] Riwayat kontribusi publik per user: klik nama penulis memfilter antrean dan menampilkan
   ringkasan (jumlah catatan, balasan, dan berapa kali kena takedown)
-- [ ] Rate limit pembuatan catatan/balasan — sekarang tidak ada sama sekali (hanya batas 2.000
-  karakter dan 4 gambar); pakai ulang pola bucket atomik `AuthRateLimit`
+- [x] Rate limit pembuatan catatan/balasan — Redis fixed window `COMMENT_WRITE_RATE_LIMITS`
+  (2 Oktober 2026, bersama catatan kata flashcard), bukan bucket `AuthRateLimit`
 - [x] Buka `/discussion` untuk mesin pencari (2 Oktober 2026), sekaligus `/flashcard/discussion` dan
   diskusi di halaman pola bunpou. Halaman diskusi tanpa entri `noindex, follow`; halaman yang
   berisi masuk sitemap. `robots.txt` di-prerender saat build → butuh redeploy
