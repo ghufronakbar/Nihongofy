@@ -33,10 +33,12 @@ export function DiscussionPageThreads({
   roots,
   currentUserId,
   reportEnabled,
+  emptyText,
 }: {
   roots: DiscussionRoot[];
   currentUserId: number | null;
   reportEnabled: boolean;
+  emptyText?: string;
 }) {
   const router = useRouter();
 
@@ -47,6 +49,7 @@ export function DiscussionPageThreads({
       onChanged={() => router.refresh()}
       showPermalink
       reportEnabled={reportEnabled}
+      emptyText={emptyText}
     />
   );
 }

@@ -14,6 +14,7 @@ import type { ModerationQueryInput } from "./schemas";
 const moderationSelect = {
   id: true,
   questionId: true,
+  vocabId: true,
   parentId: true,
   commentText: true,
   commentImages: true,
@@ -37,6 +38,8 @@ const moderationSelect = {
       },
     },
   },
+  // Catatan kata flashcard: tepat satu dari `question`/`vocab` terisi.
+  vocab: { select: { id: true, level: true, wordPlain: true, reading: true } },
 } satisfies Prisma.QuestionCommentSelect;
 
 type ModerationRow = Prisma.QuestionCommentGetPayload<{ select: typeof moderationSelect }>;

@@ -13,6 +13,7 @@ import {
 } from "@/features/admin/moderation/schemas";
 import { ModerationActions } from "@/features/admin/moderation/components/moderation-actions";
 import { mondaiTypeFullLabel } from "@/constants/jlpt";
+import { discussionThreadHref } from "@/features/question-comment/target";
 
 export const metadata: Metadata = { title: "Moderasi - Admin" };
 
@@ -67,12 +68,24 @@ export default async function AdminModerationPage({
         </p>
       </div>
 
-      {!FEATURES.questionDiscussion && (
-        <p className="border-[3px] border-neo-ink bg-neo-yellow px-4 py-2.5 text-sm font-bold text-black shadow-neo-sm">
-          Diskusi publik sedang nonaktif (FEATURES_QUESTION_DISCUSSION=false). Tidak ada konten
-          yang terlihat pengunjung saat ini, tetapi datanya tetap ada dan dapat dimoderasi.
-        </p>
-      )}
+      {[
+        { off: !FEATURES.questionDiscussion, label: "Diskusi soal", env: "FEATURES_QUESTION_DISCUSSION" },
+        {
+          off: !FEATURES.flashcardDiscussion,
+          label: "Diskusi kata flashcard",
+          env: "FEATURES_FLASHCARD_DISCUSSION",
+        },
+      ]
+        .filter((surface) => surface.off)
+        .map((surface) => (
+          <p
+            key={surface.env}
+            className="border-[3px] border-neo-ink bg-neo-yellow px-4 py-2.5 text-sm font-bold text-black shadow-neo-sm"
+          >
+            {surface.label} sedang nonaktif ({surface.env}=false). Kontennya tidak terlihat
+            pengunjung saat ini, tetapi datanya tetap ada dan dapat dimoderasi.
+          </p>
+        ))}
 
       <div className="flex flex-wrap items-center gap-3">
         <div className="flex flex-wrap gap-2">
@@ -145,7 +158,6 @@ export default async function AdminModerationPage({
         <ul className="flex flex-col gap-4">
           {entries.map((entry) => {
             const badge = STATE_BADGE[entry.state];
-            const { testPackageItem } = entry.question;
             return (
               <li
                 key={entry.id}
@@ -188,13 +200,34 @@ export default async function AdminModerationPage({
 
                 <div className="flex flex-wrap items-center gap-3 border-t-2 border-neo-ink/15 pt-3">
                   <span className="font-mono text-[11px] font-bold text-foreground/60">
-                    {testPackageItem.testPackage.jlptLevel} ·{" "}
-                    {testPackageItem.testPackage.name} ·{" "}
-                    {mondaiTypeFullLabel(testPackageItem.mondaiType)} · soal{" "}
-                    {entry.question.order}
+                    {entry.question ? (
+                      <>
+                        {entry.question.testPackageItem.testPackage.jlptLevel} ·{" "}
+                        {entry.question.testPackageItem.testPackage.name} ·{" "}
+                        {mondaiTypeFullLabel(entry.question.testPackageItem.mondaiType)} · soal{" "}
+                        {entry.question.order}
+                      </>
+                    ) : entry.vocab ? (
+                      <>
+                        Flashcard · {entry.vocab.level} ·{" "}
+                        <span lang="ja" className="font-japanese">
+                          {entry.vocab.wordPlain}
+                          {entry.vocab.reading !== entry.vocab.wordPlain
+                            ? ` (${entry.vocab.reading})`
+                            : ""}
+                        </span>
+                      </>
+                    ) : null}
                   </span>
                   <Link
-                    href={`/discussion/${entry.parentId ?? entry.id}`}
+                    href={discussionThreadHref(
+                      {
+                        id: entry.parentId ?? entry.id,
+                        questionId: entry.questionId,
+                        vocabId: entry.vocabId,
+                      },
+                      entry.id,
+                    )}
                     target="_blank"
                     className="inline-flex items-center gap-1 font-mono text-[11px] font-bold text-foreground/60 hover:text-neo-blue"
                   >

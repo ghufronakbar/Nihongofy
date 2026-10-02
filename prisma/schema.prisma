@@ -395,8 +395,9 @@ model FlashcardVocab {
 
   retiredAt DateTime?
 
-  cards   FlashcardCard[]
-  reports Report[]
+  cards    FlashcardCard[]
+  reports  Report[]
+  comments QuestionComment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -874,11 +875,23 @@ model QuestionExplanationChoice {
 // Tidak pernah hard delete: `deletedAt` membuat root tampil sebagai tombstone
 // supaya balasan orang lain tidak ikut hilang. Isi teks/gambar comment yang
 // deletedAt-nya terisi tidak boleh ikut dikirim ke client.
+// Catatan belajar dan diskusi publik. Satu tabel melayani dua target — soal
+// (`questionId`) dan kata flashcard (`vocabId`) — supaya aturan tombstone,
+// balasan, mention, moderasi, laporan, dan anonimisasi akun berlaku sama untuk
+// keduanya. Tepat satu target terisi; CHECK-nya hanya ada di SQL migration
+// (`QuestionComment_target_check`) karena Prisma tidak dapat mengekspresikannya.
 model QuestionComment {
   id Int @id @default(autoincrement())
 
-  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  questionId Int
+  question   Question? @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId Int?
+
+  // Kata katalog, bukan kartu milik user: catatan untuk satu kata berlaku di
+  // semua deck yang memuatnya. Restrict seperti `FlashcardCard.vocabId` — kata
+  // tidak pernah dihapus (hanya `retiredAt`), dan penghapusan yang tidak
+  // disengaja tidak boleh ikut memusnahkan percakapan.
+  vocab   FlashcardVocab? @relation(fields: [vocabId], references: [id], onDelete: Restrict)
+  vocabId Int?
 
   // Restrict, bukan Cascade: menghapus baris user akan ikut menghancurkan
   // balasan orang lain pada thread miliknya. Penghapusan akun menganonimkan
@@ -936,6 +949,10 @@ model QuestionComment {
   @@index([questionId, parentId, sharedAt])
   // Antrean moderasi: seluruh entri publik lintas soal, terbaru dulu.
   @@index([sharedAt])
+  // Padanan tiga index di atas untuk catatan dan diskusi kata flashcard.
+  @@index([vocabId])
+  @@index([vocabId, userId, deletedAt])
+  @@index([vocabId, parentId, sharedAt])
   @@index([deletedById])
   @@index([repliedToId])
 }

@@ -168,6 +168,7 @@ async function resolveTarget(
             },
           },
         },
+        vocab: { select: { level: true, wordPlain: true } },
       },
     });
 
@@ -183,11 +184,16 @@ async function resolveTarget(
       };
     }
 
-    const { testPackageItem } = comment.question;
+    // Tepat satu target terisi (CHECK di database): soal atau kata flashcard.
+    const where = comment.question
+      ? `${comment.question.testPackageItem.testPackage.jlptLevel} ${comment.question.testPackageItem.testPackage.name} · soal ${comment.question.order}`
+      : comment.vocab
+        ? `kata ${comment.vocab.level} ${comment.vocab.wordPlain}`
+        : "target tidak dikenal";
     return {
       ok: true,
       targetLabel: truncate(
-        `Diskusi · ${testPackageItem.testPackage.jlptLevel} ${testPackageItem.testPackage.name} · soal ${comment.question.order} · @${comment.user.username}`,
+        `Diskusi · ${where} · @${comment.user.username}`,
         REPORT_TARGET_LABEL_MAX_LENGTH,
       ),
       data: { commentId: comment.id },

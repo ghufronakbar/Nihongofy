@@ -4,6 +4,7 @@ import {
   COMMENT_IMAGE_MAX_COUNT,
   COMMENT_IMAGE_MAX_FILE_SIZE_BYTES,
 } from "@/constants/storage";
+import { CommentTargetSchema } from "./target";
 
 // Bentuk URL divalidasi di sini; kepemilikan object (harus hasil upload user ini
 // ke bucket kita, atau aset Cloudinary lama) dicek server lewat
@@ -20,7 +21,7 @@ const commentTextSchema = z
 export const CommentVisibilitySchema = z.enum(["PRIVATE", "PUBLIC"]);
 
 export const AddQuestionCommentSchema = z.object({
-  questionId: z.number().int().positive(),
+  target: CommentTargetSchema,
   commentText: commentTextSchema,
   commentImages: commentImagesSchema,
   // Wajib dikirim eksplisit, bukan default schema: `.default()` membuat tipe
@@ -39,7 +40,7 @@ export const DeleteQuestionCommentSchema = z.object({
   commentId: z.number().int().positive(),
 });
 
-// Balasan mewarisi questionId dan visibility dari root, jadi input hanya butuh
+// Balasan mewarisi target dan visibility dari root, jadi input hanya butuh
 // parent. Balasan tidak punya toggle visibility sendiri.
 export const ReplyQuestionCommentSchema = z.object({
   parentId: z.number().int().positive(),
@@ -56,8 +57,12 @@ export const SetQuestionCommentVisibilitySchema = z.object({
   visibility: CommentVisibilitySchema,
 });
 
-export const GetQuestionDiscussionSchema = z.object({
-  questionId: z.number().int().positive(),
+export const GetDiscussionSchema = z.object({
+  target: CommentTargetSchema,
+});
+
+export const GetOwnVocabNotesSchema = z.object({
+  vocabId: z.number().int().positive(),
 });
 
 export const CreateCommentImageUploadSchema = z.object({
@@ -77,5 +82,6 @@ export type ReplyQuestionCommentInput = z.infer<typeof ReplyQuestionCommentSchem
 export type SetQuestionCommentVisibilityInput = z.infer<
   typeof SetQuestionCommentVisibilitySchema
 >;
-export type GetQuestionDiscussionInput = z.infer<typeof GetQuestionDiscussionSchema>;
+export type GetDiscussionInput = z.infer<typeof GetDiscussionSchema>;
+export type GetOwnVocabNotesInput = z.infer<typeof GetOwnVocabNotesSchema>;
 export type CreateCommentImageUploadInput = z.infer<typeof CreateCommentImageUploadSchema>;

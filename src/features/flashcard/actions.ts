@@ -29,6 +29,14 @@ type ActionResult<T = undefined> =
 
 const SIGN_IN_MESSAGE = "Masuk dulu untuk menyimpan progres.";
 
+// Aksi yang dipanggil reviewer (jawab, undo, tunda, suspend) sengaja TIDAK
+// memanggil revalidatePath. Server Action yang me-revalidate apa pun membuat
+// router me-render ulang halaman yang sedang dibuka: halaman belajar membangun
+// antrean baru, reviewer di-mount ulang, dan sesi (hitungan, ringkasan, undo)
+// hilang. Semua halaman flashcard dinamis dan router tidak menyimpannya
+// (staleTimes.dynamic = 0), jadi halaman lain tetap segar saat dibuka; daftar
+// kata deck me-refresh dirinya sendiri setelah aksinya.
+
 function isUniqueViolation(error: unknown) {
   return error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002";
 }
@@ -313,7 +321,6 @@ export async function answerCardAction(input: AnswerCardInput): Promise<ActionRe
   const returnsToday =
     result.card.queue === "LEARNING" && !leechSuspends && result.card.due < dayEnd;
 
-  revalidatePath("/flashcard");
   return {
     ok: true,
     data: {
@@ -382,7 +389,6 @@ export async function undoReviewAction(input: { clientToken: string }): Promise<
     ]);
   }
 
-  revalidatePath("/flashcard");
   return { ok: true };
 }
 
@@ -425,10 +431,7 @@ export async function buryCardAction(input: {
     update: { buriedUntil },
   });
 
-  // Hanya beranda: me-revalidate layout ikut me-render ulang halaman belajar,
-  // yang akan membangun antrean baru dan mereset sesi yang sedang berjalan.
-  // Halaman lain yang memanggil aksi ini me-refresh dirinya sendiri.
-  revalidatePath("/flashcard");
+  // Tanpa revalidatePath: lihat catatan di atas SIGN_IN_MESSAGE.
   return { ok: true };
 }
 
@@ -462,8 +465,7 @@ export async function setCardSuspendedAction(input: {
     });
   }
 
-  // Lihat catatan di buryCardAction.
-  revalidatePath("/flashcard");
+  // Tanpa revalidatePath: lihat catatan di atas SIGN_IN_MESSAGE.
   return { ok: true };
 }
 

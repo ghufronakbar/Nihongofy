@@ -32,7 +32,7 @@ Dilaporkan:
 | `QUESTION` | Exam runner, latihan cepat, mode baca paket, review hasil | `questionId` |
 | `QUESTION_EXPLANATION` | Kartu pembahasan di mode baca, review hasil, latihan cepat | `questionId` |
 | `ARTICLE` | Halaman artikel publik | `articleId` |
-| `COMMENT` | Thread diskusi (root dan balasan), permalink, sheet diskusi | `commentId` |
+| `COMMENT` | Thread diskusi soal dan kata flashcard (root dan balasan), permalink, sheet diskusi | `commentId` |
 | `FLASHCARD_VOCAB` | Reviewer (setelah sisi belakang dibuka), daftar kata `/flashcard/deck/[slug]`, mode coba `/flashcard/try/[slug]` | `vocabId` |
 
 Pembahasan dilaporkan lewat `questionId`, **bukan** id pembahasannya. Pembahasan di-upsert oleh

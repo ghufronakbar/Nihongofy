@@ -4,6 +4,8 @@
 
 **Catatan belajar pribadi selesai; berbagi catatan ke diskusi publik dan balasan satu tingkat sudah aktif.** User login dapat menambah, mengedit, menghapus, dan melampirkan gambar pada soal di mode baca dan result detail, lalu membagikan catatan itu ke diskusi yang dapat dibaca semua orang termasuk guest.
 
+**Sejak 2 Oktober 2026 modul ini melayani dua target: soal JLPT dan kata flashcard.** Tabel, action, query, komponen, moderasi, dan laporannya sama; permukaan flashcard-nya dijelaskan di [flashcard.md](flashcard.md#catatan-dan-diskusi-kata). Semua tulisan dibatasi rate limit Redis.
+
 ## Feature Flag
 
 Dua flag terpisah.
@@ -22,6 +24,14 @@ Dua flag terpisah.
 - `addQuestionCommentAction` menolak `visibility: "PUBLIC"`, tetapi catatan privat tetap bisa ditulis.
 - Catatan yang sudah publik tidak diubah menjadi privat; hanya tidak ada permukaan yang menampilkannya.
 
+`FEATURES_FLASHCARD_DISCUSSION` (default `true`, otomatis mati bila `FEATURES_FLASHCARD` mati) menjadi
+satu-satunya flag untuk catatan **dan** diskusi kata flashcard. Kedua flag soal di atas tidak
+memengaruhi target kata, dan sebaliknya. Saat flag ini mati: blok Catatanku, tombol Diskusi di
+reviewer, ikon di daftar kata deck, dan `/flashcard/discussion/*` hilang (404), dan seluruh action
+dengan target kata memanggil `notFound()`. Flag ditentukan per target: action berbasis `commentId`
+membaca target catatannya dulu. Upload gambar hidup bila salah satu dari `FEATURES_QUESTION_COMMENT`
+atau `FEATURES_FLASHCARD_DISCUSSION` hidup.
+
 ## Scope
 
 - Catatan default privat. Publik hanya terjadi karena tindakan eksplisit pemiliknya.
@@ -32,6 +42,12 @@ Dua flag terpisah.
 ## Model Data
 
 Satu tabel `QuestionComment` untuk catatan pribadi dan thread publik — yang dibagikan adalah record yang sama, bukan salinannya, sehingga edit tidak perlu disinkronkan antar tabel.
+
+- **Target:** tepat satu dari `questionId` (soal) atau `vocabId` (kata flashcard di katalog, bukan
+  kartu milik user) terisi. CHECK `QuestionComment_target_check` (`num_nonnulls(...) = 1`) hanya ada
+  di SQL migration. Balasan selalu mewarisi target root-nya, jadi satu thread tidak pernah bercampur.
+  Di kode, target diwakili `CommentTarget` (`target.ts`), yang juga membentuk tautan:
+  thread soal → `/discussion/<rootId>`, thread kata → `/flashcard/discussion/<vocabId>#comment-<id>`.
 
 - `visibility` (`PRIVATE` | `PUBLIC`) — status saat ini.
 - `sharedAt` — terisi saat pertama kali dibagikan, **tidak pernah dikosongkan lagi**. Ini penentu keanggotaan thread publik, bukan `visibility`.
@@ -59,6 +75,18 @@ Balasan yang dihapus langsung hilang dari tampilan tanpa tombstone, karena tidak
 - **Thread mati bersifat read-only.** Balasan baru ditolak bila root sudah dihapus atau dikembalikan ke privat.
 - **Balasan mewarisi visibility root** dan tidak punya toggle sendiri; `setQuestionCommentVisibilityAction` menolak comment yang punya `parentId`.
 - Comment yang sudah di-soft delete tidak bisa diedit, dibagikan, atau dibalas (`requireOwnLiveComment()`).
+- **Rate limit tulis** (`COMMENT_WRITE_RATE_LIMITS`, Redis fixed window per user, gabungan soal dan
+  flashcard): 8 per menit, 60 per jam, 300 per hari, untuk membuat catatan, membalas, menyunting,
+  dan membagikan ke diskusi. Menghapus dan menarik kembali ke privat tidak dibatasi. Upload gambar
+  punya kuota sendiri (`COMMENT_IMAGE_UPLOAD_RATE_LIMITS`: 40 per jam, 150 per hari). Percobaan yang
+  ditolak tetap dihitung. Gagal tertutup: tanpa Redis, session pun tidak tervalidasi.
+- **Penolakan dikembalikan, bukan dilempar.** Action tulis mengembalikan
+  `{ ok: true } | { ok: false, message }` supaya pesan rate limit sampai ke user (pesan error Server
+  Action disamarkan di produksi). Input tidak valid dan akses terlarang tetap `notFound()`/throw.
+- Kata yang sudah pensiun (`retiredAt`) tidak menerima catatan baru; catatan lamanya tetap terbaca.
+- **Komponen menerima callback, bukan selalu `router.refresh()`.** `CommentItem` (`onChanged`),
+  `QuestionCommentForm` (`onSaved`), dan `DiscussionSheet` (`onPosted`) dipakai di reviewer
+  flashcard, tempat refresh halaman membangun ulang antrean dan mereset sesi belajar.
 
 ## Performa
 
@@ -104,13 +132,35 @@ Ketiganya memakai `DiscussionQuestionCard` yang sama untuk merender soal, kunci,
 
 - **Belum ada laporan dari user.** Moderasi admin sudah ada (`/admin/moderation`: antrean, sembunyikan root, takedown, pulihkan takedown admin, filter per user), tetapi penyalahgunaan hanya ketahuan bila admin memeriksa antrean secara aktif. Rem darurat `FEATURES_QUESTION_DISCUSSION=false` tetap tersedia.
 - **Tidak ada notifikasi** saat catatan dibalas — aplikasi belum punya sistem notifikasi sama sekali.
+- **Belum ada upvote** — lihat [Fitur Mendatang](#fitur-mendatang-upvote).
 - **Lampiran di object storage tidak pernah terhapus**, termasuk saat takedown admin. Ini keputusan eksplisit: takedown bekerja di level record database saja, dan pembersihan asset fisik berada di luar scope modul admin.
-- Tidak ada rate limit khusus pada pembuatan comment/balasan; yang ada hanya batas 2.000 karakter dan 4 gambar.
+- Rate limit per user saja, tidak per IP; satu orang dengan banyak akun tetap bisa menulis lebih banyak.
+  Batas isi tetap 2.000 karakter dan 4 gambar.
 - Tidak ada pencarian, tag, pin, export, atau halaman agregat semua catatan.
 - Guest melihat form catatan pribadi, tetapi submit diarahkan ke login.
 
+## Fitur Mendatang: Upvote
+
+Belum dikerjakan; dicatat di sini supaya rancangannya tidak hilang. Berlaku untuk diskusi soal
+**dan** diskusi kata flashcard, karena keduanya satu tabel.
+
+- **Tujuan:** menaikkan pembahasan dan jembatan keledai yang paling membantu, terutama di kata
+  flashcard yang populer, alih-alih hanya urutan terbaru.
+- **Data:** tabel `QuestionCommentVote` (`commentId`, `userId`, `createdAt`, PK
+  `commentId + userId`) — satu suara per user, bisa ditarik. Tidak ada downvote: tanpa moderasi
+  aktif, downvote mudah dipakai untuk merundung. Jumlah suara dihitung lewat `groupBy`, atau
+  disimpan sebagai kolom cache bila sudah terasa lambat.
+- **Aturan:** tidak bisa memberi suara pada catatan sendiri, catatan privat, atau tombstone; balasan
+  boleh diberi suara; suara ikut terhapus saat akun dianonimkan.
+- **Tampilan:** urutan thread "Paling membantu" di samping "Terbaru"; label "Diskusi (n)" tetap
+  menghitung entri, bukan suara.
+- **Rate limit:** kuota sendiri di Redis (mis. 60 suara per jam) supaya tidak menghabiskan kuota tulis.
+- **Moderasi:** antrean admin menampilkan jumlah suara; takedown tidak menghapus suara, hanya
+  menyembunyikan entrinya.
+
 ## File Utama
 
+- `src/features/question-comment/target.ts` — `CommentTarget` dan pembentuk tautan
 - `src/features/question-comment/actions.ts`
 - `src/features/question-comment/queries.ts`
 - `src/features/question-comment/schemas.ts`
@@ -124,4 +174,6 @@ Ketiganya memakai `DiscussionQuestionCard` yang sama untuk merender soal, kunci,
 - `src/features/question-comment/components/reply-form.tsx`
 - `src/app/(public)/discussion/layout.tsx`
 - `src/app/(public)/discussion/[commentId]/page.tsx`
-- `src/features/admin/moderation/` — antrean dan action takedown milik admin, terpisah dari action user di atas yang tetap menolak non-pemilik
+- `src/features/question-comment/components/discussion-tabs.tsx` — tab Soal | Kosakata
+- `src/lib/rate-limit.ts`, `src/lib/redis-rate-limit.ts` — rate limit fixed window
+- `src/features/admin/moderation/` — antrean dan action takedown milik admin (menampilkan konteks soal atau kata), terpisah dari action user di atas yang tetap menolak non-pemilik

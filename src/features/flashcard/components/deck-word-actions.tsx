@@ -1,14 +1,17 @@
 "use client";
 
 import { useTransition } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Ban, Loader2, RotateCcw, Undo2 } from "lucide-react";
+import { Ban, Loader2, MessageSquareText, RotateCcw, Undo2 } from "lucide-react";
 import { ReportButton } from "@/features/report/components/report-button";
 import { resetCardAction, setCardSuspendedAction } from "../actions";
 import type { DeckWordStatus } from "../types";
 
 type Props = {
+  /** Jumlah catatan pribadi dan entri diskusi kata ini; null bila fiturnya mati. */
+  discussion: { notes: number; entries: number } | null;
   deckSlug: string;
   /** Suspend dan reset hanya untuk deck yang sedang ditambahkan. */
   cardActions: boolean;
@@ -26,6 +29,7 @@ type Props = {
  * deck ini; kartu kata yang sama di deck lain tidak tersentuh.
  */
 export function DeckWordActions({
+  discussion,
   deckSlug,
   cardActions,
   vocabId,
@@ -58,6 +62,23 @@ export function DeckWordActions({
   return (
     <div className="flex shrink-0 items-center gap-1">
       {pending ? <Loader2 className="size-4 animate-spin" aria-label="Menyimpan" /> : null}
+      {discussion ? (
+        <Link
+          href={`/flashcard/discussion/${vocabId}`}
+          className="neo-button min-h-9 gap-1 bg-white px-2 py-1 text-xs tabular-nums"
+          aria-label={`Catatan dan diskusi ${word}: ${discussion.notes} catatanku, ${discussion.entries} diskusi`}
+          title="Catatan dan diskusi"
+        >
+          <MessageSquareText className="size-4" aria-hidden />
+          {discussion.notes + discussion.entries > 0 ? (
+            <span>
+              {discussion.notes > 0 ? `${discussion.notes}✎` : null}
+              {discussion.notes > 0 && discussion.entries > 0 ? " · " : null}
+              {discussion.entries > 0 ? discussion.entries : null}
+            </span>
+          ) : null}
+        </Link>
+      ) : null}
       {cardActions ? (
         <button
           type="button"
