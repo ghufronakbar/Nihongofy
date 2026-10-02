@@ -3,7 +3,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { FEATURES } from "@/constants";
 import { getSession } from "@/lib/auth";
-import { buildPreviewLabels, getCatalogDeck, getTrySession } from "@/features/flashcard/data";
+import {
+  buildPreviewLabels,
+  getCardDiscussionData,
+  getCatalogDeck,
+  getTrySession,
+} from "@/features/flashcard/data";
 import { FlashcardReviewer } from "@/features/flashcard/components/flashcard-reviewer";
 import { createNewCardState } from "@/features/flashcard/lib/scheduler";
 import { EMPTY_STUDY_COUNTS } from "@/features/flashcard/lib/session-summary";
@@ -53,7 +58,15 @@ export default async function TryDeckPage({ params }: Props) {
   const trial = await getTrySession(deck.slug);
   if (!trial || trial.rows.length === 0) notFound();
 
-  const session = await getSession();
+  const [session, discussion] = await Promise.all([
+    getSession(),
+    // Mode coba tidak menyimpan apa pun milik user, jadi hanya diskusi publik:
+    // tanpa catatan pribadi, meski user sedang login.
+    getCardDiscussionData(
+      null,
+      trial.rows.map((row) => row.vocabId),
+    ),
+  ]);
   const now = new Date();
 
   // Guest selalu bertemu kartu baru, jadi label tombol cukup dihitung sekali.
@@ -88,6 +101,7 @@ export default async function TryDeckPage({ params }: Props) {
         unloadedCounts={EMPTY_STUDY_COUNTS}
         tomorrow={null}
         hasMore={false}
+        generatedAt={now.toISOString()}
         display={FLASHCARD_DEFAULT_DISPLAY}
         // SELALU ephemeral, termasuk untuk user yang sudah login: mode coba
         // tidak boleh menyentuh jadwal siapa pun.
@@ -95,6 +109,8 @@ export default async function TryDeckPage({ params }: Props) {
         // Guest boleh melapor (docs/module/report.md): dialognya meminta
         // Turnstile bila tidak ada session, sama seperti laporan dari ujian guest.
         reportEnabled={FEATURES.report}
+        discussion={discussion}
+        currentUserId={session?.userId ?? null}
       />
     </main>
   );

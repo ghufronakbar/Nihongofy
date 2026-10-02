@@ -1116,11 +1116,29 @@ Keputusan desain dan alasannya ada di `docs/module/flashcard.md`; kontrak datany
   pengaturan dari deck lain, tombol Pengaturan dan pemakaian batas harian di halaman deck.
 - [x] Statistik per deck di halaman deck (progres, kematangan young/mature, retensi 30 hari,
   perkiraan 7 hari, kata tersulit) dan filter deck di `/flashcard/stats` (1 Okt 2026).
+- [x] Perbaikan (2 Okt 2026): kartu yang dijawab Again langsung tampil lagi dan sesi ter-reset.
+  Penyebabnya dua: action belajar memanggil `revalidatePath` sehingga halaman belajar dirender
+  ulang tiap jawaban, dan antrean server menaruh kartu learning dalam batas learn ahead di depan.
+  Diuji di browser (build produksi lokal): sebelum perbaikan kartu yang sama tampil lagi dengan
+  "0 dijawab"; sesudahnya kartu lain tampil dulu dan kartu Again kembali setelah 1 menit.
+
+- [x] Catatan dan diskusi per kata (2 Okt 2026): `QuestionComment` dibuat polimorfik (`questionId`
+  atau `vocabId`, CHECK tepat satu), Catatanku tampil di sisi belakang kartu, sheet diskusi di
+  reviewer tanpa mereset sesi, halaman `/flashcard/discussion` dan `/flashcard/discussion/[vocabId]`,
+  ikon di daftar kata deck, konteks kata di moderasi admin dan label laporan, flag
+  `FEATURES_FLASHCARD_DISCUSSION`, serta rate limit Redis untuk semua tulisan catatan (soal dan
+  flashcard) dan upload gambar. Migration `20261002090000_comment_flashcard_vocab_target` hanya
+  menambah kolom. Diuji terhadap Postgres + Redis lokal dan di browser.
+- [ ] Upvote catatan dan diskusi (soal dan kata) — fitur mendatang, rancangan di
+  `docs/module/question-comment.md#fitur-mendatang-upvote`.
 
 ### Langkah tersisa (dijalankan pemilik project)
 
 - [ ] `npx prisma migrate deploy` untuk `20261001180000_flashcard_cards_per_deck` (mengosongkan
   kartu, revlog, langganan, dan pengaturan flashcard semua user).
+- [ ] `npx prisma migrate deploy` untuk `20261002090000_comment_flashcard_vocab_target` (hanya
+  menambah kolom, tidak mengubah data), lalu `FEATURES_FLASHCARD_DISCUSSION` di environment Vercel
+  (kosong = `true`).
 
 - [x] `npx prisma migrate deploy` (1 Okt 2026).
 - [x] Commit dan deploy kode flashcard baru dengan flag mati (sampai PR #50).

@@ -59,6 +59,15 @@ Stack: Next.js + Prisma + PostgreSQL (Supabase).
 
 ## Komentar dan Diskusi
 
+- `QuestionComment` melayani dua target: soal (`questionId`, `Cascade`) dan kata flashcard
+  (`vocabId` ke `FlashcardVocab`, `Restrict` seperti `FlashcardCard.vocabId`). Tepat satu terisi —
+  CHECK `QuestionComment_target_check` hanya ada di SQL migration
+  `20261002090000_comment_flashcard_vocab_target`, karena Prisma tidak dapat mengekspresikannya.
+  Karena tidak ada FK yang SET NULL, CHECK ini tidak dapat menggagalkan penghapusan targetnya.
+  Balasan mewarisi target root-nya. Index target kata meniru index soal: `vocabId`,
+  `(vocabId, userId, deletedAt)`, `(vocabId, parentId, sharedAt)`.
+- Query yang mengelompokkan per target wajib membuang baris target lain: `groupBy` pada
+  `questionId` kini juga mengembalikan grup `null` (catatan kata), dan sebaliknya.
 - `QuestionComment.deletedAt` adalah soft delete; baris tidak pernah dihapus permanen karena
   balasan user lain menempel pada root.
 - `QuestionComment.deletedById` mencatat siapa yang menghapus. Hapusan pemilik terisi dengan

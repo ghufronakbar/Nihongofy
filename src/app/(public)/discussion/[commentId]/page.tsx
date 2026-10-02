@@ -9,6 +9,7 @@ import {
 import { DiscussionPermalinkThread } from "@/features/question-comment/components/discussion-permalink-thread";
 import { DiscussionQuestionCard } from "@/features/question-comment/components/discussion-question-card";
 import { FEATURES } from "@/constants";
+import { discussionThreadHref } from "@/features/question-comment/target";
 import { mondaiTypeFullLabel } from "@/constants/jlpt";
 import type { Metadata } from "next";
 import { privateMetadata } from "@/lib/seo";
@@ -32,6 +33,18 @@ export default async function DiscussionPermalinkPage({
 
   const resolved = await resolveDiscussionRootId(commentIdNum);
   if (!resolved) notFound();
+
+  // Thread kata flashcard dibaca di halaman katanya. Tautan yang dibuat aplikasi
+  // sudah langsung ke sana; ini untuk permalink yang dibentuk dari id saja.
+  if (resolved.vocabId !== null) {
+    if (!FEATURES.flashcardDiscussion) notFound();
+    redirect(
+      discussionThreadHref(
+        { id: resolved.rootId, questionId: null, vocabId: resolved.vocabId },
+        commentIdNum,
+      ),
+    );
+  }
 
   // Balasan tidak punya halaman sendiri — arahkan ke thread induknya dan biarkan
   // anchor membawa pembaca langsung ke balasan yang dimaksud.

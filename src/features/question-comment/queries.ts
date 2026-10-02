@@ -3,6 +3,7 @@ import "server-only";
 import type { JlptLevel, MondaiType, Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { QUESTION_EXPLANATION_SELECT } from "@/lib/question-explanation";
+import { targetWhere, type CommentTarget } from "./target";
 
 // ============================================================
 // BENTUK DATA YANG DIKIRIM KE CLIENT
@@ -40,7 +41,9 @@ export type DiscussionRootState = "VISIBLE" | "HIDDEN" | "DELETED";
 
 export type DiscussionRoot = {
   id: number;
-  questionId: number;
+  // Tepat satu terisi: soal JLPT atau kata flashcard.
+  questionId: number | null;
+  vocabId: number | null;
   state: DiscussionRootState;
   createdAt: Date;
   // Empat field di bawah hanya terisi saat state === "VISIBLE". Untuk tombstone
@@ -63,6 +66,7 @@ const discussionAuthorSelect = {
 const discussionRootSelect = {
   id: true,
   questionId: true,
+  vocabId: true,
   commentText: true,
   commentImages: true,
   visibility: true,
@@ -125,6 +129,7 @@ function toDiscussionRoot(row: RawDiscussionRoot): DiscussionRoot {
     return {
       id: row.id,
       questionId: row.questionId,
+      vocabId: row.vocabId,
       state,
       createdAt: row.createdAt,
       commentText: null,
@@ -138,6 +143,7 @@ function toDiscussionRoot(row: RawDiscussionRoot): DiscussionRoot {
   return {
     id: row.id,
     questionId: row.questionId,
+    vocabId: row.vocabId,
     state,
     createdAt: row.createdAt,
     commentText: row.commentText,
@@ -155,18 +161,26 @@ function isWorthRendering(root: DiscussionRoot) {
 }
 
 // ============================================================
-// THREAD PER SOAL
+// THREAD PER TARGET (SOAL ATAU KATA)
 // ============================================================
 
-export async function getQuestionDiscussion(questionId: number): Promise<DiscussionRoot[]> {
+export async function getDiscussion(target: CommentTarget): Promise<DiscussionRoot[]> {
   const rows = await prisma.questionComment.findMany({
-    where: { questionId, ...publicRootWhere },
+    where: { ...targetWhere(target), ...publicRootWhere },
     orderBy: { createdAt: "desc" },
     select: discussionRootSelect,
   });
 
   return rows.map(toDiscussionRoot).filter(isWorthRendering);
 }
+
+// Yang dihitung adalah entri yang benar-benar tampil: root publik yang masih
+// hidup, ditambah seluruh balasan hidup — termasuk balasan pada root yang
+// sudah disembunyikan atau dihapus, karena balasan itu tetap dirender.
+const countedEntryWhere = {
+  deletedAt: null,
+  OR: [{ parentId: { not: null } }, { visibility: "PUBLIC" as const, ...publicRootWhere }],
+} satisfies Prisma.QuestionCommentWhereInput;
 
 // Dipakai halaman mode baca dan result detail hanya untuk label tombol
 // "Diskusi (n)". Thread-nya sendiri baru diambil saat tombol diklik, supaya
@@ -177,24 +191,81 @@ export async function getQuestionDiscussionCounts(
   const counts = new Map<number, number>();
   if (questionIds.length === 0) return counts;
 
-  // Yang dihitung adalah entri yang benar-benar tampil: root publik yang masih
-  // hidup, ditambah seluruh balasan hidup — termasuk balasan pada root yang
-  // sudah disembunyikan atau dihapus, karena balasan itu tetap dirender.
   const grouped = await prisma.questionComment.groupBy({
     by: ["questionId"],
-    where: {
-      questionId: { in: questionIds },
-      deletedAt: null,
-      OR: [{ parentId: { not: null } }, { visibility: "PUBLIC", ...publicRootWhere }],
-    },
+    where: { questionId: { in: questionIds }, ...countedEntryWhere },
     _count: { _all: true },
   });
 
   for (const row of grouped) {
-    counts.set(row.questionId, row._count._all);
+    if (row.questionId !== null) counts.set(row.questionId, row._count._all);
   }
 
   return counts;
+}
+
+/** Padanan `getQuestionDiscussionCounts` untuk kata flashcard (sesi belajar, daftar kata). */
+export async function getVocabDiscussionCounts(vocabIds: number[]): Promise<Map<number, number>> {
+  const counts = new Map<number, number>();
+  if (vocabIds.length === 0) return counts;
+
+  const grouped = await prisma.questionComment.groupBy({
+    by: ["vocabId"],
+    where: { vocabId: { in: vocabIds }, ...countedEntryWhere },
+    _count: { _all: true },
+  });
+
+  for (const row of grouped) {
+    if (row.vocabId !== null) counts.set(row.vocabId, row._count._all);
+  }
+
+  return counts;
+}
+
+// ============================================================
+// CATATAN PRIBADI MILIK USER
+// ============================================================
+
+export const ownNoteSelect = {
+  id: true,
+  questionId: true,
+  vocabId: true,
+  commentText: true,
+  commentImages: true,
+  visibility: true,
+  createdAt: true,
+  updatedAt: true,
+  user: { select: { displayName: true } },
+} satisfies Prisma.QuestionCommentSelect;
+
+export type OwnNote = Prisma.QuestionCommentGetPayload<{ select: typeof ownNoteSelect }>;
+
+/**
+ * Catatan milik user pada sekumpulan kata, termasuk yang sudah dibagikan.
+ * Balasan (`parentId != null`) hidup di dalam thread publik, jadi tidak ikut —
+ * ini panel "Catatanku", bukan thread.
+ */
+export async function getOwnVocabNotes(
+  userId: number,
+  vocabIds: number[],
+): Promise<Map<number, OwnNote[]>> {
+  const notes = new Map<number, OwnNote[]>();
+  if (vocabIds.length === 0) return notes;
+
+  const rows = await prisma.questionComment.findMany({
+    where: { userId, vocabId: { in: vocabIds }, parentId: null, deletedAt: null },
+    orderBy: { createdAt: "desc" },
+    select: ownNoteSelect,
+  });
+
+  for (const row of rows) {
+    if (row.vocabId === null) continue;
+    const list = notes.get(row.vocabId) ?? [];
+    list.push(row);
+    notes.set(row.vocabId, list);
+  }
+
+  return notes;
 }
 
 // ============================================================
@@ -241,24 +312,26 @@ const permalinkQuestionSelect = {
 export async function resolveDiscussionRootId(commentId: number) {
   const comment = await prisma.questionComment.findUnique({
     where: { id: commentId },
-    select: { id: true, parentId: true, sharedAt: true },
+    select: { id: true, parentId: true, sharedAt: true, questionId: true, vocabId: true },
   });
 
   if (!comment) return null;
-  if (comment.parentId) return { rootId: comment.parentId, isReply: true as const };
+  const target = { questionId: comment.questionId, vocabId: comment.vocabId };
+  if (comment.parentId) return { rootId: comment.parentId, isReply: true as const, ...target };
   if (!comment.sharedAt) return null; // catatan pribadi tidak punya permalink
-  return { rootId: comment.id, isReply: false as const };
+  return { rootId: comment.id, isReply: false as const, ...target };
 }
 
 export async function getDiscussionPermalink(
   rootId: number,
 ): Promise<DiscussionPermalink | null> {
+  // Permalink ini khusus thread soal; thread kata dibaca di halaman katanya.
   const row = await prisma.questionComment.findFirst({
-    where: { id: rootId, ...publicRootWhere },
+    where: { id: rootId, questionId: { not: null }, ...publicRootWhere },
     select: { ...discussionRootSelect, question: { select: permalinkQuestionSelect } },
   });
 
-  if (!row) return null;
+  if (!row?.question) return null;
 
   const root = toDiscussionRoot(row);
   if (!isWorthRendering(root)) return null;
@@ -284,7 +357,7 @@ export async function getQuestionDiscussionPage(
   });
   if (!question) return null;
 
-  return { question, roots: await getQuestionDiscussion(questionId) };
+  return { question, roots: await getDiscussion({ type: "question", questionId }) };
 }
 
 // ============================================================
@@ -305,13 +378,7 @@ export const DISCUSSION_INDEX_PAGE_SIZE = 20;
 
 // Entri yang benar-benar tampil di thread: root publik yang masih hidup plus
 // seluruh balasan hidup. Definisi yang sama dipakai `getQuestionDiscussionCounts`.
-const visibleDiscussionEntryWhere = {
-  deletedAt: null,
-  OR: [
-    { parentId: { not: null } },
-    { visibility: "PUBLIC" as const, parentId: null, sharedAt: { not: null } },
-  ],
-} satisfies Prisma.QuestionCommentWhereInput;
+const visibleDiscussionEntryWhere = countedEntryWhere;
 
 export async function getDiscussionIndex(page: number): Promise<{
   entries: DiscussionIndexEntry[];
@@ -324,7 +391,7 @@ export async function getDiscussionIndex(page: number): Promise<{
   // terpisah.
   const grouped = await prisma.questionComment.groupBy({
     by: ["questionId"],
-    where: visibleDiscussionEntryWhere,
+    where: { questionId: { not: null }, ...visibleDiscussionEntryWhere },
     _count: { _all: true },
     _max: { createdAt: true },
     orderBy: { _max: { createdAt: "desc" } },
@@ -336,8 +403,9 @@ export async function getDiscussionIndex(page: number): Promise<{
   const rows = hasMore ? grouped.slice(0, DISCUSSION_INDEX_PAGE_SIZE) : grouped;
   if (rows.length === 0) return { entries: [], hasMore: false };
 
+  const questionIds = rows.flatMap((row) => (row.questionId === null ? [] : [row.questionId]));
   const questions = await prisma.question.findMany({
-    where: { id: { in: rows.map((row) => row.questionId) } },
+    where: { id: { in: questionIds } },
     select: {
       id: true,
       order: true,
@@ -355,6 +423,7 @@ export async function getDiscussionIndex(page: number): Promise<{
 
   const entries: DiscussionIndexEntry[] = [];
   for (const row of rows) {
+    if (row.questionId === null) continue;
     const question = questionById.get(row.questionId);
     if (!question || !row._max.createdAt) continue;
 
@@ -369,6 +438,66 @@ export async function getDiscussionIndex(page: number): Promise<{
         id: question.testPackageItem.id,
         mondaiType: question.testPackageItem.mondaiType,
       },
+    });
+  }
+
+  return { entries, hasMore };
+}
+
+// ============================================================
+// INDEKS DISKUSI KATA FLASHCARD
+// ============================================================
+
+export type VocabDiscussionIndexEntry = {
+  vocabId: number;
+  level: JlptLevel;
+  wordPlain: string;
+  reading: string;
+  meaningsId: string[];
+  entryCount: number;
+  lastActivityAt: Date;
+};
+
+/** Padanan `getDiscussionIndex` untuk kata flashcard: satu baris per kata. */
+export async function getVocabDiscussionIndex(page: number): Promise<{
+  entries: VocabDiscussionIndexEntry[];
+  hasMore: boolean;
+}> {
+  const skip = Math.max(0, page - 1) * DISCUSSION_INDEX_PAGE_SIZE;
+
+  const grouped = await prisma.questionComment.groupBy({
+    by: ["vocabId"],
+    where: { vocabId: { not: null }, ...visibleDiscussionEntryWhere },
+    _count: { _all: true },
+    _max: { createdAt: true },
+    orderBy: { _max: { createdAt: "desc" } },
+    take: DISCUSSION_INDEX_PAGE_SIZE + 1,
+    skip,
+  });
+
+  const hasMore = grouped.length > DISCUSSION_INDEX_PAGE_SIZE;
+  const rows = hasMore ? grouped.slice(0, DISCUSSION_INDEX_PAGE_SIZE) : grouped;
+  const vocabIds = rows.flatMap((row) => (row.vocabId === null ? [] : [row.vocabId]));
+  if (vocabIds.length === 0) return { entries: [], hasMore: false };
+
+  const words = await prisma.flashcardVocab.findMany({
+    where: { id: { in: vocabIds } },
+    select: { id: true, level: true, wordPlain: true, reading: true, meaningsId: true },
+  });
+  const wordById = new Map(words.map((word) => [word.id, word]));
+
+  const entries: VocabDiscussionIndexEntry[] = [];
+  for (const row of rows) {
+    const word = row.vocabId === null ? undefined : wordById.get(row.vocabId);
+    if (!word || !row._max.createdAt) continue;
+    entries.push({
+      vocabId: word.id,
+      level: word.level,
+      wordPlain: word.wordPlain,
+      reading: word.reading,
+      meaningsId: word.meaningsId,
+      entryCount: row._count._all,
+      lastActivityAt: row._max.createdAt,
     });
   }
 

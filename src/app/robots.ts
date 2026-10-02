@@ -23,6 +23,8 @@ export default function robots(): MetadataRoute.Robots {
         "/flashcard/settings",
         "/flashcard/stats",
         "/flashcard/deck/",
+        // Catatan dan diskusi kata flashcard, sama seperti /discussion.
+        "/flashcard/discussion",
         // Catatan buatan pengguna, belum ada moderasi. Dibuka untuk diindeks
         // nanti bersamaan dengan dashboard admin.
         "/discussion",

@@ -315,7 +315,7 @@ export default async function ResultDetailPage({
                         <div className="flex shrink-0 items-center gap-2">
                           {FEATURES.questionDiscussion && (
                             <DiscussionSheet
-                              questionId={question.id}
+                              target={{ type: "question", questionId: question.id }}
                               initialCount={question.discussionCount}
                               currentUserId={currentUserId}
                               reportEnabled={FEATURES.report}
@@ -446,7 +446,7 @@ export default async function ResultDetailPage({
                               ))}
                             </div>
                           )}
-                          <QuestionCommentForm questionId={question.id} />
+                          <QuestionCommentForm target={{ type: "question", questionId: question.id }} />
                         </div>
                       )}
                     </div>

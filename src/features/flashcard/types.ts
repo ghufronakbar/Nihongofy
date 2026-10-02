@@ -1,3 +1,4 @@
+import type { OwnNote } from "@/features/question-comment/queries";
 import type { FlashcardRatingInput } from "./schemas";
 import type { FlashcardTagView } from "./taxonomy";
 
@@ -39,6 +40,16 @@ export type ReviewerCard = {
 
 /** Kartu learning yang jatuh tempo nanti hari ini, ditahan reviewer sampai waktunya. */
 export type PendingLearningCard = ReviewerCard & { dueAt: string };
+
+/**
+ * Catatan pribadi user dan jumlah entri diskusi publik untuk kata-kata di
+ * potongan antrean ini, per `vocabId`. Null bila `FEATURES_FLASHCARD_DISCUSSION`
+ * mati.
+ */
+export type CardDiscussionData = {
+  notes: Record<number, OwnNote[]>;
+  counts: Record<number, number>;
+};
 
 /**
  * Bahan perkiraan "besok" di ringkasan sesi. `base` dihitung server saat

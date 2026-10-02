@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BarChart3, ChevronRight, Plus, Settings2 } from "lucide-react";
+import { BarChart3, ChevronRight, MessagesSquare, Plus, Settings2 } from "lucide-react";
+import { FEATURES } from "@/constants";
 import { getSession } from "@/lib/auth";
 import { getDeckCatalog, getMyDecks } from "@/features/flashcard/data";
 import { DeckCatalog } from "@/features/flashcard/components/deck-catalog";
@@ -57,6 +58,11 @@ export default async function FlashcardPage() {
           <Link href="/flashcard/stats" className="neo-button bg-white text-xs">
             <BarChart3 className="size-4" aria-hidden /> Statistik
           </Link>
+          {FEATURES.flashcardDiscussion ? (
+            <Link href="/flashcard/discussion" className="neo-button bg-white text-xs">
+              <MessagesSquare className="size-4" aria-hidden /> Diskusi
+            </Link>
+          ) : null}
           <Link href="/flashcard/settings" className="neo-button bg-white text-xs">
             <Settings2 className="size-4" aria-hidden /> Pengaturan
           </Link>

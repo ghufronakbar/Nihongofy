@@ -6,12 +6,15 @@ import { useRouter } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Globe, Lock } from "lucide-react";
+import { toast } from "sonner";
 import { EditQuestionCommentSchema, type EditQuestionCommentInput } from "../schemas";
 import {
   updateQuestionCommentAction,
   deleteQuestionCommentAction,
   setQuestionCommentVisibilityAction,
+  type CommentActionResult,
 } from "../actions";
+import { discussionThreadHref } from "../target";
 import { CommentImageUploader } from "./comment-image-uploader";
 import { CommentAuthorLine, CommentAvatar, CommentImages } from "./comment-body";
 import { Button } from "@/components/ui/button";
@@ -31,6 +34,10 @@ import {
 
 type CommentData = {
   id: number;
+  // Target catatan, untuk tautan "Buka diskusi". Catatan soal lama yang tidak
+  // membawa kolom ini dianggap catatan soal.
+  questionId?: number | null;
+  vocabId?: number | null;
   commentText: string;
   commentImages: string[];
   visibility: "PRIVATE" | "PUBLIC";
@@ -42,13 +49,30 @@ type CommentData = {
 export function CommentItem({
   comment,
   canShare = false,
+  onChanged,
 }: {
   comment: CommentData;
-  // Mati saat FEATURES_QUESTION_DISCUSSION off: catatan tetap bisa ditulis dan
+  // Mati saat flag diskusi target-nya off: catatan tetap bisa ditulis dan
   // diedit, hanya tombol bagikannya yang hilang.
   canShare?: boolean;
+  /**
+   * Dipanggil setelah catatan berubah. Tanpa ini halaman di-refresh; reviewer
+   * flashcard WAJIB mengisinya supaya sesi belajar tidak ter-reset.
+   */
+  onChanged?: () => void;
 }) {
   const router = useRouter();
+  const refresh = () => (onChanged ? onChanged() : router.refresh());
+
+  // Pesan penolakan (rate limit) ditampilkan; sukses menyegarkan data.
+  function settle(result: CommentActionResult, afterSuccess?: () => void) {
+    if (!result.ok) {
+      toast.error(result.message);
+      return;
+    }
+    afterSuccess?.();
+    refresh();
+  }
   const [isEditing, setIsEditing] = useState(false);
   const [isPending, startTransition] = useTransition();
 
@@ -73,26 +97,24 @@ export function CommentItem({
 
   function onSubmit(values: EditQuestionCommentInput) {
     startTransition(async () => {
-      await updateQuestionCommentAction(values);
-      setIsEditing(false);
-      router.refresh();
+      settle(await updateQuestionCommentAction(values), () => setIsEditing(false));
     });
   }
 
   function handleDelete() {
     startTransition(async () => {
-      await deleteQuestionCommentAction({ commentId: comment.id });
-      router.refresh();
+      settle(await deleteQuestionCommentAction({ commentId: comment.id }));
     });
   }
 
   function handleToggleVisibility() {
     startTransition(async () => {
-      await setQuestionCommentVisibilityAction({
-        commentId: comment.id,
-        visibility: isPublic ? "PRIVATE" : "PUBLIC",
-      });
-      router.refresh();
+      settle(
+        await setQuestionCommentVisibilityAction({
+          commentId: comment.id,
+          visibility: isPublic ? "PRIVATE" : "PUBLIC",
+        }),
+      );
     });
   }
 
@@ -169,7 +191,11 @@ export function CommentItem({
 
               {canShare && isPublic && (
                 <Link
-                  href={`/discussion/${comment.id}`}
+                  href={discussionThreadHref({
+                    id: comment.id,
+                    questionId: comment.questionId ?? null,
+                    vocabId: comment.vocabId ?? null,
+                  })}
                   className="text-xs text-muted-foreground hover:underline"
                 >
                   Buka diskusi
