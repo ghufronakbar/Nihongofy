@@ -44,6 +44,8 @@ Profile tidak punya flag sendiri. Section "Aktivitas belajar" dan "Lanjut belaja
 - Privacy opt-in terpisah untuk penyimpanan audio dan conversation; default keduanya nonaktif.
   Toggle audio hanya tampil bila `FEATURES_SPEAKING` aktif, toggle conversation bila
   `FEATURES_CONVERSATION` aktif, dan seluruh box "Izin penyimpanan AI" hilang bila keduanya mati.
+- `/profile/privacy` menautkan [Kebijakan Privasi dan Syarat & Ketentuan](public-shell.md#dokumen-hukum)
+  di bawah judulnya.
 - Export JSON untuk data akun dan aktivitas user tanpa password, token, session, atau rate-limit.
   Laporan yang pernah dikirim ikut, untuk semua jenis target, tanpa status dan catatan internal
   admin.

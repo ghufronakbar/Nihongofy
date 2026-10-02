@@ -4,6 +4,7 @@ import { FEATURES, SITE_URL, type FeatureName } from "@/constants";
 import { getArticleSitemapEntries } from "@/features/article/queries";
 import { getBunpouSitemapEntries } from "@/features/bunpou/queries";
 import { getDiscussionSitemapTargets } from "@/features/question-comment/queries";
+import { PRIVACY_PATH, TERMS_PATH } from "@/features/legal/constants";
 import { CACHE_KEYS } from "@/constants/cache-key";
 import { getTestPackageSitemapEntries } from "@/features/test-package/queries";
 
@@ -31,6 +32,9 @@ const STATIC_ENTRIES: StaticEntry[] = [
     feature: "flashcardDiscussion",
   },
   { path: "/bunpou/discussion", changeFrequency: "weekly", priority: 0.5, feature: "bunpouDiscussion" },
+  // Dokumen hukum tanpa flag: selalu ada, apa pun modul yang aktif.
+  { path: PRIVACY_PATH, changeFrequency: "monthly", priority: 0.3 },
+  { path: TERMS_PATH, changeFrequency: "monthly", priority: 0.3 },
 ];
 
 // Hanya halaman diskusi yang punya entri tampil; halaman kosong diberi `noindex`.

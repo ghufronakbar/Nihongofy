@@ -7,6 +7,7 @@
 ## Route
 
 - `/`
+- `/privacy` (Kebijakan Privasi) dan `/terms` (Syarat & Ketentuan) — lihat [Dokumen Hukum](#dokumen-hukum).
 - Layout bersama untuk route group `(public)`, termasuk home, article, kana, flashcard, exercises, test-package, exam, result, conversation, dan speaking.
 
 ## Fitur Aktif
@@ -16,6 +17,7 @@
 - Landing page menampilkan kartu kana, flashcard, bunpou, latihan cepat, dan mock JLPT untuk modul yang aktif, serta section conversation dan speaking bila flag-nya aktif.
 - Featured article berasal dari query artikel published, dengan empty state jika database kosong.
 - Metadata Open Graph dasar tersedia.
+- Footer menautkan Kebijakan Privasi dan Syarat & Ketentuan tanpa syarat flag.
 
 ## Feature Flag
 
@@ -50,11 +52,32 @@ Route milik modul yang mati mengembalikan 404 lewat `layout.tsx` guard di segmen
 ## Keterbatasan
 
 - Tidak ada halaman publik khusus overview product selain home.
-- Sitemap memuat home, test package, latihan cepat, kana, flashcard, bunpou (katalog, tiap pola, dan tiap perbandingan), dan artikel untuk modul yang aktif. `robots.ts` hanya meng-`allow` path modul aktif; route akun, exam, result, conversation, dan speaking selalu di-`disallow`. Diskusi (`/discussion`, `/flashcard/discussion`, dan diskusi di halaman pola) diindeks sejak 2 Oktober 2026; halaman diskusi tanpa entri diberi `noindex`.
+- Sitemap memuat home, `/privacy`, `/terms`, test package, latihan cepat, kana, flashcard, bunpou (katalog, tiap pola, dan tiap perbandingan), dan artikel untuk modul yang aktif. `robots.ts` meng-`allow` `/privacy` dan `/terms` tanpa syarat, selebihnya hanya path modul aktif; route akun, exam, result, conversation, dan speaking selalu di-`disallow`. Diskusi (`/discussion`, `/flashcard/discussion`, dan diskusi di halaman pola) diindeks sejak 2 Oktober 2026; halaman diskusi tanpa entri diberi `noindex`.
 - `robots.txt` dan `sitemap.xml` di-prerender saat build, sehingga perubahan flag baru tercermin di keduanya setelah redeploy.
 - Header publik tidak menyediakan shortcut langsung ke history/progress/analytics; aksesnya melalui dashboard.
 - Routing tidak mewajibkan login untuk prefix belajar/exam/result. Proteksi akun dan ownership diterapkan secara selektif di page/action terkait; mode guest memang tersedia pada beberapa modul.
 - Sidebar dashboard hanya tersedia pada `/dashboard`, `/history`, `/progress`, `/analytics`, dan `/profile`; modul belajar serta exam tetap memakai public shell.
+
+## Dokumen Hukum
+
+Kebijakan Privasi (`/privacy`) dan Syarat & Ketentuan (`/terms`) ditambahkan 2 Oktober 2026.
+
+- **Statis, di repo.** Isi ditulis sebagai TSX per bagian di `src/features/legal/content/`
+  (`privacy-policy.tsx`, `terms.tsx`), bukan tabel database, seed, atau CMS artikel. Setiap file
+  mengekspor `VERSION`, `LAST_UPDATED`, dan `EFFECTIVE_DATE` yang tampil di kepala halaman.
+  Riwayat perubahan cukup lewat git; naikkan `VERSION` setiap kali isinya berubah berarti.
+- **Tanpa flag dan tanpa query.** Halaman memakai `export const dynamic = "force-static"` sehingga
+  di-prerender saat build (○ di output build). Konsekuensinya `cookies()` di layout `(public)`
+  kosong, jadi header di kedua halaman selalu tampil sebagai tamu (tombol Masuk, bukan Dashboard).
+- **Isian yang belum diketahui** (nama pengelola, email kontak, alamat, usia minimum, region
+  Supabase, penyedia SMTP dan AI) dikumpulkan di `LEGAL_FACTS` (`src/features/legal/constants.ts`)
+  dengan awalan `[[ISI:` dan dirender sebagai penanda merah. Tanggal berlaku ada di masing-masing
+  file konten. Jangan deploy ke publik selama masih ada `[[ISI:`.
+- **Akurat terhadap kode.** Setiap klaim kebijakan merujuk alur data yang ada (cookie, retensi,
+  pemroses, anonimisasi). Saat menambah cookie, pemroses, atau aturan retensi baru, perbarui
+  dokumen ini di commit yang sama.
+- Ditautkan dari footer publik, `/profile/privacy`, form daftar, dan dekat tombol Google di login
+  serta register (`LegalConsentNotice`, tautan dibuka di tab baru agar isian form tidak hilang).
 
 ## File Utama
 
@@ -64,4 +87,6 @@ Route milik modul yang mati mengembalikan 404 lewat `layout.tsx` guard di segmen
 - `src/components/marketing/public-footer.tsx`
 - `src/app/sitemap.ts`
 - `src/app/robots.ts`
+- `src/app/(public)/privacy/page.tsx`, `src/app/(public)/terms/page.tsx`
+- `src/features/legal/` — konten, `LEGAL_FACTS`, `LegalDocumentView`, `LegalConsentNotice`
 - `src/proxy.ts`

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Database, Download, LockKeyhole } from "lucide-react";
 import { FEATURES } from "@/constants";
+import { PRIVACY_PATH, TERMS_PATH } from "@/features/legal/constants";
 import { getPrivacySettingsAction } from "@/features/profile/privacy-actions";
 import { AccountLifecycle } from "@/features/profile/components/account-lifecycle";
 import { PrivacyPreferencesForm } from "@/features/profile/components/privacy-preferences-form";
@@ -52,6 +54,23 @@ export default async function ProfilePrivacyPage({
           {showAiStorage
             ? "Tentukan data AI yang boleh disimpan, ambil salinan data akun, atau kelola penghapusan akun."
             : "Ambil salinan data akun atau kelola penghapusan akun."}
+        </p>
+        <p className="mt-3 max-w-2xl text-sm font-semibold text-foreground/70">
+          Rincian data yang kami proses dan masa simpannya ada di{" "}
+          <Link
+            href={PRIVACY_PATH}
+            className="font-bold text-foreground underline decoration-2 decoration-neo-blue underline-offset-4"
+          >
+            Kebijakan Privasi
+          </Link>{" "}
+          dan{" "}
+          <Link
+            href={TERMS_PATH}
+            className="font-bold text-foreground underline decoration-2 decoration-neo-blue underline-offset-4"
+          >
+            Syarat & Ketentuan
+          </Link>
+          .
         </p>
       </header>
 

@@ -29,6 +29,13 @@ selain Google tetap di luar scope.
 6. Login dengan password benar pada akun belum verified mengirim ulang email jika cooldown dan
    rate limit mengizinkan, lalu kembali ke `/verify-email`.
 
+Form daftar dan area tombol Google di `/login` serta `/register` menampilkan kalimat persetujuan
+("Dengan mendaftar, Anda menyetujui Syarat & Ketentuan dan Kebijakan Privasi") lewat
+`LegalConsentNotice` (`src/features/legal/components/`). Tautannya ke `/terms` dan `/privacy`
+dibuka di tab baru supaya isian form dan token Turnstile tidak hilang. Login Google ikut diberi
+kalimat ini karena dapat membuat akun baru. Persetujuan belum dicatat di database (tidak ada kolom
+versi ketentuan yang disetujui).
+
 ## Forgot dan Reset Password
 
 1. `/forget-password` selalu memberi respons generik agar keberadaan akun tidak bocor.

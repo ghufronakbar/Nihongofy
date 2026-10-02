@@ -7,6 +7,7 @@ import { RegisterForm } from "@/features/auth/components/register-form";
 import { GoogleOAuthButton } from "@/features/auth/components/google-oauth-button";
 import { getSafeRedirectPath } from "@/features/auth/lib/safe-redirect";
 import { GOOGLE_OAUTH_ENABLED } from "@/constants";
+import { LegalConsentNotice } from "@/features/legal/components/legal-consent-notice";
 
 export const metadata: Metadata = {
   title: "Daftar",
@@ -64,6 +65,7 @@ export default async function RegisterPage({
         {GOOGLE_OAUTH_ENABLED ? (
           <>
             <GoogleOAuthButton intent="register" label="Daftar dengan Google" nextPath={nextPath} />
+            <LegalConsentNotice lead="Dengan mendaftar dengan Google" className="mt-3 text-center" />
             <div className="my-6 flex items-center gap-3" aria-hidden="true">
               <span className="h-0.5 flex-1 bg-black" />
               <span className="font-mono text-xs font-black uppercase">atau email</span>

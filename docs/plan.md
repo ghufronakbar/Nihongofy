@@ -1211,6 +1211,28 @@ Rancangan: `docs/module/bunpou.md`; kontrak data: `docs/seed-bunpou.md`.
   tautan `confidence: high` yang tampil; tautan tidak terkirim di mode ujian.
 - [ ] Fase C: SRS bunpou.
 
+## Fase 8.14 — Kebijakan Privasi & Syarat Ketentuan
+
+Dokumen statis di repo (TSX per bagian, `VERSION`/`LAST_UPDATED` per dokumen), di-prerender tanpa
+query dan tanpa flag. Rincian di [public-shell.md](module/public-shell.md#dokumen-hukum).
+
+- [x] `/privacy` dan `/terms` di route group `(public)`, `force-static`, metadata `pageMetadata()`
+  (2 Oktober 2026)
+- [x] Isi Kebijakan Privasi dipetakan dari kode: data akun dan Google, cookie, Redis, HMAC rate
+  limit, data belajar, guest stash, diskusi publik dan indexing, soft delete, laporan, conversation,
+  email, pemroses pihak ketiga, retensi, anonimisasi, export, hak subjek data UU PDP
+- [x] Isi Syarat & Ketentuan: akun, aturan diskusi dan sanksi, lisensi konten, konten AI, skor 180,
+  disclaimer Japan Foundation/JEES, batasan tanggung jawab, hukum Indonesia
+- [x] Tautan di footer publik, `/profile/privacy`, form daftar, dan dekat tombol Google login/register
+- [x] Sitemap dan robots memuat `/privacy` dan `/terms`
+- [ ] Isi placeholder `[[ISI:` di `src/features/legal/constants.ts` (`LEGAL_FACTS`) dan
+  `EFFECTIVE_DATE` di kedua file konten, sebelum deploy publik
+- [ ] Putuskan penjaga placeholder (test atau guard build produksi) supaya `[[ISI:` tidak ter-deploy
+- [ ] Daftarkan URL `/privacy` dan `/terms` di OAuth consent screen Google Cloud Console
+- [ ] Tinjauan hukum isi S&K dan Kebijakan Privasi, terutama status bank soal JLPT, transfer data
+  ke luar negeri, dan batasan tanggung jawab
+- [ ] Uji manual (user): kedua halaman di mobile/desktop, tautan footer, consent di login/register
+
 ## Fase 9 — Verifikasi & Polish
 
 - [ ] `npm run build` setelah tiap perubahan struktural/server action/caching

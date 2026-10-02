@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { TurnstileWidget } from "./turnstile";
 import { TURNSTILE_ACTIONS } from "../lib/turnstile-config";
+import { LegalConsentNotice } from "@/features/legal/components/legal-consent-notice";
 
 export function RegisterForm({ nextPath }: { nextPath: string }) {
   const [isPending, startTransition] = useTransition();
@@ -147,6 +148,8 @@ export function RegisterForm({ nextPath }: { nextPath: string }) {
               {formError}
             </FieldError>
           )}
+
+          <LegalConsentNotice />
 
           <button type="submit" disabled={isPending || !turnstileToken} className="neo-button w-full bg-neo-green py-3 text-base">
             <UserPlus className="size-5" aria-hidden="true" />

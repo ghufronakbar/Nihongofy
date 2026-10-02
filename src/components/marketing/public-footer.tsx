@@ -3,6 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 import { BrandMark } from "@/components/marketing/brand-mark";
 import { PageContainer } from "@/components/marketing/page-container";
 import { FEATURES, type FeatureName } from "@/constants";
+import { PRIVACY_PATH, TERMS_PATH } from "@/features/legal/constants";
 
 const FOOTER_LINKS: { label: string; href: string; feature?: FeatureName }[] = [
   { label: "Beranda", href: "/" },
@@ -11,6 +12,9 @@ const FOOTER_LINKS: { label: string; href: string; feature?: FeatureName }[] = [
   { label: "Masuk", href: "/login" },
   { label: "Daftar", href: "/register" },
   { label: "Laporkan masalah", href: "/report", feature: "report" },
+  // Dokumen hukum sengaja tanpa feature flag: keduanya tidak boleh bisa dimatikan.
+  { label: "Kebijakan Privasi", href: PRIVACY_PATH },
+  { label: "Syarat & Ketentuan", href: TERMS_PATH },
 ];
 
 export function PublicFooter() {

@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { FEATURES, SITE_URL } from "@/constants";
+import { PRIVACY_PATH, TERMS_PATH } from "@/features/legal/constants";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -7,6 +8,9 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: [
         "/",
+        // Dokumen hukum selalu terbuka, tanpa flag.
+        PRIVACY_PATH,
+        TERMS_PATH,
         ...(FEATURES.article ? ["/article", "/article/"] : []),
         ...(FEATURES.testPackage ? ["/test-package", "/test-package/"] : []),
         ...(FEATURES.practice ? ["/exercises"] : []),
