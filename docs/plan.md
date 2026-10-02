@@ -1158,13 +1158,14 @@ Rancangan: `docs/module/bunpou.md`; kontrak data: `docs/seed-bunpou.md`.
 ### Pekerjaan
 
 - [x] Kontrak data `docs/seed-bunpou.md` dan rancangan `docs/module/bunpou.md`.
-- [x] `data/bunpou/` di-gitignore.
-- [ ] Kumpulkan slide ke `data/bunpou/slides/<level>/<deck>/` (pemilik project).
+- [x] `data/bunpou/raw_images/` di-gitignore.
+- [x] Sumber N5 tersedia di `data/bunpou/raw_images/n5-bunpou/` (36 gambar).
 - [ ] Uji gateway: `BUNPOU_EXTRACT_MODEL` menerima input gambar (2-3 slide contoh).
-- [ ] `src/bunpou-data/taxonomy.json` dari draf di kontrak.
-- [ ] `npm run bunpou:extract`, `gen:bunpou`, `bunpou:doubts`, `seed:bunpou` (+ `:check`).
-- [ ] `npm run gen:bunpou-comparisons`.
-- [ ] Skema + migration Fase A, ditambah `BUNPOU_POINT`/`BUNPOU_COMPARISON` di `ReportTargetType`.
+- [x] `src/bunpou-data/taxonomy.json` dari draf di kontrak.
+- [x] `npm run bunpou:extract`, `gen:bunpou`, `bunpou:doubts`, `seed:bunpou` (+ `:check`).
+- [x] `npm run gen:bunpou-comparisons`.
+- [x] Skema + migration katalog dan perbandingan Fase A.
+- [ ] Tambahkan `BUNPOU_POINT`/`BUNPOU_COMPARISON` ke `ReportTargetType` saat UI laporan dikerjakan.
 - [ ] Halaman `/bunpou`, `/bunpou/[key]`, `/bunpou/compare/[key]`, SEO, dan flag.
 - [ ] Fase B: `gen:bunpou-links`, tabel `QuestionBunpouLink`, tampilan di halaman pola dan review.
 - [ ] Fase C: SRS bunpou.

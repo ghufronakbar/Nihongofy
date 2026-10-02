@@ -2,9 +2,10 @@
 
 ## Status Aktual
 
-**Rancangan, belum diimplementasi (1 Oktober 2026).** Data slide sedang dikumpulkan. Kontrak
-datanya ada di [seed-bunpou.md](../seed-bunpou.md); keputusan di bawah disepakati dalam diskusi
-desain dan menjadi acuan implementasi.
+**Implementasi data Phase A sedang berjalan (2 Oktober 2026).** Kontrak, taxonomy, generator,
+validator, schema, migration katalog, serta ekstraksi dan generation 90 point dari 36 slide N5
+sudah tersedia. Migration belum diterapkan dan UI publik belum dikerjakan. Kontrak datanya ada di
+[seed-bunpou.md](../seed-bunpou.md).
 
 ## Keputusan
 
@@ -25,6 +26,11 @@ desain dan menjadi acuan implementasi.
   ditinjau yang terbit.
 - **Sambungan (接続) terstruktur**, memakai bentuk baku dari taxonomy (`v-ta`, `na-adj-na`, …),
   sehingga bisa ditampilkan sebagai badge dan dipakai sebagai filter.
+- **Jenis materi eksplisit** (`pattern`, `particle`, `conjugation`, `foundation`) supaya halaman
+  detail dapat memilih tampilan yang sesuai. Konjugasi memakai `formation` terstruktur; materi
+  tidak dipaksa mengikuti susunan visual slide sumber.
+- **Section pembelajaran eksplisit** lewat `sectionKey` dari taxonomy. Section mengatur kelompok
+  navigasi, sedangkan tag tetap menjelaskan fungsi, ragam, dan nuansa linguistik.
 - **Tidak dibuat:** klik kanji untuk detail (belum ada data kanji), audio rekaman (memakai TTS
   browser dari modul [study](study.md)), dan full-text search di database. Katalog diperkirakan
   ratusan sampai sekitar seribu pola, jadi pencarian cukup dilakukan di client.
@@ -35,8 +41,8 @@ desain dan menjadi acuan implementasi.
 
 | Route | Isi |
 |---|---|
-| `/bunpou` | Jalur per level N5 → N1 (urutan `order`). Filter fungsi, ragam, nuansa, dan bentuk sambungan. Pencarian di client atas judul, variasi, romaji, kana, dan arti Indonesia/Inggris dari daftar ringkas. |
-| `/bunpou/[key]` | Judul berfurigana, level, ragam, dan fungsi; tab makna lain dalam family; arti inti; sambungan berupa badge; penjelasan; contoh kalimat (sorotan pola, furigana on/off lewat `FuriganaScope`, TTS); batasan dan kesalahan umum; ringkasan perbandingan yang memuat pola ini; pola lain dengan fungsi sama. |
+| `/bunpou` | Jalur per level N5 → N1, dikelompokkan menurut section lalu `order`. Filter jenis materi, fungsi, ragam, nuansa, dan bentuk sambungan. Pencarian di client atas judul, variasi, romaji, kana, dan arti Indonesia/Inggris dari daftar ringkas. |
+| `/bunpou/[key]` | Judul berfurigana, level, section, jenis materi, ragam, dan fungsi; tab makna lain dalam family; arti inti; sambungan berupa badge; tabel pembentukan bila ada; penjelasan; contoh kalimat (sorotan pola, furigana on/off lewat `FuriganaScope`, TTS); batasan dan kesalahan umum; ringkasan perbandingan yang memuat pola ini; pola lain dengan fungsi sama. |
 | `/bunpou/compare/[key]` | Perbandingan lengkap: tabel nuansa, ragam, dan batasan, ditambah kalimat kontras ○/△/✕. |
 
 Metadata memakai `pageMetadata()`, structured data `LearningResource`, dan halaman masuk sitemap.
@@ -83,7 +89,7 @@ Skema final ditulis saat implementasi. Migration ditulis tangan lalu `migrate de
 
 | Tabel | Fase | Isi |
 |---|---|---|
-| `BunpouPoint` | A | Seperti `FlashcardVocab`: `key` unik, level, order, family, judul (markup, polos, bacaan, romaji), isi, tag, audit AI, `retiredAt`. Tidak pernah dihapus. |
+| `BunpouPoint` | A | Seperti `FlashcardVocab`: `key` unik; level, order, kind, sectionKey, family; judul (markup, polos, bacaan, romaji); meaning dan search text; `content` JSONB tervalidasi untuk sambungan, formation, variasi, penjelasan, contoh, dan pitfalls; tag; provenance/audit AI dan review manusia; `retiredAt`. Tidak pernah dihapus. Unique `(level, order)`, index `(level, sectionKey, order)` dan `family`, serta GIN pada tag. |
 | `BunpouComparison` + `BunpouComparisonPoint` | A | Kelompok perbandingan dan urutan kolomnya. |
 | `QuestionBunpouLink` | B | `questionId`, `pointId`, peran `TESTED`/`DISTRACTOR`. |
 | `BunpouCard`, `BunpouRevlog`, pengaturan | C | Mengikuti `FlashcardCard`/`FlashcardRevlog`. |

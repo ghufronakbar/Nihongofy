@@ -75,6 +75,13 @@ enum FlashcardDeckKind {
   CATEGORY // onomatope, idiom, ...
 }
 
+enum BunpouKind {
+  PATTERN
+  PARTICLE
+  CONJUGATION
+  FOUNDATION
+}
+
 enum FlashcardCardType {
   NEW
   LEARNING
@@ -396,6 +403,81 @@ model FlashcardVocab {
 
   @@index([level, order])
   @@index([tags], type: Gin)
+}
+
+// Katalog grammar bawaan. Fixture src/bunpou-data/ adalah sumber kebenaran;
+// entri yang hilang atau belum lolos review dipensiunkan, bukan dihapus.
+model BunpouPoint {
+  id    Int        @id @default(autoincrement())
+  key   String     @unique @db.VarChar(80)
+  level JlptLevel
+  order Int
+  kind  BunpouKind
+
+  sectionKey String  @db.VarChar(80)
+  family     String? @db.VarChar(80)
+
+  title        String @db.VarChar(240) // markup furigana
+  titlePlain   String @db.VarChar(160)
+  titleReading String @db.VarChar(240)
+  titleRomaji  String @db.VarChar(240)
+  meaningId    String @db.VarChar(240)
+  meaningEn    String @db.VarChar(240)
+  searchText   String @db.Text
+
+  content Json     @db.JsonB
+  tags    String[]
+
+  // Provenance slide dan audit dua tahap generator.
+  source        Json     @db.JsonB
+  extract       Json     @db.JsonB
+  review        Json?    @db.JsonB
+  aiModel       String   @db.VarChar(120)
+  promptVersion String   @db.VarChar(60)
+  generatedAt   DateTime
+
+  retiredAt DateTime?
+
+  comparisons BunpouComparisonPoint[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([level, order])
+  @@index([level, sectionKey, order])
+  @@index([family])
+  @@index([tags], type: Gin)
+}
+
+model BunpouComparison {
+  id      Int    @id @default(autoincrement())
+  key     String @unique @db.VarChar(80)
+  title   String @db.VarChar(200)
+  content Json   @db.JsonB
+
+  aiModel       String    @db.VarChar(120)
+  promptVersion String    @db.VarChar(60)
+  generatedAt   DateTime
+  reviewedAt    DateTime
+  retiredAt     DateTime?
+
+  points BunpouComparisonPoint[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model BunpouComparisonPoint {
+  comparisonId Int
+  pointId      Int
+  order        Int
+
+  comparison BunpouComparison @relation(fields: [comparisonId], references: [id], onDelete: Cascade)
+  point      BunpouPoint      @relation(fields: [pointId], references: [id], onDelete: Restrict)
+
+  @@id([comparisonId, pointId])
+  @@unique([comparisonId, order])
+  @@index([pointId])
 }
 
 // Deck bawaan = satu tag taxonomy. Isinya tidak disimpan: kata masuk deck bila

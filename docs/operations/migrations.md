@@ -33,6 +33,29 @@ contract wajib memiliki migration dan catatan ringkas di dokumen/PR perubahan. J
 
 ## Ledger
 
+### 1 Oktober 2026 - Katalog Bunpou Phase A
+
+- Status: required (belum di-deploy)
+- Migration: `prisma/migrations/20261001200000_bunpou_catalog/migration.sql`. Ditulis tangan;
+  `prisma migrate dev` tidak dipakai karena shadow database Supabase tidak tersedia untuk project
+  ini.
+- Alasan: fixture hasil ekstraksi slide membutuhkan katalog grammar yang stabil, provenance dua
+  tahap AI, pengelompokan family/section, dan kelompok perbandingan yang dapat dirujuk fitur lain.
+- Object terdampak: enum `BunpouKind`; tabel `BunpouPoint`, `BunpouComparison`, dan
+  `BunpouComparisonPoint`; unique key dan urutan per level; index section/family/tag/FK; tiga FK;
+  revoke grant Data API; RLS aktif tanpa policy client.
+- Data existing: seluruh tabel baru dan kosong. Setelah migration, jalankan ekstraksi/generator,
+  `npm run seed:bunpou:check`, lalu `npm run seed:bunpou`.
+- Risiko operasi: hanya membuat object baru sehingga tidak mengunci tabel aplikasi lama. Kode lama
+  tidak membaca tabel ini; migration aman dideploy sebelum UI Bunpou. Seed mempertahankan row yang
+  hilang sebagai retired dan memakai order negatif internal untuk membebaskan unique order saat
+  dua point bertukar posisi.
+- Validasi: `npx prisma validate`, validasi fixture, lint, typecheck, test, build, dan penerapan
+  migration pada PostgreSQL lokal/Supabase masih harus dilengkapi sebelum deploy.
+- Refresh setelah deploy: jalankan `npx prisma generate`, redeploy aplikasi, lalu seed setelah
+  fixture N5 lolos review. Tidak ada cache yang perlu diinvalidasi sebelum UI tersedia.
+- Owner: Engineering Owner.
+
 ### 1 Oktober 2026 - Kartu flashcard sebagai target laporan
 
 - Status: required (belum di-deploy)
