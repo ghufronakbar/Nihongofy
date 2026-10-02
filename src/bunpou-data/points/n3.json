@@ -30,8 +30,86 @@
         "extractedAt": "2026-10-02T07:48:13.372Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜れる／〜られる",
+        "senseLabel": "pasif faktual",
+        "meaningId": "fakta yang dilaporkan tanpa menonjolkan pelaku",
+        "meaningEn": "facts reported without highlighting the agent",
+        "connections": [
+          {
+            "form": "v-nai-stem",
+            "pattern": "れる",
+            "note": "untuk kata kerja godan"
+          },
+          {
+            "form": "v-masu",
+            "pattern": "られる",
+            "note": "untuk kata kerja ichidan"
+          }
+        ],
+        "formation": [
+          {
+            "label": "kata kerja godan",
+            "input": "Vない tanpa ない",
+            "rule": "tambahkan れる",
+            "output": "V + れる",
+            "note": null
+          },
+          {
+            "label": "kata kerja ichidan",
+            "input": "Vます tanpa ます",
+            "rule": "tambahkan られる",
+            "output": "V + られる",
+            "note": null
+          },
+          {
+            "label": "kata kerja tidak beraturan",
+            "input": "する／くる",
+            "rule": "gunakan bentuk pasif khusus",
+            "output": "される／こられる",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "Bentuk pasif ini dipakai untuk menyampaikan fakta, sejarah, kebiasaan, pengumuman, atau informasi umum. Pelaku tindakan tidak penting, tidak diketahui, atau sengaja tidak disebutkan.",
+          "Fokus kalimat berada pada peristiwa atau benda yang terkait dengan tindakan, bukan pada orang yang melakukannya. Pola ini tidak dengan sendirinya menyatakan bahwa subjek mengalami kerugian."
+        ],
+        "examples": [
+          {
+            "jp": "この{寺|てら}は{約|やく}{三百年前|さんびゃくねんまえ}に{建|た}て__られた__。",
+            "id": "Kuil ini dibangun sekitar tiga ratus tahun yang lalu.",
+            "en": "This temple was built about three hundred years ago."
+          },
+          {
+            "jp": "{市|し}の{新|あたら}しい{図書館|としょかん}は{来年|らいねん}{開|ひら}か__れます__。",
+            "id": "Perpustakaan baru kota akan dibuka tahun depan.",
+            "en": "The city's new library will open next year."
+          },
+          {
+            "jp": "この{薬|くすり}は{食後|しょくご}に{使|つか}わ__れています__。",
+            "id": "Obat ini digunakan setelah makan.",
+            "en": "This medicine is used after meals."
+          },
+          {
+            "jp": "この{地域|ちいき}では、{昔|むかし}から{米|こめ}が{作|つく}ら__れてきた__。",
+            "id": "Di daerah ini, beras telah ditanam sejak dahulu.",
+            "en": "Rice has been grown in this region since long ago."
+          }
+        ],
+        "pitfalls": [
+          "Jangan memakai pola ini untuk menambahkan kesan dirugikan. Untuk fakta umum, perhatian utama tetap pada peristiwa atau hasilnya, bukan dampak pada seseorang."
+        ],
+        "tags": [
+          "voice"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v4",
+        "generatedAt": "2026-10-02T12:56:31.353Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -62,8 +140,93 @@
         "extractedAt": "2026-10-02T07:48:13.372Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "(〜に)〜れる／〜られる",
+        "senseLabel": "pasif merugikan",
+        "meaningId": "kerugian akibat tindakan atau kejadian pihak lain",
+        "meaningEn": "being adversely affected by another's action or event",
+        "connections": [
+          {
+            "form": "n",
+            "pattern": "に",
+            "note": "pelaku atau peristiwa pemicu, bila disebut"
+          },
+          {
+            "form": "v-nai-stem",
+            "pattern": "れる",
+            "note": "untuk kata kerja godan"
+          },
+          {
+            "form": "v-masu",
+            "pattern": "られる",
+            "note": "untuk kata kerja ichidan"
+          }
+        ],
+        "formation": [
+          {
+            "label": "kata kerja godan",
+            "input": "Vない tanpa ない",
+            "rule": "tambahkan れる",
+            "output": "V + れる",
+            "note": null
+          },
+          {
+            "label": "kata kerja ichidan",
+            "input": "Vます tanpa ます",
+            "rule": "tambahkan られる",
+            "output": "V + られる",
+            "note": null
+          },
+          {
+            "label": "kata kerja tidak beraturan",
+            "input": "する／くる",
+            "rule": "gunakan bentuk pasif khusus",
+            "output": "される／こられる",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "Pasif ini digunakan ketika seseorang terdampak secara tidak menyenangkan oleh tindakan orang lain atau oleh suatu kejadian. Subjek kalimat adalah pihak yang merasa terganggu, dirugikan, atau sedih.",
+          "Pelaku atau penyebab dapat ditandai dengan に, tetapi kadang tidak disebutkan jika sudah jelas dari konteks. Pola ini sering disebut pasif tidak langsung atau pasif yang merugikan."
+        ],
+        "examples": [
+          {
+            "jp": "{隣|となり}の{人|ひと}に{夜中|よなか}まで{騒|さわ}が__れて__、{眠|ねむ}れなかった。",
+            "id": "Saya tidak bisa tidur karena tetangga berisik sampai tengah malam.",
+            "en": "I could not sleep because my neighbor was noisy until midnight."
+          },
+          {
+            "jp": "{弟|おとうと}に{私|わたし}のケーキを{食|た}べ__られて__、がっかりした。",
+            "id": "Saya kecewa karena adik laki-laki saya memakan kue saya.",
+            "en": "I was disappointed because my younger brother ate my cake."
+          },
+          {
+            "jp": "{子|こ}どもに{大切|たいせつ}な{書類|しょるい}を{破|やぶ}ら__れて__、{困|こま}った。",
+            "id": "Saya kesulitan karena anak itu merobek dokumen penting.",
+            "en": "I was troubled because a child tore an important document."
+          },
+          {
+            "jp": "{飼|か}っていた{猫|ねこ}に{逃|に}げ__られて__、みんな{心配|しんぱい}した。",
+            "id": "Kami semua khawatir karena kucing peliharaan kami kabur.",
+            "en": "Everyone was worried because our pet cat ran away."
+          }
+        ],
+        "pitfalls": [
+          "Pola ini bukan sekadar pasif biasa untuk menjelaskan tindakan terhadap objek. Gunakan saat pihak yang menjadi subjek benar-benar dipahami sebagai pihak yang terdampak secara negatif.",
+          "Kesan merugikan biasanya penting. Jika tidak ada dampak negatif pada subjek, pasif impersonal untuk fakta umum mungkin lebih sesuai."
+        ],
+        "tags": [
+          "voice",
+          "negative"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v4",
+        "generatedAt": "2026-10-02T12:56:31.353Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -94,8 +257,84 @@
         "extractedAt": "2026-10-02T07:50:50.653Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜(さ)せてください／〜(さ)せてもらえますか／〜(さ)せていただけますか",
+        "senseLabel": null,
+        "meaningId": "meminta izin untuk melakukan tindakan sendiri",
+        "meaningEn": "asking permission to do something oneself",
+        "connections": [
+          {
+            "form": "v-nai-stem",
+            "pattern": "せてください／せてもらえますか／せていただけますか",
+            "note": "untuk kata kerja godan"
+          },
+          {
+            "form": "v-masu",
+            "pattern": "させてください／させてもらえますか／させていただけますか",
+            "note": "untuk kata kerja ichidan"
+          }
+        ],
+        "formation": [
+          {
+            "label": "kata kerja godan",
+            "input": "Vない tanpa ない",
+            "rule": "tambahkan せて lalu pilih ungkapan izin",
+            "output": "V + せてください／せてもらえますか／せていただけますか",
+            "note": null
+          },
+          {
+            "label": "kata kerja ichidan",
+            "input": "Vます tanpa ます",
+            "rule": "tambahkan させて lalu pilih ungkapan izin",
+            "output": "V + させてください／させてもらえますか／させていただけますか",
+            "note": null
+          },
+          {
+            "label": "kata kerja tidak beraturan",
+            "input": "する／くる",
+            "rule": "gunakan bentuk kausatif khusus sebelum ungkapan izin",
+            "output": "させて／こさせて",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "Pola ini meminta lawan bicara mengizinkan pembicara melakukan suatu tindakan. Tindakan tersebut dilakukan oleh pembicara atau kelompok pembicara, bukan oleh lawan bicara.",
+          "〜させてください adalah permintaan izin yang langsung dan sopan. 〜させてもらえますか terdengar lebih lunak, sedangkan 〜させていただけますか lebih merendah dan lazim dalam situasi resmi."
+        ],
+        "examples": [
+          {
+            "jp": "{少|すこ}し{窓|まど}を{開|あ}け__させてください__。",
+            "id": "Tolong izinkan saya membuka jendela sebentar.",
+            "en": "Please allow me to open the window for a moment."
+          },
+          {
+            "jp": "{私|わたし}にもその{資料|しりょう}を{読|よ}ま__せてもらえますか__。",
+            "id": "Bolehkah saya juga membaca dokumen itu?",
+            "en": "May I read that document as well?"
+          },
+          {
+            "jp": "{会議|かいぎ}で{一言|ひとこと}{話|はな}さ__せていただけますか__。",
+            "id": "Izinkan saya menyampaikan beberapa kata dalam rapat.",
+            "en": "May I say a few words at the meeting?"
+          }
+        ],
+        "pitfalls": [
+          "Jangan gunakan pola ini untuk menyuruh lawan bicara melakukan tindakan. Subjek tindakan pada pola ini adalah pembicara.",
+          "〜させていただけますか lebih cocok ketika izin atau persetujuan pihak lain memang diperlukan, terutama dalam konteks resmi."
+        ],
+        "tags": [
+          "permission",
+          "keigo",
+          "polite"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v4",
+        "generatedAt": "2026-10-02T12:56:31.353Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -126,23 +365,103 @@
         "extractedAt": "2026-10-02T07:50:50.653Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜ないと／〜なくちゃ／〜なきゃ",
+        "senseLabel": null,
+        "meaningId": "kewajiban dalam ungkapan singkat kasual",
+        "meaningEn": "obligation in a shortened casual expression",
+        "connections": [
+          {
+            "form": "v-nai",
+            "pattern": "と",
+            "note": "umumnya dipakai di akhir kalimat dengan kewajiban yang dihilangkan"
+          },
+          {
+            "form": "v-nai-stem",
+            "pattern": "なくちゃ",
+            "note": "ragam kasual"
+          },
+          {
+            "form": "v-nai-stem",
+            "pattern": "なきゃ",
+            "note": "ragam kasual"
+          }
+        ],
+        "formation": [
+          {
+            "label": "bentuk ないと",
+            "input": "Vない",
+            "rule": "tambahkan と dan hilangkan predikat kewajiban yang dipahami",
+            "output": "Vないと",
+            "note": "misalnya いけない atau だめ tidak diucapkan"
+          },
+          {
+            "label": "bentuk なくちゃ",
+            "input": "Vない tanpa ない",
+            "rule": "tambahkan なくちゃ",
+            "output": "Vなくちゃ",
+            "note": "berasal dari bentuk なくては"
+          },
+          {
+            "label": "bentuk なきゃ",
+            "input": "Vない tanpa ない",
+            "rule": "tambahkan なきゃ",
+            "output": "Vなきゃ",
+            "note": "berasal dari bentuk なければ"
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜ないと, 〜なくちゃ, dan 〜なきゃ yang dipakai di akhir kalimat menyatakan bahwa pembicara harus melakukan sesuatu. Predikat seperti いけない atau だめ dipahami dari konteks, tetapi tidak diucapkan.",
+          "〜なくちゃ dan 〜なきゃ terasa lebih kasual daripada 〜ないと. Bentuk-bentuk ini umum dalam percakapan santai, tetapi sebaiknya dihindari dalam tulisan atau situasi yang sangat resmi."
+        ],
+        "examples": [
+          {
+            "jp": "{明日|あした}は{早|はや}いから、もう{寝|ね}__ないと__。",
+            "id": "Besok harus bangun pagi, jadi saya harus tidur sekarang.",
+            "en": "I have to get up early tomorrow, so I need to sleep now."
+          },
+          {
+            "jp": "{申込書|もうしこみしょ}を{今日中|きょうじゅう}に{出|だ}さ__なくちゃ__。",
+            "id": "Saya harus menyerahkan formulir pendaftaran ini hari ini.",
+            "en": "I have to submit this application form today."
+          },
+          {
+            "jp": "{薬|くすり}を{忘|わす}れずに{飲|の}ま__なきゃ__。",
+            "id": "Saya harus minum obat tanpa lupa.",
+            "en": "I have to remember to take my medicine."
+          }
+        ],
+        "pitfalls": [
+          "Jangan menyambungkan bentuk ini dengan bentuk masu. Gunakan bentuk nai, misalnya {行|い}かないと, bukan {行|い}きないと.",
+          "Jika ないと diikuti akibat yang jelas, bentuk itu dapat bermakna syarat “jika tidak”. Kartu ini hanya membahas pemakaian akhir kalimat yang bermakna kewajiban."
+        ],
+        "tags": [
+          "obligation",
+          "casual"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v4",
+        "generatedAt": "2026-10-02T12:56:31.353Z",
+        "doubt": null
+      },
       "review": null
     },
     {
-      "key": "chau-jau",
+      "key": "chau-jau-selesai",
       "order": 5,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
-      "family": null,
+      "family": "te-shimau",
       "title": "〜ちゃう／〜じゃう",
       "source": {
         "slides": [
           "n3-bunpou/n3-bunpou-5.png"
         ],
         "title": "〜ちゃった",
-        "meaning": "sering digunakan dalam bahasa lisan; menjelaskan sesuatu yang dilakukan sampai selesai, habis; dalam konteks tertentu ada perasaan kecewa, menyesal, tidak sengaja (〜ちゃった)",
+        "meaning": "menyelesaikan atau menghabiskan suatu tindakan dalam ragam lisan",
         "connection": "K. Kerja てしまう → ちゃう | K. Kerja でしまう → じゃう",
         "formation": [
           {
@@ -163,7 +482,120 @@
         "notes": "",
         "examples": [
           "A: 「ここにあったチョコレートは?」 B: 「あ、食べちゃった。」",
-          "試験が終わった! 今日は飲んじゃおう! (=飲んでしまおう)",
+          "試験が終わった! 今日は飲んじゃおう! (=飲んでしまおう)"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v3",
+        "extractedAt": "2026-10-02T07:52:36.644Z",
+        "doubt": null
+      },
+      "content": {
+        "title": "〜ちゃう／〜じゃう",
+        "senseLabel": "penyelesaian hingga tuntas",
+        "meaningId": "penyelesaian tindakan dalam ragam lisan",
+        "meaningEn": "completion of an action in casual speech",
+        "connections": [
+          {
+            "form": "v-te",
+            "pattern": "ちゃう／じゃう",
+            "note": "bentuk lisan dari てしまう atau でしまう"
+          }
+        ],
+        "formation": [
+          {
+            "label": "bentuk てしまう",
+            "input": "Vてしまう",
+            "rule": "てしまう menjadi ちゃう dalam percakapan",
+            "output": "Vちゃう",
+            "note": null
+          },
+          {
+            "label": "bentuk でしまう",
+            "input": "Vでしまう",
+            "rule": "でしまう menjadi じゃう dalam percakapan",
+            "output": "Vじゃう",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜ちゃう dan 〜じゃう adalah kontraksi lisan dari 〜てしまう dan 〜でしまう. Dalam pemakaian ini, pola tersebut menunjukkan bahwa tindakan telah diselesaikan seluruhnya atau hasilnya sudah terjadi.",
+          "Bentuk ini sangat umum dalam percakapan santai. Karena hasilnya telah telanjur terjadi, konteks kadang dapat memberi kesan penyesalan, tetapi kesan itu tidak selalu ada."
+        ],
+        "examples": [
+          {
+            "jp": "{宿題|しゅくだい}を{全部|ぜんぶ}やっ__ちゃった__。",
+            "id": "Saya sudah menyelesaikan semua pekerjaan rumah.",
+            "en": "I have finished all of my homework."
+          },
+          {
+            "jp": "もうその{映画|えいが}は{見|み}__ちゃった__。",
+            "id": "Saya sudah menonton film itu.",
+            "en": "I have already watched that movie."
+          },
+          {
+            "jp": "{会議|かいぎ}の{資料|しりょう}を{全部|ぜんぶ}{印刷|いんさつ}し__ちゃった__。",
+            "id": "Saya sudah mencetak semua bahan rapat.",
+            "en": "I have printed all the meeting materials."
+          },
+          {
+            "jp": "{週末|しゅうまつ}にこの{小説|しょうせつ}を{読|よ}み__ちゃおう__。",
+            "id": "Ayo selesaikan membaca novel ini pada akhir pekan.",
+            "en": "Let's finish reading this novel over the weekend."
+          }
+        ],
+        "pitfalls": [
+          "Bentuk ini kasual. Dalam ragam yang lebih netral atau sopan, gunakan 〜てしまう atau 〜でしまう.",
+          "Jangan menganggap 〜ちゃう selalu bermakna penyesalan. Makna utamanya di sini adalah tindakan mencapai selesai."
+        ],
+        "tags": [
+          "aspect",
+          "casual"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v4",
+        "generatedAt": "2026-10-02T12:56:31.353Z",
+        "doubt": null
+      },
+      "review": null
+    },
+    {
+      "key": "chau-jau-penyesalan",
+      "order": 6,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "te-shimau",
+      "title": "〜ちゃう／〜じゃう",
+      "source": {
+        "slides": [
+          "n3-bunpou/n3-bunpou-5.png"
+        ],
+        "title": "〜ちゃった",
+        "meaning": "menyatakan kejadian yang tidak sengaja, terlanjur terjadi, atau disesali dalam ragam lisan",
+        "connection": "K. Kerja てしまう → ちゃう | K. Kerja でしまう → じゃう",
+        "formation": [
+          {
+            "label": "K. Kerja てしまう",
+            "input": "てしまう",
+            "rule": "てしまう → ちゃう",
+            "output": "ちゃう",
+            "note": null
+          },
+          {
+            "label": "K. Kerja でしまう",
+            "input": "でしまう",
+            "rule": "でしまう → じゃう",
+            "output": "じゃう",
+            "note": null
+          }
+        ],
+        "notes": "",
+        "examples": [
+          "A: 「ここにあったチョコレートは?」 B: 「あ、食べちゃった。」",
           "すみません、車が混んじゃって... 少し遅れます。 (=混んでしまって)"
         ]
       },
@@ -173,23 +605,99 @@
         "extractedAt": "2026-10-02T07:52:36.644Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜ちゃう／〜じゃう",
+        "senseLabel": "penyesalan atas kejadian",
+        "meaningId": "menyatakan kejadian yang tidak disengaja, terlanjur, atau disayangkan dalam ragam lisan",
+        "meaningEn": "expresses an unintended, irreversible, or regrettable event in casual speech",
+        "connections": [
+          {
+            "form": "v-te",
+            "pattern": "ちゃう",
+            "note": "Dipakai setelah bentuk て."
+          },
+          {
+            "form": "v-te",
+            "pattern": "じゃう",
+            "note": "Dipakai setelah bentuk で."
+          }
+        ],
+        "formation": [
+          {
+            "label": "sesudah bentuk て",
+            "input": "Vてしまう",
+            "rule": "Ganti てしまう dengan ちゃう.",
+            "output": "Vちゃう",
+            "note": "Bentuk lampau てしまった menjadi ちゃった."
+          },
+          {
+            "label": "sesudah bentuk で",
+            "input": "Vでしまう",
+            "rule": "Ganti でしまう dengan じゃう.",
+            "output": "Vじゃう",
+            "note": "Bentuk lampau でしまった menjadi じゃった."
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜ちゃう／〜じゃう adalah bentuk singkat lisan dari 〜てしまう／〜でしまう. Pada makna ini, pola tersebut menyatakan bahwa sesuatu terjadi tanpa sengaja, telanjur terjadi, atau menimbulkan rasa menyesal.",
+          "Gunakan 〜ちゃう setelah bentuk て dan 〜じゃう setelah bentuk で. Bentuk ini sangat lazim dalam percakapan santai; untuk situasi lebih sopan, gunakan bentuk lengkap 〜てしまう atau 〜てしまいました.",
+          "Pola ini berfokus pada akibat yang tidak diinginkan, bukan pada tindakan yang sengaja diselesaikan. Konteks biasanya menunjukkan kerugian, kesalahan, atau keadaan yang sulit dibatalkan."
+        ],
+        "examples": [
+          {
+            "jp": "{大事|だいじ}な{書類|しょるい}を __{捨|す}てちゃった__。",
+            "id": "Saya tidak sengaja membuang dokumen penting.",
+            "en": "I accidentally threw away an important document."
+          },
+          {
+            "jp": "{電車|でんしゃ}で{寝|ね} __{過|す}ごしちゃって__、{会社|かいしゃ}に{遅|おく}れた。",
+            "id": "Saya ketiduran di kereta hingga kelewatan tujuan dan terlambat ke kantor.",
+            "en": "I overslept on the train, missed my stop, and was late for work."
+          },
+          {
+            "jp": "{雨|あめ}で{服|ふく}が __ぬれちゃった__。",
+            "id": "Pakaian saya jadi basah karena hujan.",
+            "en": "My clothes got wet in the rain."
+          },
+          {
+            "jp": "{期限|きげん}を __{忘|わす}れちゃった__から、{申込|もうしこ}みができなかった。",
+            "id": "Karena saya telanjur lupa tenggat waktunya, saya tidak bisa mendaftar.",
+            "en": "Because I forgot the deadline, I could not apply."
+          }
+        ],
+        "pitfalls": [
+          "〜ちゃう／〜じゃう merupakan ragam santai. Hindari dalam surat atau percakapan resmi.",
+          "Jangan memakai makna ini hanya untuk menyatakan tindakan yang selesai dengan sengaja. Untuk makna penyelesaian, konteksnya berbeda.",
+          "○ {読|よ}んでしまった → {読|よ}んじゃった. ✕ {読|よ}んてしまった → {読|よ}んちゃった."
+        ],
+        "tags": [
+          "aspect",
+          "casual",
+          "negative"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v4",
+        "generatedAt": "2026-10-02T15:07:22.844Z",
+        "doubt": null
+      },
       "review": null
     },
     {
-      "key": "toku-doku",
-      "order": 6,
+      "key": "toku-doku-persiapan",
+      "order": 7,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
-      "family": null,
+      "family": "te-oku",
       "title": "〜とく／〜どく",
       "source": {
         "slides": [
           "n3-bunpou/n3-bunpou-6.png"
         ],
         "title": "〜とく “terlebih dahulu…”",
-        "meaning": "terlebih dahulu...; sering digunakan dalam bahasa lisan; melakukan sesuatu perbuatan sebagai sebuah persiapan; bisa juga untuk mempertahankan suatu kondisi atau keadaan",
+        "meaning": "melakukan sesuatu terlebih dahulu sebagai persiapan; bentuk lisan dari 〜ておく／〜でおく",
         "connection": "K. Kerja ておく → とく | K. Kerja でおく → どく",
         "formation": [
           {
@@ -220,13 +728,196 @@
         "extractedAt": "2026-10-02T07:52:36.644Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜とく／〜どく",
+        "senseLabel": "persiapan sebelumnya",
+        "meaningId": "kontraksi lisan untuk melakukan sesuatu terlebih dahulu",
+        "meaningEn": "casual contraction for doing something in advance",
+        "connections": [
+          {
+            "form": "other",
+            "pattern": "とく／どく",
+            "note": "Bentuk lisan dari Vておく dan Vでおく. Vておく menjadi Vとく, sedangkan Vでおく menjadi Vどく."
+          }
+        ],
+        "formation": [
+          {
+            "label": "kontraksi ておく",
+            "input": "Vておく",
+            "rule": "ておく dikontraksikan menjadi とく.",
+            "output": "Vとく",
+            "note": "Bentuk turunannya juga berkontraksi, misalnya といて, といた, dan とかない."
+          },
+          {
+            "label": "kontraksi でおく",
+            "input": "Vでおく",
+            "rule": "でおく dikontraksikan menjadi どく.",
+            "output": "Vどく",
+            "note": "Bentuk turunannya juga berkontraksi, misalnya どいて, どいた, dan どかない."
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜とく／〜どく adalah bentuk singkat dalam percakapan dari 〜ておく／〜でおく. Pola ini menyatakan bahwa suatu tindakan dilakukan lebih awal sebagai persiapan untuk kebutuhan atau keadaan berikutnya.",
+          "Gunakan とく setelah kata kerja yang berakhir dengan て, dan どく setelah kata kerja yang berakhir dengan で. Kontraksi ini dapat menerima akhiran lain, seperti といて, といた, とかない, どいて, dan どかない.",
+          "Bentuk ini terutama dipakai dalam percakapan santai. Dalam situasi resmi, tulisan, atau ketika ingin terdengar lebih sopan, gunakan bentuk lengkap ておく／でおく."
+        ],
+        "examples": [
+          {
+            "jp": "{出発|しゅっぱつ}までに、{切符|きっぷ}を__{買|か}っとく__。",
+            "id": "Aku akan membeli tiketnya terlebih dahulu sebelum berangkat.",
+            "en": "I will buy the ticket in advance before leaving."
+          },
+          {
+            "jp": "{旅行|りょこう}の{前|まえ}に、ホテルを__{予約|よやく}しといた__。",
+            "id": "Aku sudah memesan hotel terlebih dahulu sebelum perjalanan.",
+            "en": "I booked the hotel in advance before the trip."
+          },
+          {
+            "jp": "{薬|くすり}を__{飲|の}んどかない__と、{夜|よる}に{熱|ねつ}が{出|で}るかもしれない。",
+            "id": "Kalau tidak minum obat terlebih dahulu, mungkin malam nanti demamnya akan muncul.",
+            "en": "If you do not take the medicine beforehand, you may get a fever tonight."
+          }
+        ],
+        "pitfalls": [
+          "Setelah bentuk で, gunakan どく, bukan とく. ○ {読|よ}んどく。 ✕ {読|よ}んとく.",
+          "Jangan memakai bentuk ini dalam dokumen resmi atau saat memerlukan ragam sangat sopan. Gunakan bentuk lengkap ておく／でおく."
+        ],
+        "tags": [
+          "purpose",
+          "casual"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v4",
+        "generatedAt": "2026-10-02T14:01:27.689Z",
+        "doubt": null
+      },
+      "review": null
+    },
+    {
+      "key": "toku-doku-membiarkan",
+      "order": 8,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "te-oku",
+      "title": "〜とく／〜どく",
+      "source": {
+        "slides": [
+          "n3-bunpou/n3-bunpou-6.png"
+        ],
+        "title": "〜とく “terlebih dahulu…”",
+        "meaning": "melakukan sesuatu lalu mempertahankan atau membiarkan keadaan tersebut; bentuk lisan dari 〜ておく／〜でおく",
+        "connection": "K. Kerja ておく → とく | K. Kerja でおく → どく",
+        "formation": [
+          {
+            "label": "K. Kerja ておく",
+            "input": "ておく",
+            "rule": "ておく → とく",
+            "output": "とく",
+            "note": null
+          },
+          {
+            "label": "K. Kerja でおく",
+            "input": "でおく",
+            "rule": "でおく → どく",
+            "output": "どく",
+            "note": null
+          }
+        ],
+        "notes": "Slide menyebut fungsi mempertahankan suatu kondisi atau keadaan, tetapi tidak memberikan contoh khusus untuk fungsi ini.",
+        "examples": []
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v3",
+        "extractedAt": "2026-10-02T07:52:36.644Z",
+        "doubt": null
+      },
+      "content": {
+        "title": "〜とく／〜どく",
+        "senseLabel": "membiarkan keadaan tetap",
+        "meaningId": "membiarkan keadaan hasil tindakan tetap berlangsung",
+        "meaningEn": "leave the resulting state in place",
+        "connections": [
+          {
+            "form": "v-te",
+            "pattern": "とく",
+            "note": "Bentuk lisan yang berasal dari 〜ておく."
+          },
+          {
+            "form": "v-te",
+            "pattern": "どく",
+            "note": "Dipakai ketika bentuk asalnya berakhir dengan でおく; merupakan kontraksi dari 〜でおく."
+          }
+        ],
+        "formation": [
+          {
+            "label": "Kontraksi ておく",
+            "input": "Vておく",
+            "rule": "Ganti ておく dengan とく.",
+            "output": "Vとく",
+            "note": null
+          },
+          {
+            "label": "Kontraksi でおく",
+            "input": "Vでおく",
+            "rule": "Ganti でおく dengan どく.",
+            "output": "Vどく",
+            "note": null
+          }
+        ],
+        "variants": [
+          "〜ておく／〜でおく"
+        ],
+        "explanation": [
+          "〜とく／〜どく adalah kontraksi lisan dari 〜ておく／〜でおく. Pada makna ini, pola tersebut menyatakan bahwa penutur sengaja melakukan suatu tindakan lalu membiarkan keadaan hasilnya tetap berlangsung untuk sementara.",
+          "Fokusnya bukan pada persiapan untuk kebutuhan nanti, melainkan pada keadaan yang dibiarkan tetap ada, misalnya jendela tetap terbuka, pintu tetap terkunci, atau barang tetap diletakkan di suatu tempat.",
+          "Bentuk ini terutama digunakan dalam percakapan santai. Dalam situasi yang lebih netral atau sopan, gunakan 〜ておく atau 〜でおく."
+        ],
+        "examples": [
+          {
+            "jp": "{会議|かいぎ}が{終|お}わるまで、{窓|まど}を{少|すこ}し{開|あ}け__とく__。",
+            "id": "Sampai rapat selesai, aku akan membiarkan jendelanya sedikit terbuka.",
+            "en": "I will leave the window slightly open until the meeting ends."
+          },
+          {
+            "jp": "{使|つか}わない{部屋|へや}だから、{鍵|かぎ}をかけ__とく__。",
+            "id": "Karena ruangan itu tidak dipakai, aku akan membiarkannya tetap terkunci.",
+            "en": "Since nobody will use the room, I will leave it locked."
+          },
+          {
+            "jp": "{大|おお}きい{箱|はこ}は{邪魔|じゃま}にならないように、{廊下|ろうか}の{端|はし}に{運|はこ}ん__どく__。",
+            "id": "Agar tidak menghalangi, aku akan membiarkan kotak besar itu di ujung lorong.",
+            "en": "So that it does not get in the way, I will leave the large box at the end of the hallway."
+          },
+          {
+            "jp": "{濡|ぬ}れた{傘|かさ}は、{玄関|げんかん}に{立|た}てかけ__とく__。",
+            "id": "Aku akan membiarkan payung basah itu tersandar di pintu masuk.",
+            "en": "I will leave the wet umbrella propped up by the entrance."
+          }
+        ],
+        "pitfalls": [
+          "Jangan gunakan pola ini hanya untuk menyatakan bahwa suatu tindakan sudah selesai. Pola ini perlu menunjukkan maksud untuk membiarkan keadaan hasil tindakan tetap berlangsung.",
+          "○ {窓|まど}を{開|あ}けとく. ✕ {窓|まど}を{開|あ}けていた. Bentuk kedua hanya menyatakan keadaan yang sedang atau telah berlangsung, dan tidak selalu mengandung maksud sengaja membiarkannya demikian."
+        ],
+        "tags": [
+          "aspect",
+          "casual"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v4",
+        "generatedAt": "2026-10-02T15:08:15.772Z",
+        "doubt": null
+      },
       "review": null
     },
     {
       "key": "mitai-sepertinya",
-      "order": 7,
+      "order": 9,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "mitai",
@@ -251,13 +942,111 @@
         "extractedAt": "2026-10-02T07:54:26.067Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜みたい",
+        "senseLabel": "dugaan berdasarkan kesan",
+        "meaningId": "sepertinya berdasarkan petunjuk",
+        "meaningEn": "seems to be, based on clues",
+        "connections": [
+          {
+            "form": "v-plain",
+            "pattern": "みたいだ",
+            "note": "Dapat mengikuti bentuk positif, negatif, lampau, dan negatif lampau."
+          },
+          {
+            "form": "i-adj-plain",
+            "pattern": "みたいだ",
+            "note": "Dapat mengikuti bentuk positif, negatif, dan lampau."
+          },
+          {
+            "form": "na-adj-stem",
+            "pattern": "みたいだ",
+            "note": "Gunakan bentuk dasar tanpa だ."
+          },
+          {
+            "form": "n",
+            "pattern": "みたいだ",
+            "note": "Tambahkan langsung setelah nomina tanpa だ."
+          }
+        ],
+        "formation": [
+          {
+            "label": "kata kerja",
+            "input": "V bentuk biasa",
+            "rule": "Tambahkan みたいだ setelah bentuk biasa, termasuk bentuk negatif atau lampau.",
+            "output": "V biasa + みたいだ",
+            "note": null
+          },
+          {
+            "label": "kata sifat-i",
+            "input": "kata sifat-i bentuk biasa",
+            "rule": "Tambahkan みたいだ setelah bentuk biasa kata sifat-i.",
+            "output": "kata sifat-i biasa + みたいだ",
+            "note": null
+          },
+          {
+            "label": "kata sifat-na",
+            "input": "kata sifat-na tanpa だ",
+            "rule": "Gunakan bentuk dasar kata sifat-na, lalu tambahkan みたいだ.",
+            "output": "kata sifat-na + みたいだ",
+            "note": null
+          },
+          {
+            "label": "nomina",
+            "input": "nomina",
+            "rule": "Tambahkan みたいだ langsung setelah nomina tanpa だ.",
+            "output": "N + みたいだ",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜みたいだ menyatakan simpulan sementara, yaitu “sepertinya”, yang dibuat pembicara dari tanda yang dilihat, didengar, atau dirasakan.",
+          "Pola ini lazim dalam percakapan dan maknanya dekat dengan 〜ようだ. Pembicara belum menyatakan fakta yang sudah pasti, melainkan penilaian berdasarkan petunjuk yang ada.",
+          "Setelah kata sifat-na dan nomina, だ tidak dipakai sebelum みたいだ."
+        ],
+        "examples": [
+          {
+            "jp": "{山|やま}の{上|うえ}が{白|しろ}い。{昨夜|さくや}、{雪|ゆき}が{降|ふ}った__みたいだ__。",
+            "id": "Puncak gunungnya putih. Sepertinya tadi malam turun salju.",
+            "en": "The top of the mountain is white. It seems that it snowed last night."
+          },
+          {
+            "jp": "{駅|えき}の{前|まえ}に{人|ひと}がたくさん{集|あつ}まっている。{今日|きょう}はお{祭|まつ}り__みたいだ__。",
+            "id": "Banyak orang berkumpul di depan stasiun. Sepertinya hari ini ada festival.",
+            "en": "A lot of people are gathering in front of the station. It seems there is a festival today."
+          },
+          {
+            "jp": "{妹|いもうと}の{部屋|へや}の{電気|でんき}が{消|き}えている。もう{寝|ね}た__みたいだ__。",
+            "id": "Lampu kamar adik perempuan saya sudah mati. Sepertinya dia sudah tidur.",
+            "en": "My younger sister's room light is off. It seems that she has already gone to bed."
+          },
+          {
+            "jp": "{受付|うけつけ}の{人|ひと}が「{会議|かいぎ}は{延期|えんき}です」と{言|い}っていた。{明日|あした}の{予定|よてい}は{変|か}わる__みたいです__。",
+            "id": "Petugas resepsionis mengatakan bahwa rapat ditunda. Sepertinya jadwal besok akan berubah.",
+            "en": "The receptionist said that the meeting was postponed. It seems that tomorrow's schedule will change."
+          }
+        ],
+        "pitfalls": [
+          "Setelah kata sifat-na dan nomina, jangan memakai だ sebelum みたいだ. ○ {静|しず}かみたいだ. ✕ {静|しず}かだみたいだ.",
+          "〜みたいだ terutama menyampaikan dugaan berdasarkan petunjuk, bukan kepastian yang sudah dikonfirmasi."
+        ],
+        "tags": [
+          "conjecture",
+          "casual"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v4",
+        "generatedAt": "2026-10-02T14:02:25.944Z",
+        "doubt": null
+      },
       "review": null
     },
     {
       "key": "mitai-seperti",
-      "order": 8,
+      "order": 10,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "mitai",
@@ -287,13 +1076,98 @@
         "extractedAt": "2026-10-02T09:57:58.626Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜みたい",
+        "senseLabel": "perumpamaan kemiripan",
+        "meaningId": "seperti; sangat mirip dengan",
+        "meaningEn": "like; very similar to",
+        "connections": [
+          {
+            "form": "n",
+            "pattern": "みたいだ",
+            "note": "Dipakai sebagai predikat untuk menyatakan kemiripan."
+          },
+          {
+            "form": "n",
+            "pattern": "みたいに",
+            "note": "Dipakai untuk menerangkan cara tindakan atau keadaan."
+          },
+          {
+            "form": "n",
+            "pattern": "みたいな",
+            "note": "Dipakai sebelum nomina yang diterangkan."
+          }
+        ],
+        "formation": [
+          {
+            "label": "predikat perumpamaan",
+            "input": "N",
+            "rule": "Tambahkan みたいだ setelah nomina untuk menyatakan bahwa sesuatu sangat menyerupai nomina tersebut.",
+            "output": "N + みたいだ",
+            "note": null
+          },
+          {
+            "label": "keterangan cara atau keadaan",
+            "input": "N",
+            "rule": "Tambahkan みたいに setelah nomina untuk menerangkan cara melakukan tindakan atau sifat suatu keadaan.",
+            "output": "N + みたいに + V／A",
+            "note": null
+          },
+          {
+            "label": "penerang nomina",
+            "input": "N",
+            "rule": "Tambahkan みたいな setelah nomina untuk menerangkan nomina berikutnya.",
+            "output": "N + みたいな + N",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜みたい menyatakan perumpamaan: sesuatu sangat mirip dengan benda, orang, atau keadaan yang disebut sebelumnya. Pola ini sepadan dengan 〜のようだ, tetapi みたい lebih lazim dalam percakapan santai.",
+          "Gunakan みたいだ sebagai predikat, みたいに untuk menerangkan cara atau keadaan, dan みたいな untuk menerangkan nomina. Pola ini tidak menyatakan dugaan dalam pemakaian ini, melainkan kemiripan."
+        ],
+        "examples": [
+          {
+            "jp": "この{雲|くも}は{綿菓子|わたがし}__みたいだ__。",
+            "id": "Awan ini seperti gula kapas.",
+            "en": "This cloud is like cotton candy."
+          },
+          {
+            "jp": "{弟|おとうと}は{父|ちち}__みたいに__{早起|はやお}きする。",
+            "id": "Adik laki-laki saya bangun pagi seperti ayah saya.",
+            "en": "My younger brother gets up early like our father."
+          },
+          {
+            "jp": "{海|うみ}のそばには{宝石|ほうせき}__みたいな__{石|いし}がある。",
+            "id": "Di tepi laut ada batu yang seperti permata.",
+            "en": "There are stones like jewels by the sea."
+          },
+          {
+            "jp": "この{部屋|へや}は{冷蔵庫|れいぞうこ}__みたいに__{寒|さむ}い。",
+            "id": "Ruangan ini dingin seperti lemari es.",
+            "en": "This room is as cold as a refrigerator."
+          }
+        ],
+        "pitfalls": [
+          "〜みたい dalam makna ini membandingkan dua hal yang mirip. Jangan menerjemahkannya sebagai dugaan “sepertinya” tanpa konteks yang mendukung.",
+          "Untuk menerangkan nomina, gunakan NみたいなN. ○{宝石|ほうせき}みたいな{石|いし}。 ✕{宝石|ほうせき}みたいに{石|いし}."
+        ],
+        "tags": [
+          "appearance",
+          "casual"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v4",
+        "generatedAt": "2026-10-02T14:01:43.314Z",
+        "doubt": null
+      },
       "review": null
     },
     {
       "key": "rashii-layaknya",
-      "order": 9,
+      "order": 11,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "rashii",
@@ -322,13 +1196,73 @@
         "extractedAt": "2026-10-02T09:57:58.626Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜らしい",
+        "senseLabel": "ciri khas yang sesuai",
+        "meaningId": "berciri khas seperti",
+        "meaningEn": "characteristically like; typical of",
+        "connections": [
+          {
+            "form": "n",
+            "pattern": "らしい"
+          }
+        ],
+        "formation": [
+          {
+            "label": "nomina",
+            "input": "N",
+            "rule": "Tambahkan らしい pada nomina yang menjadi acuan ciri atau gambaran.",
+            "output": "Nらしい",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜らしい melekat pada nomina untuk menyatakan bahwa sesuatu memiliki ciri, suasana, atau perilaku yang cocok dengan gambaran umum tentang nomina itu. Dalam bahasa Indonesia, bentuk ini dapat berarti “khas”, “layaknya”, atau “benar-benar seperti”.",
+          "Penilaian ini didasarkan pada citra pembicara atau citra yang umum dikenal, sehingga tidak selalu menyatakan identitas harfiah. Bentuk ini dapat menerangkan nomina, seperti {春|はる}らしい{日|ひ}, atau menjadi predikat, seperti {彼|かれ}らしい."
+        ],
+        "examples": [
+          {
+            "jp": "{今日|きょう}は{秋|あき}__らしい__{涼|すず}しい{風|かぜ}が{吹|ふ}いている。",
+            "id": "Hari ini angin sejuk khas musim gugur sedang bertiup.",
+            "en": "A cool, autumn-like breeze is blowing today."
+          },
+          {
+            "jp": "{彼|かれ}は{子|こ}ども__らしい__{発想|はっそう}で、みんなを{笑|わら}わせた。",
+            "id": "Ia membuat semua orang tertawa dengan ide yang khas anak-anak.",
+            "en": "The child made everyone laugh with a childlike idea."
+          },
+          {
+            "jp": "{自分|じぶん}__らしい__{働|はたら}き{方|かた}を{見|み}つけたい。",
+            "id": "Saya ingin menemukan cara bekerja yang sesuai dengan diri saya sendiri.",
+            "en": "I want to find a way of working that is true to myself."
+          },
+          {
+            "jp": "その{色|いろ}を{選|えら}ぶところが、{彼女|かのじょ}__らしい__。",
+            "id": "Memilih warna itu memang khas dirinya.",
+            "en": "Choosing that color is so like her."
+          }
+        ],
+        "pitfalls": [
+          "Makna ini bukan らしい yang menyampaikan kabar dari luar atau informasi yang didengar.",
+          "Untuk makna ini, らしい terutama mengikuti nomina, bukan langsung bentuk verba atau adjektiva.",
+          "Pemakaian dengan kategori seperti gender dapat bergantung pada stereotip sosial dan dalam konteks tertentu dapat terdengar kurang peka."
+        ],
+        "tags": [
+          "appearance"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v4",
+        "generatedAt": "2026-10-02T15:07:09.982Z",
+        "doubt": null
+      },
       "review": null
     },
     {
       "key": "rashii-dengar-dengar",
-      "order": 10,
+      "order": 12,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "rashii",
@@ -354,16 +1288,114 @@
         "extractedAt": "2026-10-02T07:58:21.837Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜らしい",
+        "senseLabel": "informasi dari luar",
+        "meaningId": "kabar atau dugaan berdasarkan informasi yang didengar",
+        "meaningEn": "hearsay or inference based on obtained information",
+        "connections": [
+          {
+            "form": "v-plain",
+            "pattern": "らしい",
+            "note": "Dipakai setelah kata kerja dalam bentuk biasa."
+          },
+          {
+            "form": "i-adj-plain",
+            "pattern": "らしい",
+            "note": "Dipakai setelah kata sifat-i dalam bentuk biasa."
+          },
+          {
+            "form": "na-adj-stem",
+            "pattern": "らしい",
+            "note": "Untuk bentuk positif masa kini, gunakan bentuk tanpa だ."
+          },
+          {
+            "form": "n",
+            "pattern": "らしい",
+            "note": "Untuk bentuk positif masa kini, jangan tambahkan だ."
+          }
+        ],
+        "formation": [
+          {
+            "label": "kata kerja",
+            "input": "V bentuk biasa",
+            "rule": "Tambahkan らしい setelah bentuk biasa.",
+            "output": "V biasa + らしい",
+            "note": null
+          },
+          {
+            "label": "kata sifat-i",
+            "input": "kata sifat-i bentuk biasa",
+            "rule": "Tambahkan らしい setelah bentuk biasa.",
+            "output": "kata sifat-i biasa + らしい",
+            "note": null
+          },
+          {
+            "label": "kata sifat-na",
+            "input": "kata sifat-na bentuk dasar",
+            "rule": "Tambahkan らしい tanpa だ pada bentuk positif masa kini.",
+            "output": "kata sifat-na + らしい",
+            "note": null
+          },
+          {
+            "label": "nomina",
+            "input": "nomina",
+            "rule": "Tambahkan らしい tanpa だ pada bentuk positif masa kini.",
+            "output": "nomina + らしい",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜らしい menyampaikan kabar, informasi, atau dugaan yang diperoleh dari sumber luar. Pembicara tidak menyatakan bahwa ia mengetahui hal itu secara langsung.",
+          "Dalam bahasa Indonesia, pola ini sering berarti \"katanya\", \"dengar-dengar\", atau \"sepertinya\". Nuansa \"sepertinya\" di sini tetap berlandaskan informasi yang didengar, bukan kesan yang dilihat langsung.",
+          "Makna ini berbeda dari 〜らしい yang berarti \"layaknya\" atau \"khas\". Pada makna kabar, pola ini tidak menilai apakah sesuatu memiliki ciri khas tertentu.",
+          "Untuk nomina dan kata sifat-na dalam bentuk positif masa kini, だ tidak dipakai sebelum らしい."
+        ],
+        "examples": [
+          {
+            "jp": "{会議|かいぎ}は{午後|ごご}{三時|さんじ}に{始|はじ}まる__らしい__。",
+            "id": "Katanya rapat akan mulai pukul tiga sore.",
+            "en": "I hear that the meeting will start at three in the afternoon."
+          },
+          {
+            "jp": "この{町|まち}では、{来週|らいしゅう}から{新|あたら}しい{図書館|としょかん}が{開|ひら}く__らしい__。",
+            "id": "Dengar-dengar, perpustakaan baru akan dibuka di kota ini mulai minggu depan.",
+            "en": "Apparently, a new library will open in this town next week."
+          },
+          {
+            "jp": "あの{店|みせ}の{限定|げんてい}ケーキは、{午前中|ごぜんちゅう}に{売|う}り{切|き}れる__らしい__。",
+            "id": "Katanya kue edisi terbatas di toko itu habis terjual sebelum siang.",
+            "en": "I hear that the limited-edition cakes at that shop sell out before noon."
+          },
+          {
+            "jp": "{田中|たなか}さんは{来年|らいねん}、{海外|かいがい}で{働|はたら}く__らしい__。",
+            "id": "Sepertinya Tanaka akan bekerja di luar negeri tahun depan.",
+            "en": "Apparently, Tanaka will work overseas next year."
+          }
+        ],
+        "pitfalls": [
+          "Untuk nomina dan kata sifat-na positif masa kini, jangan memakai だ. ○ {彼|かれ}は{元気|げんき}らしい。✕ {彼|かれ}は{元気|げんき}だらしい.",
+          "Gunakan makna ini saat ada informasi dari luar. Jangan mencampurkannya dengan 〜らしい bermakna \"layaknya\" atau \"khas\"."
+        ],
+        "tags": [
+          "hearsay"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v4",
+        "generatedAt": "2026-10-02T14:03:06.241Z",
+        "doubt": null
+      },
       "review": null
     },
     {
-      "key": "ppoi",
-      "order": 11,
+      "key": "ppoi-kemiripan",
+      "order": 13,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
-      "family": null,
+      "family": "ppoi",
       "title": "〜っぽい",
       "source": {
         "slides": [
@@ -371,16 +1403,9 @@
           "n3-bunpou/n3-bunpou-173.png"
         ],
         "title": "〜っぽい \"seperti\", \"terlihat seperti\"\n〜っぽい",
-        "meaning": "\"seperti\", \"terlihat seperti\"; menerangkan sebuah sifat, karakter atau keadaan; sering digunakan dalam konteks negatif (tapi tidak selalu)\n〜のような要素・性質がある\nMemiliki unsur atau sifat seperti...",
-        "connection": "kata benda & sifat っぽい → \"terlihat atau terasa seperti...\" | kata benda っぽい → \"terasa banyak...\" | kata kerja っぽい → \"mudah...\", \"sering...\"",
+        "meaning": "terlihat, terasa, atau memiliki sifat seperti sesuatu",
+        "connection": "K. Benda + っぽい / K. Sifat-i tanpa い + っぽい",
         "formation": [
-          {
-            "label": "K. Kerja",
-            "input": "〜ます",
-            "rule": "hilangkan ます",
-            "output": "〜っぽい",
-            "note": null
-          },
           {
             "label": "K. Sifat-i",
             "input": "〜い",
@@ -399,9 +1424,215 @@
         "notes": "",
         "examples": [
           "あの小学生は、大人っぽい。(=大人みたいだ) / anak SD itu seperti orang dewasa (sifat dll seperti orang dewasa)",
-          "この料理は油っぽくていやだ。(=油が多い感じがして) / masakan ini seperti berminyak sekali, saya tidak suka (terasa banyak minyak)",
+          "彼女はわがままばかり言って、子どもっぽい人だ。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v3",
+        "extractedAt": "2026-10-02T09:57:58.626Z",
+        "doubt": null
+      },
+      "content": {
+        "title": "〜っぽい",
+        "senseLabel": "kemiripan atau kesan",
+        "meaningId": "berkesan atau memiliki sifat seperti",
+        "meaningEn": "seem to have the quality of",
+        "connections": [
+          {
+            "form": "n",
+            "pattern": "っぽい",
+            "note": "Menunjukkan kesan atau sifat yang menyerupai nomina tersebut."
+          },
+          {
+            "form": "i-adj-stem",
+            "pattern": "っぽい",
+            "note": "Tidak semua kata sifat-i dapat membentuk pola ini secara alami."
+          }
+        ],
+        "formation": [
+          {
+            "label": "Nomina",
+            "input": "N",
+            "rule": "Tambahkan っぽい langsung setelah nomina.",
+            "output": "Nっぽい",
+            "note": null
+          },
+          {
+            "label": "Kata sifat-i",
+            "input": "Aい",
+            "rule": "Hilangkan い, lalu tambahkan っぽい.",
+            "output": "Aっぽい",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜っぽい menyatakan bahwa seseorang atau sesuatu memberi kesan, tampak, atau memiliki sifat yang menyerupai hal sebelumnya.",
+          "Pola ini tidak berarti bahwa dua hal benar-benar sama. Misalnya, {大人|おとな}っぽい berarti terlihat atau bersikap dewasa, bukan berarti orang itu benar-benar sudah dewasa.",
+          "Bentuk ini sering dipakai untuk sifat yang kurang disukai, seperti kesan murahan atau terlalu kekanak-kanakan, tetapi juga dapat dipakai secara netral."
+        ],
+        "examples": [
+          {
+            "jp": "{彼|かれ}は{話|はな}し{方|かた}が__{大人|おとな}っぽい__。",
+            "id": "Cara bicaranya terkesan dewasa.",
+            "en": "The way he speaks seems mature."
+          },
+          {
+            "jp": "この{時計|とけい}は__{安|やす}っぽく__{見|み}えるが、{実際|じっさい}は{丈夫|じょうぶ}だ。",
+            "id": "Jam ini terlihat murahan, tetapi sebenarnya tahan lama.",
+            "en": "This watch looks cheap, but it is actually durable."
+          },
+          {
+            "jp": "{部屋|へや}の{壁|かべ}を__{青|あお}っぽい__{色|いろ}に{塗|ぬ}った。",
+            "id": "Saya mengecat dinding kamar dengan warna yang agak kebiruan.",
+            "en": "I painted the room's wall a bluish color."
+          }
+        ],
+        "pitfalls": [
+          "〜っぽい menunjukkan kesan atau sifat, bukan kesamaan yang persis.",
+          "Tidak semua kata sifat-i dapat langsung diikuti っぽい. Gunakan bentuk yang lazim, misalnya {安|やす}っぽい."
+        ],
+        "tags": [
+          "appearance"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v4",
+        "generatedAt": "2026-10-02T14:03:07.760Z",
+        "doubt": null
+      },
+      "review": null
+    },
+    {
+      "key": "ppoi-kandungan",
+      "order": 14,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "ppoi",
+      "title": "〜っぽい",
+      "source": {
+        "slides": [
+          "n3-bunpou/n3-bunpou-11.png",
+          "n3-bunpou/n3-bunpou-173.png"
+        ],
+        "title": "〜っぽい \"seperti\", \"terlihat seperti\"\n〜っぽい",
+        "meaning": "terasa mengandung terlalu banyak unsur tertentu",
+        "connection": "K. Benda + っぽい",
+        "formation": [
+          {
+            "label": "K. Benda",
+            "input": "だ",
+            "rule": "tanpa だ",
+            "output": "〜っぽい",
+            "note": null
+          }
+        ],
+        "notes": "",
+        "examples": [
+          "この料理は油っぽくていやだ。(=油が多い感じがして) / masakan ini terasa terlalu berminyak, saya tidak suka"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v3",
+        "extractedAt": "2026-10-02T09:57:58.626Z",
+        "doubt": null
+      },
+      "content": {
+        "title": "〜っぽい",
+        "senseLabel": "unsur berlebihan",
+        "meaningId": "terasa mengandung terlalu banyak unsur tertentu",
+        "meaningEn": "feels as if it contains too much of a certain element",
+        "connections": [
+          {
+            "form": "n",
+            "pattern": "っぽい",
+            "note": "Umumnya dipakai dengan nomina yang menyatakan zat, bahan, atau unsur."
+          }
+        ],
+        "formation": [
+          {
+            "label": "Nomina",
+            "input": "N",
+            "rule": "Tambahkan っぽい langsung pada nomina.",
+            "output": "Nっぽい",
+            "note": "Bentuk っぽい kemudian berperilaku seperti kata sifat-i dan dapat berubah menjadi っぽくて, っぽいです, dan sebagainya."
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "Pola Nっぽい menyatakan bahwa sesuatu terasa mengandung unsur yang disebutkan oleh N secara berlebihan. Maknanya sering berkaitan dengan rasa, tekstur, bau, atau keadaan yang dapat dirasakan.",
+          "Pola ini lazim dipakai untuk menilai keadaan yang kurang menyenangkan, misalnya terlalu berminyak, terlalu berair, atau terlalu bertepung. Ini bukan pemakaian っぽい untuk menyatakan kemiripan seseorang atau kecenderungan melakukan tindakan."
+        ],
+        "examples": [
+          {
+            "jp": "このスープは__{油|あぶら}っぽくて__、{後|あと}{味|あじ}が{重|おも}い。",
+            "id": "Sup ini terlalu berminyak sehingga meninggalkan rasa berat di mulut.",
+            "en": "This soup is too greasy and leaves a heavy aftertaste."
+          },
+          {
+            "jp": "{雨|あめ}の{後|あと}は、{部|へ}{屋|や}の{空|くう}{気|き}が__{湿|しめ}っぽくなる__。",
+            "id": "Setelah hujan, udara di kamar menjadi terlalu lembap.",
+            "en": "After rain, the air in the room becomes damp."
+          },
+          {
+            "jp": "このパンは__{水|みず}っぽくて__、あまりおいしくない。",
+            "id": "Roti ini terlalu berair sehingga kurang enak.",
+            "en": "This bread is too watery and not very tasty."
+          },
+          {
+            "jp": "{古|ふる}い{本|ほん}を{開|ひら}くと、{少|すこ}し__ほこりっぽい__においがした。",
+            "id": "Ketika membuka buku lama itu, tercium bau yang agak berdebu.",
+            "en": "When I opened the old book, it had a slightly dusty smell."
+          }
+        ],
+        "pitfalls": [
+          "Jangan menyisipkan partikel antara nomina dan っぽい. ○ {水|みず}っぽい. ✕ {水|みず}がっぽい.",
+          "Tidak semua nomina cocok dengan makna ini. Pilih nomina yang dapat dipahami sebagai unsur, zat, atau bahan yang terasa terlalu banyak.",
+          "Makna ini berbeda dari 〜っぽい yang berarti memiliki kesan seperti sesuatu, misalnya {子|こ}どもっぽい."
+        ],
+        "tags": [
+          "degree",
+          "negative"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v4",
+        "generatedAt": "2026-10-02T15:08:17.060Z",
+        "doubt": null
+      },
+      "review": null
+    },
+    {
+      "key": "ppoi-kecenderungan",
+      "order": 15,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "ppoi",
+      "title": "〜っぽい",
+      "source": {
+        "slides": [
+          "n3-bunpou/n3-bunpou-11.png",
+          "n3-bunpou/n3-bunpou-173.png"
+        ],
+        "title": "〜っぽい \"seperti\", \"terlihat seperti\"\n〜っぽい",
+        "meaning": "mudah atau sering melakukan suatu tindakan; memiliki kecenderungan tertentu",
+        "connection": "K. Kerja 〜ます tanpa ます + っぽい",
+        "formation": [
+          {
+            "label": "K. Kerja",
+            "input": "〜ます",
+            "rule": "hilangkan ます",
+            "output": "〜っぽい",
+            "note": null
+          }
+        ],
+        "notes": "",
+        "examples": [
           "私の母はもう年のせいか、最近忘れっぽい。(=忘れやすい) / ibu saya entah karena faktor usia, akhir-akhir ini mudah lupa",
-          "彼女はわがままばかり言って、子どもっぽい人だ。",
           "弟はあきっぽくて、何でも途中でやめてしまう。"
         ]
       },
@@ -411,13 +1642,68 @@
         "extractedAt": "2026-10-02T09:57:58.626Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜っぽい",
+        "senseLabel": "kecenderungan mudah terjadi",
+        "meaningId": "cenderung mudah atau sering melakukan sesuatu",
+        "meaningEn": "tends to do something easily or often",
+        "connections": [
+          {
+            "form": "v-masu",
+            "pattern": "っぽい",
+            "note": "Gunakan bentuk masu tanpa ます."
+          }
+        ],
+        "formation": [
+          {
+            "label": "kata kerja",
+            "input": "Vます{形|けい}",
+            "rule": "Hilangkan ます dari bentuk masu, lalu tambahkan っぽい.",
+            "output": "Vます{語幹|ごかん} + っぽい",
+            "note": "Bentuk ini berfungsi seperti kata sifat-i dan dapat berubah menjadi っぽく, っぽくて, atau っぽかった."
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜っぽい setelah bentuk masu tanpa ます menyatakan bahwa seseorang mudah melakukan suatu tindakan atau memiliki kebiasaan melakukan tindakan itu berulang kali.",
+          "Pola ini biasanya menggambarkan kecenderungan yang menetap atau mudah muncul, bukan satu kejadian tunggal. Nuansanya bergantung pada kata kerja yang dipakai."
+        ],
+        "examples": [
+          {
+            "jp": "{彼|かれ}は{疲|つか}れると、__{怒|おこ}りっぽく__なる。",
+            "id": "Ia cenderung mudah marah ketika lelah.",
+            "en": "He tends to get angry easily when he is tired."
+          },
+          {
+            "jp": "{私|わたし}は{忙|いそが}しい{時期|じき}になると、__{忘|わす}れっぽく__なる。",
+            "id": "Saya cenderung mudah lupa ketika memasuki masa sibuk.",
+            "en": "I tend to become forgetful during busy periods."
+          },
+          {
+            "jp": "{弟|おとうと}は__{飽|あ}きっぽくて__、{新|あたら}しい{趣味|しゅみ}を{始|はじ}めても{長|なが}く{続|つづ}かない。",
+            "id": "Adik laki-laki saya mudah bosan, jadi hobi baru pun tidak pernah bertahan lama.",
+            "en": "My younger brother gets bored easily, so even his new hobbies never last long."
+          }
+        ],
+        "pitfalls": [
+          "Gunakan untuk sifat atau kecenderungan yang berulang, bukan tindakan yang hanya terjadi sekali.",
+          "っぽい berinfleksi seperti kata sifat-i. Gunakan っぽく atau っぽくて sesuai fungsi kalimat, bukan っぽいだ."
+        ],
+        "tags": [
+          "tendency"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v4",
+        "generatedAt": "2026-10-02T15:08:20.900Z",
+        "doubt": null
+      },
       "review": null
     },
     {
       "key": "you-ni-suru-usahakan",
-      "order": 12,
+      "order": 16,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "you-ni-suru",
@@ -443,13 +1729,83 @@
         "extractedAt": "2026-10-02T08:06:01.685Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜ようにする",
+        "senseLabel": "usaha atau kebiasaan",
+        "meaningId": "berusaha membiasakan diri untuk melakukan atau tidak melakukan sesuatu",
+        "meaningEn": "make an effort to develop a habit of doing or not doing something",
+        "connections": [
+          {
+            "form": "v-dict",
+            "pattern": "ようにする"
+          },
+          {
+            "form": "v-nai",
+            "pattern": "ようにする"
+          }
+        ],
+        "formation": [
+          {
+            "label": "bentuk positif",
+            "input": "v-dict",
+            "rule": "Tambahkan ようにする setelah kata kerja bentuk kamus.",
+            "output": "Vるようにする",
+            "note": null
+          },
+          {
+            "label": "bentuk negatif",
+            "input": "v-nai",
+            "rule": "Tambahkan ようにする setelah kata kerja bentuk negatif ない.",
+            "output": "Vないようにする",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜ようにする menyatakan usaha sadar untuk menjadikan suatu tindakan sebagai kebiasaan. Pola ini dapat dipakai untuk kebiasaan yang ingin dilakukan maupun dihindari.",
+          "Bentuk 〜ようにしている menekankan usaha yang terus dijalankan sebagai kebiasaan saat ini. Sementara itu, 〜ようにする dapat menyatakan keputusan atau niat untuk mulai mengusahakannya."
+        ],
+        "examples": [
+          {
+            "jp": "{健康|けんこう}のため、{夜|よる}は{甘|あま}い{物|もの}を{食|た}べない__ようにしている__。",
+            "id": "Demi kesehatan, saya mengusahakan agar tidak makan makanan manis pada malam hari.",
+            "en": "For my health, I try not to eat sweet foods at night."
+          },
+          {
+            "jp": "{会議|かいぎ}では、{相手|あいて}の{話|はなし}を{最後|さいご}まで{聞|き}く__ようにしています__。",
+            "id": "Dalam rapat, saya berusaha membiasakan diri mendengarkan lawan bicara sampai selesai.",
+            "en": "In meetings, I make an effort to listen to the other person until the end."
+          },
+          {
+            "jp": "{医者|いしゃ}に{言|い}われて、{塩|しお}を{取|と}りすぎない__ようにしています__。",
+            "id": "Karena disarankan dokter, saya berusaha tidak mengonsumsi terlalu banyak garam.",
+            "en": "Following my doctor's advice, I try not to consume too much salt."
+          },
+          {
+            "jp": "{出|で}かける{前|まえ}に、{必要|ひつよう}な{物|もの}を{紙|かみ}に{書|か}く__ようにしています__。",
+            "id": "Sebelum pergi, saya membiasakan diri menulis barang yang diperlukan di kertas.",
+            "en": "Before going out, I make a habit of writing down the things I need on paper."
+          }
+        ],
+        "pitfalls": [
+          "Pola ini biasanya digunakan untuk tindakan yang dapat diusahakan atau dikendalikan oleh pelaku. ○ まいにちはやくねるようにしている。✕ まいにちあめがふるようにしている.",
+          "Jangan samakan dengan 〜ようになる. 〜ようにする berfokus pada usaha sadar, sedangkan 〜ようになる menyatakan perubahan keadaan atau kemampuan yang terjadi."
+        ],
+        "tags": [
+          "intention"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v4",
+        "generatedAt": "2026-10-02T14:03:11.776Z",
+        "doubt": null
+      },
       "review": null
     },
     {
       "key": "you-ni-naru-sudah-bisa",
-      "order": 13,
+      "order": 17,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "you-ni-naru",
@@ -459,12 +1815,103 @@
           "n3-bunpou/n3-bunpou-13.png"
         ],
         "title": "〜ようになる \"sudah bisa\", \"menjadi\" (keadaan)",
-        "meaning": "\"sudah bisa\", \"menjadi\" (keadaan); jika menggunakan kata kerja potensial, terdapat perubahan dari tidak bisa menjadi bisa",
-        "connection": "K. Kerja 〜る / K. Kerja 〜れる + ようになる",
+        "meaning": "menjadi bisa melakukan sesuatu setelah sebelumnya tidak mampu",
+        "connection": "K. Kerja bentuk potensial + ようになる",
         "formation": [],
         "notes": "",
         "examples": [
-          "最近、納豆が食べられるようになりました。",
+          "最近、納豆が食べられるようになりました。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v3",
+        "extractedAt": "2026-10-02T08:26:59.459Z",
+        "doubt": null
+      },
+      "content": {
+        "title": "〜ようになる",
+        "senseLabel": "menjadi bisa",
+        "meaningId": "menjadi bisa melakukan sesuatu",
+        "meaningEn": "become able to do something",
+        "connections": [
+          {
+            "form": "v-dict",
+            "pattern": "ようになる",
+            "note": "Gunakan kata kerja potensial dalam bentuk kamus."
+          }
+        ],
+        "formation": [
+          {
+            "label": "kemampuan yang diperoleh",
+            "input": "{読|よ}める",
+            "rule": "Gunakan kata kerja potensial bentuk kamus, lalu tambahkan ようになる.",
+            "output": "{読|よ}めるようになる",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "Pola ini menyatakan bahwa seseorang yang sebelumnya belum mampu melakukan suatu tindakan kini sudah memperoleh kemampuan untuk melakukannya.",
+          "Kata kerja sebelum ようになる umumnya berbentuk potensial. Pola ini menekankan perubahan kemampuan yang telah terjadi, bukan sekadar keinginan atau rencana untuk belajar.",
+          "Bentuk なる dapat dikonjugasikan sesuai waktu dan ragam kalimat, misalnya ようになった atau ようになりました."
+        ],
+        "examples": [
+          {
+            "jp": "{弟|おとうと}は{補助輪|ほじょりん}なしで{自転車|じてんしゃ}に__{乗|の}れるようになった__。",
+            "id": "Adik laki-laki saya sudah bisa naik sepeda tanpa roda bantu.",
+            "en": "My younger brother became able to ride a bicycle without training wheels."
+          },
+          {
+            "jp": "{日本語|にほんご}の{新聞|しんぶん}が__{読|よ}めるようになって__、{毎朝|まいあさ}{記事|きじ}をチェックしている。",
+            "id": "Setelah bisa membaca koran berbahasa Jepang, saya memeriksa artikel setiap pagi.",
+            "en": "Since becoming able to read Japanese newspapers, I check articles every morning."
+          },
+          {
+            "jp": "{手術|しゅじゅつ}の{後|あと}、{父|ちち}は{杖|つえ}なしで__{歩|ある}けるようになりました__。",
+            "id": "Setelah operasi, ayah sudah bisa berjalan tanpa tongkat.",
+            "en": "After the operation, my father became able to walk without a cane."
+          },
+          {
+            "jp": "{新|あたら}しいソフトを{習|なら}って、{資料|しりょう}を{自分|じぶん}で__{作|つく}れるようになった__。",
+            "id": "Setelah mempelajari perangkat lunak baru, saya sudah bisa membuat materi sendiri.",
+            "en": "After learning new software, I became able to create materials by myself."
+          }
+        ],
+        "pitfalls": [
+          "Letakkan ようになる setelah bentuk kamus dari kata kerja potensial, bukan setelah bentuk masu. ○ {話|はな}せるようになる. ✕ {話|はな}せますようになる.",
+          "Jangan memakai bentuk potensial dua kali. ○ {読|よ}めるようになる. ✕ {読|よ}められるようになる."
+        ],
+        "tags": [
+          "change",
+          "possibility"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v4",
+        "generatedAt": "2026-10-02T14:03:54.547Z",
+        "doubt": null
+      },
+      "review": null
+    },
+    {
+      "key": "you-ni-naru-perubahan",
+      "order": 18,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "you-ni-naru",
+      "title": "〜ようになる",
+      "source": {
+        "slides": [
+          "n3-bunpou/n3-bunpou-13.png"
+        ],
+        "title": "〜ようになる \"sudah bisa\", \"menjadi\" (keadaan)",
+        "meaning": "terjadi perubahan kebiasaan, perilaku, atau keadaan",
+        "connection": "K. Kerja bentuk kamus / bentuk negatif + ようになる",
+        "formation": [],
+        "notes": "",
+        "examples": [
           "大学生になってから自分で弁当を作るようになりました。",
           "ここの電気は人が通るとつくようになっています。"
         ]
@@ -475,13 +1922,87 @@
         "extractedAt": "2026-10-02T08:26:59.459Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜ようになる",
+        "senseLabel": "perubahan kebiasaan",
+        "meaningId": "perubahan kebiasaan, perilaku, atau keadaan",
+        "meaningEn": "a change in habitual behavior or state",
+        "connections": [
+          {
+            "form": "v-dict",
+            "pattern": "ようになる",
+            "note": "Untuk menyatakan mulai melakukan sesuatu secara menjadi kebiasaan atau sebagai keadaan baru."
+          },
+          {
+            "form": "v-nai",
+            "pattern": "ようになる",
+            "note": "Untuk menyatakan menjadi tidak lagi melakukan sesuatu atau kebiasaan yang berhenti."
+          }
+        ],
+        "formation": [
+          {
+            "label": "perubahan positif",
+            "input": "V bentuk kamus",
+            "rule": "Tambahkan ようになる setelah bentuk kamus.",
+            "output": "V-dict + ようになる",
+            "note": null
+          },
+          {
+            "label": "perubahan negatif",
+            "input": "V bentuk nai",
+            "rule": "Tambahkan ようになる setelah bentuk nai.",
+            "output": "V-nai + ようになる",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜ようになる menyatakan bahwa kebiasaan, perilaku, atau keadaan berubah seiring waktu. Perubahan tersebut biasanya menjadi keadaan yang berlanjut, bukan peristiwa yang hanya terjadi sekali.",
+          "Setelah bentuk kamus, pola ini berarti mulai melakukan sesuatu sebagai kebiasaan atau keadaan baru. Setelah bentuk nai, artinya menjadi tidak melakukan sesuatu lagi.",
+          "Bentuk 〜ようになっている dapat menggambarkan keadaan yang telah diatur atau sistem yang kini bekerja dengan cara tertentu. Jika fokusnya khusus pada kemampuan yang diperoleh, gunakan sense \"menjadi bisa\"."
+        ],
+        "examples": [
+          {
+            "jp": "{私|わたし}は{最近|さいきん}、{寝|ね}る{前|まえ}に{日記|にっき}を{書|か}く__ようになった__。",
+            "id": "Akhir-akhir ini, saya mulai menulis buku harian sebelum tidur.",
+            "en": "Recently, I have started keeping a diary before going to bed."
+          },
+          {
+            "jp": "{引|ひ}っ{越|こ}してから、{家族|かぞく}と{夕食|ゆうしょく}を{食|た}べる__ようになりました__。",
+            "id": "Setelah pindah rumah, saya mulai makan malam bersama keluarga.",
+            "en": "After moving, I started having dinner with my family."
+          },
+          {
+            "jp": "{以前|いぜん}は{人前|ひとまえ}で{話|はな}すと{緊張|きんちょう}したが、{今|いま}はあまり{緊張|きんちょう}しない__ようになった__。",
+            "id": "Dulu saya gugup ketika berbicara di depan orang, tetapi sekarang saya tidak terlalu gugup lagi.",
+            "en": "I used to get nervous when speaking in front of people, but now I do not get very nervous anymore."
+          },
+          {
+            "jp": "この{部屋|へや}の{照明|しょうめい}は、{暗|くら}くなると{自動的|じどうてき}に{点|つ}く__ようになっている__。",
+            "id": "Lampu di ruangan ini telah diatur agar menyala secara otomatis ketika hari menjadi gelap.",
+            "en": "The lighting in this room is set to turn on automatically when it gets dark."
+          }
+        ],
+        "pitfalls": [
+          "Pola ini tidak dipakai hanya untuk satu kejadian sesaat; pola ini menekankan perubahan yang menjadi kebiasaan atau keadaan berlanjut.",
+          "Bentuk negatifnya memakai V-nai. ○ {行|い}かないようになる. ✕ {行|い}くないようになる.",
+          "Jangan menyamakan pola ini dengan perubahan kemampuan. Pada sense ini, yang ditekankan adalah perubahan kebiasaan, perilaku, atau keadaan."
+        ],
+        "tags": [
+          "change"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v4",
+        "generatedAt": "2026-10-02T15:09:18.064Z",
+        "doubt": null
+      },
       "review": null
     },
     {
       "key": "you-ni-supaya",
-      "order": 14,
+      "order": 19,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "you-ni",
@@ -506,13 +2027,94 @@
         "extractedAt": "2026-10-02T08:26:59.459Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜ように",
+        "senseLabel": "tujuan yang diharapkan",
+        "meaningId": "agar tercapai keadaan yang diharapkan",
+        "meaningEn": "so that a desired state can be achieved",
+        "connections": [
+          {
+            "form": "v-dict",
+            "pattern": "ように",
+            "note": "Sering dipakai dengan verba potensial atau verba yang menyatakan keadaan."
+          },
+          {
+            "form": "v-nai",
+            "pattern": "ように",
+            "note": "Menyatakan agar keadaan negatif tidak terjadi."
+          }
+        ],
+        "formation": [
+          {
+            "label": "bentuk kamus",
+            "input": "verba bentuk kamus",
+            "rule": "tambahkan ように",
+            "output": "Vるように",
+            "note": "Sering digunakan bila hasilnya berupa kemampuan atau keadaan."
+          },
+          {
+            "label": "bentuk negatif",
+            "input": "verba bentuk nai",
+            "rule": "tambahkan ように",
+            "output": "Vないように",
+            "note": "Menyatakan tindakan untuk mencegah keadaan yang tidak diinginkan."
+          },
+          {
+            "label": "verba potensial",
+            "input": "verba potensial bentuk kamus",
+            "rule": "tambahkan ように",
+            "output": "verba potensial + ように",
+            "note": "Bentuk ini sangat umum karena menekankan tercapainya kemampuan."
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜ように menyatakan tujuan agar suatu keadaan yang diharapkan dapat terwujud. Klausa setelahnya biasanya berisi tindakan yang dilakukan untuk membantu mewujudkan atau mencegah keadaan tersebut.",
+          "Pola ini sering digunakan dengan verba potensial, verba keadaan, atau bentuk negatif. Fokusnya bukan pada niat langsung untuk melakukan tindakan pada klausa pertama, melainkan pada hasil atau keadaan yang ingin tercapai.",
+          "Untuk tujuan berupa tindakan yang dapat dikendalikan langsung, ために sering lebih sesuai. Bandingkan tujuan belajar dengan keadaan akhirnya: belajar dilakukan agar nantinya dapat melakukan sesuatu."
+        ],
+        "examples": [
+          {
+            "jp": "{試験|しけん}で{力|ちから}を{出|だ}せる__ように__、{毎日|まいにち}{練習|れんしゅう}している。",
+            "id": "Saya berlatih setiap hari agar dapat mengerahkan kemampuan saya dalam ujian.",
+            "en": "I practice every day so that I can perform well on the exam."
+          },
+          {
+            "jp": "{子|こ}どもが{安全|あんぜん}に{渡|わた}れる__ように__、{横断歩道|おうだんほどう}のそばに{立|た}った。",
+            "id": "Saya berdiri di dekat penyeberangan agar anak-anak dapat menyeberang dengan aman.",
+            "en": "I stood near the crosswalk so that the children could cross safely."
+          },
+          {
+            "jp": "{締|し}め{切|き}りを{忘|わす}れない__ように__、{携帯電話|けいたいでんわ}に{通知|つうち}を{設定|せってい}した。",
+            "id": "Saya mengatur notifikasi di ponsel agar tidak lupa tenggat waktunya.",
+            "en": "I set a notification on my phone so that I would not forget the deadline."
+          },
+          {
+            "jp": "{字|じ}が{読|よ}める__ように__、{画面|がめん}を{明|あか}るくしてください。",
+            "id": "Tolong cerahkan layarnya agar hurufnya dapat dibaca.",
+            "en": "Please brighten the screen so that the letters can be read."
+          }
+        ],
+        "pitfalls": [
+          "Pola ini menekankan keadaan hasil yang diharapkan, bukan sekadar tujuan melakukan suatu tindakan.",
+          "Untuk tujuan yang berupa tindakan langsung dan disengaja, pertimbangkan ために. Misalnya, belajar untuk lulus ujian lebih alami dengan ために, sedangkan agar dapat lulus menekankan hasil dan cocok dengan ように.",
+          "Jangan menganggap ように selalu berarti perintah atau doa; fungsi pada pola ini adalah menyatakan tujuan."
+        ],
+        "tags": [
+          "purpose"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v4",
+        "generatedAt": "2026-10-02T14:04:09.438Z",
+        "doubt": null
+      },
       "review": null
     },
     {
       "key": "tameni-demi-untuk",
-      "order": 15,
+      "order": 20,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "tame-ni",
@@ -552,13 +2154,85 @@
         "extractedAt": "2026-10-02T08:28:23.776Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜ために",
+        "senseLabel": "tujuan",
+        "meaningId": "untuk atau demi mencapai tujuan yang disengaja",
+        "meaningEn": "in order to or for the purpose of achieving an intentional goal",
+        "connections": [
+          {
+            "form": "v-dict",
+            "pattern": "ために"
+          },
+          {
+            "form": "n-no",
+            "pattern": "ために"
+          }
+        ],
+        "formation": [
+          {
+            "label": "kata kerja",
+            "input": "v-dict",
+            "rule": "Tambahkan ために setelah bentuk kamus kata kerja yang menyatakan tujuan.",
+            "output": "V bentuk kamus + ために",
+            "note": null
+          },
+          {
+            "label": "nomina",
+            "input": "n-no",
+            "rule": "Tambahkan のために setelah nomina yang menyatakan tujuan atau pihak yang diuntungkan.",
+            "output": "N + のために",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜ために menyatakan tujuan yang mendorong tindakan pada bagian setelahnya. Dalam bahasa Indonesia, pola ini umumnya berarti \"untuk\" atau \"demi\".",
+          "Bagian sebelum ために biasanya berupa tujuan yang sengaja ingin diwujudkan, sedangkan bagian setelahnya menunjukkan usaha atau tindakan untuk mencapai tujuan itu.",
+          "Pola ini kurang cocok apabila tujuannya berupa kemampuan, keadaan alami, atau hasil yang tidak dapat dikendalikan langsung. Untuk konteks seperti itu, 〜ように sering lebih tepat."
+        ],
+        "examples": [
+          {
+            "jp": "{海外|かいがい}で{働|はたら}く__ために__、{毎日|まいにち}{英語|えいご}を{勉強|べんきょう}している。",
+            "id": "Saya belajar bahasa Inggris setiap hari untuk bekerja di luar negeri.",
+            "en": "I study English every day in order to work overseas."
+          },
+          {
+            "jp": "{大学院|だいがくいん}に{進|すす}む__ために__、{研究|けんきゅう}{計画|けいかく}を{書|か}き{直|なお}した。",
+            "id": "Saya menulis ulang rencana penelitian untuk melanjutkan ke pascasarjana.",
+            "en": "I rewrote my research plan in order to go to graduate school."
+          },
+          {
+            "jp": "{新|あたら}しい{仕事|しごと}を{始|はじ}める__ために__、{必要|ひつよう}な{資格|しかく}を{取|と}った。",
+            "id": "Saya memperoleh kualifikasi yang diperlukan untuk memulai pekerjaan baru.",
+            "en": "I obtained the necessary qualification in order to start a new job."
+          },
+          {
+            "jp": "{地域|ちいき}の{安全|あんぜん}の__ために__、{住民|じゅうみん}が{夜|よる}に{見回|みまわ}りをしている。",
+            "id": "Demi keamanan lingkungan, warga berpatroli pada malam hari.",
+            "en": "For the safety of the neighborhood, residents patrol at night."
+          }
+        ],
+        "pitfalls": [
+          "Gunakan pola ini untuk tujuan yang dapat diusahakan secara sadar melalui tindakan pada bagian setelahnya.",
+          "Untuk tujuan berupa kemampuan atau hasil yang tidak dapat dikendalikan langsung, 〜ように umumnya lebih sesuai.",
+          "Setelah nomina, gunakan のために. Bentuk ✕ Nために tidak tepat untuk penggunaan ini."
+        ],
+        "tags": [
+          "purpose"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v4",
+        "generatedAt": "2026-10-02T14:04:09.293Z",
+        "doubt": null
+      },
       "review": null
     },
     {
       "key": "you-ni-seperti-yang",
-      "order": 16,
+      "order": 21,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "you-ni",
@@ -599,13 +2273,86 @@
         "extractedAt": "2026-10-02T08:28:23.776Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜ように",
+        "senseLabel": "rujukan informasi",
+        "meaningId": "seperti yang telah diketahui, tertulis, atau disebutkan",
+        "meaningEn": "as is known, written, or previously mentioned",
+        "connections": [
+          {
+            "form": "v-plain",
+            "pattern": "ように",
+            "note": "Dipakai setelah klausa bentuk biasa yang merujuk pada informasi yang sudah ada."
+          },
+          {
+            "form": "n-no",
+            "pattern": "ように",
+            "note": "Dipakai setelah nomina + の untuk merujuk pada hal, keterangan, atau contoh yang sudah diketahui."
+          }
+        ],
+        "formation": [
+          {
+            "label": "kata kerja",
+            "input": "v-plain",
+            "rule": "Tambahkan ように setelah bentuk biasa yang menyatakan informasi yang telah diketahui, tertulis, atau disebutkan.",
+            "output": "V biasa + ように",
+            "note": null
+          },
+          {
+            "label": "kata benda",
+            "input": "n-no",
+            "rule": "Tambahkan ように setelah nomina yang diikuti の.",
+            "output": "N + のように",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜ように berarti \"seperti yang ...\" dan dipakai untuk merujuk pada informasi yang sudah diketahui bersama, tertulis, terlihat, atau pernah disampaikan sebelumnya.",
+          "Pola ini sering muncul pada bagian awal kalimat. Klausa setelahnya kemudian menyampaikan informasi utama, keputusan, pengumuman, atau penjelasan yang berkaitan dengan rujukan tersebut.",
+          "Dalam penggunaan ini, 〜ように bukan berarti \"agar\". Fungsinya adalah menghubungkan isi yang dirujuk dengan pernyataan utama."
+        ],
+        "examples": [
+          {
+            "jp": "{皆|みな}さんがご{存|ぞん}じ__のように__、{新|あたら}しい{制度|せいど}は{四月|しがつ}から{始|はじ}まります。",
+            "id": "Seperti yang Anda semua ketahui, sistem baru akan dimulai pada bulan April.",
+            "en": "As you all know, the new system will begin in April."
+          },
+          {
+            "jp": "{案内|あんない}に{書|か}いてある__ように__、{会場|かいじょう}では{写真|しゃしん}を{撮|と}れません。",
+            "id": "Seperti yang tertulis dalam pemberitahuan, Anda tidak boleh mengambil foto di lokasi acara.",
+            "en": "As written in the notice, you may not take photographs at the venue."
+          },
+          {
+            "jp": "{前回|ぜんかい}{話|はな}した__ように__、{申込|もうしこ}みの{締切|しめきり}は{金曜日|きんようび}です。",
+            "id": "Seperti yang saya sampaikan sebelumnya, batas pendaftaran adalah hari Jumat.",
+            "en": "As I mentioned previously, the application deadline is Friday."
+          },
+          {
+            "jp": "{地図|ちず}に{示|しめ}されている__ように__、この{道|みち}をまっすぐ{進|すす}んでください。",
+            "id": "Seperti yang ditunjukkan pada peta, silakan terus lurus di jalan ini.",
+            "en": "As shown on the map, please go straight along this road."
+          }
+        ],
+        "pitfalls": [
+          "Jangan menafsirkan 〜ように dalam pola ini sebagai \"agar\". Makna \"agar\" memakai penggunaan 〜ように yang menyatakan tujuan atau hasil yang diharapkan.",
+          "Untuk nomina, gunakan N + のように. ○ {地図|ちず}のように. ✕ {地図|ちず}ように."
+        ],
+        "tags": [
+          "conjunction"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v4",
+        "generatedAt": "2026-10-02T15:09:08.965Z",
+        "doubt": null
+      },
       "review": null
     },
     {
       "key": "you-ni-mohon-agar",
-      "order": 17,
+      "order": 22,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "you-ni",
@@ -631,13 +2378,80 @@
         "extractedAt": "2026-10-02T08:38:32.216Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜ように",
+        "senseLabel": "perintah ringan",
+        "meaningId": "mohon agar melakukan atau tidak melakukan sesuatu",
+        "meaningEn": "please make sure to do or not do something",
+        "connections": [
+          {
+            "form": "v-dict",
+            "pattern": "ように",
+            "note": "Dipakai untuk instruksi agar tindakan dilakukan."
+          },
+          {
+            "form": "v-nai",
+            "pattern": "ように",
+            "note": "Dipakai untuk instruksi agar tindakan tidak dilakukan."
+          }
+        ],
+        "formation": [
+          {
+            "label": "perintah melakukan",
+            "input": "kata kerja bentuk kamus",
+            "rule": "Tambahkan ように setelah kata kerja bentuk kamus untuk menyampaikan instruksi dengan nada tidak langsung.",
+            "output": "V + ように",
+            "note": "Lazim dalam pengumuman dan arahan."
+          },
+          {
+            "label": "perintah tidak melakukan",
+            "input": "kata kerja bentuk nai",
+            "rule": "Tambahkan ように setelah bentuk nai untuk meminta atau menginstruksikan agar suatu tindakan tidak dilakukan.",
+            "output": "Vない + ように",
+            "note": "Digunakan untuk larangan yang relatif tidak langsung."
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "Pola ini menyampaikan instruksi, permintaan, atau larangan secara relatif ringan dan tidak langsung. Penutur meminta lawan bicara untuk memastikan suatu tindakan dilakukan atau tidak dilakukan.",
+          "Bentuk ini sering dipakai dalam pengumuman, aturan, pemberitahuan, atau arahan dari orang yang memiliki kewenangan. Berbeda dari penggunaan yang menyatakan tujuan, fokusnya adalah isi instruksi kepada pendengar."
+        ],
+        "examples": [
+          {
+            "jp": "{会議|かいぎ}の{資料|しりょう}は{今日中|きょうじゅう}に{提出|ていしゅつ}する__ように__。",
+            "id": "Mohon serahkan bahan rapat sebelum hari ini berakhir.",
+            "en": "Please make sure to submit the meeting materials by the end of today."
+          },
+          {
+            "jp": "{教室|きょうしつ}では{携帯電話|けいたいでんわ}の{音|おと}を{鳴|な}らさない__ように__。",
+            "id": "Mohon jangan membunyikan ponsel di dalam kelas.",
+            "en": "Please do not let your mobile phone make sounds in the classroom."
+          },
+          {
+            "jp": "{変更|へんこう}があった{場合|ばあい}は、すぐ{担当者|たんとうしゃ}に{知|し}らせる__ように__。",
+            "id": "Jika ada perubahan, mohon segera beri tahu petugas yang bertanggung jawab.",
+            "en": "If there are any changes, please notify the person in charge immediately."
+          }
+        ],
+        "pitfalls": [
+          "Pola ini bukan terutama untuk menyatakan tujuan tindakan penutur. Dalam pemakaian ini, kalimatnya berfungsi sebagai instruksi kepada pendengar.",
+          "Bentuk ini terdengar lebih tidak langsung daripada perintah tegas, tetapi tetap dapat bernada otoritatif bergantung pada situasi."
+        ],
+        "tags": [
+          "request"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v4",
+        "generatedAt": "2026-10-02T15:09:17.444Z",
+        "doubt": null
+      },
       "review": null
     },
     {
       "key": "you-ni-mudah-mudahan",
-      "order": 18,
+      "order": 23,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "you-ni",
@@ -663,13 +2477,70 @@
         "extractedAt": "2026-10-02T08:38:32.216Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜ように",
+        "senseLabel": "doa dan harapan",
+        "meaningId": "semoga; doa agar sesuatu terjadi",
+        "meaningEn": "may it happen; expressing a prayer or wish",
+        "connections": [
+          {
+            "form": "other",
+            "pattern": "ように",
+            "note": "Setelah predikat sopan nonlampau, terutama Vます, Vません, atau bentuk potensial sopan. Biasanya di akhir kalimat."
+          }
+        ],
+        "formation": [
+          {
+            "label": "doa afirmatif atau negatif",
+            "input": "predikat sopan nonlampau",
+            "rule": "Nyatakan keadaan yang diharapkan dalam bentuk afirmatif atau negatif, lalu tambahkan ように pada akhir kalimat.",
+            "output": "Vますように / Vませんように",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜ように di akhir kalimat menyatakan doa atau harapan kuat agar suatu keadaan terjadi atau tidak terjadi. Dalam bahasa Indonesia, pola ini sering diterjemahkan sebagai “semoga” atau “mudah-mudahan”.",
+          "Pola ini lazim memakai bentuk sopan nonlampau seperti ます, ません, atau bentuk potensial seperti できます. Pembicara biasanya tidak dapat mengendalikan langsung hasil yang didoakan.",
+          "Berbeda dari 〜ように yang menyatakan tujuan, penggunaan ini tidak diikuti tindakan utama. Kalimat selesai pada 〜ように sebagai ungkapan harapan."
+        ],
+        "examples": [
+          {
+            "jp": "{明日|あした}、{雨|あめ}が{降|ふ}りません__ように__。",
+            "id": "Semoga besok tidak hujan.",
+            "en": "I hope it does not rain tomorrow."
+          },
+          {
+            "jp": "{試験|しけん}に{合格|ごうかく}できます__ように__。",
+            "id": "Semoga saya bisa lulus ujian.",
+            "en": "I hope I can pass the exam."
+          },
+          {
+            "jp": "{祖父|そふ}が{早|はや}く{元気|げんき}になります__ように__。",
+            "id": "Semoga kakek lekas sehat.",
+            "en": "I hope my grandfather gets well soon."
+          }
+        ],
+        "pitfalls": [
+          "Pola doa ini umumnya memakai bentuk sopan nonlampau: ○ できますように. Bentuk kamus seperti できるように lebih mudah ditafsirkan sebagai pola tujuan.",
+          "Jangan menambahkan klausa tindakan setelah 〜ように bila maksudnya adalah doa yang berdiri sendiri."
+        ],
+        "tags": [
+          "desire",
+          "feeling"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v4",
+        "generatedAt": "2026-10-02T15:10:06.971Z",
+        "doubt": null
+      },
       "review": null
     },
     {
       "key": "you-to-omou",
-      "order": 19,
+      "order": 24,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -694,13 +2565,73 @@
         "extractedAt": "2026-10-02T08:39:36.167Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜ようと{思|おも}う",
+        "senseLabel": null,
+        "meaningId": "bermaksud akan melakukan",
+        "meaningEn": "intend to do",
+        "connections": [
+          {
+            "form": "v-vol",
+            "pattern": "と{思|おも}う",
+            "note": "Bentuk ajakan kata kerja, misalnya {行|い}こう atau {食|た}べよう."
+          }
+        ],
+        "formation": [
+          {
+            "label": "bentuk dasar",
+            "input": "kata kerja bentuk ajakan",
+            "rule": "Ubah kata kerja ke bentuk ajakan, lalu tambahkan と{思|おも}う.",
+            "output": "{行|い}こうと{思|おも}う",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜ようと{思|おも}う menyatakan niat atau rencana pembicara untuk melakukan sesuatu pada masa depan. Pola ini dipakai untuk keputusan yang berasal dari kehendak pembicara.",
+          "Bentuk 〜ようと{思|おも}っている menunjukkan bahwa niat tersebut masih ada atau sedang dipertahankan. Niatnya dapat berubah, sehingga pola ini tidak selalu menyatakan janji yang pasti."
+        ],
+        "examples": [
+          {
+            "jp": "{週末|しゅうまつ}は{部屋|へや}を__{片付|かたづ}けようと{思|おも}っている__。",
+            "id": "Akhir pekan ini saya bermaksud membereskan kamar.",
+            "en": "I intend to tidy up my room this weekend."
+          },
+          {
+            "jp": "{今年|ことし}はもっと{日本語|にほんご}の{本|ほん}を__{読|よ}もうと{思|おも}う__。",
+            "id": "Tahun ini saya bermaksud membaca lebih banyak buku bahasa Jepang.",
+            "en": "I intend to read more Japanese books this year."
+          },
+          {
+            "jp": "{卒業|そつぎょう}したら、{東京|とうきょう}で__{働|はたら}こうと{思|おも}っています__。",
+            "id": "Setelah lulus, saya bermaksud bekerja di Tokyo.",
+            "en": "After graduating, I intend to work in Tokyo."
+          },
+          {
+            "jp": "{明日|あした}、{先生|せんせい}にそのことを__{相談|そうだん}しようと{思|おも}う__。",
+            "id": "Besok saya bermaksud berkonsultasi kepada guru tentang hal itu.",
+            "en": "I intend to consult my teacher about it tomorrow."
+          }
+        ],
+        "pitfalls": [
+          "Gunakan bentuk ajakan sebelum と{思|おも}う. ○ {行|い}こうと{思|おも}う. ✕ {行|い}くと{思|おも}う untuk makna niat.",
+          "Pola ini terutama menyatakan niat pembicara. Untuk menanyakan niat lawan bicara, bentuk tanya seperti どうするつもりですか sering lebih alami."
+        ],
+        "tags": [
+          "intention"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v4",
+        "generatedAt": "2026-10-02T15:10:11.361Z",
+        "doubt": null
+      },
       "review": null
     },
     {
       "key": "you-to-suru",
-      "order": 20,
+      "order": 25,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -733,7 +2664,7 @@
     },
     {
       "key": "you-to-shinai",
-      "order": 21,
+      "order": 26,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -764,7 +2695,7 @@
     },
     {
       "key": "bakari-melulu",
-      "order": 22,
+      "order": 27,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "bakari",
@@ -796,7 +2727,7 @@
     },
     {
       "key": "dake-shika",
-      "order": 23,
+      "order": 28,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -827,7 +2758,7 @@
     },
     {
       "key": "sae",
-      "order": 24,
+      "order": 29,
       "kind": "particle",
       "sectionKey": "particles",
       "family": null,
@@ -859,7 +2790,7 @@
     },
     {
       "key": "koso",
-      "order": 25,
+      "order": 30,
       "kind": "particle",
       "sectionKey": "particles",
       "family": null,
@@ -891,7 +2822,7 @@
     },
     {
       "key": "ni-tsuite",
-      "order": 26,
+      "order": 31,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -922,7 +2853,7 @@
     },
     {
       "key": "ni-kanshite",
-      "order": 27,
+      "order": 32,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -954,7 +2885,7 @@
     },
     {
       "key": "ni-yoruto",
-      "order": 28,
+      "order": 33,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -985,7 +2916,7 @@
     },
     {
       "key": "ni-yotte-cara",
-      "order": 29,
+      "order": 34,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "ni-yotte",
@@ -1015,7 +2946,7 @@
     },
     {
       "key": "ni-yotte-tergantung",
-      "order": 30,
+      "order": 35,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "ni-yotte",
@@ -1045,7 +2976,7 @@
     },
     {
       "key": "ni-yotte-karena",
-      "order": 31,
+      "order": 36,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "ni-yotte",
@@ -1075,7 +3006,7 @@
     },
     {
       "key": "sa-kata-benda",
-      "order": 32,
+      "order": 37,
       "kind": "pattern",
       "sectionKey": "adjectives",
       "family": null,
@@ -1128,7 +3059,7 @@
     },
     {
       "key": "mi",
-      "order": 33,
+      "order": 38,
       "kind": "pattern",
       "sectionKey": "adjectives",
       "family": null,
@@ -1174,7 +3105,7 @@
     },
     {
       "key": "koto-perihal",
-      "order": 34,
+      "order": 39,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "koto",
@@ -1204,7 +3135,7 @@
     },
     {
       "key": "koto-nominalisasi",
-      "order": 35,
+      "order": 40,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "koto",
@@ -1234,7 +3165,7 @@
     },
     {
       "key": "koto-hal",
-      "order": 36,
+      "order": 41,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "koto",
@@ -1264,7 +3195,7 @@
     },
     {
       "key": "no-kata-benda",
-      "order": 37,
+      "order": 42,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "no",
@@ -1328,7 +3259,7 @@
     },
     {
       "key": "to-iu-nama-n3",
-      "order": 38,
+      "order": 43,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "to-iu",
@@ -1363,7 +3294,7 @@
     },
     {
       "key": "to-iu-isi-n3",
-      "order": 39,
+      "order": 44,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "to-iu",
@@ -1396,7 +3327,7 @@
     },
     {
       "key": "to-itta",
-      "order": 40,
+      "order": 45,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -1429,7 +3360,7 @@
     },
     {
       "key": "to-iu-no-wa",
-      "order": 41,
+      "order": 46,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -1465,7 +3396,7 @@
     },
     {
       "key": "to-iu-no-to-iu-koto",
-      "order": 42,
+      "order": 47,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -1502,7 +3433,7 @@
     },
     {
       "key": "to-iu-yori-to-iu-ka",
-      "order": 43,
+      "order": 48,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -1534,7 +3465,7 @@
     },
     {
       "key": "to-iu-to-to-ieba-to-ittara",
-      "order": 44,
+      "order": 49,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -1566,7 +3497,7 @@
     },
     {
       "key": "to-ittemo",
-      "order": 45,
+      "order": 50,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -1597,7 +3528,7 @@
     },
     {
       "key": "te-goran",
-      "order": 46,
+      "order": 51,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -1628,7 +3559,7 @@
     },
     {
       "key": "you-ni-iu-bilang-supaya",
-      "order": 47,
+      "order": 52,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -1659,7 +3590,7 @@
     },
     {
       "key": "te-kure-to-iwareru",
-      "order": 48,
+      "order": 53,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -1690,7 +3621,7 @@
     },
     {
       "key": "to-iwareru-meirei-kinshi",
-      "order": 49,
+      "order": 54,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -1722,7 +3653,7 @@
     },
     {
       "key": "temo-meskipun",
-      "order": 50,
+      "order": 55,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "temo",
@@ -1783,7 +3714,7 @@
     },
     {
       "key": "kata-tanya-temo",
-      "order": 51,
+      "order": 56,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "temo",
@@ -1815,7 +3746,7 @@
     },
     {
       "key": "zu-ni",
-      "order": 52,
+      "order": 57,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -1862,7 +3793,7 @@
     },
     {
       "key": "toshite",
-      "order": 53,
+      "order": 58,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -1894,7 +3825,7 @@
     },
     {
       "key": "ni-shite-wa",
-      "order": 54,
+      "order": 59,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -1926,7 +3857,7 @@
     },
     {
       "key": "ni-shitemo",
-      "order": 55,
+      "order": 60,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -1957,7 +3888,7 @@
     },
     {
       "key": "to-shitara-to-sureba",
-      "order": 56,
+      "order": 61,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -2048,7 +3979,7 @@
     },
     {
       "key": "tsumori-datta",
-      "order": 57,
+      "order": 62,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "tsumori",
@@ -2094,7 +4025,7 @@
     },
     {
       "key": "hazu",
-      "order": 58,
+      "order": 63,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -2125,7 +4056,7 @@
     },
     {
       "key": "beki",
-      "order": 59,
+      "order": 64,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -2157,7 +4088,7 @@
     },
     {
       "key": "ta-mono-da",
-      "order": 60,
+      "order": 65,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -2204,7 +4135,7 @@
     },
     {
       "key": "tsuide-ni",
-      "order": 61,
+      "order": 66,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -2257,7 +4188,7 @@
     },
     {
       "key": "tabi-ni",
-      "order": 62,
+      "order": 67,
       "kind": "pattern",
       "sectionKey": "time-and-sequence",
       "family": null,
@@ -2288,7 +4219,7 @@
     },
     {
       "key": "ta-totan",
-      "order": 63,
+      "order": 68,
       "kind": "pattern",
       "sectionKey": "time-and-sequence",
       "family": null,
@@ -2320,7 +4251,7 @@
     },
     {
       "key": "saichuu-ni",
-      "order": 64,
+      "order": 69,
       "kind": "pattern",
       "sectionKey": "time-and-sequence",
       "family": null,
@@ -2352,7 +4283,7 @@
     },
     {
       "key": "toori",
-      "order": 65,
+      "order": 70,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -2385,7 +4316,7 @@
     },
     {
       "key": "mama-dalam-keadaan",
-      "order": 66,
+      "order": 71,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -2417,7 +4348,7 @@
     },
     {
       "key": "ppanashi-membiarkan",
-      "order": 67,
+      "order": 72,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "ppanashi",
@@ -2456,7 +4387,7 @@
     },
     {
       "key": "ppanashi-terus-menerus",
-      "order": 68,
+      "order": 73,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "ppanashi",
@@ -2494,7 +4425,7 @@
     },
     {
       "key": "kiri-hanya",
-      "order": 69,
+      "order": 74,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -2526,7 +4457,7 @@
     },
     {
       "key": "garu",
-      "order": 70,
+      "order": 75,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -2586,7 +4517,7 @@
     },
     {
       "key": "te-hoshii-moraitai",
-      "order": 71,
+      "order": 76,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -2633,7 +4564,7 @@
     },
     {
       "key": "furi-o-suru",
-      "order": 72,
+      "order": 77,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -2664,7 +4595,7 @@
     },
     {
       "key": "ni-totte",
-      "order": 73,
+      "order": 78,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -2696,7 +4627,7 @@
     },
     {
       "key": "wari-ni",
-      "order": 74,
+      "order": 79,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -2728,7 +4659,7 @@
     },
     {
       "key": "kuse-ni",
-      "order": 75,
+      "order": 80,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -2761,7 +4692,7 @@
     },
     {
       "key": "nanka-nante-nado-contoh",
-      "order": 76,
+      "order": 81,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "nanka-nante-nado",
@@ -2791,7 +4722,7 @@
     },
     {
       "key": "nanka-nante-nado-meremehkan",
-      "order": 77,
+      "order": 82,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "nanka-nante-nado",
@@ -2822,7 +4753,7 @@
     },
     {
       "key": "nanka-nante-nado-merendahkan-diri",
-      "order": 78,
+      "order": 83,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "nanka-nante-nado",
@@ -2852,7 +4783,7 @@
     },
     {
       "key": "okage-de",
-      "order": 79,
+      "order": 84,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -2884,7 +4815,7 @@
     },
     {
       "key": "sei",
-      "order": 80,
+      "order": 85,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -2916,7 +4847,7 @@
     },
     {
       "key": "kawari-ni",
-      "order": 81,
+      "order": 86,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -2947,7 +4878,7 @@
     },
     {
       "key": "ni-kawatte-ni-kawari",
-      "order": 82,
+      "order": 87,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -2986,7 +4917,7 @@
     },
     {
       "key": "kurai-hodo",
-      "order": 83,
+      "order": 88,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -3050,7 +4981,7 @@
     },
     {
       "key": "hodo-yang-lebih",
-      "order": 84,
+      "order": 89,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "hodo",
@@ -3096,7 +5027,7 @@
     },
     {
       "key": "ba-hodo",
-      "order": 85,
+      "order": 90,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "hodo",
@@ -3158,7 +5089,7 @@
     },
     {
       "key": "kurai-hodo-wa-nai",
-      "order": 86,
+      "order": 91,
       "kind": "pattern",
       "sectionKey": "comparison",
       "family": null,
@@ -3190,7 +5121,7 @@
     },
     {
       "key": "koto-wa-nai",
-      "order": 87,
+      "order": 92,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -3225,7 +5156,7 @@
     },
     {
       "key": "to-iu-koto-da-katanya",
-      "order": 88,
+      "order": 93,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "to-iu-koto-da",
@@ -3255,7 +5186,7 @@
     },
     {
       "key": "to-iu-koto-da-artinya",
-      "order": 89,
+      "order": 94,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "to-iu-koto-da",
@@ -3285,7 +5216,7 @@
     },
     {
       "key": "koto-da-sebaiknya",
-      "order": 90,
+      "order": 95,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -3317,7 +5248,7 @@
     },
     {
       "key": "koto-ka",
-      "order": 91,
+      "order": 96,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -3348,7 +5279,7 @@
     },
     {
       "key": "kke",
-      "order": 92,
+      "order": 97,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -3379,7 +5310,7 @@
     },
     {
       "key": "shikanai",
-      "order": 93,
+      "order": 98,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -3412,7 +5343,7 @@
     },
     {
       "key": "ndatte",
-      "order": 94,
+      "order": 99,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -3443,7 +5374,7 @@
     },
     {
       "key": "damon",
-      "order": 95,
+      "order": 100,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -3475,7 +5406,7 @@
     },
     {
       "key": "tsumari",
-      "order": 96,
+      "order": 101,
       "kind": "pattern",
       "sectionKey": "conjunctions-adverbs",
       "family": null,
@@ -3509,7 +5440,7 @@
     },
     {
       "key": "sono-tame-ni",
-      "order": 97,
+      "order": 102,
       "kind": "pattern",
       "sectionKey": "conjunctions-adverbs",
       "family": null,
@@ -3543,7 +5474,7 @@
     },
     {
       "key": "sono-kekka",
-      "order": 98,
+      "order": 103,
       "kind": "pattern",
       "sectionKey": "conjunctions-adverbs",
       "family": null,
@@ -3575,7 +5506,7 @@
     },
     {
       "key": "nazenara-ba",
-      "order": 99,
+      "order": 104,
       "kind": "pattern",
       "sectionKey": "conjunctions-adverbs",
       "family": null,
@@ -3608,7 +5539,7 @@
     },
     {
       "key": "wa-mochiron",
-      "order": 100,
+      "order": 105,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -3639,7 +5570,7 @@
     },
     {
       "key": "bakari-ka",
-      "order": 101,
+      "order": 106,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -3671,7 +5602,7 @@
     },
     {
       "key": "ni-kurabete",
-      "order": 102,
+      "order": 107,
       "kind": "pattern",
       "sectionKey": "comparison",
       "family": null,
@@ -3703,7 +5634,7 @@
     },
     {
       "key": "ni-taishite-terhadap",
-      "order": 103,
+      "order": 108,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "ni-taishite",
@@ -3733,7 +5664,7 @@
     },
     {
       "key": "ni-taishite-berlawanan",
-      "order": 104,
+      "order": 109,
       "kind": "pattern",
       "sectionKey": "comparison",
       "family": "ni-taishite",
@@ -3763,7 +5694,7 @@
     },
     {
       "key": "ageru-agaru",
-      "order": 105,
+      "order": 110,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -3803,7 +5734,7 @@
     },
     {
       "key": "kiru",
-      "order": 106,
+      "order": 111,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -3846,7 +5777,7 @@
     },
     {
       "key": "kake-belum-selesai",
-      "order": 107,
+      "order": 112,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "kake",
@@ -3887,7 +5818,7 @@
     },
     {
       "key": "kake-hampir-mulai",
-      "order": 108,
+      "order": 113,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "kake",
@@ -3927,7 +5858,7 @@
     },
     {
       "key": "tate",
-      "order": 109,
+      "order": 114,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -3967,7 +5898,7 @@
     },
     {
       "key": "to-ii-naa",
-      "order": 110,
+      "order": 115,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -4013,7 +5944,7 @@
     },
     {
       "key": "ba-yokatta",
-      "order": 111,
+      "order": 116,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -4073,7 +6004,7 @@
     },
     {
       "key": "ba-noni",
-      "order": 112,
+      "order": 117,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -4120,7 +6051,7 @@
     },
     {
       "key": "kanaa-harapan",
-      "order": 113,
+      "order": 118,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "kana-kashira",
@@ -4150,7 +6081,7 @@
     },
     {
       "key": "kanaa-ketidakpastian",
-      "order": 114,
+      "order": 119,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "kana-kashira",
@@ -4181,7 +6112,7 @@
     },
     {
       "key": "made-sampai-n3",
-      "order": 115,
+      "order": 120,
       "kind": "particle",
       "sectionKey": "particles",
       "family": "made",
@@ -4212,7 +6143,7 @@
     },
     {
       "key": "made-bahkan",
-      "order": 116,
+      "order": 121,
       "kind": "particle",
       "sectionKey": "particles",
       "family": "made",
@@ -4243,7 +6174,7 @@
     },
     {
       "key": "kara-ni-kakete",
-      "order": 117,
+      "order": 122,
       "kind": "pattern",
       "sectionKey": "time-and-sequence",
       "family": null,
@@ -4275,7 +6206,7 @@
     },
     {
       "key": "ni-oite",
-      "order": 118,
+      "order": 123,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -4307,7 +6238,7 @@
     },
     {
       "key": "tatoe-temo",
-      "order": 119,
+      "order": 124,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "temo",
@@ -4340,7 +6271,7 @@
     },
     {
       "key": "moshikasuruto-kamoshirenai",
-      "order": 120,
+      "order": 125,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -4374,7 +6305,7 @@
     },
     {
       "key": "to-wa-kagiranai",
-      "order": 121,
+      "order": 126,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -4406,7 +6337,7 @@
     },
     {
       "key": "marude-you-da",
-      "order": 122,
+      "order": 127,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -4440,7 +6371,7 @@
     },
     {
       "key": "dakedo",
-      "order": 123,
+      "order": 128,
       "kind": "pattern",
       "sectionKey": "conjunctions-adverbs",
       "family": null,
@@ -4472,7 +6403,7 @@
     },
     {
       "key": "desukara",
-      "order": 124,
+      "order": 129,
       "kind": "pattern",
       "sectionKey": "conjunctions-adverbs",
       "family": null,
@@ -4503,7 +6434,7 @@
     },
     {
       "key": "tokoroga-akan-tetapi",
-      "order": 125,
+      "order": 130,
       "kind": "pattern",
       "sectionKey": "conjunctions-adverbs",
       "family": null,
@@ -4536,7 +6467,7 @@
     },
     {
       "key": "tokorode-ngomong-ngomong",
-      "order": 126,
+      "order": 131,
       "kind": "pattern",
       "sectionKey": "conjunctions-adverbs",
       "family": null,
@@ -4569,7 +6500,7 @@
     },
     {
       "key": "moshi-tanara",
-      "order": 127,
+      "order": 132,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -4601,7 +6532,7 @@
     },
     {
       "key": "moshi-toshitemo",
-      "order": 128,
+      "order": 133,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -4633,7 +6564,7 @@
     },
     {
       "key": "moshimo-nara-temo",
-      "order": 129,
+      "order": 134,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -4668,7 +6599,7 @@
     },
     {
       "key": "koto-ni-naru",
-      "order": 130,
+      "order": 135,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -4699,7 +6630,7 @@
     },
     {
       "key": "koto-ni-suru-memutuskan",
-      "order": 131,
+      "order": 136,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -4732,7 +6663,7 @@
     },
     {
       "key": "koto-wa-ga",
-      "order": 132,
+      "order": 137,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -4764,7 +6695,7 @@
     },
     {
       "key": "nai-koto-wa-nai",
-      "order": 133,
+      "order": 138,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -4796,7 +6727,7 @@
     },
     {
       "key": "ta-tokoro-setelah-ternyata",
-      "order": 134,
+      "order": 139,
       "kind": "pattern",
       "sectionKey": "time-and-sequence",
       "family": "tokoro",
@@ -4827,7 +6758,7 @@
     },
     {
       "key": "tokoro-datta",
-      "order": 135,
+      "order": 140,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -4859,7 +6790,7 @@
     },
     {
       "key": "te-hajimete",
-      "order": 136,
+      "order": 141,
       "kind": "pattern",
       "sectionKey": "time-and-sequence",
       "family": null,
@@ -4891,7 +6822,7 @@
     },
     {
       "key": "uchi-ni",
-      "order": 137,
+      "order": 142,
       "kind": "pattern",
       "sectionKey": "time-and-sequence",
       "family": null,
@@ -4959,7 +6890,7 @@
     },
     {
       "key": "wake-da",
-      "order": 138,
+      "order": 143,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "wake",
@@ -5026,7 +6957,7 @@
     },
     {
       "key": "wake-dewa-nai",
-      "order": 139,
+      "order": 144,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "wake",
@@ -5058,7 +6989,7 @@
     },
     {
       "key": "wake-ga-nai",
-      "order": 140,
+      "order": 145,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "wake",
@@ -5089,7 +7020,7 @@
     },
     {
       "key": "wake-ni-wa-ikanai",
-      "order": 141,
+      "order": 146,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "wake",
@@ -5120,7 +7051,7 @@
     },
     {
       "key": "kesshite-nai",
-      "order": 142,
+      "order": 147,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -5154,7 +7085,7 @@
     },
     {
       "key": "mattaku-nai",
-      "order": 143,
+      "order": 148,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -5188,7 +7119,7 @@
     },
     {
       "key": "mettani-nai",
-      "order": 144,
+      "order": 149,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -5222,7 +7153,7 @@
     },
     {
       "key": "sukoshimo-nai",
-      "order": 145,
+      "order": 150,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -5278,7 +7209,7 @@
     },
     {
       "key": "ato-soreto",
-      "order": 146,
+      "order": 151,
       "kind": "pattern",
       "sectionKey": "conjunctions-adverbs",
       "family": null,
@@ -5310,7 +7241,7 @@
     },
     {
       "key": "soretomo",
-      "order": 147,
+      "order": 152,
       "kind": "pattern",
       "sectionKey": "conjunctions-adverbs",
       "family": null,
@@ -5342,7 +7273,7 @@
     },
     {
       "key": "sono-ue",
-      "order": 148,
+      "order": 153,
       "kind": "pattern",
       "sectionKey": "conjunctions-adverbs",
       "family": null,
@@ -5377,7 +7308,7 @@
     },
     {
       "key": "wa-koto-da",
-      "order": 149,
+      "order": 154,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -5409,7 +7340,7 @@
     },
     {
       "key": "koto-ga-aru",
-      "order": 150,
+      "order": 155,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -5440,7 +7371,7 @@
     },
     {
       "key": "no-panca-indra",
-      "order": 151,
+      "order": 156,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "no",
@@ -5471,7 +7402,7 @@
     },
     {
       "key": "no-ni-wa-tujuan",
-      "order": 152,
+      "order": 157,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -5502,7 +7433,7 @@
     },
     {
       "key": "no-wa-da",
-      "order": 153,
+      "order": 158,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -5533,7 +7464,7 @@
     },
     {
       "key": "no-dewa-nai-ka-no-dewa-nai-darou-ka",
-      "order": 154,
+      "order": 159,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -5564,7 +7495,7 @@
     },
     {
       "key": "to-ta-tara-ta",
-      "order": 155,
+      "order": 160,
       "kind": "pattern",
       "sectionKey": "time-and-sequence",
       "family": null,
@@ -5603,7 +7534,7 @@
     },
     {
       "key": "to-ta-segera",
-      "order": 156,
+      "order": 161,
       "kind": "pattern",
       "sectionKey": "time-and-sequence",
       "family": null,
@@ -5635,7 +7566,7 @@
     },
     {
       "key": "mo-ba-mo-mo-nara-mo",
-      "order": 157,
+      "order": 162,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -5669,7 +7600,7 @@
     },
     {
       "key": "te-iru-sedang",
-      "order": 158,
+      "order": 163,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "te-iru",
@@ -5699,7 +7630,7 @@
     },
     {
       "key": "te-iru-rutinitas",
-      "order": 159,
+      "order": 164,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "te-iru",
@@ -5729,7 +7660,7 @@
     },
     {
       "key": "te-iru-hasil",
-      "order": 160,
+      "order": 165,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "te-iru",
@@ -5760,7 +7691,7 @@
     },
     {
       "key": "te-iru-kondisi-bentuk",
-      "order": 161,
+      "order": 166,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "te-iru",
@@ -5792,7 +7723,7 @@
     },
     {
       "key": "te-iru-selesai-belum-selesai",
-      "order": 162,
+      "order": 167,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "te-iru",
@@ -5824,7 +7755,7 @@
     },
     {
       "key": "te-kuru-te-iku-setelah-tindakan",
-      "order": 163,
+      "order": 168,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "te-kuru",
@@ -5860,7 +7791,7 @@
     },
     {
       "key": "te-kuru-te-iku-arah-perpindahan",
-      "order": 164,
+      "order": 169,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "te-kuru",
@@ -5893,7 +7824,7 @@
     },
     {
       "key": "te-kuru-mendekat-mencapai",
-      "order": 165,
+      "order": 170,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "te-kuru",
@@ -5925,7 +7856,7 @@
     },
     {
       "key": "te-kuru-te-iku-perubahan-kelanjutan",
-      "order": 166,
+      "order": 171,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "te-kuru",
@@ -5958,7 +7889,7 @@
     },
     {
       "key": "menerangkan-kata-benda",
-      "order": 167,
+      "order": 172,
       "kind": "foundation",
       "sectionKey": "foundations",
       "family": null,
@@ -6003,7 +7934,7 @@
     },
     {
       "key": "ga-informasi-baru",
-      "order": 168,
+      "order": 173,
       "kind": "particle",
       "sectionKey": "particles",
       "family": "ga",
@@ -6034,7 +7965,7 @@
     },
     {
       "key": "ga-fenomena-alam",
-      "order": 169,
+      "order": 174,
       "kind": "particle",
       "sectionKey": "particles",
       "family": "ga",
@@ -6066,7 +7997,7 @@
     },
     {
       "key": "ga-subjek-anak-kalimat",
-      "order": 170,
+      "order": 175,
       "kind": "particle",
       "sectionKey": "particles",
       "family": "ga",
@@ -6097,7 +8028,7 @@
     },
     {
       "key": "wa-mengangkat-topik",
-      "order": 171,
+      "order": 176,
       "kind": "particle",
       "sectionKey": "particles",
       "family": "wa",
@@ -6128,7 +8059,7 @@
     },
     {
       "key": "wa-fokus-penekanan-penyangkalan",
-      "order": 172,
+      "order": 177,
       "kind": "particle",
       "sectionKey": "particles",
       "family": "wa",
@@ -6160,7 +8091,7 @@
     },
     {
       "key": "wa-kontras",
-      "order": 173,
+      "order": 178,
       "kind": "particle",
       "sectionKey": "particles",
       "family": "wa",
@@ -6192,7 +8123,7 @@
     },
     {
       "key": "mata",
-      "order": 174,
+      "order": 179,
       "kind": "pattern",
       "sectionKey": "conjunctions-adverbs",
       "family": null,
@@ -6222,7 +8153,7 @@
     },
     {
       "key": "sarani",
-      "order": 175,
+      "order": 180,
       "kind": "pattern",
       "sectionKey": "conjunctions-adverbs",
       "family": null,
@@ -6252,7 +8183,7 @@
     },
     {
       "key": "shikamo",
-      "order": 176,
+      "order": 181,
       "kind": "pattern",
       "sectionKey": "conjunctions-adverbs",
       "family": null,
@@ -6282,7 +8213,7 @@
     },
     {
       "key": "soremo",
-      "order": 177,
+      "order": 182,
       "kind": "pattern",
       "sectionKey": "conjunctions-adverbs",
       "family": null,
@@ -6312,7 +8243,7 @@
     },
     {
       "key": "shitagatte",
-      "order": 178,
+      "order": 183,
       "kind": "pattern",
       "sectionKey": "conjunctions-adverbs",
       "family": null,
@@ -6342,7 +8273,7 @@
     },
     {
       "key": "sokode",
-      "order": 179,
+      "order": 184,
       "kind": "pattern",
       "sectionKey": "conjunctions-adverbs",
       "family": null,
@@ -6372,7 +8303,7 @@
     },
     {
       "key": "suruto",
-      "order": 180,
+      "order": 185,
       "kind": "pattern",
       "sectionKey": "conjunctions-adverbs",
       "family": null,
@@ -6402,7 +8333,7 @@
     },
     {
       "key": "sore-ni-taishite-ippou",
-      "order": 181,
+      "order": 186,
       "kind": "pattern",
       "sectionKey": "conjunctions-adverbs",
       "family": null,
@@ -6432,7 +8363,7 @@
     },
     {
       "key": "daga",
-      "order": 182,
+      "order": 187,
       "kind": "pattern",
       "sectionKey": "conjunctions-adverbs",
       "family": null,
@@ -6462,7 +8393,7 @@
     },
     {
       "key": "matawa",
-      "order": 183,
+      "order": 188,
       "kind": "pattern",
       "sectionKey": "conjunctions-adverbs",
       "family": null,
@@ -6492,7 +8423,7 @@
     },
     {
       "key": "tada",
-      "order": 184,
+      "order": 189,
       "kind": "pattern",
       "sectionKey": "conjunctions-adverbs",
       "family": null,
@@ -6522,7 +8453,7 @@
     },
     {
       "key": "tadashi",
-      "order": 185,
+      "order": 190,
       "kind": "pattern",
       "sectionKey": "conjunctions-adverbs",
       "family": null,
@@ -6552,7 +8483,7 @@
     },
     {
       "key": "sonnani-nai",
-      "order": 186,
+      "order": 191,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -6582,7 +8513,7 @@
     },
     {
       "key": "sou-nai",
-      "order": 187,
+      "order": 192,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -6612,7 +8543,7 @@
     },
     {
       "key": "taishite-nai",
-      "order": 188,
+      "order": 193,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -6642,7 +8573,7 @@
     },
     {
       "key": "sudeni",
-      "order": 189,
+      "order": 194,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -6674,7 +8605,7 @@
     },
     {
       "key": "sukoshizutsu",
-      "order": 190,
+      "order": 195,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -6704,7 +8635,7 @@
     },
     {
       "key": "shidai-ni",
-      "order": 191,
+      "order": 196,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -6734,7 +8665,7 @@
     },
     {
       "key": "masumasu",
-      "order": 192,
+      "order": 197,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -6764,7 +8695,7 @@
     },
     {
       "key": "osoraku",
-      "order": 193,
+      "order": 198,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -6796,7 +8727,7 @@
     },
     {
       "key": "doumo",
-      "order": 194,
+      "order": 199,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -6827,7 +8758,7 @@
     },
     {
       "key": "ima-nimo-souda",
-      "order": 195,
+      "order": 200,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -6857,7 +8788,7 @@
     },
     {
       "key": "zehi",
-      "order": 196,
+      "order": 201,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -6888,7 +8819,7 @@
     },
     {
       "key": "nantokashite",
-      "order": 197,
+      "order": 202,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -6919,7 +8850,7 @@
     },
     {
       "key": "douka",
-      "order": 198,
+      "order": 203,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -6950,7 +8881,7 @@
     },
     {
       "key": "choudo-mitai-da",
-      "order": 199,
+      "order": 204,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -6980,7 +8911,7 @@
     },
     {
       "key": "manichi-mangaichi",
-      "order": 200,
+      "order": 205,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -7012,7 +8943,7 @@
     },
     {
       "key": "donnani-temo",
-      "order": 201,
+      "order": 206,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "temo",
@@ -7042,7 +8973,7 @@
     },
     {
       "key": "ikura-temo",
-      "order": 202,
+      "order": 207,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "temo",
@@ -7072,7 +9003,7 @@
     },
     {
       "key": "sekkaku",
-      "order": 203,
+      "order": 208,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -7104,7 +9035,7 @@
     },
     {
       "key": "tada-dake",
-      "order": 204,
+      "order": 209,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -7134,7 +9065,7 @@
     },
     {
       "key": "toosu",
-      "order": 205,
+      "order": 210,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -7165,7 +9096,7 @@
     },
     {
       "key": "dasu-mulai",
-      "order": 206,
+      "order": 211,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -7196,7 +9127,7 @@
     },
     {
       "key": "yasui-kemudahan",
-      "order": 207,
+      "order": 212,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "yasui",
@@ -7226,7 +9157,7 @@
     },
     {
       "key": "yasui-mudah-terjadi",
-      "order": 208,
+      "order": 213,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "yasui",
@@ -7256,7 +9187,7 @@
     },
     {
       "key": "nikui-susah",
-      "order": 209,
+      "order": 214,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -7287,7 +9218,7 @@
     },
     {
       "key": "zurai",
-      "order": 210,
+      "order": 215,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -7318,7 +9249,7 @@
     },
     {
       "key": "sugiru-sugida",
-      "order": 211,
+      "order": 216,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -7351,7 +9282,7 @@
     },
     {
       "key": "gachi-da",
-      "order": 212,
+      "order": 217,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -7382,7 +9313,7 @@
     },
     {
       "key": "darake-da",
-      "order": 213,
+      "order": 218,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -7425,7 +9356,7 @@
     },
     {
       "key": "sonkeigo",
-      "order": 214,
+      "order": 219,
       "kind": "foundation",
       "sectionKey": "foundations",
       "family": null,
@@ -7480,7 +9411,7 @@
     },
     {
       "key": "kenjougo-1",
-      "order": 215,
+      "order": 220,
       "kind": "foundation",
       "sectionKey": "foundations",
       "family": null,
@@ -7520,7 +9451,7 @@
     },
     {
       "key": "kenjougo-2",
-      "order": 216,
+      "order": 221,
       "kind": "foundation",
       "sectionKey": "foundations",
       "family": null,
@@ -7557,7 +9488,7 @@
     },
     {
       "key": "teineigo",
-      "order": 217,
+      "order": 222,
       "kind": "foundation",
       "sectionKey": "foundations",
       "family": null,
@@ -7588,7 +9519,7 @@
     },
     {
       "key": "ippou-de",
-      "order": 218,
+      "order": 223,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -7622,7 +9553,7 @@
     },
     {
       "key": "tokoro-akan-n3",
-      "order": 219,
+      "order": 224,
       "kind": "pattern",
       "sectionKey": "time-and-sequence",
       "family": "tokoro",
@@ -7652,7 +9583,7 @@
     },
     {
       "key": "te-iru-tokoro-n3",
-      "order": 220,
+      "order": 225,
       "kind": "pattern",
       "sectionKey": "time-and-sequence",
       "family": "tokoro",
@@ -7682,7 +9613,7 @@
     },
     {
       "key": "ta-tokoro-baru-saja-n3",
-      "order": 221,
+      "order": 226,
       "kind": "pattern",
       "sectionKey": "time-and-sequence",
       "family": "tokoro",
@@ -7713,7 +9644,7 @@
     },
     {
       "key": "te-kara-denai-to",
-      "order": 222,
+      "order": 227,
       "kind": "pattern",
       "sectionKey": "time-and-sequence",
       "family": null,
@@ -7745,7 +9676,7 @@
     },
     {
       "key": "kurai-nara",
-      "order": 223,
+      "order": 228,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -7778,7 +9709,7 @@
     },
     {
       "key": "ni-kagiru",
-      "order": 224,
+      "order": 229,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -7810,7 +9741,7 @@
     },
     {
       "key": "koto-kara-kara",
-      "order": 225,
+      "order": 230,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -7878,7 +9809,7 @@
     },
     {
       "key": "no-dakara",
-      "order": 226,
+      "order": 231,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -7939,7 +9870,7 @@
     },
     {
       "key": "te-wa-no-dewa",
-      "order": 227,
+      "order": 232,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -7971,7 +9902,7 @@
     },
     {
       "key": "toka-katanya",
-      "order": 228,
+      "order": 233,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "toka",
@@ -8003,7 +9934,7 @@
     },
     {
       "key": "tte",
-      "order": 229,
+      "order": 234,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -8036,7 +9967,7 @@
     },
     {
       "key": "to-iu-katanya",
-      "order": 230,
+      "order": 235,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "to-iu",
@@ -8068,7 +9999,7 @@
     },
     {
       "key": "tara-dou",
-      "order": 231,
+      "order": 236,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -8101,7 +10032,7 @@
     },
     {
       "key": "bakari-denaku",
-      "order": 232,
+      "order": 237,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -8133,7 +10064,7 @@
     },
     {
       "key": "bakari-da-terus-menerus",
-      "order": 233,
+      "order": 238,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "bakari",
@@ -8173,7 +10104,7 @@
     },
     {
       "key": "bakari-da-tinggal",
-      "order": 234,
+      "order": 239,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "bakari",
@@ -8213,7 +10144,7 @@
     },
     {
       "key": "irai",
-      "order": 235,
+      "order": 240,
       "kind": "pattern",
       "sectionKey": "time-and-sequence",
       "family": null,
@@ -8260,7 +10191,7 @@
     },
     {
       "key": "nagara-meskipun",
-      "order": 236,
+      "order": 241,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "nagara",
@@ -8321,7 +10252,7 @@
     },
     {
       "key": "tsutsu-meskipun",
-      "order": 237,
+      "order": 242,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "tsutsu",
@@ -8360,7 +10291,7 @@
     },
     {
       "key": "tsutsu-sambil",
-      "order": 238,
+      "order": 243,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": "tsutsu",
@@ -8398,7 +10329,7 @@
     },
     {
       "key": "tsutsu-aru",
-      "order": 239,
+      "order": 244,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -8439,7 +10370,7 @@
     },
     {
       "key": "to-tomo-ni",
-      "order": 240,
+      "order": 245,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -8471,7 +10402,7 @@
     },
     {
       "key": "ni-shitagatte",
-      "order": 241,
+      "order": 246,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -8503,7 +10434,7 @@
     },
     {
       "key": "ni-motozuite",
-      "order": 242,
+      "order": 247,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -8535,7 +10466,7 @@
     },
     {
       "key": "o-chuushin-ni",
-      "order": 243,
+      "order": 248,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -8567,7 +10498,7 @@
     },
     {
       "key": "hanmen",
-      "order": 244,
+      "order": 249,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -8628,7 +10559,7 @@
     },
     {
       "key": "you-ga-nai",
-      "order": 245,
+      "order": 250,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -8669,7 +10600,7 @@
     },
     {
       "key": "gatai",
-      "order": 246,
+      "order": 251,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -8709,7 +10640,7 @@
     },
     {
       "key": "zu-ni-wa-irarenai",
-      "order": 247,
+      "order": 252,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -8749,7 +10680,7 @@
     },
     {
       "key": "te-shikata-ga-nai",
-      "order": 248,
+      "order": 253,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -8803,7 +10734,7 @@
     },
     {
       "key": "ni-chigainai",
-      "order": 249,
+      "order": 254,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -8864,7 +10795,7 @@
     },
     {
       "key": "ni-atatte-ni-atari",
-      "order": 250,
+      "order": 255,
       "kind": "pattern",
       "sectionKey": "time-and-sequence",
       "family": null,
@@ -8914,7 +10845,7 @@
     },
     {
       "key": "sai",
-      "order": 251,
+      "order": 256,
       "kind": "pattern",
       "sectionKey": "time-and-sequence",
       "family": null,
@@ -8945,7 +10876,7 @@
     },
     {
       "key": "ni-sakidatte",
-      "order": 252,
+      "order": 257,
       "kind": "pattern",
       "sectionKey": "time-and-sequence",
       "family": null,
@@ -8977,7 +10908,7 @@
     },
     {
       "key": "goto-ni",
-      "order": 253,
+      "order": 258,
       "kind": "pattern",
       "sectionKey": "time-and-sequence",
       "family": null,
@@ -9009,7 +10940,7 @@
     },
     {
       "key": "oki-ni",
-      "order": 254,
+      "order": 259,
       "kind": "pattern",
       "sectionKey": "time-and-sequence",
       "family": null,
@@ -9041,7 +10972,7 @@
     },
     {
       "key": "shidai-segera-setelah",
-      "order": 255,
+      "order": 260,
       "kind": "pattern",
       "sectionKey": "time-and-sequence",
       "family": null,
@@ -9081,7 +11012,7 @@
     },
     {
       "key": "ni-wa-untuk",
-      "order": 256,
+      "order": 261,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -9121,7 +11052,7 @@
     },
     {
       "key": "hokanai",
-      "order": 257,
+      "order": 262,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -9161,7 +11092,7 @@
     },
     {
       "key": "naosu",
-      "order": 258,
+      "order": 263,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -9202,7 +11133,7 @@
     },
     {
       "key": "hajimeru",
-      "order": 259,
+      "order": 264,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -9243,7 +11174,7 @@
     },
     {
       "key": "toka-toka",
-      "order": 260,
+      "order": 265,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -9276,7 +11207,7 @@
     },
     {
       "key": "wa-motoyori",
-      "order": 261,
+      "order": 266,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -9308,7 +11239,7 @@
     },
     {
       "key": "dake-denaku",
-      "order": 262,
+      "order": 267,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -9340,7 +11271,7 @@
     },
     {
       "key": "dake-semaksimal-mungkin",
-      "order": 263,
+      "order": 268,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -9372,7 +11303,7 @@
     },
     {
       "key": "tsui-te-shimau",
-      "order": 264,
+      "order": 269,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
@@ -9404,7 +11335,7 @@
     },
     {
       "key": "nante-darou",
-      "order": 265,
+      "order": 270,
       "kind": "pattern",
       "sectionKey": "sentence-patterns",
       "family": null,
