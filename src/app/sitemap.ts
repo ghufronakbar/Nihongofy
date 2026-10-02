@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { FEATURES, SITE_URL, type FeatureName } from "@/constants";
 import { getArticleSitemapEntries } from "@/features/article/queries";
+import { getBunpouSitemapEntries } from "@/features/bunpou/queries";
 import { getTestPackageSitemapEntries } from "@/features/test-package/queries";
 
 type StaticEntry = {
@@ -17,13 +18,15 @@ const STATIC_ENTRIES: StaticEntry[] = [
   { path: "/kana/hiragana", changeFrequency: "monthly", priority: 0.8, feature: "kana" },
   { path: "/kana/katakana", changeFrequency: "monthly", priority: 0.8, feature: "kana" },
   { path: "/flashcard", changeFrequency: "weekly", priority: 0.8, feature: "flashcard" },
+  { path: "/bunpou", changeFrequency: "weekly", priority: 0.8, feature: "bunpou" },
   { path: "/article", changeFrequency: "weekly", priority: 0.8, feature: "article" },
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [articles, testPackages] = await Promise.all([
+  const [articles, testPackages, bunpou] = await Promise.all([
     FEATURES.article ? getArticleSitemapEntries() : [],
     FEATURES.testPackage ? getTestPackageSitemapEntries() : [],
+    FEATURES.bunpou ? getBunpouSitemapEntries() : { points: [], comparisons: [] },
   ]);
 
   return [
@@ -51,6 +54,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.7,
       },
     ]),
+    ...bunpou.points.map((point) => ({
+      url: new URL(`/bunpou/${point.key}`, SITE_URL).toString(),
+      lastModified: point.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    })),
+    ...bunpou.comparisons.map((comparison) => ({
+      url: new URL(`/bunpou/compare/${comparison.key}`, SITE_URL).toString(),
+      lastModified: comparison.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.65,
+    })),
     ...articles.map((article) => ({
       url: new URL(`/article/${article.slug}`, SITE_URL).toString(),
       lastModified: article.updatedAt,

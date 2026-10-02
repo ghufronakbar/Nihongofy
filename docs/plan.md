@@ -1160,13 +1160,17 @@ Rancangan: `docs/module/bunpou.md`; kontrak data: `docs/seed-bunpou.md`.
 - [x] Kontrak data `docs/seed-bunpou.md` dan rancangan `docs/module/bunpou.md`.
 - [x] `data/bunpou/raw_images/` di-gitignore.
 - [x] Sumber N5 tersedia di `data/bunpou/raw_images/n5-bunpou/` (36 gambar).
-- [ ] Uji gateway: `BUNPOU_EXTRACT_MODEL` menerima input gambar (2-3 slide contoh).
+- [x] Uji gateway: `BUNPOU_EXTRACT_MODEL` menerima input gambar (ekstraksi N5 dan N4 selesai).
 - [x] `src/bunpou-data/taxonomy.json` dari draf di kontrak.
 - [x] `npm run bunpou:extract`, `gen:bunpou`, `bunpou:doubts`, `seed:bunpou` (+ `:check`).
 - [x] `npm run gen:bunpou-comparisons`.
 - [x] Skema + migration katalog dan perbandingan Fase A.
 - [ ] Tambahkan `BUNPOU_POINT`/`BUNPOU_COMPARISON` ke `ReportTargetType` saat UI laporan dikerjakan.
-- [ ] Halaman `/bunpou`, `/bunpou/[key]`, `/bunpou/compare/[key]`, SEO, dan flag.
+- [x] Halaman `/bunpou`, `/bunpou/[key]`, `/bunpou/compare/[key]`, SEO, dan flag.
+- [ ] `npx prisma migrate deploy` untuk `20261001200000_bunpou_catalog` sebelum deploy kode UI
+  (`sitemap.xml` membaca tabelnya saat build), atau deploy dengan `FEATURES_BUNPOU=false`.
+- [ ] Bereskan fixture sampai `npm run seed:bunpou:check` lulus, lalu `npm run seed:bunpou`.
+- [ ] Uji manual `/bunpou` lalu nyalakan flag di Vercel.
 - [ ] Fase B: `gen:bunpou-links`, tabel `QuestionBunpouLink`, tampilan di halaman pola dan review.
 - [ ] Fase C: SRS bunpou.
 

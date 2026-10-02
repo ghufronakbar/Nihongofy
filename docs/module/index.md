@@ -11,7 +11,7 @@ Folder ini mendokumentasikan kondisi aplikasi berdasarkan kode, fixture, dan dat
 | [Dashboard](dashboard.md) | Selesai sederhana | Menampilkan attempt selesai dan attempt terakhir; kartu modul lain masih berupa shortcut statis. |
 | [Kana](kana.md) | Selesai dengan scope terbatas | Fixture kana terkurasi dan progress akun aktif; audio memakai Web Speech API, bukan rekaman. |
 | [Flashcard](flashcard.md) | Kode selesai, katalog belum terisi | Dirombak 1 Oktober 2026: katalog kosakata JLPT bawaan (6.697 kata N5-N1) dengan deck per level/topik/kategori, FSRS-6 dan antrean v3 Anki, pengaturan per user, dan mode coba guest. Menunggu migration, generate isi kartu AI, dan seed. |
-| [Bunpou](bunpou.md) | Rancangan | Katalog pola kalimat bawaan di `/bunpou` dari slide acuan, dengan perbandingan pola mirip, tautan ke soal JLPT asli, dan SRS sendiri. Kontrak data di [seed-bunpou.md](../seed-bunpou.md); slide masih dikumpulkan. |
+| [Bunpou](bunpou.md) | Fase A selesai di kode, belum live | Katalog pola kalimat bawaan di `/bunpou` (90 pola N5, 138 pola N4) dengan halaman detail dan perbandingan pola mirip. Menunggu `migrate deploy`, perbaikan fixture, dan seed. Tautan ke soal JLPT asli (Fase B) dan SRS (Fase C) belum dikerjakan. Kontrak data di [seed-bunpou.md](../seed-bunpou.md). |
 | [Latihan cepat](practice.md) | Fungsional dengan gap guest | Session akun persisten dan feedback langsung aktif; guest hanya state sementara. |
 | [Paket tes](test-package.md) | Fungsional, kini dikelola dari admin | 48 fixture dan 48 paket di database mencakup kelima level; import, editor soal, dan penghapusan tersedia di `/admin/test-package`. |
 | [Exam runner](exam.md) | Fungsional dengan hardening tersisa | State sesi dan submit aktif; belum ada timer, marker submit per sesi, dan validasi kelengkapan payload. |
@@ -40,6 +40,7 @@ di-prerender saat build, jadi keduanya baru berubah setelah redeploy.
 |---|---|---|
 | `FEATURES_KANA` | [Kana](kana.md#feature-flag) | `/kana/*` |
 | `FEATURES_FLASHCARD` | [Flashcard](flashcard.md#feature-flag) | `/flashcard/*`; laporan kartu baru ditolak, laporan lama tetap di `/admin/report` |
+| `FEATURES_BUNPOU` | [Bunpou](bunpou.md#feature-flag) | `/bunpou/*` |
 | `FEATURES_PRACTICE` | [Latihan cepat](practice.md#feature-flag) | `/exercises/*` |
 | `FEATURES_TEST_PACKAGE` | [Paket tes](test-package.md#feature-flag), [Exam](exam.md#feature-flag), [Result](result.md#feature-flag) | `/test-package/*`, `/exam/*`, `/result/*` |
 | `FEATURES_HISTORY` | [History](history.md#feature-flag) | `/history` |

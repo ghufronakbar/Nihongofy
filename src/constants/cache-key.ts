@@ -14,6 +14,9 @@ export const CACHE_TAGS = {
   articleList: "article-list",
   articleFacets: "article-facets",
   articleDetail: (slug: string) => `article-${slug}`,
+  // Satu tag untuk seluruh katalog bunpou: `seed:bunpou` berjalan di luar app,
+  // jadi invalidasinya lewat /admin/ops atau habisnya `revalidate`.
+  bunpouCatalog: "bunpou-catalog",
 } as const;
 
 export const CACHE_KEYS = {
@@ -41,6 +44,11 @@ export const CACHE_KEYS = {
   articleDetail: (slug: string) => ["article-detail", slug],
   articleCover: (slug: string) => ["article-cover", slug],
   articleSitemap: ["article-sitemap"] as string[],
+  bunpouCatalog: ["bunpou-catalog"] as string[],
+  bunpouPoint: (key: string) => ["bunpou-point", key],
+  bunpouComparison: (key: string) => ["bunpou-comparison", key],
+  bunpouComparisonList: ["bunpou-comparison-list"] as string[],
+  bunpouSitemap: ["bunpou-sitemap"] as string[],
   // Shares CACHE_TAGS.analytics for invalidation — both derive from the same
   // source (completed attempts), so one updateTag on submit refreshes both.
   progress: (userId: number) => ["progress", String(userId)],

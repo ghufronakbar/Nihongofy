@@ -67,3 +67,23 @@ export function parseJapaneseMarkup(source: string): MarkupSegment[] {
   flush();
   return segments;
 }
+
+/** Teks polos tanpa furigana dan penanda, mis. untuk TTS: `{食|た}べ__ながら__` → `食べながら`. */
+export function toPlainJapanese(source: string): string {
+  const flatten = (segments: MarkupSegment[]): string =>
+    segments
+      .map((segment) => {
+        switch (segment.type) {
+          case "text":
+            return segment.value;
+          case "furigana":
+            return segment.kanji;
+          case "underline":
+            return flatten(segment.children);
+          case "slot":
+            return "";
+        }
+      })
+      .join("");
+  return flatten(parseJapaneseMarkup(source));
+}

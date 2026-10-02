@@ -12,10 +12,14 @@ export const INVALIDATABLE_TAGS = {
   practiceCatalog: CACHE_TAGS.practiceCatalog,
   articleList: CACHE_TAGS.articleList,
   articleFacets: CACHE_TAGS.articleFacets,
+  bunpouCatalog: CACHE_TAGS.bunpouCatalog,
 } as const;
 
 // Katalog flashcard sengaja tidak punya tag di sini: halamannya membaca
 // `FlashcardDeck`/`FlashcardVocab` langsung tanpa `unstable_cache`, jadi hasil
 // `npm run seed:flashcard` langsung terlihat tanpa invalidasi.
+//
+// Katalog bunpou sebaliknya di-cache karena halamannya publik dan diindeks;
+// setelah `npm run seed:bunpou`, invalidasi `bunpouCatalog` di sini.
 
 export type InvalidatableTag = keyof typeof INVALIDATABLE_TAGS;

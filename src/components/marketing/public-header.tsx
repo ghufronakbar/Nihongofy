@@ -21,6 +21,7 @@ const NAV_ITEMS: { label: string; href: string; feature?: FeatureName }[] = [
   { label: "Beranda", href: "/" },
   { label: "Kana", href: "/kana/hiragana", feature: "kana" },
   { label: "Flashcard", href: "/flashcard", feature: "flashcard" },
+  { label: "Bunpou", href: "/bunpou", feature: "bunpou" },
   { label: "Latihan Cepat", href: "/exercises", feature: "practice" },
   { label: "Mock JLPT", href: "/test-package", feature: "testPackage" },
   { label: "Artikel", href: "/article", feature: "article" },

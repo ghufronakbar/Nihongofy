@@ -2,11 +2,22 @@
 
 ## Status Aktual
 
-**Implementasi data Phase A sedang berjalan (2 Oktober 2026).** Kontrak, taxonomy, generator,
-validator, schema, migration katalog, serta ekstraksi dan generation 90 point dari 36 slide N5
-sudah tersedia. Ekstraksi N4 menghasilkan 138 point dari 77 slide dan menunggu generation.
-Migration belum diterapkan dan UI publik belum dikerjakan. Kontrak datanya ada di
-[seed-bunpou.md](../seed-bunpou.md).
+**Fase A: data dan UI publik selesai di kode, belum live (2 Oktober 2026).** Kontrak, taxonomy,
+generator, validator, schema, dan migration katalog tersedia. Fixture berisi 90 point N5 (36
+slide) dan 138 point N4 (77 slide). Halaman `/bunpou`, `/bunpou/[key]`, dan
+`/bunpou/compare/[key]` beserta SEO dan flag `FEATURES_BUNPOU` sudah dibuat. Yang tersisa sebelum
+live: `migrate deploy`, perbaikan fixture sampai `seed:bunpou:check` lulus, `seed:bunpou`, lalu
+uji manual. Kontrak datanya ada di [seed-bunpou.md](../seed-bunpou.md).
+
+## Feature Flag
+
+`FEATURES_BUNPOU` (default `true`). Saat `false`, `/bunpou/*` menjadi 404 lewat
+`src/app/(public)/bunpou/layout.tsx`, menu "Bunpou" di header publik tidak dirender, dan path
+bunpou keluar dari `sitemap.xml` serta `robots.txt`.
+
+**Urutan deploy:** `sitemap.xml` di-prerender saat build dan membaca `BunpouPoint` bila flag
+aktif, jadi migration `20261001200000_bunpou_catalog` wajib sudah diterapkan sebelum deploy kode
+ini. Tanpa migration, set `FEATURES_BUNPOU=false` atau build gagal.
 
 ## Keputusan
 
@@ -51,6 +62,28 @@ Migration belum diterapkan dan UI publik belum dikerjakan. Kontrak datanya ada d
 | `/bunpou/compare/[key]` | Perbandingan lengkap: tabel nuansa, ragam, dan batasan, ditambah kalimat kontras ○/△/✕. |
 
 Metadata memakai `pageMetadata()`, structured data `LearningResource`, dan halaman masuk sitemap.
+
+### Implementasi
+
+- Query di `src/features/bunpou/queries.ts`. Daftar ringkas seluruh pola dimuat sekali
+  (`getBunpouCatalog`) dan dipakai ulang untuk katalog, family, pola terkait, serta navigasi
+  sebelum/sesudah. Isi lengkap per pola dan per perbandingan diambil terpisah.
+- Semua query memakai `unstable_cache` dengan satu tag `CACHE_TAGS.bunpouCatalog` dan
+  `revalidate` 1 jam. `seed:bunpou` berjalan di luar app, jadi setelah seed hasilnya muncul paling
+  lambat sejam kemudian, atau segera setelah tag `bunpouCatalog` diinvalidasi di `/admin/ops`.
+- Kolom JSONB dibaca lewat skema zod longgar di `schemas.ts`; validasi ketat tetap milik seed.
+- Katalog (`components/bunpou-catalog.tsx`) memilih level lewat tombol dan menyimpannya di
+  `?level=` dengan `history.replaceState`, sehingga tautan breadcrumb dari halaman detail kembali
+  ke level yang sama. Saat ada kata kunci, pencarian berlaku di semua level. Pencocokan dan filter
+  ada di `lib/catalog-filter.ts`; katakana pada kata kunci diubah ke hiragana.
+- Halaman detail menampilkan family sebagai tab, sambungan sebagai badge bentuk baku, tabel
+  `formation`, penjelasan, contoh dengan sorotan pola dan TTS browser, pitfalls, perbandingan yang
+  memuat pola ini, dan sampai enam pola lain dengan tag fungsi yang sama (level terdekat dulu).
+  Sebelum/sesudah hanya dalam level yang sama.
+- Perbandingan yang salah satu polanya sudah dipensiunkan dianggap tidak ada (404), karena
+  tabelnya tidak lagi utuh.
+- Belum ada: tombol laporan (menunggu `BUNPOU_POINT`/`BUNPOU_COMPARISON` di `ReportTargetType`)
+  dan kartu bunpou di home.
 
 ## Fase B — Tautan ke Soal JLPT Asli
 

@@ -53,7 +53,11 @@ contract wajib memiliki migration dan catatan ringkas di dokumen/PR perubahan. J
 - Validasi: `npx prisma validate`, validasi fixture, lint, typecheck, test, build, dan penerapan
   migration pada PostgreSQL lokal/Supabase masih harus dilengkapi sebelum deploy.
 - Refresh setelah deploy: jalankan `npx prisma generate`, redeploy aplikasi, lalu seed setelah
-  fixture N5 lolos review. Tidak ada cache yang perlu diinvalidasi sebelum UI tersedia.
+  fixture N5 lolos review. Setelah seed, invalidasi tag `bunpouCatalog` di `/admin/ops` (atau
+  tunggu `revalidate` 1 jam).
+- Urutan deploy (sejak UI `/bunpou` ada): migration wajib diterapkan **sebelum** deploy kode UI,
+  karena `sitemap.xml` di-prerender saat build dan membaca `BunpouPoint` selama
+  `FEATURES_BUNPOU` aktif. Tanpa migration, build gagal dengan `P2021`.
 - Owner: Engineering Owner.
 
 ### 1 Oktober 2026 - Kartu flashcard sebagai target laporan

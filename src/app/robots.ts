@@ -12,6 +12,7 @@ export default function robots(): MetadataRoute.Robots {
         ...(FEATURES.practice ? ["/exercises"] : []),
         ...(FEATURES.kana ? ["/kana", "/kana/"] : []),
         ...(FEATURES.flashcard ? ["/flashcard", "/flashcard/try/"] : []),
+        ...(FEATURES.bunpou ? ["/bunpou", "/bunpou/"] : []),
       ],
       disallow: [
         "/api/",

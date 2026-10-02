@@ -11,7 +11,7 @@
 
 ## Fitur Aktif
 
-- Header desktop/mobile menuju Kana, Flashcard, Latihan Cepat, Mock JLPT, Artikel, Percakapan, dan Bicara, masing-masing hanya bila flag modulnya aktif.
+- Header desktop/mobile menuju Kana, Flashcard, Bunpou, Latihan Cepat, Mock JLPT, Artikel, Percakapan, dan Bicara, masing-masing hanya bila flag modulnya aktif.
 - CTA berubah antara login/register dan dashboard/test package berdasarkan session.
 - Landing page menampilkan kartu kana, flashcard, latihan cepat, dan mock JLPT untuk modul yang aktif, serta section conversation dan speaking bila flag-nya aktif.
 - Featured article berasal dari query artikel published, dengan empty state jika database kosong.
@@ -50,7 +50,7 @@ Route milik modul yang mati mengembalikan 404 lewat `layout.tsx` guard di segmen
 ## Keterbatasan
 
 - Tidak ada halaman publik khusus overview product selain home.
-- Sitemap memuat home, test package, latihan cepat, kana, flashcard, dan artikel untuk modul yang aktif. `robots.ts` hanya meng-`allow` path modul aktif; route akun, exam, result, conversation, dan speaking selalu di-`disallow`.
+- Sitemap memuat home, test package, latihan cepat, kana, flashcard, bunpou (katalog, tiap pola, dan tiap perbandingan), dan artikel untuk modul yang aktif. `robots.ts` hanya meng-`allow` path modul aktif; route akun, exam, result, conversation, dan speaking selalu di-`disallow`.
 - `robots.txt` dan `sitemap.xml` di-prerender saat build, sehingga perubahan flag baru tercermin di keduanya setelah redeploy.
 - Header publik tidak menyediakan shortcut langsung ke history/progress/analytics; aksesnya melalui dashboard.
 - Routing tidak mewajibkan login untuk prefix belajar/exam/result. Proteksi akun dan ownership diterapkan secara selektif di page/action terkait; mode guest memang tersedia pada beberapa modul.

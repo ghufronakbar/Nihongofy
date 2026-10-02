@@ -1,0 +1,61 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { JsonLd } from "@/components/seo/json-ld";
+import { BunpouPointView } from "@/features/bunpou/components/bunpou-point-view";
+import { getBunpouPointDetail } from "@/features/bunpou/queries";
+import { BunpouKeySchema } from "@/features/bunpou/schemas";
+import { breadcrumbJsonLd, learningResourceJsonLd } from "@/lib/json-ld";
+import { pageMetadata, privateMetadata } from "@/lib/seo";
+
+type Props = { params: Promise<{ key: string }> };
+
+async function detailFromParams(params: Props["params"]) {
+  const parsed = BunpouKeySchema.safeParse((await params).key);
+  return parsed.success ? getBunpouPointDetail(parsed.data) : null;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const detail = await detailFromParams(params);
+  if (!detail) {
+    return privateMetadata("Pola tidak ditemukan", "Pola yang kamu cari belum atau tidak lagi tersedia.");
+  }
+
+  const { point, content } = detail;
+  const sense = content.senseLabel ? ` (${content.senseLabel})` : "";
+  return pageMetadata({
+    title: `${point.titlePlain}${sense} – Bunpou JLPT ${point.level}`,
+    description: `${content.meaningId.trim().replace(/[.。]?$/, ".")} Arti, sambungan, penjelasan, dan contoh kalimat pola ${point.titlePlain} untuk JLPT ${point.level}.`,
+    path: `/bunpou/${point.key}`,
+    keywords: [point.titlePlain, point.titleReading, point.titleRomaji, `JLPT ${point.level}`, "bunpou", "文法"],
+  });
+}
+
+export default async function BunpouPointPage({ params }: Props) {
+  const detail = await detailFromParams(params);
+  if (!detail) notFound();
+
+  const { point, content } = detail;
+  const path = `/bunpou/${point.key}`;
+
+  return (
+    <main className="mx-auto w-full max-w-3xl px-4 py-10">
+      <JsonLd
+        data={[
+          learningResourceJsonLd({
+            path,
+            name: `${point.titlePlain}${content.senseLabel ? ` (${content.senseLabel})` : ""}`,
+            description: content.meaningId,
+            resourceType: "Reference",
+            educationalLevel: `JLPT ${point.level}`,
+          }),
+          breadcrumbJsonLd([
+            { name: "Beranda", path: "/" },
+            { name: "Bunpou", path: "/bunpou" },
+            { name: point.titlePlain, path },
+          ]),
+        ]}
+      />
+      <BunpouPointView detail={detail} />
+    </main>
+  );
+}

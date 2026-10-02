@@ -50,6 +50,7 @@ const envSchema = z
     // Feature flags. Default aktif; set "false" untuk menyembunyikan modul.
     FEATURES_KANA: featureFlag,
     FEATURES_FLASHCARD: featureFlag,
+    FEATURES_BUNPOU: featureFlag,
     FEATURES_PRACTICE: featureFlag,
     FEATURES_TEST_PACKAGE: featureFlag,
     FEATURES_HISTORY: featureFlag,
@@ -157,6 +158,7 @@ export const GOOGLE_OAUTH_ENABLED = Boolean(
 export const FEATURES = {
   kana: env.FEATURES_KANA,
   flashcard: env.FEATURES_FLASHCARD,
+  bunpou: env.FEATURES_BUNPOU,
   practice: env.FEATURES_PRACTICE,
   testPackage: env.FEATURES_TEST_PACKAGE,
   history: env.FEATURES_HISTORY,
