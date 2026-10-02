@@ -1,4 +1,4817 @@
 {
   "level": "N4",
-  "points": []
+  "points": [
+    {
+      "key": "ni-tsutomeru",
+      "order": 1,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": "ni",
+      "title": "〜に",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-1.png"
+        ],
+        "title": "〜に",
+        "meaning": "",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "兄は 日本の トヨタに つとめて います。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:37:21.514Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "de-tempat-aktivitas",
+      "order": 2,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": "de",
+      "title": "〜で",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-1.png"
+        ],
+        "title": "〜で",
+        "meaning": "",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "兄は 日本で 働いて います。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:37:21.514Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "kara-bahan",
+      "order": 3,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": "kara",
+      "title": "〜から",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-1.png"
+        ],
+        "title": "〜から",
+        "meaning": "",
+        "connection": "",
+        "formation": [],
+        "notes": "*bahan dasar mengalami perubahan & tidak terlihat",
+        "examples": [
+          "ぶどうから ワインを 作ります。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:37:21.514Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ni-frekuensi",
+      "order": 4,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": "ni",
+      "title": "〜に",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-1.png"
+        ],
+        "title": "〜に",
+        "meaning": "",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "1日に 3回、この 薬を 飲んで います。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:37:21.514Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "mo-penekanan-negatif",
+      "order": 5,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": "mo",
+      "title": "〜も",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-1.png",
+          "n4-bunpou/n4-bunpou-5.png"
+        ],
+        "title": "〜も",
+        "meaning": "digunakan bersama kalimat negatif “sama sekali tidak...”",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "私は ひらがなも 書けません。",
+          "パーティーには 10人も 来ませんでした。",
+          "私は スカートを 1枚も 持って いません。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:55:57.591Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "zutsu",
+      "order": 6,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": null,
+      "title": "〜ずつ",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-1.png"
+        ],
+        "title": "〜ずつ",
+        "meaning": "*masing-masing",
+        "connection": "",
+        "formation": [],
+        "notes": "*masing-masing",
+        "examples": [
+          "この プリントを 一枚ずつ 配って ください。",
+          "この 本を 毎日 2ページずつ 勉強しましょう。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:37:21.514Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "hodo-nai",
+      "order": 7,
+      "kind": "pattern",
+      "sectionKey": "comparison",
+      "family": null,
+      "title": "〜ほど〜ない",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-2.png"
+        ],
+        "title": "〜ほど 〜ない",
+        "meaning": "“tidak se...” = 〜より 〜の ほうが〜",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "今週は 先週ほど いそがしく ありません。",
+          "日本では 豚肉は 牛肉ほど たかく ありません。",
+          "私の 国の 夏は 日本の 夏ほど 暑くない。",
+          "今週も いそがしいですが、先週ほどでは ありません。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:37:21.514Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "penggunaan-dua-partikel",
+      "order": 8,
+      "kind": "foundation",
+      "sectionKey": "particles",
+      "family": null,
+      "title": "二重助詞",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-2.png"
+        ],
+        "title": "*Penggunaan 2 partikel",
+        "meaning": "",
+        "connection": "",
+        "formation": [],
+        "notes": "*Penggunaan 2 partikel",
+        "examples": [
+          "東京には 大きい 公園が たくさん あります。",
+          "この 子は 家では うるさいですが、外では おとなしいです。",
+          "誕生日に 父からも、母からも プレゼントを もらいました。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:37:21.514Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "meishi-shuushoku",
+      "order": 9,
+      "kind": "foundation",
+      "sectionKey": "foundations",
+      "family": null,
+      "title": "名詞修飾",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-3.png"
+        ],
+        "title": "これは 兄に もらった バッグです。",
+        "meaning": "",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "これは 兄に もらった バッグです。",
+          "この 近くに 安くて おいしい レストランが ありますか。",
+          "きのう クラスで 使う 本を 買いに 行きました。",
+          "フランス語が 話せる 友だちが います。",
+          "あそこの 青いセーターを 着た 背の高い 男の人は だれですか。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:37:21.514Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "demo-ekstrim",
+      "order": 10,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": "demo",
+      "title": "〜でも",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-4.png"
+        ],
+        "title": "〜でも",
+        "meaning": "mengibaratkan sebuah contoh ekstrim “...pun”, “... juga”",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "これは 日本人でも 読めない 漢字です。",
+          "これは 子どもでも できる 問題です。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:55:57.591Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "demo-representatif",
+      "order": 11,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": "demo",
+      "title": "〜でも",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-4.png"
+        ],
+        "title": "〜でも",
+        "meaning": "memberikan contoh yang mewakili",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "お茶でも 飲みましょうか。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:55:57.591Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "de-alat-cara",
+      "order": 12,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": "de",
+      "title": "〜で",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-4.png"
+        ],
+        "title": "〜で",
+        "meaning": "menunjukkan cara yang digunakan “menggunakan”",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "電車で 行きます。",
+          "はさみで 切ります。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:55:57.591Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "de-batasan",
+      "order": 13,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": "de",
+      "title": "〜で",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-4.png"
+        ],
+        "title": "〜で",
+        "meaning": "memberi batasan tertentu",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "富士山は 日本で いちばん 高い 山です。",
+          "この りんごは 3個で 500円です。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:55:57.591Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "de-alasan",
+      "order": 14,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": "de",
+      "title": "〜で",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-5.png"
+        ],
+        "title": "〜で",
+        "meaning": "menyebutkan alasan",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "かぜで 学校を 休みました。",
+          "父は 仕事で アメリカに 行って います。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:55:57.591Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "de-bahan",
+      "order": 15,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": "de",
+      "title": "〜で",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-5.png"
+        ],
+        "title": "〜で",
+        "meaning": "materi/bahan dasar yang digunakan (bentuk bahan dasar masih terlihat)",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "これは、紙で 作った にんぎょうです。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:55:57.591Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "mo-penekanan-banyak",
+      "order": 16,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": "mo",
+      "title": "〜も",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-5.png"
+        ],
+        "title": "〜も",
+        "meaning": "menunjukkan bahwa hal tersebut banyak “sampai...”",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "きのう ビールを 3本も 飲みました。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:55:57.591Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "toka",
+      "order": 17,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": null,
+      "title": "〜とか",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-6.png"
+        ],
+        "title": "〜とか",
+        "meaning": "memberikan contoh “misalnya”",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "毎日、昼は ラーメンとか そばとかを 食べます。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:55:57.591Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "shika",
+      "order": 18,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": null,
+      "title": "〜しか",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-6.png"
+        ],
+        "title": "〜しか",
+        "meaning": "“hanya” diikuti bentuk negatif dibelakangnya",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "私の クラスに 男の人は 二人しか いません。",
+          "ジョンさんは 英語しか 話せません。",
+          "れいぞうこに、たまごが 1個しか ありません。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:55:57.591Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "made",
+      "order": 19,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": null,
+      "title": "〜まで",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-7.png"
+        ],
+        "title": "〜まで",
+        "meaning": "\"sampai\"",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "私は 日本に 来るまで フランスに 住んで いました。",
+          "来週の 水曜日まで 会社を 休みます。",
+          "母は 夜 おそくまで 働いて います。",
+          "仕事が 終わるまで、ここで 待って いて ください。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:57:29.228Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "madeni",
+      "order": 20,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": null,
+      "title": "〜までに",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-7.png"
+        ],
+        "title": "〜までに",
+        "meaning": "sebagai batas akhir “paling lambat...”, “sebelum...”",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "レポートは 15日までに 出して ください。",
+          "私は 30さいに なるまでに 結婚したいです。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:57:29.228Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "tari-tari",
+      "order": 21,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜たり（〜たり）",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-8.png"
+        ],
+        "title": "〜たり（〜たり）",
+        "meaning": "untuk menyebutkan beberapa kegiatan yang mewakili",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "休みの 日は DVDを 見たり 本を 読んだり しています。",
+          "夏休みは 旅行したり テニスをしたり していました。",
+          "休みの 日は DVDを 見たり しています。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:57:29.228Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "shi-paralel",
+      "order": 22,
+      "kind": "particle",
+      "sectionKey": "conjunctions-adverbs",
+      "family": "shi",
+      "title": "〜し（〜し）",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-8.png",
+          "n4-bunpou/n4-bunpou-9.png"
+        ],
+        "title": "〜し（〜し）",
+        "meaning": "Menjelaskan topik kalimat dengan 2 hal (atau lebih) yang mempunyai nilai sama",
+        "connection": "K. kerja / K. sifat - i / K. sifat -na + だ / K. benda + だ } bentuk biasa + 〜し、",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "この レストランは おいしいし、安いです。",
+          "鈴木さんは ピアノも 弾けるし、歌も 歌えるし、ダンスもできます。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:57:29.228Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "shi-alasan",
+      "order": 23,
+      "kind": "particle",
+      "sectionKey": "conjunctions-adverbs",
+      "family": "shi",
+      "title": "〜し（〜し）",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-9.png"
+        ],
+        "title": "〜し（〜し）",
+        "meaning": "Dapat digunakan untuk menyebutkan beberapa alasan",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "のども かわいたし、おなかも すいたし、少し 休みたいです。",
+          "きのうの ハイキングは 天気も よかったし、楽しかった。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:57:29.228Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "bakari",
+      "order": 24,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": null,
+      "title": "〜ばかり",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-9.png"
+        ],
+        "title": "Kata Benda 〜ばかり",
+        "meaning": "“melulu”, “terus-terusan”",
+        "connection": "Kata Benda 〜ばかり",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "弟は ゲームばかり しています。",
+          "父は このごろ お酒ばかり 飲んでいます。",
+          "あの 人の 話は、うそばかりだ。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:57:29.228Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "tokoro-akan",
+      "order": 25,
+      "kind": "pattern",
+      "sectionKey": "time-and-sequence",
+      "family": "tokoro",
+      "title": "〜ところ",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-10.png"
+        ],
+        "title": "K.Kerja kamus 〜 ところ",
+        "meaning": "“baru mau..., baru akan...”",
+        "connection": "K.Kerja kamus 〜 ところ",
+        "formation": [],
+        "notes": "menjelaskan suatu keadaan apakah \"akan, sedang, atau baru saja terjadi\"",
+        "examples": [
+          "A「昼ご飯は もう 食べましたか。」",
+          "opsi 1) B「今から 食べる ところです。」"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:58:42.516Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "te-iru-tokoro",
+      "order": 26,
+      "kind": "pattern",
+      "sectionKey": "time-and-sequence",
+      "family": "tokoro",
+      "title": "〜ているところ",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-10.png"
+        ],
+        "title": "K.Kerja 〜ている ところ",
+        "meaning": "“ini sedang..., ini lagi...”",
+        "connection": "K.Kerja 〜ている ところ",
+        "formation": [],
+        "notes": "menjelaskan suatu keadaan apakah \"akan, sedang, atau baru saja terjadi\"",
+        "examples": [
+          "A「昼ご飯は もう 食べましたか。」",
+          "opsi 2) B「今 食べて いる ところです。」"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:58:42.516Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ta-tokoro",
+      "order": 27,
+      "kind": "pattern",
+      "sectionKey": "time-and-sequence",
+      "family": "tokoro",
+      "title": "〜たところ",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-10.png"
+        ],
+        "title": "K.Kerja 〜た ところ",
+        "meaning": "“baru saja..., barusan...”",
+        "connection": "K.Kerja 〜た ところ",
+        "formation": [],
+        "notes": "menjelaskan suatu keadaan apakah \"akan, sedang, atau baru saja terjadi\"",
+        "examples": [
+          "今、授業が終わったところです。",
+          "A「昼ご飯は もう 食べましたか。」",
+          "opsi 3) B「たった今 食べた ところです。」"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:58:42.516Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "toki-ni",
+      "order": 28,
+      "kind": "pattern",
+      "sectionKey": "time-and-sequence",
+      "family": null,
+      "title": "〜とき（に）",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-11.png"
+        ],
+        "title": "〜とき(に)",
+        "meaning": "“ketika...”",
+        "connection": "K. kerja / K. sifat - i [bentuk biasa] + とき (に) / K. sifat -na → + な とき (に) / K. benda → + の とき (に)",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "寝るとき、パジャマを着ます。",
+          "私は、本を 読む とき、めがねを かけます。",
+          "東京に 行った ときに、友だちに 会う 予定です。",
+          "暇な とき、うちへ 遊びに 来て ください。",
+          "若い とき／子どものとき、あまり 勉強しませんでした。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:58:42.516Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "aidani",
+      "order": 29,
+      "kind": "pattern",
+      "sectionKey": "time-and-sequence",
+      "family": null,
+      "title": "〜間に",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-12.png"
+        ],
+        "title": "〜の間に / 〜ている間に",
+        "meaning": "“selagi....”, “sewaktu....”, “pas....”",
+        "connection": "〜の間に / 〜ている間に",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "買い物に 行って いる 間に、友だちが 来ました。",
+          "夏休みの 間に ヨーロッパへ 旅行を する 予定です。",
+          "映画を 見て いる 間に、寝て しまいました。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:58:42.516Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "chuu",
+      "order": 30,
+      "kind": "pattern",
+      "sectionKey": "time-and-sequence",
+      "family": null,
+      "title": "〜中",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-12.png"
+        ],
+        "title": "〜中",
+        "meaning": "“sedang...”, “lagi...”",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "田中さんは 今、電話中です。",
+          "社長は 会議中です。 = 会議を している ところ",
+          "食事中は テレビを 消しましょう。 = 食事している 間"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:58:42.516Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "te-de-alasan",
+      "order": 31,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "〜て／〜で",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-13.png",
+          "n4-bunpou/n4-bunpou-14.png"
+        ],
+        "title": "〜て／〜で menyatakan alasan",
+        "meaning": "karena",
+        "connection": "K. kerja (〜て、〜なくて) / K. sifat -i (〜くて) / K. sifat -na (〜で) / K. benda (〜で)、〜",
+        "formation": [],
+        "notes": "kebanyakan kalimat setelahnya mengandung ekspresi, emosi seperti senang, kaget, kesal, sedih, kecewa, penyesalan, dll (bukan berbentuk keinginan, perintah, ajakan). K.Benda 〜で sebab-akibat: kalimat setelahnya merupakan sebuah “akibat”. Contoh salah/benar: (X) 暑くて、まどを 開けてください。 (V) 暑いから／暑いので",
+        "examples": [
+          "かぜを ひいて、学校を 休みました。",
+          "家族に 会えなくて 寂しいです。",
+          "話が 複雑で よく わかりませんでした。",
+          "この カレーは からくて 食べられません。",
+          "地震で ビルが 倒れました。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:59:14.925Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "te-kondisi",
+      "order": 32,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜て",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-14.png"
+        ],
+        "title": "〜て",
+        "meaning": "dengan",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "コーヒーは 砂糖を 入れて 飲みます。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:59:14.925Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "naide",
+      "order": 33,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜ないで",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-14.png"
+        ],
+        "title": "〜ないで",
+        "meaning": "tanpa",
+        "connection": "",
+        "formation": [],
+        "notes": "tambahan : memilih/memutuskan salah satu di antara dua hal yang tidak bisa dilakukan bersama",
+        "examples": [
+          "コーヒーは 砂糖を 入れないで 飲みます。",
+          "日曜日は どこも 行かないで、うちで ゆっくり 休みます。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:59:14.925Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "mama",
+      "order": 34,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜まま",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-15.png"
+        ],
+        "title": "〜たまま / K.Benda 〜の まま",
+        "meaning": "dalam keadaan",
+        "connection": "〜たまま / K.Benda 〜の まま",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "まどを 開けたまま 寝ました。",
+          "父は めがねを かけたまま 寝ました。",
+          "うちの 子は、パジャマのまま、出かけて しまいました。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:59:14.925Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "nagara",
+      "order": 35,
+      "kind": "pattern",
+      "sectionKey": "time-and-sequence",
+      "family": null,
+      "title": "〜ながら",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-15.png"
+        ],
+        "title": "K.Kerja -masu 〜ながら",
+        "meaning": "sambil",
+        "connection": "K.Kerja -masu 〜ながら",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "私は 音楽を 聞きながら 勉強します。",
+          "私は いつも ご飯を 食べながら、テレビを 見て います。",
+          "田中さんの 息子さんは、働きながら 大学に 行って います。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:59:14.925Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ta-koto-ga-aru",
+      "order": 36,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜たことがある",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-16.png"
+        ],
+        "title": "〜た ことがある",
+        "meaning": "\"pernah\"",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "私はアフリカに行ったことがあります。",
+          "私は マラソン大会に出た ことがあります。",
+          "私は 一度も ミュージカルを見た ことがありません。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:59:50.113Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "koto-ga-aru-ada-kalanya",
+      "order": 37,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜ことがある",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-16.png"
+        ],
+        "title": "K. K bentuk kamus 〜ことがある",
+        "meaning": "“ada kalanya” sesuatu yang jarang terjadi",
+        "connection": "K. K bentuk kamus",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "うちの 犬は 夜中に ほえる ことが あって、困ります。",
+          "私は 昼ご飯を 食べない ことが あります。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:59:50.113Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ni-suru-pilihan",
+      "order": 38,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜にする",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-17.png"
+        ],
+        "title": "K. Benda 〜にする",
+        "meaning": "“....saja” digunakan untuk menentukan pilihan",
+        "connection": "K. Benda",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "＜レストランで＞私は Aランチ に します。",
+          "ミーティングは 明日に します。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:59:50.113Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "koto-ni-suru",
+      "order": 39,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜ことにする",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-17.png"
+        ],
+        "title": "K. Kerja Kamus／ない 〜ことにする",
+        "meaning": "“saya memutuskan untuk...” keputusan atas keinginan sendiri",
+        "connection": "K. Kerja Kamus／ない",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "毎朝、30分 散歩することに して います。",
+          "これから、ダイエットする ことに します。",
+          "毎日、牛乳を 飲む ことに して います。",
+          "今年の 夏は、国に 帰らない ことに します。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:59:50.113Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ku-ni-suru",
+      "order": 40,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜くする／〜にする",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-18.png"
+        ],
+        "title": "〜く／に する",
+        "meaning": "merubah objek jadi... “me...kan”",
+        "connection": "Kata sifat -i い→く / Kata sifat na に",
+        "formation": [
+          {
+            "label": "Kata sifat -i",
+            "input": "い",
+            "rule": "い→く",
+            "output": "く",
+            "note": null
+          },
+          {
+            "label": "Kata sifat na",
+            "input": "",
+            "rule": "に",
+            "output": "に",
+            "note": null
+          }
+        ],
+        "notes": "",
+        "examples": [
+          "テレビの 音を 小さく して ください。",
+          "スピーカーの 音を 大きく します。",
+          "もらった 時計、大切に します。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:59:50.113Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ku-ni-naru",
+      "order": 41,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜くなる／〜になる",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-18.png"
+        ],
+        "title": "〜く／に なる",
+        "meaning": "“menjadi...”",
+        "connection": "Kata sifat -i い→く / Kata sifat na に",
+        "formation": [
+          {
+            "label": "Kata sifat -i",
+            "input": "い",
+            "rule": "い→く",
+            "output": "く",
+            "note": null
+          },
+          {
+            "label": "Kata sifat na",
+            "input": "",
+            "rule": "に",
+            "output": "に",
+            "note": null
+          }
+        ],
+        "notes": "",
+        "examples": [
+          "日本語が 上手に なりました。",
+          "大きい 道路が できて、この 辺も 静かじゃなく なりました。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T01:59:50.113Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "nakereba-naranai",
+      "order": 42,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜なければならない",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-19.png"
+        ],
+        "title": "〜なければ ならない　〜なくては いけない　〜ないと いけない",
+        "meaning": "“harus....”",
+        "connection": "",
+        "formation": [],
+        "notes": "〜なきゃ（いけない）　〜なくちゃ（いけない）　〜ないと（いけない）",
+        "examples": [
+          "明日は 早く 起きなければ なりません。",
+          "日本では 車は 左側を 走らなければ なりません。",
+          "今週は 日曜日も 会社に 行かなくては いけない。",
+          "食後に、薬を 飲まないと いけない。",
+          "洗濯しなきゃ。",
+          "明日 試験だから 勉強しなくちゃ いけない。",
+          "お客さんが 来るから、片づけないと。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:00:31.176Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "te-mo-ii",
+      "order": 43,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜てもいい",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-20.png"
+        ],
+        "title": "〜ても いい",
+        "meaning": "“boleh...”",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "これ、すてても いいですか。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:00:31.176Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "nakute-mo-ii",
+      "order": 44,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜なくてもいい",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-20.png"
+        ],
+        "title": "〜なくても いい",
+        "meaning": "“tidak harus...”",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "その本は、すぐに返さなくても いいです。",
+          "明日 来なくても いいですか。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:00:31.176Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "te-wa-ikenai",
+      "order": 45,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜てはいけない",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-20.png"
+        ],
+        "title": "〜ては いけない",
+        "meaning": "“tidak boleh/dilarang...”",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "テストの とき、ペンを 使っては いけません。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:00:31.176Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "to-ii-tara-ii-ba-ii",
+      "order": 46,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜といい／〜たらいい／〜ばいい",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-20.png"
+        ],
+        "title": "〜と いい　〜たら いい　〜ば いい",
+        "meaning": "“sebaiknya...” “mudah-mudahan...”",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "頭が 痛いとき、この 薬を 飲むと いいです。",
+          "明日、雨が 降らないと いいですね。",
+          "仕事が 早く 見つかったら いいですね。",
+          "母の 病気が 早く 治れば いい (の) ですが・・・"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:00:31.176Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "te-oku-persiapan",
+      "order": 47,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "te-oku",
+      "title": "〜ておく",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-21.png"
+        ],
+        "title": "〜て おく",
+        "meaning": "① melakukan sesuatu sebagai sebuah persiapan “...terlebih dahulu”",
+        "connection": "",
+        "formation": [],
+        "notes": "* dalam bahasa lisan (kasual) bisa berubah bentuk 「〜ておく」→「〜とく」",
+        "examples": [
+          "お客さんが 来る 前に そうじして おきます。",
+          "旅行する 前に、ガイドブックを 読んで おきます。",
+          "読んどく",
+          "しとく"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:00:31.176Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "te-oku-membiarkan",
+      "order": 48,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "te-oku",
+      "title": "〜ておく",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-21.png"
+        ],
+        "title": "〜て おく",
+        "meaning": "② mempertahankan sebuah kondisi/keadaan “biarkan...dulu”",
+        "connection": "",
+        "formation": [],
+        "notes": "* dalam bahasa lisan (kasual) bisa berubah bentuk 「〜ておく」→「〜とく」",
+        "examples": [
+          "机の 上は 片づけないで、そのままに して おいて ください。",
+          "A「窓を 閉めましょうか。」 B「開けて おいてください。」",
+          "閉めといて ください"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:00:31.176Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "te-shimau-selesai",
+      "order": 49,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "te-shimau",
+      "title": "〜てしまう",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-22.png"
+        ],
+        "title": "〜てしまう",
+        "meaning": "① melakukan sesuatu sampai akhir, selesai, beres, habis",
+        "connection": "",
+        "formation": [],
+        "notes": "* dalam bahasa lisan (kasual), bisa berubah bentuk menjadi 〜ちゃう (lampau ちゃった)",
+        "examples": [
+          "残っていた ワインを 飲んで しまいました。",
+          "きのう 買った たまごは、使って しまいました。",
+          "その 本だなの まんがは 全部 読んで しまいました。",
+          "読んじゃう"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:01:07.276Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "te-shimau-penyesalan",
+      "order": 50,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "te-shimau",
+      "title": "〜てしまう",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-22.png"
+        ],
+        "title": "〜てしまう",
+        "meaning": "② mengungkapkan perasaan “menyesal”, “sayang sekali” terhadap suatu kejadian",
+        "connection": "",
+        "formation": [],
+        "notes": "* dalam bahasa lisan (kasual), bisa berubah bentuk menjadi 〜ちゃう (lampau ちゃった)",
+        "examples": [
+          "電車の 中に かさを 忘れて しまいました。",
+          "駅まで 走りましたが、電車は 行って しまいました。",
+          "忘れちゃう",
+          "行っちゃった"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:01:07.276Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "te-miru",
+      "order": 51,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜てみる",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-23.png"
+        ],
+        "title": "〜てみる",
+        "meaning": "“mencoba...”",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "これ、おいしいですよ。食べて みてください。",
+          "くつを 買う 前には 必ず はいて みましょう。",
+          "日本の 旅館に とまって みたいです。",
+          "その ゲーム、やって みたけれど、つまらなかった。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:01:07.276Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "wo-ageru",
+      "order": 52,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜をあげる",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-24.png"
+        ],
+        "title": "〜をあげる",
+        "meaning": "“memberi” saya memberi sesuatu ke orang lain",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "私は 田中さんに セーターを あげました。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:01:07.276Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "wo-kureru",
+      "order": 53,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜をくれる",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-24.png"
+        ],
+        "title": "〜をくれる",
+        "meaning": "“memberi” orang lain memberi sesuatu ke saya",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "田中さんが (私に) セーターを くれました。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:01:07.276Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "wo-morau",
+      "order": 54,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜をもらう",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-24.png"
+        ],
+        "title": "〜をもらう",
+        "meaning": "“menerima” saya menerima sesuatu dari orang lain",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "私は 田中さんに セーターを もらいました。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:01:07.276Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "wo-yaru",
+      "order": 55,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜をやる",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-24.png"
+        ],
+        "title": "〜をやる",
+        "meaning": "“memberi” kepada hewan, tumbuhan, anak, (dari posisi atas ke bawah)",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "花に 水を やります。",
+          "犬に えさを やります。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:01:07.276Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "te-ageru",
+      "order": 56,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜てあげる",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-25.png"
+        ],
+        "title": "〜てあげる",
+        "meaning": "saya melakukan perbuatan baik untuk orang lain",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "私は 友だちの 引っこしを 手伝って あげました。",
+          "英語を 教えて あげましょうか。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:01:45.718Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "te-yaru",
+      "order": 57,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜てやる",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-25.png"
+        ],
+        "title": "〜てやる",
+        "meaning": "saya melakukan perbuatan dari atas ke bawah",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "子どもに 勉強を 教えて やります。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:01:45.718Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "te-kureru",
+      "order": 58,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜てくれる",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-25.png"
+        ],
+        "title": "〜てくれる",
+        "meaning": "orang lain melakukan perbuatan baik untuk saya",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "田中さんは 私に 地図を かいて くれました。",
+          "この マフラーは、友だちが あんで くれました。",
+          "手伝って くれて、ありがとう。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:01:45.718Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "te-morau",
+      "order": 59,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜てもらう",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-26.png"
+        ],
+        "title": "〜てもらう",
+        "meaning": "saya menerima perbuatan baik dari orang lain “di....” (mengandung perasaan bersyukur)",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "私は 田中さんに 地図を かいて もらいました。",
+          "友だちに 東京駅まで 連れて 行って もらいました。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:01:45.718Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "wo-te-sashiageru",
+      "order": 60,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜を／てさしあげる",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-26.png"
+        ],
+        "title": "〜を／て さしあげる",
+        "meaning": "bahasa hormat (あげる)",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": []
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:01:45.718Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "wo-te-kudasaru",
+      "order": 61,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜を／てくださる",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-26.png"
+        ],
+        "title": "〜を／て くださる",
+        "meaning": "bahasa hormat (くれる)",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "あの 先生は いつも やさしく 教えて くださいます。",
+          "先生が 本を くださいました。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:01:45.718Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "wo-te-itadaku",
+      "order": 62,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜を／ていただく",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-26.png"
+        ],
+        "title": "〜を／て いただく",
+        "meaning": "bahasa hormat (もらう)",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "先生に 地図を かいて 頂きました。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:01:45.718Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "tame-ni-tujuan",
+      "order": 63,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "tame-ni",
+      "title": "〜ため（に）",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-27.png"
+        ],
+        "title": "〜ため（に）",
+        "meaning": "“demi”, “untuk” menyatakan tujuan (kalimat mengandung sebuah keinginan)",
+        "connection": "K.Kerja kamus 〜ため（に） | K.Benda 〜のため（に）",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "社長は 会議に 出席する ために、東京へ 行きました。",
+          "家族の ために、一生懸命 働いて います。",
+          "家を 買う ために、貯金を して います。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:01:45.718Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "tame-ni-alasan",
+      "order": 64,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": "tame-ni",
+      "title": "〜ため（に）",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-27.png"
+        ],
+        "title": "〜ため（に）",
+        "meaning": "“karena” menyatakan penyebab (formal)",
+        "connection": "K.Kerja kamus 〜ため（に） | K.Benda 〜のため（に）",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "台風の ため、飛行機が おくれました。",
+          "電車が おくれたため、会議に 間に合いませんでした。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:01:45.718Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "you-ni-tujuan",
+      "order": 65,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜ように",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-28.png"
+        ],
+        "title": "K.Kerja 〜ように",
+        "meaning": "“agar”, “supaya”",
+        "connection": "K.Kerja 〜ように",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "みんなに 聞こえるように、大きい声で話してください。",
+          "雪の 日は、ちこくしないように、早く 家を 出ます。",
+          "習った ことは 忘れないように、復習しましょう。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:02:26.448Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "you-ni-naru",
+      "order": 66,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜ようになる",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-28.png"
+        ],
+        "title": "K.Kerja 〜ようになる",
+        "meaning": "“menjadi...” menyatakan adanya perubahan",
+        "connection": "K.Kerja 〜ようになる",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "日本語が 上手に 話せるように なりたいです。",
+          "赤ちゃんは、1さいごろから 歩くように なります。",
+          "父は 仕事を やめてから、早く 寝るように なりました。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:02:26.448Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "you-ni-suru",
+      "order": 67,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜ようにする",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-29.png"
+        ],
+        "title": "K.Kerja 〜ようにする",
+        "meaning": "“berusaha”, “mengusahakan”",
+        "connection": "K.Kerja 〜ようにする",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "毎食後、歯を みがくように して います。",
+          "日本語の クラスでは、日本語だけを 話すように して います。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:02:26.448Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "you-ni-iu",
+      "order": 68,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜ように言う",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-29.png"
+        ],
+        "title": "K.Kerja 〜ように言う",
+        "meaning": "“bilang supaya...”",
+        "connection": "K.Kerja 〜ように言う",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "父に あまり お酒を 飲まないように 言って います。",
+          "母から 今日は 早く 帰るように 言われました。",
+          "妻に、家の中では たばこを 吸わないように 言われて います。",
+          "あの人たち、うるさいから、静かにするように 言ってください。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:02:26.448Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "konna-sonna-anna-donna",
+      "order": 69,
+      "kind": "pattern",
+      "sectionKey": "foundations",
+      "family": null,
+      "title": "こんな／そんな／あんな／どんな",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-30.png"
+        ],
+        "title": "こんな〜 そんな〜 あんな〜 どんな〜",
+        "meaning": "“seperti ini, itu, apa” “begini, begitu, bagaimana”",
+        "connection": "こんな〜／そんな〜／あんな〜／どんな〜 ＋ K. Benda",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "私も こんな 家に 住みたいです。",
+          "A「これ、できる？」 B「そんなこと、できないよ。」",
+          "あんな バッグが ほしいです。",
+          "どんな 音楽が 好きですか。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:02:26.448Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "konna-ni-sonna-ni-anna-ni-donna-ni",
+      "order": 70,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "こんなに／そんなに／あんなに／どんなに",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-30.png"
+        ],
+        "title": "こんなに そんなに あんなに どんなに",
+        "meaning": "“seperti ini, itu, apa” “begini, begitu, bagaimana”",
+        "connection": "こんなに／そんなに／あんなに／どんなに ＋ Selain K. Benda (K. kerja, K. sifat, K. Ket)",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "こんなに 勉強しているのに、成績が 悪いのは どうしてだろう。",
+          "A「テスト、全然 できませんでした。」 B「そんなに むずかしかったんですか。」"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:02:26.448Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "kou-sou-aa-dou",
+      "order": 71,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "こう／そう／ああ／どう",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-31.png"
+        ],
+        "title": "こう | そう | ああ | どう",
+        "meaning": "begini, begitu, bagaimana",
+        "connection": "+ K. Kerja",
+        "formation": [],
+        "notes": "Catatan :\nketika membicarakan sesuatu yang diketahui kedua pihak, menggunakan awalan あ〜\ntapi jika diketahui hanya salah satu pihak, menggunakan awalan そ〜",
+        "examples": [
+          "私も そう 思います。",
+          "A「これは、漢字で どう 書きますか。」\nB「こう 書きます。」",
+          "A「また 駅前の 居酒屋へ 行きましょうか。」\nB「あそこは 高いですよ。「わかば」は どうですか。」\nA「どこですか？ そこも 居酒屋ですか。」"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:03:05.229Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "to-iu-tte-iu",
+      "order": 72,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "to-iu",
+      "title": "〜という／〜っていう",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-32.png"
+        ],
+        "title": "〜という | 〜っていう",
+        "meaning": "“yang bernama...”, “disebut...”",
+        "connection": "+ K. Benda",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "日本で ○○は ダメという 意味です。",
+          "兄は、東京の 目黒というところに 住んで います。",
+          "電気代が あがる という話は、本当ですか。",
+          "駅前の「あすか」っていうレストランを 知っていますか。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:03:05.229Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "dou-iu",
+      "order": 73,
+      "kind": "pattern",
+      "sectionKey": "question-expressions",
+      "family": null,
+      "title": "どういう",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-32.png"
+        ],
+        "title": "どういう",
+        "meaning": "“....apa?”",
+        "connection": "+ K. Benda",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "それは どういう意味ですか。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:03:05.229Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ta-hou-ga-ii",
+      "order": 74,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜たほうがいい",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-33.png"
+        ],
+        "title": "〜た ほうがいい",
+        "meaning": "“sebaiknya...”",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "わからない ことは 先生に 聞いたほうがいいですよ。",
+          "かぜを ひいた ときは、早く 寝た ほうが いいですよ。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:03:05.229Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "nai-hou-ga-ii",
+      "order": 75,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜ないほうがいい",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-33.png"
+        ],
+        "title": "〜ない ほうがいい",
+        "meaning": "“sebaiknya tidak...”",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "その 川では およがない ほうが いいでしょう。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:03:05.229Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "kinshi-kei",
+      "order": 76,
+      "kind": "conjugation",
+      "sectionKey": "verb-forms",
+      "family": null,
+      "title": "禁止形",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-33.png",
+          "n4-bunpou/n4-bunpou-34.png"
+        ],
+        "title": "禁止形",
+        "meaning": "“larangan”",
+        "connection": "K.K kamus + な",
+        "formation": [
+          {
+            "label": "K.K",
+            "input": "kamus",
+            "rule": "+ な",
+            "output": "禁止形",
+            "note": null
+          }
+        ],
+        "notes": "② bisa digunakan untuk memberikan semangat, tanda peringatan\n③ bisa digunakan untuk menyampaikan perkataan orang lain & makna suatu hal",
+        "examples": [
+          "しゃべるな！",
+          "混ぜるな、危険！",
+          "スピードを 出すな！",
+          "医者に、酒を 飲むなと 言われました。",
+          "「立入禁止」は 入るなと いう 意味です"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:03:35.494Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "meirei-kei",
+      "order": 77,
+      "kind": "conjugation",
+      "sectionKey": "verb-forms",
+      "family": null,
+      "title": "命令形",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-33.png",
+          "n4-bunpou/n4-bunpou-34.png"
+        ],
+        "title": "命令形",
+        "meaning": "“perintah”",
+        "connection": "",
+        "formation": [
+          {
+            "label": "GOL I",
+            "input": "",
+            "rule": "9 akhiran diubah ke bunyi え",
+            "output": "",
+            "note": null
+          },
+          {
+            "label": "GOL II",
+            "input": "",
+            "rule": "Akhiran 〜る diubah menjadi ろ",
+            "output": "",
+            "note": null
+          },
+          {
+            "label": "GOL III",
+            "input": "くる",
+            "rule": "",
+            "output": "こい",
+            "note": null
+          },
+          {
+            "label": "GOL III",
+            "input": "する",
+            "rule": "",
+            "output": "しろ",
+            "note": null
+          }
+        ],
+        "notes": "① mempunyai kesan kasar, biasanya digunakan laki-laki\n② bisa digunakan untuk memberikan semangat, tanda peringatan\n③ bisa digunakan untuk menyampaikan perkataan orang lain & makna suatu hal",
+        "examples": [
+          "静かにしろ！",
+          "時間が ないから、早くしろ。",
+          "こっちに 来い。",
+          "がんばれ！",
+          "止まれ！",
+          "父に、毎日 メールを くれと 言われて います。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:03:35.494Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "nasai",
+      "order": 78,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜なさい",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-35.png"
+        ],
+        "title": "K. Kerja 〜なさい",
+        "meaning": "“tolong...”",
+        "connection": "K. Kerja + 〜なさい",
+        "formation": [],
+        "notes": "bentuk perintah yang biasanya digunakan orang tua kepada anak, guru kepada murid",
+        "examples": [
+          "早く 起きなさい。",
+          "肉ばかり 食べないで、野菜も 食べなさい。",
+          "つぎの ことばを 漢字で 書きなさい。",
+          "静かに しなさい。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:03:35.494Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ka-dou-ka",
+      "order": 79,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜かどうか",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-36.png"
+        ],
+        "title": "〜かどうか",
+        "meaning": "“...atau tidak,...”",
+        "connection": "K. kerja / K. sifat - i / K. sifat -na / K. benda (bentuk biasa) + か どうか、〜",
+        "formation": [
+          {
+            "label": "K. kerja",
+            "input": "bentuk biasa",
+            "rule": "+ か どうか、〜",
+            "output": "K. kerja (bentuk biasa) か どうか、〜",
+            "note": null
+          },
+          {
+            "label": "K. sifat - i",
+            "input": "bentuk biasa",
+            "rule": "+ か どうか、〜",
+            "output": "K. sifat - i (bentuk biasa) か どうか、〜",
+            "note": null
+          },
+          {
+            "label": "K. sifat -na",
+            "input": "bentuk biasa",
+            "rule": "tanpa だ + か どうか、〜",
+            "output": "K. sifat -na か どうか、〜",
+            "note": "〜だ dicoret"
+          },
+          {
+            "label": "K. benda",
+            "input": "bentuk biasa",
+            "rule": "tanpa だ + か どうか、〜",
+            "output": "K. benda か どうか、〜",
+            "note": "〜だ dicoret"
+          }
+        ],
+        "notes": "",
+        "examples": [
+          "おいしいかどうかわかりませんが、食べてみてください。",
+          "新しい 学校で、友だちが できる かどうか 心配です。",
+          "土曜日は 都合が いい かどうか、まだ わかりません。",
+          "ハンコが 必要 かどうか 聞いて ください。",
+          "その 話が 本当 かどうか 調べた ほうが いいですよ。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:03:35.494Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ka-pertanyaan-dalam-kalimat",
+      "order": 80,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜か",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-37.png"
+        ],
+        "title": "Kata Tanya (いつ・どこ・だれ dll) 〜か",
+        "meaning": "menyisipkan pertanyaan dalam kalimat",
+        "connection": "K. kerja / K. sifat - i / K. sifat -na / K. benda bentuk biasa (K. sifat -na / K. benda 〜だ dicoret) + か、〜",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "田中さんが どこに 住んでいるか 知っていますか。",
+          "非常口は どこに あるか、確かめて ください。",
+          "きのうの 夜、どうやって 帰ったか 覚えて いません。",
+          "この 作文は だれが 書いたか 名前が ないので わかりません。",
+          "なぜ 会社を やめたか 教えて ください。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:04:55.255Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "no-pengganti-orang-benda",
+      "order": 81,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": "no",
+      "title": "〜の",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-38.png"
+        ],
+        "title": "partikel 〜の",
+        "meaning": "sebagai pengganti kata benda, seperti orang, benda & waktu",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "あそこで たばこを すって いるのが 社長です。（＝人）",
+          "あなたが ほしいのは 何ですか。（＝もの）",
+          "学校が 始まるのは、9時からです。（＝時間）"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:04:55.255Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "no-nominalisasi",
+      "order": 82,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": "no",
+      "title": "〜の",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-38.png"
+        ],
+        "title": "partikel 〜の",
+        "meaning": "membendakan kata kerja/kalimat",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "漢字を 覚えるのは 大変です。",
+          "姉は ケーキを 作るのが 上手です。（＝作ること）",
+          "田中さんが 中国へ 留学したのを 知っていますか。（＝留学したこと）",
+          "外国人が 多いのに びっくりしました。（＝多いこと）"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:04:55.255Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "noni-tujuan",
+      "order": 83,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "noni",
+      "title": "〜のに",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-39.png"
+        ],
+        "title": "K.K Bentuk Kamus 〜のに",
+        "meaning": "“untuk...”",
+        "connection": "K.K Bentuk Kamus 〜のに",
+        "formation": [],
+        "notes": "1. umumnya digunakan untuk menyatakan \"fungsi\", \"(biaya/waktu) yang diperlukan\"\n2. sering digunakan dengan kata つかいます、いいです、べんりです dsb",
+        "examples": [
+          "この 絵を かくのに 1か月 かかりました。",
+          "この 洗剤は、セーターを 洗うのに 使います。",
+          "この 掃除機は 小さいので、階段を 掃除するのに 便利です。",
+          "子どもを いい 学校に 入れるのに お金が かかります。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:04:55.255Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "kanou-kei",
+      "order": 84,
+      "kind": "conjugation",
+      "sectionKey": "verb-forms",
+      "family": null,
+      "title": "可能形",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-40.png"
+        ],
+        "title": "Bentuk potensial",
+        "meaning": "“bisa...”",
+        "connection": "",
+        "formation": [
+          {
+            "label": "GOL I",
+            "input": "",
+            "rule": "9 akhiran diubah ke bunyi え + る",
+            "output": "",
+            "note": null
+          },
+          {
+            "label": "GOL II",
+            "input": "",
+            "rule": "Akhiran 〜る diubah menjadi られる",
+            "output": "",
+            "note": null
+          },
+          {
+            "label": "GOL III",
+            "input": "くる",
+            "rule": "diubah menjadi",
+            "output": "こられる",
+            "note": null
+          },
+          {
+            "label": "GOL III",
+            "input": "する",
+            "rule": "diubah menjadi",
+            "output": "できる",
+            "note": null
+          }
+        ],
+        "notes": "= K. Kerja Kamus 〜ことができる",
+        "examples": [
+          "この 店では 新鮮な 魚が 食べられます。",
+          "私は 日本語が 話せます。",
+          "私は およげますが、早く およぐ ことは できません。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:05:49.805Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "kikoeru-kikeru",
+      "order": 85,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜聞こえる／〜聞ける",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-40.png"
+        ],
+        "title": "〜聞こえる／〜聞ける",
+        "meaning": "〜聞こえる “terdengar”, 〜聞ける “bisa mendengar”",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "窓を 開けると、鳥の 声が 聞こえます。",
+          "となりの 家から ピアノの 音が 聞こえます。",
+          "この パソコンは ラジオも 聞けます。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:05:49.805Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "mieru-mirareru",
+      "order": 86,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜見える／〜見られる",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-41.png"
+        ],
+        "title": "〜見える／〜見られる",
+        "meaning": "〜見える “terlihat”, 〜見られる “bisa melihat”",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "東京駅が よく 見えます。",
+          "この 美術館では、ピカソの 絵が 見られます。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:05:49.805Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "no-ga-mieru-kikoeru",
+      "order": 87,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜のが見える／〜のを見る／〜のが聞こえる／〜のを聞く",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-41.png"
+        ],
+        "title": "〜のが見える／〜のを見る／〜のが聞こえる／〜のを聞く",
+        "meaning": "",
+        "connection": "",
+        "formation": [],
+        "notes": "〜の di sini tidak bisa diganti dengan 〜こと",
+        "examples": [
+          "公園で 子どもたちが 遊んで いるのが 見えます。",
+          "トムさんが、きれいな 女の人と 歩いて いるのを 見ました。",
+          "となりの 部屋で だれかが けんかして いるのが 聞こえます。",
+          "田中さんが 英語を 話して いるのを 聞いた ことが ありません。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:05:49.805Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "node",
+      "order": 88,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "〜ので",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-42.png"
+        ],
+        "title": "〜ので",
+        "meaning": "“karena...” (sopan)",
+        "connection": "K. kerja (bentuk biasa) + 〜ので / K. sifat - i (bentuk biasa) + 〜ので / K. sifat -na (bentuk biasa 〜だ → 〜な) + 〜ので / K. benda (bentuk biasa 〜だ → 〜な) + 〜ので",
+        "formation": [
+          {
+            "label": "K. kerja",
+            "input": "bentuk biasa",
+            "rule": "+ 〜ので",
+            "output": "",
+            "note": null
+          },
+          {
+            "label": "K. sifat - i",
+            "input": "bentuk biasa",
+            "rule": "+ 〜ので",
+            "output": "",
+            "note": null
+          },
+          {
+            "label": "K. sifat -na",
+            "input": "bentuk biasa",
+            "rule": "〜だ → 〜な + 〜ので",
+            "output": "",
+            "note": null
+          },
+          {
+            "label": "K. benda",
+            "input": "bentuk biasa",
+            "rule": "〜だ → 〜な + 〜ので",
+            "output": "",
+            "note": null
+          }
+        ],
+        "notes": "Catatan : 〜ので tidak bisa digunakan diakhir kalimat seperti から",
+        "examples": [
+          "雨が 降って いるので、今日は 出かけませんでした。",
+          "ちょっと 暑いので、窓を 開けても いいですか。",
+          "私は 歌が 下手なので、カラオケには 行きません。",
+          "今は、運転できません。お酒を 飲んだからです。 ✕ 飲んだのです"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:05:49.805Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "noni-padahal",
+      "order": 89,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": "noni",
+      "title": "〜のに",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-43.png"
+        ],
+        "title": "〜のに",
+        "meaning": "padahal...",
+        "connection": "K. kerja (bentuk biasa) + 〜のに / K. sifat - i (bentuk biasa) + 〜のに / K. sifat -na + な + 〜のに / K. benda + な + 〜のに",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "きのう 勉強したのに、もう 忘れて しまいました。",
+          "30分も 待って いるのに、彼女は 来ません。",
+          "あの レストランは おいしくないのに、値段が 高いです。",
+          "妻は 料理が 上手なのに、あまり 作って くれません。",
+          "冬なのに、あたたかいですね。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:06:22.598Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "te-mo-meskipun",
+      "order": 90,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "〜ても",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-44.png"
+        ],
+        "title": "〜ても",
+        "meaning": "meskipun...",
+        "connection": "K. Kerja, K. Sifat -i -> 〜ても／〜なくても / K. Sifat -na, K. Benda -> + でも",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "調べても わからなかった。",
+          "考えても わかりません",
+          "パソコンは 必要なので、高くても 買います。",
+          "便利でも 車は 使いません。",
+          "明日、雨でも、動物園に 行きます。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:06:22.598Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "kata-tanya-te-mo-demo",
+      "order": 91,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜ても／でも",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-45.png"
+        ],
+        "title": "K. Tanya 〜ても／でも",
+        "meaning": "kapan, di mana, seberapa dll....pun",
+        "connection": "K. Tanya 〜ても／でも",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "この文は 何回 読んでも 理解できません。",
+          "あの レストランは いつ 行っても こんで います。",
+          "英語を 習っているが、どんなに 勉強しても うまく 話せない。",
+          "兄は いくら お酒を 飲んでも 顔色が 変わりません。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:06:22.598Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "sore-ni-sono-ue",
+      "order": 92,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "それに／そのうえ",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-46.png"
+        ],
+        "title": "それに／そのうえ",
+        "meaning": "“apalagi”, “lagi pula”",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "この店の 料理は おいしい。それに ねだんも 安い。",
+          "山田さんは 若くて きれいです。それに、頭も いいです。",
+          "きのうは 雨で 寒かったです。そのうえ、風も 強かったです。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:07:00.524Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "sore-de-dakara",
+      "order": 93,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "それで／だから",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-46.png"
+        ],
+        "title": "それで／だから",
+        "meaning": "“oleh karena itu”, “makanya”",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "電車で 事故が あった。それで、ちこくしてしまった。",
+          "パソコンが こわれた。だから、新しいのを 買った。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:07:00.524Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "tokoroga",
+      "order": 94,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "ところが",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-46.png"
+        ],
+        "title": "ところが、",
+        "meaning": "“akan tetapi”",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "昨日は試験の日だった。ところが、病気で受けられませんでした"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:07:00.524Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "keredomo-keredo-demo-shikashi",
+      "order": 95,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "けれども／けれど／でも／しかし",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-47.png"
+        ],
+        "title": "けれども／けれど／でも／しかし",
+        "meaning": "“tapi”",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": []
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:07:00.524Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "tokorode",
+      "order": 96,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "ところで",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-47.png"
+        ],
+        "title": "ところで",
+        "meaning": "“ngomong-ngomong”",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": []
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:07:00.524Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "tatoeba",
+      "order": 97,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "たとえば",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-47.png"
+        ],
+        "title": "たとえば",
+        "meaning": "“contohnya”",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": []
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:07:00.524Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "soredewa-dewa-soreja-ja",
+      "order": 98,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "それでは／では／それじゃ／じゃ",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-47.png"
+        ],
+        "title": "それでは／では／それじゃ／じゃ",
+        "meaning": "“kalau begitu”",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": []
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:07:00.524Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "sa",
+      "order": 99,
+      "kind": "pattern",
+      "sectionKey": "adjectives",
+      "family": null,
+      "title": "〜さ",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-47.png"
+        ],
+        "title": "K. Sifat ＋さ",
+        "meaning": "membentuk kata benda dari kata sifat",
+        "connection": "K. Sifat ＋さ",
+        "formation": [],
+        "notes": "※いい → よさ",
+        "examples": [
+          "あの 山の 高さは どのくらいですか。",
+          "同じ 大きさの ダイヤモンドでも、値段は いろいろ 違います。",
+          "広さよりも 便利さを 考えて、今の アパートを 選びました。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:07:00.524Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "kata-cara",
+      "order": 100,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜方",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-48.png"
+        ],
+        "title": "K. Benda 〜方",
+        "meaning": "“cara...”",
+        "connection": "K. Benda 〜方",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "この 漢字の 読み方を 教えて ください。",
+          "新しい コンピューターの 使い方を 習いました。",
+          "この ゲームの やり方が、まだ わからない。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:07:00.524Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "te-kuremasen-ka-itadakemasen-ka",
+      "order": 101,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜てくれませんか／〜てもらえませんか／〜てくださいませんか／〜ていただけませんか",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-49.png"
+        ],
+        "title": "〜てくれませんか／〜てもらえませんか／〜てくださいませんか／〜ていただけませんか",
+        "meaning": "",
+        "connection": "",
+        "formation": [],
+        "notes": "makin kebawah, makin halus. Bukan ❌ いただきませんか",
+        "examples": [
+          "ボールペンを貸してくださいませんか。",
+          "静かにしてもらえませんか。",
+          "ちょっと、手伝ってくれませんか。",
+          "すみませんが、もう一度言っていただけませんか。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:07:28.344Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "te-hoshii-moraitai-itadakitai",
+      "order": 102,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜てほしい／〜てもらいたい／〜ていただきたい",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-50.png"
+        ],
+        "title": "〜てほしい／〜てもらいたい／〜ていただきたい",
+        "meaning": "digunakan ketika pembicara ingin agar orang lain melakukan sesuatu (atau menjadi....)",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "父に早く元気になってほしいです。",
+          "私のことを忘れないでほしい。",
+          "息子にいい大学に行ってもらいたいです。",
+          "そのことは聞いてほしくない。（=聞かないでほしい）",
+          "先生にこの文章をチェックしていただきたいです。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:07:28.344Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "tara-dou-ikaga-desuka",
+      "order": 103,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜たらどう／いかがですか",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-51.png"
+        ],
+        "title": "〜たらどう／いかがですか",
+        "meaning": "“bagaimana kalau...”, “kenapa tidak.... aja?”",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "インターネットで調べたらどうですか。",
+          "先生に聞いてみたらどうですか。",
+          "少し休んだらいかがですか。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:07:28.344Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ga-kedo-keredo-pembuka",
+      "order": 104,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "〜が／けど／けれど",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-51.png"
+        ],
+        "title": "〜が／けど／けれど",
+        "meaning": "kalimat pembuka",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "すみませんが、この辺にコンビニはありませんか。",
+          "ちょっと教えてほしいことがあるんですが、",
+          "もしもし、こちらはA社の田中ですが、リンさんをお願いします。",
+          "映画のチケットが2枚あるんだけど、いっしょに行かない？"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:07:28.344Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "to-iu-tte-iu-kutipan",
+      "order": 105,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "to-iu",
+      "title": "〜という／〜っていう",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-52.png"
+        ],
+        "title": "〜という／〜っていう",
+        "meaning": "digunakan untuk mengutip suatu perkataan",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "田中さんは 明日は 来ないと 言って いましたよ。",
+          "天気予報で、明日は 寒いと 言って いました。",
+          "医者に 酒は 飲むなと 言われました。",
+          "父に 今日は 早く 帰って 来いって 言われた。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:07:56.839Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "to-omou",
+      "order": 106,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜と思う",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-52.png"
+        ],
+        "title": "〜と思う",
+        "meaning": "“saya pikir”, “menurut saya”",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "田中さんは もう 帰ったと 思います。",
+          "試験に 受かったと 思います。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:07:56.839Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ikou-kei",
+      "order": 107,
+      "kind": "conjugation",
+      "sectionKey": "verb-forms",
+      "family": null,
+      "title": "意向形",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-53.png"
+        ],
+        "title": "Bentuk maksud",
+        "meaning": "“ayo...”",
+        "connection": "",
+        "formation": [
+          {
+            "label": "GOL I",
+            "input": "行く",
+            "rule": "Bunyi お＋う",
+            "output": "行こう",
+            "note": null
+          },
+          {
+            "label": "GOL II",
+            "input": "見る",
+            "rule": "る → よう",
+            "output": "見よう",
+            "note": null
+          },
+          {
+            "label": "GOL III",
+            "input": "する",
+            "rule": "tidak beraturan",
+            "output": "しよう",
+            "note": null
+          },
+          {
+            "label": "GOL III",
+            "input": "来る",
+            "rule": "tidak beraturan",
+            "output": "こよう",
+            "note": null
+          }
+        ],
+        "notes": "",
+        "examples": [
+          "飲みに行こう！",
+          "A「日曜日、映画に 行こうよ。」 B「いいね、何を 見ようか。」",
+          "疲れたから、ちょっと 休もう。",
+          "おなかが すいたね。何か 食べよう。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:07:56.839Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "tsumori",
+      "order": 108,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜つもり",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-54.png"
+        ],
+        "title": "〜つもり",
+        "meaning": "“bermaksud untuk...”",
+        "connection": "K. Kerja kamus／ない 〜つもり",
+        "formation": [],
+        "notes": "〜つもりはありません mempunyai kesan “maksud yang lebih kuat” daripada 〜ないつもり\n❌ つもりません",
+        "examples": [
+          "夏休みに 国に 帰るつもりです。",
+          "私は 来年 日本に 留学するつもりです。",
+          "これから デパートに 行きますが、見るだけで 何も 買わないつもりです。",
+          "私は、大学に 行くつもりは ありません。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:07:56.839Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "tara",
+      "order": 109,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜たら",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-55.png"
+        ],
+        "title": "〜たら",
+        "meaning": "“kalau”, “kalau sudah”",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "雨が降ったら、明日の試合は中止です。",
+          "もし 大きい 地震が 起きたら、どうしますか。",
+          "１０時に なったら 行きましょう。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:08:50.542Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ba",
+      "order": 110,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜ば",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-55.png",
+          "n4-bunpou/n4-bunpou-56.png"
+        ],
+        "title": "〜ば／なら",
+        "meaning": "“kalau”",
+        "connection": "",
+        "formation": [
+          {
+            "label": "GOL I",
+            "input": "行く",
+            "rule": "Bunyi え＋ば",
+            "output": "行けば",
+            "note": null
+          },
+          {
+            "label": "GOL II",
+            "input": "見る",
+            "rule": "る → れば",
+            "output": "見れば",
+            "note": null
+          },
+          {
+            "label": "GOL III",
+            "input": "する",
+            "rule": "tidak beraturan",
+            "output": "すれば",
+            "note": null
+          },
+          {
+            "label": "GOL III",
+            "input": "来る",
+            "rule": "tidak beraturan",
+            "output": "くれば",
+            "note": null
+          },
+          {
+            "label": "Bentuk negatif",
+            "input": "〜ない",
+            "rule": "〜ない → 〜なければ",
+            "output": "〜なければ",
+            "note": null
+          },
+          {
+            "label": "K. Sifat -i",
+            "input": "K. Sifat -i",
+            "rule": "い → ければ",
+            "output": "安ければ、よければ",
+            "note": null
+          }
+        ],
+        "notes": "",
+        "examples": [
+          "タクシーで行けば、間に合うでしょう。",
+          "安ければ買いますが、高いので買いません。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:08:50.542Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "nara",
+      "order": 111,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜なら",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-55.png",
+          "n4-bunpou/n4-bunpou-56.png"
+        ],
+        "title": "K. Kerja bentuk biasa 〜なら",
+        "meaning": "“kalau” (〜なら bisa untuk memberi saran, respon & menyatakan keinginan)",
+        "connection": "K. Sifat -na ＋ なら, K. Benda ＋ なら, K. Kerja bentuk biasa 〜なら",
+        "formation": [
+          {
+            "label": "K. Sifat -na",
+            "input": "K. Sifat -na",
+            "rule": "→ ＋ なら",
+            "output": "きれいなら、ゆうめいなら",
+            "note": null
+          },
+          {
+            "label": "K. Benda",
+            "input": "K. Benda",
+            "rule": "→ ＋ なら",
+            "output": "雨なら、ともだちなら",
+            "note": null
+          },
+          {
+            "label": "K. Kerja",
+            "input": "K. Kerja bentuk biasa",
+            "rule": "〜なら",
+            "output": "〜なら",
+            "note": null
+          }
+        ],
+        "notes": "〜なら bisa untuk memberi saran, respon & menyatakan keinginan",
+        "examples": [
+          "無理なら、あさって来てください",
+          "ラーメンなら、駅前のラーメン屋がおいしいですよ。",
+          "ここから 東京駅に 行くなら、地下鉄が 便利です。",
+          "あなたが 行かないなら、私も 行きません。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:08:50.542Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "to-kondisi",
+      "order": 112,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜と",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-57.png"
+        ],
+        "title": "K. Kerja kamus／ない 〜と",
+        "meaning": "“kalau” (untuk sesuatu yang terjadi secara otomatis)",
+        "connection": "K. Kerja kamus／ない 〜と",
+        "formation": [],
+        "notes": "untuk sesuatu yang terjadi secara otomatis",
+        "examples": [
+          "この ボタンを 押すと、ドアが 開きます。",
+          "ここを 右に 曲がると、銀行が あります。",
+          "ここを 押さないと、水が 出ません。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:08:50.542Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "you-sepertinya",
+      "order": 113,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜よう",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-58.png"
+        ],
+        "title": "〜よう",
+        "meaning": "“sepertinya”, “kayaknya” (pembicara mengambil kesimpulan atas apa yang dilihat, didengar & dirasakan)",
+        "connection": "K. kerja (bentuk biasa) + 〜よう / K. sifat - i (bentuk biasa) + 〜よう / K. sifat -na + な + 〜よう / K. benda + の + 〜よう",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "主人は 最近、疲れているようです。",
+          "道路が ぬれて いるから、雨が 降ったようですね。",
+          "外は 寒いようです。",
+          "彼は 甘いものが 好きなようです。",
+          "その 話は 本当のようです。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:09:15.637Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "mitai",
+      "order": 114,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜みたい",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-59.png"
+        ],
+        "title": "〜みたい",
+        "meaning": "“sepertinya”, “kayaknya” (lebih kasual dari 〜よう)",
+        "connection": "K. kerja (bentuk biasa) + 〜みたい / K. sifat - i (bentuk biasa) + 〜みたい / K. sifat -na (bentuk biasa 〜だ dicoret) + 〜みたい / K. benda (〜だ dicoret) + 〜みたい",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "この パソコン、変です。こわれて いるみたいです。",
+          "トムさんは 最近、忙しいみたいだ。",
+          "彼は 飛行機が 嫌いみたいだ。",
+          "発音が きれいですね。日本人みたいですよ。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:09:15.637Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "sou-kelihatannya",
+      "order": 115,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "sou",
+      "title": "〜そう",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-60.png"
+        ],
+        "title": "〜そう",
+        "meaning": "“kelihatannya”",
+        "connection": "K. kerja (bentuk masu) + そうです / K. sifat -i (tanpa -i) + そうです / K. sifat -na (tanpa -na) + そうです",
+        "formation": [
+          {
+            "label": "K. sifat -i ireguler",
+            "input": "いい",
+            "rule": "perubahan khusus",
+            "output": "よさそう",
+            "note": null
+          }
+        ],
+        "notes": "Bentuk keliru: 元気なそう",
+        "examples": [
+          "雨が 降りそうです。",
+          "留学生は これから もっと 増えそうです。",
+          "外は 寒そうですね。",
+          "テレーザちゃんは 元気そうですね。",
+          "元気そうな 赤ちゃんですね。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:09:15.637Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "sou-katanya",
+      "order": 116,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "sou",
+      "title": "〜そう",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-61.png"
+        ],
+        "title": "〜そう",
+        "meaning": "“katanya”",
+        "connection": "K. kerja (bentuk biasa) + そう\nK. sifat -i (bentuk biasa, dengan -i) + そう\nK. sifat -na (+ だ) + そう\nK. Benda (+ だ) + そう",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "天気予報によると、午後から 雨が 降るそうですよ。",
+          "北海道は 寒かったそうです。",
+          "田中さんの お父さんは 元気だそうです。",
+          "彼は 佐藤さんの 友だちだそうです。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:09:52.801Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "deshou-darou",
+      "order": 117,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜でしょう／〜だろう",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-62.png"
+        ],
+        "title": "〜でしょう　〜だろう",
+        "meaning": "“mungkin”",
+        "connection": "K. kerja (bentuk biasa) + でしょう／だろう\nK. sifat -i (bentuk biasa, dengan -i) + でしょう／だろう\nK. sifat -na (tanpa な) + でしょう／だろう\nK. Benda (tanpa だ) + でしょう／だろう",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "今日は 午後から 雨が 降るでしょう。",
+          "トムさんは たぶん 試験に 受かるでしょう。（＝受かると思う）",
+          "今夜は 寒いでしょう。（＝寒いと思う）",
+          "彼は 明日 ひまでしょう。（＝ひまだと思う）",
+          "午後の 天気は くもりでしょう。（＝くもりだと思う）"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:09:52.801Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "kamoshiremasen",
+      "order": 118,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜かもしれません",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-63.png"
+        ],
+        "title": "〜かもしれません",
+        "meaning": "“mungkin”",
+        "connection": "K. kerja (bentuk biasa) + かもしれない\nK. sifat -i (bentuk biasa, dengan -i) + かもしれない\nK. sifat -na (tanpa な) + かもしれない\nK. Benda (tanpa だ) + かもしれない",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "来年、東京に 転勤に なるかもしれません。",
+          "寒いですね。今晩、雪が 降るかもしれませんよ。",
+          "あの レストランは 高いかもしれません。",
+          "彼は 今 ひまかもしれません。",
+          "あの 人は 年上かもしれません。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:09:52.801Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "sugiru",
+      "order": 119,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜すぎる",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-64.png"
+        ],
+        "title": "〜すぎる",
+        "meaning": "“terlalu...” sesuatu yang berlebihan",
+        "connection": "K. kerja (bentuk masu) / K. sifat -i (tanpa -i) / K. sifat -na (tanpa -na) + すぎる",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "この ぼうしは 私には 小さすぎます。",
+          "きのう、お酒を 飲みすぎて、頭が いたい。",
+          "漢字は 多すぎて 覚えられません。",
+          "この 問題は 簡単すぎて、小学生でも できると思います。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:10:22.511Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "yasui",
+      "order": 120,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜やすい",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-65.png"
+        ],
+        "title": "〜やすい",
+        "meaning": "“mudah di..., enak di..., nyaman di...”",
+        "connection": "K. Kerja 〜ます + 〜やすい",
+        "formation": [
+          {
+            "label": "K. Kerja",
+            "input": "〜ます",
+            "rule": "hilangkan ます",
+            "output": "〜やすい",
+            "note": null
+          }
+        ],
+        "notes": "",
+        "examples": [
+          "この ペンは 書きやすいです。",
+          "田中先生の 説明は わかりやすいです。",
+          "この くつは じょうぶで はきやすい。",
+          "その ワイングラスは うすくて 割れやすいから、気を つけて。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:10:22.511Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "nikui",
+      "order": 121,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜にくい",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-65.png"
+        ],
+        "title": "〜にくい",
+        "meaning": "“tidak mudah di..., tidak enak di..., tidak nyaman di...”",
+        "connection": "K. Kerja 〜ます + 〜にくい",
+        "formation": [
+          {
+            "label": "K. Kerja",
+            "input": "〜ます",
+            "rule": "hilangkan ます",
+            "output": "〜にくい",
+            "note": null
+          }
+        ],
+        "notes": "",
+        "examples": [
+          "この 地図は、小さくて わかりにくいです。",
+          "カタカナが 多いと、読みにくい。",
+          "この 町は 住みにくいと 思います。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:10:22.511Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "dasu",
+      "order": 122,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜出す",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-66.png"
+        ],
+        "title": "〜出す",
+        "meaning": "“mulai...”",
+        "connection": "K. Kerja 〜ます + 〜出す",
+        "formation": [
+          {
+            "label": "K. Kerja",
+            "input": "〜ます",
+            "rule": "hilangkan ます",
+            "output": "〜出す",
+            "note": null
+          }
+        ],
+        "notes": "",
+        "examples": [
+          "午後から 雨が 降り出しました。",
+          "赤ちゃんが 急に 泣き出した。（＝泣き始めた）"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:10:22.511Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "owaru",
+      "order": 123,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜終わる",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-66.png"
+        ],
+        "title": "〜終わる",
+        "meaning": "“selesai...”",
+        "connection": "K. Kerja 〜ます + 〜終わる",
+        "formation": [
+          {
+            "label": "K. Kerja",
+            "input": "〜ます",
+            "rule": "hilangkan ます",
+            "output": "〜終わる",
+            "note": null
+          }
+        ],
+        "notes": "",
+        "examples": [
+          "ご飯を 食べ終わるまで、待って いて ください。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:10:22.511Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "tsuzukeru",
+      "order": 124,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜続ける",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-66.png"
+        ],
+        "title": "〜続ける",
+        "meaning": "“terus-menerus...”",
+        "connection": "K. Kerja 〜ます + 〜続ける",
+        "formation": [
+          {
+            "label": "K. Kerja",
+            "input": "〜ます",
+            "rule": "hilangkan ます",
+            "output": "〜続ける",
+            "note": null
+          }
+        ],
+        "notes": "",
+        "examples": [
+          "1週間、この 薬を 飲み続けて ください。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:10:22.511Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ukemi-kei",
+      "order": 125,
+      "kind": "conjugation",
+      "sectionKey": "verb-forms",
+      "family": null,
+      "title": "受身形",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-67.png"
+        ],
+        "title": "Kalimat Pasif",
+        "meaning": "di...",
+        "connection": "",
+        "formation": [
+          {
+            "label": "GOL I",
+            "input": "読む",
+            "rule": "Bunyi あ + れる",
+            "output": "読まれる",
+            "note": null
+          },
+          {
+            "label": "GOL II",
+            "input": "見る",
+            "rule": "る → られる",
+            "output": "見られる",
+            "note": null
+          },
+          {
+            "label": "GOL III",
+            "input": "する",
+            "rule": "tidak beraturan",
+            "output": "される",
+            "note": null
+          },
+          {
+            "label": "GOL III",
+            "input": "来る",
+            "rule": "tidak beraturan",
+            "output": "こられる",
+            "note": null
+          }
+        ],
+        "notes": "",
+        "examples": [
+          "私は よく 母に しかられました。",
+          "外国人に 道を 聞かれました。",
+          "日本では、医者や 弁護士は「先生」と 呼ばれて います。",
+          "その 歌は、世界中で 歌われて います。",
+          "私は 電車で だれかに 足を ふまれました。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:11:14.938Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "shieki-kei",
+      "order": 126,
+      "kind": "conjugation",
+      "sectionKey": "verb-forms",
+      "family": null,
+      "title": "使役形",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-68.png"
+        ],
+        "title": "Kalimat Kausatif",
+        "meaning": "Fungsi kalimat kausatif :\n1. Menyuruh\n2. Membiarkan\n3. Membuat (orang lain melakukan...)",
+        "connection": "Pelaku yang disuruh に + K.K Transitif\nPelaku yang disuruh を + K.K Intransitif",
+        "formation": [
+          {
+            "label": "GOL I",
+            "input": "行く",
+            "rule": "Bunyi あ + せる",
+            "output": "行かせる",
+            "note": null
+          },
+          {
+            "label": "GOL II",
+            "input": "見る",
+            "rule": "る → させる",
+            "output": "見させる",
+            "note": null
+          },
+          {
+            "label": "GOL III",
+            "input": "する",
+            "rule": "tidak beraturan",
+            "output": "させる",
+            "note": null
+          },
+          {
+            "label": "GOL III",
+            "input": "来る",
+            "rule": "tidak beraturan",
+            "output": "こさせる",
+            "note": null
+          }
+        ],
+        "notes": "",
+        "examples": [
+          "先生は 学生に 日記を 書かせます。",
+          "社長は、ちこくが 多い 社員を やめさせました。",
+          "公園で 犬を 走らせます。",
+          "母：私は 息子に 野菜を 食べさせました。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:11:14.938Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "shieki-ukemi-kei",
+      "order": 127,
+      "kind": "conjugation",
+      "sectionKey": "verb-forms",
+      "family": null,
+      "title": "使役受身形",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-69.png"
+        ],
+        "title": "Kalimat Pasif Kausatif",
+        "meaning": "disuruh...",
+        "connection": "",
+        "formation": [
+          {
+            "label": "GOL I",
+            "input": "読む",
+            "rule": "読ませる → 読ませられる",
+            "output": "読ませられる",
+            "note": null
+          },
+          {
+            "label": "GOL II",
+            "input": "見る",
+            "rule": "見させる → 見させられる",
+            "output": "見させられる",
+            "note": null
+          },
+          {
+            "label": "GOL III",
+            "input": "する",
+            "rule": "させる → させられる",
+            "output": "させられる",
+            "note": null
+          },
+          {
+            "label": "GOL III",
+            "input": "来る",
+            "rule": "こさせる → こさせられる",
+            "output": "こさせられる",
+            "note": null
+          }
+        ],
+        "notes": "",
+        "examples": [
+          "息子：私は 母に 野菜を 食べさせられました。",
+          "母に 野菜を 食べさせられました。",
+          "私は 大きい 失敗を して、会社を やめさせられました。",
+          "会社に 入ったとき、3か月間 敬語の 練習を させられました。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:11:14.938Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "sasete-kudasai",
+      "order": 128,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜させてください",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-70.png"
+        ],
+        "title": "K. Kerja kausatif 〜てください",
+        "meaning": "“izinkan saya...”, “biarkan saya...”",
+        "connection": "K. Kerja kausatif 〜てください",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "ノートを コピーさせて ください。",
+          "お手洗いを 使わせて ください。",
+          "疲れた。ちょっと 休ませて。",
+          "私に 説明させて ください。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:11:45.354Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "jidoushi-tadoushi",
+      "order": 129,
+      "kind": "foundation",
+      "sectionKey": "foundations",
+      "family": null,
+      "title": "他動詞・自動詞",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-71.png",
+          "n4-bunpou/n4-bunpou-72.png"
+        ],
+        "title": "他動詞 K.K Transitif / 自動詞 K.K Intransitif",
+        "meaning": "",
+        "connection": "",
+        "formation": [],
+        "notes": "• Transitif artinya berawalan“me...”, Intransitif “ter....”\n• Transitif menggunakan partikel を, intransitif が\n• Tidak ada pola tertentu untuk membedakan keduanya, jadi harus dihafal satu persatu!\n• Ada juga 1 kata kerja yang mempunyai makna transitif & intransitif\nContoh : 開く（ひらく）\nbisa bermakna \"membuka\" & \"terbuka\"",
+        "examples": [
+          "だれが コップを 割りましたか。",
+          "危ないから、ろうそくを 消しますよ。",
+          "ろうそくの 火が 消えました。",
+          "ドアを 閉めて ください。",
+          "<駅で>ドアが 閉まります。ご注意ください。",
+          "さあ、授業を 始めましょう。",
+          "毎日 9時に 授業が 始まります。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:11:45.354Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "jidoushi-te-iru",
+      "order": 130,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜ている",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-72.png",
+          "n4-bunpou/n4-bunpou-73.png"
+        ],
+        "title": "K. Kerja Intransitif 〜ている\nkata kerja intransitif 〜ていない",
+        "meaning": "digunakan untuk menyatakan “keadaan” akibat sebuah perbuatan\nmenyatakan keadaan yang “belum” atau “tidak”",
+        "connection": "K. Kerja Intransitif 〜ている\nkata kerja intransitif 〜ていない",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "窓が 閉まって います。",
+          "会議室は、かぎが かかって います。",
+          "弟は今出かけています。",
+          "宿題はまだ終わっていません。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:12:32.862Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "te-aru",
+      "order": 131,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜てある",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-73.png"
+        ],
+        "title": "K. Kerja Transitif 〜てある",
+        "meaning": "digunakan untuk menyatakan “keadaan” yang dilakukan dengan “tujuan” tertentu",
+        "connection": "K. Kerja Transitif 〜てある",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "テーブルの上に花がかざってあります。",
+          "おさらは、ぜんぶ洗ってあります。",
+          "その本には、使い方が書いてありません。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:12:32.862Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "te-kuru-kembali",
+      "order": 132,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "te-kuru",
+      "title": "〜てくる",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-74.png"
+        ],
+        "title": "〜てくる",
+        "meaning": "pergi melakukan sesuatu, lalu kembali",
+        "connection": "〜てくる",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "A「コンビニに行って来るね。」 B「じゃ、パンも買ってきて。」"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:12:32.862Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "te-kuru-te-iku-perubahan",
+      "order": 133,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "te-kuru",
+      "title": "〜てくる／〜ていく",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-74.png"
+        ],
+        "title": "〜てくる、〜ていく",
+        "meaning": "mengungkapkan adanya “perubahan”, “pergerakan”, “permulaan” berdasarkan titik waktu saat ini atau posisi saat ini (mendekat/menjauh)",
+        "connection": "〜てくる、〜ていく",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "雨が降ってきました。",
+          "これからもっと寒くなっていくでしょう。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:12:32.862Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "n-desu-no-desu",
+      "order": 134,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜んです／〜のです",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-75.png"
+        ],
+        "title": "〜んです／〜のです",
+        "meaning": "digunakan ketika bertanya (meminta alasan) dan ketika menjelaskan alasan",
+        "connection": "K. kerja / K. sifat - i + bentuk biasa + 〜んです／〜のです\nK. sifat -na / K. benda + な + 〜んです／〜のです",
+        "formation": [
+          {
+            "label": "K. kerja",
+            "input": "bentuk biasa",
+            "rule": "+ 〜んです／〜のです",
+            "output": "〜んです／〜のです",
+            "note": null
+          },
+          {
+            "label": "K. sifat - i",
+            "input": "bentuk biasa",
+            "rule": "+ 〜んです／〜のです",
+            "output": "〜んです／〜のです",
+            "note": null
+          },
+          {
+            "label": "K. sifat -na",
+            "input": "",
+            "rule": "+ な + 〜んです／〜のです",
+            "output": "〜なんです／〜なのです",
+            "note": null
+          },
+          {
+            "label": "K. benda",
+            "input": "",
+            "rule": "+ な + 〜んです／〜のです",
+            "output": "〜なんです／〜なのです",
+            "note": null
+          }
+        ],
+        "notes": "dalam bahasa lisan 〜んです lebih sering digunakan\ndalam bahasa kasual bisa jadi「〜の？」dan「〜んだ。／〜の。」\n「〜の。」biasa dipakai perempuan",
+        "examples": [
+          "A「どうしたんですか。」 B「頭がいたいんです。」",
+          "A「パーティーに行かないの？」 B「ちょっと用事があるんだ。」"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:12:32.862Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "naa",
+      "order": 135,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": null,
+      "title": "〜なあ",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-76.png"
+        ],
+        "title": "〜なあ",
+        "meaning": "digunakan ketika merasa “kagum”, “kaget”",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "トムさんの おねえさん、きれいだなあ。",
+          "試験、むずかしかったなあ。",
+          "よく 食べるなあ。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:13:14.940Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ne",
+      "order": 136,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": null,
+      "title": "〜ね",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-76.png"
+        ],
+        "title": "〜ね",
+        "meaning": "digunakan ketika meminta persetujuan lawan bicara",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "いい 天気ですね。",
+          "もうすぐ 試験ですね。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:13:14.940Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "yo",
+      "order": 137,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": null,
+      "title": "〜よ",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-77.png"
+        ],
+        "title": "〜よ",
+        "meaning": "digunakan ketika memberi tahu lawan bicara",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "雨が 降って いますよ。",
+          "漢字の テストは 明日ですよ。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:13:14.940Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "kana-kashira",
+      "order": 138,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": null,
+      "title": "〜かな／〜かしら",
+      "source": {
+        "slides": [
+          "n4-bunpou/n4-bunpou-77.png"
+        ],
+        "title": "〜かな　〜かしら",
+        "meaning": "① digunakan ketika pembicara merasa tidak pasti\n② digunakan bersama bentuk negatif untuk menyatakan keinginan",
+        "connection": "",
+        "formation": [],
+        "notes": "",
+        "examples": [
+          "試験に 受からないかなあ。",
+          "ここは どこかな。",
+          "早く 夏休みが 来ないかなあ。",
+          "明日、雨が 降るかしら。"
+        ]
+      },
+      "extract": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-extract-v2",
+        "extractedAt": "2026-10-02T02:13:14.940Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    }
+  ]
 }

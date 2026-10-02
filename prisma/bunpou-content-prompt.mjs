@@ -114,7 +114,7 @@ Keluarkan tepat satu item untuk setiap key input dan jangan tulis teks di luar J
 export function buildUserPrompt(level, points) {
   return [
     `Level: ${level}`,
-    "Tulis content untuk point berikut. related berisi anggota family/judul serupa agar sense tidak tumpang tindih.",
+    "Tulis content untuk point berikut. related berisi anggota family atau judul serupa. Bentuk yang sama pada level berbeda boleh menjelaskan sense yang sama; jangan menciptakan perbedaan yang tidak didukung source. Untuk anggota family yang memang berbeda makna, jaga agar penjelasan setiap sense tidak tumpang tindih.",
     JSON.stringify(
       points.map(({ point, related }) => ({
         key: point.key,

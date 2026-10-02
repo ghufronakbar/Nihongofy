@@ -4,7 +4,8 @@
 
 **Implementasi data Phase A sedang berjalan (2 Oktober 2026).** Kontrak, taxonomy, generator,
 validator, schema, migration katalog, serta ekstraksi dan generation 90 point dari 36 slide N5
-sudah tersedia. Migration belum diterapkan dan UI publik belum dikerjakan. Kontrak datanya ada di
+sudah tersedia. Ekstraksi N4 menghasilkan 138 point dari 77 slide dan menunggu generation.
+Migration belum diterapkan dan UI publik belum dikerjakan. Kontrak datanya ada di
 [seed-bunpou.md](../seed-bunpou.md).
 
 ## Keputusan
@@ -20,6 +21,10 @@ sudah tersedia. Migration belum diterapkan dan UI publik belum dikerjakan. Kontr
   わけ) dipecah menjadi beberapa entri yang masing-masing punya level dan URL sendiri, lalu
   dikelompokkan lewat `family`. Level disimpan per makna karena たばかり (N4) dan ばかりだ (N2)
   berbeda level.
+- **Level mengikuti slide sumber.** Pola dengan makna sama boleh muncul sebagai entri terpisah di
+  beberapa level. Ini mendukung navigasi katalog per level dan tidak memaksakan klasifikasi JLPT
+  yang tidak memiliki daftar grammar resmi tunggal. `family` tetap khusus untuk bentuk sama dengan
+  makna berbeda, bukan untuk menautkan pengulangan sense yang sama lintas level.
 - **Perbandingan pola mirip adalah data terpisah** (`comparisons.json`), bukan bagian dari tiap
   pola. Isinya milik kelompok, jadi kalau disimpan per pola akan terduplikasi dan saling
   bertentangan. Anggota kelompok ditentukan manusia, isinya dirancang AI, dan hanya yang sudah

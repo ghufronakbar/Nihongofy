@@ -107,13 +107,13 @@ Model vision menyalin isi slide **apa adanya** ke `source`, lalu memecahnya menj
   pengetahuannya sendiri di langkah ini; itu tugas langkah 2.
 - `extract.doubt` diisi bila slide tidak terbaca, isinya janggal, atau polanya tampak bukan level
   folder tersebut. Level tetap mengikuti folder.
-- **Calon duplikat**: bila judul yang dinormalisasi (tanpa `〜`/`～`, spasi, kurung, dan `・`)
-  sama dengan entri lain di level mana pun, `extract.doubt` menyebut key entri itu. Selesaikan
-  sebelum seed pertama dengan salah satu cara:
-  - **Gabung** bila maknanya sama: pindahkan `source.slides` ke entri yang levelnya **lebih
-    rendah** (sama dengan aturan kata lintas level di flashcard), lalu hapus entri satunya.
-  - **Pisahkan** bila maknanya berbeda: beri keduanya `family` yang sama dan `content.senseLabel`
-    yang berbeda.
+- **Calon duplikat dalam level yang sama** diaudit sebelum generation. Bila bentuk dan maknanya
+  sama, gabungkan evidence slide ke satu entri. Bila bentuknya sama tetapi maknanya berbeda,
+  pisahkan menjadi beberapa entri dengan `family` dan `content.senseLabel` yang berbeda.
+- Kemunculan pola yang sama pada level berbeda **bukan duplikat yang harus digabung**. Setiap
+  entri tetap mengikuti level slide sumber karena pembagian bunpou per JLPT tidak memiliki acuan
+  resmi tunggal dan UI menampilkan katalog berdasarkan level. Gunakan `key` global yang berbeda;
+  jangan menciptakan perbedaan makna hanya agar kedua entri tampak berbeda.
 
 | Flag | Fungsi |
 |---|---|
@@ -471,8 +471,9 @@ Nama file sama dengan fixture paketnya, mis. `question-links/n3-2019-12.json`.
     misalnya sistem predikat adjektiva. Daftar kosakata murni tidak masuk katalog.
 - **`sectionKey`**: slug dari `taxonomy.sections`. Ini kelompok belajar/navigasi, bukan tag
   semantik. Semua entri wajib punya tepat satu section.
-- **`level`**: dari folder slide. Pola dengan makna sama di dua level masuk level terendah.
-  JLPT tidak punya daftar grammar resmi sejak 2010, jadi slide adalah acuan level satu-satunya.
+- **`level`**: dari folder slide. Pola dengan makna sama boleh memiliki entri terpisah bila muncul
+  pada slide level berbeda. JLPT tidak punya daftar grammar resmi sejak 2010, jadi slide adalah
+  acuan penempatan level dan UI dapat menyajikan katalog berdasarkan level yang dipilih pengguna.
 - **`order`**: bilangan bulat unik per level. Urutan gambar dalam deck memakai `sequence` numerik
   dari nama file. Urutan pola diturunkan ulang dari `decks[].order`, `slides[].sequence`, lalu
   posisi key dalam `slides[].points`; untuk entri yang muncul di beberapa slide dipakai kemunculan
