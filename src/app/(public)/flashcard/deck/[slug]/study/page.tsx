@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { FEATURES } from "@/constants";
 import { getSession } from "@/lib/auth";
 import { getStudySession } from "@/features/flashcard/data";
+import { isPostingSuspended } from "@/features/question-comment/queries";
 import { FlashcardReviewer } from "@/features/flashcard/components/flashcard-reviewer";
 import { FlashcardDeckSlugSchema } from "@/features/flashcard/schemas";
 import { privateMetadata } from "@/lib/seo";
@@ -23,7 +24,10 @@ export default async function StudyPage({ params }: Props) {
   const session = await getSession();
   if (!session) redirect(`/login?next=/flashcard/deck/${slug}`);
 
-  const study = await getStudySession(session.userId, slug);
+  const [study, postingSuspended] = await Promise.all([
+    getStudySession(session.userId, slug),
+    FEATURES.flashcardDiscussion ? isPostingSuspended(session.userId) : false,
+  ]);
   if (!study) notFound();
   // Belajar hanya untuk deck yang sudah ditambahkan; halaman deck menawarkan
   // tombol tambahnya.
@@ -49,6 +53,7 @@ export default async function StudyPage({ params }: Props) {
         reportEnabled={FEATURES.report}
         discussion={study.discussion}
         currentUserId={session.userId}
+        postingSuspended={postingSuspended}
       />
     </main>
   );

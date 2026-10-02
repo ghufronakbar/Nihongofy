@@ -37,6 +37,12 @@ Stack: Next.js + Prisma + PostgreSQL (Supabase).
 - `allowAudioStorage` dan `allowConversationStorage` adalah opt-in terpisah dengan default `false`.
 - `deletionRequestedAt` dan `deletionScheduledFor` harus null bersama atau membentuk jadwal valid.
   Hard-delete user dijalankan cron setelah 7 hari; seluruh relasi user-owned memakai cascade.
+- `postingSuspendedAt`, `postingSuspendedReason` (`VARCHAR(500)`), dan `postingSuspendedById`
+  adalah suspend posting diskusi publik oleh admin. CHECK `User_posting_suspension_check` (hanya
+  di SQL migration) menolak alasan/admin tanpa `postingSuspendedAt`; sebaliknya `ById` boleh NULL
+  saat suspend berlaku karena FK-nya `ON DELETE SET NULL`. Dibaca per request lewat
+  `isPostingSuspended()`, tidak di-cache. `anonymizeAccount` mengosongkan ketiganya; suspend yang
+  pernah diberikan seorang admin kepada orang lain dibiarkan sebagai jejak moderasi.
 - `AuthRateLimit.keyHash` menyimpan HMAC-SHA256 dari scope dan subject. Jangan simpan email atau alamat IP mentah pada tabel rate limit.
 - Update bucket rate limit harus atomik dengan `INSERT ... ON CONFLICT DO UPDATE`, bukan pola select lalu update.
 - Update profile dan password selalu mengambil user dari `session.userId`. Ganti password wajib membandingkan current password, memakai bcrypt cost 12 untuk hash baru, lalu membuat ulang cookie session.
@@ -74,6 +80,13 @@ Stack: Next.js + Prisma + PostgreSQL (Supabase).
   `userId` miliknya sendiri, takedown admin terisi dengan id admin. Hanya yang kedua yang boleh
   dipulihkan — memulihkan hapusan pemilik berarti menerbitkan ulang tulisan yang sengaja ia tarik.
 - Takedown hanya mengubah record database. File lampiran di object storage **tidak** dihapus.
+- `QuestionCommentVote` adalah suara "membantu": PK `(commentId, userId)` sehingga satu suara per
+  user per entri, tanpa kolom nilai (tidak ada downvote). FK `commentId` dan `userId` `Cascade`
+  (jaring pengaman; comment tidak pernah di-hard delete), index `userId` untuk anonimisasi dan
+  export. Jumlah dihitung `groupBy` saat thread dibaca, bukan kolom cache. Query yang dikirim ke
+  client tidak pernah memilih `userId` pemberi suara — hanya jumlah dan status milik viewer
+  (dijaga `votes.test.ts`). Takedown tidak menghapus suara; `anonymizeAccount` menghapus suara
+  yang diberikan akun itu.
 
 ## Laporan Pengguna
 

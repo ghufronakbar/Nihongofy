@@ -26,6 +26,10 @@ export async function GET() {
       allowConversationStorage: true,
       deletionRequestedAt: true,
       deletionScheduledFor: true,
+      // Pembatasan posting diskusi oleh admin: kapan dan alasannya. Identitas
+      // admin yang men-suspend tidak ikut, sejalan dengan laporan di bawah.
+      postingSuspendedAt: true,
+      postingSuspendedReason: true,
       createdAt: true,
       updatedAt: true,
       oauthAccounts: {
@@ -190,6 +194,11 @@ export async function GET() {
             },
           },
         },
+      },
+      // Suara "membantu" yang diberikan akun ini pada entri diskusi.
+      questionCommentVotes: {
+        orderBy: { createdAt: "asc" },
+        select: { commentId: true, createdAt: true },
       },
       articleInteractions: {
         orderBy: { updatedAt: "asc" },

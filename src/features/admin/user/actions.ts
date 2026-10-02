@@ -12,10 +12,14 @@ import {
   RevokeUserSessionSchema,
   ResetUserRateLimitSchema,
   CancelUserDeletionSchema,
+  SuspendUserPostingSchema,
+  LiftUserPostingSuspensionSchema,
   type SetUserRoleInput,
   type RevokeUserSessionInput,
   type ResetUserRateLimitInput,
   type CancelUserDeletionInput,
+  type SuspendUserPostingInput,
+  type LiftUserPostingSuspensionInput,
 } from "./schemas";
 
 export type UserActionResult = { ok: true; message?: string } | { ok: false; message: string };
@@ -234,4 +238,110 @@ export async function cancelUserDeletionAction(
   // Halaman profil user membaca status ini dari cache per user.
   updateTag(CACHE_TAGS.profileAccount(userId));
   return { ok: true, message: "Jadwal penghapusan dibatalkan." };
+}
+
+/**
+ * Rem darurat moderasi: user tidak dapat menulis ke diskusi publik pada target
+ * mana pun (soal, kata, pola), tanpa menghapus akunnya. Catatan privat, konten
+ * publik yang sudah ada, dan akses lain tidak berubah — konten lama tetap
+ * ditakedown lewat /admin/moderation. Berlaku seketika karena status dibaca per
+ * request oleh action diskusi.
+ *
+ * Admin tidak dapat men-suspend dirinya sendiri: tidak ada gunanya, dan kalau
+ * ia satu-satunya admin, tidak ada yang dapat mencabutnya dari UI.
+ */
+export async function suspendUserPostingAction(
+  input: SuspendUserPostingInput,
+): Promise<UserActionResult> {
+  const actor = await requireAdmin();
+
+  const validated = SuspendUserPostingSchema.safeParse(input);
+  if (!validated.success) {
+    return { ok: false, message: validated.error.issues[0]?.message ?? "Data tidak valid." };
+  }
+
+  const { userId, reason } = validated.data;
+  if (userId === actor.user.id) {
+    return { ok: false, message: "Tidak dapat membatasi posting akun sendiri." };
+  }
+
+  const target = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true, anonymizedAt: true, postingSuspendedAt: true },
+  });
+  if (!target) notFound();
+  if (target.anonymizedAt) {
+    return { ok: false, message: "Akun ini sudah dihapus; tidak ada yang perlu dibatasi." };
+  }
+  if (target.postingSuspendedAt) {
+    return { ok: false, message: "Posting akun ini sudah dibatasi." };
+  }
+
+  await prisma.$transaction(async (tx) => {
+    // `postingSuspendedAt: null` di where menutup balapan dua admin sekaligus:
+    // yang kalah tidak menimpa alasan dan pelaku yang sudah tercatat.
+    const updated = await tx.user.updateMany({
+      where: { id: userId, postingSuspendedAt: null },
+      data: {
+        postingSuspendedAt: new Date(),
+        postingSuspendedReason: reason,
+        postingSuspendedById: actor.user.id,
+      },
+    });
+    if (updated.count === 0) return;
+    // Alasan sengaja tidak masuk summary: bisa memuat kutipan konten, dan baris
+    // log bertahan lebih lama daripada datanya. Alasan tersimpan di baris User.
+    await recordAdminActionTx(tx, {
+      actor,
+      action: "user.posting_suspend",
+      targetType: "user",
+      targetId: userId,
+      summary: "Membatasi posting diskusi publik user ini.",
+    });
+  });
+  return {
+    ok: true,
+    message:
+      "Posting diskusi publik dibatasi. Berlaku seketika; konten lama tidak berubah — takedown lewat Moderasi bila perlu.",
+  };
+}
+
+/** Mencabut suspend posting. Alasan dan pelaku lama ikut dikosongkan. */
+export async function liftUserPostingSuspensionAction(
+  input: LiftUserPostingSuspensionInput,
+): Promise<UserActionResult> {
+  const actor = await requireAdmin();
+
+  const validated = LiftUserPostingSuspensionSchema.safeParse(input);
+  if (!validated.success) return { ok: false, message: "Data tidak valid." };
+
+  const { userId } = validated.data;
+  const target = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true, postingSuspendedAt: true },
+  });
+  if (!target) notFound();
+  if (!target.postingSuspendedAt) {
+    return { ok: false, message: "Posting akun ini tidak sedang dibatasi." };
+  }
+
+  await prisma.$transaction(async (tx) => {
+    const updated = await tx.user.updateMany({
+      where: { id: userId, postingSuspendedAt: { not: null } },
+      data: {
+        postingSuspendedAt: null,
+        postingSuspendedReason: null,
+        postingSuspendedById: null,
+      },
+    });
+    if (updated.count === 0) return;
+    await recordAdminActionTx(tx, {
+      actor,
+      action: "user.posting_unsuspend",
+      targetType: "user",
+      targetId: userId,
+      summary: "Mencabut pembatasan posting diskusi publik user ini.",
+    });
+  });
+  return { ok: true, message: "Pembatasan posting dicabut." };
 }

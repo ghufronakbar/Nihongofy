@@ -5,6 +5,7 @@ import { ArrowLeft, KeyRound, ShieldCheck } from "lucide-react";
 import { requireAdmin } from "@/lib/auth";
 import { getAdminUserDetail } from "@/features/admin/user/queries";
 import { UserActions } from "@/features/admin/user/components/user-actions";
+import { PostingSuspensionPanel } from "@/features/admin/user/components/posting-suspension-panel";
 
 export const metadata: Metadata = { title: "Detail User - Admin" };
 
@@ -60,6 +61,14 @@ export default async function AdminUserDetailPage({
             <span className="inline-flex items-center border-2 border-neo-ink bg-neo-yellow px-2.5 py-0.5 font-mono text-xs font-black shadow-neo-sm">
               kamu
             </span>
+          )}
+          {user.postingSuspendedAt && (
+            <a
+              href="#posting"
+              className="inline-flex items-center border-2 border-neo-ink bg-neo-yellow px-2.5 py-0.5 font-mono text-xs font-black shadow-neo-sm"
+            >
+              posting dibatasi
+            </a>
           )}
         </div>
         <p className="mt-1 font-mono text-[11px] text-foreground/60">
@@ -142,6 +151,21 @@ export default async function AdminUserDetailPage({
           lastSeenAt: session.lastSeenAt,
         }))}
         currentSessionId={actor.sessionId}
+      />
+
+      <PostingSuspensionPanel
+        userId={user.id}
+        isSelf={isSelf}
+        isAnonymized={Boolean(user.anonymizedAt)}
+        suspension={
+          user.postingSuspendedAt
+            ? {
+                since: user.postingSuspendedAt.toISOString(),
+                reason: user.postingSuspendedReason,
+                byName: user.postingSuspendedBy?.displayName ?? null,
+              }
+            : null
+        }
       />
     </div>
   );

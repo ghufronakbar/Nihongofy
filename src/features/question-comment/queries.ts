@@ -25,7 +25,16 @@ export type DiscussionMention = {
   username: string;
 } | null;
 
-export type DiscussionReply = {
+// Suara "membantu". Yang dikirim ke client hanya jumlahnya dan apakah viewer
+// yang sedang login ikut memberi suara — tidak pernah siapa saja pemberinya,
+// karena thread dirender server dan diindeks.
+export type DiscussionVotes = {
+  voteCount: number;
+  /** Selalu false untuk guest dan sebelum `withViewerVotes`. */
+  viewerVoted: boolean;
+};
+
+export type DiscussionReply = DiscussionVotes & {
   id: number;
   commentText: string;
   commentImages: string[];
@@ -40,7 +49,7 @@ export type DiscussionReply = {
 // DELETED  : pemilik menghapusnya, balasan orang lain tetap ada.
 export type DiscussionRootState = "VISIBLE" | "HIDDEN" | "DELETED";
 
-export type DiscussionRoot = {
+export type DiscussionRoot = DiscussionVotes & {
   id: number;
   // Tepat satu terisi: soal JLPT, kata flashcard, atau pola bunpou.
   questionId: number | null;
@@ -48,9 +57,10 @@ export type DiscussionRoot = {
   bunpouPointId: number | null;
   state: DiscussionRootState;
   createdAt: Date;
-  // Empat field di bawah hanya terisi saat state === "VISIBLE". Untuk tombstone
-  // isinya sengaja tidak ikut diambil dari baris database supaya teks/gambar
-  // yang sudah dihapus atau disembunyikan tidak pernah sampai ke browser.
+  // Empat field di bawah — dan suaranya — hanya terisi saat state === "VISIBLE".
+  // Untuk tombstone isinya sengaja tidak ikut diambil dari baris database supaya
+  // teks/gambar yang sudah dihapus atau disembunyikan tidak pernah sampai ke
+  // browser.
   commentText: string | null;
   commentImages: string[];
   updatedAt: Date | null;
@@ -120,6 +130,8 @@ function toDiscussionRoot(row: RawDiscussionRoot): DiscussionRoot {
     createdAt: reply.createdAt,
     updatedAt: reply.updatedAt,
     author: reply.user,
+    voteCount: 0,
+    viewerVoted: false,
   }));
 
   const state: DiscussionRootState = row.deletedAt
@@ -140,6 +152,8 @@ function toDiscussionRoot(row: RawDiscussionRoot): DiscussionRoot {
       commentImages: [],
       updatedAt: null,
       author: null,
+      voteCount: 0,
+      viewerVoted: false,
       replies,
     };
   }
@@ -155,8 +169,74 @@ function toDiscussionRoot(row: RawDiscussionRoot): DiscussionRoot {
     commentImages: row.commentImages,
     updatedAt: row.updatedAt,
     author: row.user,
+    voteCount: 0,
+    viewerVoted: false,
     replies,
   };
+}
+
+// ============================================================
+// SUARA "MEMBANTU"
+// ============================================================
+
+/** Id entri yang boleh membawa suara: root VISIBLE dan seluruh balasan yang tampil. */
+function votableIds(roots: DiscussionRoot[]) {
+  return roots.flatMap((root) => [
+    ...(root.state === "VISIBLE" ? [root.id] : []),
+    ...root.replies.map((reply) => reply.id),
+  ]);
+}
+
+function mapEntries(
+  roots: DiscussionRoot[],
+  apply: <T extends DiscussionVotes & { id: number }>(entry: T) => T,
+): DiscussionRoot[] {
+  return roots.map((root) => ({
+    ...(root.state === "VISIBLE" ? apply(root) : root),
+    replies: root.replies.map(apply),
+  }));
+}
+
+/** Jumlah suara per entri, satu `groupBy` untuk seluruh thread. */
+export async function countVotes(commentIds: number[]): Promise<Map<number, number>> {
+  const counts = new Map<number, number>();
+  if (commentIds.length === 0) return counts;
+  const grouped = await prisma.questionCommentVote.groupBy({
+    by: ["commentId"],
+    where: { commentId: { in: commentIds } },
+    _count: { _all: true },
+  });
+  for (const row of grouped) counts.set(row.commentId, row._count._all);
+  return counts;
+}
+
+// Tombstone tidak membawa jumlah suara: sama seperti isinya, angka itu bagian
+// dari entri yang sudah ditarik.
+async function withVoteCounts(roots: DiscussionRoot[]): Promise<DiscussionRoot[]> {
+  const counts = await countVotes(votableIds(roots));
+  if (counts.size === 0) return roots;
+  return mapEntries(roots, (entry) => ({ ...entry, voteCount: counts.get(entry.id) ?? 0 }));
+}
+
+/**
+ * Menandai entri yang sudah diberi suara oleh viewer. Dipisah dari
+ * `getDiscussion` supaya thread itu sendiri tetap sama untuk semua orang
+ * (metadata halaman memakai hasil yang sama lewat `cache`).
+ */
+export async function withViewerVotes(
+  roots: DiscussionRoot[],
+  viewerId: number | null,
+): Promise<DiscussionRoot[]> {
+  if (viewerId === null) return roots;
+  const ids = votableIds(roots);
+  if (ids.length === 0) return roots;
+  const votes = await prisma.questionCommentVote.findMany({
+    where: { userId: viewerId, commentId: { in: ids } },
+    select: { commentId: true },
+  });
+  if (votes.length === 0) return roots;
+  const voted = new Set(votes.map((vote) => vote.commentId));
+  return mapEntries(roots, (entry) => ({ ...entry, viewerVoted: voted.has(entry.id) }));
 }
 
 // Tombstone tanpa balasan tidak berguna untuk siapa pun: yang tersisa hanya
@@ -176,7 +256,7 @@ export async function getDiscussion(target: CommentTarget): Promise<DiscussionRo
     select: discussionRootSelect,
   });
 
-  return rows.map(toDiscussionRoot).filter(isWorthRendering);
+  return withVoteCounts(rows.map(toDiscussionRoot).filter(isWorthRendering));
 }
 
 // Yang dihitung adalah entri yang benar-benar tampil: root publik yang masih
@@ -225,6 +305,27 @@ export async function getVocabDiscussionCounts(vocabIds: number[]): Promise<Map<
   }
 
   return counts;
+}
+
+// ============================================================
+// SUSPEND POSTING
+// ============================================================
+
+/**
+ * Rem darurat moderasi (`User.postingSuspendedAt`, diatur admin). User yang
+ * di-suspend tidak dapat menulis ke diskusi publik; catatan privat tetap boleh.
+ * Guest selalu `false` — mereka memang belum bisa menulis.
+ *
+ * Dibaca per request dan tidak di-cache, sama seperti role: suspend harus
+ * berlaku seketika tanpa user login ulang.
+ */
+export async function isPostingSuspended(userId: number | null): Promise<boolean> {
+  if (userId === null) return false;
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { postingSuspendedAt: true },
+  });
+  return Boolean(user?.postingSuspendedAt);
 }
 
 // ============================================================
@@ -370,7 +471,8 @@ export async function getDiscussionPermalink(
   const root = toDiscussionRoot(row);
   if (!isWorthRendering(root)) return null;
 
-  return { root, question: row.question };
+  const [withCounts] = await withVoteCounts([root]);
+  return { root: withCounts!, question: row.question };
 }
 
 // ============================================================

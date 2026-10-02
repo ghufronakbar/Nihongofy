@@ -50,6 +50,11 @@ export async function anonymizeAccount(userId: number) {
       data: { deletedAt: anonymizedAt, deletedById: userId },
     });
 
+    // Suara "membantu" yang diberikan akun ini ikut dihapus; jumlah suara pada
+    // entri orang lain turun sesuai. Suara orang lain pada catatan akun ini
+    // milik mereka dan tidak disentuh.
+    await tx.questionCommentVote.deleteMany({ where: { userId } });
+
     // Anak dihapus lebih dulu agar tidak bergantung pada urutan cascade.
     await tx.flashcardRevlog.deleteMany({ where: { userId } });
     await tx.flashcardCard.deleteMany({ where: { userId } });
@@ -89,6 +94,11 @@ export async function anonymizeAccount(userId: number) {
       data: { actorName: ANONYMIZED_DISPLAY_NAME },
     });
 
+    // Suspend posting yang PERNAH DIBERIKAN akun ini (bila ia admin) dibiarkan:
+    // `postingSuspendedById` pada akun orang lain adalah jejak moderasi, setara
+    // AdminAuditLog. Suspend MILIK akun ini dikosongkan di update User di bawah —
+    // alasannya ditulis admin tentang dirinya, jadi termasuk data pribadi.
+
     await tx.user.update({
       where: { id: userId },
       data: {
@@ -107,6 +117,9 @@ export async function anonymizeAccount(userId: number) {
         avatarBytes: null,
         allowAudioStorage: false,
         allowConversationStorage: false,
+        postingSuspendedAt: null,
+        postingSuspendedReason: null,
+        postingSuspendedById: null,
         anonymizedAt,
         // Dikosongkan agar cron tidak memproses ulang baris yang sama.
         deletionScheduledFor: null,

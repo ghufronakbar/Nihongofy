@@ -23,6 +23,8 @@ function whereForFilter(filter: UserFilter): Prisma.UserWhereInput {
       return { oauthAccounts: { some: {} } };
     case "pendingDeletion":
       return { deletionScheduledFor: { not: null } };
+    case "postingSuspended":
+      return { postingSuspendedAt: { not: null } };
   }
 }
 
@@ -51,6 +53,7 @@ export async function listAdminUsers(filter: UserFilter, query: string) {
         role: true,
         emailVerifiedAt: true,
         deletionScheduledFor: true,
+        postingSuspendedAt: true,
         createdAt: true,
         avatarUrl: true,
         _count: { select: { oauthAccounts: true, attempts: true, questionComments: true } },
@@ -63,17 +66,18 @@ export async function listAdminUsers(filter: UserFilter, query: string) {
       prisma.user.count({ where: { emailVerifiedAt: null } }),
       prisma.user.count({ where: { oauthAccounts: { some: {} } } }),
       prisma.user.count({ where: { deletionScheduledFor: { not: null } } }),
+      prisma.user.count({ where: { postingSuspendedAt: { not: null } } }),
     ]),
   ]);
 
-  const [all, admin, unverified, oauth, pendingDeletion] = counts;
+  const [all, admin, unverified, oauth, pendingDeletion, postingSuspended] = counts;
 
   return {
     rows,
     matching,
     truncated: matching > rows.length,
     pageSize: LIST_PAGE_SIZE,
-    counts: { all, admin, unverified, oauth, pendingDeletion },
+    counts: { all, admin, unverified, oauth, pendingDeletion, postingSuspended },
   };
 }
 
@@ -93,6 +97,10 @@ export async function getAdminUserDetail(userId: number) {
       allowConversationStorage: true,
       deletionRequestedAt: true,
       deletionScheduledFor: true,
+      anonymizedAt: true,
+      postingSuspendedAt: true,
+      postingSuspendedReason: true,
+      postingSuspendedBy: { select: { id: true, displayName: true } },
       createdAt: true,
       updatedAt: true,
       // Hanya keberadaannya. Akun OAuth-only punya password null, dan itu

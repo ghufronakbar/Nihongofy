@@ -76,6 +76,8 @@ type Props = {
   discussion: CardDiscussionData | null;
   /** User yang sedang login, untuk menulis di diskusi; null untuk guest. */
   currentUserId: number | null;
+  /** User di-suspend admin dari diskusi publik: tombol bagikan di Catatanku disembunyikan. */
+  postingSuspended?: boolean;
 };
 
 const COUNT_LABELS: { kind: ReviewerCardKind; label: string; tone: string }[] = [
@@ -247,6 +249,7 @@ export function FlashcardReviewer({
   reportEnabled,
   discussion,
   currentUserId,
+  postingSuspended = false,
 }: Props) {
   const router = useRouter();
   const [state, dispatch] = useReducer(reducer, undefined, () =>
@@ -655,6 +658,7 @@ export function FlashcardReviewer({
           vocabId={current.vocabId}
           notes={notesByVocab[current.vocabId] ?? []}
           canShare
+          postingSuspended={postingSuspended}
           onChanged={() => void refreshNotes(current.vocabId)}
         />
       ) : null}

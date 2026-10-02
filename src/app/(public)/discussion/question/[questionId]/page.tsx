@@ -6,6 +6,8 @@ import { cache } from "react";
 import {
   countDiscussionEntries,
   getQuestionDiscussionPage,
+  isPostingSuspended,
+  withViewerVotes,
 } from "@/features/question-comment/queries";
 import { questionDiscussionMetadata } from "@/features/question-comment/seo";
 import { DiscussionPageThreads } from "@/features/question-comment/components/discussion-permalink-thread";
@@ -37,8 +39,13 @@ export default async function QuestionDiscussionPage({ params }: Props) {
 
   const [discussion, authSession] = await Promise.all([loadDiscussion(questionId), getSession()]);
   if (!discussion) notFound();
+  const currentUserId = authSession?.userId ?? null;
+  const [postingSuspended, roots] = await Promise.all([
+    isPostingSuspended(currentUserId),
+    withViewerVotes(discussion.roots, currentUserId),
+  ]);
 
-  const { question, roots } = discussion;
+  const { question } = discussion;
   const { testPackageItem } = question;
   const { testPackage } = testPackageItem;
 
@@ -84,7 +91,8 @@ export default async function QuestionDiscussionPage({ params }: Props) {
         </h2>
         <DiscussionPageThreads
           roots={roots}
-          currentUserId={authSession?.userId ?? null}
+          currentUserId={currentUserId}
+          postingSuspended={postingSuspended}
           reportEnabled={FEATURES.report}
         />
       </div>

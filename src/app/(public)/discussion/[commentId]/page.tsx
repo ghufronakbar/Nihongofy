@@ -6,7 +6,9 @@ import { cache } from "react";
 import {
   countDiscussionEntries,
   getDiscussionPermalink,
+  isPostingSuspended,
   resolveDiscussionRootId,
+  withViewerVotes,
 } from "@/features/question-comment/queries";
 import { questionDiscussionMetadata } from "@/features/question-comment/seo";
 import { DiscussionPermalinkThread } from "@/features/question-comment/components/discussion-permalink-thread";
@@ -88,8 +90,13 @@ export default async function DiscussionPermalinkPage({
 
   const [permalink, authSession] = await Promise.all([loadPermalink(commentId), getSession()]);
   if (!permalink) notFound();
+  const currentUserId = authSession?.userId ?? null;
+  const [postingSuspended, [root]] = await Promise.all([
+    isPostingSuspended(currentUserId),
+    withViewerVotes([permalink.root], currentUserId),
+  ]);
 
-  const { root, question } = permalink;
+  const { question } = permalink;
   const { testPackageItem } = question;
   const { testPackage } = testPackageItem;
   const questionsHref = `/test-package/${testPackage.id}/questions?mondai=${testPackageItem.id}`;
@@ -131,7 +138,8 @@ export default async function DiscussionPermalinkPage({
         </h2>
         <DiscussionPermalinkThread
           root={root}
-          currentUserId={authSession?.userId ?? null}
+          currentUserId={currentUserId}
+          postingSuspended={postingSuspended}
           reportEnabled={FEATURES.report}
         />
       </div>

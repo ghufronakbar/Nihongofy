@@ -33,6 +33,58 @@ contract wajib memiliki migration dan catatan ringkas di dokumen/PR perubahan. J
 
 ## Ledger
 
+### 2 Oktober 2026 - Upvote diskusi (QuestionCommentVote)
+
+- Status: deployed (2 Oktober 2026, `migrate deploy` oleh pemilik project; katalog diverifikasi read-only: kolom, CHECK, FK, index, RLS aktif, tanpa grant Data API)
+- Migration: `prisma/migrations/20261002150000_question_comment_vote/migration.sql`. Ditulis
+  tangan; `prisma migrate dev` tidak dipakai karena shadow database Supabase.
+- Alasan: suara "membantu" pada entri diskusi soal, kata, dan pola untuk urutan "Paling membantu".
+  Rancangan di [question-comment.md](../module/question-comment.md#upvote).
+- Object terdampak: tabel baru `QuestionCommentVote` (PK `commentId, userId`), index
+  `QuestionCommentVote_userId_idx`, FK `commentId` → `QuestionComment` dan `userId` → `User`
+  (keduanya `ON DELETE CASCADE`), revoke grant Data API, RLS aktif tanpa policy.
+- Data existing: tabel baru dan kosong; tidak ada backfill.
+- Risiko operasi: hanya membuat object baru, tidak mengunci tabel lama. **Wajib diterapkan sebelum
+  deploy kode**: setiap pembacaan thread (halaman diskusi soal/kata, permalink, section diskusi
+  `/bunpou/[key]`, sheet), antrean moderasi, export akun, dan cron anonimisasi kini membaca atau
+  menghapus tabel ini, sehingga kode baru tanpa migration membuat halaman tersebut error. Tidak
+  bergantung pada migration suspend posting, tetapi keduanya dijalankan berurutan oleh
+  `migrate deploy`. Build tidak menyentuh tabel ini (seluruh route diskusi dinamis; sitemap tidak
+  membaca suara).
+- Validasi: `npx prisma validate`; `prisma migrate diff` dari `schema.prisma` HEAD ke schema baru
+  menghasilkan CREATE TABLE/INDEX/FK yang sama (REVOKE + RLS ditambahkan tangan seperti tabel lain);
+  `votes.test.ts`, `anonymize-account.test.ts`, lint, typecheck, test, build.
+- Refresh setelah deploy: `npx prisma generate` lalu redeploy. Tidak ada cache yang perlu
+  diinvalidasi — thread diskusi memang tidak di-cache.
+- Owner: Engineering Owner.
+
+### 2 Oktober 2026 - Suspend posting diskusi per user
+
+- Status: deployed (2 Oktober 2026, `migrate deploy` oleh pemilik project; katalog diverifikasi read-only: kolom, CHECK, FK, index, RLS aktif, tanpa grant Data API)
+- Migration: `prisma/migrations/20261002140000_user_posting_suspension/migration.sql`. Ditulis
+  tangan; `prisma migrate dev` tidak dipakai karena shadow database Supabase.
+- Alasan: rem darurat moderasi — user yang berulang kali menyalahgunakan diskusi dapat dihentikan
+  menulis ke diskusi publik tanpa menghapus akunnya. Rancangan di
+  [admin.md](../module/admin.md#7-user-dan-akun).
+- Object terdampak: kolom `User.postingSuspendedAt`, `User.postingSuspendedReason`
+  (`VARCHAR(500)`), `User.postingSuspendedById` dengan FK self-relation `User_postingSuspendedById_fkey`
+  (`ON DELETE SET NULL`), index `User_postingSuspendedById_idx`, dan CHECK
+  `User_posting_suspension_check` (alasan/admin hanya boleh terisi bila `postingSuspendedAt`
+  terisi; hanya ada di SQL).
+- Data existing: tidak ada backfill. Seluruh baris lama punya ketiga kolom NULL, jadi CHECK
+  langsung terpenuhi dan tidak ada user yang ter-suspend.
+- Risiko operasi: `ADD COLUMN` nullable tanpa default tidak menulis ulang tabel; `ADD CONSTRAINT`
+  CHECK dan FK memindai tabel `User` yang kecil. **Wajib diterapkan sebelum deploy kode**: action
+  diskusi, halaman diskusi, halaman admin user/moderasi, export akun, dan cron anonimisasi kini
+  membaca/menulis kolom ini, sehingga kode baru tanpa migration membuat halaman tersebut error.
+  Kode lama tidak terpengaruh kolom baru.
+- Validasi: `npx prisma validate`; `prisma migrate diff` dari `schema.prisma` HEAD ke schema baru
+  menghasilkan ALTER/INDEX/FK yang sama dengan migration (CHECK ditambahkan tangan);
+  `anonymize-account.test.ts`, `posting-suspension.test.ts`, lint, typecheck, test, build.
+- Refresh setelah deploy: `npx prisma generate` lalu redeploy. Tidak ada cache yang perlu
+  diinvalidasi — status suspend dibaca per request dan tidak di-cache.
+- Owner: Engineering Owner.
+
 ### 2 Oktober 2026 - Pola bunpou sebagai target catatan dan diskusi
 
 - Status: required (belum di-deploy)

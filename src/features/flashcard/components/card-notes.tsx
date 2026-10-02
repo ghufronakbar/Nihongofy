@@ -14,6 +14,8 @@ type Props = {
   notes: OwnNote[];
   /** Tombol bagikan ke diskusi; mati bila diskusi publik tidak tersedia. */
   canShare: boolean;
+  /** User di-suspend admin dari diskusi publik; lihat `CommentItem`. */
+  postingSuspended?: boolean;
   /** Dipanggil setelah catatan berubah supaya reviewer mengambil ulang catatan kata ini. */
   onChanged: () => void;
 };
@@ -25,7 +27,13 @@ type Props = {
  * Semua aksi memakai `onChanged`, bukan refresh halaman: me-refresh halaman
  * belajar membangun ulang antrean dan mereset sesi.
  */
-export function CardNotes({ vocabId, notes, canShare, onChanged }: Props) {
+export function CardNotes({
+  vocabId,
+  notes,
+  canShare,
+  postingSuspended = false,
+  onChanged,
+}: Props) {
   const [adding, setAdding] = useState(false);
 
   return (
@@ -67,7 +75,13 @@ export function CardNotes({ vocabId, notes, canShare, onChanged }: Props) {
       {notes.length > 0 ? (
         <div className="mt-3 flex flex-col gap-3">
           {notes.map((note) => (
-            <CommentItem key={note.id} comment={note} canShare={canShare} onChanged={onChanged} />
+            <CommentItem
+              key={note.id}
+              comment={note}
+              canShare={canShare}
+              postingSuspended={postingSuspended}
+              onChanged={onChanged}
+            />
           ))}
         </div>
       ) : null}

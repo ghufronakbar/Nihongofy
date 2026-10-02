@@ -263,6 +263,15 @@ model User {
   password                 String? // null hanya untuk akun OAuth-only; jika terisi wajib berupa hash
   role                     UserRole  @default(USER) // lihat enum UserRole: tidak pernah dibaca dari JWT
 
+  // Rem darurat moderasi: terisi berarti user tidak dapat menulis ke diskusi
+  // publik (membagikan, membalas, menulis langsung, menyunting entri publik).
+  // Catatan privat tetap boleh. Diubah hanya oleh admin lewat /admin/user/[id];
+  // `postingSuspendedById` SET NULL supaya jejaknya tidak menahan akun admin.
+  postingSuspendedAt     DateTime?
+  postingSuspendedReason String?   @db.VarChar(500)
+  postingSuspendedById   Int?
+  postingSuspendedBy     User?     @relation("PostingSuspendedBy", fields: [postingSuspendedById], references: [id], onDelete: SetNull)
+
   questionComments       QuestionComment[]
   deletedComments        QuestionComment[]           @relation("CommentDeletedBy")
   adminAuditLogs         AdminAuditLog[]             @relation("AdminAuditActor")
@@ -281,6 +290,8 @@ model User {
   reports                Report[]                    @relation("ReportReporter")
   handledReports         Report[]                    @relation("ReportHandledBy")
   reportReplies          Report[]                    @relation("ReportRepliedBy")
+  postingSuspensionsIssued User[]                    @relation("PostingSuspendedBy")
+  questionCommentVotes   QuestionCommentVote[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -288,6 +299,7 @@ model User {
   // Partial index: baris ADMIN hanya segelintir, dan daftar admin dibaca jauh
   // lebih sering daripada diubah.
   @@index([role])
+  @@index([postingSuspendedById])
 }
 
 // Provider subject adalah identitas stabil. Email hanya snapshot untuk status
@@ -927,6 +939,7 @@ model QuestionComment {
   mentionedBy QuestionComment[] @relation("CommentMentions")
 
   reports Report[]
+  votes   QuestionCommentVote[]
 
   commentText   String   @db.Text
   commentImages String[] // url gambar lampiran
@@ -970,6 +983,24 @@ model QuestionComment {
   @@index([bunpouPointId, parentId, sharedAt])
   @@index([deletedById])
   @@index([repliedToId])
+}
+
+// Upvote "membantu" pada entri diskusi publik (root atau balasan). Satu suara per
+// user per entri dan bisa ditarik; tidak ada downvote. Jumlahnya dihitung lewat
+// groupBy saat thread dibaca, tidak disimpan sebagai kolom. Siapa yang memberi
+// suara tidak pernah dikirim ke client — hanya jumlah dan status milik viewer.
+// Suara pada catatan sendiri, catatan privat, atau tombstone ditolak di action;
+// takedown tidak menghapus suara. Ikut dihapus saat akun dianonimkan.
+model QuestionCommentVote {
+  comment   QuestionComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId Int
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  createdAt DateTime        @default(now())
+
+  @@id([commentId, userId])
+  // Penghapusan saat anonimisasi dan export data akun mencari per user.
+  @@index([userId])
 }
 
 // ============================================================

@@ -61,6 +61,13 @@ export const GetDiscussionSchema = z.object({
   target: CommentTargetSchema,
 });
 
+// `voted` adalah keadaan yang diinginkan, bukan toggle: klik ganda atau retry
+// tidak membalik suara dua kali.
+export const VoteQuestionCommentSchema = z.object({
+  commentId: z.number().int().positive(),
+  voted: z.boolean(),
+});
+
 export const GetOwnVocabNotesSchema = z.object({
   vocabId: z.number().int().positive(),
 });
@@ -84,4 +91,5 @@ export type SetQuestionCommentVisibilityInput = z.infer<
 >;
 export type GetDiscussionInput = z.infer<typeof GetDiscussionSchema>;
 export type GetOwnVocabNotesInput = z.infer<typeof GetOwnVocabNotesSchema>;
+export type VoteQuestionCommentInput = z.infer<typeof VoteQuestionCommentSchema>;
 export type CreateCommentImageUploadInput = z.infer<typeof CreateCommentImageUploadSchema>;

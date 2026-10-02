@@ -667,8 +667,14 @@ satu-satunya konten buatan user yang terlihat publik, termasuk oleh guest.
 - [x] `QuestionComment.deletedById` — migration `20260925180000_comment_deleted_by`. Bukan opsional
   pada akhirnya: tanpa itu pemulihan tidak dapat membedakan takedown admin dari hapusan pemilik.
   Baris lama dibackfill sebagai hapusan pemilik
-- [ ] Opsional: penanda suspend posting publik di `User` — sekarang satu-satunya cara
-  menghentikan penyalahgunaan berulang adalah menghapus akunnya
+- [x] Suspend posting diskusi per user (2 Okt 2026) — `User.postingSuspendedAt`/`Reason`/`ById`,
+  migration `20261002140000_user_posting_suspension`. Ditegakkan di semua action tulis publik
+  (`checkPublicPostingAllowed`, dijaga `posting-suspension.test.ts`); catatan privat, hapus, dan
+  tarik ke privat tetap bisa. Form diskusi diganti keterangan "Akun dibatasi". Panel `#posting` di
+  `/admin/user/[id]` (alasan wajib, tidak bisa suspend diri sendiri, audit log), pintasan dari
+  baris penulis `/admin/moderation`, filter "Posting dibatasi" di daftar user. Ikut dikosongkan
+  `anonymizeAccount` dan ikut di export data akun
+- [ ] Verifikasi manual (user) suspend posting setelah `migrate deploy` — lihat ledger migration
 - [x] Peringatan saat `FEATURES_QUESTION_DISCUSSION` mati ditampilkan di halaman moderasi (dan
   `FEATURES_ARTICLE` di halaman artikel): layar admin tetap dapat dipakai saat modul publiknya mati
 - [x] Thread dan hitungannya sengaja tidak di-cache dan tidak punya tag di `CACHE_TAGS` — aksi
@@ -825,8 +831,11 @@ memusnahkan balasan pengguna lain pada thread miliknya.
 - [x] Nav publik dapat entri "Diskusi" di balik `FEATURES_QUESTION_DISCUSSION`
 - [ ] Verifikasi manual (user): ganti username lalu pastikan mention lama ikut berubah; uji
   request deletion sampai cron berjalan dan cek thread tetap utuh
-- [ ] Setiap relasi personal baru pada `User` wajib ditambahkan ke `anonymizeAccount` — belum ada
-  test otomatis yang menjaga ini
+- [x] Setiap relasi personal baru pada `User` wajib ditambahkan ke `anonymizeAccount` — dijaga
+  `src/features/auth/lib/anonymize-account.test.ts` (2 Okt 2026): `HANDLED_USER_RELATIONS` mendaftar
+  tiap relasi `User` dari `Prisma.dmmf` beserta caranya (dihapus/dikosongkan/dianonimkan/dibiarkan +
+  alasan), dan sumber `anonymizeAccount` diperiksa benar-benar memuat `deleteMany`/`updateMany`
+  yang di-scope ke user. Relasi baru yang belum terdaftar membuat tes gagal
 
 ## Fase 8.9 — Bugfix Hitungan Lembar Jawaban + Hasil untuk Guest
 
@@ -1130,8 +1139,15 @@ Keputusan desain dan alasannya ada di `docs/module/flashcard.md`; kontrak datany
   `FEATURES_FLASHCARD_DISCUSSION`, serta rate limit Redis untuk semua tulisan catatan (soal dan
   flashcard) dan upload gambar. Migration `20261002090000_comment_flashcard_vocab_target` hanya
   menambah kolom. Diuji terhadap Postgres + Redis lokal dan di browser.
-- [ ] Upvote catatan dan diskusi (soal dan kata) — fitur mendatang, rancangan di
-  `docs/module/question-comment.md#fitur-mendatang-upvote`.
+- [x] Upvote diskusi (soal, kata, pola) — 2 Okt 2026, migration
+  `20261002150000_question_comment_vote`. Tabel `QuestionCommentVote` (PK `commentId + userId`),
+  `voteQuestionCommentAction` dengan kuota Redis sendiri (60/jam), aturan `voteRejection`
+  (bukan catatan sendiri/privat/tombstone/thread arsip), jumlah lewat `groupBy` + status viewer
+  lewat `withViewerVotes` (tidak ada identitas pemberi suara yang terkirim), tombol "Membantu",
+  urutan "Terbaru"/"Paling membantu" di `DiscussionThread`, jumlah suara di antrean moderasi,
+  ikut `anonymizeAccount` dan export akun. Rancangan di
+  `docs/module/question-comment.md#upvote`.
+- [ ] Verifikasi manual (user) upvote setelah `migrate deploy` — lihat ledger migration
 
 ### Langkah tersisa (dijalankan pemilik project)
 

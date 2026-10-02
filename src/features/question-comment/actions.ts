@@ -1,13 +1,26 @@
 "use server";
 
 import { notFound, redirect } from "next/navigation";
-import { COMMENT_IMAGE_UPLOAD_RATE_LIMITS, COMMENT_WRITE_RATE_LIMITS, FEATURES } from "@/constants";
+import {
+  COMMENT_IMAGE_UPLOAD_RATE_LIMITS,
+  COMMENT_VOTE_RATE_LIMITS,
+  COMMENT_WRITE_RATE_LIMITS,
+  FEATURES,
+} from "@/constants";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { createCommentImageUpload, isAllowedCommentImageUrl } from "@/lib/r2";
 import { formatRetryAfter } from "@/lib/rate-limit";
 import { limitByRedis } from "@/lib/redis-rate-limit";
-import { getDiscussion, getOwnVocabNotes, type DiscussionRoot, type OwnNote } from "./queries";
+import {
+  countVotes,
+  getDiscussion,
+  getOwnVocabNotes,
+  isPostingSuspended,
+  withViewerVotes,
+  type DiscussionRoot,
+  type OwnNote,
+} from "./queries";
 import {
   AddQuestionCommentSchema,
   EditQuestionCommentSchema,
@@ -17,6 +30,7 @@ import {
   GetDiscussionSchema,
   GetOwnVocabNotesSchema,
   CreateCommentImageUploadSchema,
+  VoteQuestionCommentSchema,
   type AddQuestionCommentInput,
   type EditQuestionCommentInput,
   type DeleteQuestionCommentInput,
@@ -25,15 +39,25 @@ import {
   type GetDiscussionInput,
   type GetOwnVocabNotesInput,
   type CreateCommentImageUploadInput,
+  type VoteQuestionCommentInput,
 } from "./schemas";
 import { targetColumns, targetOf, type CommentTarget } from "./target";
+import { voteRejection } from "./votes";
 
 /**
- * Hasil aksi tulis. Penolakan yang perlu dibaca user (rate limit) dikembalikan
- * sebagai pesan, bukan dilempar: pesan error Server Action disamarkan di
- * produksi. Input tidak valid dan akses terlarang tetap `notFound()`/throw.
+ * Hasil aksi tulis. Penolakan yang perlu dibaca user (rate limit, akun
+ * dibatasi) dikembalikan sebagai pesan, bukan dilempar: pesan error Server
+ * Action disamarkan di produksi. Input tidak valid dan akses terlarang tetap
+ * `notFound()`/throw.
  */
 export type CommentActionResult = { ok: true } | { ok: false; message: string };
+
+/** Thread satu target beserta status viewer yang memengaruhi form-nya. */
+export type DiscussionThreadData = {
+  roots: DiscussionRoot[];
+  /** Viewer login yang di-suspend admin: form diskusi diganti keterangan. */
+  postingSuspended: boolean;
+};
 
 // ============================================================
 // FLAG PER TARGET
@@ -121,6 +145,7 @@ async function requireOwnLiveComment(commentId: number, userId: number) {
       parentId: true,
       deletedAt: true,
       sharedAt: true,
+      visibility: true,
       ...commentTargetSelect,
     },
   });
@@ -139,6 +164,19 @@ async function checkWriteLimit(userId: number): Promise<CommentActionResult | nu
   return {
     ok: false,
     message: `Terlalu banyak catatan dalam waktu singkat. Coba lagi dalam ${formatRetryAfter(limit.retryAfterSeconds)}.`,
+  };
+}
+
+// Rem darurat dari admin (`User.postingSuspendedAt`). Hanya jalur yang menulis
+// ke diskusi publik yang dibatasi: catatan privat, menghapus, dan menarik
+// kembali ke privat tetap jalan. Konten publik lama tidak disentuh — takedown
+// tetap urusan /admin/moderation.
+async function checkPublicPostingAllowed(userId: number): Promise<CommentActionResult | null> {
+  if (!(await isPostingSuspended(userId))) return null;
+  return {
+    ok: false,
+    message:
+      "Akun Anda sedang dibatasi dari diskusi publik: tidak dapat membagikan, membalas, atau menulis di diskusi. Catatan pribadi tetap bisa ditulis.",
   };
 }
 
@@ -163,6 +201,11 @@ export async function addQuestionCommentAction(
 
   requireOwnedCommentImages(commentImages, authSession.userId);
   await ensureTargetExists(target);
+
+  if (visibility === "PUBLIC") {
+    const suspended = await checkPublicPostingAllowed(authSession.userId);
+    if (suspended) return suspended;
+  }
 
   const limited = await checkWriteLimit(authSession.userId);
   if (limited) return limited;
@@ -195,6 +238,13 @@ export async function updateQuestionCommentAction(
   requireOwnedCommentImages(commentImages, authSession.userId);
   const comment = await requireOwnLiveComment(commentId, authSession.userId);
   if (!notesEnabled(comment.target)) notFound();
+
+  // Menyunting entri yang sedang tampil publik sama dengan menulis ke diskusi.
+  // Balasan selalu publik; root privat (termasuk yang disembunyikan) bebas.
+  if (comment.parentId !== null || comment.visibility === "PUBLIC") {
+    const suspended = await checkPublicPostingAllowed(authSession.userId);
+    if (suspended) return suspended;
+  }
 
   const limited = await checkWriteLimit(authSession.userId);
   if (limited) return limited;
@@ -274,6 +324,9 @@ export async function setQuestionCommentVisibilityAction(
 
   // Hanya membagikan yang dibatasi: menarik kembali ke privat harus selalu bisa.
   if (visibility === "PUBLIC") {
+    const suspended = await checkPublicPostingAllowed(authSession.userId);
+    if (suspended) return suspended;
+
     const limited = await checkWriteLimit(authSession.userId);
     if (limited) return limited;
   }
@@ -348,6 +401,9 @@ export async function replyToQuestionCommentAction(
     }
   }
 
+  const suspended = await checkPublicPostingAllowed(authSession.userId);
+  if (suspended) return suspended;
+
   const limited = await checkWriteLimit(authSession.userId);
   if (limited) return limited;
 
@@ -370,7 +426,9 @@ export async function replyToQuestionCommentAction(
   return { ok: true };
 }
 
-export async function getDiscussionAction(input: GetDiscussionInput): Promise<DiscussionRoot[]> {
+export async function getDiscussionAction(
+  input: GetDiscussionInput,
+): Promise<DiscussionThreadData> {
   const validated = GetDiscussionSchema.safeParse(input);
   if (!validated.success) {
     throw new Error("Data tidak valid.");
@@ -378,7 +436,91 @@ export async function getDiscussionAction(input: GetDiscussionInput): Promise<Di
   if (!discussionEnabled(validated.data.target)) notFound();
 
   // Diskusi publik terbuka untuk guest; login hanya dibutuhkan untuk menulis.
-  return getDiscussion(validated.data.target);
+  const authSession = await getSession();
+  const viewerId = authSession?.userId ?? null;
+  const [roots, postingSuspended] = await Promise.all([
+    getDiscussion(validated.data.target),
+    isPostingSuspended(viewerId),
+  ]);
+  return { roots: await withViewerVotes(roots, viewerId), postingSuspended };
+}
+
+// ============================================================
+// SUARA "MEMBANTU"
+// ============================================================
+
+export type VoteActionResult =
+  | { ok: true; voted: boolean; voteCount: number }
+  | { ok: false; message: string };
+
+/**
+ * Memberi atau menarik suara "membantu". Satu suara per user per entri
+ * (PK `commentId + userId`), tanpa downvote. Kuota Redis sendiri, terpisah dari
+ * kuota tulis. User yang di-suspend dari posting tetap boleh memberi suara:
+ * suara tidak menerbitkan konten apa pun.
+ *
+ * Menarik suara tidak memeriksa keadaan entri — takedown tidak menghapus suara,
+ * dan pemiliknya tetap boleh menariknya.
+ */
+export async function voteQuestionCommentAction(
+  input: VoteQuestionCommentInput,
+): Promise<VoteActionResult> {
+  const authSession = await getSession();
+  if (!authSession) redirect("/login");
+
+  const validated = VoteQuestionCommentSchema.safeParse(input);
+  if (!validated.success) {
+    throw new Error("Data tidak valid.");
+  }
+  const { commentId, voted } = validated.data;
+  const userId = authSession.userId;
+
+  const comment = await prisma.questionComment.findUnique({
+    where: { id: commentId },
+    select: {
+      userId: true,
+      deletedAt: true,
+      visibility: true,
+      sharedAt: true,
+      ...commentTargetSelect,
+      parent: { select: { visibility: true, sharedAt: true, deletedAt: true } },
+    },
+  });
+  if (!comment) notFound();
+  const target = targetOf(comment);
+  if (!target || !discussionEnabled(target)) notFound();
+
+  if (voted) {
+    const rejection = voteRejection(
+      { authorId: comment.userId, deletedAt: comment.deletedAt, root: comment.parent ?? comment },
+      userId,
+    );
+    if (rejection === "unavailable") notFound();
+    if (rejection === "own") {
+      return { ok: false, message: "Tidak bisa memberi suara pada catatan sendiri." };
+    }
+  }
+
+  const limit = await limitByRedis("comment-vote", userId, COMMENT_VOTE_RATE_LIMITS);
+  if (!limit.allowed) {
+    return {
+      ok: false,
+      message: `Terlalu banyak suara dalam waktu singkat. Coba lagi dalam ${formatRetryAfter(limit.retryAfterSeconds)}.`,
+    };
+  }
+
+  if (voted) {
+    // skipDuplicates: klik ganda atau retry tidak menggagalkan apa pun.
+    await prisma.questionCommentVote.createMany({
+      data: [{ commentId, userId }],
+      skipDuplicates: true,
+    });
+  } else {
+    await prisma.questionCommentVote.deleteMany({ where: { commentId, userId } });
+  }
+
+  const counts = await countVotes([commentId]);
+  return { ok: true, voted, voteCount: counts.get(commentId) ?? 0 };
 }
 
 // ============================================================

@@ -110,7 +110,8 @@ Yang dilakukan saat jatuh tempo:
   Root menjadi tombstone; balasan orang lain di bawahnya tetap terbaca.
 - Data pribadi yang dulu ikut terhapus oleh cascade kini dihapus eksplisit: flashcard beserta
   revlog/card/note/deck/preset/collection, practice session, attempt, kana progress, article
-  interaction, conversation session dan quota, auth token, serta `OAuthAccount`. **Melewatkan satu
+  interaction, conversation session dan quota, suara "membantu" di diskusi, auth token, serta
+  `OAuthAccount`. **Melewatkan satu
   relasi berarti data pribadi tertinggal di akun yang mengira dirinya sudah dihapus.**
 - `OAuthAccount` wajib dihapus; tanpa itu login Google menghidupkan kembali akun lewat provider
   subject yang masih tertaut.
@@ -124,6 +125,18 @@ Yang dilakukan saat jatuh tempo:
   dianonimkan pada detik yang sama menghasilkan string identik, jadi bentrokannya diselesaikan
   dengan salt acak alih-alih menggagalkan cron.
 - `loginAction` menolak akun dengan `anonymizedAt` terisi.
+- **Dijaga tes.** `anonymize-account.test.ts` membaca relasi `User` dari `Prisma.dmmf` dan
+  mencocokkannya dengan daftar eksplisit `HANDLED_USER_RELATIONS` (per nama field relasi, karena
+  `Report` punya tiga relasi ke `User` dengan penanganan berbeda). Tiap entri menyebut caranya:
+  `dihapus`, `dikosongkan`, `dianonimkan`, atau `dibiarkan` beserta alasannya. Untuk tiga cara
+  pertama tes juga memastikan sumber `anonymizeAccount` memuat `deleteMany`/`updateMany` yang
+  di-scope ke user. Menambah relasi ke `User` tanpa mendaftarkannya membuat tes gagal.
+- Yang sengaja dibiarkan: `deletedComments` (`deletedById` pada catatan orang lain = atribusi
+  takedown admin), `handledReports`, dan `reportReplies` (jejak admin yang menindak/membalas laporan
+  orang lain). Ketiganya setara `AdminAuditLog`; nama yang tampil ikut anonim karena dibaca dari
+  baris `User`. Begitu juga `postingSuspensionsIssued` (suspend posting yang pernah diberikan
+  admin ini kepada orang lain). Suspend posting **milik** akun ini (`postingSuspendedBy` beserta
+  waktu dan alasannya) dikosongkan di update baris `User`.
 
 ## Cloudflare Turnstile
 

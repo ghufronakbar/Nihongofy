@@ -18,12 +18,16 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Field, FieldError } from "@/components/ui/field";
 import { Spinner } from "@/components/ui/spinner";
-import { addQuestionCommentAction, getDiscussionAction } from "../actions";
+import {
+  addQuestionCommentAction,
+  getDiscussionAction,
+  type DiscussionThreadData,
+} from "../actions";
 import { AddQuestionCommentSchema, type AddQuestionCommentInput } from "../schemas";
-import type { DiscussionRoot } from "../queries";
 import { discussionPageHref, type CommentTarget } from "../target";
 import { CommentImageUploader } from "./comment-image-uploader";
 import { DiscussionThread } from "./discussion-thread";
+import { PostingSuspendedNotice } from "./posting-suspended-notice";
 
 const COPY: Record<
   CommentTarget["type"],
@@ -140,7 +144,7 @@ export function DiscussionSheet({
 }) {
   const copy = COPY[target.type];
   const [open, setOpen] = useState(false);
-  const [roots, setRoots] = useState<DiscussionRoot[] | null>(null);
+  const [thread, setThread] = useState<DiscussionThreadData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   // Thread baru diambil saat sheet dibuka, bukan saat halaman dirender, supaya
@@ -148,7 +152,7 @@ export function DiscussionSheet({
   const load = useCallback(async () => {
     setIsLoading(true);
     try {
-      setRoots(await getDiscussionAction({ target }));
+      setThread(await getDiscussionAction({ target }));
     } finally {
       setIsLoading(false);
     }
@@ -157,11 +161,11 @@ export function DiscussionSheet({
   function handleOpenChange(next: boolean) {
     setOpen(next);
     onOpenChange?.(next);
-    if (next && roots === null) void load();
+    if (next && thread === null) void load();
   }
 
-  const count = roots
-    ? roots.reduce(
+  const count = thread
+    ? thread.roots.reduce(
         (total, root) => total + root.replies.length + (root.state === "VISIBLE" ? 1 : 0),
         0,
       )
@@ -196,14 +200,15 @@ export function DiscussionSheet({
         </SheetHeader>
 
         <div className="flex-1 overflow-y-auto px-4 pb-4">
-          {isLoading && roots === null ? (
+          {isLoading && thread === null ? (
             <div className="flex justify-center py-8">
               <Spinner />
             </div>
           ) : (
             <DiscussionThread
-              roots={roots ?? []}
+              roots={thread?.roots ?? []}
               currentUserId={currentUserId}
+              postingSuspended={thread?.postingSuspended ?? false}
               onChanged={() => void load()}
               reportEnabled={reportEnabled}
               emptyText={copy.empty}
@@ -219,6 +224,8 @@ export function DiscussionSheet({
             >
               Masuk untuk ikut berdiskusi
             </Link>
+          ) : thread?.postingSuspended ? (
+            <PostingSuspendedNotice />
           ) : (
             <NewPublicNoteForm
               target={target}

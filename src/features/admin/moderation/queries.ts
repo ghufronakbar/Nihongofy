@@ -2,6 +2,7 @@ import "server-only";
 
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { countVotes } from "@/features/question-comment/queries";
 import type { ModerationQueryInput } from "./schemas";
 
 // Tidak di-cache, sejalan dengan modul diskusi itu sendiri: thread dan
@@ -24,7 +25,7 @@ const moderationSelect = {
   deletedAt: true,
   deletedById: true,
   createdAt: true,
-  user: { select: { id: true, displayName: true, email: true } },
+  user: { select: { id: true, displayName: true, email: true, postingSuspendedAt: true } },
   deletedBy: { select: { id: true, displayName: true } },
   question: {
     select: {
@@ -54,9 +55,12 @@ export type ModerationEntry = Omit<ModerationRow, "deletedById"> & {
   // Hanya takedown admin yang dapat dipulihkan. Memulihkan hapusan pemilik
   // berarti menerbitkan ulang tulisan yang sengaja ia tarik.
   canRestore: boolean;
+  // Suara "membantu", termasuk pada entri yang sudah di-takedown: takedown
+  // tidak menghapus suara, hanya menyembunyikan entrinya.
+  voteCount: number;
 };
 
-function toEntry(row: ModerationRow): ModerationEntry {
+function toEntry(row: ModerationRow, voteCount: number): ModerationEntry {
   const { deletedById, ...rest } = row;
   const removedByAdmin = Boolean(row.deletedAt) && deletedById !== null && deletedById !== row.user.id;
 
@@ -73,6 +77,7 @@ function toEntry(row: ModerationRow): ModerationEntry {
     kind: row.parentId === null ? "root" : "reply",
     state,
     canRestore: state === "TAKEN_DOWN",
+    voteCount,
   };
 }
 
@@ -116,8 +121,10 @@ export async function listModerationQueue(filter: ModerationQueryInput) {
     else removed += row._count._all;
   }
 
+  const votes = await countVotes(rows.map((row) => row.id));
+
   return {
-    entries: rows.map(toEntry),
+    entries: rows.map((row) => toEntry(row, votes.get(row.id) ?? 0)),
     counts: { all: live + removed, live, removed },
     truncated: rows.length === 100,
   };
@@ -127,7 +134,14 @@ export async function getModerationUserSummary(userId: number) {
   const [user, roots, replies, removed] = await Promise.all([
     prisma.user.findUnique({
       where: { id: userId },
-      select: { id: true, displayName: true, email: true, createdAt: true, role: true },
+      select: {
+        id: true,
+        displayName: true,
+        email: true,
+        createdAt: true,
+        role: true,
+        postingSuspendedAt: true,
+      },
     }),
     prisma.questionComment.count({
       where: { userId, parentId: null, sharedAt: { not: null } },

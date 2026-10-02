@@ -161,6 +161,9 @@ export const COMMENT_IMAGE_UPLOAD_RATE_LIMITS = [
   { seconds: 60 * 60, max: 40 },
   { seconds: 24 * 60 * 60, max: 150 },
 ] as const;
+// Suara "membantu" pada diskusi, terpisah dari kuota tulis supaya memberi suara
+// tidak menghabiskan jatah menulis. Memberi dan menarik suara sama-sama dihitung.
+export const COMMENT_VOTE_RATE_LIMITS = [{ seconds: 60 * 60, max: 60 }] as const;
 
 export const SITE_URL = new URL(env.APP_URL);
 export const GOOGLE_OAUTH_ENABLED = Boolean(

@@ -17,6 +17,8 @@ export type BunpouCommunity = {
   pointKey: string;
   /** Null untuk guest. */
   viewerId: number | null;
+  /** Viewer di-suspend admin: form diskusi diganti keterangan. */
+  postingSuspended: boolean;
   notes: OwnNote[];
   roots: DiscussionRoot[];
   entryCount: number;
@@ -48,7 +50,12 @@ export function BunpouOwnNotes({ community }: { community: BunpouCommunity }) {
             Catatan privat hanya terlihat olehmu; bagikan ke diskusi bila ingin dibaca orang lain.
           </p>
           {community.notes.map((note) => (
-            <CommentItem key={note.id} comment={note} canShare />
+            <CommentItem
+              key={note.id}
+              comment={note}
+              canShare
+              postingSuspended={community.postingSuspended}
+            />
           ))}
           <QuestionCommentForm
             target={target}
@@ -77,6 +84,7 @@ export function BunpouDiscussion({ community }: { community: BunpouCommunity }) 
       <DiscussionPageThreads
         roots={community.roots}
         currentUserId={community.viewerId}
+        postingSuspended={community.postingSuspended}
         reportEnabled={community.reportEnabled}
         emptyText="Belum ada diskusi untuk pola ini. Jadilah yang pertama."
       />
@@ -88,6 +96,7 @@ export function BunpouDiscussion({ community }: { community: BunpouCommunity }) 
         ) : (
           <DiscussionComposer
             target={{ type: "bunpou", bunpouPointId: community.pointId }}
+            postingSuspended={community.postingSuspended}
             placeholder="Bagikan contoh kalimat, tips mengingat, atau pertanyaan tentang pola ini..."
           />
         )}

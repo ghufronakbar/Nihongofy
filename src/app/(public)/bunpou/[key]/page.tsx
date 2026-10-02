@@ -9,6 +9,8 @@ import {
   countDiscussionEntries,
   getDiscussion,
   getOwnBunpouNotes,
+  isPostingSuspended,
+  withViewerVotes,
 } from "@/features/question-comment/queries";
 import { getSession } from "@/lib/auth";
 import { BunpouKeySchema } from "@/features/bunpou/schemas";
@@ -46,12 +48,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 async function loadCommunity(pointId: number, pointKey: string): Promise<BunpouCommunity | null> {
   if (!FEATURES.bunpouDiscussion) return null;
   const target = { type: "bunpou" as const, bunpouPointId: pointId };
-  const [session, roots] = await Promise.all([getSession(), getDiscussion(target)]);
-  const notes = session ? await getOwnBunpouNotes(session.userId, pointId) : [];
+  const [session, threadRoots] = await Promise.all([getSession(), getDiscussion(target)]);
+  const viewerId = session?.userId ?? null;
+  const [notes, postingSuspended, roots] = await Promise.all([
+    viewerId === null ? [] : getOwnBunpouNotes(viewerId, pointId),
+    isPostingSuspended(viewerId),
+    withViewerVotes(threadRoots, viewerId),
+  ]);
   return {
     pointId,
     pointKey,
-    viewerId: session?.userId ?? null,
+    viewerId,
+    postingSuspended,
     notes,
     roots,
     entryCount: countDiscussionEntries(roots),

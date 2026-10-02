@@ -14,6 +14,8 @@ import {
   countDiscussionEntries,
   getDiscussion,
   getOwnVocabNotes,
+  isPostingSuspended,
+  withViewerVotes,
 } from "@/features/question-comment/queries";
 import { vocabDiscussionMetadata } from "@/features/question-comment/seo";
 import { CommentItem } from "@/features/question-comment/components/comment-item";
@@ -59,13 +61,15 @@ export default async function VocabDiscussionPage({ params }: Props) {
   const { vocabId: rawVocabId } = await params;
   const [loaded, session] = await Promise.all([loadVocab(rawVocabId), getSession()]);
   if (!loaded) notFound();
-  const { vocab, roots } = loaded;
+  const { vocab } = loaded;
   const vocabId = vocab.vocabId;
 
   const target = { type: "vocab" as const, vocabId };
-  const [ownNotes, settings] = await Promise.all([
+  const [ownNotes, settings, postingSuspended, roots] = await Promise.all([
     session ? getOwnVocabNotes(session.userId, [vocabId]) : null,
     session ? getFlashcardSettings(session.userId) : null,
+    isPostingSuspended(session?.userId ?? null),
+    withViewerVotes(loaded.roots, session?.userId ?? null),
   ]);
   const notes = ownNotes?.get(vocabId) ?? [];
   const display = settings?.display ?? FLASHCARD_DEFAULT_DISPLAY;
@@ -118,7 +122,12 @@ export default async function VocabDiscussionPage({ params }: Props) {
             olehmu; bagikan ke diskusi bila ingin dibaca orang lain.
           </p>
           {notes.map((note) => (
-            <CommentItem key={note.id} comment={note} canShare />
+            <CommentItem
+              key={note.id}
+              comment={note}
+              canShare
+              postingSuspended={postingSuspended}
+            />
           ))}
           {!vocab.retired ? (
             <QuestionCommentForm
@@ -136,6 +145,7 @@ export default async function VocabDiscussionPage({ params }: Props) {
         <DiscussionPageThreads
           roots={roots}
           currentUserId={session?.userId ?? null}
+          postingSuspended={postingSuspended}
           reportEnabled={FEATURES.report}
           emptyText="Belum ada diskusi untuk kata ini."
         />
@@ -148,7 +158,7 @@ export default async function VocabDiscussionPage({ params }: Props) {
               Masuk untuk ikut berdiskusi
             </Link>
           ) : !vocab.retired ? (
-            <VocabDiscussionComposer vocabId={vocabId} />
+            <VocabDiscussionComposer vocabId={vocabId} postingSuspended={postingSuspended} />
           ) : null}
         </div>
       </section>

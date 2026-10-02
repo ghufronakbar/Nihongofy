@@ -310,6 +310,27 @@ penyalahgunaan hanya ketahuan bila admin memeriksa antrean secara aktif.
 - Reset bucket `AuthRateLimit` untuk user yang terkunci. Key disimpan sebagai HMAC sehingga
   pencarian harus lewat helper yang sama dengan yang membuatnya, bukan query mentah.
 - Lihat dan batalkan `deletionRequestedAt` / `deletionScheduledFor`.
+- **Suspend posting diskusi publik** (2 Oktober 2026), section `#posting` di `/admin/user/[id]`
+  (`PostingSuspensionPanel`, `suspendUserPostingAction`/`liftUserPostingSuspensionAction`). Rem
+  darurat untuk penyalahgunaan berulang tanpa menghapus akun:
+  - Mengisi `User.postingSuspendedAt`, `postingSuspendedReason` (wajib, 5–500 karakter), dan
+    `postingSuspendedById`. Mencabutnya mengosongkan ketiganya.
+  - Efeknya ditegakkan di setiap action tulis publik `question-comment/actions.ts`
+    (`checkPublicPostingAllowed`): membuat catatan publik, membagikan, membalas, dan menyunting
+    entri yang sedang publik ditolak dengan `{ ok: false, message }` di target soal, kata, dan
+    pola. Catatan privat, menghapus, dan menarik ke privat tetap bisa. Konten publik lama tidak
+    berubah — takedown tetap lewat Moderasi.
+  - Admin tidak dapat men-suspend dirinya sendiri; akun yang sudah dianonimkan juga ditolak.
+  - Dicatat di audit log (`user.posting_suspend`, `user.posting_unsuspend`). Alasan sengaja tidak
+    masuk `summary` (bisa memuat kutipan konten); tersimpan di baris `User` selama suspend
+    berlaku dan ikut hilang saat dicabut.
+  - Antrean moderasi juga menampilkan jumlah suara "membantu" tiap entri; takedown tidak menghapus
+    suara ([question-comment.md](question-comment.md#upvote)).
+  - Pintasan: badge "batasi"/"dibatasi" di tiap baris penulis `/admin/moderation` dan tombol di
+    ringkasan per user menaut ke `/admin/user/<id>#posting`. Daftar user punya filter
+    "Posting dibatasi".
+  - Pemilik akun dapat membaca waktu dan alasannya lewat export data akun; identitas admin tidak
+    ikut.
 
 ### 8. Conversation
 
@@ -368,7 +389,7 @@ Aturan project yang existing tetap berlaku penuh di area admin:
 | `enum UserRole` + `User.role` | Prasyarat seluruh modul |
 | ~~`AdminAuditLog`~~ | Sudah dibuat di Tahap 7 |
 | `QuestionComment.deletedBy` (opsional) | Membedakan hapus oleh pemilik dan takedown oleh admin; sekarang `deletedAt` tidak menyimpan siapa pelakunya |
-| Penanda suspend posting publik pada `User` | Tidak ada cara menghentikan user yang berulang kali menyalahgunakan diskusi selain menghapus akunnya |
+| ~~Penanda suspend posting publik pada `User`~~ | Sudah dibuat (2 Oktober 2026, `20261002140000_user_posting_suspension`) — lihat §7 |
 | Bucket rate limit posting | Pembuatan catatan/balasan sekarang tanpa batas laju; pola `AuthRateLimit` dapat dipakai ulang |
 
 Tiga yang terakhir bersifat opsional untuk versi pertama, tetapi `deletedBy` dan penanda

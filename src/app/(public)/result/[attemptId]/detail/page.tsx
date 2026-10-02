@@ -11,6 +11,7 @@ import { QuestionCommentForm } from "@/features/question-comment/components/ques
 import { CommentItem } from "@/features/question-comment/components/comment-item";
 import { DiscussionSheet } from "@/features/question-comment/components/discussion-sheet";
 import { getSession } from "@/lib/auth";
+import { isPostingSuspended } from "@/features/question-comment/queries";
 import { CopyQuestionButton } from "@/components/copy-question-button";
 import { ReportButton } from "@/features/report/components/report-button";
 import { QuestionNavList, type NavMondaiItem } from "@/components/question-nav";
@@ -50,6 +51,7 @@ export default async function ResultDetailPage({
     getSession(),
   ]);
   const currentUserId = authSession?.userId ?? null;
+  const postingSuspended = await isPostingSuspended(currentUserId);
 
   if (testPackageItems.length === 0) {
     return (
@@ -442,6 +444,7 @@ export default async function ResultDetailPage({
                                   key={comment.id}
                                   comment={comment}
                                   canShare={FEATURES.questionDiscussion}
+                                  postingSuspended={postingSuspended}
                                 />
                               ))}
                             </div>

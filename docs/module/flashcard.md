@@ -257,8 +257,6 @@ Kontrak lengkapnya di [seed-flashcard.md](../seed-flashcard.md):
 ## Yang Belum Ada
 
 - Audio atau tombol dengar (TTS browser seperti modul kana bisa ditambahkan tanpa file).
-- Upvote catatan dan diskusi kata — dirancang di
-  [question-comment.md](question-comment.md#fitur-mendatang-upvote), berlaku juga untuk diskusi soal.
 - Halaman admin untuk meninjau kata bertanda ragu dari generator AI. Sementara memakai
   `npm run flashcard:doubts` dan `npm run fix:flashcard-doubts` di terminal, lalu seed ulang.
 

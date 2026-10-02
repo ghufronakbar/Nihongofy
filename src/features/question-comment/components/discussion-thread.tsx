@@ -6,6 +6,8 @@ import { Link2, MessageSquareReply } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { DiscussionReply, DiscussionRoot } from "../queries";
 import { discussionThreadHref } from "../target";
+import { DISCUSSION_SORT_LABELS, sortDiscussionRoots, type DiscussionSort } from "../votes";
+import { cn } from "@/lib/utils";
 import {
   CommentAuthorLine,
   CommentAvatar,
@@ -14,17 +16,32 @@ import {
 } from "./comment-body";
 import { ReportButton } from "@/features/report/components/report-button";
 import { ReplyForm } from "./reply-form";
+import { VoteButton, type VoteButtonMode } from "./vote-button";
 
 type ReplyTarget = { parentId: number; repliedTo: { id: number; username: string } | null } | null;
+
+function voteMode(
+  authorId: number,
+  currentUserId: number | null,
+  threadLive: boolean,
+): VoteButtonMode {
+  if (currentUserId === null) return "guest";
+  if (authorId === currentUserId) return "own";
+  // Thread yang root-nya sudah tombstone adalah arsip read-only.
+  return threadLive ? "active" : "readonly";
+}
 
 function ReplyRow({
   reply,
   currentUserId,
+  threadLive,
   onReply,
   reportEnabled,
 }: {
   reply: DiscussionReply;
   currentUserId: number | null;
+  /** Root thread masih VISIBLE. */
+  threadLive: boolean;
   onReply?: () => void;
   // Status `FEATURES.report` diteruskan sebagai props: komponen client tidak
   // boleh mengimpor `@/constants`.
@@ -55,6 +72,13 @@ function ReplyRow({
         <p className="mt-1 text-sm break-words whitespace-pre-wrap">{reply.commentText}</p>
         <CommentImages images={reply.commentImages} />
         <div className="mt-1 flex flex-wrap items-center gap-3">
+          <VoteButton
+            key={`${reply.id}-${reply.voteCount}-${reply.viewerVoted}`}
+            commentId={reply.id}
+            voteCount={reply.voteCount}
+            viewerVoted={reply.viewerVoted}
+            mode={voteMode(reply.author.id, currentUserId, threadLive)}
+          />
           {onReply && (
             <button
               type="button"
@@ -79,12 +103,15 @@ function ReplyRow({
 export function DiscussionRootCard({
   root,
   currentUserId,
+  postingSuspended = false,
   onChanged,
   showPermalink = true,
   reportEnabled,
 }: {
   root: DiscussionRoot;
   currentUserId: number | null;
+  /** Viewer di-suspend admin: tombol balas diganti keterangan, server pun menolak. */
+  postingSuspended?: boolean;
   onChanged: () => void;
   showPermalink?: boolean;
   reportEnabled: boolean;
@@ -93,7 +120,7 @@ export function DiscussionRootCard({
 
   // Thread yang root-nya sudah disembunyikan atau dihapus menjadi arsip
   // read-only: balasan lama tetap terbaca, balasan baru ditolak server.
-  const canReply = root.state === "VISIBLE" && currentUserId !== null;
+  const canReply = root.state === "VISIBLE" && currentUserId !== null && !postingSuspended;
   // Tombstone tidak menampilkan isi apa pun, jadi tidak ada yang bisa dilaporkan.
   const canReportRoot =
     reportEnabled && root.state === "VISIBLE" && currentUserId !== root.author?.id;
@@ -144,6 +171,7 @@ export function DiscussionRootCard({
               key={reply.id}
               reply={reply}
               currentUserId={currentUserId}
+              threadLive={root.state === "VISIBLE"}
               onReply={
                 canReply
                   ? () => openReply({ id: reply.id, username: reply.author.username })
@@ -170,6 +198,15 @@ export function DiscussionRootCard({
         // yang ia lihat, dan menuntut akun dulu berarti penyalahgunaan dibiarkan
         // lebih lama.
         <div className="mt-1 flex flex-wrap items-center gap-3">
+          {root.author && (
+            <VoteButton
+              key={`${root.id}-${root.voteCount}-${root.viewerVoted}`}
+              commentId={root.id}
+              voteCount={root.voteCount}
+              viewerVoted={root.viewerVoted}
+              mode={voteMode(root.author.id, currentUserId, true)}
+            />
+          )}
           {currentUserId === null ? (
             <Link
               href="/login"
@@ -177,6 +214,10 @@ export function DiscussionRootCard({
             >
               Masuk untuk membalas
             </Link>
+          ) : postingSuspended ? (
+            <span className="text-xs font-semibold text-muted-foreground">
+              Akun dibatasi: tidak dapat membalas
+            </span>
           ) : (
             <Button
               type="button"
@@ -204,6 +245,7 @@ export function DiscussionRootCard({
 export function DiscussionThread({
   roots,
   currentUserId,
+  postingSuspended = false,
   onChanged,
   showPermalink = true,
   reportEnabled,
@@ -211,11 +253,17 @@ export function DiscussionThread({
 }: {
   roots: DiscussionRoot[];
   currentUserId: number | null;
+  postingSuspended?: boolean;
   onChanged: () => void;
   showPermalink?: boolean;
   reportEnabled: boolean;
   emptyText?: string;
 }) {
+  // Urutan dipilih di client: thread selalu dimuat utuh (tanpa paginasi) dan
+  // sudah membawa jumlah suara, jadi tidak perlu query ulang. HTML server tetap
+  // "Terbaru" untuk mesin pencari.
+  const [sort, setSort] = useState<DiscussionSort>("newest");
+
   if (roots.length === 0) {
     return (
       <p className="py-6 text-center text-sm font-semibold text-muted-foreground">
@@ -226,11 +274,30 @@ export function DiscussionThread({
 
   return (
     <div className="flex flex-col gap-3">
-      {roots.map((root) => (
+      {roots.length > 1 && (
+        <div role="group" aria-label="Urutan diskusi" className="flex gap-1.5 self-end">
+          {(Object.keys(DISCUSSION_SORT_LABELS) as DiscussionSort[]).map((value) => (
+            <button
+              key={value}
+              type="button"
+              aria-pressed={sort === value}
+              onClick={() => setSort(value)}
+              className={cn(
+                "rounded border-2 border-neo-ink px-2 py-0.5 font-mono text-[11px] font-black",
+                sort === value ? "bg-neo-ink text-white" : "bg-background text-foreground/70",
+              )}
+            >
+              {DISCUSSION_SORT_LABELS[value]}
+            </button>
+          ))}
+        </div>
+      )}
+      {sortDiscussionRoots(roots, sort).map((root) => (
         <DiscussionRootCard
           key={root.id}
           root={root}
           currentUserId={currentUserId}
+          postingSuspended={postingSuspended}
           onChanged={onChanged}
           showPermalink={showPermalink}
           reportEnabled={reportEnabled}

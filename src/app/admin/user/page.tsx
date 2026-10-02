@@ -13,6 +13,7 @@ const TABS = [
   { value: "unverified", label: "Belum verifikasi", countKey: "unverified" },
   { value: "oauth", label: "Punya Google", countKey: "oauth" },
   { value: "pendingDeletion", label: "Menunggu dihapus", countKey: "pendingDeletion" },
+  { value: "postingSuspended", label: "Posting dibatasi", countKey: "postingSuspended" },
 ] as const;
 
 export default async function AdminUserListPage({
@@ -130,6 +131,11 @@ export default async function AdminUserListPage({
                       {row.deletionScheduledFor && (
                         <span className="inline-flex items-center border-2 border-neo-ink bg-neo-coral px-1.5 py-0 font-mono text-[10px] font-black text-white">
                           dijadwalkan hapus
+                        </span>
+                      )}
+                      {row.postingSuspendedAt && (
+                        <span className="inline-flex items-center border-2 border-neo-ink bg-neo-yellow px-1.5 py-0 font-mono text-[10px] font-black">
+                          posting dibatasi
                         </span>
                       )}
                     </div>

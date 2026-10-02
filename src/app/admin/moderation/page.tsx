@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { ExternalLink, ImageIcon, Search } from "lucide-react";
+import { Ban, ExternalLink, ImageIcon, Search, ThumbsUp } from "lucide-react";
 import { requireAdmin } from "@/lib/auth";
 import { FEATURES } from "@/constants";
 import {
@@ -142,6 +142,15 @@ export default async function AdminModerationPage({
             {userSummary.takenDown} kena takedown
           </p>
           <Link
+            href={`/admin/user/${userSummary.user.id}#posting`}
+            className={`inline-flex items-center gap-1 border-2 border-neo-ink px-2 py-0.5 font-mono text-[11px] font-black shadow-neo-sm ${
+              userSummary.user.postingSuspendedAt ? "bg-neo-yellow" : "bg-white"
+            }`}
+          >
+            <Ban className="size-3.5" />
+            {userSummary.user.postingSuspendedAt ? "Posting dibatasi — kelola" : "Batasi posting"}
+          </Link>
+          <Link
             href={hrefFor(filter.state)}
             className="ml-auto font-mono text-xs font-black underline underline-offset-4"
           >
@@ -181,7 +190,29 @@ export default async function AdminModerationPage({
                   <span className="font-mono text-[11px] text-foreground/50">
                     #{entry.user.id}
                   </span>
-                  <span className="ml-auto font-mono text-[11px] font-bold text-foreground/50">
+                  {/* Pintasan ke suspend posting di detail user. */}
+                  <Link
+                    href={`/admin/user/${entry.user.id}#posting`}
+                    title={
+                      entry.user.postingSuspendedAt
+                        ? "Posting user ini dibatasi — kelola"
+                        : "Batasi posting user ini"
+                    }
+                    className={`inline-flex items-center gap-1 border-2 border-neo-ink px-1.5 py-0 font-mono text-[10px] font-black ${
+                      entry.user.postingSuspendedAt ? "bg-neo-yellow" : "bg-white text-foreground/70"
+                    }`}
+                  >
+                    <Ban className="size-3" />
+                    {entry.user.postingSuspendedAt ? "dibatasi" : "batasi"}
+                  </Link>
+                  <span
+                    title="Suara membantu (tidak terhapus oleh takedown)"
+                    className="ml-auto inline-flex items-center gap-1 font-mono text-[11px] font-bold text-foreground/60"
+                  >
+                    <ThumbsUp className="size-3" />
+                    {entry.voteCount}
+                  </span>
+                  <span className="font-mono text-[11px] font-bold text-foreground/50">
                     {entry.sharedAt?.toISOString().slice(0, 16).replace("T", " ")}
                   </span>
                 </div>

@@ -50,12 +50,19 @@ type CommentData = {
 export function CommentItem({
   comment,
   canShare = false,
+  postingSuspended = false,
   onChanged,
 }: {
   comment: CommentData;
   // Mati saat flag diskusi target-nya off: catatan tetap bisa ditulis dan
   // diedit, hanya tombol bagikannya yang hilang.
   canShare?: boolean;
+  /**
+   * Pemilik di-suspend admin: tidak bisa membagikan atau menyunting catatan yang
+   * sedang publik. Menarik ke privat dan menghapus tetap bisa. Server menolak
+   * sendiri; ini hanya menyembunyikan tombol yang pasti ditolak.
+   */
+  postingSuspended?: boolean;
   /**
    * Dipanggil setelah catatan berubah. Tanpa ini halaman di-refresh; reviewer
    * flashcard WAJIB mengisinya supaya sesi belajar tidak ter-reset.
@@ -78,6 +85,8 @@ export function CommentItem({
   const [isPending, startTransition] = useTransition();
 
   const isPublic = comment.visibility === "PUBLIC";
+  const canEdit = !(postingSuspended && isPublic);
+  const canToggleVisibility = canShare && (isPublic || !postingSuspended);
 
   const {
     register,
@@ -171,15 +180,17 @@ export function CommentItem({
             <p className="mt-1 text-sm break-words whitespace-pre-wrap">{comment.commentText}</p>
             <CommentImages images={comment.commentImages} />
             <div className="mt-1 flex flex-wrap gap-3">
-              <button
-                type="button"
-                onClick={() => setIsEditing(true)}
-                className="text-xs text-muted-foreground hover:underline"
-              >
-                Edit
-              </button>
+              {canEdit && (
+                <button
+                  type="button"
+                  onClick={() => setIsEditing(true)}
+                  className="text-xs text-muted-foreground hover:underline"
+                >
+                  Edit
+                </button>
+              )}
 
-              {canShare && (
+              {canToggleVisibility && (
                 <button
                   type="button"
                   disabled={isPending}

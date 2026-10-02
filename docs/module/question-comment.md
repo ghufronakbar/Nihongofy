@@ -43,7 +43,7 @@ atau `FEATURES_FLASHCARD_DISCUSSION` hidup.
 - Catatan default privat. Publik hanya terjadi karena tindakan eksplisit pemiliknya.
 - `Question.explanation` adalah pembahasan resmi/terkurasi; `QuestionComment` adalah catatan user, dan keduanya tetap dipisahkan.
 - Diskusi dapat dibaca guest; menulis dan membalas butuh login.
-- Moderasi admin tersedia di `/admin/moderation`. Yang belum ada: laporan penyalahgunaan dari user, notifikasi balasan, like, dan sorting selain terbaru.
+- Moderasi admin tersedia di `/admin/moderation`. Upvote "membantu" dan urutan "Paling membantu" aktif sejak 2 Oktober 2026 (lihat [Upvote](#upvote)). Yang belum ada: notifikasi balasan.
 
 ## Model Data
 
@@ -89,9 +89,18 @@ Balasan yang dihapus langsung hilang dari tampilan tanpa tombstone, karena tidak
   dan membagikan ke diskusi. Menghapus dan menarik kembali ke privat tidak dibatasi. Upload gambar
   punya kuota sendiri (`COMMENT_IMAGE_UPLOAD_RATE_LIMITS`: 40 per jam, 150 per hari). Percobaan yang
   ditolak tetap dihitung. Gagal tertutup: tanpa Redis, session pun tidak tervalidasi.
+- **Suspend posting per user** (`User.postingSuspendedAt`, diatur admin di `/admin/user/[id]#posting`).
+  `checkPublicPostingAllowed()` menolak setiap tulisan ke diskusi publik di target mana pun:
+  catatan baru `PUBLIC` (termasuk composer di halaman kata/pola dan sheet), membagikan, membalas,
+  dan menyunting entri yang sedang publik (root `PUBLIC` atau balasan). Catatan privat, menghapus,
+  dan menarik kembali ke privat tetap bisa; konten publik lama tidak diubah. Status dibaca per
+  request (`isPostingSuspended`, tidak di-cache) supaya berlaku seketika. Di UI, form diskusi dan
+  tombol balas diganti keterangan "Akun dibatasi"; `CommentItem` menyembunyikan tombol bagikan dan
+  edit-entri-publik (juga di "Catatanku" reviewer flashcard).
 - **Penolakan dikembalikan, bukan dilempar.** Action tulis mengembalikan
-  `{ ok: true } | { ok: false, message }` supaya pesan rate limit sampai ke user (pesan error Server
-  Action disamarkan di produksi). Input tidak valid dan akses terlarang tetap `notFound()`/throw.
+  `{ ok: true } | { ok: false, message }` supaya pesan rate limit dan suspend sampai ke user (pesan
+  error Server Action disamarkan di produksi). Input tidak valid dan akses terlarang tetap
+  `notFound()`/throw.
 - Kata yang sudah pensiun (`retiredAt`) tidak menerima catatan baru; catatan lamanya tetap terbaca.
 - **Komponen menerima callback, bukan selalu `router.refresh()`.** `CommentItem` (`onChanged`),
   `QuestionCommentForm` (`onSaved`), dan `DiscussionSheet` (`onPosted`) dipakai di reviewer
@@ -160,31 +169,48 @@ rate limit tulis sudah aktif sebagai penahannya.
 
 - **Belum ada laporan dari user.** Moderasi admin sudah ada (`/admin/moderation`: antrean, sembunyikan root, takedown, pulihkan takedown admin, filter per user), tetapi penyalahgunaan hanya ketahuan bila admin memeriksa antrean secara aktif. Rem darurat `FEATURES_QUESTION_DISCUSSION=false` tetap tersedia.
 - **Tidak ada notifikasi** saat catatan dibalas — aplikasi belum punya sistem notifikasi sama sekali.
-- **Belum ada upvote** — lihat [Fitur Mendatang](#fitur-mendatang-upvote).
 - **Lampiran di object storage tidak pernah terhapus**, termasuk saat takedown admin. Ini keputusan eksplisit: takedown bekerja di level record database saja, dan pembersihan asset fisik berada di luar scope modul admin.
 - Rate limit per user saja, tidak per IP; satu orang dengan banyak akun tetap bisa menulis lebih banyak.
   Batas isi tetap 2.000 karakter dan 4 gambar.
 - Tidak ada pencarian, tag, pin, export, atau halaman agregat semua catatan.
 - Guest melihat form catatan pribadi, tetapi submit diarahkan ke login.
 
-## Fitur Mendatang: Upvote
+## Upvote
 
-Belum dikerjakan; dicatat di sini supaya rancangannya tidak hilang. Berlaku untuk diskusi soal
-**dan** diskusi kata flashcard, karena keduanya satu tabel.
+Aktif sejak 2 Oktober 2026 (migration `20261002150000_question_comment_vote`), untuk diskusi soal,
+kata flashcard, dan pola bunpou sekaligus karena ketiganya satu tabel.
 
-- **Tujuan:** menaikkan pembahasan dan jembatan keledai yang paling membantu, terutama di kata
-  flashcard yang populer, alih-alih hanya urutan terbaru.
+- **Tujuan:** menaikkan pembahasan dan jembatan keledai yang paling membantu, alih-alih hanya
+  urutan terbaru.
 - **Data:** tabel `QuestionCommentVote` (`commentId`, `userId`, `createdAt`, PK
-  `commentId + userId`) — satu suara per user, bisa ditarik. Tidak ada downvote: tanpa moderasi
-  aktif, downvote mudah dipakai untuk merundung. Jumlah suara dihitung lewat `groupBy`, atau
-  disimpan sebagai kolom cache bila sudah terasa lambat.
-- **Aturan:** tidak bisa memberi suara pada catatan sendiri, catatan privat, atau tombstone; balasan
-  boleh diberi suara; suara ikut terhapus saat akun dianonimkan.
-- **Tampilan:** urutan thread "Paling membantu" di samping "Terbaru"; label "Diskusi (n)" tetap
-  menghitung entri, bukan suara.
-- **Rate limit:** kuota sendiri di Redis (mis. 60 suara per jam) supaya tidak menghabiskan kuota tulis.
-- **Moderasi:** antrean admin menampilkan jumlah suara; takedown tidak menghapus suara, hanya
-  menyembunyikan entrinya.
+  `commentId + userId`) — satu suara per user per entri, bisa ditarik. Tidak ada downvote: tanpa
+  moderasi aktif, downvote mudah dipakai untuk merundung. Jumlah dihitung lewat satu `groupBy` per
+  thread (`countVotes`), tidak disimpan sebagai kolom; thread tetap tidak di-cache.
+- **Action:** `voteQuestionCommentAction({ commentId, voted })` — `voted` adalah keadaan yang
+  diinginkan, bukan toggle, jadi klik ganda atau retry idempoten (`createMany` + `skipDuplicates`
+  / `deleteMany`). Mengembalikan `{ ok: true, voted, voteCount }` atau `{ ok: false, message }`.
+- **Aturan** (`voteRejection` di `votes.ts`, diuji `votes.test.ts`): tidak bisa memberi suara pada
+  catatan sendiri, catatan privat, entri yang dihapus, atau di thread yang root-nya sudah tombstone
+  (dihapus/disembunyikan) — thread mati adalah arsip read-only, sama seperti balasan baru.
+  Balasan di thread hidup boleh diberi suara. Menarik suara selalu boleh. User yang di-suspend dari
+  posting tetap boleh memberi suara.
+- **Privasi:** thread dirender server dan diindeks, jadi yang dikirim ke client hanya `voteCount`
+  dan `viewerVoted` milik viewer login. `getDiscussion` sendiri tidak bergantung viewer (dipakai
+  ulang metadata lewat `cache`); status viewer ditempel `withViewerVotes()` yang hanya membaca
+  suara milik viewer dan hanya memilih `commentId`. Tombstone tidak membawa jumlah suara.
+- **Tampilan:** tombol "Membantu" beserta jumlah di setiap entri (`VoteButton`). Guest melihat
+  jumlah, klik mengarah ke login; catatan sendiri dan thread arsip hanya menampilkan angka.
+  Pilihan urutan "Terbaru" / "Paling membantu" ada di `DiscussionThread`, jadi tampil di
+  `/discussion/question/[questionId]`, `/flashcard/discussion/[vocabId]`, section Diskusi
+  `/bunpou/[key]`, dan sheet diskusi (bila thread punya lebih dari satu root). Urutan dipilih di
+  client karena thread selalu dimuat utuh dan sudah membawa jumlah; HTML server tetap "Terbaru".
+  Hanya root yang diurutkan ulang — balasan tetap kronologis karena itu konteks percakapan.
+  Label "Diskusi (n)" tetap menghitung entri, bukan suara.
+- **Rate limit:** `COMMENT_VOTE_RATE_LIMITS` (60 per jam per user, Redis), terpisah dari kuota
+  tulis. Memberi dan menarik suara sama-sama dihitung.
+- **Moderasi:** antrean `/admin/moderation` menampilkan jumlah suara tiap entri; takedown tidak
+  menghapus suara, hanya menyembunyikan entrinya (pemulihan takedown membawa suaranya kembali).
+- **Akun:** suara yang diberikan ikut dihapus `anonymizeAccount` dan ikut di export data akun.
 
 ## File Utama
 
@@ -206,4 +232,8 @@ Belum dikerjakan; dicatat di sini supaya rancangannya tidak hilang. Berlaku untu
 - `src/features/question-comment/components/discussion-composer.tsx` — form tulis langsung ke diskusi di halaman target
 - `src/features/question-comment/seo.ts` — metadata halaman diskusi
 - `src/lib/rate-limit.ts`, `src/lib/redis-rate-limit.ts` — rate limit fixed window
+- `src/features/question-comment/components/posting-suspended-notice.tsx` — pengganti form untuk akun yang di-suspend
+- `src/features/question-comment/posting-suspension.test.ts` — penjaga cek suspend di action tulis publik
+- `src/features/question-comment/votes.ts` — aturan suara dan urutan thread (aman untuk client)
+- `src/features/question-comment/components/vote-button.tsx` — tombol "Membantu"
 - `src/features/admin/moderation/` — antrean dan action takedown milik admin (menampilkan konteks soal atau kata), terpisah dari action user di atas yang tetap menolak non-pemilik
