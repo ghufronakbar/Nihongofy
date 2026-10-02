@@ -29,6 +29,12 @@ Rancangan lama (paritas Anki penuh) tetap ada di
 - Kartu tidak dapat dilaporkan: tombol "Laporkan kartu" hanya ada di bawah `/flashcard`, dan
   `submitReportAction` (modul report, di luar segmen ini) mengecek flag ini sendiri untuk target
   `FLASHCARD_VOCAB`. Laporan kartu yang sudah masuk tetap dapat ditindak di `/admin/report`.
+- `FEATURES_FLASHCARD_DISCUSSION` ikut mati (lihat [Catatan dan Diskusi Kata](#catatan-dan-diskusi-kata)).
+
+`FEATURES_FLASHCARD_DISCUSSION` (default `true`) mengatur catatan pribadi dan diskusi publik per
+kata. Saat `false`: blok Catatanku dan tombol Diskusi di reviewer, ikon catatan di daftar kata
+deck, tombol Diskusi di `/flashcard`, dan seluruh `/flashcard/discussion/*` (404) hilang; action
+catatan dengan target kata menolak dengan `notFound()`. Catatan yang sudah tersimpan tidak diubah.
 
 ## Konsep
 
@@ -138,6 +144,8 @@ Rancangan lama (paritas Anki penuh) tetap ada di
 | `/flashcard/deck/[slug]` | Hitungan hari ini dan pemakaian batas harian deck, tombol belajar, pengaturan deck, tambah/lepas deck, [statistik deck](#statistik), dan daftar kata read-only (pencarian kata/bacaan/arti, filter status, 50 per halaman, suspend, reset, dan laporkan per kata). |
 | `/flashcard/deck/[slug]/settings` | Pengaturan penjadwalan deck ini (deck options Anki). Hanya untuk deck yang sedang ditambahkan; selain itu dialihkan ke halaman deck. |
 | `/flashcard/deck/[slug]/study` | Reviewer. Hanya untuk deck yang sudah ditambahkan. Antrean dikirim per 200 kartu; tombol "Lanjutkan" membangun antrean berikutnya. Lihat [Layar belajar](#layar-belajar). |
+| `/flashcard/discussion` | Indeks kata yang punya diskusi publik, terbaru dulu; tab ke `/discussion` bila diskusi soal hidup. |
+| `/flashcard/discussion/[vocabId]` | Isi kartu lengkap, Catatanku, dan seluruh thread kata itu; form tulis langsung ke diskusi. |
 | `/flashcard/settings` | Tampilan kartu untuk semua deck: ukuran teks dan furigana. |
 | `/flashcard/stats` | True retention, kematangan kartu, perkiraan 30 hari, riwayat review, dan sebaran interval; semua deck atau satu deck (`?deck=slug`). |
 | `/flashcard/try/[slug]` | Mode coba 20 kata pertama deck, selalu ephemeral. Guest boleh melaporkan kartu (dengan Turnstile). |
@@ -176,6 +184,34 @@ Rancangan lama (paritas Anki penuh) tetap ada di
 - Rumus (`lib/stats.ts`): true retention hanya review kartu matang (`kind = REVIEW`, selain
   Again), kartu lewat due dihitung di hari ini pada perkiraan, dan kartu suspend dihitung
   terpisah apa pun jenisnya.
+
+## Catatan dan Diskusi Kata
+
+Memakai modul catatan soal ([question-comment.md](question-comment.md)) dengan target kata:
+tabel, aturan tombstone, balasan satu tingkat, mention, moderasi admin, laporan `COMMENT`,
+anonimisasi akun, dan rate limit-nya sama.
+
+- **Target per kata katalog** (`QuestionComment.vocabId`), bukan per kartu atau deck: catatan untuk
+  食事 tampil di deck JLPT N5 maupun Makanan, dan diskusinya satu untuk semua user.
+- **Catatanku tampil otomatis di sisi belakang kartu** (di bawah tombol jawaban), termasuk catatan
+  sendiri yang sudah dibagikan. Bisa ditambah, disunting, dihapus, dan dibagikan langsung dari
+  reviewer, lengkap dengan gambar.
+- **Anti-spoiler:** Catatanku dan tombol **Diskusi (n)** baru muncul setelah jawaban dibuka, sama
+  seperti tombol Laporkan kartu.
+- **Sesi belajar tidak ter-reset.** Semua aksi catatan di reviewer memakai callback dan
+  `getOwnVocabNotesAction` untuk kata itu saja, bukan refresh halaman. Catatan disimpan di state
+  reviewer, jadi catatan yang baru ditulis ikut tampil saat kartu yang sama muncul lagi.
+- **Pintasan keyboard** mati selama sheet diskusi terbuka dan di dalam area Catatanku
+  (`data-reviewer-keys="off"`), supaya Space/Enter pada tombol Simpan tidak menilai kartu.
+- **Payload:** catatan pribadi dan jumlah diskusi untuk seluruh potongan 200 kartu dimuat bersama
+  antrean (satu query dan satu `groupBy`, `getCardDiscussionData`). Isi thread baru diambil saat
+  sheet dibuka.
+- **Mode coba guest:** jumlah dan isi diskusi bisa dibaca; tanpa Catatanku (mode coba tidak
+  menyimpan apa pun milik user). Menulis butuh login.
+- **Daftar kata deck:** ikon per kata menuju halaman diskusinya, dengan jumlah catatanku (✎) dan
+  entri diskusi.
+- Kata yang sudah pensiun tetap dapat dibuka halamannya, tetapi tidak menerima catatan baru.
+- Isi kartu yang keliru tetap lewat **Laporkan kartu**; deskripsi sheet diskusi mengarahkan ke sana.
 
 ## Laporan Kartu
 
@@ -221,6 +257,8 @@ Kontrak lengkapnya di [seed-flashcard.md](../seed-flashcard.md):
 ## Yang Belum Ada
 
 - Audio atau tombol dengar (TTS browser seperti modul kana bisa ditambahkan tanpa file).
+- Upvote catatan dan diskusi kata — dirancang di
+  [question-comment.md](question-comment.md#fitur-mendatang-upvote), berlaku juga untuk diskusi soal.
 - Halaman admin untuk meninjau kata bertanda ragu dari generator AI. Sementara memakai
   `npm run flashcard:doubts` dan `npm run fix:flashcard-doubts` di terminal, lalu seed ulang.
 
@@ -237,6 +275,8 @@ Kontrak lengkapnya di [seed-flashcard.md](../seed-flashcard.md):
 - `src/features/flashcard/lib/scheduler/`, `lib/queue/`, `lib/collection.ts`,
   `lib/session-summary.ts`
 - `src/features/flashcard/schemas.ts`, `settings-form.ts`, `taxonomy.ts`, `types.ts`
+- `src/features/flashcard/components/card-notes.tsx`, `vocab-discussion-composer.tsx` — Catatanku dan
+  form diskusi kata; `src/app/(public)/flashcard/discussion/` — halaman diskusi kata
 - `src/features/flashcard/components/` — reviewer, ringkasan sesi, tampilan kartu, katalog, form
   tampilan (`flashcard-display-form.tsx`) dan form pengaturan deck (`deck-config-form.tsx`)
 - `src/features/flashcard/**/*.test.ts` — scheduler, antrean, pipeline seed, pengaturan, statistik,

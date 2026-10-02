@@ -172,6 +172,9 @@ export async function getTestPackageQuestions(testPackageId: number) {
 
   const commentsByQuestion = new Map<number, typeof comments>();
   for (const comment of comments) {
+    // Selalu terisi di sini (filter di atas lewat relasi soal); kolomnya nullable
+    // karena tabel yang sama juga menyimpan catatan kata flashcard.
+    if (comment.questionId === null) continue;
     const list = commentsByQuestion.get(comment.questionId) ?? [];
     list.push(comment);
     commentsByQuestion.set(comment.questionId, list);

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { MessagesSquare } from "lucide-react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 import {
   Sheet,
   SheetContent,
@@ -17,20 +18,48 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Field, FieldError } from "@/components/ui/field";
 import { Spinner } from "@/components/ui/spinner";
-import { addQuestionCommentAction, getQuestionDiscussionAction } from "../actions";
+import { addQuestionCommentAction, getDiscussionAction } from "../actions";
 import { AddQuestionCommentSchema, type AddQuestionCommentInput } from "../schemas";
 import type { DiscussionRoot } from "../queries";
+import { discussionPageHref, type CommentTarget } from "../target";
 import { CommentImageUploader } from "./comment-image-uploader";
 import { DiscussionThread } from "./discussion-thread";
 
-function NewPublicNoteForm({
-  questionId,
+const COPY: Record<
+  CommentTarget["type"],
+  { title: string; description: string; placeholder: string; empty: string }
+> = {
+  question: {
+    title: "Diskusi Soal",
+    description: "Catatan belajar yang dibagikan pengguna lain untuk soal ini.",
+    placeholder: "Tulis pembahasan versi Anda untuk soal ini...",
+    empty: "Belum ada catatan yang dibagikan untuk soal ini.",
+  },
+  vocab: {
+    title: "Diskusi Kata",
+    description:
+      "Jembatan keledai, nuansa, dan pertanyaan pengguna lain tentang kata ini. Isi kartu keliru? Pakai tombol Laporkan kartu.",
+    placeholder: "Bagikan jembatan keledai, nuansa, atau pertanyaan tentang kata ini...",
+    empty: "Belum ada diskusi untuk kata ini.",
+  },
+};
+
+export function NewPublicNoteForm({
+  target,
+  placeholder,
   onDone,
 }: {
-  questionId: number;
+  target: CommentTarget;
+  placeholder: string;
   onDone: () => void;
 }) {
   const [isPending, startTransition] = useTransition();
+  const empty: AddQuestionCommentInput = {
+    target,
+    commentText: "",
+    commentImages: [],
+    visibility: "PUBLIC",
+  };
 
   const {
     register,
@@ -41,20 +70,19 @@ function NewPublicNoteForm({
     formState: { errors },
   } = useForm<AddQuestionCommentInput>({
     resolver: zodResolver(AddQuestionCommentSchema),
-    defaultValues: {
-      questionId,
-      commentText: "",
-      commentImages: [],
-      visibility: "PUBLIC",
-    },
+    defaultValues: empty,
   });
 
   const commentImages = useWatch({ control, name: "commentImages" });
 
   function onSubmit(values: AddQuestionCommentInput) {
     startTransition(async () => {
-      await addQuestionCommentAction({ ...values, visibility: "PUBLIC" });
-      reset({ questionId, commentText: "", commentImages: [], visibility: "PUBLIC" });
+      const result = await addQuestionCommentAction({ ...values, visibility: "PUBLIC" });
+      if (!result.ok) {
+        toast.error(result.message);
+        return;
+      }
+      reset(empty);
       onDone();
     });
   }
@@ -63,7 +91,7 @@ function NewPublicNoteForm({
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2" noValidate>
       <Field>
         <Textarea
-          placeholder="Tulis pembahasan versi Anda untuk soal ini..."
+          placeholder={placeholder}
           rows={3}
           {...register("commentText")}
         />
@@ -84,16 +112,26 @@ function NewPublicNoteForm({
 }
 
 export function DiscussionSheet({
-  questionId,
+  target,
   initialCount,
   currentUserId,
   reportEnabled,
+  onOpenChange,
+  onPosted,
+  triggerClassName,
 }: {
-  questionId: number;
+  target: CommentTarget;
   initialCount: number;
   currentUserId: number | null;
   reportEnabled: boolean;
+  /** Mis. reviewer flashcard mematikan pintasan keyboard selama sheet terbuka. */
+  onOpenChange?: (open: boolean) => void;
+  /** Setelah user menulis catatan publik baru, mis. untuk menyegarkan "Catatanku". */
+  onPosted?: () => void;
+  /** Mengganti gaya tombol pemicu bawaan. */
+  triggerClassName?: string;
 }) {
+  const copy = COPY[target.type];
   const [open, setOpen] = useState(false);
   const [roots, setRoots] = useState<DiscussionRoot[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -103,14 +141,15 @@ export function DiscussionSheet({
   const load = useCallback(async () => {
     setIsLoading(true);
     try {
-      setRoots(await getQuestionDiscussionAction({ questionId }));
+      setRoots(await getDiscussionAction({ target }));
     } finally {
       setIsLoading(false);
     }
-  }, [questionId]);
+  }, [target]);
 
   function handleOpenChange(next: boolean) {
     setOpen(next);
+    onOpenChange?.(next);
     if (next && roots === null) void load();
   }
 
@@ -124,18 +163,24 @@ export function DiscussionSheet({
   return (
     <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetTrigger
-        render={<Button size="sm" variant="outline" className="h-8 gap-1.5 text-xs" />}
+        render={
+          triggerClassName ? (
+            <button type="button" className={triggerClassName} />
+          ) : (
+            <Button size="sm" variant="outline" className="h-8 gap-1.5 text-xs" />
+          )
+        }
       >
         <MessagesSquare className="size-3.5" />
         Diskusi ({count})
       </SheetTrigger>
       <SheetContent side="right" className="w-full sm:max-w-lg">
         <SheetHeader>
-          <SheetTitle>Diskusi Soal</SheetTitle>
+          <SheetTitle>{copy.title}</SheetTitle>
           <SheetDescription>
-            Catatan belajar yang dibagikan pengguna lain untuk soal ini.{" "}
+            {copy.description}{" "}
             <Link
-              href={`/discussion/question/${questionId}`}
+              href={discussionPageHref(target)}
               className="font-semibold underline underline-offset-2"
             >
               Buka halaman penuh
@@ -154,6 +199,7 @@ export function DiscussionSheet({
               currentUserId={currentUserId}
               onChanged={() => void load()}
               reportEnabled={reportEnabled}
+              emptyText={copy.empty}
             />
           )}
         </div>
@@ -167,7 +213,14 @@ export function DiscussionSheet({
               Masuk untuk ikut berdiskusi
             </Link>
           ) : (
-            <NewPublicNoteForm questionId={questionId} onDone={() => void load()} />
+            <NewPublicNoteForm
+              target={target}
+              placeholder={copy.placeholder}
+              onDone={() => {
+                void load();
+                onPosted?.();
+              }}
+            />
           )}
         </div>
       </SheetContent>

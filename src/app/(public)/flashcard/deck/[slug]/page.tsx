@@ -7,6 +7,7 @@ import { getSession } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import {
   DECK_WORD_STATUSES,
+  getCardDiscussionData,
   getDeckForUser,
   getDeckStats,
   getDeckWords,
@@ -74,6 +75,11 @@ export default async function DeckPage({ params, searchParams }: Props) {
     getDeckWords(session.userId, deck, { query, status, page }),
     subscribed ? getDeckStats(session.userId, deck, settings.day) : null,
   ]);
+  // Catatan pribadi dan jumlah diskusi untuk kata di halaman ini saja.
+  const discussion = await getCardDiscussionData(
+    session.userId,
+    list.words.map((word) => word.vocabId),
+  );
   const total = due.newCount + due.learningCount + due.reviewCount;
 
   const hrefWith = (next: { status?: DeckWordFilter; page?: number }) => {
@@ -230,6 +236,14 @@ export default async function DeckPage({ params, searchParams }: Props) {
                     ) : null}
                   </span>
                   <DeckWordActions
+                    discussion={
+                      discussion
+                        ? {
+                            notes: discussion.notes[word.vocabId]?.length ?? 0,
+                            entries: discussion.counts[word.vocabId] ?? 0,
+                          }
+                        : null
+                    }
                     deckSlug={slug}
                     // Kartu milik langganan deck ini; deck yang belum atau tidak
                     // lagi ditambahkan hanya bisa dilaporkan isinya.

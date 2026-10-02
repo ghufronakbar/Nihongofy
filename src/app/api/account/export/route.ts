@@ -167,10 +167,13 @@ export async function GET() {
         select: {
           id: true,
           questionId: true,
+          vocabId: true,
           commentText: true,
           commentImages: true,
           createdAt: true,
           updatedAt: true,
+          // Catatan kata flashcard; tepat satu dari `question`/`vocab` terisi.
+          vocab: { select: { key: true, wordPlain: true, reading: true } },
           question: {
             select: {
               order: true,

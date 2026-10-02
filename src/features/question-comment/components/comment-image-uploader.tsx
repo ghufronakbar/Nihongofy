@@ -13,15 +13,20 @@ import { createCommentImageUploadAction } from "../actions";
 const MAX_IMAGES = COMMENT_IMAGE_MAX_COUNT;
 const MAX_FILE_SIZE_BYTES = COMMENT_IMAGE_MAX_FILE_SIZE_BYTES;
 
+class UploadRejectedError extends Error {}
+
 async function uploadToR2(file: File): Promise<string> {
   if (!isCommentImageContentType(file.type)) {
     throw new Error("Tipe gambar tidak didukung.");
   }
 
-  const { uploadUrl, url, contentType } = await createCommentImageUploadAction({
+  const signed = await createCommentImageUploadAction({
     contentType: file.type,
     byteLength: file.size,
   });
+  // Penolakan server (mis. rate limit) membawa pesan yang perlu dibaca user.
+  if (!signed.ok) throw new UploadRejectedError(signed.message);
+  const { uploadUrl, url, contentType } = signed;
 
   // Upload langsung dari browser ke R2 — file tidak pernah lewat server kita.
   // Content-Type harus sama persis dengan yang ditandatangani server.
@@ -79,7 +84,11 @@ export function CommentImageUploader({
       try {
         uploaded = [...uploaded, await uploadToR2(file)];
         onChange(uploaded);
-      } catch {
+      } catch (uploadError) {
+        if (uploadError instanceof UploadRejectedError) {
+          setError(uploadError.message);
+          break;
+        }
         setError("Upload gambar gagal, coba lagi.");
       }
     }

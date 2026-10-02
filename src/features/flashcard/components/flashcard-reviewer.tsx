@@ -6,9 +6,13 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { ArrowLeft, Ban, EyeOff, Loader2, Timer, Undo2 } from "lucide-react";
 import { ReportButton } from "@/features/report/components/report-button";
+import { getOwnVocabNotesAction } from "@/features/question-comment/actions";
+import { DiscussionSheet } from "@/features/question-comment/components/discussion-sheet";
+import type { OwnNote } from "@/features/question-comment/queries";
 import { cn } from "@/lib/utils";
 import type { FlashcardDisplay, FlashcardRatingInput } from "../schemas";
 import type {
+  CardDiscussionData,
   PendingLearningCard,
   ReviewerCard,
   ReviewerCardKind,
@@ -28,6 +32,7 @@ import {
   setCardSuspendedAction,
   undoReviewAction,
 } from "../actions";
+import { CardNotes } from "./card-notes";
 import { RATING_OPTIONS } from "./rating-options";
 import { SessionSummaryPanel } from "./session-summary-panel";
 import { VocabCardView } from "./vocab-card-view";
@@ -64,6 +69,13 @@ type Props = {
    * reviewer hanya dirender di bawah /flashcard, yang 404 saat modulnya mati.
    */
   reportEnabled: boolean;
+  /**
+   * Catatan pribadi dan jumlah diskusi kata-kata sesi ini; null bila
+   * `FEATURES_FLASHCARD_DISCUSSION` mati. Mode coba hanya membawa jumlah diskusi.
+   */
+  discussion: CardDiscussionData | null;
+  /** User yang sedang login, untuk menulis di diskusi; null untuk guest. */
+  currentUserId: number | null;
 };
 
 const COUNT_LABELS: { kind: ReviewerCardKind; label: string; tone: string }[] = [
@@ -233,6 +245,8 @@ export function FlashcardReviewer({
   display,
   isGuest,
   reportEnabled,
+  discussion,
+  currentUserId,
 }: Props) {
   const router = useRouter();
   const [state, dispatch] = useReducer(reducer, undefined, () =>
@@ -248,6 +262,23 @@ export function FlashcardReviewer({
   // Dialog laporan sedang terbuka: keyboard milik dialog, bukan reviewer. Ref,
   // bukan state, supaya membuka dialog tidak me-render ulang sesi.
   const reportOpen = useRef(false);
+  // Sheet diskusi terbuka: sama seperti dialog laporan, keyboard milik sheet.
+  const discussionOpen = useRef(false);
+  // Catatan pribadi per kata. Disimpan di state reviewer (bukan diambil ulang
+  // dari halaman) supaya catatan yang baru ditulis ikut tampil saat kartu yang
+  // sama muncul lagi di sesi ini, tanpa me-refresh halaman belajar.
+  const [notesByVocab, setNotesByVocab] = useState<Record<number, OwnNote[]>>(
+    () => discussion?.notes ?? {},
+  );
+
+  const refreshNotes = useCallback(async (vocabId: number) => {
+    try {
+      const notes = await getOwnVocabNotesAction({ vocabId });
+      setNotesByVocab((previous) => ({ ...previous, [vocabId]: notes }));
+    } catch {
+      toast.error("Gagal memuat catatan. Coba lagi.");
+    }
+  }, []);
 
   const { current, revealed } = state;
   const furiganaVisible = display.showFuriganaOnBack || state.furiganaShown;
@@ -257,6 +288,7 @@ export function FlashcardReviewer({
     // Tombol laporan hanya ada selama kartu terbuka, jadi kartu baru berarti
     // dialog kartu sebelumnya sudah tidak ada.
     reportOpen.current = false;
+    discussionOpen.current = false;
   }, [state.turn]);
 
   // Tidak ada kartu yang bisa tampil sekarang, tetapi ada kartu learning yang
@@ -395,10 +427,13 @@ export function FlashcardReviewer({
       // membatalkan klik tombol itu). Status dialog dicek lebih dulu karena fokus
       // tidak selalu berada di dalam dialog, mis. saat tombol kirim di-disable
       // selama laporan dikirim.
-      if (reportOpen.current) return;
+      if (reportOpen.current || discussionOpen.current) return;
       const target = event.target as HTMLElement | null;
       if (target && ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName)) return;
       if (target instanceof Element && target.closest('[role="dialog"], [role="alertdialog"]')) return;
+      // Tombol di dalam catatan (Simpan, Edit, Bagikan) tidak boleh ikut
+      // menilai kartu lewat Space/Enter.
+      if (target instanceof Element && target.closest('[data-reviewer-keys="off"]')) return;
 
       if (event.key === " " || event.key === "Enter") {
         event.preventDefault();
@@ -424,6 +459,9 @@ export function FlashcardReviewer({
   // Kartu dilaporkan setelah sisi belakangnya terbaca: kesalahan isi (arti,
   // bacaan, contoh) baru terlihat di sana.
   const canReport = reportEnabled && revealed;
+  // Catatan dan diskusi berisi arti kata, jadi baru muncul setelah jawaban dibuka.
+  const canDiscuss = discussion !== null && revealed;
+  const canTakeNotes = canDiscuss && !isGuest && currentUserId !== null;
 
   // Seperti Anki, kartu yang sedang tampil ikut dihitung, dan kartu learning
   // yang menunggu jatuh tempo tetap masuk hitungan "Belajar".
@@ -611,7 +649,17 @@ export function FlashcardReviewer({
         </button>
       )}
 
-      {!isGuest || canReport ? (
+      {canTakeNotes ? (
+        <CardNotes
+          key={current.vocabId}
+          vocabId={current.vocabId}
+          notes={notesByVocab[current.vocabId] ?? []}
+          canShare
+          onChanged={() => void refreshNotes(current.vocabId)}
+        />
+      ) : null}
+
+      {!isGuest || canReport || canDiscuss ? (
         <div className="flex flex-wrap items-center justify-center gap-2">
           {!isGuest ? (
             <>
@@ -660,6 +708,23 @@ export function FlashcardReviewer({
                 reportOpen.current = open;
               }}
               className="px-3 py-2 text-xs"
+            />
+          ) : null}
+          {canDiscuss ? (
+            // Isi thread baru diambil saat sheet dibuka. `key` per kata supaya
+            // thread kartu sebelumnya tidak terbawa ke kartu berikutnya.
+            <DiscussionSheet
+              key={current.vocabId}
+              target={{ type: "vocab", vocabId: current.vocabId }}
+              initialCount={discussion?.counts[current.vocabId] ?? 0}
+              currentUserId={currentUserId}
+              reportEnabled={reportEnabled}
+              onOpenChange={(open) => {
+                discussionOpen.current = open;
+              }}
+              // Catatan publik milik user juga tampil di "Catatanku".
+              onPosted={canTakeNotes ? () => void refreshNotes(current.vocabId) : undefined}
+              triggerClassName="neo-button gap-1.5 bg-white px-3 py-2 text-xs"
             />
           ) : null}
           {pending ? <Loader2 className="size-4 animate-spin" aria-label="Menyimpan" /> : null}

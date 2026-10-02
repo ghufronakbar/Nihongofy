@@ -3,6 +3,7 @@
 import { useTransition } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 import { ReplyQuestionCommentSchema, type ReplyQuestionCommentInput } from "../schemas";
 import { replyToQuestionCommentAction } from "../actions";
 import { CommentImageUploader } from "./comment-image-uploader";
@@ -47,7 +48,11 @@ export function ReplyForm({
 
   function onSubmit(values: ReplyQuestionCommentInput) {
     startTransition(async () => {
-      await replyToQuestionCommentAction(values);
+      const result = await replyToQuestionCommentAction(values);
+      if (!result.ok) {
+        toast.error(result.message);
+        return;
+      }
       reset({
         parentId,
         repliedToId: repliedTo?.id ?? null,

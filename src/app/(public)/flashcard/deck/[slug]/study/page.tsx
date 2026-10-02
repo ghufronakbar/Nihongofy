@@ -47,6 +47,8 @@ export default async function StudyPage({ params }: Props) {
         display={study.display}
         isGuest={false}
         reportEnabled={FEATURES.report}
+        discussion={study.discussion}
+        currentUserId={session.userId}
       />
     </main>
   );

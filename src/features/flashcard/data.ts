@@ -2,7 +2,13 @@ import "server-only";
 import { cache } from "react";
 import { Prisma, type FlashcardCardQueue, type FlashcardCardType } from "@prisma/client";
 import { z } from "zod";
+import { FEATURES } from "@/constants";
 import { prisma } from "@/lib/prisma";
+import {
+  getOwnVocabNotes,
+  getVocabDiscussionCounts,
+  type OwnNote,
+} from "@/features/question-comment/queries";
 import { getFlashcardSettings, type DeckSchedulingContext } from "./lib/collection";
 import {
   buildQueue,
@@ -30,6 +36,7 @@ import {
 } from "./schemas";
 import { describeTags, FLASHCARD_DECK_MIN_NOTES } from "./taxonomy";
 import type {
+  CardDiscussionData,
   DeckDueCounts,
   DeckKind,
   DeckSummary,
@@ -526,6 +533,25 @@ function toSchedulerState(candidate: QueueCandidate): SchedulerCardState {
   };
 }
 
+/**
+ * Catatan pribadi dan jumlah diskusi untuk kata-kata sesi belajar: satu query
+ * catatan dan satu groupBy untuk seluruh potongan, bukan per kartu. Isi thread
+ * baru diambil saat sheet diskusinya dibuka. `userId` null untuk mode coba,
+ * yang hanya menampilkan diskusi publik.
+ */
+export async function getCardDiscussionData(
+  userId: number | null,
+  vocabIds: number[],
+): Promise<CardDiscussionData | null> {
+  if (!FEATURES.flashcardDiscussion) return null;
+
+  const [notes, counts] = await Promise.all([
+    userId === null ? new Map<number, OwnNote[]>() : getOwnVocabNotes(userId, vocabIds),
+    getVocabDiscussionCounts(vocabIds),
+  ]);
+  return { notes: Object.fromEntries(notes), counts: Object.fromEntries(counts) };
+}
+
 /** Kelompok antrean v3 dipadatkan ke tiga hitungan yang tampil di layar belajar. */
 function reviewerKind(entry: QueueEntry): ReviewerCardKind {
   if (entry.group === "new") return "new";
@@ -613,14 +639,14 @@ export async function getStudySession(userId: number, slug: string) {
   const selected = built.queue.slice(0, STUDY_BATCH_SIZE);
   const later = built.laterLearning.slice(0, STUDY_BATCH_SIZE);
   const ids = [...selected, ...later].map((entry) => entry.vocabId);
-  const contents = new Map(
-    (
-      await prisma.flashcardVocab.findMany({
-        where: { id: { in: ids } },
-        select: VOCAB_CONTENT_SELECT,
-      })
-    ).map((row) => [row.id, toCardContent(row)]),
-  );
+  const [contentRows, discussion] = await Promise.all([
+    prisma.flashcardVocab.findMany({
+      where: { id: { in: ids } },
+      select: VOCAB_CONTENT_SELECT,
+    }),
+    getCardDiscussionData(userId, ids),
+  ]);
+  const contents = new Map(contentRows.map((row) => [row.id, toCardContent(row)]));
 
   const toReviewerCard = (entry: QueueEntry, shownAt: Date): ReviewerCard | null => {
     const content = contents.get(entry.vocabId);
@@ -666,9 +692,28 @@ export async function getStudySession(userId: number, slug: string) {
     pendingLearning,
     unloadedCounts,
     tomorrow,
+    discussion,
     hasMore: built.queue.length > selected.length,
     generatedAt: now.toISOString(),
   };
+}
+
+// ---------------------------------------------------------------------------
+// Halaman diskusi kata
+// ---------------------------------------------------------------------------
+
+/**
+ * Isi kartu untuk halaman diskusi kata. Kata yang sudah pensiun tetap dapat
+ * dibuka supaya catatan dan diskusi lamanya terbaca, tetapi tidak menerima
+ * catatan baru (`retired`).
+ */
+export async function getVocabForDiscussion(vocabId: number) {
+  const row = await prisma.flashcardVocab.findUnique({
+    where: { id: vocabId },
+    select: { ...VOCAB_CONTENT_SELECT, retiredAt: true },
+  });
+  if (!row) return null;
+  return { vocabId: row.id, content: toCardContent(row), retired: row.retiredAt !== null };
 }
 
 // ---------------------------------------------------------------------------

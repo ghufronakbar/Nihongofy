@@ -3,6 +3,8 @@ import { ArrowLeft, ArrowRight, MessagesSquare } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { id as idLocale } from "date-fns/locale";
 import { getDiscussionIndex } from "@/features/question-comment/queries";
+import { DiscussionTabs } from "@/features/question-comment/components/discussion-tabs";
+import { FEATURES } from "@/constants";
 import { JapaneseText } from "@/components/japanese-text";
 import { FuriganaScope } from "@/components/furigana-scope";
 import { mondaiTypeFullLabel } from "@/constants/jlpt";
@@ -37,6 +39,12 @@ export default async function DiscussionIndexPage({
           aktivitas terbaru.
         </p>
       </div>
+
+      <DiscussionTabs
+        active="question"
+        questionEnabled={FEATURES.questionDiscussion}
+        vocabEnabled={FEATURES.flashcardDiscussion}
+      />
 
       {entries.length === 0 ? (
         <div className="neo-surface bg-white p-8 text-center border-[3px] border-neo-ink shadow-neo">

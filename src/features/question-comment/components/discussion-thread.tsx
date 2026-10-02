@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Link2, MessageSquareReply } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { DiscussionReply, DiscussionRoot } from "../queries";
+import { discussionThreadHref } from "../target";
 import {
   CommentAuthorLine,
   CommentAvatar,
@@ -102,7 +103,10 @@ export function DiscussionRootCard({
   }
 
   return (
-    <div className="rounded-lg border-2 border-neo-ink/20 bg-background p-3 shadow-neo-sm">
+    <div
+      id={`comment-${root.id}`}
+      className="scroll-mt-24 rounded-lg border-2 border-neo-ink/20 bg-background p-3 shadow-neo-sm"
+    >
       {root.state === "VISIBLE" && root.author ? (
         <div className="flex gap-2">
           <CommentAvatar author={root.author} />
@@ -117,7 +121,7 @@ export function DiscussionRootCard({
               />
               {showPermalink && (
                 <Link
-                  href={`/discussion/${root.id}`}
+                  href={discussionThreadHref(root)}
                   className="shrink-0 text-muted-foreground hover:text-foreground"
                   title="Buka halaman diskusi ini"
                 >
@@ -203,17 +207,19 @@ export function DiscussionThread({
   onChanged,
   showPermalink = true,
   reportEnabled,
+  emptyText = "Belum ada catatan yang dibagikan untuk soal ini.",
 }: {
   roots: DiscussionRoot[];
   currentUserId: number | null;
   onChanged: () => void;
   showPermalink?: boolean;
   reportEnabled: boolean;
+  emptyText?: string;
 }) {
   if (roots.length === 0) {
     return (
       <p className="py-6 text-center text-sm font-semibold text-muted-foreground">
-        Belum ada catatan yang dibagikan untuk soal ini.
+        {emptyText}
       </p>
     );
   }

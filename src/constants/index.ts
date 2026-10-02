@@ -50,6 +50,7 @@ const envSchema = z
     // Feature flags. Default aktif; set "false" untuk menyembunyikan modul.
     FEATURES_KANA: featureFlag,
     FEATURES_FLASHCARD: featureFlag,
+    FEATURES_FLASHCARD_DISCUSSION: featureFlag,
     FEATURES_PRACTICE: featureFlag,
     FEATURES_TEST_PACKAGE: featureFlag,
     FEATURES_HISTORY: featureFlag,
@@ -143,6 +144,22 @@ export const GOOGLE_OAUTH_REAUTH_DURATION_SECONDS = 5 * 60;
 
 export const BCRYPT_COST_FACTOR = 12;
 
+// Batas tulis catatan dan diskusi per user, gabungan soal dan flashcard:
+// membuat catatan, membalas, menyunting, dan membagikan ke diskusi. Konten publik
+// hanya dimoderasi admin secara manual, jadi batas ini yang mencegah satu akun
+// membanjiri diskusi. Ditegakkan lewat Redis (`limitByRedis`).
+export const COMMENT_WRITE_RATE_LIMITS = [
+  { seconds: 60, max: 8 },
+  { seconds: 60 * 60, max: 60 },
+  { seconds: 24 * 60 * 60, max: 300 },
+] as const;
+// Presigned upload gambar catatan. Tiap URL boleh dipakai satu PUT ke R2, jadi
+// batas ini juga membatasi pemakaian storage.
+export const COMMENT_IMAGE_UPLOAD_RATE_LIMITS = [
+  { seconds: 60 * 60, max: 40 },
+  { seconds: 24 * 60 * 60, max: 150 },
+] as const;
+
 export const SITE_URL = new URL(env.APP_URL);
 export const GOOGLE_OAUTH_ENABLED = Boolean(
   env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET,
@@ -157,6 +174,10 @@ export const GOOGLE_OAUTH_ENABLED = Boolean(
 export const FEATURES = {
   kana: env.FEATURES_KANA,
   flashcard: env.FEATURES_FLASHCARD,
+  // Catatan pribadi dan diskusi publik per kata flashcard. Berdiri sendiri dari
+  // catatan/diskusi soal supaya konten publik flashcard bisa dimatikan tanpa
+  // menyentuh modul soal, dan ikut mati bila modul flashcard mati.
+  flashcardDiscussion: env.FEATURES_FLASHCARD_DISCUSSION && env.FEATURES_FLASHCARD,
   practice: env.FEATURES_PRACTICE,
   testPackage: env.FEATURES_TEST_PACKAGE,
   history: env.FEATURES_HISTORY,
