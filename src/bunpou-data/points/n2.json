@@ -369,6 +369,189 @@
       "content": null,
       "ai": null,
       "review": null
+    },
+    {
+      "key": "wa-motoyori-n2",
+      "order": 11,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜はもとより",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "wa-motoyori"
+          }
+        ],
+        "title": "〜はもとより",
+        "meaning": "A sudah tentu, bahkan B juga; bukan hanya A, tetapi juga B",
+        "connection": "名詞＋はもとより",
+        "formation": [],
+        "notes": "Pola formal untuk menyatakan bahwa A sudah jelas termasuk, lalu menambahkan B yang cakupannya lebih luas atau dianggap lebih mengejutkan. Bagian sesudahnya sering disertai も, まで, atau bentuk lain yang menegaskan penambahan.",
+        "examples": [
+          "この商品は国内はもとより、海外でも人気がある。",
+          "彼は英語はもとより、中国語も話せる。",
+          "大人はもとより、子供にも楽しめる作品だ。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v2",
+        "extractedAt": "2026-10-03T23:23:12.418Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "wa-tomokaku",
+      "order": 12,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜はともかく",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "wa-tomokaku"
+          }
+        ],
+        "title": "〜はともかく",
+        "meaning": "mengesampingkan suatu hal untuk memusatkan perhatian pada hal lain",
+        "connection": "名詞＋はともかく／疑問詞節＋かはともかく",
+        "formation": [],
+        "notes": "Menandai bahwa topik pertama tidak akan dibahas atau dinilai lebih lanjut, lalu pembicara mengutamakan topik berikutnya. Dapat diperluas menjadi 〜はともかくとして dengan makna yang sama.",
+        "examples": [
+          "値段はともかく、デザインは気に入った。",
+          "できるかどうかはともかく、まず挑戦してみよう。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v2",
+        "extractedAt": "2026-10-03T23:23:12.949Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "nara-madashimo",
+      "order": 13,
+      "kind": "pattern",
+      "sectionKey": "comparison",
+      "family": null,
+      "title": "〜ならまだしも",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "nara-madashimo"
+          }
+        ],
+        "title": "〜ならまだしも",
+        "meaning": "kalau X masih dapat dimaklumi atau diterima, tetapi Y tidak",
+        "connection": "名詞＋ならまだしも／ナ形容詞語幹＋ならまだしも／イ形容詞普通形＋ならまだしも／動詞普通形＋ならまだしも",
+        "formation": [],
+        "notes": "Menetapkan X sebagai keadaan yang relatif masih dapat diterima, lalu membandingkannya dengan Y yang dianggap lebih sulit diterima, tidak wajar, atau bermasalah. Bagian sesudahnya sering menyatakan kritik, keterkejutan, atau penolakan.",
+        "examples": [
+          "子供ならまだしも、大人がそんなことをしてはいけない。",
+          "一度ならまだしも、同じ失敗を何度も繰り返すのは問題だ。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v2",
+        "extractedAt": "2026-10-03T23:23:10.093Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "nuki-without",
+      "order": 14,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "nuki",
+      "title": "〜抜き",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "nuki"
+          }
+        ],
+        "title": "〜抜き",
+        "meaning": "tanpa menyertakan N; dengan menghilangkan atau mengecualikan N",
+        "connection": "Nは抜きにして\nNを抜きにして\nN抜きで\nN抜きに\nN抜きのN",
+        "formation": [],
+        "notes": "Menunjukkan bahwa orang, benda, unsur, atau kebiasaan yang biasanya dapat disertakan sengaja ditiadakan. N抜きで dan N抜きに berfungsi secara adverbial, sedangkan N抜きのN menerangkan nomina. Bentuk Nは抜きにして sering memberi nuansa mengesampingkan N untuk sementara.",
+        "examples": [
+          "冗談は抜きにして、本題に入りましょう。",
+          "今日は砂糖抜きでコーヒーを飲んだ。",
+          "彼抜きの会議は珍しい。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v2",
+        "extractedAt": "2026-10-03T23:23:47.872Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "nuki-indispensable-condition",
+      "order": 15,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "nuki",
+      "title": "〜抜きにしては・〜抜きでは・〜抜きには",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "nuki"
+          }
+        ],
+        "title": "〜抜きにしては・〜抜きでは・〜抜きには",
+        "meaning": "tanpa N, sesuatu tidak mungkin dilakukan atau diwujudkan",
+        "connection": "Nを抜きにしては + bentuk potensial negatif atau ungkapan ketidakmungkinan\nN抜きでは + bentuk potensial negatif atau ungkapan ketidakmungkinan\nN抜きには + bentuk potensial negatif atau ungkapan ketidakmungkinan",
+        "formation": [],
+        "notes": "Pola ini menyatakan bahwa N merupakan syarat atau unsur yang sangat penting. Klausa sesudahnya lazim berupa bentuk potensial negatif atau ungkapan lain yang menyatakan bahwa sesuatu tidak dapat berlangsung, dibahas, dipahami, atau diwujudkan.",
+        "examples": [
+          "この問題は経済の視点を抜きにしては語れない。",
+          "彼の協力抜きでは計画を実現できない。",
+          "十分な準備抜きには成功は望めない。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v2",
+        "extractedAt": "2026-10-03T23:23:47.872Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
     }
   ]
 }
