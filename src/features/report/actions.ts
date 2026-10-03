@@ -21,6 +21,7 @@ import {
 } from "./constants";
 import { bunpouComparisonReportLabel, bunpouPointReportLabel } from "./lib/bunpou-target";
 import { flashcardReportLabel } from "./lib/flashcard-target";
+import { getPostAccess } from "@/features/community/queries";
 import {
   SubmitReportSchema,
   type ReportSubmitResult,
@@ -110,7 +111,7 @@ function createReportRateLimitBuckets(
 /** Hanya kolom FK target; sisa baris disusun oleh `submitReportAction`. */
 type TargetColumns = Pick<
   Prisma.ReportUncheckedCreateInput,
-  "questionId" | "articleId" | "commentId" | "vocabId" | "bunpouPointId" | "bunpouComparisonId"
+  "questionId" | "articleId" | "commentId" | "vocabId" | "bunpouPointId" | "bunpouComparisonId" | "postId"
 >;
 
 type ResolvedTarget =
@@ -172,6 +173,7 @@ async function resolveTarget(
         },
         vocab: { select: { level: true, wordPlain: true } },
         bunpouPoint: { select: { level: true, key: true } },
+        postId: true,
       },
     });
 
@@ -179,6 +181,14 @@ async function resolveTarget(
     // melaporkannya; entri yang sudah hilang dari diskusi juga tidak perlu.
     if (!comment || comment.deletedAt || !comment.sharedAt || comment.visibility !== "PUBLIC") {
       return { ok: false, message: "Entri diskusi yang dilaporkan sudah tidak tampil." };
+    }
+    // Komentar di postingan akun private hanya terlihat pemilik dan follower
+    // yang disetujui; selain itu entri ini memang tidak tampil bagi pelapor.
+    if (comment.postId !== null) {
+      const access = await getPostAccess(comment.postId, viewerId);
+      if (!FEATURES.community || !access || !access.canView) {
+        return { ok: false, message: "Entri diskusi yang dilaporkan sudah tidak tampil." };
+      }
     }
     if (viewerId !== null && comment.userId === viewerId) {
       return {
@@ -194,7 +204,9 @@ async function resolveTarget(
         ? `kata ${comment.vocab.level} ${comment.vocab.wordPlain}`
         : comment.bunpouPoint
           ? `pola ${comment.bunpouPoint.level} ${comment.bunpouPoint.key}`
-          : "target tidak dikenal";
+          : comment.postId !== null
+            ? `postingan #${comment.postId}`
+            : "target tidak dikenal";
     return {
       ok: true,
       targetLabel: truncate(
@@ -202,6 +214,26 @@ async function resolveTarget(
         REPORT_TARGET_LABEL_MAX_LENGTH,
       ),
       data: { commentId: comment.id },
+    };
+  }
+
+  if (values.targetType === "POST") {
+    // Hanya postingan yang memang terlihat oleh pelapor: postingan akun private
+    // tanpa follow yang disetujui tidak tampil baginya, jadi tidak dapat dilaporkan.
+    const access = FEATURES.community ? await getPostAccess(values.postId, viewerId) : null;
+    if (!access || access.deletedAt || !access.canView) {
+      return { ok: false, message: "Postingan yang dilaporkan sudah tidak tampil." };
+    }
+    if (viewerId !== null && access.authorId === viewerId) {
+      return { ok: false, message: "Ini postingan Anda sendiri. Pakai tombol hapus." };
+    }
+
+    return {
+      ok: true,
+      // Label tanpa isi postingan: isinya dibaca admin dari barisnya langsung,
+      // dan snapshot teks bebas tidak perlu ikut tersimpan di laporan.
+      targetLabel: truncate(`Postingan #${access.id} · @${access.authorUsername}`, REPORT_TARGET_LABEL_MAX_LENGTH),
+      data: { postId: access.id },
     };
   }
 
@@ -320,6 +352,10 @@ export async function submitReportAction(
     !FEATURES.bunpou
   ) {
     return { ok: false, message: BUNPOU_NOT_FOUND_MESSAGE };
+  }
+  // Dan untuk tombol laporan postingan di bawah /community, /post, dan profil.
+  if (values.targetType === "POST" && !FEATURES.community) {
+    return { ok: false, message: "Postingan yang dilaporkan sudah tidak tampil." };
   }
 
   const session = await getSession();

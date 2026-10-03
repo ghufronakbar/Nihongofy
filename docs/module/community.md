@@ -2,8 +2,8 @@
 
 ## Status Aktual
 
-**Tahap 1 (profil publik) dan tahap 2 (follow) selesai di kode, migration keduanya sudah diterapkan
-(3 Oktober 2026); menunggu uji manual.** Tahap 3–4 belum dikerjakan. Checklist pengerjaannya ada di `docs/plan.md`
+**Tahap 1 (profil publik), tahap 2 (follow), dan tahap 3 (postingan) selesai di kode, migration
+ketiganya sudah diterapkan (3 Oktober 2026); menunggu uji manual.** Tahap 4 belum dikerjakan. Checklist pengerjaannya ada di `docs/plan.md`
 (Fase 8.15). Fitur ini sebelumnya tercatat di luar scope awal
 (`plan/redesign-and-feature.md`: "Community feed, komentar publik, follower"); komentar publik sudah
 lebih dulu hadir lewat [Question comments](question-comment.md).
@@ -234,8 +234,11 @@ pola `withViewerVotes()`.
 
 - Teks polos maksimal 2.000 karakter, tanpa tautan yang dapat diklik (sama dengan komentar, sehingga
   tidak perlu `rel="ugc"` dan tidak menjadi magnet spam SEO).
-- Maksimal 4 gambar di R2 dengan object key `jlpt-exam/posts/{userId}/<uuid>.<ext>`, presigned PUT
-  yang mengikat content-type dan content-length, divalidasi milik user seperti `commentImages`.
+- Maksimal 4 gambar. **Memakai ulang jalur upload komentar** — prefix
+  `jlpt-exam/comments/{userId}/`, `createCommentImageUploadAction`, `CommentImageUploader`,
+  `isAllowedCommentImageUrl`, dan kuota `COMMENT_IMAGE_UPLOAD_RATE_LIMITS` — alih-alih prefix
+  `posts/` tersendiri seperti rancangan awal. Sifat objeknya sama (gambar publik milik user), jadi
+  jalur kedua hanya menambah kode R2 tanpa perbedaan perlakuan.
 - Dapat disunting (`editedAt` ditampilkan sebagai "disunting") dan dihapus.
 - **Tidak pernah hard delete.** Postingan yang dihapus dan punya komentar menjadi tombstone; tanpa
   komentar, langsung hilang. `deletedById` membedakan hapusan pemilik dari takedown admin.
@@ -245,7 +248,9 @@ pola `withViewerVotes()`.
 Satu like per user per postingan, dapat ditarik, tidak bisa me-like postingan sendiri. Jumlahnya
 dihitung lewat `groupBy` untuk postingan di halaman yang sedang dibaca (pola `countVotes`), tidak
 disimpan sebagai kolom. Siapa yang memberi like tidak dikirim ke client, konsisten dengan suara
-diskusi. Like pada komentar postingan memakai `QuestionCommentVote` dengan label "Suka".
+diskusi. Suara pada komentar postingan memakai `QuestionCommentVote` dengan label "Membantu" yang
+sama seperti diskusi lain (bukan "Suka" seperti rancangan awal), karena suara itu ikut dihitung
+sebagai reputasi "Membantu".
 
 ### Komentar dan balasan
 
@@ -262,7 +267,8 @@ di `target.ts` mendapat jenis `post` dengan tautan `/post/<postId>#comment-<id>`
 | `/community` | Feed global: postingan hidup dari akun `PUBLIC`, kronologis, cursor pagination. Guest boleh membaca. Halaman pertama diindeks; halaman lanjutan `noindex, follow`. |
 | `/community/following` | Tab "Mengikuti": postingan akun yang diikuti, termasuk akun private yang sudah menyetujui. Per viewer, tidak di-cache, `noindex`. Guest melihat CTA login. |
 | `/post/[id]` | Permalink: postingan, like, dan thread komentar. Akun private tanpa akses melihat "Postingan ini dari akun private" dengan `noindex`. Postingan terhapus tanpa komentar menjadi 404. JSON-LD `SocialMediaPosting`. |
-| `/u/[username]` tab Postingan | Postingan milik user, mengikuti aturan akses. |
+| `/u/[username]` bagian Postingan | Halaman pertama postingan milik user di profilnya, mengikuti aturan akses. |
+| `/u/[username]/posts` | Daftar lengkap dengan cursor pagination, `noindex` (setiap postingan sudah punya permalink). |
 
 Permalink memakai id, bukan username, supaya tetap valid saat username diganti. Feed dan thread
 tidak di-`unstable_cache`, dengan alasan yang sama seperti thread diskusi; status like milik viewer
@@ -275,11 +281,41 @@ ditempel terpisah.
   ada.
 - **Moderasi:** tab Postingan di `/admin/moderation` untuk takedown dan memulihkan takedown admin,
   dengan jejak `AdminAuditLog`.
-- **Suspend posting:** `checkPublicPostingAllowed()` juga menolak membuat, menyunting, dan
-  berkomentar di postingan.
-- **Rate limit:** `POST_WRITE_RATE_LIMITS` (usulan 5 per jam, 20 per hari) untuk membuat dan
-  menyunting; komentar memakai `COMMENT_WRITE_RATE_LIMITS`; like punya kuota sendiri; upload gambar
-  postingan punya kuota sendiri.
+- **Suspend posting:** `isPostingSuspended()` juga menolak membuat dan menyunting postingan;
+  komentar postingan sudah tertahan `checkPublicPostingAllowed()`. Menghapus postingan sendiri
+  selalu bisa.
+- **Rate limit:** `POST_WRITE_RATE_LIMITS` (5 per jam, 20 per hari) untuk membuat dan menyunting;
+  komentar memakai `COMMENT_WRITE_RATE_LIMITS`; like `POST_LIKE_RATE_LIMITS` (120 per jam); upload
+  gambar berbagi kuota dengan gambar komentar.
+
+### Implementasi tahap 3
+
+- **Modul** `src/features/community/`: `queries.ts` (feed global, tab Mengikuti, postingan per user,
+  detail, `getPostAccess`), `actions.ts` (buat, sunting, hapus, like), `schemas.ts`, dan komponen
+  `PostCard`, `PostComposer`, `LikeButton`, `PostFeed`/`FeedTabs`, `ComposerSection`.
+- **Akses** satu pintu lewat `getPostAccess(postId, viewerId)`, yang memakai
+  `canViewProfileContent` + status follow viewer. Dipakai permalink, like, laporan `POST`, dan
+  setiap action komentar dengan target `post` (`requirePostAccess` di
+  `src/features/question-comment/actions.ts`): tambah, sunting, balas, beri suara, dan
+  `getDiscussionAction`. Postingan dari akun anonim atau yang menunggu penghapusan dianggap tidak
+  ada.
+- **Komentar postingan** selalu `PUBLIC`: `addQuestionCommentAction` menolak `PRIVATE` untuk target
+  `post`, dan `setQuestionCommentVisibilityAction` menolak komentar postingan. Thread postingan yang
+  dihapus dirender dengan prop `archived` di `DiscussionThread` (tanpa balas dan suara).
+- **Tombstone** dibersihkan di `toPostCard`, bukan di JSX: postingan terhapus tidak membawa teks,
+  gambar, identitas, maupun jumlah like ke client.
+- **Feed global** urut `id desc` dengan kursor `?before=<id>` (20 per halaman), memakai PK — bukan
+  index `deletedAt, createdAt` seperti rancangan awal. Index `userId, id` menopang profil dan tab
+  Mengikuti.
+- **Reputasi** "Membantu" kini menjumlahkan suara pada entri diskusi (termasuk komentar postingan)
+  dan like pada postingan hidup milik user.
+- **Moderasi:** `/admin/moderation?kind=posts` (`listPostModerationQueue`, `takedownPostAction`,
+  `restorePostAction`, audit `post.takedown`/`post.restore`); komentar postingan tetap di antrean
+  diskusi dengan konteks "Postingan #id · @username". Laporan `POST` menautkan ke antrean itu.
+- **SEO:** `/community` diindeks dan masuk sitemap; postingan public diindeks dengan JSON-LD
+  `SocialMediaPosting`; tombstone `noindex, follow`; postingan akun private `noindex`. Postingan
+  satu per satu tidak didaftarkan di sitemap.
+- **Navigasi:** menu "Komunitas" di header publik dan sidebar dashboard, mengikuti flag.
 
 ## Tahap 4 — Notifikasi dan Blokir
 
@@ -310,7 +346,7 @@ dipisah ke migration sendiri (`ALTER TYPE ... ADD VALUE`), mengikuti pola `repor
 | `User.publicProfileNoticeDismissedAt` | 1 | Penanda banner default PUBLIC sudah ditutup |
 | `enum FollowStatus` | 2 | `PENDING`, `ACCEPTED` |
 | `Follow` | 2 | `followerId`, `followingId`, `status`, `createdAt`, `respondedAt`. PK `followerId + followingId`; CHECK `followerId <> followingId` (hanya di SQL); index `followingId, status, createdAt` dan `followerId, status, createdAt`; `onDelete: Cascade` di kedua sisi |
-| `Post` | 3 | `userId` (`Restrict`, seperti `QuestionComment.userId`), `text`, `images[]`, `editedAt`, `deletedAt`, `deletedById` (`SetNull`), `createdAt`, `updatedAt`. Index `deletedAt, createdAt` untuk feed dan `userId, createdAt` untuk profil |
+| `Post` | 3 | `userId` (`Restrict`, seperti `QuestionComment.userId`), `text`, `images[]`, `editedAt`, `deletedAt`, `deletedById` (`SetNull`), `createdAt`, `updatedAt`. Feed memakai PK; index `userId, id` untuk profil dan tab Mengikuti, `deletedById` untuk FK |
 | `PostLike` | 3 | PK `postId + userId`, index `userId`; `Cascade` di kedua sisi |
 | `QuestionComment.postId` | 3 | FK ke `Post` dengan `Restrict` (postingan tidak pernah hard delete). CHECK `QuestionComment_target_check` menjadi `num_nonnulls(questionId, vocabId, bunpouPointId, postId) = 1`. Index `postId, parentId, sharedAt` |
 | `ReportTargetType.POST`, `Report.postId` | 3 | `SetNull`, index `postId` |
@@ -336,7 +372,7 @@ Sesuai aturan `project-rules.md`, setiap relasi baru ke `User` wajib ikut ditang
 |---|---|---|
 | `FEATURES_PUBLIC_PROFILE` | `/u/*`, section "Profil publik" di `/profile/privacy`, field bio dan target level di `/profile/info`, banner di dashboard, tombol "Lihat profil publik" di `/profile`, keterangan di halaman daftar, tautan username ke profil di diskusi | — (aktif sejak tahap 1) |
 | `FEATURES_FOLLOW` | Tombol Follow, jumlah dan daftar follower/following, `/profile/follow-requests`, badge permintaan | Ikut mati bila `FEATURES_PUBLIC_PROFILE` mati (aktif sejak tahap 2) |
-| `FEATURES_COMMUNITY` | `/community/*`, `/post/*`, tab Postingan, action postingan dan like | Ikut mati bila `FEATURES_PUBLIC_PROFILE` mati |
+| `FEATURES_COMMUNITY` | `/community/*`, `/post/*`, `/u/*/posts`, bagian Postingan di profil, action postingan, like, dan komentar postingan, menu Komunitas, tab Postingan di moderasi | Ikut mati bila `FEATURES_PUBLIC_PROFILE` mati (aktif sejak tahap 3) |
 
 Saat `FEATURES_FOLLOW` mati, konten akun private hanya terlihat oleh pemiliknya. Data tidak dihapus
 saat flag dimatikan. Server Action yang dipanggil di luar segmen modul memeriksa flag sendiri.
@@ -354,4 +390,5 @@ saat flag dimatikan. Server Action yang dipanggil di luar segmen modul memeriksa
 - Markup furigana `{漢字|かんじ}` di dalam postingan. Cocok untuk app belajar bahasa Jepang, tetapi
   menambah validasi markup pada teks bebas.
 - Postingan yang menautkan objek aplikasi (pola bunpou, artikel, kata) sebagai kartu bagikan.
-- Angka final rate limit postingan dan follow.
+- Angka rate limit postingan, like, dan follow saat ini masih nilai awal; tinjau setelah ada data
+  pemakaian nyata.

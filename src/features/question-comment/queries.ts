@@ -55,10 +55,11 @@ export type DiscussionRootState = "VISIBLE" | "HIDDEN" | "DELETED";
 
 export type DiscussionRoot = DiscussionVotes & {
   id: number;
-  // Tepat satu terisi: soal JLPT, kata flashcard, atau pola bunpou.
+  // Tepat satu terisi: soal JLPT, kata flashcard, pola bunpou, atau postingan.
   questionId: number | null;
   vocabId: number | null;
   bunpouPointId: number | null;
+  postId: number | null;
   state: DiscussionRootState;
   createdAt: Date;
   // Empat field di bawah — dan suaranya — hanya terisi saat state === "VISIBLE".
@@ -84,6 +85,7 @@ const discussionRootSelect = {
   questionId: true,
   vocabId: true,
   bunpouPointId: true,
+  postId: true,
   commentText: true,
   commentImages: true,
   visibility: true,
@@ -156,6 +158,7 @@ function toDiscussionRoot(row: RawDiscussionRoot): DiscussionRoot {
       questionId: row.questionId,
       vocabId: row.vocabId,
       bunpouPointId: row.bunpouPointId,
+      postId: row.postId,
       state,
       createdAt: row.createdAt,
       commentText: null,
@@ -173,6 +176,7 @@ function toDiscussionRoot(row: RawDiscussionRoot): DiscussionRoot {
     questionId: row.questionId,
     vocabId: row.vocabId,
     bunpouPointId: row.bunpouPointId,
+    postId: row.postId,
     state,
     createdAt: row.createdAt,
     commentText: row.commentText,
@@ -294,6 +298,24 @@ export async function getQuestionDiscussionCounts(
 
   for (const row of grouped) {
     if (row.questionId !== null) counts.set(row.questionId, row._count._all);
+  }
+
+  return counts;
+}
+
+/** Padanan `getQuestionDiscussionCounts` untuk postingan komunitas (label komentar di feed). */
+export async function getPostCommentCounts(postIds: number[]): Promise<Map<number, number>> {
+  const counts = new Map<number, number>();
+  if (postIds.length === 0) return counts;
+
+  const grouped = await prisma.questionComment.groupBy({
+    by: ["postId"],
+    where: { postId: { in: postIds }, ...countedEntryWhere },
+    _count: { _all: true },
+  });
+
+  for (const row of grouped) {
+    if (row.postId !== null) counts.set(row.postId, row._count._all);
   }
 
   return counts;
@@ -453,6 +475,7 @@ export async function resolveDiscussionRootId(commentId: number) {
       questionId: true,
       vocabId: true,
       bunpouPointId: true,
+      postId: true,
     },
   });
 
@@ -461,6 +484,7 @@ export async function resolveDiscussionRootId(commentId: number) {
     questionId: comment.questionId,
     vocabId: comment.vocabId,
     bunpouPointId: comment.bunpouPointId,
+    postId: comment.postId,
   };
   if (comment.parentId) return { rootId: comment.parentId, isReply: true as const, ...target };
   if (!comment.sharedAt) return null; // catatan pribadi tidak punya permalink

@@ -6,11 +6,14 @@ import { FEATURES } from "@/constants";
 import {
   getModerationUserSummary,
   listModerationQueue,
+  listPostModerationQueue,
 } from "@/features/admin/moderation/queries";
 import {
+  ModerationKindSchema,
   ModerationQuerySchema,
   ModerationStateFilterSchema,
 } from "@/features/admin/moderation/schemas";
+import { PostModerationList } from "@/features/admin/moderation/components/post-moderation-list";
 import { ModerationActions } from "@/features/admin/moderation/components/moderation-actions";
 import { mondaiTypeFullLabel } from "@/constants/jlpt";
 import { discussionThreadHref } from "@/features/question-comment/target";
@@ -33,7 +36,7 @@ const STATE_BADGE: Record<string, { label: string; className: string }> = {
 export default async function AdminModerationPage({
   searchParams,
 }: {
-  searchParams: Promise<{ state?: string; q?: string; user?: string }>;
+  searchParams: Promise<{ state?: string; q?: string; user?: string; kind?: string }>;
 }) {
   await requireAdmin();
 
@@ -46,13 +49,21 @@ export default async function AdminModerationPage({
     userId: Number.isInteger(userIdRaw) && userIdRaw > 0 ? userIdRaw : undefined,
   });
 
-  const [{ entries, counts, truncated }, userSummary] = await Promise.all([
-    listModerationQueue(filter),
+  // Antrean postingan komunitas terpisah dari entri diskusi; komentar postingan
+  // tetap di antrean diskusi karena barisnya QuestionComment.
+  const kind = ModerationKindSchema.catch("comments").parse(params.kind);
+  const [commentQueue, postQueue, userSummary] = await Promise.all([
+    kind === "comments" ? listModerationQueue(filter) : Promise.resolve(null),
+    kind === "posts" ? listPostModerationQueue(filter) : Promise.resolve(null),
     filter.userId ? getModerationUserSummary(filter.userId) : Promise.resolve(null),
   ]);
+  const entries = commentQueue?.entries ?? [];
+  const counts = (commentQueue ?? postQueue)?.counts ?? { all: 0, live: 0, removed: 0 };
+  const truncated = (commentQueue ?? postQueue)?.truncated ?? false;
 
-  function hrefFor(state: string) {
+  function hrefFor(state: string, targetKind: string = kind) {
     const search = new URLSearchParams();
+    if (targetKind !== "comments") search.set("kind", targetKind);
     search.set("state", state);
     if (filter.query) search.set("q", filter.query);
     if (filter.userId) search.set("user", String(filter.userId));
@@ -64,9 +75,33 @@ export default async function AdminModerationPage({
       <div>
         <h1 className="text-2xl font-black uppercase text-neo-ink sm:text-3xl">Moderasi</h1>
         <p className="mt-1 text-sm font-semibold text-foreground/70">
-          {counts.all} entri pernah dibagikan · {counts.live} aktif · {counts.removed} dihapus
+          {kind === "posts"
+            ? `${counts.all} postingan · ${counts.live} aktif · ${counts.removed} dihapus`
+            : `${counts.all} entri pernah dibagikan · ${counts.live} aktif · ${counts.removed} dihapus`}
         </p>
       </div>
+
+      {FEATURES.community || kind === "posts" ? (
+        <div className="flex flex-wrap gap-2" role="group" aria-label="Jenis konten">
+          {(
+            [
+              { value: "comments", label: "Diskusi" },
+              { value: "posts", label: "Postingan" },
+            ] as const
+          ).map((tab) => (
+            <Link
+              key={tab.value}
+              href={hrefFor(filter.state, tab.value)}
+              aria-current={kind === tab.value ? "page" : undefined}
+              className={`inline-flex items-center border-[3px] border-neo-ink px-3 py-1.5 text-sm font-black shadow-neo-sm ${
+                kind === tab.value ? "bg-neo-yellow text-black" : "bg-white text-black"
+              }`}
+            >
+              {tab.label}
+            </Link>
+          ))}
+        </div>
+      ) : null}
 
       {[
         { off: !FEATURES.questionDiscussion, label: "Diskusi soal", env: "FEATURES_QUESTION_DISCUSSION" },
@@ -103,6 +138,7 @@ export default async function AdminModerationPage({
         </div>
 
         <form action="/admin/moderation" className="ml-auto flex items-center gap-2">
+          {kind !== "comments" ? <input type="hidden" name="kind" value={kind} /> : null}
           <input type="hidden" name="state" value={filter.state} />
           <input
             type="search"
@@ -159,7 +195,9 @@ export default async function AdminModerationPage({
         </div>
       )}
 
-      {entries.length === 0 ? (
+      {postQueue ? (
+        <PostModerationList entries={postQueue.entries} state={filter.state} />
+      ) : entries.length === 0 ? (
         <div className="neo-surface border-[3px] border-neo-ink bg-white p-6 text-sm font-semibold text-foreground/70 shadow-neo">
           Tidak ada entri yang cocok.
         </div>
@@ -256,6 +294,10 @@ export default async function AdminModerationPage({
                         </span>{" "}
                         · {entry.bunpouPoint.key}
                       </>
+                    ) : entry.post ? (
+                      <>
+                        Postingan #{entry.post.id} · @{entry.post.user.username}
+                      </>
                     ) : null}
                   </span>
                   <Link
@@ -265,6 +307,7 @@ export default async function AdminModerationPage({
                         questionId: entry.questionId,
                         vocabId: entry.vocabId,
                         bunpouPointId: entry.bunpouPointId,
+                        postId: entry.postId,
                       },
                       entry.id,
                     )}

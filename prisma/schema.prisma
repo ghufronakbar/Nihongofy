@@ -174,6 +174,7 @@ enum ReportTargetType {
   FLASHCARD_VOCAB
   BUNPOU_POINT
   BUNPOU_COMPARISON
+  POST
 }
 
 // Kategori dibatasi oleh target: peta lengkapnya ada di
@@ -324,6 +325,9 @@ model User {
   questionCommentVotes     QuestionCommentVote[]
   follows                  Follow[]                    @relation("FollowFollower")
   followedBy               Follow[]                    @relation("FollowFollowing")
+  posts                    Post[]                      @relation("PostAuthor")
+  deletedPosts             Post[]                      @relation("PostDeletedBy")
+  postLikes                PostLike[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -948,6 +952,13 @@ model QuestionComment {
   bunpouPoint   BunpouPoint? @relation(fields: [bunpouPointId], references: [id], onDelete: Restrict)
   bunpouPointId Int?
 
+  // Komentar postingan komunitas. Restrict seperti `vocab`: postingan tidak
+  // pernah di-hard delete (hanya `deletedAt`), dan penghapusan yang tidak
+  // disengaja tidak boleh ikut memusnahkan percakapan. Komentar postingan
+  // selalu PUBLIC — tidak ada catatan privat pada postingan.
+  post   Post? @relation(fields: [postId], references: [id], onDelete: Restrict)
+  postId Int?
+
   // Restrict, bukan Cascade: menghapus baris user akan ikut menghancurkan
   // balasan orang lain pada thread miliknya. Penghapusan akun menganonimkan
   // user dan men-soft-delete comment-nya — lihat `anonymizeAccount`.
@@ -1013,6 +1024,9 @@ model QuestionComment {
   @@index([bunpouPointId])
   @@index([bunpouPointId, userId, deletedAt])
   @@index([bunpouPointId, parentId, sharedAt])
+  // Thread komentar satu postingan dan hitungannya di feed.
+  @@index([postId])
+  @@index([postId, parentId, sharedAt])
   @@index([deletedById])
   @@index([repliedToId])
 }
@@ -1057,6 +1071,64 @@ model Follow {
   @@index([followingId, status, createdAt])
   // Daftar akun yang diikuti dan tab "Mengikuti" (tahap 3).
   @@index([followerId, status, createdAt])
+}
+
+// Postingan komunitas (tahap 3). Teks polos tanpa tautan yang dapat diklik,
+// gambar memakai jalur upload komentar (`jlpt-exam/comments/{userId}/`).
+// Komentarnya tinggal di `QuestionComment` (target `postId`), likes di `PostLike`.
+//
+// Tidak pernah hard delete: postingan yang dihapus dan punya komentar menjadi
+// tombstone. `deletedById` membedakan hapusan pemilik dari takedown admin, sama
+// seperti `QuestionComment.deletedById`.
+//
+// Siapa yang boleh melihat ditentukan visibility profil penulisnya
+// (`canViewProfileContent`), bukan kolom di sini.
+model Post {
+  id Int @id @default(autoincrement())
+
+  // Restrict, bukan Cascade: sama seperti QuestionComment.userId — akun
+  // dianonimkan, bukan dihapus, dan komentar orang lain menempel di sini.
+  user   User @relation("PostAuthor", fields: [userId], references: [id], onDelete: Restrict)
+  userId Int
+
+  text   String   @db.Text
+  images String[]
+
+  // Terisi saat isi disunting; `updatedAt` ikut berubah oleh takedown/pulih.
+  editedAt DateTime?
+
+  deletedAt   DateTime?
+  // SetNull: akun admin yang dihapus tidak boleh ikut menghapus postingan orang.
+  deletedBy   User?     @relation("PostDeletedBy", fields: [deletedById], references: [id], onDelete: SetNull)
+  deletedById Int?
+
+  likes    PostLike[]
+  comments QuestionComment[]
+  reports  Report[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Feed global memakai urutan PK (id desc); tab Postingan di profil dan tab
+  // "Mengikuti" mencari per penulis.
+  @@index([userId, id])
+  @@index([deletedById])
+}
+
+// Like pada postingan. Satu per user per postingan, bisa ditarik, tidak bisa
+// me-like postingan sendiri (ditolak di action). Jumlah dihitung lewat groupBy,
+// tidak disimpan sebagai kolom. Siapa yang me-like tidak pernah dikirim ke
+// client — hanya jumlah dan status milik viewer.
+model PostLike {
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  createdAt DateTime @default(now())
+
+  @@id([postId, userId])
+  // Penghapusan saat anonimisasi dan export data akun mencari per user.
+  @@index([userId])
 }
 
 // ============================================================
@@ -1441,6 +1513,11 @@ model Report {
   bunpouComparison   BunpouComparison? @relation(fields: [bunpouComparisonId], references: [id], onDelete: SetNull)
   bunpouComparisonId Int?
 
+  // Postingan komunitas. SetNull dengan alasan yang sama seperti target lain;
+  // postingan sendiri tidak pernah di-hard delete.
+  post   Post? @relation(fields: [postId], references: [id], onDelete: SetNull)
+  postId Int?
+
   // Snapshot teks target saat laporan dibuat, mis. "N2 Juli 2025 · 文法 · soal 12".
   // Mengikuti pola `AdminAuditLog.actorName`: FK yang menjadi null karena
   // targetnya dihapus akan meninggalkan baris yang tidak terbaca tanpa ini.
@@ -1495,6 +1572,7 @@ model Report {
   @@index([vocabId])
   @@index([bunpouPointId])
   @@index([bunpouComparisonId])
+  @@index([postId])
   @@index([reporterId])
   @@index([handledById])
   @@index([repliedById])

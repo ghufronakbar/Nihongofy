@@ -38,12 +38,14 @@ export function DiscussionPageThreads({
   postingSuspended = false,
   reportEnabled,
   emptyText,
+  archived = false,
 }: {
   roots: DiscussionRoot[];
   currentUserId: number | null;
   postingSuspended?: boolean;
   reportEnabled: boolean;
   emptyText?: string;
+  archived?: boolean;
 }) {
   const router = useRouter();
 
@@ -56,6 +58,7 @@ export function DiscussionPageThreads({
       showPermalink
       reportEnabled={reportEnabled}
       emptyText={emptyText}
+      archived={archived}
     />
   );
 }

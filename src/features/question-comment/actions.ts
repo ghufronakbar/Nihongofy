@@ -12,6 +12,7 @@ import { getSession } from "@/lib/auth";
 import { createCommentImageUpload, isAllowedCommentImageUrl } from "@/lib/r2";
 import { formatRetryAfter } from "@/lib/rate-limit";
 import { limitByRedis } from "@/lib/redis-rate-limit";
+import { getPostAccess } from "@/features/community/queries";
 import {
   countVotes,
   getDiscussion,
@@ -74,6 +75,9 @@ function notesEnabled(target: CommentTarget) {
       return FEATURES.flashcardDiscussion;
     case "bunpou":
       return FEATURES.bunpouDiscussion;
+    // Postingan tidak punya catatan privat; flag ini hanya menjaga komentar publiknya.
+    case "post":
+      return FEATURES.community;
   }
 }
 
@@ -85,6 +89,8 @@ function discussionEnabled(target: CommentTarget) {
       return FEATURES.flashcardDiscussion;
     case "bunpou":
       return FEATURES.bunpouDiscussion;
+    case "post":
+      return FEATURES.community;
   }
 }
 
@@ -101,9 +107,27 @@ function requireOwnedCommentImages(commentImages: string[], userId: number) {
   }
 }
 
+/**
+ * Komentar postingan mengikuti aturan akses postingannya: postingan akun private
+ * hanya terbuka bagi pemilik dan follower yang disetujui. Tanpa cek ini, siapa
+ * pun yang menebak id postingan dapat membaca atau menulis di thread-nya.
+ *
+ * `allowDeleted` untuk jalur baca: postingan yang dihapus tetap tampil sebagai
+ * tombstone selama komentarnya ada, tetapi thread-nya read-only.
+ */
+async function requirePostAccess(
+  target: CommentTarget,
+  viewerId: number | null,
+  { allowDeleted = false }: { allowDeleted?: boolean } = {},
+) {
+  if (target.type !== "post") return;
+  const access = await getPostAccess(target.postId, viewerId);
+  if (!access || !access.canView || (access.deletedAt && !allowDeleted)) notFound();
+}
+
 // Kata dan pola yang sudah pensiun dari katalog tetap menyimpan catatan lamanya,
-// tetapi tidak menerima catatan baru.
-async function ensureTargetExists(target: CommentTarget) {
+// tetapi tidak menerima catatan baru. Postingan yang dihapus juga tidak.
+async function ensureTargetExists(target: CommentTarget, viewerId: number) {
   switch (target.type) {
     case "question": {
       const question = await prisma.question.findUnique({
@@ -129,10 +153,13 @@ async function ensureTargetExists(target: CommentTarget) {
       if (!point || point.retiredAt) notFound();
       return;
     }
+    case "post":
+      await requirePostAccess(target, viewerId);
+      return;
   }
 }
 
-const commentTargetSelect = { questionId: true, vocabId: true, bunpouPointId: true } as const;
+const commentTargetSelect = { questionId: true, vocabId: true, bunpouPointId: true, postId: true } as const;
 
 // Comment yang sudah di-soft delete diperlakukan seperti tidak ada: hanya
 // tombstone-nya yang dirender, dan tidak boleh diedit, dibagikan, atau dibalas.
@@ -195,12 +222,14 @@ export async function addQuestionCommentAction(
   const { target, commentText, commentImages, visibility } = validated.data;
   if (!notesEnabled(target)) notFound();
   if (visibility === "PUBLIC" && !discussionEnabled(target)) notFound();
+  // Komentar postingan selalu publik: tidak ada catatan pribadi pada postingan.
+  if (target.type === "post" && visibility !== "PUBLIC") notFound();
 
   const authSession = await getSession();
   if (!authSession) redirect("/login");
 
   requireOwnedCommentImages(commentImages, authSession.userId);
-  await ensureTargetExists(target);
+  await ensureTargetExists(target, authSession.userId);
 
   if (visibility === "PUBLIC") {
     const suspended = await checkPublicPostingAllowed(authSession.userId);
@@ -238,6 +267,9 @@ export async function updateQuestionCommentAction(
   requireOwnedCommentImages(commentImages, authSession.userId);
   const comment = await requireOwnLiveComment(commentId, authSession.userId);
   if (!notesEnabled(comment.target)) notFound();
+  // Menulis di thread postingan yang sudah tidak terlihat (akun private yang
+  // tidak lagi diikuti) atau sudah dihapus tidak diizinkan; menghapus tetap bisa.
+  await requirePostAccess(comment.target, authSession.userId);
 
   // Menyunting entri yang sedang tampil publik sama dengan menulis ke diskusi.
   // Balasan selalu publik; root privat (termasuk yang disembunyikan) bebas.
@@ -318,6 +350,8 @@ export async function setQuestionCommentVisibilityAction(
   const { commentId, visibility } = validated.data;
   const comment = await requireOwnLiveComment(commentId, authSession.userId);
   if (!discussionEnabled(comment.target)) notFound();
+  // Komentar postingan tidak punya versi privat.
+  if (comment.target.type === "post") notFound();
 
   // Balasan mewarisi visibility root-nya dan tidak punya toggle sendiri.
   if (comment.parentId) notFound();
@@ -385,6 +419,7 @@ export async function replyToQuestionCommentAction(
   }
   const target = targetOf(root);
   if (!target || !discussionEnabled(target)) notFound();
+  await requirePostAccess(target, authSession.userId);
 
   // Mention hanya diterima bila menunjuk comment hidup di thread yang sama.
   // Tanpa cek ini, balasan bisa "membalas" comment di soal lain dan merender
@@ -413,6 +448,7 @@ export async function replyToQuestionCommentAction(
       questionId: root.questionId,
       vocabId: root.vocabId,
       bunpouPointId: root.bunpouPointId,
+      postId: root.postId,
       userId: authSession.userId,
       parentId: root.id,
       repliedToId: mentionId,
@@ -438,6 +474,7 @@ export async function getDiscussionAction(
   // Diskusi publik terbuka untuk guest; login hanya dibutuhkan untuk menulis.
   const authSession = await getSession();
   const viewerId = authSession?.userId ?? null;
+  await requirePostAccess(validated.data.target, viewerId, { allowDeleted: true });
   const [roots, postingSuspended] = await Promise.all([
     getDiscussion(validated.data.target),
     isPostingSuspended(viewerId),
@@ -491,6 +528,9 @@ export async function voteQuestionCommentAction(
   if (!target || !discussionEnabled(target)) notFound();
 
   if (voted) {
+    // Thread postingan yang dihapus adalah arsip read-only, sama seperti root
+    // tombstone; postingan akun private hanya untuk yang boleh melihatnya.
+    await requirePostAccess(target, userId);
     const rejection = voteRejection(
       { authorId: comment.userId, deletedAt: comment.deletedAt, root: comment.parent ?? comment },
       userId,
@@ -538,7 +578,8 @@ export type CommentImageUploadResult =
 export async function createCommentImageUploadAction(
   input: CreateCommentImageUploadInput,
 ): Promise<CommentImageUploadResult> {
-  if (!FEATURES.questionComment && !FEATURES.flashcardDiscussion) notFound();
+  // Postingan memakai uploader dan prefix object yang sama dengan komentar.
+  if (!FEATURES.questionComment && !FEATURES.flashcardDiscussion && !FEATURES.community) notFound();
 
   const authSession = await getSession();
   if (!authSession) redirect("/login");

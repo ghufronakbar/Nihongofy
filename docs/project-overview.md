@@ -24,6 +24,10 @@ Rules terkait: `database.md` (schema, markup teks, aturan query).
 | `/article/[slug]` | Detail artikel dengan body terstruktur, related article, save/favorite, dan share/copy fallback. |
 | `/u/[username]` | Profil publik: identitas, statistik belajar, jejak belajar harian 12 bulan, streak, dan reputasi "Membantu". Akun private hanya menampilkan kartu identitas berlabel "Akun ini private". Lihat `docs/module/community.md`. |
 | `/u/[username]/followers`, `/u/[username]/following` | Daftar follower dan akun yang diikuti, mengikuti aturan akses isi profil; tidak diindeks. |
+| `/u/[username]/posts` | Semua postingan satu akun, mengikuti aturan akses isi profil; tidak diindeks. |
+| `/community` | Feed global postingan dari akun public; dapat dibaca guest dan diindeks. |
+| `/community/following` | Postingan sendiri dan akun yang diikuti, termasuk akun private yang menyetujui; tidak diindeks. |
+| `/post/[id]` | Permalink postingan beserta like dan thread komentar. Postingan akun private hanya untuk pemilik dan follower yang disetujui. |
 
 ### Route group `(auth)` - layout auth
 

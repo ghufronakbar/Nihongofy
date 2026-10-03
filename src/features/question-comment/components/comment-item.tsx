@@ -208,6 +208,8 @@ export function CommentItem({
                     questionId: comment.questionId ?? null,
                     vocabId: comment.vocabId ?? null,
                     bunpouPointId: comment.bunpouPointId ?? null,
+                    // Catatan pribadi tidak pernah menempel pada postingan.
+                    postId: null,
                   })}
                   className="text-xs text-muted-foreground hover:underline"
                 >

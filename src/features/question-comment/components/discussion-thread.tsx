@@ -108,6 +108,7 @@ export function DiscussionRootCard({
   onChanged,
   showPermalink = true,
   reportEnabled,
+  archived = false,
 }: {
   root: DiscussionRoot;
   currentUserId: number | null;
@@ -116,12 +117,18 @@ export function DiscussionRootCard({
   onChanged: () => void;
   showPermalink?: boolean;
   reportEnabled: boolean;
+  /**
+   * Target thread sudah tidak menerima tulisan (postingan yang dihapus): semua
+   * root diperlakukan seperti arsip, sama dengan root tombstone.
+   */
+  archived?: boolean;
 }) {
   const [replyTarget, setReplyTarget] = useState<ReplyTarget>(null);
 
   // Thread yang root-nya sudah disembunyikan atau dihapus menjadi arsip
   // read-only: balasan lama tetap terbaca, balasan baru ditolak server.
-  const canReply = root.state === "VISIBLE" && currentUserId !== null && !postingSuspended;
+  const threadLive = root.state === "VISIBLE" && !archived;
+  const canReply = threadLive && currentUserId !== null && !postingSuspended;
   // Tombstone tidak menampilkan isi apa pun, jadi tidak ada yang bisa dilaporkan.
   const canReportRoot =
     reportEnabled && root.state === "VISIBLE" && currentUserId !== root.author?.id;
@@ -173,7 +180,7 @@ export function DiscussionRootCard({
               key={reply.id}
               reply={reply}
               currentUserId={currentUserId}
-              threadLive={root.state === "VISIBLE"}
+              threadLive={threadLive}
               onReply={
                 canReply
                   ? () => openReply({ id: reply.id, username: reply.author.username })
@@ -195,7 +202,7 @@ export function DiscussionRootCard({
           }}
           onCancel={() => setReplyTarget(null)}
         />
-      ) : root.state === "VISIBLE" ? (
+      ) : threadLive ? (
         // Guest tidak dapat membalas, tetapi tetap boleh melaporkan: entri inilah
         // yang ia lihat, dan menuntut akun dulu berarti penyalahgunaan dibiarkan
         // lebih lama.
@@ -252,6 +259,7 @@ export function DiscussionThread({
   showPermalink = true,
   reportEnabled,
   emptyText = "Belum ada catatan yang dibagikan untuk soal ini.",
+  archived = false,
 }: {
   roots: DiscussionRoot[];
   currentUserId: number | null;
@@ -260,6 +268,7 @@ export function DiscussionThread({
   showPermalink?: boolean;
   reportEnabled: boolean;
   emptyText?: string;
+  archived?: boolean;
 }) {
   // Urutan dipilih di client: thread selalu dimuat utuh (tanpa paginasi) dan
   // sudah membawa jumlah suara, jadi tidak perlu query ulang. HTML server tetap
@@ -303,6 +312,7 @@ export function DiscussionThread({
           onChanged={onChanged}
           showPermalink={showPermalink}
           reportEnabled={reportEnabled}
+          archived={archived}
         />
       ))}
     </div>

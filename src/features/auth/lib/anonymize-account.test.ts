@@ -55,6 +55,17 @@ const HANDLED_USER_RELATIONS: Record<string, Handling> = {
   questionCommentVotes: { kind: "dihapus" },
   follows: { kind: "dihapus" },
   followedBy: { kind: "dihapus" },
+  posts: {
+    kind: "dianonimkan",
+    apa: "di-soft delete (deletedAt, deletedById = diri sendiri) karena komentar orang lain menempel pada postingan",
+  },
+  deletedPosts: {
+    kind: "dibiarkan",
+    alasan:
+      "deletedById pada postingan orang lain adalah atribusi takedown admin: penentu boleh-tidaknya " +
+      "postingan dipulihkan. Nama yang tampil ikut anonim karena dibaca dari baris User.",
+  },
+  postLikes: { kind: "dihapus" },
   reports: { kind: "dikosongkan" },
   handledReports: {
     kind: "dibiarkan",

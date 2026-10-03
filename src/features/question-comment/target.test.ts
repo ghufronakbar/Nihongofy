@@ -16,6 +16,7 @@ const TARGETS: CommentTarget[] = [
   { type: "question", questionId: 7 },
   { type: "vocab", vocabId: 12 },
   { type: "bunpou", bunpouPointId: 4 },
+  { type: "post", postId: 9 },
 ];
 
 describe("CommentTarget", () => {
@@ -28,7 +29,7 @@ describe("CommentTarget", () => {
   });
 
   it("targetOf mengembalikan null bila tidak ada kolom target", () => {
-    expect(targetOf({ questionId: null, vocabId: null, bunpouPointId: null })).toBeNull();
+    expect(targetOf({ questionId: null, vocabId: null, bunpouPointId: null, postId: null })).toBeNull();
   });
 
   it("filter Prisma hanya menyebut kolom target itu sendiri", () => {
@@ -45,16 +46,23 @@ describe("tautan diskusi", () => {
   it("diskusi pola lewat pengalih id → key", () => {
     expect(discussionPageHref({ type: "bunpou", bunpouPointId: 4 })).toBe("/bunpou/discussion/4");
     expect(
-      discussionThreadHref({ id: 30, questionId: null, vocabId: null, bunpouPointId: 4 }, 31),
+      discussionThreadHref({ id: 30, questionId: null, vocabId: null, bunpouPointId: 4, postId: null }, 31),
     ).toBe("/bunpou/discussion/4?comment=31");
   });
 
+  it("komentar postingan dibaca di permalink postingannya", () => {
+    expect(discussionPageHref({ type: "post", postId: 9 })).toBe("/post/9");
+    expect(
+      discussionThreadHref({ id: 30, questionId: null, vocabId: null, bunpouPointId: null, postId: 9 }, 31),
+    ).toBe("/post/9#comment-31");
+  });
+
   it("tautan soal dan kata tidak berubah", () => {
-    expect(discussionThreadHref({ id: 30, questionId: 7, vocabId: null, bunpouPointId: null })).toBe(
+    expect(discussionThreadHref({ id: 30, questionId: 7, vocabId: null, bunpouPointId: null, postId: null })).toBe(
       "/discussion/30",
     );
     expect(
-      discussionThreadHref({ id: 30, questionId: null, vocabId: 12, bunpouPointId: null }, 31),
+      discussionThreadHref({ id: 30, questionId: null, vocabId: 12, bunpouPointId: null, postId: null }, 31),
     ).toBe("/flashcard/discussion/12#comment-31");
   });
 });
@@ -81,10 +89,10 @@ describe("QuestionComment_target_check", () => {
     const targetFields = (model?.fields ?? []).filter(
       (field) =>
         field.kind === "object" &&
-        ["Question", "FlashcardVocab", "BunpouPoint"].includes(field.type),
+        ["Question", "FlashcardVocab", "BunpouPoint", "Post"].includes(field.type),
     );
     const columns = targetFields.flatMap((field) => field.relationFromFields ?? []);
-    expect(columns).toEqual(expect.arrayContaining(["questionId", "vocabId", "bunpouPointId"]));
+    expect(columns).toEqual(expect.arrayContaining(["questionId", "vocabId", "bunpouPointId", "postId"]));
     for (const column of columns) expect(check, column).toContain(`"${column}"`);
     expect(check).toMatch(/num_nonnulls\([^)]*\) = 1/);
   });

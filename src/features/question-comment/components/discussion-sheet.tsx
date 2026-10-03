@@ -53,6 +53,12 @@ const COPY: Record<
     placeholder: "Bagikan contoh kalimat, tips mengingat, atau pertanyaan tentang pola ini...",
     empty: "Belum ada diskusi untuk pola ini.",
   },
+  post: {
+    title: "Komentar",
+    description: "Komentar dan balasan pada postingan ini.",
+    placeholder: "Tulis komentar...",
+    empty: "Belum ada komentar.",
+  },
 };
 
 export function NewPublicNoteForm({

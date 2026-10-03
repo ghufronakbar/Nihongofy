@@ -17,6 +17,7 @@ const moderationSelect = {
   questionId: true,
   vocabId: true,
   bunpouPointId: true,
+  postId: true,
   parentId: true,
   commentText: true,
   commentImages: true,
@@ -40,9 +41,10 @@ const moderationSelect = {
       },
     },
   },
-  // Tepat satu dari `question`/`vocab`/`bunpouPoint` terisi.
+  // Tepat satu dari `question`/`vocab`/`bunpouPoint`/`post` terisi.
   vocab: { select: { id: true, level: true, wordPlain: true, reading: true } },
   bunpouPoint: { select: { id: true, key: true, level: true, titlePlain: true } },
+  post: { select: { id: true, user: { select: { username: true } } } },
 } satisfies Prisma.QuestionCommentSelect;
 
 type ModerationRow = Prisma.QuestionCommentGetPayload<{ select: typeof moderationSelect }>;
@@ -154,4 +156,87 @@ export async function getModerationUserSummary(userId: number) {
 
   if (!user) return null;
   return { user, roots, replies, takenDown: removed };
+}
+
+// ============================================================
+// POSTINGAN KOMUNITAS
+// ============================================================
+
+// Sama seperti antrean diskusi: admin SELALU melihat isi asli, termasuk
+// postingan yang sudah di-takedown atau dari akun private. Jangan dipakai ulang
+// oleh jalur publik mana pun.
+const postModerationSelect = {
+  id: true,
+  text: true,
+  images: true,
+  createdAt: true,
+  editedAt: true,
+  deletedAt: true,
+  deletedById: true,
+  user: {
+    select: {
+      id: true,
+      displayName: true,
+      username: true,
+      email: true,
+      postingSuspendedAt: true,
+      profileVisibility: true,
+    },
+  },
+  deletedBy: { select: { id: true, displayName: true } },
+  _count: { select: { likes: true, comments: true } },
+} satisfies Prisma.PostSelect;
+
+type PostModerationRow = Prisma.PostGetPayload<{ select: typeof postModerationSelect }>;
+
+export type PostModerationState = "VISIBLE" | "REMOVED_BY_OWNER" | "TAKEN_DOWN";
+
+export type PostModerationEntry = Omit<PostModerationRow, "deletedById" | "_count"> & {
+  state: PostModerationState;
+  // Hanya takedown admin yang dapat dipulihkan, sama seperti entri diskusi.
+  canRestore: boolean;
+  likeCount: number;
+  commentCount: number;
+};
+
+function toPostEntry(row: PostModerationRow): PostModerationEntry {
+  const { deletedById, _count, ...rest } = row;
+  const state: PostModerationState = row.deletedAt
+    ? deletedById !== null && deletedById !== row.user.id
+      ? "TAKEN_DOWN"
+      : "REMOVED_BY_OWNER"
+    : "VISIBLE";
+  return {
+    ...rest,
+    state,
+    canRestore: state === "TAKEN_DOWN",
+    likeCount: _count.likes,
+    commentCount: _count.comments,
+  };
+}
+
+export async function listPostModerationQueue(filter: ModerationQueryInput) {
+  const where: Prisma.PostWhereInput = {};
+  if (filter.state === "live") where.deletedAt = null;
+  if (filter.state === "removed") where.deletedAt = { not: null };
+  if (filter.userId) where.userId = filter.userId;
+  if (filter.query) {
+    where.OR = [
+      { text: { contains: filter.query, mode: "insensitive" } },
+      { user: { displayName: { contains: filter.query, mode: "insensitive" } } },
+      { user: { username: { contains: filter.query.toLowerCase() } } },
+    ];
+  }
+
+  const [rows, live, removed] = await Promise.all([
+    prisma.post.findMany({ where, orderBy: { id: "desc" }, take: 100, select: postModerationSelect }),
+    prisma.post.count({ where: { deletedAt: null } }),
+    prisma.post.count({ where: { deletedAt: { not: null } } }),
+  ]);
+
+  return {
+    entries: rows.map(toPostEntry),
+    counts: { all: live + removed, live, removed },
+    truncated: rows.length === 100,
+  };
 }

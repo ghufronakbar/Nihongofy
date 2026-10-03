@@ -196,3 +196,50 @@ export function profilePageJsonLd(profile: ProfilePageJsonLdInput): JsonLdObject
     },
   };
 }
+
+type SocialMediaPostingJsonLdInput = {
+  path: string;
+  text: string;
+  authorName: string;
+  authorPath: string | null;
+  createdAt: Date;
+  editedAt: Date | null;
+  images: string[];
+  likeCount: number;
+  commentCount: number;
+};
+
+/** Postingan komunitas. Hanya untuk postingan yang memang diindeks (penulis public). */
+export function socialMediaPostingJsonLd(post: SocialMediaPostingJsonLdInput): JsonLdObject {
+  const url = absoluteUrl(post.path);
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "SocialMediaPosting",
+    "@id": `${url}#post`,
+    url,
+    headline: post.text.slice(0, 110),
+    articleBody: post.text,
+    datePublished: post.createdAt.toISOString(),
+    ...(post.editedAt ? { dateModified: post.editedAt.toISOString() } : {}),
+    author: {
+      "@type": "Person",
+      name: post.authorName,
+      ...(post.authorPath ? { url: absoluteUrl(post.authorPath) } : {}),
+    },
+    ...(post.images.length > 0 ? { image: post.images } : {}),
+    interactionStatistic: [
+      {
+        "@type": "InteractionCounter",
+        interactionType: "https://schema.org/LikeAction",
+        userInteractionCount: post.likeCount,
+      },
+      {
+        "@type": "InteractionCounter",
+        interactionType: "https://schema.org/CommentAction",
+        userInteractionCount: post.commentCount,
+      },
+    ],
+    isPartOf: { "@id": WEBSITE_ID },
+  };
+}

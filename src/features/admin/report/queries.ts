@@ -35,6 +35,7 @@ const reportSelect = {
   vocabId: true,
   bunpouPointId: true,
   bunpouComparisonId: true,
+  postId: true,
   reporter: { select: { id: true, displayName: true, username: true } },
   handledBy: { select: { id: true, displayName: true } },
   repliedBy: { select: { id: true, displayName: true } },
@@ -46,6 +47,7 @@ const reportSelect = {
   vocab: { select: { ...VOCAB_CONTENT_SELECT, key: true, retiredAt: true } },
   bunpouPoint: { select: { key: true, level: true, retiredAt: true } },
   bunpouComparison: { select: { key: true, retiredAt: true } },
+  post: { select: { id: true, userId: true, deletedAt: true } },
 } satisfies Prisma.ReportSelect;
 
 type ReportRow = Prisma.ReportGetPayload<{ select: typeof reportSelect }>;
@@ -97,6 +99,9 @@ function buildTargetHref(row: ReportRow): string | null {
     // perlakuannya atas entri yang sama.
     case "COMMENT":
       return row.comment ? `/admin/moderation?state=all&user=${row.comment.userId}` : null;
+    // Sama seperti komentar: takedown postingan hidup di antrean moderasi.
+    case "POST":
+      return row.post ? `/admin/moderation?kind=posts&state=all&user=${row.post.userId}` : null;
     // Katalog flashcard sengaja tidak punya editor admin: perbaikannya lewat
     // fixture lalu `seed:flashcard`. Isi kartu ditampilkan di antrean ini.
     // Bunpou juga tanpa editor admin; tautannya ke halaman publik supaya isi yang
@@ -124,6 +129,8 @@ function isTargetMissing(row: ReportRow): boolean {
       return row.articleId === null;
     case "COMMENT":
       return row.comment === null;
+    case "POST":
+      return row.post === null;
     case "FLASHCARD_VOCAB":
       return row.vocab === null;
     case "BUNPOU_POINT":
@@ -205,6 +212,7 @@ export async function listReportQueue(filter: ReportQueryInput) {
   const bunpouComparisonIds = [
     ...new Set(rows.flatMap((row) => (row.bunpouComparisonId ? [row.bunpouComparisonId] : []))),
   ];
+  const postIds = [...new Set(rows.flatMap((row) => (row.postId ? [row.postId] : [])))];
 
   const [
     questionGroups,
@@ -213,6 +221,7 @@ export async function listReportQueue(filter: ReportQueryInput) {
     vocabGroups,
     bunpouPointGroups,
     bunpouComparisonGroups,
+    postGroups,
   ] = await Promise.all([
     questionIds.length
       ? prisma.report.groupBy({
@@ -256,6 +265,13 @@ export async function listReportQueue(filter: ReportQueryInput) {
           _count: { _all: true },
         })
       : Promise.resolve([]),
+    postIds.length
+      ? prisma.report.groupBy({
+          by: ["postId"],
+          where: { ...openWhere, postId: { in: postIds } },
+          _count: { _all: true },
+        })
+      : Promise.resolve([]),
   ]);
 
   const openByQuestion = new Map(
@@ -270,6 +286,7 @@ export async function listReportQueue(filter: ReportQueryInput) {
   const openByBunpouComparison = new Map(
     bunpouComparisonGroups.map((group) => [group.bunpouComparisonId, group._count._all]),
   );
+  const openByPost = new Map(postGroups.map((group) => [group.postId, group._count._all]));
 
   function otherOpenOnTarget(row: ReportRow) {
     const total = row.questionId
@@ -284,7 +301,9 @@ export async function listReportQueue(filter: ReportQueryInput) {
               ? openByBunpouPoint.get(row.bunpouPointId)
               : row.bunpouComparisonId
                 ? openByBunpouComparison.get(row.bunpouComparisonId)
-                : undefined;
+                : row.postId
+                  ? openByPost.get(row.postId)
+                  : undefined;
     if (total === undefined) return 0;
     // Baris ini sendiri ikut terhitung hanya bila statusnya masih terbuka.
     const includesSelf = OPEN_STATUSES.includes(row.status);

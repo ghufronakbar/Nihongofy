@@ -33,6 +33,35 @@ contract wajib memiliki migration dan catatan ringkas di dokumen/PR perubahan. J
 
 ## Ledger
 
+### 3 Oktober 2026 - Postingan komunitas
+
+- Status: deployed (3 Oktober 2026, `migrate deploy`; diverifikasi di transaksi yang di-rollback:
+  CHECK target komentar menolak dua target, CHECK target laporan menolak `postId` pada laporan
+  `COMMENT`, partial unique index menolak laporan OPEN kedua dari pelapor yang sama, FK `Restrict`
+  menahan hard delete postingan bercomment, like duplikat diabaikan; RLS aktif di `Post` dan
+  `PostLike`; tidak ada baris tersisa)
+- Migration: `prisma/migrations/20261003180000_report_post_enum/migration.sql` (nilai enum saja) dan
+  `prisma/migrations/20261003180100_post/migration.sql`. Ditulis tangan; enum dipisah karena nilai
+  baru tidak boleh dipakai di transaksi yang menambahkannya (`55P04`).
+- Alasan: tahap 3 modul komunitas. Rancangan di
+  [community.md](../module/community.md#tahap-3--postingan).
+- Object terdampak: nilai enum `ReportTargetType.POST`; tabel baru `Post` (index `userId, id` dan
+  `deletedById`, FK `userId` Restrict dan `deletedById` SetNull) dan `PostLike` (PK `postId, userId`,
+  index `userId`, FK Cascade); kolom `QuestionComment.postId` (FK Restrict, index `postId` dan
+  `postId, parentId, sharedAt`) dengan `QuestionComment_target_check` empat kolom; kolom
+  `Report.postId` (FK SetNull, index) dengan `Report_target_columns_check` baru dan
+  `Report_open_post_per_reporter_key`. Revoke grant Data API dan RLS untuk kedua tabel baru serta
+  sequence `Post_id_seq`.
+- Data existing: hanya kolom nullable baru; seluruh baris lama memenuhi CHECK baru tanpa backfill.
+- Risiko operasi: `DROP`/`ADD CONSTRAINT` CHECK memvalidasi ulang `QuestionComment` dan `Report`
+  (tabel kecil saat ini). **Wajib diterapkan sebelum deploy kode**: seluruh query diskusi memilih
+  `postId`, dan antrean laporan memilih relasi `post`. Bergantung pada dua migration komunitas
+  sebelumnya; `migrate deploy` menjalankan semuanya berurutan.
+- Validasi: `npx prisma validate`, `npx prisma migrate status`, uji constraint di transaksi yang
+  di-rollback, `pg_class.relrowsecurity`, `report-migrations.test.ts` dan `target.test.ts`.
+- Refresh setelah deploy: tidak ada.
+- Owner: Engineering Owner.
+
 ### 3 Oktober 2026 - Follow antar-user
 
 - Status: deployed (3 Oktober 2026, `migrate deploy`; diverifikasi di transaksi yang di-rollback:

@@ -32,6 +32,9 @@ const STATIC_ENTRIES: StaticEntry[] = [
     feature: "flashcardDiscussion",
   },
   { path: "/bunpou/discussion", changeFrequency: "weekly", priority: 0.5, feature: "bunpouDiscussion" },
+  // Feed komunitas. Postingannya sendiri tidak didaftarkan: jumlahnya terus
+  // bertambah dan permalinknya ditemukan lewat feed dan profil.
+  { path: "/community", changeFrequency: "weekly", priority: 0.5, feature: "community" },
   // Dokumen hukum tanpa flag: selalu ada, apa pun modul yang aktif.
   { path: PRIVACY_PATH, changeFrequency: "monthly", priority: 0.3 },
   { path: TERMS_PATH, changeFrequency: "monthly", priority: 0.3 },

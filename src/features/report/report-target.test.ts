@@ -34,6 +34,7 @@ const TARGET_SAMPLES = {
   FLASHCARD_VOCAB: { vocabId: 12 },
   BUNPOU_POINT: { bunpouPointId: 4 },
   BUNPOU_COMPARISON: { bunpouComparisonId: 2 },
+  POST: { postId: 9 },
 } satisfies Record<ReportTargetTypeValue, Record<string, number>>;
 
 function submission(

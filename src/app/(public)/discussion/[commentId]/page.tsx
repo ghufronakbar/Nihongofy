@@ -60,7 +60,7 @@ export default async function DiscussionPermalinkPage({
     if (!FEATURES.flashcardDiscussion) notFound();
     redirect(
       discussionThreadHref(
-        { id: resolved.rootId, questionId: null, vocabId: resolved.vocabId, bunpouPointId: null },
+        { id: resolved.rootId, questionId: null, vocabId: resolved.vocabId, bunpouPointId: null, postId: null },
         commentIdNum,
       ),
     );
@@ -76,7 +76,20 @@ export default async function DiscussionPermalinkPage({
           questionId: null,
           vocabId: null,
           bunpouPointId: resolved.bunpouPointId,
+          postId: null,
         },
+        commentIdNum,
+      ),
+    );
+  }
+
+  // Komentar postingan dibaca di permalink postingannya. Akses postingan akun
+  // private diperiksa di halaman tujuan.
+  if (resolved.postId !== null) {
+    if (!FEATURES.community) notFound();
+    redirect(
+      discussionThreadHref(
+        { id: resolved.rootId, questionId: null, vocabId: null, bunpouPointId: null, postId: resolved.postId },
         commentIdNum,
       ),
     );

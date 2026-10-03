@@ -15,7 +15,7 @@ import type { LegalDocument } from "../types";
 // Setiap klaim di dokumen ini harus dapat ditunjuk dasar kodenya. Saat alur data
 // berubah (cookie baru, pemroses baru, retensi baru), perbarui bagian yang
 // relevan, naikkan VERSION, dan ganti LAST_UPDATED. Riwayatnya cukup lewat git.
-export const VERSION = "1.2";
+export const VERSION = "1.3";
 export const LAST_UPDATED = "2026-10-03";
 export const EFFECTIVE_DATE = "2026-10-03";
 
@@ -46,6 +46,10 @@ export const PRIVACY_POLICY: LegalDocument = {
         <li>
           Profil belajar Anda di <Code>/u/username</Code> bersifat publik secara bawaan dan diindeks
           mesin pencari. Anda dapat menjadikannya private kapan saja.
+        </li>
+        <li>
+          Postingan komunitas dari akun public dapat dibaca siapa pun dan diindeks; postingan dari
+          akun private hanya terlihat oleh Anda dan follower yang Anda setujui.
         </li>
         <li>Anda dapat mengunduh data akun dan menghapus akun sendiri dari halaman profil.</li>
       </ul>
@@ -328,6 +332,51 @@ export const PRIVACY_POLICY: LegalDocument = {
       ),
     },
     {
+      id: "postingan",
+      title: "Postingan komunitas",
+      content: (
+        <>
+          <LegalP>
+            Di <LegalLink href="/community">Komunitas</LegalLink> Anda dapat menulis postingan teks
+            dengan gambar, menyukai postingan orang lain, dan berkomentar. Kami menyimpan isi
+            postingan, gambar lampiran, waktu dibuat dan disunting, siapa yang menyukai postingan
+            mana, serta komentar Anda.
+          </LegalP>
+          <LegalList
+            items={[
+              <>
+                <strong>Siapa yang melihat</strong> ditentukan visibility profil Anda. Postingan dari
+                akun public tampil di feed Komunitas, di profil Anda, dan di halamannya sendiri; dapat
+                dibaca tanpa login dan diindeks mesin pencari. Postingan dari akun private tidak masuk
+                feed Komunitas dan hanya terlihat oleh Anda serta follower yang Anda setujui.
+              </>,
+              <>
+                Setiap postingan dan komentar menampilkan <strong>nama tampilan, username, dan
+                avatar</strong> Anda. Jumlah like ditampilkan, tetapi siapa yang menyukai tidak.
+              </>,
+              <>
+                Komentar di postingan selalu mengikuti siapa yang boleh melihat postingannya.
+                Komentar Anda di postingan public orang lain tetap terlihat walaupun akun Anda
+                private.
+              </>,
+              <>
+                Postingan yang Anda hapus berhenti tampil. Bila sudah ada komentar, postingan diganti
+                keterangan &quot;telah dihapus&quot; tanpa isi dan tanpa identitas Anda, dan komentar
+                orang lain tetap terbaca. Seperti diskusi, penghapusan ini <em>soft delete</em>: isi
+                postingan masih tersimpan di database tanpa ditampilkan, dan file gambar tidak dihapus
+                otomatis.
+              </>,
+              <>
+                Admin dapat menurunkan (takedown) postingan dan membatasi akun agar tidak dapat
+                memposting. Membuat dan menyunting postingan dibatasi jumlahnya per akun untuk
+                mencegah spam.
+              </>,
+            ]}
+          />
+        </>
+      ),
+    },
+    {
       id: "laporan",
       title: "Laporan",
       content: (
@@ -589,6 +638,11 @@ export const PRIVACY_POLICY: LegalDocument = {
                 "Kepentingan yang sah untuk fitur komunitas belajar; Anda dapat menolaknya kapan saja dengan menjadikan profil private",
               ],
               [
+                "Menampilkan postingan komunitas",
+                "Isi postingan, gambar, like, komentar, nama tampilan, username, avatar",
+                "Persetujuan, yang Anda berikan dengan memposting atau berkomentar",
+              ],
+              [
                 "Fitur follow",
                 "Relasi follow dan permintaan follow",
                 "Pemenuhan perjanjian, untuk fitur yang Anda gunakan sendiri",
@@ -746,7 +800,7 @@ export const PRIVACY_POLICY: LegalDocument = {
           <LegalP>
             Progres kana, seluruh data flashcard (kartu, riwayat review, langganan deck, dan
             pengaturan), latihan cepat, attempt ujian, interaksi artikel, relasi follow di kedua
-            arah (termasuk permintaan yang menunggu), sesi dan pemakaian
+            arah (termasuk permintaan yang menunggu), like postingan yang Anda berikan, sesi dan pemakaian
             percakapan, token email, koneksi akun Google, dan file avatar di R2.
           </LegalP>
           <LegalH3>Yang dianonimkan atau tetap ada</LegalH3>
@@ -762,7 +816,7 @@ export const PRIVACY_POLICY: LegalDocument = {
                 dipakai mendaftar lagi.
               </>,
               <>
-                Catatan dan entri diskusi Anda di-soft-delete. Thread yang sudah dibalas orang lain
+                Catatan, entri diskusi, dan postingan Anda di-soft-delete. Thread yang sudah dibalas orang lain
                 tetap ada dengan penanda &quot;telah dihapus&quot;, dan{" "}
                 <strong>balasan orang lain tetap tampil</strong> karena merupakan tulisan mereka. Isi
                 entri Anda masih tersimpan di database tanpa ditampilkan, dan gambar lampiran tidak

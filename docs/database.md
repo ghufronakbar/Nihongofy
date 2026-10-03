@@ -48,6 +48,12 @@ Stack: Next.js + Prisma + PostgreSQL (Supabase).
   tidak pernah dari cache. `publicProfileNoticeDismissedAt` menandai banner "profilmu kini publik"
   sudah ditutup: akun lama NULL, baris baru default `now()` (lihat ledger migration
   `20261003120000_public_profile`). `anonymizeAccount` mengosongkan bio dan target level.
+- `Post` adalah postingan komunitas: teks polos, `images[]` (URL R2 dari jalur upload komentar),
+  `editedAt`, soft delete `deletedAt` + `deletedById` (pemilik vs takedown admin, sama seperti
+  komentar). `userId` `Restrict`; tidak pernah di-hard delete karena komentar menempel padanya.
+  Siapa yang boleh melihat ditentukan visibility profil penulis, bukan kolom di tabel ini.
+- `PostLike` PK `(postId, userId)`, index `userId`, FK `Cascade` sebagai jaring pengaman. Jumlah
+  dihitung `groupBy`; pemberi like tidak pernah dikirim ke client.
 - `Follow` menyimpan relasi follow: PK `(followerId, followingId)`, `status` `PENDING` | `ACCEPTED`,
   `respondedAt` saat permintaan disetujui. Permintaan yang ditolak dihapus. CHECK
   `Follow_not_self_check` (follower <> following) hanya ada di SQL migration
@@ -76,8 +82,10 @@ Stack: Next.js + Prisma + PostgreSQL (Supabase).
 
 ## Komentar dan Diskusi
 
-- `QuestionComment` melayani dua target: soal (`questionId`, `Cascade`) dan kata flashcard
-  (`vocabId` ke `FlashcardVocab`, `Restrict` seperti `FlashcardCard.vocabId`). Tepat satu terisi —
+- `QuestionComment` melayani empat target: soal (`questionId`, `Cascade`), kata flashcard
+  (`vocabId` ke `FlashcardVocab`, `Restrict` seperti `FlashcardCard.vocabId`), pola bunpou
+  (`bunpouPointId`, `Restrict`), dan postingan komunitas (`postId`, `Restrict`; komentarnya selalu
+  `PUBLIC`). Definisi CHECK yang berlaku ada di migration `20261003180100_post`. Tepat satu terisi —
   CHECK `QuestionComment_target_check` hanya ada di SQL migration
   `20261002090000_comment_flashcard_vocab_target`, karena Prisma tidak dapat mengekspresikannya.
   Karena tidak ada FK yang SET NULL, CHECK ini tidak dapat menggagalkan penghapusan targetnya.

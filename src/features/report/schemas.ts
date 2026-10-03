@@ -107,6 +107,11 @@ export const SubmitReportSchema = z
       bunpouComparisonId: z.number().int().positive(),
       ...sharedFields,
     }),
+    z.object({
+      targetType: z.literal("POST"),
+      postId: z.number().int().positive(),
+      ...sharedFields,
+    }),
   ])
   .superRefine((value, context) => {
     if (isReportCategoryAllowed(value.targetType, value.category)) return;
@@ -129,7 +134,8 @@ export type ReportTarget =
   | { targetType: "COMMENT"; commentId: number }
   | { targetType: "FLASHCARD_VOCAB"; vocabId: number }
   | { targetType: "BUNPOU_POINT"; bunpouPointId: number }
-  | { targetType: "BUNPOU_COMPARISON"; bunpouComparisonId: number };
+  | { targetType: "BUNPOU_COMPARISON"; bunpouComparisonId: number }
+  | { targetType: "POST"; postId: number };
 
 export type ReportSubmitResult = { ok: boolean; message: string };
 

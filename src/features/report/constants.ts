@@ -14,6 +14,7 @@ export const REPORT_TARGET_TYPES = [
   "FLASHCARD_VOCAB",
   "BUNPOU_POINT",
   "BUNPOU_COMPARISON",
+  "POST",
 ] as const;
 
 export type ReportTargetTypeValue = (typeof REPORT_TARGET_TYPES)[number];
@@ -82,6 +83,9 @@ export const REPORT_CATEGORIES_BY_TARGET = {
     "OTHER",
   ],
   BUNPOU_COMPARISON: ["CONTENT_ERROR", "BUG", "OTHER"],
+  // Postingan komunitas diperlakukan seperti entri diskusi: yang dilaporkan
+  // adalah perilaku penulisnya, bukan isi aplikasi.
+  POST: ["ABUSE", "OTHER"],
 } as const satisfies Record<ReportTargetTypeValue, readonly ReportCategoryValue[]>;
 
 export const REPORT_TARGET_TYPE_LABELS: Record<ReportTargetTypeValue, string> = {
@@ -93,6 +97,7 @@ export const REPORT_TARGET_TYPE_LABELS: Record<ReportTargetTypeValue, string> = 
   FLASHCARD_VOCAB: "Kartu flashcard",
   BUNPOU_POINT: "Pola bunpou",
   BUNPOU_COMPARISON: "Perbandingan bunpou",
+  POST: "Postingan",
 };
 
 export const REPORT_CATEGORY_LABELS: Record<ReportCategoryValue, string> = {

@@ -9,7 +9,10 @@ import {
   PublicProfileView,
   type PublicProfileContent,
   type PublicProfileFollow,
+  type PublicProfilePosts,
 } from "@/features/public-profile/components/public-profile-view";
+import { countUserPosts, getUserPosts } from "@/features/community/queries";
+import { isPostingSuspended } from "@/features/question-comment/queries";
 import {
   countPendingFollowRequests,
   getFollowCounts,
@@ -37,16 +40,17 @@ async function resolve(params: Props["params"]) {
 // diambil SETELAH aturan akses lolos — metadata akun private tidak pernah
 // membaca statistiknya.
 const loadContent = cache(async (ownerId: number, timeZone: string): Promise<PublicProfileContent> => {
-  const [overview, activity, community] = await Promise.all([
+  const [overview, activity, community, postCount] = await Promise.all([
     getProfileOverview(ownerId),
     HEATMAP_ENABLED ? getProfileActivity({ id: ownerId, timeZone }) : null,
     COMMUNITY_STATS_ENABLED ? getProfileCommunityStats(ownerId) : null,
+    FEATURES.community ? countUserPosts(ownerId) : null,
   ]);
-  return { overview, activity, community };
+  return { overview, activity, community, postCount };
 });
 
 function isThin(owner: PublicProfileOwner, content: PublicProfileContent) {
-  const { overview, activity, community } = content;
+  const { overview, activity, community, postCount } = content;
   const hasStats =
     overview.kanaLearned +
       overview.flashcardStudied +
@@ -54,7 +58,7 @@ function isThin(owner: PublicProfileOwner, content: PublicProfileContent) {
       overview.sectionPracticeCompleted +
       overview.mockCompleted >
     0;
-  return !owner.bio && !hasStats && !activity?.summary.activeDays && !community?.entries;
+  return !owner.bio && !hasStats && !activity?.summary.activeDays && !community?.entries && !postCount;
 }
 
 function describeProfile(owner: PublicProfileOwner, content: PublicProfileContent) {
@@ -125,6 +129,18 @@ export default async function PublicProfilePage({ params }: Props) {
         )
       : null,
   ]);
+  // Postingan bergantung viewer (status like), jadi diambil terpisah dari isi
+  // profil yang di-dedup bersama metadata.
+  const posts: PublicProfilePosts | null =
+    content && FEATURES.community
+      ? {
+          page: await getUserPosts(owner.id, null, viewerId),
+          viewerId,
+          postingSuspended: await isPostingSuspended(viewerId),
+          reportEnabled: FEATURES.report,
+        }
+      : null;
+
   // Hanya halaman yang dilihat crawler (guest) yang dinilai: isi yang terbuka
   // karena viewer adalah follower tidak pernah ikut JSON-LD.
   const indexable = canViewProfileContent(owner, null) && content !== null && !isThin(owner, content);
@@ -143,7 +159,14 @@ export default async function PublicProfilePage({ params }: Props) {
           })}
         />
       ) : null}
-      <PublicProfileView owner={owner} isOwner={isOwner} content={content} follow={follow} features={FEATURES} />
+      <PublicProfileView
+        owner={owner}
+        isOwner={isOwner}
+        content={content}
+        follow={follow}
+        posts={posts}
+        features={FEATURES}
+      />
     </>
   );
 }

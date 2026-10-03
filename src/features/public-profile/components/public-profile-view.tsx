@@ -18,6 +18,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { FeatureFlags } from "@/constants";
 import type { ProfileOverview } from "@/features/profile/overview";
 import { formatInTimeZone } from "@/lib/time-zone";
+import { PostFeed } from "@/features/community/components/post-feed";
+import type { PostPage } from "@/features/community/queries";
 import type { FollowCounts } from "../follow-queries";
 import type { ProfileActivity, ProfileCommunityStats, PublicProfileOwner } from "../queries";
 import { ActivityHeatmap } from "./activity-heatmap";
@@ -37,6 +39,16 @@ export type PublicProfileContent = {
   overview: ProfileOverview;
   activity: ProfileActivity | null;
   community: ProfileCommunityStats | null;
+  /** Jumlah postingan hidup; null bila fitur komunitas mati. */
+  postCount: number | null;
+};
+
+/** Halaman pertama postingan untuk viewer ini; null bila komunitas mati atau isi tertutup. */
+export type PublicProfilePosts = {
+  page: PostPage;
+  viewerId: number | null;
+  postingSuspended: boolean;
+  reportEnabled: boolean;
 };
 
 function initialsOf(displayName: string) {
@@ -52,6 +64,7 @@ export function PublicProfileView({
   isOwner,
   content,
   follow,
+  posts,
   features,
 }: {
   owner: PublicProfileOwner;
@@ -59,6 +72,7 @@ export function PublicProfileView({
   /** null = viewer tidak boleh melihat isi profil (akun private). */
   content: PublicProfileContent | null;
   follow: PublicProfileFollow | null;
+  posts: PublicProfilePosts | null;
   features: FeatureFlags;
 }) {
   const isPrivate = owner.profileVisibility === "PRIVATE";
@@ -136,7 +150,31 @@ export function PublicProfileView({
       ) : null}
 
       {content ? (
-        <ProfileContent content={content} features={features} />
+        <>
+          <ProfileContent content={content} features={features} />
+          {posts ? (
+            <section aria-labelledby="posts-heading">
+              <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+                <h2 id="posts-heading" className="text-3xl">
+                  Postingan{content.postCount ? ` (${content.postCount})` : ""}
+                </h2>
+                {isOwner ? (
+                  <Link href="/community" className="font-bold underline decoration-2 underline-offset-4">
+                    Buat postingan
+                  </Link>
+                ) : null}
+              </div>
+              <PostFeed
+                page={posts.page}
+                basePath={`/u/${owner.username}/posts`}
+                currentUserId={posts.viewerId}
+                reportEnabled={posts.reportEnabled}
+                postingSuspended={posts.postingSuspended}
+                emptyText={isOwner ? "Kamu belum memposting apa pun." : `@${owner.username} belum memposting apa pun.`}
+              />
+            </section>
+          ) : null}
+        </>
       ) : (
         <section className="neo-surface grid justify-items-center gap-3 bg-white p-8 text-center sm:p-12">
           <span className="grid size-14 place-items-center border-[3px] border-black bg-neo-yellow shadow-neo-sm">

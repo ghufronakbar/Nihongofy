@@ -178,11 +178,12 @@ export async function GET() {
           questionId: true,
           vocabId: true,
           bunpouPointId: true,
+          postId: true,
           commentText: true,
           commentImages: true,
           createdAt: true,
           updatedAt: true,
-          // Tepat satu dari `question`/`vocab`/`bunpouPoint` terisi.
+          // Tepat satu target terisi: `question`/`vocab`/`bunpouPoint`, atau `postId`.
           vocab: { select: { key: true, wordPlain: true, reading: true } },
           bunpouPoint: { select: { key: true, level: true, titlePlain: true } },
           question: {
@@ -216,6 +217,23 @@ export async function GET() {
           respondedAt: true,
           following: { select: { username: true } },
         },
+      },
+      // Postingan komunitas, termasuk yang sudah dihapus (isinya masih tersimpan
+      // karena soft delete), dan like yang diberikan.
+      posts: {
+        orderBy: { createdAt: "asc" },
+        select: {
+          id: true,
+          text: true,
+          images: true,
+          createdAt: true,
+          editedAt: true,
+          deletedAt: true,
+        },
+      },
+      postLikes: {
+        orderBy: { createdAt: "asc" },
+        select: { postId: true, createdAt: true },
       },
       followedBy: {
         orderBy: { createdAt: "asc" },

@@ -61,6 +61,17 @@ export async function anonymizeAccount(userId: number) {
     await tx.follow.deleteMany({ where: { followerId: userId } });
     await tx.follow.deleteMany({ where: { followingId: userId } });
 
+    // Postingan diperlakukan seperti comment: di-soft delete, bukan dihapus,
+    // karena komentar orang lain menempel padanya. Yang punya komentar menjadi
+    // tombstone tanpa isi dan tanpa identitas; deletedById = diri sendiri supaya
+    // moderasi tidak membacanya sebagai takedown admin. Like yang diberikan akun
+    // ini dihapus; like orang lain pada postingannya tidak disentuh.
+    await tx.post.updateMany({
+      where: { userId, deletedAt: null },
+      data: { deletedAt: anonymizedAt, deletedById: userId },
+    });
+    await tx.postLike.deleteMany({ where: { userId } });
+
     // Anak dihapus lebih dulu agar tidak bergantung pada urutan cascade.
     await tx.flashcardRevlog.deleteMany({ where: { userId } });
     await tx.flashcardCard.deleteMany({ where: { userId } });

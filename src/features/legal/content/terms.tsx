@@ -13,7 +13,7 @@ import type { LegalDocument } from "../types";
 
 // Naikkan VERSION dan ganti LAST_UPDATED setiap kali isi ketentuan berubah
 // secara berarti. Riwayatnya cukup lewat git.
-export const VERSION = "1.1";
+export const VERSION = "1.2";
 export const LAST_UPDATED = "2026-10-03";
 export const EFFECTIVE_DATE = "2026-10-03";
 
@@ -123,18 +123,21 @@ export const TERMS: LegalDocument = {
     },
     {
       id: "diskusi",
-      title: "Aturan diskusi publik",
+      title: "Aturan diskusi publik dan komunitas",
       content: (
         <>
           <LegalP>
             Catatan yang Anda bagikan, balasan, dan tulisan langsung di diskusi dapat dibaca siapa
-            pun dan diindeks mesin pencari. Di diskusi, Anda dilarang menulis atau mengunggah:
+            pun dan diindeks mesin pencari, begitu pula postingan dan komentar Komunitas dari akun
+            public. Aturan di bawah berlaku untuk semuanya, termasuk postingan dari akun private.
+            Anda dilarang menulis atau mengunggah:
           </LegalP>
           <LegalList
             items={[
               <>
                 <strong>spam</strong>, termasuk tulisan berulang atau yang tidak berhubungan dengan
-                soal, kata, atau pola yang dibahas;
+                soal, kata, atau pola yang dibahas, maupun dengan belajar bahasa Jepang di
+                Komunitas;
               </>,
               <>
                 <strong>kata-kata kasar</strong>, pelecehan, ancaman, ujaran kebencian, atau konten

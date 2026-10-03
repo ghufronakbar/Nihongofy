@@ -66,6 +66,7 @@ const envSchema = z
     FEATURES_SPEAKING: featureFlag,
     FEATURES_PUBLIC_PROFILE: featureFlag,
     FEATURES_FOLLOW: featureFlag,
+    FEATURES_COMMUNITY: featureFlag,
     CONVERSATION_PROVIDER: z.enum(["mock", "openai"]).default("mock"),
     CONVERSATION_CHAT_MODEL: optionalEnvString,
     OPENAI_API_KEY: optionalEnvString,
@@ -170,6 +171,18 @@ export const COMMENT_VOTE_RATE_LIMITS = [{ seconds: 60 * 60, max: 60 }] as const
 // Follow dan permintaan follow baru per user. Tanpa batas ini satu akun dapat
 // membanjiri antrean permintaan akun private orang lain. Berhenti mengikuti,
 // membatalkan, menyetujui, dan menolak tidak dihitung.
+// Membuat dan menyunting postingan, per user. Lebih ketat daripada komentar:
+// postingan tampil di feed global yang dapat dibaca guest dan diindeks, jadi
+// satu akun tidak boleh membanjirinya. Komentar postingan memakai
+// COMMENT_WRITE_RATE_LIMITS, gambar memakai kuota upload komentar.
+export const POST_WRITE_RATE_LIMITS = [
+  { seconds: 60 * 60, max: 5 },
+  { seconds: 24 * 60 * 60, max: 20 },
+] as const;
+
+// Like dan batal like pada postingan, terpisah dari suara diskusi.
+export const POST_LIKE_RATE_LIMITS = [{ seconds: 60 * 60, max: 120 }] as const;
+
 export const FOLLOW_RATE_LIMITS = [
   { seconds: 60 * 60, max: 30 },
   { seconds: 24 * 60 * 60, max: 200 },
@@ -223,6 +236,10 @@ export const FEATURES = {
   // profil publik, jadi ikut mati bila profil publik mati. Saat mati, isi akun
   // private hanya terlihat oleh pemiliknya; baris follow tidak dihapus.
   follow: env.FEATURES_FOLLOW && env.FEATURES_PUBLIC_PROFILE,
+  // Postingan, like, komentar postingan, dan feed /community. Akses postingan
+  // mengikuti visibility profil penulisnya, jadi ikut mati bila profil publik
+  // mati. Kill switch konten publik: postingan lama tidak dihapus.
+  community: env.FEATURES_COMMUNITY && env.FEATURES_PUBLIC_PROFILE,
 };
 
 export type FeatureFlags = typeof FEATURES;

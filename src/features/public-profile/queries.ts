@@ -159,6 +159,7 @@ const FLAG_SIGNATURE = [
   FEATURES.questionDiscussion,
   FEATURES.flashcardDiscussion,
   FEATURES.bunpouDiscussion,
+  FEATURES.community,
 ]
   .map(Number)
   .join("");
@@ -226,7 +227,7 @@ export type ProfileCommunityStats = {
 
 /** Ada permukaan diskusi yang hidup, sehingga reputasi bermakna untuk ditampilkan. */
 export const COMMUNITY_STATS_ENABLED =
-  FEATURES.questionDiscussion || FEATURES.flashcardDiscussion || FEATURES.bunpouDiscussion;
+  FEATURES.questionDiscussion || FEATURES.flashcardDiscussion || FEATURES.bunpouDiscussion || FEATURES.community;
 
 /**
  * Hanya entri yang memang terlihat publik yang dihitung — aturan tampilnya
@@ -236,6 +237,10 @@ export const COMMUNITY_STATS_ENABLED =
  *   di bawah root tombstone tetap tampil, jadi tetap dihitung.
  * Target yang flag diskusinya mati dibuang, karena entrinya tidak tampil di mana
  * pun.
+ *
+ * Reputasi "Membantu" = suara pada entri tersebut + like pada postingan hidup
+ * milik user (bila komunitas aktif). Like pada postingan yang dihapus atau
+ * di-takedown tidak dihitung.
  */
 export function getProfileCommunityStats(userId: number) {
   return unstable_cache(
@@ -244,7 +249,11 @@ export function getProfileCommunityStats(userId: number) {
       if (FEATURES.questionDiscussion) targets.push(Prisma.sql`c."questionId" IS NOT NULL`);
       if (FEATURES.flashcardDiscussion) targets.push(Prisma.sql`c."vocabId" IS NOT NULL`);
       if (FEATURES.bunpouDiscussion) targets.push(Prisma.sql`c."bunpouPointId" IS NOT NULL`);
+      if (FEATURES.community) targets.push(Prisma.sql`c."postId" IS NOT NULL`);
       if (targets.length === 0) return { entries: 0, helpful: 0 };
+      const postLikes = FEATURES.community
+        ? Prisma.sql`(SELECT count(*)::int FROM "PostLike" l JOIN "Post" ps ON ps.id = l."postId" WHERE ps."userId" = ${userId} AND ps."deletedAt" IS NULL)`
+        : Prisma.sql`0`;
 
       const rows = await prisma.$queryRaw<ProfileCommunityStats[]>`
         WITH visible AS (
@@ -261,7 +270,8 @@ export function getProfileCommunityStats(userId: number) {
         )
         SELECT
           (SELECT count(*)::int FROM visible) AS entries,
-          (SELECT count(*)::int FROM "QuestionCommentVote" v JOIN visible ON visible.id = v."commentId") AS helpful
+          (SELECT count(*)::int FROM "QuestionCommentVote" v JOIN visible ON visible.id = v."commentId")
+            + ${postLikes} AS helpful
       `;
       return rows[0] ?? { entries: 0, helpful: 0 };
     },

@@ -8,9 +8,13 @@ import {
   HideDiscussionRootSchema,
   TakedownCommentSchema,
   RestoreCommentSchema,
+  TakedownPostSchema,
+  RestorePostSchema,
   type HideDiscussionRootInput,
   type TakedownCommentInput,
   type RestoreCommentInput,
+  type TakedownPostInput,
+  type RestorePostInput,
 } from "./schemas";
 
 // Action moderasi sengaja TERPISAH dari action milik user di
@@ -135,6 +139,78 @@ export async function restoreCommentAction(input: RestoreCommentInput) {
       targetType: "comment",
       targetId: comment.id,
       summary: "Membatalkan takedown admin atas entri diskusi.",
+    });
+  });
+}
+
+// ============================================================
+// POSTINGAN KOMUNITAS
+// ============================================================
+
+/**
+ * Takedown postingan oleh admin. Soft delete, sama seperti entri diskusi:
+ * komentar orang lain menempel pada postingan, dan riwayatnya tetap dibutuhkan
+ * untuk menilai pola penyalahgunaan. Like dan komentar tidak dihapus.
+ */
+export async function takedownPostAction(input: TakedownPostInput) {
+  const actor = await requireAdmin();
+  const { user } = actor;
+
+  const validated = TakedownPostSchema.safeParse(input);
+  if (!validated.success) throw new Error("Data tidak valid.");
+
+  const post = await prisma.post.findUnique({
+    where: { id: validated.data.postId },
+    select: { id: true, deletedAt: true },
+  });
+  if (!post) notFound();
+  if (post.deletedAt) return;
+
+  await prisma.$transaction(async (tx) => {
+    await tx.post.update({
+      where: { id: post.id },
+      data: { deletedAt: new Date(), deletedById: user.id },
+      select: { id: true },
+    });
+    await recordAdminActionTx(tx, {
+      actor: { ...actor, user },
+      action: "post.takedown",
+      targetType: "post",
+      targetId: post.id,
+      summary: "Takedown postingan komunitas. Komentar, like, dan file lampiran tidak ikut dihapus.",
+    });
+  });
+}
+
+/** Membatalkan takedown admin atas postingan. Hapusan pemilik tidak dapat dipulihkan. */
+export async function restorePostAction(input: RestorePostInput) {
+  const actor = await requireAdmin();
+
+  const validated = RestorePostSchema.safeParse(input);
+  if (!validated.success) throw new Error("Data tidak valid.");
+
+  const post = await prisma.post.findUnique({
+    where: { id: validated.data.postId },
+    select: { id: true, userId: true, deletedAt: true, deletedById: true },
+  });
+  if (!post || !post.deletedAt) notFound();
+
+  if (post.deletedById === null || post.deletedById === post.userId) {
+    throw new Error("Ini dihapus pemiliknya sendiri, bukan takedown admin. Tidak dapat dipulihkan.");
+  }
+
+  await prisma.$transaction(async (tx) => {
+    await tx.post.update({
+      where: { id: post.id },
+      data: { deletedAt: null, deletedById: null },
+      select: { id: true },
+    });
+    await recordAdminActionTx(tx, {
+      actor,
+      action: "post.restore",
+      targetType: "post",
+      targetId: post.id,
+      summary: "Membatalkan takedown admin atas postingan komunitas.",
     });
   });
 }

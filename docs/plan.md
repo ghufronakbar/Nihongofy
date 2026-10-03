@@ -1334,23 +1334,29 @@ postingan karena aturan akses akun private baru lengkap setelah follow ada.
 
 ### Tahap 3 — Postingan
 
-- [ ] Migration enum: `ReportTargetType.POST`.
-- [ ] Migration: `Post`, `PostLike`, `QuestionComment.postId` + CHECK target empat kolom,
-  `Report.postId`. **Wajib `migrate deploy` sebelum deploy kode** karena seluruh query diskusi
-  memilih `postId`.
-- [ ] Flag `FEATURES_COMMUNITY` (ikut mati bila `FEATURES_PUBLIC_PROFILE` mati).
-- [ ] Action buat/sunting/hapus postingan, upload gambar R2 `jlpt-exam/posts/{userId}/`, like;
-  `POST_WRITE_RATE_LIMITS`, kuota like, kuota upload; `checkPublicPostingAllowed()`.
-- [ ] `CommentTarget` jenis `post`; komentar postingan selalu `PUBLIC`; test target diperbarui.
-- [ ] `/community` (feed global, akun public saja), `/community/following`, `/post/[id]`, tab
-  Postingan di profil.
-- [ ] SEO: metadata dari isi postingan, JSON-LD `SocialMediaPosting`, `noindex` untuk permalink
-  private dan halaman feed lanjutan.
-- [ ] Reputasi menyertakan like postingan.
-- [ ] Laporan target `POST` dan tab Postingan di `/admin/moderation`.
-- [ ] `anonymizeAccount` (soft delete postingan, hapus like) dan export.
-- [ ] Menu Komunitas di header publik dan sidebar, mengikuti flag.
-- [ ] `npx prisma migrate deploy`, `npm run verify`, lalu uji manual (user).
+- [x] Migration enum `20261003180000_report_post_enum`: `ReportTargetType.POST`.
+- [x] Migration `20261003180100_post`: `Post`, `PostLike`, `QuestionComment.postId` + CHECK target
+  empat kolom, `Report.postId` + CHECK target + partial unique index anti-banjir. Diterapkan
+  3 Oktober 2026; constraint diuji di transaksi yang di-rollback.
+- [x] Flag `FEATURES_COMMUNITY` (ikut mati bila `FEATURES_PUBLIC_PROFILE` mati).
+- [x] Action buat/sunting/hapus postingan dan like; gambar memakai jalur upload komentar;
+  `POST_WRITE_RATE_LIMITS` (5 per jam, 20 per hari), `POST_LIKE_RATE_LIMITS`; suspend posting.
+- [x] `CommentTarget` jenis `post`; komentar postingan selalu `PUBLIC`; akses postingan akun private
+  diperiksa di setiap action komentar; test target diperbarui.
+- [x] `/community` (feed global, akun public saja), `/community/following`, `/post/[id]`, bagian
+  Postingan di profil, dan `/u/[username]/posts`.
+- [x] SEO: metadata dari isi postingan, JSON-LD `SocialMediaPosting`, `noindex` untuk permalink
+  private, tombstone, dan halaman feed lanjutan; `/community` di sitemap.
+- [x] Reputasi menyertakan like postingan.
+- [x] Laporan target `POST` dan tab Postingan di `/admin/moderation` (takedown/pulihkan + audit log).
+- [x] `anonymizeAccount` (soft delete postingan, hapus like) dan export; Kebijakan Privasi 1.3 dan
+  Syarat & Ketentuan 1.2.
+- [x] Menu Komunitas di header publik dan sidebar, mengikuti flag.
+- [x] `npm run verify` lulus; feed, permalink public/private/tombstone, profil, dan mobile 375px
+  dicek dengan server produksi lokal (data uji dibersihkan).
+- [ ] Uji manual (user): buat, sunting, hapus postingan dengan gambar; like; komentar dan balasan di
+  postingan; postingan akun private tidak muncul di feed Semua tetapi muncul di tab Mengikuti bagi
+  follower; laporkan postingan; takedown dan pulihkan dari `/admin/moderation?kind=posts`.
 
 ### Tahap 4 — Notifikasi dan blokir
 

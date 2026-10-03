@@ -31,6 +31,7 @@ const TARGET_DESCRIPTIONS: Record<ReportTarget["targetType"], string> = {
     "Laporan ini otomatis membawa identitas pola yang sedang Anda baca, jadi pola dan levelnya tidak perlu ditulis ulang.",
   BUNPOU_COMPARISON:
     "Laporan ini otomatis membawa identitas perbandingan pola yang sedang Anda baca.",
+  POST: "Laporan ini otomatis membawa identitas postingan yang Anda pilih.",
 };
 
 /**

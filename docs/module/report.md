@@ -19,6 +19,7 @@ Target pola dan perbandingan bunpou (2 Oktober 2026) menunggu `npx prisma migrat
 |---|---|
 | `FEATURES_REPORT` | `/report` menjadi 404, seluruh tombol "Laporkan" tidak dirender, dan kedua Server Action publik menolak dengan `notFound()`. Antrean `/admin/report` **tetap hidup** |
 | `FEATURES_FLASHCARD` | Target kartu flashcard hilang dari sisi user: tombol "Laporkan kartu" hanya ada di bawah `/flashcard`, yang menjadi 404, dan `/report` tidak lagi menyebut kartu flashcard. `submitReportAction` menolak laporan kartu dari tab lama sebelum Turnstile dan rate limit. Laporan kartu yang sudah masuk **tetap** dapat dibuka dan ditindak di `/admin/report` |
+| `FEATURES_COMMUNITY` | Tombol laporan postingan hilang bersama halaman komunitas, dan `submitReportAction` menolak laporan `POST` dari tab lama sebelum Turnstile dan rate limit. Laporan postingan hanya diterima bila pelapor memang boleh melihat postingannya (akun private: pemilik dan follower yang disetujui). Laporan yang sudah masuk tetap ditindak di `/admin/report`, dengan tautan ke `/admin/moderation?kind=posts` |
 | `FEATURES_BUNPOU` | Sama seperti flashcard: tombol laporan hanya ada di bawah `/bunpou`, yang menjadi 404, dan `submitReportAction` menolak laporan `BUNPOU_POINT`/`BUNPOU_COMPARISON` dari tab lama sebelum Turnstile dan rate limit. Laporan yang sudah masuk tetap ditindak di `/admin/report` |
 
 Antrean admin sengaja tidak ikut mati. Alasan utama mematikan `FEATURES_REPORT` adalah
@@ -127,6 +128,7 @@ form, `SubmitReportSchema`, serta layar admin.
 | `FLASHCARD_VOCAB` | `READING_ERROR`, `MEANING_ERROR`, `EXAMPLE_ERROR`, `TAG_ERROR`, `BUG`, `OTHER` |
 | `BUNPOU_POINT` | `MEANING_ERROR`, `CONNECTION_ERROR`, `EXAMPLE_ERROR`, `READING_ERROR`, `BUG`, `OTHER` |
 | `BUNPOU_COMPARISON` | `CONTENT_ERROR`, `BUG`, `OTHER` |
+| `POST` | `ABUSE`, `OTHER` |
 
 Keputusan di dalam peta itu:
 

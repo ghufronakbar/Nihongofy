@@ -4,7 +4,7 @@
 
 **Catatan belajar pribadi selesai; berbagi catatan ke diskusi publik dan balasan satu tingkat sudah aktif.** User login dapat menambah, mengedit, menghapus, dan melampirkan gambar pada soal di mode baca dan result detail, lalu membagikan catatan itu ke diskusi yang dapat dibaca semua orang termasuk guest.
 
-**Sejak 2 Oktober 2026 modul ini melayani tiga target: soal JLPT, kata flashcard, dan pola bunpou.** Tabel, action, query, komponen, moderasi, dan laporannya sama; permukaan flashcard-nya dijelaskan di [flashcard.md](flashcard.md#catatan-dan-diskusi-kata) dan permukaan bunpou di [bunpou.md](bunpou.md#catatan-dan-diskusi-pola). Semua tulisan dibatasi rate limit Redis.
+**Sejak 3 Oktober 2026 modul ini melayani empat target: soal JLPT, kata flashcard, pola bunpou, dan postingan komunitas** ([Komunitas](community.md#komentar-dan-balasan); komentar postingan selalu publik dan mengikuti akses postingannya). Tabel, action, query, komponen, moderasi, dan laporannya sama; permukaan flashcard-nya dijelaskan di [flashcard.md](flashcard.md#catatan-dan-diskusi-kata) dan permukaan bunpou di [bunpou.md](bunpou.md#catatan-dan-diskusi-pola). Semua tulisan dibatasi rate limit Redis.
 
 **Diskusi diindeks mesin pencari sejak 2 Oktober 2026** — lihat [Indexing](#indexing).
 
