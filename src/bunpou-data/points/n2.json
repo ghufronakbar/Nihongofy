@@ -1755,6 +1755,1282 @@
       "content": null,
       "ai": null,
       "review": null
+    },
+    {
+      "key": "ni-shitara-standpoint",
+      "order": 49,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜にしたら",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ni-shitara"
+          }
+        ],
+        "title": "〜にしたら",
+        "meaning": "kalau dilihat dari sudut pandang pihak tersebut; bagi pihak tersebut",
+        "connection": "N + にしたら",
+        "formation": [],
+        "notes": "Menunjukkan dugaan atau penilaian pembicara dengan menempatkan diri pada posisi orang atau pihak yang disebutkan. Umumnya digunakan untuk memperkirakan perasaan, keadaan, atau pendapat pihak tersebut. Variasi yang berdekatan meliputi 〜にすれば, 〜にしてみれば, dan 〜にしてみたら.",
+        "examples": [
+          "親にしたら、子どもの将来が心配なのだろう。",
+          "彼にしたら、それは納得できない話だったに違いない。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:39:24.745Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "to-shitara-hypothetical",
+      "order": 50,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜としたら",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "to-shitara"
+          }
+        ],
+        "title": "〜としたら",
+        "meaning": "andaikan atau jika suatu keadaan dianggap benar",
+        "connection": "動詞普通形＋としたら／イ形容詞普通形＋としたら／ナ形容詞語幹＋だとしたら／名詞＋だとしたら",
+        "formation": [],
+        "notes": "Menetapkan suatu keadaan sebagai asumsi, kemudian menyatakan penilaian, keputusan, atau akibat berdasarkan asumsi tersebut. Sering dipakai untuk situasi yang belum pasti, bersifat hipotesis, atau kemungkinan terjadinya relatif kecil.",
+        "examples": [
+          "もし海外で働くとしたら、どの国を選びますか。",
+          "その話が本当だとしたら、大きな問題だ。",
+          "一人で行くとしたら、十分な準備が必要だ。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:39:17.864Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "to-shitemo-concessive",
+      "order": 51,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜としても",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "to-shitemo"
+          }
+        ],
+        "title": "〜としても",
+        "meaning": "sekalipun suatu keadaan diasumsikan benar atau terjadi, penilaian, sikap, atau hasil yang dinyatakan pembicara tetap berlaku",
+        "connection": "V bentuk biasa + としても／イ形 bentuk biasa + としても／ナ形 bentuk biasa + としても／N bentuk biasa + としても（ナ形 dan N bentuk kini afirmatif memakai だとしても）",
+        "formation": [],
+        "notes": "Mengajukan keadaan sebagai asumsi lalu menyatakan konsesi, penilaian, perasaan, atau kesimpulan pembicara. Sering digunakan bersama 仮に atau たとえ dan dapat menonjolkan bahwa hasil tidak berubah meskipun asumsi tersebut diterima. Untuk nomina, Nだとしても dalam pola ini berbeda dari Nとしても yang berarti 'juga dalam kapasitas atau sudut pandang sebagai N'.",
+        "examples": [
+          "彼の話が本当だとしても、結論は変わらない。",
+          "たとえ失敗するとしても、挑戦する価値はある。",
+          "参加するとしても、長くはいられません。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:39:23.459Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ni-shitemo-concessive",
+      "order": 52,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜にしても",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ni-shitemo"
+          }
+        ],
+        "title": "〜にしても",
+        "meaning": "Sekalipun suatu keadaan, posisi, atau pilihan diterima sebagai premis, penilaian atau perasaan pembicara tetap berlaku.",
+        "connection": "動詞普通形 + にしても／イ形容詞普通形 + にしても／ナ形容詞 + である + にしても／名詞 + である + にしても",
+        "formation": [],
+        "notes": "Bagian sebelum にしても diterima atau diandaikan sementara sebagai premis, sedangkan bagian sesudahnya menyampaikan pendapat, penilaian, atau perasaan pembicara yang tidak berubah karena premis tersebut. Dalam pemakaian dengan nomina, である kadang dilesapkan, seperti 冗談にしても. Sense ini berbeda dari pola berpasangan 〜にしても〜にしても yang menyatakan bahwa hasilnya sama untuk dua alternatif.",
+        "examples": [
+          "私が悪かったにしても、彼の言い方はひどい。",
+          "冗談にしても、そんなことを言うべきではない。",
+          "参加しないにしても、早めに連絡してください。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:40:19.831Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "toshite-role",
+      "order": 53,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": null,
+      "title": "〜として",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "toshite"
+          }
+        ],
+        "title": "〜として",
+        "meaning": "sebagai; dalam peran, kedudukan, atau kapasitas tertentu",
+        "connection": "N + として",
+        "formation": [],
+        "notes": "Menunjukkan peran, kedudukan, kapasitas, atau sudut pandang yang dimiliki seseorang atau sesuatu. Dapat muncul dalam variasi seperti 〜としては dan 〜としても.",
+        "examples": [
+          "彼は医者として働いている。",
+          "この建物は文化財として保存されている。",
+          "私は代表者として会議に出席した。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:39:30.749Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "to-tomoni-together",
+      "order": 54,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "to-tomoni",
+      "title": "〜とともに",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "tomo-ni"
+          }
+        ],
+        "title": "〜とともに",
+        "meaning": "bersama seseorang atau suatu pihak dalam melakukan tindakan atau bekerja sama",
+        "connection": "N + とともに",
+        "formation": [],
+        "notes": "Menunjukkan pendamping atau pihak yang bertindak bersama. Bernuansa lebih formal daripada 〜と一緒に dan lazim digunakan untuk orang, kelompok, atau organisasi.",
+        "examples": [
+          "仲間とともに新しい計画を進めた。",
+          "地域の人々とともに問題の解決に取り組む。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:39:55.344Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "to-tomoni-correlated-change",
+      "order": 55,
+      "kind": "pattern",
+      "sectionKey": "time-and-sequence",
+      "family": "to-tomoni",
+      "title": "〜とともに",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "tomo-ni"
+          }
+        ],
+        "title": "〜とともに",
+        "meaning": "seiring dengan perubahan atau perkembangan X, Y juga berubah",
+        "connection": "V bentuk kamus + とともに; N + とともに",
+        "formation": [],
+        "notes": "Menghubungkan dua perubahan yang berlangsung beriringan. Pola ini menunjukkan keterkaitan perkembangan, tetapi tidak selalu menyatakan bahwa perubahan pertama secara langsung menyebabkan perubahan kedua. Bernuansa formal dan sering digunakan dalam tulisan.",
+        "examples": [
+          "年を取るとともに体力が衰えてきた。",
+          "経済の発展とともに人々の生活も変化した。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:39:55.344Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ni-tomonau",
+      "order": 56,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜に伴い／〜に伴って／〜に伴う",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ni-tomonau"
+          }
+        ],
+        "title": "〜に伴い／〜に伴って／〜に伴う",
+        "meaning": "seiring dengan suatu perubahan atau kejadian; disertai oleh hal yang berkaitan",
+        "connection": "N＋に伴い／に伴って；V辞書形＋に伴い／に伴って；N＋に伴う＋N；V辞書形＋に伴う＋N",
+        "formation": [],
+        "notes": "Menunjukkan bahwa suatu perubahan, keadaan, atau kejadian berlangsung bersama atau sebagai konsekuensi yang berkaitan dengan hal lain. Lazim digunakan dalam ragam formal dan tertulis. 〜に伴い dan 〜に伴って menerangkan predikat, sedangkan 〜に伴う menerangkan nomina.",
+        "examples": [
+          "人口の増加に伴って、住宅不足が深刻になった。",
+          "制度の変更に伴う手続きについて説明します。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:39:51.333Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ni-tsurete",
+      "order": 57,
+      "kind": "pattern",
+      "sectionKey": "time-and-sequence",
+      "family": null,
+      "title": "〜につれて",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ni-tsurete"
+          }
+        ],
+        "title": "〜につれて",
+        "meaning": "seiring dengan perubahan atau perkembangan sesuatu, hal lain juga berubah secara bertahap",
+        "connection": "V bentuk kamus + につれて; N + につれて",
+        "formation": [],
+        "notes": "Menunjukkan dua perubahan yang berlangsung secara berkaitan dan bertahap. Bentuk 〜につれ merupakan variasi yang lebih ringkas dengan sense yang sama. Klausa sesudahnya umumnya menyatakan perubahan alami atau keadaan yang berkembang, bukan perintah atau kehendak langsung.",
+        "examples": [
+          "年を取るにつれて、体力が落ちてきた。",
+          "町の発展につれて、人口も増加した。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:40:04.680Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ni-shitagatte-according-to",
+      "order": 58,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "ni-shitagatte",
+      "title": "〜にしたがって",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ni-shitagatte"
+          }
+        ],
+        "title": "〜にしたがって",
+        "meaning": "sesuai dengan atau dengan mengikuti aturan, petunjuk, kebijakan, maupun arahan",
+        "connection": "N + にしたがって",
+        "formation": [],
+        "notes": "Menunjukkan bahwa tindakan dilakukan dengan mengikuti sesuatu yang menjadi pedoman atau dasar. Bentuk 〜にしたがい merupakan variasi yang lebih formal.",
+        "examples": [
+          "説明書にしたがって操作してください。",
+          "規則にしたがって手続きを進めます。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:40:20.058Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ni-shitagatte-as-change",
+      "order": 59,
+      "kind": "pattern",
+      "sectionKey": "time-and-sequence",
+      "family": "ni-shitagatte",
+      "title": "〜にしたがって",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ni-shitagatte"
+          }
+        ],
+        "title": "〜にしたがって",
+        "meaning": "seiring dengan perubahan atau perkembangan suatu keadaan, keadaan lain juga berubah",
+        "connection": "V辞書形 + にしたがって／N + にしたがって",
+        "formation": [],
+        "notes": "Menghubungkan dua perubahan yang berlangsung secara berkaitan: ketika keadaan pertama berkembang atau berubah, keadaan kedua turut berubah. Lazim digunakan dengan kata kerja atau nomina yang menyatakan perubahan bertahap. Bentuk 〜にしたがい merupakan variasi yang lebih formal.",
+        "examples": [
+          "年を取るにしたがって体力が落ちてきた。",
+          "町の発展にしたがって人口も増加した。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:40:20.058Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "toori-doori",
+      "order": 60,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜とおり／〜どおり",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "toori"
+          }
+        ],
+        "title": "〜とおり／〜どおり",
+        "meaning": "sesuai dengan atau persis seperti sesuatu yang dinyatakan, direncanakan, atau dicontohkan",
+        "connection": "V bentuk kamus／V bentuk lampau + とおり（に／だ）；N + のとおり（に／だ）；N + どおり（に／だ）",
+        "formation": [],
+        "notes": "〜とおり mengikuti kata kerja atau nomina dengan の, sedangkan 〜どおり umumnya langsung mengikuti nomina. Bentuk dengan に menerangkan cara suatu tindakan dilakukan; bentuk dengan だ digunakan sebagai predikat. Pola ini menyatakan bahwa tindakan, keadaan, atau hasil benar-benar sesuai dengan acuan.",
+        "examples": [
+          "説明書に書いてあるとおりに操作してください。",
+          "計画どおりに工事が進んでいる。",
+          "結果は私が予想したとおりだった。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:40:25.935Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "mama-ni-passive-compliance",
+      "order": 61,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜まま（に）",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "mama"
+          }
+        ],
+        "title": "〜まま（に）",
+        "meaning": "melakukan sesuatu begitu saja sesuai kehendak, arahan, atau perintah orang lain tanpa melawan",
+        "connection": "動詞普通形＋まま（に）／動詞受身形＋まま（に）",
+        "formation": [],
+        "notes": "Menunjukkan sikap pasif atau membiarkan tindakan berlangsung sepenuhnya menurut kehendak pihak lain. Sering digunakan dengan bentuk pasif seperti 言われるままに dan 命じられるままに.",
+        "examples": [
+          "私は言われるままに書類に署名した。",
+          "彼は命じられるままに行動した。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:40:39.188Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "koto-ni",
+      "order": 62,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜ことに",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "koto-ni"
+          }
+        ],
+        "title": "〜ことに",
+        "meaning": "menekankan penilaian atau perasaan pembicara terhadap fakta yang disebutkan setelahnya",
+        "connection": "Vた形＋ことに／イ形容詞普通形＋ことに／ナ形容詞語幹＋な＋ことに",
+        "formation": [],
+        "notes": "Diletakkan setelah ungkapan yang menunjukkan perasaan atau penilaian, seperti 驚いた, 嬉しい, 残念, atau 不思議. Bagian setelah pola ini menyatakan fakta yang menimbulkan perasaan tersebut. Lazim digunakan dalam bahasa tulis atau ragam formal.",
+        "examples": [
+          "驚いたことに、彼はその事実を知っていた。",
+          "嬉しいことに、全員が試験に合格した。",
+          "残念なことに、計画は中止になった。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:40:33.586Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "amari-extreme-result",
+      "order": 63,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜あまり",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "amari"
+          }
+        ],
+        "title": "〜あまり",
+        "meaning": "Saking terlalu kuat atau ekstremnya suatu keadaan, perasaan, atau tindakan, sampai timbul hasil tertentu.",
+        "connection": "V辞書形・Vた形＋あまり（に）／ナ形容詞語幹＋な＋あまり（に）／N＋の＋あまり（に）",
+        "formation": [],
+        "notes": "Menunjukkan bahwa tingkat sesuatu melampaui kewajaran dan menjadi sebab hasil berikutnya. Sering dipakai untuk emosi atau tindakan yang sangat kuat, dan hasilnya kerap tidak diharapkan atau tidak biasa. Berbeda dari あまり〜ない yang berarti 'tidak terlalu'.",
+        "examples": [
+          "緊張のあまり、名前を言い間違えてしまった。",
+          "結果を気にするあまり、仕事に集中できなかった。",
+          "彼は慎重なあまり、決断する機会を逃した。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:40:49.704Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "wake-da-n2",
+      "order": 64,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜わけだ",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "wake-da"
+          }
+        ],
+        "title": "〜わけだ",
+        "meaning": "menyatakan kesimpulan atau konsekuensi logis berdasarkan fakta sebelumnya; jadi, berarti, atau pantas saja",
+        "connection": "V bentuk biasa＋わけだ／イA bentuk biasa＋わけだ／ナA＋な・だった・ではない＋わけだ／N＋な・だった・ではない＋わけだ",
+        "formation": [],
+        "notes": "Dipakai ketika penutur menarik kesimpulan yang wajar, menjelaskan hasil logis, atau menyatakan bahwa suatu keadaan dapat dimengerti berdasarkan informasi yang ada. Dalam konteks keterkejutan yang kemudian terjelaskan, dapat diterjemahkan sebagai 'pantas saja'.",
+        "examples": [
+          "彼は日本に十年住んでいたから、日本語が上手なわけだ。",
+          "一日八時間なら、五日で四十時間働くわけだ。",
+          "電車が止まっていたのか。彼が遅れたわけだ。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:41:02.687Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "wake-demo-nai",
+      "order": 65,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜わけでもない",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "wake-demo-nai"
+          }
+        ],
+        "title": "〜わけでもない",
+        "meaning": "bukan berarti demikian; menyangkal bahwa suatu keadaan, alasan, atau kesimpulan berlaku sepenuhnya",
+        "connection": "V bentuk biasa + わけでもない; イA bentuk biasa + わけでもない; ナA + なわけでもない／であるわけでもない; N + なわけでもない／であるわけでもない",
+        "formation": [],
+        "notes": "Menyangkal anggapan atau kesimpulan yang mungkin muncul dari konteks, biasanya secara tidak mutlak dan bernuansa lebih lunak daripada penyangkalan langsung. Sering digunakan untuk menyatakan bahwa sesuatu tidak selalu benar atau bukan alasan yang sebenarnya.",
+        "examples": [
+          "日本に長く住んでいるからといって、日本語が完璧に話せるわけでもない。",
+          "その仕事が嫌いなわけでもないが、今は少し休みたい。",
+          "お金があれば必ず幸せになれるわけでもない。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:40:58.390Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "wake-ga-nai-n2",
+      "order": 66,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜わけがない",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "wake-ga-nai"
+          }
+        ],
+        "title": "〜わけがない",
+        "meaning": "tidak mungkin; mustahil bahwa sesuatu terjadi atau benar",
+        "connection": "動詞普通形／イ形容詞普通形／ナ形容詞語幹＋な／名詞＋の＋わけがない",
+        "formation": [],
+        "notes": "Menyatakan keyakinan kuat bahwa sesuatu tidak mungkin berdasarkan alasan, keadaan, atau penilaian pembicara. Dalam percakapan dapat disingkat menjadi 〜わけない. Berbeda dari 〜わけではない, yang berarti bukan berarti atau tidak selalu demikian.",
+        "examples": [
+          "彼がそんな約束を忘れるわけがない。",
+          "こんな難しい問題が子どもに分かるわけがない。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:40:57.046Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "wake-niwa-ikanai",
+      "order": 67,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜わけにはいかない",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "wake-niwa-ikanai"
+          }
+        ],
+        "title": "〜わけにはいかない",
+        "meaning": "tidak dapat melakukan sesuatu karena pertimbangan moral, sosial, tanggung jawab, atau keadaan",
+        "connection": "V辞書形 + わけにはいかない",
+        "formation": [],
+        "notes": "Menyatakan bahwa tindakan sebenarnya mungkin dilakukan, tetapi pembicara merasa tidak pantas atau tidak dapat melakukannya karena kewajiban, posisi, norma sosial, atau alasan tertentu. Bukan terutama untuk ketidakmampuan fisik.",
+        "examples": [
+          "大切な約束だから、忘れるわけにはいかない。",
+          "みんなが働いているのに、私だけ休むわけにはいかない。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:41:04.872Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ta-totan-n2",
+      "order": 68,
+      "kind": "pattern",
+      "sectionKey": "time-and-sequence",
+      "family": null,
+      "title": "〜たとたん",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ta-totan"
+          }
+        ],
+        "title": "〜たとたん",
+        "meaning": "tepat setelah suatu tindakan terjadi, peristiwa lain langsung terjadi secara tiba-tiba",
+        "connection": "動詞た形＋とたん（に）",
+        "formation": [],
+        "notes": "Menekankan bahwa peristiwa kedua terjadi seketika dan biasanya tidak terduga atau berada di luar kehendak pelaku. Bentuk 〜たとたんに juga digunakan. Umumnya tidak dipakai untuk menyatakan tindakan kedua yang sengaja direncanakan oleh subjek.",
+        "examples": [
+          "家を出たとたん、雨が降り出した。",
+          "立ち上がったとたんに、めまいがした。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:41:11.279Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ta-ageku",
+      "order": 69,
+      "kind": "pattern",
+      "sectionKey": "time-and-sequence",
+      "family": null,
+      "title": "〜たあげく",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ta-ageku"
+          }
+        ],
+        "title": "〜たあげく",
+        "meaning": "setelah melalui proses yang panjang atau berbagai upaya, akhirnya memperoleh hasil tertentu",
+        "connection": "動詞た形＋あげく／あげくに；名詞＋の＋あげく／あげくに",
+        "formation": [],
+        "notes": "Menekankan proses, pertimbangan, atau usaha yang berlangsung lama sebelum mencapai hasil akhir. Hasil tersebut biasanya tidak diharapkan, tidak memuaskan, atau bernuansa negatif, meskipun secara tata bahasa tidak selalu harus negatif. Bentuk あげくに merupakan variasi yang setara.",
+        "examples": [
+          "長い間悩んだあげく、会社を辞めることにした。",
+          "何度も話し合ったあげくに、計画は中止になった。",
+          "試行錯誤のあげく、ようやく解決策を見つけた。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:41:19.980Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "sue-ni",
+      "order": 70,
+      "kind": "pattern",
+      "sectionKey": "time-and-sequence",
+      "family": null,
+      "title": "〜末／〜末に",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "sue"
+          }
+        ],
+        "title": "〜末／〜末に",
+        "meaning": "setelah melalui proses atau pertimbangan yang panjang, akhirnya mencapai suatu hasil",
+        "connection": "Vた形＋末（に）／Nの＋末（に）",
+        "formation": [],
+        "notes": "Menunjukkan hasil akhir yang dicapai setelah proses panjang, seperti pertimbangan, perdebatan, perjuangan, atau percobaan berulang. Hasilnya dapat positif maupun negatif. Bentuk 末 dan 末に merupakan variasi dalam sense yang sama.",
+        "examples": [
+          "家族と話し合った末に、留学することを決めた。",
+          "長い議論の末、計画は中止された。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:41:18.383Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ka-to-omottara-ka-to-omou-to",
+      "order": 71,
+      "kind": "pattern",
+      "sectionKey": "time-and-sequence",
+      "family": null,
+      "title": "〜かと思ったら／〜かと思うと",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ka-to-omottara"
+          }
+        ],
+        "title": "〜かと思ったら／〜かと思うと",
+        "meaning": "Baru saja suatu keadaan atau peristiwa terjadi, segera disusul kejadian lain yang tidak terduga.",
+        "connection": "動詞タ形＋かと思ったら／かと思うと",
+        "formation": [],
+        "notes": "Menunjukkan dua kejadian atau perubahan yang berlangsung dalam jarak waktu sangat dekat. Kejadian sesudahnya biasanya mengejutkan atau berlawanan dengan keadaan sebelumnya. Umumnya dipakai untuk peristiwa yang diamati, bukan untuk menyatakan rangkaian tindakan yang sengaja dilakukan oleh penutur.",
+        "examples": [
+          "空が急に暗くなったかと思うと、激しい雨が降り始めた。",
+          "彼は帰ってきたかと思ったら、すぐまた出かけてしまった。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:41:40.967Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "tokoro-o-concessive",
+      "order": 72,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "tokoro-o",
+      "title": "〜ところを",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "tokoro"
+          }
+        ],
+        "title": "〜ところを",
+        "meaning": "meskipun sedang atau berada dalam keadaan tertentu; mengakui bahwa tindakan berikutnya mengganggu atau membebani pihak lain",
+        "connection": "Vた形／Vている形／Vていた形／イ形容詞／Nの＋ところを",
+        "formation": [],
+        "notes": "Sering dipakai dalam permintaan, permintaan maaf, dan ucapan terima kasih yang sopan. Pembicara menunjukkan perhatian terhadap keadaan lawan bicara, misalnya ketika lawan bicara sedang sibuk, beristirahat, atau baru menyelesaikan sesuatu.",
+        "examples": [
+          "お忙しいところをお越しいただき、ありがとうございます。",
+          "お休みのところを申し訳ありません。",
+          "会議が終わったところを引き止めてしまった。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:42:39.096Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "tokoro-o-affected-scene",
+      "order": 73,
+      "kind": "pattern",
+      "sectionKey": "time-and-sequence",
+      "family": "tokoro-o",
+      "title": "〜ところを",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "tokoro"
+          }
+        ],
+        "title": "〜ところを",
+        "meaning": "ketika sedang atau baru berada dalam suatu keadaan, lalu menjadi sasaran tindakan seperti dipergoki, ditangkap, diserang, atau ditolong",
+        "connection": "Vた形／Vている形／Vていた形／イ形容詞／Nの＋ところを",
+        "formation": [],
+        "notes": "Partikel を menandai adegan atau keadaan yang menjadi sasaran tindakan pada klausa utama. Predikat utama sering menyatakan pengamatan, penemuan, penangkapan, gangguan, serangan, atau pertolongan; kalimat pasif juga lazim.",
+        "examples": [
+          "犯人は逃げていたところを警察に捕まった。",
+          "道で倒れたところを通行人に助けられた。",
+          "一人でいるところを誰かに見られた。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:42:39.096Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "tokoro-ni-event-occurrence",
+      "order": 74,
+      "kind": "pattern",
+      "sectionKey": "time-and-sequence",
+      "family": null,
+      "title": "〜ところに",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "tokoro"
+          }
+        ],
+        "title": "〜ところに",
+        "meaning": "tepat ketika berada dalam suatu keadaan, peristiwa lain terjadi atau sesuatu datang pada saat tersebut",
+        "connection": "Vた形／Vている形／Vていた形／イ形容詞／Nの＋ところに",
+        "formation": [],
+        "notes": "Partikel に menandai keadaan atau saat sebagai titik terjadinya peristiwa berikutnya. Peristiwa pada klausa utama sering tidak direncanakan dan dapat memengaruhi keadaan yang sedang berlangsung.",
+        "examples": [
+          "食事をしていたところに、宅配便が届いた。",
+          "仕事が終わったところに、上司から電話がかかってきた。",
+          "忙しいところに新しい依頼が来た。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:42:39.096Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "tokoro-e-directed-arrival",
+      "order": 75,
+      "kind": "pattern",
+      "sectionKey": "time-and-sequence",
+      "family": null,
+      "title": "〜ところへ",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "tokoro"
+          }
+        ],
+        "title": "〜ところへ",
+        "meaning": "tepat ketika berada dalam suatu keadaan, seseorang atau sesuatu bergerak datang memasuki keadaan atau adegan tersebut",
+        "connection": "Vた形／Vている形／Vていた形／イ形容詞／Nの＋ところへ",
+        "formation": [],
+        "notes": "Partikel へ menonjolkan arah gerak menuju adegan yang sedang berlangsung. Klausa utama lazim memakai verba gerak atau kedatangan seperti 来る, 入る, 訪ねる, dan 飛び込む. Dalam sebagian konteks dapat diganti dengan ところに, tetapi へ memberi penekanan lebih kuat pada arah masuknya orang atau hal.",
+        "examples": [
+          "困っていたところへ、友人が助けに来た。",
+          "会議が終わったところへ、社長が入ってきた。",
+          "忙しいところへ、さらに急ぎの仕事が入ってきた。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:42:39.096Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ta-tokoro-discovery",
+      "order": 76,
+      "kind": "pattern",
+      "sectionKey": "time-and-sequence",
+      "family": null,
+      "title": "〜たところ",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ta-tokoro"
+          }
+        ],
+        "title": "〜たところ",
+        "meaning": "setelah melakukan sesuatu, diketahui atau diperoleh hasil baru",
+        "connection": "動詞た形＋ところ",
+        "formation": [],
+        "notes": "Menunjukkan bahwa suatu tindakan dilakukan dan kemudian menghasilkan penemuan, informasi, atau keadaan tertentu. Klausa sesudahnya umumnya menyatakan hasil faktual, bukan kemauan atau perintah. Berbeda dari 〜たところだ yang terutama berarti bahwa tindakan baru saja selesai.",
+        "examples": [
+          "先生に聞いたところ、試験の日程が変わったそうだ。",
+          "薬を飲んだところ、熱が下がった。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:41:32.338Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "dokoro-dewa-nai",
+      "order": 77,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜どころではない",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "dokoro-dewa-nai"
+          }
+        ],
+        "title": "〜どころではない",
+        "meaning": "bukan saat atau keadaan yang memungkinkan untuk melakukan sesuatu; jauh dari bisa melakukan hal tersebut",
+        "connection": "V辞書形＋どころではない／N＋どころではない",
+        "formation": [],
+        "notes": "Menegaskan bahwa keadaan yang mendesak, berat, atau tidak mendukung membuat suatu tindakan mustahil atau tidak layak dipikirkan. Bentuk percakapannya adalah 〜どころじゃない.",
+        "examples": [
+          "仕事が忙しくて、旅行に行くどころではない。",
+          "締め切りが明日なので、休んでいるどころではない。",
+          "大けがをして、試合どころではなかった。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:41:47.421Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "dokoro-ka-contrary",
+      "order": 78,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "dokoro-ka",
+      "title": "〜どころか",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "dokoro-ka"
+          }
+        ],
+        "title": "〜どころか",
+        "meaning": "jauh dari A atau bukannya A; kenyataannya justru B yang berlawanan",
+        "connection": "V bentuk biasa＋どころか／kata sifat-i bentuk biasa＋どころか／kata sifat-na＋な・である＋どころか／N＋（である）＋どころか",
+        "formation": [],
+        "notes": "Dipakai untuk menyangkal keadaan atau hasil A dengan menghadirkan kenyataan B yang berlawanan, sering kali lebih buruk atau sangat berbeda dari yang diperkirakan. Bagian B bukan sekadar tambahan terhadap A, melainkan membalik dugaan yang dinyatakan oleh A.",
+        "examples": [
+          "病気は治るどころか、ますます悪くなった。",
+          "今日は涼しいどころか、寒いくらいだ。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:42:30.235Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "dokoro-ka-escalation",
+      "order": 79,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "dokoro-ka",
+      "title": "〜どころか",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "dokoro-ka"
+          }
+        ],
+        "title": "〜どころか",
+        "meaning": "bukan hanya A; bahkan B yang melampaui A pada suatu skala",
+        "connection": "V bentuk biasa＋どころか／kata sifat-i bentuk biasa＋どころか／kata sifat-na＋な・である＋どころか／N＋（である）＋どころか",
+        "formation": [],
+        "notes": "Menempatkan A dan B pada suatu skala, lalu menegaskan bahwa kenyataan mencapai B yang lebih jauh atau lebih mengejutkan. Dalam kalimat negatif dapat bermakna 'jangankan A, B pun tidak'; bagian B sering disertai も atau さえ.",
+        "examples": [
+          "彼は国内どころか、海外でも有名だ。",
+          "彼は漢字どころか、ひらがなさえ読めない。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:42:30.235Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "darake",
+      "order": 80,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜だらけ",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "darake"
+          }
+        ],
+        "title": "〜だらけ",
+        "meaning": "dipenuhi atau tertutupi oleh sesuatu, biasanya sesuatu yang tidak diinginkan",
+        "connection": "名詞＋だらけ",
+        "formation": [],
+        "notes": "Menunjukkan bahwa sesuatu terdapat dalam jumlah banyak atau tersebar di seluruh bagian. Biasanya bernuansa negatif, misalnya penuh kesalahan, luka, debu, atau lumpur.",
+        "examples": [
+          "この作文は間違いだらけだ。",
+          "子どもたちは泥だらけになって遊んでいる。",
+          "古い倉庫の中はほこりだらけだった。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:41:52.401Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ta-kiri-sono-mama",
+      "order": 81,
+      "kind": "pattern",
+      "sectionKey": "time-and-sequence",
+      "family": null,
+      "title": "〜たきり",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "kiri"
+          }
+        ],
+        "title": "〜たきり",
+        "meaning": "sejak melakukan suatu tindakan, keadaan tetap demikian dan tindakan atau perubahan yang diharapkan tidak pernah terjadi lagi",
+        "connection": "動詞た形＋きり（だ）",
+        "formation": [],
+        "notes": "Menunjukkan bahwa setelah satu kejadian, keadaan berlanjut tanpa perubahan. Klausa sesudahnya lazim berbentuk negatif atau menyatakan tidak adanya perkembangan, misalnya tidak kembali atau tidak memberi kabar. Sering mengandung perasaan cemas, kecewa, atau kesal dari pembicara.",
+        "examples": [
+          "彼は家を出たきり、帰ってこない。",
+          "先月連絡したきり、彼女から返事がない。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:42:11.080Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ppanashi-continuous",
+      "order": 82,
+      "kind": "pattern",
+      "sectionKey": "time-and-sequence",
+      "family": "ppanashi",
+      "title": "〜っぱなし",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ppanashi"
+          }
+        ],
+        "title": "〜っぱなし",
+        "meaning": "terus melakukan suatu tindakan atau terus berada dalam keadaan yang sama tanpa jeda",
+        "connection": "動詞ます形（ますを除く）＋っぱなし",
+        "formation": [],
+        "notes": "Menunjukkan tindakan atau keadaan yang berlangsung terus-menerus. Sering menyiratkan durasi yang berlebihan, melelahkan, atau kurang diinginkan, meskipun dapat pula digunakan secara netral.",
+        "examples": [
+          "朝から立ちっぱなしで、足が疲れた。",
+          "彼は一日中しゃべりっぱなしだった。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:42:36.169Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ppanashi-left-as-is",
+      "order": 83,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "ppanashi",
+      "title": "〜っぱなし",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ppanashi"
+          }
+        ],
+        "title": "〜っぱなし",
+        "meaning": "membiarkan sesuatu tetap dalam keadaan hasil suatu tindakan tanpa membereskan atau mengembalikannya",
+        "connection": "動詞ます形（ますを除く）＋っぱなし",
+        "formation": [],
+        "notes": "Menyoroti keadaan hasil yang dibiarkan terus setelah suatu tindakan dilakukan, misalnya pintu tetap terbuka atau air tetap mengalir. Umumnya mengandung penilaian negatif seperti kelalaian atau tidak melakukan tindakan lanjutan yang semestinya.",
+        "examples": [
+          "窓を開けっぱなしで出かけてしまった。",
+          "水を出しっぱなしにしないでください。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v3",
+        "extractedAt": "2026-10-03T23:42:36.169Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
     }
   ]
 }

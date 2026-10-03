@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { KINDS, KEY_PATTERN } from "./bunpou-data.mjs";
 
-export const PROMPT_VERSION = "bunpou-text-import-v3";
+export const PROMPT_VERSION = "bunpou-text-import-v4";
 
 const formationSchema = z.object({
   label: z.string(),
@@ -84,7 +84,7 @@ ATURAN IDENTITAS:
 - Jangan memecah variasi ejaan atau bentuk setara menjadi point terpisah bila masih satu sense.
 - title hanya berisi bentuk grammar Jepang baku tanpa furigana, underline, HTML, atau baris baru. Jangan menambahkan label sense, arti, atau anotasi penjelas dalam tanda kurung; bedakan sense melalui key, family, dan source.meaning.
 - key berupa slug ASCII kecil yang menggambarkan bentuk dan sense. Script akan menyelesaikan benturan key lintas level secara deterministik; jangan menciptakan perbedaan makna palsu hanya untuk membedakan key.
-- family dipakai hanya bila bentuk yang sama mempunyai beberapa sense. Semua hasil pecahan dari bentuk yang sama memakai family yang sama.
+- family dipakai hanya bila satu item benar-benar menghasilkan beberapa point untuk sense berbeda dari bentuk yang sama. Jika item hanya menghasilkan satu point, family wajib null; jangan membuat family untuk sense yang tidak ikut dihasilkan. Semua hasil pecahan dari bentuk yang sama memakai family yang sama.
 - kind biasanya pattern. Gunakan particle untuk fungsi partikel, conjugation bila inti materinya sistem perubahan bentuk, dan foundation hanya untuk konsep dasar.
 - sectionKey harus berasal dari daftar section sah.
 
