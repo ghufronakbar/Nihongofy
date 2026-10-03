@@ -147,6 +147,15 @@ describe("kontrak content Bunpou", async () => {
     expect(problems).toContain("meaningEn: tampak berbahasa Indonesia");
   });
 
+  it("menolak bahasa yang tercampur pada terjemahan contoh", () => {
+    const content = validContent();
+    content.examples[0]!.id = "I am eating bread.";
+    content.examples[1]!.en = "Adik sedang penuh semangat.";
+    const problems = bunpouContentProblems(point(), content, taxonomy).join(" ");
+    expect(problems).toContain("examples[0].id: tampak berbahasa Inggris");
+    expect(problems).toContain("examples[1].en: tampak berbahasa Indonesia");
+  });
+
   it("membedakan pending, doubt, dan siap terbit tanpa menghilangkan overlap", () => {
     expect(pointPublicationFlags(point({ extract: { ...point().extract, doubt: "teks buram" } }))).toEqual({
       pending: true,

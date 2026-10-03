@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { bunpouContentSchema, aiTagGroups } from "./bunpou-data.mjs";
 
-export const PROMPT_VERSION = "bunpou-content-v7";
+export const PROMPT_VERSION = "bunpou-content-v8";
 
 const replySchema = z.object({
   items: z.array(
@@ -71,18 +71,23 @@ MARKUP JEPANG WAJIB:
 - Untuk form v-te, て／で adalah bagian bentuk sambungan dan wajib berada di luar __...__. Contoh: {読|よ}んで__いる__, {変|か}わって__も__, bukan {読|よ}ん__でいる__ atau {変|か}わっ__ても__.
 - Untuk form v-ta, た／だ adalah bagian bentuk sambungan dan wajib berada di luar __...__. Contoh: {開|あ}けた__ら__, {教|おし}えた__っけ__, bukan {開|あ}け__たら__ atau {教|おし}え__たっけ__.
 - Seluruh connections.pattern harus masuk ke dalam __...__, termasuk awalan に、の、で, tetapi connections.form tetap di luar. Contoh: {店長|てんちょう}__にかわって__, {働|はたら}く__のに{比|くら}べて__, {来|こ}ない__かなあ__, {使|つか}わない__でほしい__.
+- Jangan menyisipkan spasi ASCII di antara kata atau frasa Jepang. Tulis __ぜひ__{来|き}てください, bukan __ぜひ__ {来|き}てください.
 - Kalimat Jepang memakai tanda baca Jepang 。！？, bukan titik atau tanda tanya Latin.
 - title tanpa markup harus persis sama dengan title point.
 
 ISI CONTENT:
 - senseLabel wajib berupa frasa Indonesia huruf kecil bila family terisi; null bila family null.
 - meaningId wajib berbahasa Indonesia dan meaningEn wajib berbahasa Inggris; keduanya ringkas dan maksimal 160 karakter.
-- connections memakai slug taxonomy. pattern adalah bagian setelah bentuk sambungan, tanpa simbol 〜. form other wajib note.
+- connections memakai slug taxonomy. Untuk form selain other, pattern hanya berisi satu bentuk target setelah bentuk sambungan; pisahkan alternatif ke objek lain dan jangan memakai simbol 〜, tanda +, placeholder, atau prosa.
+- Untuk form other, pattern harus berupa ungkapan tetap yang benar-benar di-underline. Template Jepang ringkas seperti お〜になる hanya boleh dipakai pada point kategori luas; jangan menulis placeholder/prosa seperti “klausa bersyarat” di dalam pattern.
+- Pada pola berpasangan seperti いくら〜ても atau どんなに〜ても, simpan dan underline unsur tetap pertama sebagai pattern other, lalu jelaskan pasangan wajibnya di note. Jangan hanya menggarisbawahi も.
+- form other wajib note.
 - formation berisi aturan transformasi linguistik, bukan layout tabel slide. conjugation wajib memiliki formation.
 - Semua field objek wajib ditulis. Khusus formation[].note, tulis null bila tidak ada catatan. Jangan mengisi connections[].note dengan string kosong; hilangkan field tersebut bila tidak diperlukan.
 - explanation 1-4 paragraf Indonesia, masing-masing satu baris dan maksimal 700 karakter.
 - Prosa Indonesia/Inggris (explanation, note, pitfalls, terjemahan) harus memakai tanda baca Latin . ! ?, bukan tanda Jepang 。！？ di ujung kalimat.
 - examples 3-5 kalimat baru, alami, memiliki terjemahan Indonesia dan Inggris, serta cukup jelas untuk kartu rumpang.
+- examples[].id wajib murni berbahasa Indonesia dan examples[].en wajib murni berbahasa Inggris; jangan mencampurkan kata dari bahasa lainnya.
 - pitfalls 0-4 butir; boleh memakai ○/✕ untuk bentuk benar/salah.
 - variants hanya bentuk yang benar-benar setara, bukan grammar lain yang sekadar mirip.
 

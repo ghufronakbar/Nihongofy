@@ -486,6 +486,21 @@ function meaningLanguageProblems(meaningId, meaningEn) {
   return problems;
 }
 
+function translationLanguageProblems(label, meaningId, meaningEn) {
+  const problems = [];
+  const englishMarkers =
+    /\b(?:i|you|we|they|he|she|my|your|our|their|am|the|of|from|with|for|is|are|was|were|will|would|should|could|not|and|or|to)\b/i;
+  const indonesianMarkers =
+    /\b(?:yang|untuk|dengan|dari|pada|dan|atau|tidak|saya|kami|penuh|menjadi|setelah|sebelum|karena)\b/i;
+  if (englishMarkers.test(meaningId)) {
+    problems.push(`${label}.id: tampak berbahasa Inggris; wajib berupa Indonesia`);
+  }
+  if (indonesianMarkers.test(meaningEn)) {
+    problems.push(`${label}.en: tampak berbahasa Indonesia; wajib berupa Inggris`);
+  }
+  return problems;
+}
+
 function normalizedSentence(value) {
   return stripJapaneseMarkup(value)
     .normalize("NFKC")
@@ -599,6 +614,7 @@ export function bunpouContentProblems(point, content, taxonomy, options = {}) {
     }
     problems.push(...plainTextProblems(`${label}.id`, example.id, LIMITS.examples.translationLength));
     problems.push(...plainTextProblems(`${label}.en`, example.en, LIMITS.examples.translationLength));
+    problems.push(...translationLanguageProblems(label, example.id, example.en));
     problems.push(...latinProsePunctuationProblems(`${label}.id`, example.id));
     problems.push(...latinProsePunctuationProblems(`${label}.en`, example.en));
     if (sourceExamples.has(normalizedSentence(example.jp))) {
