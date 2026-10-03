@@ -21,6 +21,7 @@ Profile tidak punya flag sendiri. Section "Aktivitas belajar" dan "Lanjut belaja
 - `/profile/info`
 - `/profile/security`
 - `/profile/privacy`
+- `/u/[username]` sebagai profil publik — modul tersendiri, lihat [Komunitas](community.md).
 - `/flashcard/settings` sebagai pengaturan flashcard mandiri, di luar profile (lihat
   [Flashcard](flashcard.md)).
 - `/profile/auth` sebagai redirect kompatibilitas ke security.
@@ -30,6 +31,11 @@ Profile tidak punya flag sendiri. Section "Aktivitas belajar" dan "Lanjut belaja
 - Overview akun dan tanggal bergabung.
 - Statistik jumlah kana yang pernah benar, vocabulary yang sudah dimulai, practice selesai, dan exam selesai.
 - Edit display name; email akun tampil read-only dan immutable.
+- Bio (teks polos satu baris, maksimal 160 karakter) dan target level JLPT untuk profil publik.
+  Field-nya hanya tampil bila `FEATURES_PUBLIC_PROFILE` aktif; nilainya tetap ikut tersimpan dari
+  `defaultValues` saat field disembunyikan.
+- Tombol "Lihat profil publik" di overview dan section "Profil publik" (toggle public/private) di
+  `/profile/privacy`, keduanya mengikuti `FEATURES_PUBLIC_PROFILE`.
 - Username legacy tampil read-only.
 - Upload, ganti, atau lepas avatar di Cloudflare R2.
 - Timezone IANA dipilih lewat combobox searchable dengan offset UTC untuk batas harian SRS,
@@ -61,9 +67,12 @@ Profile tidak punya flag sendiri. Section "Aktivitas belajar" dan "Lanjut belaja
 
 ## Data dan Caching
 
-- Account dan overview dicache per user.
+- Account dan overview dicache per user. Overview (`getProfileOverview` di
+  `src/features/profile/overview.ts`, server-only) dipakai bersama `/u/[username]` dan punya
+  `revalidate: 600`, karena review flashcard tidak menginvalidasi tag-nya.
 - Update profile menginvalidasi account/timezone cache dan layout dashboard.
-- Aktivitas kana, vocabulary, practice, dan exam menginvalidasi overview cache.
+- Aktivitas kana, practice, dan exam menginvalidasi overview cache. Review flashcard tidak; angka
+  "Kartu dipelajari" diperbarui paling lambat 10 menit lewat `revalidate`.
 - Pengaturan flashcard dibaca langsung dari `FlashcardCollection` tanpa cache tag.
 
 ## Definisi Statistik Profile

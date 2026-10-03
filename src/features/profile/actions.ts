@@ -24,11 +24,7 @@ import { prisma } from "@/lib/prisma";
 import { consumeGoogleOAuthReauthProof } from "@/features/auth/lib/google-oauth-state";
 import { RevokeSessionSchema } from "@/features/auth/schemas";
 import { reportServerError } from "@/lib/server-logger";
-import {
-  completedMockAttemptWhere,
-  completedQuickPracticeWhere,
-  completedSectionAttemptWhere,
-} from "@/lib/activity-metrics";
+import { getProfileOverview } from "./overview";
 import {
   ChangePasswordSchema,
   CreateAvatarUploadSchema,
@@ -62,6 +58,8 @@ const getCachedProfileAccount = (userId: number) =>
           avatarUrl: true,
           avatarPublicId: true,
           timeZone: true,
+          bio: true,
+          jlptTarget: true,
           createdAt: true,
         },
       });
@@ -72,40 +70,6 @@ const getCachedProfileAccount = (userId: number) =>
     },
     CACHE_KEYS.profileAccount(userId),
     { tags: [CACHE_TAGS.profileAccount(userId)] },
-  )(userId);
-
-const getCachedProfileOverview = (userId: number) =>
-  unstable_cache(
-    async (id: number) => {
-      const [
-        kanaLearned,
-        flashcardStudied,
-        quickPracticeCompleted,
-        sectionPracticeCompleted,
-        mockCompleted,
-      ] =
-        await Promise.all([
-          prisma.kanaProgress.count({ where: { userId: id, correctCount: { gt: 0 } } }),
-          // Kata unik: kata yang dipelajari di dua deck adalah dua kartu.
-          prisma.$queryRaw<{ total: number }[]>`
-            SELECT count(DISTINCT "vocabId")::int AS total
-            FROM "FlashcardCard" WHERE "userId" = ${id} AND reps > 0
-          `.then((rows) => rows[0]?.total ?? 0),
-          prisma.practiceSession.count({ where: completedQuickPracticeWhere(id) }),
-          prisma.attempt.count({ where: completedSectionAttemptWhere(id) }),
-          prisma.attempt.count({ where: completedMockAttemptWhere(id) }),
-        ]);
-
-      return {
-        kanaLearned,
-        flashcardStudied,
-        quickPracticeCompleted,
-        sectionPracticeCompleted,
-        mockCompleted,
-      };
-    },
-    CACHE_KEYS.profileOverview(userId),
-    { tags: [CACHE_TAGS.profileOverview(userId)] },
   )(userId);
 
 export async function getProfileAccountAction() {
@@ -122,7 +86,7 @@ export async function getProfileOverviewAction() {
   const session = await getSession();
   if (!session) redirect("/login");
 
-  return getCachedProfileOverview(session.userId);
+  return getProfileOverview(session.userId);
 }
 
 export async function getSecurityAccountAction() {
@@ -174,6 +138,8 @@ export async function updateProfileAction(
     avatarUrl: validated.data.avatarUrl,
     avatarPublicId: validated.data.avatarPublicId,
     timeZone: validated.data.timeZone,
+    bio: validated.data.bio,
+    jlptTarget: validated.data.jlptTarget,
   };
 
   const currentUser = await prisma.user.findUnique({
@@ -238,6 +204,8 @@ export async function updateProfileAction(
         username: values.username,
         ...avatar,
         timeZone: values.timeZone,
+        bio: values.bio,
+        jlptTarget: values.jlptTarget,
       },
       select: { id: true },
     });

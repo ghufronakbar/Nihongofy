@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { id as idLocale } from "date-fns/locale";
 import { EyeOff, Trash2 } from "lucide-react";
@@ -26,6 +27,7 @@ export function CommentAvatar({
 export function CommentAuthorLine({
   displayName,
   username,
+  profileHref,
   createdAt,
   updatedAt,
   isOwn,
@@ -35,6 +37,9 @@ export function CommentAuthorLine({
   // Handle publik. displayName tidak unik, jadi ini yang membedakan dua orang
   // dengan nama tampilan sama.
   username?: string;
+  // Profil publik penulis (`DiscussionAuthor.profilePath`); null/undefined
+  // berarti nama tampil sebagai teks biasa.
+  profileHref?: string | null;
   createdAt: Date;
   updatedAt?: Date | null;
   isOwn?: boolean;
@@ -44,9 +49,20 @@ export function CommentAuthorLine({
 
   return (
     <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-      <span className="text-sm font-medium">{displayName}</span>
-      {username && (
-        <span className="font-mono text-xs text-muted-foreground">@{username}</span>
+      {profileHref ? (
+        <Link href={profileHref} className="group/author inline-flex flex-wrap items-center gap-x-2 gap-y-1">
+          <span className="text-sm font-medium group-hover/author:underline">{displayName}</span>
+          {username && (
+            <span className="font-mono text-xs text-muted-foreground">@{username}</span>
+          )}
+        </Link>
+      ) : (
+        <>
+          <span className="text-sm font-medium">{displayName}</span>
+          {username && (
+            <span className="font-mono text-xs text-muted-foreground">@{username}</span>
+          )}
+        </>
       )}
       {isOwn && (
         <span className="rounded border border-neo-ink/30 px-1 font-mono text-[10px] font-black uppercase text-foreground/60">

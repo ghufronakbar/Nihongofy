@@ -4,6 +4,7 @@ import { FEATURES } from "@/constants";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { AppSidebar } from "@/components/app-sidebar";
+import { PublicProfileNotice } from "@/features/public-profile/components/public-profile-notice";
 import {
   SidebarInset,
   SidebarProvider,
@@ -30,12 +31,25 @@ export default async function DashboardLayout({
 
   const user = await prisma.user.findUnique({
     where: { id: session.userId },
-    select: { displayName: true, avatarUrl: true },
+    select: {
+      displayName: true,
+      avatarUrl: true,
+      username: true,
+      profileVisibility: true,
+      publicProfileNoticeDismissedAt: true,
+    },
   });
 
   if (!user) {
     redirect("/login");
   }
+
+  // Akun lama yang profilnya otomatis menjadi PUBLIC, sampai ditutup atau
+  // sampai pemiliknya memilih visibility sendiri.
+  const showPublicProfileNotice =
+    FEATURES.publicProfile &&
+    user.profileVisibility === "PUBLIC" &&
+    user.publicProfileNoticeDismissedAt === null;
 
   return (
     <SidebarProvider>
@@ -64,7 +78,10 @@ export default async function DashboardLayout({
             </span>
           </div>
         </header>
-        <div className="flex min-w-0 flex-1 flex-col gap-6 p-4 sm:p-6 lg:p-8 [&>*]:min-w-0">{children}</div>
+        <div className="flex min-w-0 flex-1 flex-col gap-6 p-4 sm:p-6 lg:p-8 [&>*]:min-w-0">
+          {showPublicProfileNotice ? <PublicProfileNotice username={user.username} /> : null}
+          {children}
+        </div>
       </SidebarInset>
     </SidebarProvider>
   );

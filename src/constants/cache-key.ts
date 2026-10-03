@@ -33,7 +33,7 @@ export const CACHE_KEYS = {
   testPackageSitemap: ["test-package-sitemap"] as string[],
   attemptSummary: (attemptId: number) => ["attempt-summary", String(attemptId)],
   dashboardSummary: (userId: number) => ["dashboard-summary", String(userId)],
-  profileAccount: (userId: number) => ["profile-account-v2", String(userId)],
+  profileAccount: (userId: number) => ["profile-account-v3", String(userId)],
   userTimeZone: (userId: number) => ["user-time-zone", String(userId)],
   profileOverview: (userId: number) => ["profile-overview-v2", String(userId)],
   analytics: (userId: number) => ["analytics", String(userId)],
@@ -55,4 +55,12 @@ export const CACHE_KEYS = {
   // Shares CACHE_TAGS.analytics for invalidation — both derive from the same
   // source (completed attempts), so one updateTag on submit refreshes both.
   progress: (userId: number) => ["progress", String(userId)],
+  // Heatmap dan streak profil publik. Memakai tag `profileOverview` — sumber
+  // datanya aktivitas yang sama — ditambah `revalidate`, karena review flashcard
+  // tidak menginvalidasi tag apa pun dan "hari ini" berganti tanpa mutasi.
+  publicProfileActivity: (userId: number) => ["public-profile-activity", String(userId)],
+  // Reputasi "Membantu" dan jumlah entri diskusi. Tanpa tag, sama seperti
+  // `discussionSitemap`: suara dan entri diskusi tidak punya invalidasi per
+  // mutasi, jadi cukup diperbarui oleh `revalidate`.
+  publicProfileCommunity: (userId: number) => ["public-profile-community", String(userId)],
 };

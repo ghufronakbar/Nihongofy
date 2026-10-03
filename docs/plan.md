@@ -1260,6 +1260,99 @@ query dan tanpa flag. Rincian di [public-shell.md](module/public-shell.md#dokume
   ke luar negeri, dan batasan tanggung jawab
 - [ ] Uji manual (user): kedua halaman di mobile/desktop, tautan footer, consent di login/register
 
+## Fase 8.15 — Komunitas: Profil Publik, Follow, Postingan
+
+Profil publik, follow, postingan dengan like/komentar/balasan, lalu notifikasi. Rancangan lengkap:
+[community.md](module/community.md). Dikerjakan berurutan per tahap; follow sengaja sebelum
+postingan karena aturan akses akun private baru lengkap setelah follow ada.
+
+### Keputusan yang dikunci (3 Oktober 2026)
+
+- [x] Route profil `/u/[username]` di `(public)`, bukan `/profile/[username]` (bentrok dengan
+  proxy, layout `(dashboard)`, dan halaman settings).
+- [x] Visibility default `PUBLIC` untuk user lama dan baru; user lama mendapat banner sekali tampil.
+- [x] Akun private tetap punya halaman: kartu identitas dengan label "Akun ini private".
+- [x] Follow ke akun private lewat permintaan yang harus disetujui pemilik.
+- [x] Postingan akun private tetap tersimpan, hanya terlihat oleh pemilik dan follower yang
+  disetujui; feed global menyaring keluar postingannya, dan pesan "akun private" hanya muncul di
+  permalink serta tab Postingan.
+- [x] Feed dan profil public dapat dibaca guest dan diindeks mesin pencari; profil private
+  `noindex`.
+- [x] Tidak ada like profile; diganti reputasi "Membantu" (suara diskusi + like postingan).
+- [x] Komentar postingan memakai ulang `QuestionComment` sebagai target keempat (`postId`).
+- [x] Notifikasi dan blokir di tahap terakhir.
+
+### Tahap 1 — Profil publik
+
+- [x] Migration `20261003120000_public_profile`: `enum ProfileVisibility`, `User.profileVisibility`
+  (default `PUBLIC`), `bio`, `jlptTarget`, `publicProfileNoticeDismissedAt` (akun lama NULL, baris
+  baru `now()`). Diterapkan 3 Oktober 2026, ledger di `docs/operations/migrations.md`.
+- [x] Flag `FEATURES_PUBLIC_PROFILE` di `src/constants/index.ts`, `.env.example`, dan tabel flag
+  `docs/module/index.md`.
+- [x] Tambah `community`, `post`, `notifications`, `follow`, `followers`, `following` ke username
+  terlarang; tidak ada user yang sudah memakainya (dicek 3 Oktober 2026).
+- [x] Helper akses (`src/features/public-profile/access.ts`) beserta unit test.
+- [x] `/u/[username]`: header, statistik (`getProfileOverview`), heatmap 365 hari + streak,
+  reputasi Membantu, jumlah entri diskusi; 404 untuk akun anonim/menunggu penghapusan; redirect
+  lowercase.
+- [x] Kartu "Akun ini private".
+- [x] Section "Profil publik" di `/profile/privacy`; `bio` dan target level di `/profile/info`;
+  tautan "Lihat profil publik" di `/profile`.
+- [x] Username penulis di diskusi menaut ke `/u/[username]` (bukan untuk akun anonim).
+- [x] SEO: `pageMetadata()`, JSON-LD `ProfilePage`, `noindex` untuk private, `noindex, follow`
+  untuk profil public tanpa isi.
+- [x] Banner default PUBLIC untuk user lama dan keterangan di form register.
+- [x] `anonymizeAccount` dan export data akun untuk kolom baru.
+- [x] Perbarui Kebijakan Privasi dan Syarat & Ketentuan (versi 1.1, berlaku 3 Oktober 2026).
+- [x] `npx prisma migrate deploy`, typecheck, lint, test, dan build lulus; render `/u/*` dicek
+  dengan server produksi lokal (public, private, profil kosong, 404, redirect, mobile 375px).
+- [ ] Uji manual (user): toggle public/private di `/profile/privacy`, isi bio dan target level,
+  banner muncul lalu hilang setelah ditutup, tautan nama di diskusi, tampilan profil sebagai pemilik
+  dan sebagai guest.
+- [ ] Tinjauan hukum dasar pemrosesan profil publik bawaan (opt-out, ditulis sebagai kepentingan
+  yang sah) bersama tinjauan S&K dan Kebijakan Privasi di Fase 8.14.
+
+### Tahap 2 — Follow
+
+- [ ] Migration: `enum FollowStatus`, tabel `Follow` + CHECK `followerId <> followingId`.
+- [ ] Flag `FEATURES_FOLLOW` (ikut mati bila `FEATURES_PUBLIC_PROFILE` mati).
+- [ ] Action follow/batal/berhenti mengikuti (keadaan yang diinginkan, idempoten), setujui, tolak,
+  hapus follower; `FOLLOW_RATE_LIMITS`.
+- [ ] Beralih private → public menyetujui seluruh permintaan `PENDING` dalam transaksi yang sama.
+- [ ] Helper akses menyertakan follower `ACCEPTED`; test diperbarui.
+- [ ] Jumlah follower/following di profil; `/u/[username]/followers` dan `/following`.
+- [ ] `/profile/follow-requests` dan badge jumlah permintaan.
+- [ ] `anonymizeAccount` (hapus follow dua arah) dan export.
+- [ ] `npx prisma migrate deploy`, `npm run verify`, lalu uji manual (user).
+
+### Tahap 3 — Postingan
+
+- [ ] Migration enum: `ReportTargetType.POST`.
+- [ ] Migration: `Post`, `PostLike`, `QuestionComment.postId` + CHECK target empat kolom,
+  `Report.postId`. **Wajib `migrate deploy` sebelum deploy kode** karena seluruh query diskusi
+  memilih `postId`.
+- [ ] Flag `FEATURES_COMMUNITY` (ikut mati bila `FEATURES_PUBLIC_PROFILE` mati).
+- [ ] Action buat/sunting/hapus postingan, upload gambar R2 `jlpt-exam/posts/{userId}/`, like;
+  `POST_WRITE_RATE_LIMITS`, kuota like, kuota upload; `checkPublicPostingAllowed()`.
+- [ ] `CommentTarget` jenis `post`; komentar postingan selalu `PUBLIC`; test target diperbarui.
+- [ ] `/community` (feed global, akun public saja), `/community/following`, `/post/[id]`, tab
+  Postingan di profil.
+- [ ] SEO: metadata dari isi postingan, JSON-LD `SocialMediaPosting`, `noindex` untuk permalink
+  private dan halaman feed lanjutan.
+- [ ] Reputasi menyertakan like postingan.
+- [ ] Laporan target `POST` dan tab Postingan di `/admin/moderation`.
+- [ ] `anonymizeAccount` (soft delete postingan, hapus like) dan export.
+- [ ] Menu Komunitas di header publik dan sidebar, mengikuti flag.
+- [ ] `npx prisma migrate deploy`, `npm run verify`, lalu uji manual (user).
+
+### Tahap 4 — Notifikasi dan blokir
+
+- [ ] Rancang tabel `Notification` (follow, permintaan, disetujui, like, komentar, balasan, mention;
+  termasuk balasan diskusi soal/kata/bunpou).
+- [ ] `/notifications` dan badge belum dibaca.
+- [ ] Blokir user.
+- [ ] Urutan "Populer" di feed.
+
 ## Fase 9 — Verifikasi & Polish
 
 - [ ] `npm run build` setelah tiap perubahan struktural/server action/caching

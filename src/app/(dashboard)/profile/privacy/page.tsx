@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Database, Download, LockKeyhole } from "lucide-react";
+import { Database, Download, Globe2, LockKeyhole } from "lucide-react";
 import { FEATURES } from "@/constants";
 import { PRIVACY_PATH, TERMS_PATH } from "@/features/legal/constants";
 import { getPrivacySettingsAction } from "@/features/profile/privacy-actions";
 import { AccountLifecycle } from "@/features/profile/components/account-lifecycle";
 import { PrivacyPreferencesForm } from "@/features/profile/components/privacy-preferences-form";
+import { ProfileVisibilityForm } from "@/features/public-profile/components/profile-visibility-form";
 import { formatInTimeZone } from "@/lib/time-zone";
 
 export const metadata: Metadata = {
@@ -51,9 +52,14 @@ export default async function ProfilePrivacyPage({
         <p className="font-mono text-xs font-black tracking-widest uppercase">PROFILE / PRIVACY</p>
         <h1 className="mt-2 text-4xl sm:text-6xl">Privasi & data</h1>
         <p className="mt-3 max-w-2xl text-lg text-muted-foreground">
-          {showAiStorage
-            ? "Tentukan data AI yang boleh disimpan, ambil salinan data akun, atau kelola penghapusan akun."
-            : "Ambil salinan data akun atau kelola penghapusan akun."}
+          {[
+            FEATURES.publicProfile ? "Atur siapa yang melihat profilmu" : null,
+            showAiStorage ? "tentukan data AI yang boleh disimpan" : null,
+            "ambil salinan data akun, atau kelola penghapusan akun.",
+          ]
+            .filter(Boolean)
+            .join(", ")
+            .replace(/^./, (first) => first.toUpperCase())}
         </p>
         <p className="mt-3 max-w-2xl text-sm font-semibold text-foreground/70">
           Rincian data yang kami proses dan masa simpannya ada di{" "}
@@ -73,6 +79,25 @@ export default async function ProfilePrivacyPage({
           .
         </p>
       </header>
+
+      {FEATURES.publicProfile ? (
+        <section className="neo-surface overflow-hidden bg-white" aria-labelledby="public-profile-heading">
+          <div className="flex items-center gap-4 border-b-[3px] border-black bg-neo-green p-5 sm:p-6">
+            <span className="grid size-12 place-items-center border-[3px] border-black bg-white shadow-neo-sm">
+              <Globe2 className="size-6" aria-hidden="true" />
+            </span>
+            <div>
+              <h2 id="public-profile-heading" className="text-2xl">Profil publik</h2>
+              <p className="text-sm font-semibold text-black/65">
+                Siapa yang boleh melihat isi halaman /u/{settings.username}.
+              </p>
+            </div>
+          </div>
+          <div className="p-5 sm:p-8">
+            <ProfileVisibilityForm visibility={settings.profileVisibility} username={settings.username} />
+          </div>
+        </section>
+      ) : null}
 
       {showAiStorage ? (
         <section className="neo-surface overflow-hidden bg-white" aria-labelledby="privacy-heading">

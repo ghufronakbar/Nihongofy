@@ -2,6 +2,8 @@ import "server-only";
 
 import type { JlptLevel, MondaiType, Prisma } from "@prisma/client";
 import { z } from "zod";
+import { FEATURES } from "@/constants";
+import { profilePath } from "@/features/public-profile/access";
 import { prisma } from "@/lib/prisma";
 import { QUESTION_EXPLANATION_SELECT } from "@/lib/question-explanation";
 import { targetWhere, type CommentTarget } from "./target";
@@ -15,6 +17,8 @@ export type DiscussionAuthor = {
   username: string;
   displayName: string;
   avatarUrl: string | null;
+  /** `/u/<username>`, atau null bila profil publik mati. Dihitung di server. */
+  profilePath: string | null;
 };
 
 // Tujuan sebuah balasan. Disimpan sebagai relasi lalu di-resolve saat baca,
@@ -108,6 +112,12 @@ type RawDiscussionRoot = Prisma.QuestionCommentGetPayload<{
   select: typeof discussionRootSelect;
 }>;
 
+function toDiscussionAuthor(
+  user: Prisma.UserGetPayload<{ select: typeof discussionAuthorSelect }>,
+): DiscussionAuthor {
+  return { ...user, profilePath: profilePath(user.username, FEATURES.publicProfile) };
+}
+
 // Keanggotaan thread publik ditentukan oleh `sharedAt`, bukan `visibility`:
 // root yang pernah dibagikan tetap menjadi bagian thread (sebagai tombstone)
 // meski sudah dikembalikan ke privat.
@@ -129,7 +139,7 @@ function toDiscussionRoot(row: RawDiscussionRoot): DiscussionRoot {
     commentImages: reply.commentImages,
     createdAt: reply.createdAt,
     updatedAt: reply.updatedAt,
-    author: reply.user,
+    author: toDiscussionAuthor(reply.user),
     voteCount: 0,
     viewerVoted: false,
   }));
@@ -168,7 +178,7 @@ function toDiscussionRoot(row: RawDiscussionRoot): DiscussionRoot {
     commentText: row.commentText,
     commentImages: row.commentImages,
     updatedAt: row.updatedAt,
-    author: row.user,
+    author: toDiscussionAuthor(row.user),
     voteCount: 0,
     viewerVoted: false,
     replies,

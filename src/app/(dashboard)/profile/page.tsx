@@ -6,6 +6,7 @@ import {
   Brain,
   CalendarDays,
   ChartNoAxesCombined,
+  Globe2,
   Languages,
   Sparkles,
   Trophy,
@@ -86,6 +87,15 @@ export default async function ProfilePage() {
             <p className="mt-4 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg">
               Ini ringkasan nyata dari aktivitas akunmu—tanpa angka random dari reference UI.
             </p>
+            {FEATURES.publicProfile ? (
+              <Link
+                href={`/u/${account.username}`}
+                className="neo-button mt-5 w-fit bg-neo-green text-sm"
+              >
+                <Globe2 className="size-4" aria-hidden="true" />
+                Lihat profil publik
+              </Link>
+            ) : null}
           </div>
         </div>
       </section>

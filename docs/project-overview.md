@@ -22,6 +22,7 @@ Rules terkait: `database.md` (schema, markup teks, aturan query).
 | `/article` | Index artikel publik dengan featured story, pencarian, tag, kategori, dan terbit terbaru. |
 | `/article/search` | Pencarian server-side berdasarkan query, kategori, multi-tag, sort, dan cursor pagination. |
 | `/article/[slug]` | Detail artikel dengan body terstruktur, related article, save/favorite, dan share/copy fallback. |
+| `/u/[username]` | Profil publik: identitas, statistik belajar, jejak belajar harian 12 bulan, streak, dan reputasi "Membantu". Akun private hanya menampilkan kartu identitas berlabel "Akun ini private". Lihat `docs/module/community.md`. |
 
 ### Route group `(auth)` - layout auth
 

@@ -33,6 +33,32 @@ contract wajib memiliki migration dan catatan ringkas di dokumen/PR perubahan. J
 
 ## Ledger
 
+### 3 Oktober 2026 - Profil publik (visibility, bio, target level)
+
+- Status: deployed (3 Oktober 2026, `migrate deploy`; diverifikasi read-only: 5 akun lama
+  `PUBLIC` dengan `publicProfileNoticeDismissedAt` NULL, default kolom `'PUBLIC'` dan
+  `CURRENT_TIMESTAMP`)
+- Migration: `prisma/migrations/20261003120000_public_profile/migration.sql`. Ditulis tangan;
+  `prisma migrate dev` tidak dipakai karena shadow database Supabase.
+- Alasan: tahap 1 modul komunitas, profil publik `/u/[username]` dengan pilihan public/private.
+  Rancangan di [community.md](../module/community.md).
+- Object terdampak: enum baru `ProfileVisibility`; kolom `User.profileVisibility` (NOT NULL,
+  default `PUBLIC`), `User.bio` (`VARCHAR(160)`), `User.jlptTarget` (`JlptLevel`), dan
+  `User.publicProfileNoticeDismissedAt`.
+- Data existing: tidak ada backfill. `publicProfileNoticeDismissedAt` sengaja ditambahkan tanpa
+  default lalu default-nya dipasang sesudahnya, supaya akun lama tetap NULL (melihat banner "profilmu
+  kini publik") dan hanya baris baru yang terisi `now()`. Jangan disatukan menjadi
+  `ADD COLUMN ... DEFAULT CURRENT_TIMESTAMP`: itu mengisi seluruh baris lama dan bannernya tidak
+  pernah tampil.
+- Risiko operasi: hanya menambah kolom nullable/berdefault, kompatibel dengan kode lama. **Wajib
+  diterapkan sebelum deploy kode**: layout dashboard, `/profile/privacy`, `/profile/info`, dan
+  `/u/[username]` membaca kolom baru. Build tidak menyentuhnya (semua route terkait dinamis).
+- Validasi: `npx prisma validate`, `npx prisma migrate status`, query read-only kolom dan default
+  di `information_schema.columns`.
+- Refresh setelah deploy: tidak ada. Cache `profile-account` dinaikkan ke kunci `v3` sehingga entri
+  lama tanpa `bio`/`jlptTarget` tidak terbaca.
+- Owner: Engineering Owner.
+
 ### 2 Oktober 2026 - Upvote diskusi (QuestionCommentVote)
 
 - Status: deployed (2 Oktober 2026, `migrate deploy` oleh pemilik project; katalog diverifikasi read-only: kolom, CHECK, FK, index, RLS aktif, tanpa grant Data API)

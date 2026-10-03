@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { RegisterForm } from "@/features/auth/components/register-form";
 import { GoogleOAuthButton } from "@/features/auth/components/google-oauth-button";
 import { getSafeRedirectPath } from "@/features/auth/lib/safe-redirect";
-import { GOOGLE_OAUTH_ENABLED } from "@/constants";
+import { FEATURES, GOOGLE_OAUTH_ENABLED } from "@/constants";
 import { LegalConsentNotice } from "@/features/legal/components/legal-consent-notice";
 
 export const metadata: Metadata = {
@@ -56,6 +56,12 @@ export default async function RegisterPage({
       <p className="mt-4 leading-7 text-foreground/70">
         Simpan attempt, catatan soal, history, dan progres pada akunmu sendiri.
       </p>
+      {FEATURES.publicProfile ? (
+        <p className="mt-3 text-sm leading-6 font-semibold text-foreground/70">
+          Profil belajarmu (statistik dan jejak belajar) tampil publik di <code className="font-mono">/u/username</code>{" "}
+          secara bawaan. Kamu bisa menjadikannya private kapan saja dari Profil &gt; Privasi.
+        </p>
+      ) : null}
       {typeof google === "string" && GOOGLE_NOTICE[google] ? (
         <p role="alert" className="mt-5 border-[3px] border-black bg-neo-coral p-3 font-bold text-black shadow-neo-sm">
           {GOOGLE_NOTICE[google]}

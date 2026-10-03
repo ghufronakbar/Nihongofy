@@ -39,6 +39,23 @@ export const TimeZoneSchema = z
   .max(100, "Timezone terlalu panjang.")
   .refine(isValidTimeZone, "Gunakan nama timezone IANA yang valid.");
 
+// Bio profil publik: teks polos satu baris. Spasi berurutan dirapatkan supaya
+// baris baru dari tempelan tidak lolos; string kosong disimpan sebagai null.
+export const BIO_MAX_LENGTH = 160;
+
+const BioSchema = z
+  .string()
+  .transform((value) => value.replace(/\s+/g, " ").trim())
+  .pipe(
+    z
+      .string()
+      .max(BIO_MAX_LENGTH, `Bio maksimal ${BIO_MAX_LENGTH} karakter.`)
+      .refine((value) => !/[\u0000-\u001f\u007f]/.test(value), "Bio tidak valid."),
+  )
+  .transform((value) => (value === "" ? null : value));
+
+export const JlptTargetSchema = z.enum(["N5", "N4", "N3", "N2", "N1"]).nullable();
+
 export const UpdateProfileSchema = z.object({
   displayName: DisplayNameSchema,
   // Nama publik. Aturan dan daftar kata terlarangnya di `src/lib/username.ts`.
@@ -46,6 +63,8 @@ export const UpdateProfileSchema = z.object({
   avatarUrl: AvatarUrlSchema.nullable(),
   avatarPublicId: AvatarPublicIdSchema.nullable(),
   timeZone: TimeZoneSchema,
+  bio: BioSchema.nullable(),
+  jlptTarget: JlptTargetSchema,
 });
 
 export const ChangePasswordSchema = z

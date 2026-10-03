@@ -2,19 +2,22 @@
 
 import { useState, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AtSign, Mail, Save, UserRound } from "lucide-react";
+import { AtSign, GraduationCap, Mail, MessageSquareText, Save, UserRound } from "lucide-react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import type { TimeZoneOption } from "@/lib/time-zone";
 import { updateProfileAction } from "../actions";
-import { UpdateProfileSchema, type UpdateProfileInput } from "../schemas";
+import { BIO_MAX_LENGTH, UpdateProfileSchema, type UpdateProfileInput } from "../schemas";
 import { AvatarUploader } from "./avatar-uploader";
 import { TimeZoneCombobox } from "./time-zone-combobox";
+
+const JLPT_TARGET_OPTIONS = ["N5", "N4", "N3", "N2", "N1"] as const;
 
 export function ProfileForm({
   account,
   timeZoneOptions,
+  showPublicProfileFields,
 }: {
   account: {
     displayName: string;
@@ -23,8 +26,14 @@ export function ProfileForm({
     avatarUrl: string | null;
     avatarPublicId: string | null;
     timeZone: string;
+    bio: string | null;
+    jlptTarget: UpdateProfileInput["jlptTarget"];
   };
   timeZoneOptions: TimeZoneOption[];
+  // Bio dan target level hanya tampil di profil publik. Saat modulnya mati,
+  // field-nya tidak dirender tetapi nilainya tetap ikut terkirim dari
+  // defaultValues, jadi menyimpan form tidak menghapusnya.
+  showPublicProfileFields: boolean;
 }) {
   const [isPending, startTransition] = useTransition();
   const [notice, setNotice] = useState<{ ok: boolean; message: string } | null>(null);
@@ -43,11 +52,14 @@ export function ProfileForm({
       avatarUrl: account.avatarUrl,
       avatarPublicId: account.avatarPublicId,
       timeZone: account.timeZone,
+      bio: account.bio,
+      jlptTarget: account.jlptTarget,
     },
   });
   const displayName = useWatch({ control, name: "displayName" });
   const avatarUrl = useWatch({ control, name: "avatarUrl" });
   const avatarPublicId = useWatch({ control, name: "avatarPublicId" });
+  const bio = useWatch({ control, name: "bio" });
 
   function onSubmit(values: UpdateProfileInput) {
     setNotice(null);
@@ -150,6 +162,60 @@ export function ProfileForm({
             </FieldDescription>
             <FieldError errors={[errors.username]} className="font-semibold" />
           </Field>
+
+          {showPublicProfileFields ? (
+            <>
+              <Field>
+                <FieldLabel htmlFor="bio" className="font-extrabold">Bio</FieldLabel>
+                <div className="relative">
+                  <MessageSquareText
+                    className="pointer-events-none absolute top-1/2 left-4 z-10 size-5 -translate-y-1/2 text-black/55"
+                    aria-hidden="true"
+                  />
+                  <Input
+                    id="bio"
+                    autoComplete="off"
+                    maxLength={BIO_MAX_LENGTH}
+                    placeholder="Mis. Belajar untuk JLPT Desember, suka kanji."
+                    className="neo-input pl-12"
+                    aria-invalid={Boolean(errors.bio)}
+                    {...register("bio")}
+                  />
+                </div>
+                <FieldDescription>
+                  Tampil di profil publik. Satu baris, {bio?.length ?? 0}/{BIO_MAX_LENGTH} karakter.
+                </FieldDescription>
+                <FieldError errors={[errors.bio]} className="font-semibold" />
+              </Field>
+
+              <Field>
+                <FieldLabel htmlFor="jlptTarget" className="font-extrabold">Target level JLPT</FieldLabel>
+                <div className="relative">
+                  <GraduationCap
+                    className="pointer-events-none absolute top-1/2 left-4 z-10 size-5 -translate-y-1/2 text-black/55"
+                    aria-hidden="true"
+                  />
+                  <select
+                    id="jlptTarget"
+                    className="neo-input pl-12"
+                    aria-invalid={Boolean(errors.jlptTarget)}
+                    {...register("jlptTarget", {
+                      setValueAs: (value: unknown) => (value === "" || value === null ? null : value),
+                    })}
+                  >
+                    <option value="">Belum ditentukan</option>
+                    {JLPT_TARGET_OPTIONS.map((level) => (
+                      <option key={level} value={level}>
+                        {level}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <FieldDescription>Tampil sebagai badge di profil publik.</FieldDescription>
+                <FieldError errors={[errors.jlptTarget]} className="font-semibold" />
+              </Field>
+            </>
+          ) : null}
         </div>
 
         {notice ? (

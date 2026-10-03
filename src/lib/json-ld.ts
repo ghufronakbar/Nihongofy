@@ -164,3 +164,35 @@ export function learningResourceJsonLd({
     isPartOf: { "@id": WEBSITE_ID },
   };
 }
+
+type ProfilePageJsonLdInput = {
+  path: string;
+  displayName: string;
+  username: string;
+  description: string | null;
+  avatarUrl: string | null;
+  createdAt: Date;
+};
+
+/** Halaman profil publik pengguna. Hanya untuk profil yang memang diindeks. */
+export function profilePageJsonLd(profile: ProfilePageJsonLdInput): JsonLdObject {
+  const url = absoluteUrl(profile.path);
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    "@id": `${url}#profile`,
+    url,
+    dateCreated: profile.createdAt.toISOString(),
+    isPartOf: { "@id": WEBSITE_ID },
+    mainEntity: {
+      "@type": "Person",
+      name: profile.displayName,
+      alternateName: `@${profile.username}`,
+      identifier: profile.username,
+      url,
+      ...(profile.description ? { description: profile.description } : {}),
+      ...(profile.avatarUrl ? { image: profile.avatarUrl } : {}),
+    },
+  };
+}

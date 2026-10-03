@@ -64,6 +64,7 @@ const envSchema = z
     FEATURES_REPORT: featureFlag,
     FEATURES_CONVERSATION: featureFlag,
     FEATURES_SPEAKING: featureFlag,
+    FEATURES_PUBLIC_PROFILE: featureFlag,
     CONVERSATION_PROVIDER: z.enum(["mock", "openai"]).default("mock"),
     CONVERSATION_CHAT_MODEL: optionalEnvString,
     OPENAI_API_KEY: optionalEnvString,
@@ -206,6 +207,9 @@ export const FEATURES = {
   // Speaking menumpang seluruh jalur turn milik conversation, jadi ikut mati
   // bila conversation mati.
   speaking: env.FEATURES_SPEAKING && env.FEATURES_CONVERSATION,
+  // Profil publik /u/[username] dan pengaturan public/private-nya. Data
+  // visibility tetap tersimpan saat dimatikan; hanya permukaannya yang hilang.
+  publicProfile: env.FEATURES_PUBLIC_PROFILE,
 };
 
 export type FeatureFlags = typeof FEATURES;

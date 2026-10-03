@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { UserRound } from "lucide-react";
+import { FEATURES } from "@/constants";
 import { getProfileAccountAction } from "@/features/profile/actions";
 import { ProfileForm } from "@/features/profile/components/profile-form";
 import { getTimeZoneOptions } from "@/lib/time-zone";
@@ -32,7 +33,11 @@ export default async function ProfileInfoPage() {
           </div>
         </div>
         <div className="p-5 sm:p-8">
-          <ProfileForm account={account} timeZoneOptions={timeZoneOptions} />
+          <ProfileForm
+            account={account}
+            timeZoneOptions={timeZoneOptions}
+            showPublicProfileFields={FEATURES.publicProfile}
+          />
         </div>
       </section>
     </main>

@@ -25,6 +25,10 @@ export async function GET() {
       timeZone: true,
       allowAudioStorage: true,
       allowConversationStorage: true,
+      // Profil publik /u/[username].
+      profileVisibility: true,
+      bio: true,
+      jlptTarget: true,
       deletionRequestedAt: true,
       deletionScheduledFor: true,
       // Pembatasan posting diskusi oleh admin: kapan dan alasannya. Identitas

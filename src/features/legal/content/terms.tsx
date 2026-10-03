@@ -1,5 +1,6 @@
 import { LEGAL_FACTS, PRIVACY_PATH, TERMS_PATH } from "../constants";
 import {
+  Code,
   ContactEmail,
   LegalCallout,
   LegalH3,
@@ -12,9 +13,9 @@ import type { LegalDocument } from "../types";
 
 // Naikkan VERSION dan ganti LAST_UPDATED setiap kali isi ketentuan berubah
 // secara berarti. Riwayatnya cukup lewat git.
-export const VERSION = "1.0";
-export const LAST_UPDATED = "2026-10-02";
-export const EFFECTIVE_DATE = "2026-10-02";
+export const VERSION = "1.1";
+export const LAST_UPDATED = "2026-10-03";
+export const EFFECTIVE_DATE = "2026-10-03";
 
 const operator = <LegalValue value={LEGAL_FACTS.operatorName} />;
 
@@ -87,8 +88,10 @@ export const TERMS: LegalDocument = {
                 email yang sama persis.
               </>,
               <>
-                Username tampil di diskusi publik. Jangan memakai username atau nama tampilan yang
-                meniru orang lain, menyesatkan, atau melanggar aturan diskusi di bawah.
+                Username tampil di diskusi publik dan di profil publik <Code>/u/username</Code>,
+                bersama nama tampilan, avatar, bio, dan target level. Jangan memakai username, nama
+                tampilan, avatar, atau bio yang meniru orang lain, menyesatkan, atau melanggar
+                aturan diskusi di bawah.
               </>,
             ]}
           />

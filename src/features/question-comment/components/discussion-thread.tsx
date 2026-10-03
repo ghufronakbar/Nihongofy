@@ -57,6 +57,7 @@ function ReplyRow({
         <CommentAuthorLine
           displayName={reply.author.displayName}
           username={reply.author.username}
+          profileHref={reply.author.profilePath}
           createdAt={reply.createdAt}
           updatedAt={reply.updatedAt}
           isOwn={currentUserId === reply.author.id}
@@ -142,6 +143,7 @@ export function DiscussionRootCard({
               <CommentAuthorLine
                 displayName={root.author.displayName}
                 username={root.author.username}
+                profileHref={root.author.profilePath}
                 createdAt={root.createdAt}
                 updatedAt={root.updatedAt}
                 isOwn={currentUserId === root.author.id}

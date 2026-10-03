@@ -159,6 +159,10 @@ rate limit tulis sudah aktif sebagai penahannya.
 - Content-type dan content-length ikut ditandatangani, jadi R2 sendiri menolak tipe atau ukuran di luar batas.
 - Server menolak `commentImages` yang bukan object milik user ini; URL Cloudinary lama tetap diterima agar komentar sebelum migrasi masih bisa disunting.
 - Membagikan catatan memublikasikan nama tampilan, username, dan avatar pemiliknya.
+- Nama dan username penulis menaut ke profil publiknya (`DiscussionAuthor.profilePath`, dihitung
+  di `queries.ts`; null bila `FEATURES_PUBLIC_PROFILE` mati atau akun anonim). Visibility profil
+  tidak memengaruhi entri diskusi: entri yang sudah dibagikan tetap tampil walau profilnya private.
+  Lihat [Komunitas](community.md).
 - Username yang tampil di komentar bukan kredensial login — login memakai email saja. Lihat
   `docs/module/auth.md`.
 - Penghapusan akun menganonimkan penulisnya dan men-soft-delete comment-nya; balasan pengguna lain

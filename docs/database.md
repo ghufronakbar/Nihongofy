@@ -43,6 +43,11 @@ Stack: Next.js + Prisma + PostgreSQL (Supabase).
   saat suspend berlaku karena FK-nya `ON DELETE SET NULL`. Dibaca per request lewat
   `isPostingSuspended()`, tidak di-cache. `anonymizeAccount` mengosongkan ketiganya; suspend yang
   pernah diberikan seorang admin kepada orang lain dibiarkan sebagai jejak moderasi.
+- `profileVisibility` (`PUBLIC` | `PRIVATE`, default `PUBLIC`), `bio` (`VARCHAR(160)`, teks polos),
+  dan `jlptTarget` (`JlptLevel`) milik profil publik `/u/[username]`. Visibility dibaca per request,
+  tidak pernah dari cache. `publicProfileNoticeDismissedAt` menandai banner "profilmu kini publik"
+  sudah ditutup: akun lama NULL, baris baru default `now()` (lihat ledger migration
+  `20261003120000_public_profile`). `anonymizeAccount` mengosongkan bio dan target level.
 - `AuthRateLimit.keyHash` menyimpan HMAC-SHA256 dari scope dan subject. Jangan simpan email atau alamat IP mentah pada tabel rate limit.
 - Update bucket rate limit harus atomik dengan `INSERT ... ON CONFLICT DO UPDATE`, bukan pola select lalu update.
 - Update profile dan password selalu mengambil user dari `session.userId`. Ganti password wajib membandingkan current password, memakai bcrypt cost 12 untuk hash baru, lalu membuat ulang cookie session.

@@ -234,6 +234,15 @@ enum UserRole {
   ADMIN
 }
 
+// Siapa yang boleh melihat isi profil /u/[username]: statistik, heatmap,
+// reputasi, dan (nanti) postingan. Kartu identitas — avatar, nama, username,
+// bio, target level — selalu tampil, karena ketiganya yang pertama memang
+// sudah publik lewat diskusi. Aturan aksesnya di src/features/public-profile/access.ts.
+enum ProfileVisibility {
+  PUBLIC
+  PRIVATE
+}
+
 // ============================================================
 // USER
 // ============================================================
@@ -272,26 +281,39 @@ model User {
   postingSuspendedById   Int?
   postingSuspendedBy     User?     @relation("PostingSuspendedBy", fields: [postingSuspendedById], references: [id], onDelete: SetNull)
 
-  questionComments       QuestionComment[]
-  deletedComments        QuestionComment[]           @relation("CommentDeletedBy")
-  adminAuditLogs         AdminAuditLog[]             @relation("AdminAuditActor")
-  attempts               Attempt[]
-  kanaProgresses         KanaProgress[]
-  flashcardCollection    FlashcardCollection?
-  flashcardSubscriptions FlashcardDeckSubscription[]
-  flashcardCards         FlashcardCard[]
-  flashcardRevlogs       FlashcardRevlog[]
-  practiceSessions       PracticeSession[]
-  articleInteractions    ArticleInteraction[]
-  authTokens             AuthToken[]
-  oauthAccounts          OAuthAccount[]
-  conversationSessions   ConversationSession[]
-  conversationQuotas     ConversationQuota[]
-  reports                Report[]                    @relation("ReportReporter")
-  handledReports         Report[]                    @relation("ReportHandledBy")
-  reportReplies          Report[]                    @relation("ReportRepliedBy")
-  postingSuspensionsIssued User[]                    @relation("PostingSuspendedBy")
-  questionCommentVotes   QuestionCommentVote[]
+  // Profil publik /u/[username]. Default PUBLIC untuk user lama dan baru —
+  // keputusan produk, lihat docs/module/community.md. Dibaca per request, tidak
+  // pernah dari cache: user yang baru beralih ke PRIVATE tidak boleh tetap
+  // terlihat publik sampai cache basi.
+  profileVisibility              ProfileVisibility @default(PUBLIC)
+  bio                            String?           @db.VarChar(160) // teks polos satu baris, bukan markup
+  jlptTarget                     JlptLevel?
+  // Banner "profilmu kini publik" untuk akun yang dibuat sebelum profil publik
+  // ada. Default now() hanya berlaku untuk baris baru: migration menambahkan
+  // kolomnya tanpa default lebih dulu, jadi akun lama tetap NULL dan melihat
+  // bannernya. Akun baru sudah diberi tahu di halaman daftar.
+  publicProfileNoticeDismissedAt DateTime?         @default(now())
+
+  questionComments         QuestionComment[]
+  deletedComments          QuestionComment[]           @relation("CommentDeletedBy")
+  adminAuditLogs           AdminAuditLog[]             @relation("AdminAuditActor")
+  attempts                 Attempt[]
+  kanaProgresses           KanaProgress[]
+  flashcardCollection      FlashcardCollection?
+  flashcardSubscriptions   FlashcardDeckSubscription[]
+  flashcardCards           FlashcardCard[]
+  flashcardRevlogs         FlashcardRevlog[]
+  practiceSessions         PracticeSession[]
+  articleInteractions      ArticleInteraction[]
+  authTokens               AuthToken[]
+  oauthAccounts            OAuthAccount[]
+  conversationSessions     ConversationSession[]
+  conversationQuotas       ConversationQuota[]
+  reports                  Report[]                    @relation("ReportReporter")
+  handledReports           Report[]                    @relation("ReportHandledBy")
+  reportReplies            Report[]                    @relation("ReportRepliedBy")
+  postingSuspensionsIssued User[]                      @relation("PostingSuspendedBy")
+  questionCommentVotes     QuestionCommentVote[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

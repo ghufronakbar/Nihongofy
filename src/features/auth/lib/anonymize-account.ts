@@ -117,6 +117,12 @@ export async function anonymizeAccount(userId: number) {
         avatarBytes: null,
         allowAudioStorage: false,
         allowConversationStorage: false,
+        // Isi profil publik ditulis pemiliknya tentang dirinya. Akun anonim tidak
+        // punya halaman profil (`isProfileUnavailable`), tetapi kolomnya tetap
+        // dikosongkan supaya tidak ada data pribadi yang tertinggal di baris ini.
+        bio: null,
+        jlptTarget: null,
+        profileVisibility: "PUBLIC",
         postingSuspendedAt: null,
         postingSuspendedReason: null,
         postingSuspendedById: null,

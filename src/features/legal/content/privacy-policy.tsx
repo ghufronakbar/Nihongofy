@@ -15,9 +15,9 @@ import type { LegalDocument } from "../types";
 // Setiap klaim di dokumen ini harus dapat ditunjuk dasar kodenya. Saat alur data
 // berubah (cookie baru, pemroses baru, retensi baru), perbarui bagian yang
 // relevan, naikkan VERSION, dan ganti LAST_UPDATED. Riwayatnya cukup lewat git.
-export const VERSION = "1.0";
-export const LAST_UPDATED = "2026-10-02";
-export const EFFECTIVE_DATE = "2026-10-02";
+export const VERSION = "1.1";
+export const LAST_UPDATED = "2026-10-03";
+export const EFFECTIVE_DATE = "2026-10-03";
 
 const operator = <LegalValue value={LEGAL_FACTS.operatorName} />;
 
@@ -42,6 +42,10 @@ export const PRIVACY_POLICY: LegalDocument = {
         <li>
           Diskusi yang dibagikan dapat dibaca siapa pun, diindeks mesin pencari, dan menampilkan nama
           tampilan, username, serta avatar Anda.
+        </li>
+        <li>
+          Profil belajar Anda di <Code>/u/username</Code> bersifat publik secara bawaan dan diindeks
+          mesin pencari. Anda dapat menjadikannya private kapan saja.
         </li>
         <li>Anda dapat mengunduh data akun dan menghapus akun sendiri dari halaman profil.</li>
       </ul>
@@ -104,7 +108,11 @@ export const PRIVACY_POLICY: LegalDocument = {
               </>,
               <>
                 <strong>Zona waktu</strong> (bawaan Asia/Jakarta), dipakai untuk batas hari
-                flashcard dan format tanggal.
+                flashcard, format tanggal, dan batas hari pada jejak belajar di profil publik.
+              </>,
+              <>
+                <strong>Bio dan target level JLPT</strong> bila Anda mengisinya, serta pilihan
+                visibility profil publik (public atau private).
               </>,
               <>
                 Status verifikasi email, preferensi privasi, tanggal pembuatan akun, peran akun
@@ -249,6 +257,59 @@ export const PRIVACY_POLICY: LegalDocument = {
             internal yang memuat jenis tindakan dan targetnya, tanpa isi konten. Menulis ke diskusi
             dibatasi jumlahnya per akun untuk mencegah spam.
           </LegalP>
+        </>
+      ),
+    },
+    {
+      id: "profil-publik",
+      title: "Profil publik",
+      content: (
+        <>
+          <LegalP>
+            Setiap akun memiliki halaman profil di <Code>/u/username</Code>. Isinya dihitung dari data
+            belajar yang sudah kami simpan; tidak ada data baru yang dikumpulkan untuknya.
+          </LegalP>
+          <LegalList
+            items={[
+              <>
+                <strong>Selalu tampil:</strong> avatar, nama tampilan, username, bio, target level,
+                bulan bergabung, dan keterangan bila akun private.
+              </>,
+              <>
+                <strong>Tampil bila profil public (bawaan):</strong> jumlah kana yang pernah dijawab
+                benar, kata flashcard yang dipelajari, latihan cepat, latihan seksi, dan mock test
+                yang selesai; jejak belajar 12 bulan terakhir berupa jumlah review flashcard,
+                latihan cepat, dan ujian yang selesai <strong>per hari</strong> menurut zona waktu
+                Anda, beserta streak; serta jumlah entri diskusi publik dan suara &quot;Membantu&quot;
+                yang diterimanya.
+              </>,
+              <>
+                <strong>Tidak pernah tampil:</strong> skor, jawaban, nama paket yang dikerjakan,
+                analytics, history, percakapan AI, email, zona waktu, dan jam aktivitas.
+              </>,
+              <>
+                <strong>Private:</strong> orang lain, termasuk mesin pencari, hanya melihat bagian
+                &quot;selalu tampil&quot;. Datanya tetap tersimpan dan tetap ditampilkan untuk Anda
+                sendiri. Pengaturannya ada di{" "}
+                <LegalLink href="/profile/privacy">Profil &gt; Privasi</LegalLink>.
+              </>,
+              <>
+                Akun yang dibuat sebelum fitur ini ada menjadi public secara otomatis, dan kami
+                memberi tahu pemiliknya lewat pemberitahuan di dashboard.
+              </>,
+              <>
+                Akun yang sedang dalam masa tunggu penghapusan atau sudah dihapus tidak memiliki
+                halaman profil.
+              </>,
+            ]}
+          />
+          <LegalCallout title="Profil public dapat diindeks mesin pencari" tone="coral">
+            <p>
+              Profil public dapat dibaca tanpa login dan diindeks mesin pencari. Setelah Anda
+              mengubahnya menjadi private, halaman kami langsung berhenti menampilkan isinya, tetapi
+              salinan di mesin pencari dapat bertahan sampai mereka memperbaruinya.
+            </p>
+          </LegalCallout>
         </>
       ),
     },
@@ -509,6 +570,11 @@ export const PRIVACY_POLICY: LegalDocument = {
                 "Persetujuan, yang Anda berikan dengan membagikan atau menulis di diskusi",
               ],
               [
+                "Menampilkan profil publik",
+                "Nama tampilan, username, avatar, bio, target level, penghitung dan jejak belajar harian",
+                "Kepentingan yang sah untuk fitur komunitas belajar; Anda dapat menolaknya kapan saja dengan menjadikan profil private",
+              ],
+              [
                 "Menyimpan transkrip percakapan AI",
                 "Isi percakapan",
                 "Persetujuan (opt-in di Profil > Privasi)",
@@ -527,7 +593,7 @@ export const PRIVACY_POLICY: LegalDocument = {
           />
           <LegalP>
             Persetujuan dapat Anda tarik kapan saja: menarik entri ke privat, mematikan penyimpanan
-            percakapan, atau menghapus akun. Penarikan tidak memengaruhi pemrosesan yang sudah
+            percakapan, menjadikan profil private, atau menghapus akun. Penarikan tidak memengaruhi pemrosesan yang sudah
             terjadi sebelumnya.
           </LegalP>
         </>
@@ -669,7 +735,8 @@ export const PRIVACY_POLICY: LegalDocument = {
               <>
                 Baris akun tidak dihapus, melainkan dianonimkan: nama tampilan menjadi
                 &quot;Pengguna dihapus&quot;, email, password, dan avatar dikosongkan, dan preferensi
-                dikembalikan ke bawaan. Username diganti menjadi{" "}
+                dikembalikan ke bawaan. Bio dan target level dikosongkan, dan halaman profil publik
+                tidak lagi tersedia sejak penghapusan diminta. Username diganti menjadi{" "}
                 <Code>&lt;username lama&gt;_&lt;waktu&gt;_deleted</Code>, sehingga{" "}
                 <strong>username lama tetap tercatat</strong> di dalamnya. Email yang sama dapat
                 dipakai mendaftar lagi.

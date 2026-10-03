@@ -67,6 +67,8 @@ export async function getPrivacySettingsAction() {
   const user = await prisma.user.findUnique({
     where: { id: session.userId },
     select: {
+      username: true,
+      profileVisibility: true,
       allowAudioStorage: true,
       allowConversationStorage: true,
       deletionRequestedAt: true,
@@ -83,6 +85,8 @@ export async function getPrivacySettingsAction() {
   if (!user) redirect("/login");
 
   return {
+    username: user.username,
+    profileVisibility: user.profileVisibility,
     allowAudioStorage: user.allowAudioStorage,
     allowConversationStorage: user.allowConversationStorage,
     timeZone: user.timeZone,
