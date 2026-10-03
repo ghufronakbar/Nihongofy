@@ -69,6 +69,16 @@ export function markupProblems(text) {
     );
   }
 
+  const mixedKana = [...text.matchAll(/\{([^{}|]+)\|[^{}|]+\}/g)]
+    .filter((m) => KANJI.test(m[1]) && /[ぁ-ゖァ-ヺ]/u.test(m[1]))
+    .map((m) => m[0]);
+  if (mixedKana.length > 0) {
+    problems.push(
+      `furigana tidak boleh membungkus kana atau okurigana: ${[...new Set(mixedKana)].slice(0, 4).join(", ")} — ` +
+        "pisahkan bagian kanji, mis. {食|た}べる",
+    );
+  }
+
   const bareKanji = [
     ...new Set(text.replace(/\{[^{}|]+\|[^{}|]+\}/g, "").match(KANJI_GLOBAL) ?? []),
   ];

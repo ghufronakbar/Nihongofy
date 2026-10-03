@@ -3292,7 +3292,7 @@
         ],
         "examples": [
           {
-            "jp": "{朝|あさ}{ご飯|はん}を__{食|た}べないで__{出発|しゅっぱつ}した。",
+            "jp": "{朝|あさ}ご{飯|はん}を__{食|た}べないで__{出発|しゅっぱつ}した。",
             "id": "Saya berangkat tanpa sarapan.",
             "en": "I left without eating breakfast."
           },
@@ -7643,23 +7643,23 @@
         "formation": [
           {
             "label": "Kelompok I",
-            "input": "{書く|かく}",
+            "input": "{書|か}く",
             "rule": "Ubah vokal akhir baris u pada bentuk kamus menjadi e.",
-            "output": "{書け|かけ}",
-            "note": "Contoh lain: {話す|はなす} → {話せ|はなせ}, {待つ|まつ} → {待て|まて}."
+            "output": "{書|か}け",
+            "note": "Contoh lain: {話|はな}す → {話|はな}せ, {待|ま}つ → {待|ま}て."
           },
           {
             "label": "Kelompok II",
-            "input": "{食べる|たべる}",
+            "input": "{食|た}べる",
             "rule": "Ganti る pada bentuk kamus dengan ろ.",
-            "output": "{食べろ|たべろ}",
+            "output": "{食|た}べろ",
             "note": null
           },
           {
             "label": "Kelompok III",
-            "input": "{来る|くる}",
+            "input": "{来|く}る",
             "rule": "Bentuk tidak beraturan.",
-            "output": "{来い|こい}",
+            "output": "{来|こ}い",
             "note": null
           },
           {
@@ -7705,8 +7705,8 @@
         ],
         "pitfalls": [
           "Bentuk ini sangat langsung dan dapat terdengar mengintimidasi. Jangan menggunakannya sebagai permintaan biasa kepada orang yang perlu dihormati.",
-          "Untuk kelompok I, jangan mengikuti pola kelompok II. ○ {書く|かく} → {書け|かけ}. ✕ {書き|かき}ろ.",
-          "Untuk kelompok II, bentuk standarnya adalah {食べろ|たべろ}, bukan ✕ {食べれ|たべれ}."
+          "Untuk kelompok I, jangan mengikuti pola kelompok II. ○ {書|か}く → {書|か}け. ✕ {書|か}きろ.",
+          "Untuk kelompok II, bentuk standarnya adalah {食|た}べろ, bukan ✕ {食|た}べれ."
         ],
         "tags": [
           "request"

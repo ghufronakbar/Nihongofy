@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { bunpouContentSchema, aiTagGroups } from "./bunpou-data.mjs";
 
-export const PROMPT_VERSION = "bunpou-content-v4";
+export const PROMPT_VERSION = "bunpou-content-v5";
 
 const replySchema = z.object({
   items: z.array(
@@ -64,8 +64,10 @@ ATURAN UMUM:
 
 MARKUP JEPANG WAJIB:
 - Setiap kanji dalam content harus memiliki furigana {漢字|かんじ}. Kana, angka, Latin, dan bahasa Indonesia tidak diberi furigana.
+- Furigana hanya membungkus bagian kanji; okurigana harus berada di luar. Tulis {食|た}べる, bukan {食べる|たべる} atau {食べる|た}.
 - HTML dan markdown dilarang.
 - Pada setiap examples[].jp, bungkus hanya bagian grammar target dalam bentuk yang muncul di kalimat dengan __...__ tepat satu kali.
+- Jangan masukkan kata dasar atau bentuk sambungan ke dalam __...__. Ikuti pemisahan connections.form + connections.pattern. Contoh: {帰|かえ}ろう__とした__, {読|よ}んで__ごらん__, {教師|きょうし}__として__, {雨|あめ}が{降|ふ}って__も__.
 - title tanpa markup harus persis sama dengan title point.
 
 ISI CONTENT:
@@ -73,6 +75,7 @@ ISI CONTENT:
 - meaningId wajib berbahasa Indonesia dan meaningEn wajib berbahasa Inggris; keduanya ringkas dan maksimal 160 karakter.
 - connections memakai slug taxonomy. pattern adalah bagian setelah bentuk sambungan, tanpa simbol 〜. form other wajib note.
 - formation berisi aturan transformasi linguistik, bukan layout tabel slide. conjugation wajib memiliki formation.
+- Semua field objek wajib ditulis. Khusus formation[].note, tulis null bila tidak ada catatan. Jangan mengisi connections[].note dengan string kosong; hilangkan field tersebut bila tidak diperlukan.
 - explanation 1-4 paragraf Indonesia, masing-masing satu baris dan maksimal 700 karakter.
 - Prosa Indonesia/Inggris (explanation, note, pitfalls, terjemahan) harus memakai tanda baca Latin . ! ?, bukan tanda Jepang 。！？ di ujung kalimat.
 - examples 3-5 kalimat baru, alami, memiliki terjemahan Indonesia dan Inggris, serta cukup jelas untuk kartu rumpang.

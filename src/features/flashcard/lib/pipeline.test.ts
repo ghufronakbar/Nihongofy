@@ -82,6 +82,12 @@ describe("pesan markup untuk percobaan ulang", () => {
   it("menerima __ yang membungkus blok furigana", () => {
     expect(markupProblems("__お{腹|なか}が{空|す}きました__。")).toEqual([]);
   });
+
+  it("menolak okurigana di dalam blok furigana", () => {
+    expect(markupProblems("{食べる|たべる}")).toEqual([
+      expect.stringContaining("furigana tidak boleh membungkus kana atau okurigana: {食べる|たべる}"),
+    ]);
+  });
 });
 
 describe("tulisan kata dari Anki", () => {
