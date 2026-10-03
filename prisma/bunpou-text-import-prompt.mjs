@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { KINDS, KEY_PATTERN } from "./bunpou-data.mjs";
 
-export const PROMPT_VERSION = "bunpou-text-import-v2";
+export const PROMPT_VERSION = "bunpou-text-import-v3";
 
 const formationSchema = z.object({
   label: z.string(),
@@ -77,6 +77,7 @@ SUMBER DAN BATAS BUKTI:
 - Guidance adalah hasil pemeriksaan manusia terhadap materi video dan harus diprioritaskan.
 - Anda boleh memakai pengetahuan bahasa Jepang untuk menormalisasi judul, sense, sambungan, dan catatan, tetapi jangan mengaku bahwa detail tersebut dikutip verbatim dari video.
 - Jika guidance bertentangan dengan pemakaian Jepang yang benar atau masih terlalu ambigu, tetap buat kandidat terbaik dan isi doubt secara spesifik.
+- Jangan isi doubt hanya karena guidance tidak merinci seluruh sense. Jika sense baku dapat dinormalisasi dengan yakin dari label dan pengetahuan tata bahasa, pecah atau gabungkan secara tepat lalu gunakan doubt: null. doubt hanya untuk ketidakpastian nyata yang memerlukan pemeriksaan manusia.
 
 ATURAN IDENTITAS:
 - Satu point hanya menjelaskan satu sense. Pecah label menjadi beberapa point bila fungsi, sambungan, atau nuansanya memang berbeda.
