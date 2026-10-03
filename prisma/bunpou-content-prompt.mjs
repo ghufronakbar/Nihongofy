@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { bunpouContentSchema, aiTagGroups } from "./bunpou-data.mjs";
 
-export const PROMPT_VERSION = "bunpou-content-v6";
+export const PROMPT_VERSION = "bunpou-content-v7";
 
 const replySchema = z.object({
   items: z.array(
@@ -68,6 +68,8 @@ MARKUP JEPANG WAJIB:
 - HTML dan markdown dilarang.
 - Pada setiap examples[].jp, bungkus hanya bagian grammar target dalam bentuk yang muncul di kalimat dengan __...__ tepat satu kali.
 - Jangan masukkan kata dasar atau bentuk sambungan ke dalam __...__. Ikuti pemisahan connections.form + connections.pattern. Contoh: {帰|かえ}ろう__とした__, {読|よ}んで__ごらん__, {教師|きょうし}__として__, {雨|あめ}が{降|ふ}って__も__.
+- Untuk form v-te, て／で adalah bagian bentuk sambungan dan wajib berada di luar __...__. Contoh: {読|よ}んで__いる__, {変|か}わって__も__, bukan {読|よ}ん__でいる__ atau {変|か}わっ__ても__.
+- Untuk form v-ta, た／だ adalah bagian bentuk sambungan dan wajib berada di luar __...__. Contoh: {開|あ}けた__ら__, {教|おし}えた__っけ__, bukan {開|あ}け__たら__ atau {教|おし}え__たっけ__.
 - Seluruh connections.pattern harus masuk ke dalam __...__, termasuk awalan に、の、で, tetapi connections.form tetap di luar. Contoh: {店長|てんちょう}__にかわって__, {働|はたら}く__のに{比|くら}べて__, {来|こ}ない__かなあ__, {使|つか}わない__でほしい__.
 - Kalimat Jepang memakai tanda baca Jepang 。！？, bukan titik atau tanda tanya Latin.
 - title tanpa markup harus persis sama dengan title point.
