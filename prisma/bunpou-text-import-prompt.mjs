@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { KINDS, KEY_PATTERN } from "./bunpou-data.mjs";
 
-export const PROMPT_VERSION = "bunpou-text-import-v1";
+export const PROMPT_VERSION = "bunpou-text-import-v2";
 
 const formationSchema = z.object({
   label: z.string(),
@@ -81,14 +81,14 @@ SUMBER DAN BATAS BUKTI:
 ATURAN IDENTITAS:
 - Satu point hanya menjelaskan satu sense. Pecah label menjadi beberapa point bila fungsi, sambungan, atau nuansanya memang berbeda.
 - Jangan memecah variasi ejaan atau bentuk setara menjadi point terpisah bila masih satu sense.
-- title adalah bentuk Jepang baku tanpa furigana, underline, HTML, atau baris baru.
+- title hanya berisi bentuk grammar Jepang baku tanpa furigana, underline, HTML, atau baris baru. Jangan menambahkan label sense, arti, atau anotasi penjelas dalam tanda kurung; bedakan sense melalui key, family, dan source.meaning.
 - key berupa slug ASCII kecil yang menggambarkan bentuk dan sense. Script akan menyelesaikan benturan key lintas level secara deterministik; jangan menciptakan perbedaan makna palsu hanya untuk membedakan key.
 - family dipakai hanya bila bentuk yang sama mempunyai beberapa sense. Semua hasil pecahan dari bentuk yang sama memakai family yang sama.
 - kind biasanya pattern. Gunakan particle untuk fungsi partikel, conjugation bila inti materinya sistem perubahan bentuk, dan foundation hanya untuk konsep dasar.
 - sectionKey harus berasal dari daftar section sah.
 
 ATURAN SOURCE TERNORMALISASI:
-- source.title adalah bentuk atau judul materi yang sudah dinormalisasi.
+- source.title adalah bentuk grammar yang sudah dinormalisasi dan mengikuti aturan title yang sama: tanpa label sense, arti, atau anotasi penjelas.
 - source.meaning adalah ringkasan Indonesia yang membedakan sense ini dari sense lain.
 - source.connection adalah notasi sambungan teks polos yang lengkap.
 - source.formation hanya diisi bila materi membutuhkan aturan perubahan bentuk yang terstruktur; semua field wajib teks polos dan note null bila tidak ada.

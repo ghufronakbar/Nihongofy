@@ -1,4 +1,227 @@
 {
   "level": "N2",
-  "points": []
+  "points": [
+    {
+      "key": "ge-appearance",
+      "order": 1,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜げ",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ge"
+          }
+        ],
+        "title": "〜げ",
+        "meaning": "tampak atau menunjukkan kesan memiliki perasaan atau keadaan tertentu",
+        "connection": "い形容詞（語尾いを取る）＋げ／な形容詞語幹＋げ／Vたい（語尾いを取る）＋げ",
+        "formation": [],
+        "notes": "Membentuk ungkapan yang berperilaku seperti kata sifat-na: 〜げだ, 〜げなN, dan 〜げにV. Terutama dipakai untuk perasaan atau keadaan batin yang terlihat dari raut wajah, sikap, atau perilaku, misalnya 悲しげ, 不安げ, dan 言いたげ. Tidak dapat digunakan secara bebas dengan semua kata sifat. Berbeda dari 〜そう yang cakupannya lebih luas, 〜げ cenderung menggambarkan kesan yang terpancar dari seseorang.",
+        "examples": [
+          "彼女は寂しげに笑った。",
+          "彼は何か言いたげな顔をしている。",
+          "子どもたちは楽しげに遊んでいた。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v1",
+        "extractedAt": "2026-10-03T23:11:17.128Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "gachi-tendency",
+      "order": 2,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜がち",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "gachi"
+          }
+        ],
+        "title": "〜がち",
+        "meaning": "cenderung atau sering mengalami atau melakukan sesuatu",
+        "connection": "Vます tanpa ます＋がちだ／N＋がちだ",
+        "formation": [],
+        "notes": "Menyatakan kecenderungan yang berulang atau keadaan yang mudah terjadi. Biasanya digunakan untuk hal yang dianggap kurang baik atau tidak diinginkan. Dapat menerangkan nomina dengan bentuk 〜がちなN.",
+        "examples": [
+          "忙しいと、朝ご飯を抜きがちだ。",
+          "冬は運動不足になりがちだ。",
+          "彼は最近、学校を休みがちだ。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v1",
+        "extractedAt": "2026-10-03T23:11:08.178Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ppoi-tendency",
+      "order": 3,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "ppoi",
+      "title": "〜っぽい",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ppoi"
+          }
+        ],
+        "title": "〜っぽい",
+        "meaning": "mudah atau cenderung melakukan sesuatu, sering kali berulang sebagai kebiasaan",
+        "connection": "Vます形（ますを取る）＋っぽい",
+        "formation": [],
+        "notes": "Menyatakan kecenderungan yang dianggap menonjol dan sering bernuansa negatif, misalnya mudah lupa, cepat bosan, atau gampang marah. Bentuk っぽい berkonjugasi seperti kata sifat-i.",
+        "examples": [
+          "私は忘れっぽいので、予定をすぐメモする。",
+          "彼は飽きっぽくて、何を始めても長く続かない。",
+          "弟は昔から怒りっぽい。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v1",
+        "extractedAt": "2026-10-03T23:11:48.513Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ppoi-appearance",
+      "order": 4,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "ppoi",
+      "title": "〜っぽい",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ppoi"
+          }
+        ],
+        "title": "〜っぽい",
+        "meaning": "tampak, terasa, atau memberi kesan seperti sesuatu",
+        "connection": "N＋っぽい／イ形容詞語幹（いを取る）＋っぽい",
+        "formation": [],
+        "notes": "Menunjukkan kemiripan atau kesan yang tampak, bukan identitas sebenarnya. Dalam banyak konteks bernuansa informal dan dapat menyiratkan penilaian negatif, seperti kekanak-kanakan atau terlihat murahan. Bentuk っぽい berkonjugasi seperti kata sifat-i.",
+        "examples": [
+          "その話し方は少し子どもっぽい。",
+          "このかばんはデザインが安っぽく見える。",
+          "今日は白っぽい服を着ている。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v1",
+        "extractedAt": "2026-10-03T23:11:48.513Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ppoi-abundance",
+      "order": 5,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "ppoi",
+      "title": "〜っぽい",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ppoi"
+          }
+        ],
+        "title": "〜っぽい",
+        "meaning": "unsur atau karakteristik tertentu terasa kuat dan menonjol",
+        "connection": "N（bahan, unsur, atau sifat）＋っぽい",
+        "formation": [],
+        "notes": "Menunjukkan bahwa suatu bahan atau unsur terasa menonjol, sering kali secara berlebihan atau kurang menyenangkan. Karena sambungannya sama-sama N＋っぽい, sense ini dibedakan dari kemiripan berdasarkan makna nomina dan konteks. Bentuk っぽい berkonjugasi seperti kata sifat-i.",
+        "examples": [
+          "油っぽい料理はあまり食べない。",
+          "このスープは水っぽくて味が薄い。",
+          "この薬は少し粉っぽい。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v1",
+        "extractedAt": "2026-10-03T23:11:48.513Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "gimi-tendency",
+      "order": 6,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜気味",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "gimi"
+          }
+        ],
+        "title": "〜気味",
+        "meaning": "agak; sedikit menunjukkan kecenderungan atau keadaan tertentu",
+        "connection": "Vます（tanpa ます）＋気味／N＋気味",
+        "formation": [],
+        "notes": "Menyatakan bahwa suatu kecenderungan atau keadaan mulai tampak dalam kadar ringan. Sering digunakan untuk kondisi yang kurang diinginkan, seperti kelelahan, keterlambatan, atau kenaikan berat badan, meskipun tidak selalu bernuansa negatif.",
+        "examples": [
+          "最近、少し疲れ気味だ。",
+          "電車は遅れ気味です。",
+          "このところ太り気味なので、運動を始めた。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v1",
+        "extractedAt": "2026-10-03T23:11:18.934Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    }
+  ]
 }
