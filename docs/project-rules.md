@@ -66,6 +66,9 @@ provider OAuth lain dan MFA tetap memerlukan persetujuan terpisah.
 * **Caching for 'get' actions:** Implement caching for data-fetching Server Actions using Next.js caching mechanisms (such as `unstable_cache` with tags).
 * **Centralized Cache Keys:** All cache keys and tags MUST be defined in `./src/constants/cache-key.ts`. Never hardcode cache key strings inside actions. This ensures easy invalidation (e.g., via `revalidateTag`) from a single source of truth.
 * **Data leak guard:** actions that serve exam-mode data MUST NOT include `questionAnswer` or `explanation` in their return payload (see `database.md`). Use explicit Prisma `select` — never return full models by default.
+  * Props yang dikirim Server Component ke Client Component ikut terserialisasi ke RSC payload, jadi aturan ini berlaku untuk props sama seperti untuk return value — "tidak dirender" bukan berarti "tidak terkirim".
+  * Turunan kunci ikut dilarang sebelum attempt selesai atau soal dijawab: `isCorrect`, alasan per pilihan, dan cara baca soal 漢字読み (lihat `database.md` "Aturan Query").
+  * Dijaga `src/lib/answer-key-guard.test.ts`; jangan melonggarkan test itu untuk meloloskan perubahan — tinjau dulu kenapa ia gagal.
 
 ## 7. Environment Variables & Constants
 * **Location:** `./src/constants/index.ts`

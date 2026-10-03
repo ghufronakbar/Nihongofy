@@ -374,7 +374,8 @@ Aturan project yang existing tetap berlaku penuh di area admin:
 - **Data-leak guard.** Admin boleh melihat `questionAnswer` dan `explanation`, tetapi query dan
   komponen admin harus terpisah dari jalur exam. Jangan menggunakan ulang select atau komponen
   milik modul exam untuk kebutuhan admin, dan jangan melonggarkan
-  `QUESTION_EXPLANATION_SELECT` demi admin.
+  `QUESTION_EXPLANATION_SELECT` demi admin. Bentuk select itu, daftar pemakainya, dan larangan
+  impor silang admin ↔ exam/latihan/result dikunci `src/lib/answer-key-guard.test.ts`.
 - **Isolasi data user tetap berlaku untuk non-admin.** Membuka akses lintas user hanya di
   belakang `requireAdmin()`, tidak pernah dengan menghapus filter `userId` pada action existing.
 - **Object storage: jangan hapus asset.** Admin tidak pernah memanggil API storage untuk menghapus
@@ -403,8 +404,19 @@ suspend menjadi wajib begitu diskusi publik benar-benar dipakai oleh banyak user
   memeriksa antrean secara aktif.
 - Modul ini besar: sekitar 15 route dan beberapa perubahan schema. Prasyarat role, Bank Soal,
   dan Pembahasan sudah menutup gap yang paling menyakitkan bila scope perlu dipotong.
-- Modul lain punya cakupan test yang minim (hanya flashcard yang punya unit test). Aksi admin
-  bersifat destruktif, sehingga minimal action import, hapus paket, dan takedown perlu test.
+- Aksi destruktif punya unit test sejak 3 Oktober 2026, dengan Prisma tiruan lewat `vi.mock`
+  (tanpa koneksi database):
+  - `src/features/admin/test-package/actions.test.ts` — import dan hapus paket: non-admin 404
+    sebelum query, zod, JSON/kontrak fixture yang salah ditolak tanpa satu tulisan pun, kegagalan
+    di tengah transaksi tidak meninggalkan tulisan sebagian, replacement dan penghapusan paket
+    ber-attempt ditolak, audit tercatat, dan tag cache paket (termasuk paket lama saat
+    replacement) diinvalidasi.
+  - `src/features/admin/moderation/actions.test.ts` — takedown, sembunyikan, dan pulihkan:
+    non-admin 404, zod, takedown mengisi `deletedAt` + `deletedById` tanpa hard delete, mutasi dan
+    audit di transaksi yang sama, pemulihan ditolak untuk hapusan pemilik (termasuk baris lama
+    tanpa `deletedById`), dan tidak ada invalidasi cache.
+  - Prisma tiruan memisahkan klien global dari klien transaksi, jadi mutasi yang dipindah keluar
+    dari transaksi ikut terdeteksi. Aksi admin lain belum punya test.
 
 ## File Utama (Rencana)
 

@@ -42,6 +42,12 @@ export const SubmitPracticeAnswerSchema = PracticeSessionIdSchema.extend({
   selectedAnswer: z.number().int().min(1).max(4),
 });
 
+// Cookie latihan guest (`jlpt_guest_practice`). Hanya daftar soalnya yang dipakai
+// untuk otorisasi submit; isinya tetap divalidasi karena cookie adalah data luar.
+export const GuestPracticeCookieSchema = z.object({
+  questionIds: z.array(z.number().int().positive()).min(1).max(20),
+});
+
 export type PracticeConfigurationInput = z.infer<typeof PracticeConfigurationSchema>;
 export type PracticeSessionIdInput = z.infer<typeof PracticeSessionIdSchema>;
 export type SubmitPracticeAnswerInput = z.infer<typeof SubmitPracticeAnswerSchema>;

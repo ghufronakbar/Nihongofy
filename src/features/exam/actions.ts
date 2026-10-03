@@ -2,11 +2,32 @@
 
 import { notFound, redirect } from "next/navigation";
 import { updateTag } from "next/cache";
+import type { MondaiType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
+import { withoutUnderlineFurigana } from "@/lib/japanese-markup";
 import { CACHE_TAGS } from "@/constants/cache-key";
 import { readGuestExamCookie } from "./guest-cookie";
 import { SubmitExamSessionSchema, type SubmitExamSessionInput } from "./schemas";
+
+// Pada 漢字読み, furigana di dalam underline adalah jawabannya. Runner memang tidak
+// merendernya, tetapi props Client Component terkirim utuh di RSC payload, jadi
+// cara bacanya dibuang di server sebelum dikirim.
+function withoutReadingAnswers<
+  T extends { mondaiType: MondaiType; questions: { questionText: string }[] },
+>(items: T[]): T[] {
+  return items.map((item) =>
+    item.mondaiType === "MOJI_GOI_READ_KANJI"
+      ? {
+          ...item,
+          questions: item.questions.map((question) => ({
+            ...question,
+            questionText: withoutUnderlineFurigana(question.questionText),
+          })),
+        }
+      : item,
+  );
+}
 
 // Exam-mode data-leak guard (docs/database.md): questionAnswer & explanation
 // must never be selected here — only exposed post-submit via the result feature.
@@ -64,7 +85,7 @@ export async function getExamQuestions(attemptId: number, urlSession: number) {
       },
     });
 
-    return { attempt, testPackageItems };
+    return { attempt, testPackageItems: withoutReadingAnswers(testPackageItems) };
   }
 
   const attempt = await prisma.attempt.findUnique({
@@ -127,7 +148,7 @@ export async function getExamQuestions(attemptId: number, urlSession: number) {
     },
   });
 
-  return { attempt, testPackageItems };
+  return { attempt, testPackageItems: withoutReadingAnswers(testPackageItems) };
 }
 
 export async function submitExamSessionAction(input: SubmitExamSessionInput) {

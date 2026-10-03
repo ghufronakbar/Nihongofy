@@ -27,6 +27,8 @@ Tidak punya flag sendiri; ikut `FEATURES_TEST_PACKAGE` (lihat [Paket tes](test-p
 - Navigasi per mondai tersedia pada desktop dan mobile.
 - User dapat copy soal ke clipboard serta mengelola catatan pribadi.
 - Detail tidak dicache karena comment harus langsung terlihat setelah mutation.
+- Attempt yang belum `COMPLETED` dialihkan, dan attempt milik orang lain berakhir 404, sebelum
+  query yang membaca kunci dijalankan (dijaga `src/lib/answer-key-guard.test.ts`).
 
 ## Result Guest
 
@@ -36,6 +38,7 @@ Tidak punya flag sendiri; ikut `FEATURES_TEST_PACKAGE` (lihat [Paket tes](test-p
 - Menampilkan akurasi, benar/salah/kosong/ragu, dan proyeksi 180 poin memakai `ResultSummaryView` yang sama dengan attempt user login. Yang tidak diberikan: durasi, review per soal, riwayat, dan analitik.
 - Cookie guest habis atau `sessionStorage` kosong menghasilkan empty state ber-CTA daftar, bukan skor 0%.
 - Payload jawaban tidak diverifikasi keasliannya. Ini tidak menambah kebocoran kunci karena guest memang sudah bisa membuka `/test-package/[id]/questions` yang menampilkan kunci.
+- Hasilnya hanya agregat; kunci per soal, pembahasan, dan id soal tidak ikut dikembalikan.
 
 ### Klaim Hasil ke Akun
 

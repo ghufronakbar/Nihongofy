@@ -6,9 +6,11 @@ import { cookies } from "next/headers";
 import type { JlptLevel, JlptSection, MondaiType, Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { QUESTION_EXPLANATION_SELECT } from "@/lib/question-explanation";
+import { withoutUnderlineFurigana } from "@/lib/japanese-markup";
 import { getSession } from "@/lib/auth";
 import { CACHE_KEYS, CACHE_TAGS } from "@/constants/cache-key";
 import {
+  GuestPracticeCookieSchema,
   PRACTICE_LEVELS,
   PracticeConfigurationSchema,
   PracticeSessionIdSchema,
@@ -158,6 +160,18 @@ export async function createPracticeSessionAction(input: PracticeConfigurationIn
   redirect(`/exercises/${sessionId}`);
 }
 
+// Pada 漢字読み, furigana di dalam underline adalah jawabannya. Runner tidak
+// merendernya, tetapi props Client Component terkirim utuh di RSC payload, jadi
+// cara bacanya dibuang di server. Runner juga tidak menampilkannya setelah soal
+// dijawab, sehingga tidak perlu dibedakan per status jawaban.
+function withoutReadingAnswer<
+  T extends { questionText: string; testPackageItem: { mondaiType: MondaiType } },
+>(question: T): T {
+  return question.testPackageItem.mondaiType === "MOJI_GOI_READ_KANJI"
+    ? { ...question, questionText: withoutUnderlineFurigana(question.questionText) }
+    : question;
+}
+
 export async function getPracticeSession(input: PracticeSessionIdInput) {
   const authSession = await getSession();
   const validated = PracticeSessionIdSchema.safeParse(input);
@@ -210,7 +224,7 @@ export async function getPracticeSession(input: PracticeSessionIdInput) {
         },
       });
 
-      const questionMap = new Map(questions.map((q) => [q.id, q]));
+      const questionMap = new Map(questions.map((q) => [q.id, withoutReadingAnswer(q)]));
       const ordered = guestData.questionIds
         .map((id, index) => {
           const q = questionMap.get(id);
@@ -345,10 +359,28 @@ export async function getPracticeSession(input: PracticeSessionIdInput) {
               explanation: feedback.explanation,
             }
           : null,
-        ...answer.question,
+        ...withoutReadingAnswer(answer.question),
       };
     }),
   };
+}
+
+const INVALID_CHOICE_MESSAGE = "Pilihan jawaban tidak tersedia untuk soal ini.";
+const GUEST_PRACTICE_STALE_MESSAGE =
+  "Sesi latihan tamu ini sudah berganti atau berakhir. Mulai latihan baru dari halaman Latihan Cepat.";
+
+/** Daftar soal sesi latihan guest dari cookie; `null` bila cookie hilang atau rusak. */
+async function readGuestPracticeQuestionIds(): Promise<number[] | null> {
+  const cookieStore = await cookies();
+  const raw = cookieStore.get("jlpt_guest_practice")?.value;
+  if (!raw) return null;
+
+  try {
+    const parsed = GuestPracticeCookieSchema.safeParse(JSON.parse(raw));
+    return parsed.success ? parsed.data.questionIds : null;
+  } catch {
+    return null;
+  }
 }
 
 export async function submitPracticeAnswerAction(input: SubmitPracticeAnswerInput) {
@@ -359,6 +391,14 @@ export async function submitPracticeAnswerAction(input: SubmitPracticeAnswerInpu
   }
 
   if (validated.data.sessionId === 0 || !authSession) {
+    // Kunci dan pembahasan hanya untuk soal yang memang ada di sesi guest ini.
+    // Tanpa cek ini action menjadi oracle kunci untuk seluruh bank soal, juga
+    // bagi user login yang mengirim `sessionId: 0`.
+    const guestQuestionIds = await readGuestPracticeQuestionIds();
+    if (!guestQuestionIds?.includes(validated.data.questionId)) {
+      return { ok: false as const, message: GUEST_PRACTICE_STALE_MESSAGE };
+    }
+
     const question = await prisma.question.findUnique({
       where: { id: validated.data.questionId },
       select: {
@@ -369,6 +409,11 @@ export async function submitPracticeAnswerAction(input: SubmitPracticeAnswerInpu
     });
 
     if (!question) notFound();
+    // Sama dengan jalur user login: pilihan yang tidak ada di soal tidak dinilai
+    // dan tidak membuka kunci.
+    if (!question.questionChoices.some((choice) => choice.codeAnswer === validated.data.selectedAnswer)) {
+      return { ok: false as const, message: INVALID_CHOICE_MESSAGE };
+    }
     const isCorrect = validated.data.selectedAnswer === question.questionAnswer;
 
     return {
@@ -417,7 +462,7 @@ export async function submitPracticeAnswerAction(input: SubmitPracticeAnswerInpu
       (choice) => choice.codeAnswer === validated.data.selectedAnswer,
     );
     if (!selectedAnswerIsValid) {
-      return { ok: false as const, message: "Pilihan jawaban tidak tersedia untuk soal ini." };
+      return { ok: false as const, message: INVALID_CHOICE_MESSAGE };
     }
 
     if (!assignment.answeredAt && assignment.practiceSession.status !== "IN_PROGRESS") {

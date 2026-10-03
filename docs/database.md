@@ -261,7 +261,7 @@ Aturan tambahan:
 
 - Markup boleh bersarang: `__{勉強|べんきょう}する__` valid.
 - `[_]` dan `[★]` TIDAK pernah punya isi — selalu literal persis seperti itu.
-- Pada mondai `MOJI_GOI_READ_KANJI`, furigana di dalam segmen `__...__` tidak boleh dirender (itu jawabannya) — ini urusan frontend, data tetap disimpan lengkap dengan furigananya.
+- Pada mondai `MOJI_GOI_READ_KANJI`, furigana di dalam segmen `__...__` adalah jawabannya. Data tetap disimpan lengkap dengan furigananya, tetapi payload soal sebelum dijawab (exam dan latihan) membuangnya di server lewat `withoutUnderlineFurigana()` (`src/lib/japanese-markup.ts`). Menyembunyikannya hanya saat render (`hideFuriganaInUnderline`) tidak cukup, karena teks mentahnya tetap terkirim di RSC payload.
 - Markup yang sama dipakai kolom flashcard (`FlashcardVocab.word`, `examples[].jp`, `notes`). Di
   sana `__...__` menandai kata target contoh kalimat dan dirender sebagai sorotan, bukan garis bawah.
 
@@ -293,6 +293,11 @@ Saat import data soal, tangani pelanggaran constraint sebagai sinyal error ekstr
 
 - Analitik kelemahan per tipe mondai: `AttemptAnswer → Question → TestPackageItem`, group by `mondaiType`. Filter `Attempt.status = COMPLETED`.
 - Saat mengambil soal untuk mode attempt, JANGAN mengirim `questionAnswer` dan relasi `explanation` ke client sebelum attempt disubmit. Relasi 1:1 lebih mudah bocor daripada kolom teks: satu `include: { explanation: true }` yang lolos review sudah cukup membocorkan kunci jawaban.
+  - "Dikirim ke client" mencakup props Server Component ke Client Component (ikut RSC payload, terbaca di view-source walau tidak dirender), bukan hanya return value Server Action.
+  - Larangan yang sama berlaku untuk turunannya: `AttemptAnswer.isCorrect` attempt yang belum `COMPLETED` (termasuk di `/api/account/export`), `QuestionExplanationChoice.isCorrect`, dan cara baca di dalam underline soal `MOJI_GOI_READ_KANJI`.
+  - Query baca pada model yang menyimpan kunci (`Question`, `AttemptAnswer`, `QuestionExplanation*`) selalu memakai `select`. Tanpa `select` — juga dengan `include` — seluruh kolom skalar ikut, termasuk `questionAnswer`.
+  - Data ber-kunci yang di-cache (`unstable_cache` mode baca, key `testPackageQuestions`) tidak boleh dipakai ulang jalur exam/latihan.
+  - Dijaga `src/lib/answer-key-guard.test.ts`. Mengubah select exam/latihan atau menambah pemakai `QUESTION_EXPLANATION_SELECT` akan menggagalkannya sampai ditinjau.
 - Gunakan `include`/`select` eksplisit di Prisma — jangan fetch semua relasi tanpa perlu (bacaan `storyText` bisa panjang).
 - Urutan render soal: `TestPackageItem.session` → `TestPackageItem.order` → `Question.order`.
 

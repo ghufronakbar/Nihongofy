@@ -31,6 +31,7 @@
 - Guest dapat mulai tanpa membuat row `Attempt`.
 - Mode baca menampilkan seluruh soal, kunci, explanation bila ada, furigana, audio/image, copy question, dan comment user login.
 - Query content global dicache, sedangkan attempt/comment user dibaca terpisah agar tidak bocor lintas akun.
+- Cache mode baca (`CACHE_KEYS.testPackageQuestions`) berisi kunci dan pembahasan, dan hanya dipakai halaman mode baca. Exam, latihan, dan result tidak memakainya; `unstable_cache` lain tidak boleh menyimpan soal ber-kunci (dijaga `src/lib/answer-key-guard.test.ts`).
 
 ## Struktur Data
 

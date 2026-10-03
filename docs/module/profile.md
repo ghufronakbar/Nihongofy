@@ -48,7 +48,9 @@ Profile tidak punya flag sendiri. Section "Aktivitas belajar" dan "Lanjut belaja
   di bawah judulnya.
 - Export JSON untuk data akun dan aktivitas user tanpa password, token, session, atau rate-limit.
   Laporan yang pernah dikirim ikut, untuk semua jenis target, tanpa status dan catatan internal
-  admin.
+  admin. Pada attempt yang belum `COMPLETED`, `isCorrect` per jawaban dikirim `null`: nilai itu
+  turunan kunci jawaban, sementara sesi lama masih dapat disubmit ulang selama attempt berjalan
+  (`withoutUnsubmittedGrades`, `src/features/profile/lib/account-export.ts`).
 - Penghapusan akun dengan re-authentication, logout semua perangkat, grace period 7 hari, login
   recovery, pembatalan, dan hard-delete batch melalui cron.
 - Avatar baru memakai object key unik pada folder user (`jlpt-exam/avatars/{userId}/<uuid>.webp`),
@@ -111,6 +113,7 @@ menggabungkan latihan seksi sebagai mock penuh.
 - `src/features/profile/components/account-lifecycle.tsx`
 - `src/features/profile/privacy-actions.ts`
 - `src/app/api/account/export/route.ts`
+- `src/features/profile/lib/account-export.ts`
 - `src/app/api/cron/auth-cleanup/route.ts`
 - `src/features/vocabulary/settings-actions.ts`
 - `src/app/(dashboard)/profile/`

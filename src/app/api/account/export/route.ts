@@ -1,5 +1,6 @@
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { withoutUnsubmittedGrades } from "@/features/profile/lib/account-export";
 
 export const runtime = "nodejs";
 
@@ -250,7 +251,8 @@ export async function GET() {
     {
       schemaVersion: 1,
       exportedAt: exportedAt.toISOString(),
-      account,
+      // Nilai per soal attempt yang belum selesai adalah turunan kunci jawaban.
+      account: { ...account, attempts: withoutUnsubmittedGrades(account.attempts) },
     },
     null,
     2,

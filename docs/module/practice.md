@@ -45,15 +45,37 @@
 - Jawaban dan ringkasan hanya bertahan dalam state React pada page yang sedang terbuka; refresh mengulang dari awal.
 - Restart guest kembali ke configurator, bukan mengulang set yang sama.
 
+## Data-Leak Guard
+
+Hasil audit 3 Oktober 2026 (tabel lengkap di [exam.md](exam.md#audit-data-leak-3-oktober-2026)):
+
+- Payload sesi (`getPracticeSession`) tidak memuat kunci maupun pembahasan untuk soal yang belum
+  dijawab. Query kunci hanya meminta id soal yang `answeredAt`-nya terisi.
+- Penilaian di server. User login: pilihan yang tidak ada di soal, atau soal yang belum dijawab
+  di sesi yang sudah ditutup, ditolak tanpa mengembalikan kunci. Guest: soal di luar daftar
+  cookie sesi guest ditolak sebelum kunci dibaca, dan pilihan yang tidak ada di soal ditolak.
+- Cara baca soal 漢字読み di dalam underline dibuang dari payload di server
+  (`withoutUnderlineFurigana`). Runner tidak pernah menampilkannya, termasuk setelah dijawab.
+- Runner tidak memasang diskusi maupun catatan. Tombol laporan pembahasan baru muncul setelah
+  feedback.
+- Dijaga `src/lib/answer-key-guard.test.ts`.
+
 ## Keterbatasan dan Hardening
 
-- Guest submit belum memverifikasi bahwa `questionId` merupakan anggota cookie guest session.
-- Guest submit belum memverifikasi bahwa jawaban merupakan choice yang tersedia.
+- Guest submit memverifikasi bahwa `questionId` ada di daftar soal cookie `jlpt_guest_practice`
+  (divalidasi zod) sebelum membaca kunci (3 Oktober 2026). Tanpa cookie yang cocok — termasuk
+  user login yang mengirim `sessionId: 0` — action mengembalikan `{ ok: false }` tanpa kunci.
+  Konsekuensi yang disengaja: tab latihan guest lama berhenti menerima jawaban setelah guest
+  memulai latihan baru, karena cookie-nya sudah diganti; runner menampilkan pesan untuk memulai
+  latihan baru.
+- Guest submit juga menolak pilihan yang tidak ada di soal, sama seperti jalur user login, tanpa
+  mengembalikan kunci.
 - Guest response selalu mengembalikan `answeredCount: 1` dan `isComplete: false`; ringkasan lengkap dibentuk hanya dari state client.
 - Tidak ada timer, flag, bookmark, atau comment per soal di runner practice.
 - Tidak ada halaman history/discovery session practice; user perlu menyimpan URL untuk kembali.
 - Session yang ditinggalkan dapat tetap `IN_PROGRESS` tanpa cleanup otomatis.
-- Tidak ada automated end-to-end test untuk persistence, refresh, restart, atau answer-key guard.
+- Tidak ada automated end-to-end test untuk persistence, refresh, atau restart. Answer-key guard
+  punya unit test (lihat di atas).
 
 ## File Utama
 

@@ -743,9 +743,16 @@ satu-satunya konten buatan user yang terlihat publik, termasuk oleh guest.
   pemilik tanpa tombol pulihkan, dan entri hasil takedown admin dengan tombol pulihkan beserta nama
   admin yang menghapusnya. Data uji sudah dibersihkan
 - [ ] Uji manual dua akun untuk alur artikel: buat draft, terbitkan, ubah slug, arsipkan (user)
-- [ ] Data-leak: query/komponen admin terpisah dari jalur exam; `QUESTION_EXPLANATION_SELECT`
-  tidak dilonggarkan demi admin
-- [ ] Unit test minimal untuk aksi destruktif: import paket, hapus paket, takedown komentar
+- [x] Data-leak: query/komponen admin terpisah dari jalur exam; `QUESTION_EXPLANATION_SELECT`
+  tidak dilonggarkan demi admin (3 Oktober 2026). Admin memakai select sendiri dan tidak
+  mengimpor modul exam/latihan/result; bentuk select dan arah impor dikunci
+  `src/lib/answer-key-guard.test.ts`
+- [x] Unit test minimal untuk aksi destruktif: import paket, hapus paket, takedown komentar
+  (3 Oktober 2026). `src/features/admin/test-package/actions.test.ts` (import, hapus) dan
+  `src/features/admin/moderation/actions.test.ts` (takedown, sembunyikan, pulihkan), memakai
+  Prisma tiruan lewat `vi.mock` tanpa koneksi database. Yang dijaga: non-admin 404 sebelum query,
+  zod, audit di transaksi yang sama, tag cache, penolakan paket ber-attempt, import gagal tanpa
+  tulisan sebagian, takedown soft delete, dan pemulihan hanya untuk takedown admin
 - [ ] `npm run verify` lulus
 
 ## Migrasi Storage — Cloudinary → Cloudflare R2 (S3-compatible)
@@ -1256,6 +1263,7 @@ query dan tanpa flag. Rincian di [public-shell.md](module/public-shell.md#dokume
 ## Fase 9 — Verifikasi & Polish
 
 - [ ] `npm run build` setelah tiap perubahan struktural/server action/caching
-- [ ] Audit data-leak guard: pastikan `questionAnswer`/`explanation` tidak pernah terkirim ke client sebelum attempt disubmit
+- [x] Audit data-leak guard: pastikan `questionAnswer`/`explanation` tidak pernah terkirim ke client sebelum attempt disubmit (3 Oktober 2026). Ringkasan per jalur di [exam.md](module/exam.md#audit-data-leak-3-oktober-2026). Dua kebocoran diperbaiki: cara baca 漢字読み di dalam underline ikut terkirim di payload exam/latihan (kini dibuang server-side lewat `withoutUnderlineFurigana`), dan ekspor akun membawa `isCorrect` attempt yang belum selesai (kini `null`). Dikunci `src/lib/answer-key-guard.test.ts`
+  - [x] Submit latihan guest memeriksa keanggotaan soal di cookie sebelum membaca kunci (3 Oktober 2026), sehingga tidak lagi menjadi oracle kunci untuk seluruh bank soal. Pilihan yang tidak ada di soal juga ditolak untuk guest — lihat [practice.md](module/practice.md#keterbatasan-dan-hardening)
 - [ ] Cek tema light/dark (CSS variables shadcn) konsisten di semua halaman
 - [ ] Uji manual end-to-end: register → login → pilih paket → kerjakan (mock test & latihan per seksi) → submit → lihat hasil → tambah comment → cek analytics

@@ -68,6 +68,33 @@ export function parseJapaneseMarkup(source: string): MarkupSegment[] {
   return segments;
 }
 
+/**
+ * Markup yang sama, tetapi furigana di dalam underline dibuang (kanjinya tetap):
+ * `__{人脈|じんみゃく}__を{広|ひろ}げる` → `__人脈__を{広|ひろ}げる`.
+ *
+ * Untuk payload soal 漢字読み sebelum dijawab: di sana cara baca kata bergaris
+ * bawah adalah jawabannya. `hideFuriganaInUnderline` hanya menyembunyikannya saat
+ * render, sedangkan props Client Component tetap terkirim utuh di RSC payload.
+ */
+export function withoutUnderlineFurigana(source: string): string {
+  const serialize = (segments: MarkupSegment[], insideUnderline: boolean): string =>
+    segments
+      .map((segment) => {
+        switch (segment.type) {
+          case "text":
+            return segment.value;
+          case "furigana":
+            return insideUnderline ? segment.kanji : `{${segment.kanji}|${segment.reading}}`;
+          case "underline":
+            return `__${serialize(segment.children, true)}__`;
+          case "slot":
+            return segment.kind === "blank" ? "[_]" : "[★]";
+        }
+      })
+      .join("");
+  return serialize(parseJapaneseMarkup(source), false);
+}
+
 /** Teks polos tanpa furigana dan penanda, mis. untuk TTS: `{食|た}べ__ながら__` → `食べながら`. */
 export function toPlainJapanese(source: string): string {
   const flatten = (segments: MarkupSegment[]): string =>
