@@ -548,6 +548,9 @@ export function bunpouContentProblems(point, content, taxonomy, options = {}) {
       );
       problems.push(...latinProsePunctuationProblems(`${label}.note`, connection.note));
     }
+    if (options.strictConnectionBoundary && connection.form === "v-ta" && /^[ただ]/.test(connection.pattern)) {
+      problems.push(`${label}.pattern: た／だ adalah bagian form v-ta dan harus dipisahkan dari pattern`);
+    }
   });
 
   if (content.formation.length > LIMITS.formation.max) {
@@ -611,6 +614,13 @@ export function bunpouContentProblems(point, content, taxonomy, options = {}) {
       problems.push(`${label}.jp: tandai bagian pola dengan __...__ tepat satu kali`);
     } else if (!stripJapaneseMarkup(targets[0][1]).trim()) {
       problems.push(`${label}.jp: bagian __...__ kosong`);
+    } else if (
+      options.strictConnectionBoundary &&
+      content.connections.length > 0 &&
+      content.connections.every((connection) => connection.form === "v-ta") &&
+      /^[ただ]/.test(stripJapaneseMarkup(targets[0][1]))
+    ) {
+      problems.push(`${label}.jp: た／だ bentuk v-ta harus berada di luar __...__`);
     }
     problems.push(...plainTextProblems(`${label}.id`, example.id, LIMITS.examples.translationLength));
     problems.push(...plainTextProblems(`${label}.en`, example.en, LIMITS.examples.translationLength));

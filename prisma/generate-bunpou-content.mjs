@@ -177,6 +177,7 @@ async function generateBatch({ client, model, reasoningEffort, systemPrompt, tax
         normalizeBunpouContent(generated.content);
         problems = bunpouContentProblems(item.point, generated.content, taxonomy, {
           doubt: generated.doubt,
+          strictConnectionBoundary: true,
         });
       }
       if (problems.length === 0) {
