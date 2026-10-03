@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { KINDS, KEY_PATTERN } from "./bunpou-data.mjs";
 
-export const PROMPT_VERSION = "bunpou-text-import-v4";
+export const PROMPT_VERSION = "bunpou-text-import-v5";
 
 const formationSchema = z.object({
   label: z.string(),
@@ -82,6 +82,7 @@ SUMBER DAN BATAS BUKTI:
 ATURAN IDENTITAS:
 - Satu point hanya menjelaskan satu sense. Pecah label menjadi beberapa point bila fungsi, sambungan, atau nuansanya memang berbeda.
 - Jangan memecah variasi ejaan atau bentuk setara menjadi point terpisah bila masih satu sense.
+- Gunakan konteks item lain pada hari yang sama untuk membatasi scope. Jangan menduplikasi sense yang jelas menjadi tanggung jawab item tetangga, dan jangan mengeluarkan point untuk item konteks yang tidak diminta.
 - title hanya berisi bentuk grammar Jepang baku tanpa furigana, underline, HTML, atau baris baru. Jangan menambahkan label sense, arti, atau anotasi penjelas dalam tanda kurung; bedakan sense melalui key, family, dan source.meaning.
 - key berupa slug ASCII kecil yang menggambarkan bentuk dan sense. Script akan menyelesaikan benturan key lintas level secara deterministik; jangan menciptakan perbedaan makna palsu hanya untuk membedakan key.
 - family dipakai hanya bila satu item benar-benar menghasilkan beberapa point untuk sense berbeda dari bentuk yang sama. Jika item hanya menghasilkan satu point, family wajib null; jangan membuat family untuk sense yang tidak ikut dihasilkan. Semua hasil pecahan dari bentuk yang sama memakai family yang sama.
@@ -130,6 +131,21 @@ Keluarkan tepat satu items[] untuk setiap itemKey input dan jangan tulis teks di
 }
 
 export function buildTextImportUserPrompt(source, items) {
+  const targetKeys = new Set(items.map((item) => item.key));
+  const targetDays = new Set(items.map((item) => item.day));
+  const sameDayContext = source.days
+    .filter((day) => targetDays.has(day.day))
+    .flatMap((day) =>
+      day.items
+        .filter((item) => !targetKeys.has(item.key))
+        .map((item) => ({
+          itemKey: item.key,
+          raw: item.raw,
+          guidance: item.guidance,
+          day: day.day,
+        })),
+    );
+
   return [
     `Source: ${source.key}`,
     `Level: ${source.level}`,
@@ -147,7 +163,15 @@ export function buildTextImportUserPrompt(source, items) {
       null,
       2,
     ),
-  ].join("\n\n");
+    sameDayContext.length > 0
+      ? [
+          "Konteks item lain pada hari yang sama. Jangan keluarkan item-item ini; gunakan hanya untuk membedakan scope target.",
+          JSON.stringify(sameDayContext, null, 2),
+        ].join("\n")
+      : null,
+  ]
+    .filter(Boolean)
+    .join("\n\n");
 }
 
 export function buildTextImportRetryPrompt(failures) {

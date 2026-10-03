@@ -17,6 +17,7 @@ import {
   validateCatalog,
 } from "../../prisma/bunpou-data.mjs";
 import { buildUserPrompt as buildExtractionUserPrompt } from "../../prisma/bunpou-extract-prompt.mjs";
+import { buildTextImportUserPrompt } from "../../prisma/bunpou-text-import-prompt.mjs";
 
 const temporaryDirectories: string[] = [];
 
@@ -83,6 +84,25 @@ describe("penemuan source Bunpou", () => {
     const source = sources.find((item) => item.key === "n2-48-days");
     expect(source?.days).toHaveLength(48);
     expect(source?.days.flatMap((day) => day.items)).toHaveLength(195);
+  });
+
+  it("memberi importer konteks item lain pada hari yang sama tanpa menjadikannya target", async () => {
+    const sources = await readTextSources();
+    const source = sources.find((item) => item.key === "n2-48-days");
+    const day = source?.days.find((item) => item.day === 20);
+    const item = day?.items.find((entry) => entry.key === "shidai");
+    expect(source).toBeDefined();
+    expect(day).toBeDefined();
+    expect(item).toBeDefined();
+
+    const prompt = buildTextImportUserPrompt(source!, [
+      { ...item!, day: day!.day, timestampSeconds: day!.timestampSeconds, sourceKey: source!.key, sourcePosition: 0 },
+    ]);
+
+    expect(prompt).toContain('"itemKey": "shidai"');
+    expect(prompt).toContain("Konteks item lain pada hari yang sama");
+    expect(prompt).toContain('"itemKey": "shidai-de"');
+    expect(prompt).toContain("Jangan keluarkan item-item ini");
   });
 
   it("mengurutkan nomor slide secara numerik dan mengabaikan dotfile", async () => {

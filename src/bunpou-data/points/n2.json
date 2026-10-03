@@ -3031,6 +3031,1352 @@
       "content": null,
       "ai": null,
       "review": null
+    },
+    {
+      "key": "ni-hanshite",
+      "order": 84,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜に反して",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ni-han-shite"
+          }
+        ],
+        "title": "〜に反して",
+        "meaning": "bertentangan dengan atau tidak sesuai dengan harapan, dugaan, keinginan, aturan, dan sebagainya",
+        "connection": "N＋に反して／N＋に反する＋N",
+        "formation": [],
+        "notes": "Menunjukkan bahwa hasil, keadaan, atau tindakan berlawanan dengan hal yang disebutkan sebelumnya. Bentuk 〜に反する dipakai ketika menerangkan nomina.",
+        "examples": [
+          "予想に反して、試験はそれほど難しくなかった。",
+          "親の期待に反して、彼は会社を辞めた。",
+          "規則に反する行為は禁止されている。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:45:15.672Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "hanmen-contrast",
+      "order": 85,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜反面",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "hanmen"
+          }
+        ],
+        "title": "〜反面",
+        "meaning": "di sisi lain; menyatakan sisi atau sifat yang berlawanan dari hal yang sama",
+        "connection": "V普通形＋反面／イ形容詞普通形＋反面／ナ形容詞語幹＋な・である＋反面／N＋である＋反面",
+        "formation": [],
+        "notes": "Menghubungkan dua aspek yang benar-benar kontras, biasanya mengenai subjek atau keadaan yang sama. Sering dipakai untuk menunjukkan bahwa suatu hal memiliki kelebihan sekaligus kekurangan atau dua karakteristik yang saling bertentangan.",
+        "examples": [
+          "この仕事はやりがいがある反面、責任も重い。",
+          "都会の生活は便利な反面、物価が高い。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:45:24.463Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ippou-contrast",
+      "order": 86,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜一方（で）",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ippou"
+          }
+        ],
+        "title": "〜一方（で）",
+        "meaning": "di satu sisi; menyandingkan dua keadaan, sifat, atau fakta yang kontras",
+        "connection": "動詞普通形＋一方（で）／い形容詞普通形＋一方（で）／な形容詞語幹＋な・である＋一方（で）／名詞＋である＋一方（で）",
+        "formation": [],
+        "notes": "Menampilkan dua sisi yang berbeda atau berlawanan dari satu hal, atau membandingkan keadaan dua subjek. Bentuk 一方で umum dipakai ketika klausa berikutnya menyatakan sisi kontras.",
+        "examples": [
+          "この仕事は面白い一方で、責任も重い。",
+          "兄は社交的な一方、弟はとても無口だ。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:45:30.349Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ippou-da-continuous-change",
+      "order": 87,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜一方だ",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ippou-da"
+          }
+        ],
+        "title": "〜一方だ",
+        "meaning": "menunjukkan perubahan yang terus berlanjut ke satu arah",
+        "connection": "動詞辞書形＋一方だ",
+        "formation": [],
+        "notes": "Dipakai terutama dengan verba yang menyatakan perubahan atau perkembangan. Menekankan bahwa kecenderungan tersebut terus bergerak ke arah yang sama; sering digunakan untuk perubahan yang tidak diinginkan, tetapi tidak selalu bermakna negatif. Bentuk formalnya adalah「〜一方である」.",
+        "examples": [
+          "物価は上がる一方だ。",
+          "この町の人口は減る一方だ。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:45:30.244Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ue-ni-addition",
+      "order": 88,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜上に",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ue-ni"
+          }
+        ],
+        "title": "〜上に",
+        "meaning": "selain itu; terlebih lagi; ditambah lagi",
+        "connection": "V普通形＋上に／イ形普通形＋上に／ナ形＋な・である＋上に／N＋の・である＋上に",
+        "formation": [],
+        "notes": "Menambahkan fakta atau keadaan lain yang memperkuat penilaian sebelumnya. Kedua hal yang disebutkan biasanya memiliki arah penilaian yang sama, baik sama-sama positif maupun sama-sama negatif.",
+        "examples": [
+          "この店は料理がおいしい上に、値段も安い。",
+          "今日は寒い上に、風も強い。",
+          "彼は経験が豊富な上に、責任感も強い。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:45:39.520Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ue-de-after",
+      "order": 89,
+      "kind": "pattern",
+      "sectionKey": "time-and-sequence",
+      "family": "ue-de",
+      "title": "〜上で",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ue-de"
+          }
+        ],
+        "title": "〜上で",
+        "meaning": "setelah melakukan atau mempertimbangkan sesuatu, kemudian melakukan tindakan berikutnya",
+        "connection": "動詞た形＋上で／動作名詞＋の＋上で",
+        "formation": [],
+        "notes": "Menunjukkan bahwa tindakan pertama diselesaikan sebagai persiapan, dasar, atau bahan pertimbangan bagi tindakan berikutnya. Nuansanya lebih disengaja dan formal daripada sekadar urutan kronologis.",
+        "examples": [
+          "資料を確認した上で、申請してください。",
+          "家族と相談の上で、返事を決めます。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:46:01.522Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ue-de-in-doing",
+      "order": 90,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "ue-de",
+      "title": "〜上で",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ue-de"
+          }
+        ],
+        "title": "〜上で",
+        "meaning": "dalam melakukan sesuatu atau dalam konteks suatu kegiatan, sebagai syarat atau pertimbangan penting",
+        "connection": "動詞辞書形＋上で／名詞＋の＋上で",
+        "formation": [],
+        "notes": "Menyatakan hal yang penting, diperlukan, atau perlu diperhatikan ketika menjalankan suatu kegiatan. Dengan nomina, pola ini juga dapat menunjukkan konteks atau bidang tempat pernyataan tersebut berlaku.",
+        "examples": [
+          "日本で働く上で、日本語は欠かせない。",
+          "仕事の上で必要な知識を身につける。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:46:01.522Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ue-wa",
+      "order": 91,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜上は",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ue-wa"
+          }
+        ],
+        "title": "〜上は",
+        "meaning": "karena sudah atau telah memutuskan demikian; sekali keadaan tersebut berlaku",
+        "connection": "動詞辞書形＋上は／動詞た形＋上は／名詞＋である＋上は",
+        "formation": [],
+        "notes": "Menjadikan suatu keputusan, tindakan, atau kedudukan sebagai dasar bagi kewajiban, tekad, atau konsekuensi yang semestinya menyusul. Bernuansa formal dan sering diikuti ungkapan tanggung jawab, keharusan, atau tekad; dekat dengan 〜以上は dan 〜からには.",
+        "examples": [
+          "約束した上は、最後まで責任を持たなければならない。",
+          "この仕事を引き受ける上は、全力を尽くすつもりだ。",
+          "学生である上は、学校の規則を守るべきだ。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:45:46.316Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "no-ue-dewa-perspective",
+      "order": 92,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜の上では",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "no-ue-dewa"
+          }
+        ],
+        "title": "〜の上では",
+        "meaning": "Jika dilihat dari sudut pandang, bidang, atau kerangka tertentu; secara formal atau teoretis dalam hal tersebut.",
+        "connection": "名詞＋の上では",
+        "formation": [],
+        "notes": "Menunjukkan penilaian yang dibatasi pada suatu ranah, dasar, atau sudut pandang, seperti hukum, teori, perhitungan, atau dokumen. Keadaan menurut kerangka tersebut dapat berbeda dari kenyataan praktis.",
+        "examples": [
+          "法律の上では、両者に違いはない。",
+          "計算の上では、この計画は実行可能だ。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:45:57.388Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "shidai-de-depending-on",
+      "order": 93,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜次第で",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "shidai-de"
+          }
+        ],
+        "title": "〜次第で",
+        "meaning": "tergantung pada; hasil atau keadaan berubah sesuai faktor tertentu",
+        "connection": "名詞 + 次第で",
+        "formation": [],
+        "notes": "Menunjukkan bahwa hasil, keputusan, atau keadaan ditentukan oleh nomina sebelumnya. Bentuk akhir kalimatnya adalah「〜次第だ」, sedangkan「〜次第では」menekankan bahwa kemungkinan tertentu dapat muncul bergantung pada faktor tersebut. Berbeda dari「動詞ます形の語幹 + 次第」yang berarti segera setelah suatu tindakan selesai.",
+        "examples": [
+          "結果次第で、計画を変更します。",
+          "努力次第では、合格できるでしょう。",
+          "成功するかどうかは君次第だ。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:45:58.709Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "shidai-as-soon-as",
+      "order": 94,
+      "kind": "pattern",
+      "sectionKey": "time-and-sequence",
+      "family": "shidai",
+      "title": "〜次第",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "shidai"
+          }
+        ],
+        "title": "〜次第",
+        "meaning": "segera setelah suatu tindakan selesai, tindakan berikutnya akan dilakukan",
+        "connection": "V bentuk ます (hapus ます) + 次第 + klausa utama",
+        "formation": [],
+        "notes": "Pola formal yang lazim dipakai dalam pemberitahuan, rencana, atau urusan resmi. Klausa utama biasanya menyatakan tindakan yang disengaja atau telah direncanakan, bukan kejadian lampau yang kebetulan.",
+        "examples": [
+          "準備ができ次第、出発します。",
+          "結果が分かり次第、ご連絡いたします。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:47:37.546Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "shidai-explanatory-circumstances",
+      "order": 95,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "shidai",
+      "title": "〜次第です",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "shidai"
+          }
+        ],
+        "title": "〜次第です",
+        "meaning": "demikianlah keadaan atau alasannya; menjelaskan rangkaian keadaan yang menyebabkan suatu tindakan, keputusan, atau hasil",
+        "connection": "V普通形＋次第です／このような・以上のような＋次第です",
+        "formation": [],
+        "notes": "Ungkapan formal untuk menjelaskan alasan atau rangkaian keadaan yang membawa pembicara pada tindakan, keputusan, atau hasil tertentu. Sering dipakai setelah uraian penjelas dalam surat, pengumuman, atau pembicaraan resmi. Berbeda dari N＋次第だ yang berarti hasilnya bergantung pada N.",
+        "examples": [
+          "事情を確認するため、担当者に連絡した次第です。",
+          "これが、私がこの仕事を引き受けた次第です。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:47:37.546Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "shidai-dewa-depending-on",
+      "order": 96,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜次第では",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "shidai-dewa"
+          }
+        ],
+        "title": "〜次第では",
+        "meaning": "tergantung pada sesuatu atau keadaan tertentu, hasil yang berbeda mungkin terjadi",
+        "connection": "名詞＋次第では",
+        "formation": [],
+        "notes": "Menunjukkan bahwa hasil atau kemungkinan berubah menurut faktor yang disebutkan. Bagian sesudahnya sering menyatakan salah satu kemungkinan dengan bentuk seperti 〜こともある atau 〜かもしれない. Berbeda dari 動詞ます形＋次第 yang berarti segera setelah suatu tindakan selesai.",
+        "examples": [
+          "天気次第では、試合が中止になるかもしれない。",
+          "交渉次第では、条件を変更することも可能だ。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:46:14.734Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "muke-target-audience",
+      "order": 97,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜向け",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "muke"
+          }
+        ],
+        "title": "〜向け",
+        "meaning": "ditujukan atau dibuat secara khusus untuk kelompok, pengguna, atau tujuan tertentu",
+        "connection": "N + 向けだ／N + 向けに + V／N + 向けの + N",
+        "formation": [],
+        "notes": "Menunjukkan sasaran yang menjadi tujuan pembuatan, penyediaan, atau penyampaian sesuatu. Berbeda dari 〜向き yang terutama menyatakan bahwa sesuatu cocok atau sesuai bagi pihak tertentu, 〜向け menekankan bahwa sesuatu memang ditujukan atau dirancang untuk sasaran tersebut.",
+        "examples": [
+          "この本は日本語の初心者向けです。",
+          "子ども向けに分かりやすく説明した。",
+          "これは海外市場向けの商品です。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:46:13.320Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "muki-suitable",
+      "order": 98,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜向き",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "muki"
+          }
+        ],
+        "title": "〜向き",
+        "meaning": "cocok atau sesuai untuk orang, tujuan, atau keadaan tertentu",
+        "connection": "名詞＋向きだ／名詞＋向きの＋名詞",
+        "formation": [],
+        "notes": "Menunjukkan bahwa sifat atau karakteristik sesuatu membuatnya cocok bagi sasaran tertentu. Berbeda dari 〜向け, yang lebih menekankan bahwa sesuatu sengaja dibuat atau ditujukan bagi sasaran tersebut.",
+        "examples": [
+          "この本は初心者向きだ。",
+          "これは子供向きの映画です。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:46:23.907Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ni-kotaete",
+      "order": 99,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜に応えて",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ni-kotaete"
+          }
+        ],
+        "title": "〜に応えて",
+        "meaning": "melakukan sesuatu sebagai tanggapan atas permintaan, harapan, atau tuntutan",
+        "connection": "N + に応えて",
+        "formation": [],
+        "notes": "Dipakai ketika tindakan dilakukan untuk memenuhi atau menanggapi permintaan, harapan, keinginan, dukungan, atau tuntutan. Bentuk terkaitnya meliputi 〜に応える dan 〜に応えた.",
+        "examples": [
+          "お客様の要望に応えて、新しいサービスを始めました。",
+          "国民の期待に応えて、選手たちは全力で戦った。",
+          "多くのリクエストに応えて、その番組が再放送された。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:46:26.665Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ni-taishite-target",
+      "order": 100,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "ni-taishite",
+      "title": "〜に対して",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ni-taishite"
+          }
+        ],
+        "title": "〜に対して",
+        "meaning": "terhadap atau kepada suatu sasaran yang dikenai tindakan, sikap, perasaan, atau penilaian",
+        "connection": "N＋に対して；N＋に対する＋N",
+        "formation": [],
+        "notes": "Menandai pihak atau hal yang menjadi sasaran. Bentuk 〜に対する dipakai ketika pola ini menerangkan nomina.",
+        "examples": [
+          "会社は社員に対して十分な説明をするべきだ。",
+          "お客様に対する態度を改めた。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:47:12.880Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ni-taishite-contrast",
+      "order": 101,
+      "kind": "pattern",
+      "sectionKey": "comparison",
+      "family": "ni-taishite",
+      "title": "〜に対して",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ni-taishite"
+          }
+        ],
+        "title": "〜に対して",
+        "meaning": "berbeda dengan atau berlawanan dengan keadaan lain yang dijadikan pembanding",
+        "connection": "V／イAの普通形＋のに対して；ナA／Nの普通形＋のに対して（非過去肯定は「なのに対して」、bentuk formal「であるのに対して」）；それ＋に対して",
+        "formation": [],
+        "notes": "Menyandingkan dua pihak, sifat, atau keadaan untuk menonjolkan perbedaannya. Bentuk それに対して menghubungkan pernyataan sebelumnya dengan keadaan yang berlawanan atau berbeda.",
+        "examples": [
+          "兄が慎重なのに対して、弟はすぐに行動する。",
+          "都市では人口が増えている。それに対して、地方では減少が続いている。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:47:12.880Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ni-yori-passive-agent",
+      "order": 102,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": "ni-yori",
+      "title": "〜により",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ni-yori"
+          }
+        ],
+        "title": "〜により",
+        "meaning": "oleh; menandai pelaku dalam kalimat pasif",
+        "connection": "N（pelaku）＋により＋V受身",
+        "formation": [],
+        "notes": "Bentuk formal dari pemakaian 〜によって sebagai penanda pelaku pada kalimat pasif. Lazim dalam tulisan resmi, laporan, dan uraian sejarah.",
+        "examples": [
+          "この建物は有名な建築家により設計された。",
+          "新しい制度は政府により導入された。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:46:59.198Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ni-yori-means",
+      "order": 103,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": "ni-yori",
+      "title": "〜により",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ni-yori"
+          }
+        ],
+        "title": "〜により",
+        "meaning": "dengan atau melalui suatu cara, sarana, atau metode",
+        "connection": "N（cara・sarana・metode）＋により＋V／文",
+        "formation": [],
+        "notes": "Menunjukkan sarana atau metode yang dipakai untuk menghasilkan suatu tindakan atau hasil. Bernuansa formal; 〜によって merupakan variasi yang lebih umum.",
+        "examples": [
+          "データは最新の技術により分析された。",
+          "インターネットにより世界中の情報を集められる。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:46:59.198Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ni-yori-basis",
+      "order": 104,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": "ni-yori",
+      "title": "〜により",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ni-yori"
+          }
+        ],
+        "title": "〜により",
+        "meaning": "berdasarkan atau sesuai dengan aturan, bukti, data, atau acuan tertentu",
+        "connection": "N（dasar・aturan・bukti・acuan）＋により＋判断・決定を表す述語",
+        "formation": [],
+        "notes": "Menandai landasan suatu keputusan, penilaian, atau tindakan. Pada nomina seperti 調査 atau データ, maknanya dapat berdekatan dengan fungsi cara; konteks menentukan apakah nomina tersebut dipandang sebagai metode atau dasar penilaian.",
+        "examples": [
+          "法律により、この地域での建築は制限されている。",
+          "審査結果により採用者を決定する。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:46:59.198Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ni-yori-cause",
+      "order": 105,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": "ni-yori",
+      "title": "〜により",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ni-yori"
+          }
+        ],
+        "title": "〜により",
+        "meaning": "karena atau akibat suatu sebab",
+        "connection": "N（sebab）＋により＋結果・状態を表す述語",
+        "formation": [],
+        "notes": "Menunjukkan penyebab yang menghasilkan keadaan atau peristiwa. Sangat umum dalam berita dan laporan resmi, khususnya untuk kecelakaan, bencana, kerusakan, atau perubahan objektif. Variasinya adalah 〜によって.",
+        "examples": [
+          "大雨により電車が運休した。",
+          "事故により道路が閉鎖された。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:46:59.198Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ni-yori-depending",
+      "order": 106,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": "ni-yori",
+      "title": "〜により",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ni-yori"
+          }
+        ],
+        "title": "〜により",
+        "meaning": "bergantung pada faktor atau kondisi tertentu; berbeda menurut sesuatu",
+        "connection": "N（faktor・kondisi）＋により＋差異・変化を表す述語",
+        "formation": [],
+        "notes": "Menunjukkan bahwa hasil, keadaan, atau penilaian berubah sesuai orang, tempat, waktu, situasi, atau kondisi. Bentuk 〜によって lebih umum, sedangkan 〜によっては berarti bahwa dalam sebagian kasus tertentu hasilnya dapat berbeda.",
+        "examples": [
+          "人により考え方は異なる。",
+          "季節により営業時間が変わる。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:46:59.198Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ni-kakawatte-ni-kakawaru",
+      "order": 107,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜に関わって／〜に関わる",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ni-kakawatte"
+          }
+        ],
+        "title": "〜に関わって／〜に関わる",
+        "meaning": "berkaitan dengan atau menyangkut suatu hal",
+        "connection": "N + に関わって + predikat; N + に関わる + N",
+        "formation": [],
+        "notes": "〜に関わって dipakai untuk menghubungkan topik atau perkara dengan predikat, sedangkan 〜に関わる menerangkan nomina sesudahnya. Sering digunakan untuk perkara penting atau berdampak besar, seperti kehidupan, keselamatan, kehormatan, dan kebijakan. Berbeda dari 〜にかかわらず yang berarti 'tanpa memandang' atau 'terlepas dari'.",
+        "examples": [
+          "これは人の命に関わる問題だ。",
+          "環境保護に関わって長年研究を続けている。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:47:05.562Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "nagara-mo-concessive",
+      "order": 108,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜ながら（も）",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "nagara"
+          }
+        ],
+        "title": "〜ながら（も）",
+        "meaning": "Meskipun atau walaupun suatu keadaan berlaku, hasil atau kenyataannya bertentangan dengan yang diperkirakan.",
+        "connection": "Vます tanpa ます + ながら（も）／イA普通形 + ながら（も）／ナA語幹 + ながら（も）／N + ながら（も）／ナA・N + でありながら（も）",
+        "formation": [],
+        "notes": "Menyatakan konsesi atau pertentangan, bukan dua tindakan yang dilakukan secara bersamaan. Bentuk ながらも menegaskan kontras lebih kuat daripada ながら. Pola ini cenderung formal atau tertulis; beberapa pemakaiannya juga lazim sebagai ungkapan tetap, seperti 残念ながら.",
+        "examples": [
+          "彼は若いながらも、豊富な経験を持っている。",
+          "狭いながらも、この家は住みやすい。",
+          "事情を知っていながら、彼は何も言わなかった。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:47:40.110Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "tsutsu-concessive",
+      "order": 109,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "tsutsu",
+      "title": "〜つつ（も）",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "tsutsu"
+          }
+        ],
+        "title": "〜つつ（も）",
+        "meaning": "Walaupun menyadari, memikirkan, atau mengatakan sesuatu, tetap melakukan hal yang bertentangan dengannya",
+        "connection": "動詞ます形（ますを取る）＋つつ（も）",
+        "formation": [],
+        "notes": "Menyatakan pertentangan antara keadaan atau kesadaran dengan tindakan nyata. Sering dipakai bersama kata kerja pemikiran, pengetahuan, atau ucapan seperti 思う, 知る, dan 言う. Bentuk tanpa も, yaitu 〜つつ, juga dapat menyatakan konsesi. Bernuansa formal atau tertulis.",
+        "examples": [
+          "悪いと知りつつも、同じことを繰り返してしまった。",
+          "無理だと思いつつも、最後まで挑戦した。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:47:43.219Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "tsutsu-simultaneous",
+      "order": 110,
+      "kind": "pattern",
+      "sectionKey": "time-and-sequence",
+      "family": "tsutsu",
+      "title": "〜つつ",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "tsutsu"
+          }
+        ],
+        "title": "〜つつ",
+        "meaning": "Melakukan dua tindakan secara bersamaan; sambil melakukan",
+        "connection": "動詞ます形（ますを取る）＋つつ",
+        "formation": [],
+        "notes": "Menunjukkan dua tindakan yang berlangsung bersamaan dan umumnya dilakukan oleh subjek yang sama. Tindakan pada klausa utama biasanya menjadi tindakan pokok. Maknanya dekat dengan 〜ながら, tetapi 〜つつ lebih formal dan lebih sering muncul dalam ragam tulis.",
+        "examples": [
+          "将来のことを考えつつ、計画を立てた。",
+          "景色を眺めつつ、ゆっくり歩いた。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:47:43.219Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "tsutsu-aru-ongoing-process",
+      "order": 111,
+      "kind": "pattern",
+      "sectionKey": "time-and-sequence",
+      "family": null,
+      "title": "〜つつある",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "tsutsu-aru"
+          }
+        ],
+        "title": "〜つつある",
+        "meaning": "sedang berlangsung atau berkembang secara bertahap; berada dalam proses menuju suatu keadaan",
+        "connection": "動詞ます形の語幹＋つつある",
+        "formation": [],
+        "notes": "Menunjukkan tindakan, perubahan, atau perkembangan yang sedang bergerak maju. Lazim dipakai dalam ragam formal atau tertulis, terutama untuk perubahan yang berlangsung secara bertahap.",
+        "examples": [
+          "景気は少しずつ回復しつつある。",
+          "社会の考え方も変わりつつある。",
+          "新しい技術が普及しつつある。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:47:49.720Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "kuse-ni-kuse-shite",
+      "order": 112,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜くせに／〜くせして",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "kuse-shite"
+          }
+        ],
+        "title": "〜くせに／〜くせして",
+        "meaning": "Meskipun atau padahal kenyataannya demikian; menunjukkan pertentangan yang disertai celaan, ketidakpuasan, atau kritik.",
+        "connection": "動詞普通形＋くせに／くせして；イ形容詞普通形＋くせに／くせして；ナ形容詞語幹＋な＋くせに／くせして；名詞＋の＋くせに／くせして",
+        "formation": [],
+        "notes": "Dipakai ketika hasil atau perilaku tidak sesuai dengan keadaan, kemampuan, kedudukan, atau hal yang semestinya. Biasanya mengandung penilaian negatif seperti celaan, kejengkelan, atau penghinaan sehingga tidak cocok untuk pertentangan yang netral. 〜くせして merupakan variasi yang lebih percakapan dan bernada kuat dari 〜くせに.",
+        "examples": [
+          "知っているくせに、教えてくれない。",
+          "子供のくせして、生意気なことを言う。",
+          "元気なくせに、病気のふりをしている。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:48:02.592Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "zaru-wo-enai",
+      "order": 113,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜ざるを得ない",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "zaru-wo-enai"
+          }
+        ],
+        "title": "〜ざるを得ない",
+        "meaning": "terpaksa melakukan; tidak mempunyai pilihan selain melakukan",
+        "connection": "動詞ない形（ないを取る）＋ざるを得ない；する→せざるを得ない",
+        "formation": [],
+        "notes": "Menyatakan bahwa keadaan atau alasan tertentu membuat tindakan tersebut tidak dapat dihindari, meskipun biasanya tidak diinginkan oleh pelaku. Bernuansa formal dan lebih kuat daripada 〜なければならない.",
+        "examples": [
+          "事情を説明せざるを得ない。",
+          "電車が止まったので、歩いて帰らざるを得なかった。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:47:54.219Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "beki-dewa-nai",
+      "order": 114,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜べきではない",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "beki-dewa-nai"
+          }
+        ],
+        "title": "〜べきではない",
+        "meaning": "seharusnya tidak; tidak semestinya melakukan sesuatu",
+        "connection": "V bentuk kamus＋べきではない（する dapat menjadi するべきではない atau すべきではない）",
+        "formation": [],
+        "notes": "Menyatakan bahwa suatu tindakan tidak patut atau tidak semestinya dilakukan berdasarkan penilaian, norma, kewajiban, atau nasihat kuat. Bukan sekadar menyatakan larangan formal. Bentuk lampau 〜べきではなかった menyatakan bahwa sesuatu seharusnya tidak dilakukan, tetapi ternyata telah dilakukan.",
+        "examples": [
+          "他人の秘密を話すべきではない。",
+          "感情だけで重要なことを決めるべきではない。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:48:01.281Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "koto-ni-natteiru",
+      "order": 115,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜ことになっている",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "koto-ni-natteiru"
+          }
+        ],
+        "title": "〜ことになっている",
+        "meaning": "menyatakan aturan, jadwal, kesepakatan, atau ketentuan yang telah ditetapkan dan masih berlaku",
+        "connection": "V bentuk kamus／V bentuk ない＋ことになっている",
+        "formation": [],
+        "notes": "Menunjukkan keadaan yang berlaku sebagai hasil keputusan, kesepakatan, aturan, atau rancangan suatu sistem. Keputusan tersebut umumnya tidak ditampilkan sebagai kemauan pribadi pembicara. Dalam konteks benda atau sistem, pola ini juga dapat berarti bahwa sesuatu dirancang atau diatur agar bekerja dengan cara tertentu. Berbeda dari 〜ことにしている, yang menekankan kebiasaan atau keputusan yang dipertahankan oleh pelaku sendiri.",
+        "examples": [
+          "来月から大阪支社で働くことになっている。",
+          "この建物ではたばこを吸ってはいけないことになっている。",
+          "このボタンを押すとドアが開くことになっている。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:48:10.519Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ni-suginai",
+      "order": 116,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜にすぎない",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ni-suginai"
+          }
+        ],
+        "title": "〜にすぎない",
+        "meaning": "hanya; tidak lebih dari",
+        "connection": "動詞普通形＋にすぎない／イ形容詞普通形＋にすぎない／ナ形容詞語幹＋である＋にすぎない／名詞＋にすぎない／名詞＋である＋にすぎない",
+        "formation": [],
+        "notes": "Menegaskan bahwa sesuatu terbatas pada tingkat, jumlah, atau status tertentu dan tidak lebih penting atau besar daripada itu. Bernuansa formal dan sering dipakai untuk merendahkan penilaian atau membatasi klaim.",
+        "examples": [
+          "それは単なる噂にすぎない。",
+          "今回の成功は第一歩にすぎない。",
+          "私は自分の意見を述べたにすぎない。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:48:13.868Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ni-atatte",
+      "order": 117,
+      "kind": "pattern",
+      "sectionKey": "time-and-sequence",
+      "family": null,
+      "title": "〜にあたって／〜にあたり",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ni-atatte"
+          }
+        ],
+        "title": "〜にあたって／〜にあたり",
+        "meaning": "pada saat menghadapi atau memulai suatu peristiwa penting; dalam rangka melakukan sesuatu",
+        "connection": "V bentuk kamus + にあたって／にあたり; N + にあたって／にあたり; N + にあたっての + N",
+        "formation": [],
+        "notes": "Digunakan dalam situasi formal untuk menandai kesempatan atau tahap penting, terutama ketika ada persiapan, sikap, atau tindakan khusus yang menyertainya. Bentuk にあたり cenderung lebih formal dan tertulis. Untuk menerangkan nomina, digunakan にあたっての.",
+        "examples": [
+          "新しい事業を始めるにあたって、市場調査を行った。",
+          "開会にあたり、会長から挨拶があった。",
+          "留学にあたっての注意事項を確認してください。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:48:17.554Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ni-sotte",
+      "order": 118,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜に沿って",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ni-sotte"
+          }
+        ],
+        "title": "〜に沿って",
+        "meaning": "mengikuti, sesuai dengan, atau menyusuri sesuatu yang menjadi jalur, pedoman, atau dasar",
+        "connection": "名詞＋に沿って／名詞＋に沿い／名詞＋に沿う＋名詞／名詞＋に沿った＋名詞",
+        "formation": [],
+        "notes": "Dapat digunakan secara konkret untuk bergerak atau memanjang mengikuti jalur, serta secara abstrak untuk bertindak sesuai kebijakan, rencana, harapan, atau pedoman. Bentuk に沿い lebih formal, sedangkan に沿う dan に沿った digunakan untuk menerangkan nomina.",
+        "examples": [
+          "川に沿って歩いた。",
+          "計画に沿って作業を進めます。",
+          "お客様の希望に沿った提案をします。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:48:22.284Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ni-sakidatte-n2",
+      "order": 119,
+      "kind": "pattern",
+      "sectionKey": "time-and-sequence",
+      "family": null,
+      "title": "〜に先立って",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ni-sakidatte"
+          }
+        ],
+        "title": "〜に先立って",
+        "meaning": "sebelum melakukan atau berlangsungnya sesuatu; mendahului suatu kegiatan atau peristiwa",
+        "connection": "N + に先立って; V bentuk kamus + に先立って",
+        "formation": [],
+        "notes": "Ungkapan formal yang menunjukkan bahwa suatu tindakan dilakukan sebelum kegiatan atau peristiwa utama, sering kali sebagai persiapan. Bentuk terkait: 〜に先立ち sebagai bentuk sambung formal dan 〜に先立つ + N untuk menerangkan nomina.",
+        "examples": [
+          "会議に先立って、資料が配られた。",
+          "工事を始めるに先立って、住民への説明会を開いた。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:48:29.601Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ni-watatte",
+      "order": 120,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜にわたって",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ni-watatte"
+          }
+        ],
+        "title": "〜にわたって",
+        "meaning": "sepanjang atau mencakup keseluruhan rentang waktu, tempat, wilayah, maupun lingkup tertentu",
+        "connection": "名詞＋にわたって／にわたり；名詞＋にわたる＋名詞",
+        "formation": [],
+        "notes": "Menekankan luasnya rentang atau cakupan. Lazim dipakai dengan nomina yang menyatakan periode, wilayah, jumlah kejadian, atau bidang cakupan. Bentuk にわたり lebih formal, sedangkan にわたる dipakai untuk menerangkan nomina.",
+        "examples": [
+          "会議は三日間にわたって行われた。",
+          "台風の影響は広い地域にわたっている。",
+          "二十年にわたる研究がようやく完成した。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v4",
+        "extractedAt": "2026-10-03T23:48:32.787Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
     }
   ]
 }
