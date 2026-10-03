@@ -8051,7 +8051,7 @@
             "label": "kata kerja",
             "input": "kata kerja bentuk masu tanpa ます",
             "rule": "Tambahkan っぱなし pada bentuk masu tanpa ます.",
-        "output": "Vます{語幹|ごかん} + っぱなし",
+            "output": "Vます{語幹|ごかん} + っぱなし",
             "note": null
           }
         ],
@@ -8264,8 +8264,94 @@
         "extractedAt": "2026-10-02T09:04:24.681Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜がる",
+        "senseLabel": null,
+        "meaningId": "menunjukkan keinginan atau perasaan yang tampak pada orang lain",
+        "meaningEn": "show that another person appears to feel or want something",
+        "connections": [
+          {
+            "form": "v-masu",
+            "pattern": "たがる"
+          },
+          {
+            "form": "i-adj-stem",
+            "pattern": "がる",
+            "note": "Terutama dipakai dengan kata sifat yang menyatakan perasaan atau sensasi."
+          },
+          {
+            "form": "na-adj-stem",
+            "pattern": "がる",
+            "note": "Terutama dipakai dengan kata sifat yang menyatakan perasaan atau penilaian batin."
+          }
+        ],
+        "formation": [
+          {
+            "label": "Keinginan",
+            "input": "V bentuk masu",
+            "rule": "Tambahkan たがる pada bentuk masu tanpa ます.",
+            "output": "V-たがる",
+            "note": null
+          },
+          {
+            "label": "Kata sifat-i",
+            "input": "kata sifat-i tanpa い",
+            "rule": "Tambahkan がる pada bentuk dasar kata sifat.",
+            "output": "i-adj-stem + がる",
+            "note": null
+          },
+          {
+            "label": "Kata sifat-na",
+            "input": "kata sifat-na",
+            "rule": "Tambahkan がる pada bentuk dasar kata sifat.",
+            "output": "na-adj-stem + がる",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜がる menyatakan bahwa keinginan, emosi, atau sensasi seseorang tampak dari perkataan, sikap, maupun perilakunya. Pola ini terutama digunakan untuk orang ketiga karena perasaan orang lain biasanya disimpulkan dari tanda yang terlihat.",
+          "Setelah bentuk keinginan, 〜たい berubah menjadi 〜たがる. Dengan kata sifat, い pada kata sifat-i dihilangkan sebelum がる, sedangkan kata sifat-na langsung diikuti がる. Bentuk yang terbentuk kemudian berkonjugasi seperti kata kerja.",
+          "Pola ini sering digunakan dengan perasaan seperti takut, malu, menyesal, atau keinginan melakukan sesuatu. Bergantung pada katanya, 〜がる juga dapat memberi kesan bahwa seseorang mudah atau kuat menunjukkan perasaan tersebut."
+        ],
+        "examples": [
+          {
+            "jp": "{弟|おとうと}は{誕生日|たんじょうび}のプレゼントに{新|あたら}しいゲームを{買|か}い__たがって__いる。",
+            "id": "Adik laki-laki saya tampaknya ingin membeli permainan baru sebagai hadiah ulang tahunnya.",
+            "en": "My younger brother appears to want to buy a new game for his birthday present."
+          },
+          {
+            "jp": "{幼|おさな}い{子|こ}は{暗|くら}い{部屋|へや}を{怖|こわ}__がる__。",
+            "id": "Anak kecil takut terhadap ruangan gelap.",
+            "en": "Young children are afraid of dark rooms."
+          },
+          {
+            "jp": "{彼女|かのじょ}は{失敗|しっぱい}を{皆|みんな}に{知|し}られるのを{恥|は}ずかし__がって__、{発表|はっぴょう}を{断|ことわ}った。",
+            "id": "Karena tampak malu jika kegagalannya diketahui semua orang, ia menolak melakukan presentasi.",
+            "en": "Feeling embarrassed about everyone learning of her failure, she declined to give the presentation."
+          },
+          {
+            "jp": "{部長|ぶちょう}は{計画|けいかく}が{中止|ちゅうし}になったことを{残念|ざんねん}__がって__いた。",
+            "id": "Kepala bagian itu tampak menyesalkan bahwa rencananya dibatalkan.",
+            "en": "The department manager appeared disappointed that the plan had been cancelled."
+          }
+        ],
+        "pitfalls": [
+          "Untuk menyatakan keinginan diri sendiri secara langsung, biasanya gunakan 〜たい, bukan 〜たがる.",
+          "✕ 〜たいがる. Gunakan bentuk 〜たがる setelah bentuk masu kata kerja.",
+          "Tidak semua kata sifat alami dipakai dengan 〜がる. Pola ini terutama cocok untuk perasaan, sensasi, dan keinginan yang dapat terlihat dari luar."
+        ],
+        "tags": [
+          "desire",
+          "feeling"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:30:48.307Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -8311,8 +8397,81 @@
         "extractedAt": "2026-10-02T09:04:24.681Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜てほしい／〜てもらいたい",
+        "senseLabel": null,
+        "meaningId": "Ingin orang lain melakukan atau tidak melakukan sesuatu.",
+        "meaningEn": "Want someone else to do or not do something.",
+        "connections": [
+          {
+            "form": "v-te",
+            "pattern": "ほしい／もらいたい"
+          },
+          {
+            "form": "other",
+            "pattern": "でほしい／でもらいたい",
+            "note": "Vない{形|けい} + で digunakan untuk menyatakan keinginan agar seseorang tidak melakukan tindakan."
+          }
+        ],
+        "formation": [
+          {
+            "label": "Keinginan tindakan",
+            "input": "Vて{形|けい}",
+            "rule": "Tambahkan ほしい atau もらいたい.",
+            "output": "Vてほしい／Vてもらいたい",
+            "note": null
+          },
+          {
+            "label": "Keinginan agar tidak dilakukan",
+            "input": "Vない{形|けい} + で",
+            "rule": "Tambahkan ほしい atau もらいたい.",
+            "output": "Vないでほしい／Vないでもらいたい",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜てほしい menyatakan keinginan pembicara agar orang lain melakukan sesuatu. Pelaku tindakan biasanya ditandai dengan に, tetapi dapat dihilangkan jika sudah jelas dari konteks.",
+          "〜てもらいたい juga menyatakan keinginan yang sama, tetapi lebih menonjolkan sudut pandang pembicara sebagai pihak yang ingin menerima bantuan atau tindakan tersebut.",
+          "Bentuk negatif 〜ないでほしい／〜ないでもらいたい dipakai ketika pembicara ingin orang lain tidak melakukan suatu tindakan. Pola ini menyampaikan harapan atau keinginan, sehingga tidak selalu sekuat perintah langsung."
+        ],
+        "examples": [
+          {
+            "jp": "{部長|ぶちょう}にこの{資料|しりょう}を{確認|かくにん}して__ほしい__です。",
+            "id": "Saya ingin kepala bagian memeriksa dokumen ini.",
+            "en": "I want the department manager to check this document."
+          },
+          {
+            "jp": "{妹|いもうと}には、もっと{早|はや}く{帰|かえ}って__もらいたい__。",
+            "id": "Saya ingin adik perempuan saya pulang lebih awal.",
+            "en": "I want my younger sister to come home earlier."
+          },
+          {
+            "jp": "{会議|かいぎ}{中|ちゅう}は、{携帯|けいたい}{電話|でんわ}を{使|つか}わない__でほしい__。",
+            "id": "Saya ingin kamu tidak memakai ponsel selama rapat.",
+            "en": "I want you not to use your phone during the meeting."
+          },
+          {
+            "jp": "{医師|いし}には{検査|けんさ}の{結果|けっか}を{詳|くわ}しく{説明|せつめい}して__もらいたい__。",
+            "id": "Saya ingin dokter menjelaskan hasil pemeriksaan secara rinci.",
+            "en": "I want the doctor to explain the test results in detail."
+          }
+        ],
+        "pitfalls": [
+          "Pelaku tindakan umumnya memakai に. ○ {友達|ともだち}に{手伝|てつだ}ってほしい。 ✕ {友達|ともだち}が{手伝|てつだ}ってほしい.",
+          "Jangan memakai pola ini untuk menyatakan keinginan batin orang ketiga sebagai fakta. Gunakan bentuk seperti 〜たがっている apabila keinginannya tampak dari perilaku.",
+          "〜てもらいたい berfokus pada tindakan yang ingin diterima pembicara, sedangkan 〜てほしい lebih langsung menyatakan harapan agar orang lain bertindak."
+        ],
+        "tags": [
+          "desire"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:30:47.598Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -8342,8 +8501,100 @@
         "extractedAt": "2026-10-02T09:05:12.871Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜ふりをする",
+        "senseLabel": null,
+        "meaningId": "berpura-pura seolah-olah demikian",
+        "meaningEn": "to pretend to be or do something",
+        "connections": [
+          {
+            "form": "v-plain",
+            "pattern": "ふりをする"
+          },
+          {
+            "form": "i-adj-plain",
+            "pattern": "ふりをする"
+          },
+          {
+            "form": "na-adj-na",
+            "pattern": "ふりをする"
+          },
+          {
+            "form": "n-no",
+            "pattern": "ふりをする"
+          }
+        ],
+        "formation": [
+          {
+            "label": "kata kerja",
+            "input": "kata kerja bentuk biasa",
+            "rule": "Tambahkan ふりをする setelah bentuk biasa.",
+            "output": "V bentuk biasa + ふりをする",
+            "note": null
+          },
+          {
+            "label": "kata sifat-i",
+            "input": "kata sifat-i bentuk biasa",
+            "rule": "Tambahkan ふりをする setelah bentuk biasa.",
+            "output": "A-i bentuk biasa + ふりをする",
+            "note": null
+          },
+          {
+            "label": "kata sifat-na",
+            "input": "kata sifat-na + な",
+            "rule": "Tambahkan ふりをする setelah な.",
+            "output": "A-na + な + ふりをする",
+            "note": null
+          },
+          {
+            "label": "nomina",
+            "input": "nomina + の",
+            "rule": "Tambahkan ふりをする setelah の.",
+            "output": "N + の + ふりをする",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "Pola ふりをする menyatakan bahwa seseorang sengaja memperlihatkan diri seolah-olah melakukan, mengetahui, memiliki, atau berada dalam keadaan tertentu, padahal kenyataannya tidak demikian. Dalam bahasa Indonesia, pola ini berarti \"berpura-pura\".",
+          "Pola ini berfokus pada penampilan atau sikap yang ditunjukkan kepada orang lain. Kenyataan yang berbeda sering disebutkan dalam konteks, tetapi dapat pula hanya dipahami dari situasinya."
+        ],
+        "examples": [
+          {
+            "jp": "{彼|かれ}は{眠|ねむ}いのに、{授業|じゅぎょう}{中|ちゅう}は{元気|げんき}な__ふりをして__いる。",
+            "id": "Walaupun mengantuk, dia berpura-pura bersemangat selama pelajaran.",
+            "en": "Although he is sleepy, he is pretending to be energetic during class."
+          },
+          {
+            "jp": "{弟|おとうと}は{何|なに}も{聞|き}こえなかった__ふりをした__。",
+            "id": "Adik laki-laki saya berpura-pura tidak mendengar apa pun.",
+            "en": "My younger brother pretended not to hear anything."
+          },
+          {
+            "jp": "{私|わたし}は{初|はじ}めて{会|あ}ったのに、{前|まえ}から{彼|かれ}を{知|し}っている__ふりをして__しまった。",
+            "id": "Meskipun baru pertama kali bertemu, saya malah berpura-pura sudah mengenalnya sejak dulu.",
+            "en": "Even though I had met him for the first time, I ended up pretending that I had known him for a long time."
+          },
+          {
+            "jp": "その{男|おとこ}は{医者|いしゃ}の__ふりをして__、{人|ひと}からお{金|かね}をだまし{取|と}った。",
+            "id": "Pria itu berpura-pura menjadi dokter dan menipu orang untuk mengambil uang mereka.",
+            "en": "That man pretended to be a doctor and swindled people out of their money."
+          }
+        ],
+        "pitfalls": [
+          "Pola ini menyiratkan perbedaan antara penampilan dan kenyataan. Jangan gunakan untuk menyatakan keadaan yang benar-benar nyata.",
+          "Untuk kata sifat-na gunakan な, sedangkan untuk nomina gunakan の. ○ {元気|げんき}なふりをする. ○ {病気|びょうき}のふりをする."
+        ],
+        "tags": [
+          "appearance"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:30:12.019Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -8374,8 +8625,71 @@
         "extractedAt": "2026-10-02T09:05:12.871Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜にとって",
+        "senseLabel": null,
+        "meaningId": "bagi; dari sudut pandang seseorang atau sesuatu",
+        "meaningEn": "for; from the perspective of someone or something",
+        "connections": [
+          {
+            "form": "n",
+            "pattern": "にとって"
+          },
+          {
+            "form": "n",
+            "pattern": "にとっては"
+          },
+          {
+            "form": "n",
+            "pattern": "にとっても"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Bentuk dasar",
+            "input": "N",
+            "rule": "Tambahkan にとって setelah nomina yang menjadi sudut pandang atau pihak penilai.",
+            "output": "Nにとって",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜にとって menyatakan sudut pandang, kepentingan, atau ukuran penilaian suatu orang, kelompok, maupun hal. Dalam bahasa Indonesia, pola ini sering berarti “bagi” atau “menurut pandangan”.",
+          "Nomina sebelum pola menunjukkan pihak yang merasakan, menilai, atau menganggap sesuatu penting. Bagian setelahnya biasanya berisi penilaian seperti mudah, penting, bermanfaat, atau sulit.",
+          "〜にとっては menambahkan penekanan pada sudut pandang tersebut, sedangkan 〜にとっても dapat menyatakan “juga bagi” pihak itu."
+        ],
+        "examples": [
+          {
+            "jp": "{留学生|りゅうがくせい}__にとって__、{日本|にほん}での{生活|せいかつ}は{新|あたら}しい{発見|はっけん}の{連続|れんぞく}です。",
+            "id": "Bagi mahasiswa asing, kehidupan di Jepang adalah rangkaian penemuan baru.",
+            "en": "For international students, life in Japan is a series of new discoveries."
+          },
+          {
+            "jp": "{地域|ちいき}の{住民|じゅうみん}__にとっては__、この{図書館|としょかん}は{安心|あんしん}して{過|す}ごせる{場所|ばしょ}です。",
+            "id": "Bagi warga daerah ini, perpustakaan ini adalah tempat untuk menghabiskan waktu dengan tenang.",
+            "en": "For local residents, this library is a place where they can spend time comfortably."
+          },
+          {
+            "jp": "{企業|きぎょう}__にとっても__、{環境|かんきょう}を{守|まも}ることは{将来|しょうらい}への{投資|とうし}です。",
+            "id": "Bagi perusahaan juga, melindungi lingkungan adalah investasi untuk masa depan.",
+            "en": "For companies as well, protecting the environment is an investment in the future."
+          }
+        ],
+        "pitfalls": [
+          "Jangan gunakan 〜にとって untuk menyatakan penerima tindakan. Untuk “memberikan buku kepada siswa”, gunakan に, bukan 〜にとって.",
+          "〜にとっては tidak selalu menyatakan kontras. は terutama menekankan pihak yang dijadikan sudut pandang."
+        ],
+        "tags": [
+          "topic"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:30:47.814Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -8406,8 +8720,108 @@
         "extractedAt": "2026-10-02T09:05:58.180Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜わりに",
+        "senseLabel": null,
+        "meaningId": "kenyataan yang tidak sesuai dengan dugaan",
+        "meaningEn": "contrary to expectations for a stated condition",
+        "connections": [
+          {
+            "form": "v-plain",
+            "pattern": "わりに／わりには"
+          },
+          {
+            "form": "i-adj-plain",
+            "pattern": "わりに／わりには"
+          },
+          {
+            "form": "na-adj-na",
+            "pattern": "わりに／わりには"
+          },
+          {
+            "form": "n-no",
+            "pattern": "わりに／わりには"
+          }
+        ],
+        "formation": [
+          {
+            "label": "kata kerja",
+            "input": "V{普通|ふつう}{形|けい}",
+            "rule": "Tambahkan わりに atau わりには setelah bentuk biasa kata kerja.",
+            "output": "V{普通|ふつう}{形|けい} + わりに／わりには",
+            "note": null
+          },
+          {
+            "label": "kata sifat-i",
+            "input": "イA{普通|ふつう}{形|けい}",
+            "rule": "Tambahkan わりに atau わりには setelah bentuk biasa kata sifat-i.",
+            "output": "イA{普通|ふつう}{形|けい} + わりに／わりには",
+            "note": null
+          },
+          {
+            "label": "kata sifat-na",
+            "input": "ナAな",
+            "rule": "Gunakan bentuk na sebelum わりに atau わりには.",
+            "output": "ナAな + わりに／わりには",
+            "note": null
+          },
+          {
+            "label": "nomina",
+            "input": "Nの",
+            "rule": "Gunakan の sebelum わりに atau わりには.",
+            "output": "Nの + わりに／わりには",
+            "note": null
+          }
+        ],
+        "variants": [
+          "〜わりには"
+        ],
+        "explanation": [
+          "〜わりに menyatakan bahwa hasil atau keadaan yang terjadi berbeda dari hal yang lazimnya diharapkan berdasarkan kondisi sebelumnya. Dalam bahasa Indonesia, pola ini sering diterjemahkan sebagai “padahal”, “untuk ukuran”, atau “meskipun ... ternyata”.",
+          "Bagian sebelum わりに menjadi dasar harapan atau ukuran penilaian, sedangkan bagian setelahnya menunjukkan kenyataan yang terasa tidak sejalan dengan harapan tersebut. 〜わりには adalah variasi dengan は yang memberi sedikit penekanan pada kontras."
+        ],
+        "examples": [
+          {
+            "jp": "この{店|みせ}は{駅|えき}から{遠|とお}い__わりに__、{客|きゃく}が{多|おお}い。",
+            "id": "Toko ini jauh dari stasiun, tetapi untuk ukurannya pelanggan banyak.",
+            "en": "This shop is far from the station, but it has many customers for its location."
+          },
+          {
+            "jp": "この{時計|とけい}は{値段|ねだん}が{高|たか}い__わりに__、すぐ{壊|こわ}れた。",
+            "id": "Jam ini mahal, padahal cepat rusak.",
+            "en": "This watch was expensive, yet it broke quickly."
+          },
+          {
+            "jp": "{弟|おとうと}は{大学生|だいがくせい}の__わりに__、{生活|せいかつ}が{規則的|きそくてき}だ。",
+            "id": "Adik laki-laki saya, untuk ukuran mahasiswa, memiliki kehidupan yang teratur.",
+            "en": "My younger brother has a very regular lifestyle for a university student."
+          },
+          {
+            "jp": "その{仕事|しごと}は{大変|たいへん}な__わりに__、{給料|きゅうりょう}が{安|やす}い。",
+            "id": "Pekerjaan itu berat, padahal gajinya rendah.",
+            "en": "That job is demanding, yet the salary is low."
+          },
+          {
+            "jp": "{試験|しけん}は{難|むずか}しかった__わりには__、{合格者|ごうかくしゃ}が{多|おお}かった。",
+            "id": "Ujiannya sulit, tetapi ternyata banyak yang lulus.",
+            "en": "The exam was difficult, but there were surprisingly many successful applicants."
+          }
+        ],
+        "pitfalls": [
+          "〜わりに menyatakan kontras antara harapan dan kenyataan, bukan alasan. Jadi, pola ini tidak berarti “karena”.",
+          "Untuk kata sifat-na dan nomina, gunakan bentuk ○ {静|しず}かなわりに dan ○ {初心者|しょしんしゃ}のわりに, bukan ✕ {静|しず}かだわりに atau ✕ {初心者|しょしんしゃ}わりに.",
+          "Gunakan pola ini ketika perbedaannya terasa cukup mencolok menurut penilaian pembicara, bukan untuk perbandingan netral biasa."
+        ],
+        "tags": [
+          "contrast"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:31:46.361Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -8439,8 +8853,102 @@
         "extractedAt": "2026-10-02T09:05:58.180Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜くせに",
+        "senseLabel": null,
+        "meaningId": "padahal, dengan nada meremehkan atau menyalahkan",
+        "meaningEn": "although, with a blaming or contemptuous tone",
+        "connections": [
+          {
+            "form": "v-plain",
+            "pattern": "くせに"
+          },
+          {
+            "form": "i-adj-plain",
+            "pattern": "くせに"
+          },
+          {
+            "form": "na-adj-na",
+            "pattern": "くせに"
+          },
+          {
+            "form": "n-no",
+            "pattern": "くせに"
+          }
+        ],
+        "formation": [
+          {
+            "label": "kata kerja",
+            "input": "V bentuk biasa",
+            "rule": "Tambahkan くせに setelah bentuk biasa kata kerja.",
+            "output": "V biasa + くせに",
+            "note": null
+          },
+          {
+            "label": "kata sifat-i",
+            "input": "kata sifat-i bentuk biasa",
+            "rule": "Tambahkan くせに setelah bentuk biasa kata sifat-i.",
+            "output": "kata sifat-i biasa + くせに",
+            "note": null
+          },
+          {
+            "label": "kata sifat-na",
+            "input": "kata sifat-na",
+            "rule": "Tambahkan な, lalu くせに.",
+            "output": "kata sifat-na + な + くせに",
+            "note": null
+          },
+          {
+            "label": "nomina",
+            "input": "nomina",
+            "rule": "Tambahkan の, lalu くせに.",
+            "output": "nomina + の + くせに",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜くせに berarti “padahal” dan menunjukkan hasil atau tindakan yang berlawanan dengan apa yang seharusnya diharapkan dari sifat, keadaan, atau tindakan sebelumnya.",
+          "Pola ini biasanya mengandung nada mencela, meremehkan, atau kesal terhadap subjek. Karena itu, 〜くせに lebih tajam daripada 〜のに dan sebaiknya dihindari saat berbicara tentang atasan atau orang yang perlu dihormati."
+        ],
+        "examples": [
+          {
+            "jp": "{彼|かれ}は{手伝|てつだ}うと{言|い}った__くせに__、{当日|とうじつ}は{連絡|れんらく}もなく{休|やす}んだ。",
+            "id": "Dia bilang akan membantu, tetapi pada hari itu malah tidak masuk tanpa memberi kabar.",
+            "en": "He said he would help, yet he was absent that day without even contacting us."
+          },
+          {
+            "jp": "{弟|おとうと}は{大人|おとな}の__くせに__、{自分|じぶん}の{洗濯|せんたく}もできない。",
+            "id": "Adikku sudah dewasa, tetapi bahkan tidak bisa mencuci pakaiannya sendiri.",
+            "en": "My younger brother is an adult, yet he cannot even do his own laundry."
+          },
+          {
+            "jp": "あの{店|みせ}は{高|たか}い__くせに__、{料理|りょうり}の{量|りょう}が{少|すく}ない。",
+            "id": "Restoran itu mahal, padahal porsi makanannya sedikit.",
+            "en": "That restaurant is expensive, yet its portions are small."
+          },
+          {
+            "jp": "{彼女|かのじょ}は{暇|ひま}な__くせに__、{引|ひ}っ{越|こ}しの{手伝|てつだ}いを{断|ことわ}った。",
+            "id": "Dia sedang tidak sibuk, padahal ia menolak membantu pindahan.",
+            "en": "She was free, yet she refused to help with the move."
+          }
+        ],
+        "pitfalls": [
+          "〜くせに mengandung kritik atau penghinaan, sedangkan 〜のに dapat dipakai untuk menyatakan ketidaksesuaian dengan nada yang lebih netral.",
+          "Kata sifat-na dan nomina memerlukan な atau の. ○ {暇|ひま}なくせに / {大人|おとな}のくせに. ✕ {暇|ひま}だくせに / {大人|おとな}だくせに.",
+          "Hindari memakai 〜くせに untuk mengkritik atasan atau orang yang perlu dihormati karena nadanya kasar."
+        ],
+        "tags": [
+          "concession",
+          "negative"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:31:51.573Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -8469,8 +8977,115 @@
         "extractedAt": "2026-10-02T09:06:43.130Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜なんか／〜なんて／〜など",
+        "senseLabel": "contoh tidak terbatas",
+        "meaningId": "Menyebut contoh tanpa membatasi hanya pada hal yang disebut.",
+        "meaningEn": "Giving examples without limiting the scope to the items mentioned.",
+        "connections": [
+          {
+            "form": "n",
+            "pattern": "なんか／なんて／など"
+          },
+          {
+            "form": "v-te",
+            "pattern": "なんか／なんて／など"
+          },
+          {
+            "form": "i-adj-ku",
+            "pattern": "なんか／なんて／など"
+          },
+          {
+            "form": "na-adj-stem",
+            "pattern": "でなんか／でなんて／でなど"
+          },
+          {
+            "form": "plain",
+            "pattern": "なんて／など"
+          }
+        ],
+        "formation": [
+          {
+            "label": "nomina",
+            "input": "N",
+            "rule": "Tambahkan langsung setelah nomina.",
+            "output": "N + なんか／なんて／など",
+            "note": null
+          },
+          {
+            "label": "kata kerja bentuk te",
+            "input": "V",
+            "rule": "Ubah kata kerja ke bentuk te, lalu tambahkan bentuk yang dipilih.",
+            "output": "V-te + なんか／なんて／など",
+            "note": null
+          },
+          {
+            "label": "kata sifat-i",
+            "input": "i-adj",
+            "rule": "Ubah akhiran い menjadi く, lalu tambahkan bentuk yang dipilih.",
+            "output": "i-adj-ku + なんか／なんて／など",
+            "note": null
+          },
+          {
+            "label": "kata sifat-na",
+            "input": "na-adj",
+            "rule": "Tambahkan で, lalu tambahkan bentuk yang dipilih.",
+            "output": "na-adj-stem + でなんか／でなんて／でなど",
+            "note": null
+          },
+          {
+            "label": "bentuk biasa",
+            "input": "plain",
+            "rule": "Untuk なんて dan など, bentuk biasa atau klausa juga dapat diikuti langsung oleh pola ini.",
+            "output": "plain + なんて／など",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "なんか、なんて, dan など dipakai untuk mengangkat nomina, keadaan, atau tindakan sebagai salah satu contoh. Hal yang disebut bukan batas daftar; hal lain yang sejenis juga dapat termasuk.",
+          "Dalam arti ini, ketiganya sering setara dengan “seperti”, “misalnya”, atau “dan sebagainya”. なんか dan なんて lebih lazim dalam percakapan, sedangkan など lebih netral dan sering muncul dalam ragam yang lebih resmi atau tulisan.",
+          "Jangan mencampurkan pemakaian contoh ini dengan なんか atau なんて yang dipakai untuk meremehkan sesuatu atau merendahkan diri. Pada pola ini, fungsi utamanya adalah menunjukkan bahwa contoh yang disebut tidak lengkap."
+        ],
+        "examples": [
+          {
+            "jp": "{台所|だいどころ}には、{塩|しお}や{砂糖|さとう}__など__の{調味料|ちょうみりょう}がそろっている。",
+            "id": "Di dapur tersedia bumbu seperti garam, gula, dan sebagainya.",
+            "en": "The kitchen is stocked with seasonings such as salt, sugar, and so on."
+          },
+          {
+            "jp": "{週末|しゅうまつ}には、{映画|えいが}__なんか__を{見|み}て{過|す}ごすことが{多|おお}い。",
+            "id": "Pada akhir pekan, saya sering menghabiskan waktu dengan menonton film dan sebagainya.",
+            "en": "On weekends, I often spend my time watching movies and things like that."
+          },
+          {
+            "jp": "{大|おお}きなプレゼントは{要|い}りません。{手紙|てがみ}__なんて__もらえたら、{十分|じゅうぶん}うれしいです。",
+            "id": "Saya tidak memerlukan hadiah besar. Menerima sesuatu seperti surat saja sudah membuat saya sangat senang.",
+            "en": "I do not need a big present. I would be very happy to receive something like a letter."
+          },
+          {
+            "jp": "{出発|しゅっぱつ}する{前|まえ}に、{天気|てんき}を{確認|かくにん}する__など__しておくと、{安心|あんしん}です。",
+            "id": "Akan lebih tenang jika sebelumnya melakukan hal seperti memeriksa cuaca sebelum berangkat.",
+            "en": "It is reassuring to do things such as checking the weather before leaving."
+          }
+        ],
+        "pitfalls": [
+          "Bentuk ini menunjukkan daftar terbuka. Jangan memakainya jika unsur yang disebut benar-benar merupakan satu-satunya hal yang dimaksud.",
+          "なんか dan なんて juga dapat dipakai untuk meremehkan sesuatu atau merendahkan diri. Makna tersebut berbeda dari pemakaian sebagai contoh tidak terbatas.",
+          "なんか dan なんて cenderung lebih lisan, sedangkan など lebih cocok untuk konteks netral, resmi, atau tulisan."
+        ],
+        "tags": [
+          "example",
+          "casual",
+          "formal"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:32:34.387Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -8500,8 +9115,120 @@
         "extractedAt": "2026-10-02T09:06:43.130Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜なんか／〜なんて／〜など",
+        "senseLabel": "menyepelekan hal yang disebut",
+        "meaningId": "Meremehkan atau menyepelekan hal yang disebut.",
+        "meaningEn": "To disparage or dismiss the thing mentioned.",
+        "connections": [
+          {
+            "form": "n",
+            "pattern": "なんか／なんて／など"
+          },
+          {
+            "form": "v-te",
+            "pattern": "なんか／なんて／など"
+          },
+          {
+            "form": "i-adj-ku",
+            "pattern": "なんか／なんて／など"
+          },
+          {
+            "form": "na-adj-stem",
+            "pattern": "でなんか／でなんて／でなど"
+          },
+          {
+            "form": "sentence",
+            "pattern": "なんて／など",
+            "note": "Dapat mengikuti klausa utuh untuk meremehkan atau menyangkal isi klausa tersebut."
+          }
+        ],
+        "formation": [
+          {
+            "label": "nomina",
+            "input": "N",
+            "rule": "Tambahkan salah satu bentuk untuk meremehkan nomina yang disebut.",
+            "output": "N + なんか／なんて／など",
+            "note": null
+          },
+          {
+            "label": "kata kerja bentuk te",
+            "input": "Vて",
+            "rule": "Tambahkan salah satu bentuk setelah bentuk te, sering dalam kalimat negatif untuk menyangkal dengan tegas.",
+            "output": "Vて + なんか／なんて／など",
+            "note": null
+          },
+          {
+            "label": "kata sifat-i bentuk ku",
+            "input": "Aく",
+            "rule": "Tambahkan salah satu bentuk setelah bentuk ku.",
+            "output": "Aく + なんか／なんて／など",
+            "note": null
+          },
+          {
+            "label": "kata sifat-na",
+            "input": "Aで",
+            "rule": "Tambahkan salah satu bentuk setelah de.",
+            "output": "Aで + なんか／なんて／など",
+            "note": null
+          },
+          {
+            "label": "klausa",
+            "input": "klausa utuh",
+            "rule": "Tambahkan なんて atau など setelah klausa untuk menunjukkan sikap meremehkan terhadap isi klausa.",
+            "output": "klausa + なんて／など",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜なんか／〜なんて／〜など dipakai ketika pembicara menyebut sesuatu sambil memperlakukannya sebagai hal yang tidak penting, tidak layak, rendah, atau tidak perlu dianggap serius. Sikap ini dapat terdengar meremehkan, menolak, atau menyangkal dengan kuat.",
+          "Dalam percakapan, なんか paling umum. なんて sering membawa nada emosional seperti heran atau mencemooh, sedangkan など cenderung lebih formal atau tertulis. Dalam kalimat negatif, pola ini kerap memperkuat penyangkalan, seolah-olah pembicara berkata bahwa hal tersebut sama sekali tidak berlaku."
+        ],
+        "examples": [
+          {
+            "jp": "{私|わたし}は、あんな{安|やす}い{店|みせ}__なんか__、もう{行|い}かない。",
+            "id": "Saya tidak akan pergi lagi ke tempat murah seperti itu.",
+            "en": "I will not go to a cheap place like that again."
+          },
+          {
+            "jp": "{彼|かれ}は{失敗|しっぱい}して__なんか__いない。",
+            "id": "Dia sama sekali tidak gagal.",
+            "en": "He has not failed at all."
+          },
+          {
+            "jp": "この{服|ふく}は{高|たか}く__なんて__ないから、{遠慮|えんりょ}しないで。",
+            "id": "Pakaian ini tidak mahal sama sekali, jadi jangan sungkan.",
+            "en": "These clothes are not expensive at all, so do not hesitate."
+          },
+          {
+            "jp": "こんな{小|ちい}さな{問題|もんだい}__など__、すぐに{解決|かいけつ}できる。",
+            "id": "Masalah kecil seperti ini dapat segera diselesaikan.",
+            "en": "A small problem like this can be solved right away."
+          },
+          {
+            "jp": "その{試験|しけん}は{簡単|かんたん}__でなんか__ない。",
+            "id": "Ujian itu sama sekali tidak mudah.",
+            "en": "That exam is not easy at all."
+          }
+        ],
+        "pitfalls": [
+          "Pola ini berbeda dari pemakaian yang hanya memberi contoh. Dalam sense ini, konteks harus menunjukkan sikap meremehkan, menolak, atau menyangkal.",
+          "Pemakaian untuk merujuk pada orang dapat terdengar kasar karena menunjukkan bahwa pembicara memandang rendah orang tersebut.",
+          "なんか paling lazim dalam percakapan sehari-hari, sedangkan など lebih cocok untuk ragam yang lebih resmi atau tulisan."
+        ],
+        "tags": [
+          "emphasis",
+          "judgment",
+          "negative"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:33:07.816Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -8530,8 +9257,117 @@
         "extractedAt": "2026-10-02T09:06:43.130Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜なんか／〜なんて／〜など",
+        "senseLabel": "merendahkan diri",
+        "meaningId": "Mengecilkan kemampuan, posisi, atau nilai diri sendiri dengan rendah hati.",
+        "meaningEn": "To modestly downplay one's own ability, position, or worth.",
+        "connections": [
+          {
+            "form": "v-te",
+            "pattern": "なんか／なんて／など"
+          },
+          {
+            "form": "i-adj-ku",
+            "pattern": "なんか／なんて／など"
+          },
+          {
+            "form": "na-adj-stem",
+            "pattern": "でなんか／でなんて／でなど"
+          },
+          {
+            "form": "n",
+            "pattern": "なんか／なんて／など"
+          },
+          {
+            "form": "plain",
+            "pattern": "なんて／など"
+          },
+          {
+            "form": "sentence",
+            "pattern": "なんて／など",
+            "note": "Klausa dapat berupa kalimat biasa atau kalimat sopan."
+          }
+        ],
+        "formation": [
+          {
+            "label": "Nomina",
+            "input": "N",
+            "rule": "Tambahkan なんか、なんて、atau など setelah nomina.",
+            "output": "N + なんか／なんて／など",
+            "note": null
+          },
+          {
+            "label": "Kata kerja",
+            "input": "V bentuk te",
+            "rule": "Tambahkan なんか、なんて、atau など setelah bentuk te.",
+            "output": "Vて + なんか／なんて／など",
+            "note": null
+          },
+          {
+            "label": "Kata sifat-i",
+            "input": "Akhiran い",
+            "rule": "Ubah い menjadi く, lalu tambahkan なんか、なんて、atau など.",
+            "output": "Aく + なんか／なんて／など",
+            "note": null
+          },
+          {
+            "label": "Kata sifat-na",
+            "input": "Akar kata sifat-na",
+            "rule": "Tambahkan で, lalu tambahkan なんか、なんて、atau など.",
+            "output": "Aで + なんか／なんて／など",
+            "note": null
+          },
+          {
+            "label": "Klausa biasa",
+            "input": "Bentuk biasa atau kalimat",
+            "rule": "Tambahkan なんて atau など setelah klausa untuk menilai isi klausa itu rendah atau tidak layak bagi diri sendiri.",
+            "output": "klausa + なんて／など",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "Pola ini menambahkan なんか、なんて、atau など pada diri, kemampuan, jabatan, atau tindakan pembicara untuk mengecilkan nilainya. Nuansanya sering berupa kerendahan hati, seperti “orang seperti saya” atau “saya tidak mungkin mampu melakukannya”.",
+          "Konteks harus menunjukkan bahwa pembicara sedang merendahkan dirinya sendiri, misalnya dengan menyebut kemampuan yang belum memadai atau posisi yang tidak pantas. Pada sense ini, pola tersebut bukan sekadar penanda contoh dan bukan terutama untuk meremehkan orang lain."
+        ],
+        "examples": [
+          {
+            "jp": "{私|わたし}__なんか__、{皆|みな}さんの{前|まえ}で{意見|いけん}を{言|い}える{立場|たちば}ではありません。",
+            "id": "Orang seperti saya tidak berada dalam posisi untuk menyampaikan pendapat di depan kalian semua.",
+            "en": "Someone like me is not in a position to voice an opinion in front of everyone."
+          },
+          {
+            "jp": "{日本語|にほんご}で{発表|はっぴょう}__など__できません。",
+            "id": "Saya tidak mampu melakukan presentasi dalam bahasa Jepang.",
+            "en": "I cannot do something like giving a presentation in Japanese."
+          },
+          {
+            "jp": "こんな{大切|たいせつ}な{仕事|しごと}は、{私|わたし}に__なんて__{任|まか}せないでください。",
+            "id": "Tolong jangan menyerahkan pekerjaan sepenting ini kepada orang seperti saya.",
+            "en": "Please do not entrust such an important job to someone like me."
+          },
+          {
+            "jp": "{私|わたし}のような{未経験者|みけいけんしゃ}が、{専門家|せんもんか}に__など__なれません。",
+            "id": "Orang yang belum berpengalaman seperti saya tidak mungkin menjadi ahli.",
+            "en": "An inexperienced person like me cannot become an expert."
+          }
+        ],
+        "pitfalls": [
+          "Jangan menafsirkan semua なんか／なんて／など sebagai penanda contoh. Dalam sense ini, unsur yang disebut sengaja dipandang rendah oleh pembicara.",
+          "Gunakan pola ini ketika yang dikecilkan adalah diri sendiri, kemampuan sendiri, atau kedudukan sendiri. Untuk meremehkan hal atau orang lain, gunakan sense meremehkan dalam family yang sama.",
+          "なんか lebih lazim dalam percakapan santai, sedangkan など terdengar lebih formal. なんて sering memberi penekanan emosional."
+        ],
+        "tags": [
+          "judgment"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:33:17.902Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -8562,8 +9398,102 @@
         "extractedAt": "2026-10-02T09:06:43.130Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜おかげで",
+        "senseLabel": null,
+        "meaningId": "berkat; karena suatu sebab menghasilkan hasil baik",
+        "meaningEn": "thanks to; because of a cause that brings a good result",
+        "connections": [
+          {
+            "form": "v-plain",
+            "pattern": "おかげで"
+          },
+          {
+            "form": "i-adj-plain",
+            "pattern": "おかげで"
+          },
+          {
+            "form": "na-adj-na",
+            "pattern": "おかげで"
+          },
+          {
+            "form": "n-no",
+            "pattern": "おかげで"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Kata kerja",
+            "input": "V{普通形|ふつうけい}",
+            "rule": "Tambahkan おかげで setelah bentuk biasa kata kerja.",
+            "output": "V{普通形|ふつうけい} + おかげで",
+            "note": null
+          },
+          {
+            "label": "Kata sifat-i",
+            "input": "イA{普通形|ふつうけい}",
+            "rule": "Tambahkan おかげで setelah bentuk biasa kata sifat-i.",
+            "output": "イA{普通形|ふつうけい} + おかげで",
+            "note": null
+          },
+          {
+            "label": "Kata sifat-na",
+            "input": "ナAな",
+            "rule": "Gunakan bentuk な, lalu tambahkan おかげで.",
+            "output": "ナAな + おかげで",
+            "note": null
+          },
+          {
+            "label": "Nomina",
+            "input": "Nの",
+            "rule": "Tambahkan の pada nomina, lalu ikuti dengan おかげで.",
+            "output": "Nの + おかげで",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜おかげで menyatakan sebab yang menghasilkan akibat baik atau keadaan yang dinilai menguntungkan. Penyebabnya dapat berupa tindakan, keadaan, orang, maupun hal lain.",
+          "Pola ini sering menyiratkan rasa syukur atau penghargaan pembicara terhadap penyebab tersebut. Hasil positif biasanya disebutkan pada bagian setelah おかげで."
+        ],
+        "examples": [
+          {
+            "jp": "{友人|ゆうじん}が{手伝|てつだ}ってくれた__おかげで__、{引|ひ}っ{越|こ}しが{早|はや}く{終|お}わった。",
+            "id": "Berkat bantuan teman saya, proses pindahan selesai lebih cepat.",
+            "en": "Thanks to my friend helping me, the move was finished quickly."
+          },
+          {
+            "jp": "{毎日|まいにち}{復習|ふくしゅう}した__おかげで__、{試験|しけん}でいい{点|てん}が{取|と}れた。",
+            "id": "Berkat mengulang pelajaran setiap hari, saya mendapat nilai bagus dalam ujian.",
+            "en": "Thanks to reviewing every day, I got a good score on the exam."
+          },
+          {
+            "jp": "{部屋|へや}が{静|しず}かな__おかげで__、よく{眠|ねむ}れた。",
+            "id": "Berkat kamar yang tenang, saya bisa tidur nyenyak.",
+            "en": "Thanks to the room being quiet, I was able to sleep well."
+          },
+          {
+            "jp": "{家族|かぞく}の__おかげで__、{安心|あんしん}して{治療|ちりょう}を{続|つづ}けられた。",
+            "id": "Berkat keluarga saya, saya dapat melanjutkan pengobatan dengan tenang.",
+            "en": "Thanks to my family, I was able to continue my treatment with peace of mind."
+          }
+        ],
+        "pitfalls": [
+          "Untuk akibat buruk, biasanya gunakan せいで, bukan おかげで.",
+          "Kata sifat-na harus memakai な. ○ げんきなおかげで. ✕ げんきだおかげで.",
+          "Pola ini menyatakan sebab, bukan tujuan. Jangan gunakan untuk arti \"agar\"."
+        ],
+        "tags": [
+          "reason",
+          "positive"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:33:33.537Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -8594,8 +9524,107 @@
         "extractedAt": "2026-10-02T09:07:27.161Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜せい",
+        "senseLabel": null,
+        "meaningId": "gara-gara; penyebab yang menimbulkan akibat buruk",
+        "meaningEn": "because of; due to a cause with an undesirable result",
+        "connections": [
+          {
+            "form": "v-plain",
+            "pattern": "せいだ／せいで／せいか"
+          },
+          {
+            "form": "i-adj-plain",
+            "pattern": "せいだ／せいで／せいか"
+          },
+          {
+            "form": "na-adj-na",
+            "pattern": "せいだ／せいで／せいか"
+          },
+          {
+            "form": "n-no",
+            "pattern": "せいだ／せいで／せいか"
+          }
+        ],
+        "formation": [
+          {
+            "label": "kata kerja",
+            "input": "V bentuk biasa",
+            "rule": "Tambahkan せい untuk menyatakan bahwa tindakan atau keadaan tersebut menjadi penyebab hasil buruk.",
+            "output": "V plain + せいだ／せいで／せいか",
+            "note": null
+          },
+          {
+            "label": "kata sifat-i",
+            "input": "Adjektiva-i bentuk biasa",
+            "rule": "Tambahkan せい setelah bentuk biasa kata sifat-i.",
+            "output": "i-adj plain + せいだ／せいで／せいか",
+            "note": null
+          },
+          {
+            "label": "kata sifat-na",
+            "input": "Adjektiva-na + な",
+            "rule": "Gunakan な sebelum せい pada bentuk afirmatif.",
+            "output": "na-adj + な + せいだ／せいで／せいか",
+            "note": null
+          },
+          {
+            "label": "nomina",
+            "input": "Nomina + の",
+            "rule": "Gunakan の untuk menghubungkan nomina dengan せい.",
+            "output": "N + の + せいだ／せいで／せいか",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜せい menyatakan penyebab suatu hasil yang tidak diinginkan, merugikan, atau menyulitkan. Pola ini sering menyiratkan keluhan, penyesalan, atau kecenderungan menyalahkan penyebab tersebut.",
+          "〜せいだ dipakai untuk menyatakan penyebab sebagai predikat. 〜せいで menghubungkan penyebab dengan akibat berikutnya. 〜せいか dipakai ketika pembicara menduga suatu penyebab, tetapi tidak yakin sepenuhnya."
+        ],
+        "examples": [
+          {
+            "jp": "{大|おお}きな{事故|じこ}で{電車|でんしゃ}が{止|と}まった__せいで__、{会議|かいぎ}に{遅|おく}れた。",
+            "id": "Gara-gara kereta berhenti karena kecelakaan besar, saya terlambat ke rapat.",
+            "en": "Because the train stopped due to a major accident, I was late for the meeting."
+          },
+          {
+            "jp": "{昨夜|さくや}{遅|おそ}くまで{起|お}きていた__せいか__、{今日|きょう}は{集中|しゅうちゅう}できない。",
+            "id": "Entah karena semalam saya terjaga hingga larut, hari ini saya tidak bisa berkonsentrasi.",
+            "en": "Perhaps because I stayed up late last night, I cannot concentrate today."
+          },
+          {
+            "jp": "この{部屋|へや}は{狭|せま}い__せいで__、{荷物|にもつ}を{全部|ぜんぶ}{置|お}けない。",
+            "id": "Gara-gara kamar ini sempit, saya tidak bisa menaruh semua barang.",
+            "en": "Because this room is small, I cannot put all the luggage here."
+          },
+          {
+            "jp": "{彼|かれ}の__せいで__、みんなの{予定|よてい}が{変|か}わってしまった。",
+            "id": "Gara-gara dia, rencana semua orang jadi berubah.",
+            "en": "Because of him, everyone's plans ended up changing."
+          },
+          {
+            "jp": "この{辺|あた}りの{道|みち}が{複雑|ふくざつ}な__せいで__、{目的地|もくてきち}に{着|つ}くまで{時間|じかん}がかかった。",
+            "id": "Karena jalan di sekitar sini rumit, kami memerlukan waktu untuk sampai ke tujuan.",
+            "en": "Because the roads around here are complicated, it took us time to reach the destination."
+          }
+        ],
+        "pitfalls": [
+          "〜せい biasanya digunakan untuk akibat buruk atau tidak menyenangkan. Untuk hasil yang baik, biasanya gunakan おかげ.",
+          "〜せいか menunjukkan dugaan penyebab yang tidak pasti, bukan kepastian.",
+          "Pada adjektiva-na afirmatif gunakan な, sedangkan pada nomina gunakan の sebelum せい."
+        ],
+        "tags": [
+          "reason",
+          "negative"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:33:55.273Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -8625,8 +9654,101 @@
         "extractedAt": "2026-10-02T09:07:27.161Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜かわりに",
+        "senseLabel": null,
+        "meaningId": "sebagai pengganti",
+        "meaningEn": "instead of; as a substitute",
+        "connections": [
+          {
+            "form": "v-plain",
+            "pattern": "かわりに"
+          },
+          {
+            "form": "i-adj-plain",
+            "pattern": "かわりに"
+          },
+          {
+            "form": "na-adj-na",
+            "pattern": "かわりに"
+          },
+          {
+            "form": "n-no",
+            "pattern": "かわりに"
+          }
+        ],
+        "formation": [
+          {
+            "label": "kata kerja",
+            "input": "kata kerja bentuk biasa",
+            "rule": "Tambahkan かわりに setelah bentuk biasa.",
+            "output": "V bentuk biasa + かわりに",
+            "note": null
+          },
+          {
+            "label": "kata sifat-i",
+            "input": "kata sifat-i bentuk biasa",
+            "rule": "Tambahkan かわりに setelah bentuk biasa.",
+            "output": "A-i bentuk biasa + かわりに",
+            "note": null
+          },
+          {
+            "label": "kata sifat-na",
+            "input": "kata sifat-na",
+            "rule": "Tambahkan なかわりに.",
+            "output": "A-na + なかわりに",
+            "note": null
+          },
+          {
+            "label": "nomina",
+            "input": "nomina",
+            "rule": "Tambahkan のかわりに.",
+            "output": "N + のかわりに",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜かわりに menyatakan bahwa sesuatu pada bagian setelahnya dipilih, dilakukan, atau diberikan untuk menggantikan sesuatu pada bagian sebelumnya. Penggantian ini dapat melibatkan benda, orang, peran, tindakan, maupun waktu.",
+          "Jika diikuti klausa tindakan, bagian belakang sering menunjukkan tindakan atau waktu sebagai kompensasi atas tindakan di depan. Hubungan kedua bagian harus berupa penggantian atau pertukaran, bukan sekadar alasan.",
+          "Untuk nomina gunakan Nのかわりに, sedangkan kata sifat-na memakai bentuk なかわりに. Kata かわり juga dapat ditulis {代|か}わり, tetapi penulisan kana umum dipakai dalam pola ini."
+        ],
+        "examples": [
+          {
+            "jp": "{砂糖|さとう}の__かわりに__、はちみつを{入|い}れました。",
+            "id": "Saya memasukkan madu sebagai pengganti gula.",
+            "en": "I added honey instead of sugar."
+          },
+          {
+            "jp": "{監督|かんとく}の__かわりに__、{助監督|じょかんとく}が{会見|かいけん}に{出|で}ました。",
+            "id": "Asisten sutradara menghadiri konferensi pers sebagai pengganti sutradara.",
+            "en": "The assistant director attended the press conference instead of the director."
+          },
+          {
+            "jp": "{夜勤|やきん}を{引|ひ}き{受|う}けた__かわりに__、{来週|らいしゅう}は{二日|ふつか}{休|やす}めます。",
+            "id": "Sebagai imbalan karena mengambil giliran kerja malam, saya bisa libur dua hari minggu depan.",
+            "en": "In exchange for taking the night shift, I can take two days off next week."
+          },
+          {
+            "jp": "{海外|かいがい}にいる{弟|おとうと}の__かわりに__、{私|わたし}が{両親|りょうしん}の{手伝|てつだ}いをしています。",
+            "id": "Sebagai pengganti adik laki-laki saya yang berada di luar negeri, saya membantu orang tua kami.",
+            "en": "I help our parents in place of my younger brother, who is abroad."
+          }
+        ],
+        "pitfalls": [
+          "Untuk nomina, jangan memakai N + かわりに. Gunakan Nのかわりに.",
+          "Jangan memakai pola ini hanya untuk menyatakan sebab. Unsur setelahnya harus berfungsi sebagai pengganti atau kompensasi bagi unsur sebelumnya."
+        ],
+        "tags": [
+          "contrast"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:34:43.385Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -8664,8 +9786,64 @@
         "extractedAt": "2026-10-02T09:08:14.428Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜にかわって／〜にかわり",
+        "senseLabel": null,
+        "meaningId": "sebagai pengganti N",
+        "meaningEn": "in place of N; replacing N",
+        "connections": [
+          {
+            "form": "n",
+            "pattern": "にかわって／にかわり",
+            "note": "N menyatakan orang, peran, atau hal yang digantikan sebagai pelaku atau subjek."
+          }
+        ],
+        "formation": [
+          {
+            "label": "Nomina",
+            "input": "N",
+            "rule": "Tambahkan にかわって atau にかわり setelah nomina.",
+            "output": "Nにかわって／にかわり",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜にかわって／〜にかわり menyatakan bahwa seseorang, peran, atau suatu hal mengambil tempat N sebagai pelaku, wakil, atau unsur utama. Maknanya adalah “sebagai pengganti N” atau “menggantikan N”.",
+          "Pola ini terutama dipakai ketika yang digantikan dapat menjadi subjek atau pelaku tindakan. 〜にかわり adalah bentuk yang lebih ringkas dan sering terasa lebih resmi atau tertulis daripada 〜にかわって."
+        ],
+        "examples": [
+          {
+            "jp": "{店長|てんちょう}__にかわって__、{副店長|ふくてんちょう}が{会議|かいぎ}に{出席|しゅっせき}します。",
+            "id": "Sebagai pengganti manajer toko, wakil manajer menghadiri rapat.",
+            "en": "In place of the store manager, the deputy manager will attend the meeting."
+          },
+          {
+            "jp": "{父|ちち}__にかわって__、{姉|あね}が{式|しき}で{家族|かぞく}を{代表|だいひょう}した。",
+            "id": "Sebagai pengganti ayah, kakak perempuan saya mewakili keluarga dalam acara tersebut.",
+            "en": "In place of my father, my older sister represented the family at the ceremony."
+          },
+          {
+            "jp": "{古|ふる}い{制度|せいど}__にかわり__、{新|あたら}しい{制度|せいど}が{導入|どうにゅう}された。",
+            "id": "Sistem baru diperkenalkan untuk menggantikan sistem lama.",
+            "en": "A new system was introduced in place of the old one."
+          }
+        ],
+        "pitfalls": [
+          "Pola ini tidak digunakan untuk sekadar memilih barang pengganti sebagai objek permintaan. Untuk makna tersebut, gunakan のかわりに.",
+          "✕ {紅茶|こうちゃ}にかわって、{水|みず}をください。",
+          "○ {紅茶|こうちゃ}のかわりに、{水|みず}をください。"
+        ],
+        "tags": [
+          "topic"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:34:13.478Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -8728,8 +9906,105 @@
         "extractedAt": "2026-10-02T09:10:47.154Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜くらい／ほど",
+        "senseLabel": null,
+        "meaningId": "menunjukkan derajat hingga setara dengan contoh yang disebutkan",
+        "meaningEn": "indicates a degree comparable to the stated example",
+        "connections": [
+          {
+            "form": "v-plain",
+            "pattern": "くらい／ぐらい／ほど"
+          },
+          {
+            "form": "i-adj-plain",
+            "pattern": "くらい／ぐらい／ほど"
+          },
+          {
+            "form": "na-adj-na",
+            "pattern": "くらい／ぐらい／ほど"
+          },
+          {
+            "form": "n",
+            "pattern": "くらい／ぐらい／ほど"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Kata kerja",
+            "input": "V bentuk biasa",
+            "rule": "Tambahkan くらい／ぐらい／ほど setelah bentuk biasa.",
+            "output": "V biasa + くらい／ぐらい／ほど",
+            "note": null
+          },
+          {
+            "label": "Kata sifat-i",
+            "input": "Kata sifat-i bentuk biasa",
+            "rule": "Tambahkan くらい／ぐらい／ほど setelah bentuk biasa.",
+            "output": "i-adj biasa + くらい／ぐらい／ほど",
+            "note": null
+          },
+          {
+            "label": "Kata sifat-na",
+            "input": "Kata sifat-na + な",
+            "rule": "Tambahkan くらい／ぐらい／ほど setelah な.",
+            "output": "na-adj + な + くらい／ぐらい／ほど",
+            "note": null
+          },
+          {
+            "label": "Nomina",
+            "input": "Nomina",
+            "rule": "Tambahkan くらい／ぐらい／ほど langsung setelah nomina.",
+            "output": "N + くらい／ぐらい／ほど",
+            "note": null
+          }
+        ],
+        "variants": [
+          "〜ぐらい"
+        ],
+        "explanation": [
+          "〜くらい／ぐらい／ほど menyatakan derajat suatu keadaan atau tindakan dengan memakai contoh sebagai patokan. Dalam bahasa Indonesia, pola ini sering berarti \"sampai\", \"sebegitu\", atau \"cukup ... untuk\".",
+          "Bagian sebelum pola menunjukkan contoh atau batas derajatnya, sedangkan bagian sesudahnya menjelaskan keadaan yang terjadi pada derajat tersebut.",
+          "くらい dan ぐらい pada dasarnya setara. くらい lebih lazim dalam bentuk standar, sedangkan ぐらい sering terdengar dalam percakapan. ほど cenderung terasa lebih formal atau tegas.",
+          "Pola ini berbeda dari pemakaian くらい untuk jumlah kira-kira. Pada kartu ini, fokusnya adalah derajat yang digambarkan melalui contoh."
+        ],
+        "examples": [
+          {
+            "jp": "{緊張|きんちょう}で{声|こえ}が{出|で}ない__ほど__、{大勢|おおぜい}の{前|まえ}で{話|はな}すのが{苦手|にがて}だ。",
+            "id": "Saya sangat gugup sampai tidak bisa mengeluarkan suara; saya tidak pandai berbicara di depan banyak orang.",
+            "en": "I get so nervous that I cannot speak; I am not good at talking in front of a crowd."
+          },
+          {
+            "jp": "この{本|ほん}は{小学生|しょうがくせい}でも{読|よ}める__くらい__やさしい。",
+            "id": "Buku ini cukup mudah sampai siswa sekolah dasar pun dapat membacanya.",
+            "en": "This book is easy enough for even elementary school students to read."
+          },
+          {
+            "jp": "{一円玉|いちえんだま}__ほど__の{大|おお}きさの{種|たね}が、{土|つち}から{出|で}てきた。",
+            "id": "Biji yang ukurannya kira-kira sebesar uang logam satu yen muncul dari tanah.",
+            "en": "Seeds about the size of one-yen coins emerged from the soil."
+          },
+          {
+            "jp": "この{部屋|へや}は、{外|そと}の{雨|あめ}の{音|おと}がよく{聞|き}こえる__くらい__{静|しず}かだ。",
+            "id": "Kamar ini begitu sunyi sampai suara hujan di luar terdengar jelas.",
+            "en": "This room is so quiet that the sound of rain outside can be heard clearly."
+          }
+        ],
+        "pitfalls": [
+          "Jangan mencampurkan pola ini dengan くらい untuk perkiraan jumlah, seperti {三|さん}{時間|じかん}くらい yang berarti \"sekitar tiga jam\".",
+          "Setelah kata sifat-na, gunakan な. ○ {静|しず}かなくらい. ✕ {静|しず}かくらい.",
+          "ほど dapat terdengar lebih formal atau lebih tegas daripada くらい, tetapi keduanya dapat menyatakan derajat yang sama dalam banyak konteks."
+        ],
+        "tags": [
+          "degree"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:35:19.356Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -8774,8 +10049,82 @@
         "extractedAt": "2026-10-02T09:10:47.154Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜ほど",
+        "senseLabel": "perbandingan derajat",
+        "meaningId": "semakin tinggi derajat suatu sifat, semakin kuat kecenderungan atau penilaian berikutnya",
+        "meaningEn": "the greater the degree of a quality, the stronger the following tendency or evaluation",
+        "connections": [
+          {
+            "form": "i-adj",
+            "pattern": "ほど"
+          },
+          {
+            "form": "other",
+            "pattern": "ほど",
+            "note": "Dipakai setelah frasa kata sifat-na + nomina, misalnya {静|しず}かな{場所|ばしょ}ほど."
+          }
+        ],
+        "formation": [
+          {
+            "label": "kata sifat-i",
+            "input": "bentuk -i",
+            "rule": "Tambahkan ほど.",
+            "output": "Aいほど",
+            "note": null
+          },
+          {
+            "label": "kata sifat-na + nomina",
+            "input": "Aな + N",
+            "rule": "Tambahkan ほど setelah nomina.",
+            "output": "AなNほど",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "Pola ほど menyatakan bahwa makin tinggi derajat suatu sifat, makin kuat pula kecenderungan, penilaian, atau hasil yang disebutkan sesudahnya. Unsur sebelum ほど menjadi tolok ukur perbandingan.",
+          "Dengan kata sifat-i, ほど dapat langsung mengikuti kata sifat tersebut. Dengan kata sifat-na, pola ini biasanya mengikuti nomina yang diterangkan oleh kata sifat-na.",
+          "Pola ini sering diterjemahkan sebagai \"semakin ...\", \"yang lebih ...\", atau \"makin ...\" sesuai konteks. Dalam makna perbandingan ini, ほど tidak dapat diganti dengan くらい."
+        ],
+        "examples": [
+          {
+            "jp": "{若|わか}い{人|ひと}__ほど__、{朝|あさ}の{会議|かいぎ}に{遅|おく}れがちだ。",
+            "id": "Semakin muda seseorang, semakin ia cenderung terlambat ke rapat pagi.",
+            "en": "The younger a person is, the more likely they are to be late for morning meetings."
+          },
+          {
+            "jp": "{静|しず}かな{場所|ばしょ}__ほど__、{仕事|しごと}に{集中|しゅうちゅう}しやすい。",
+            "id": "Semakin tenang tempatnya, semakin mudah berkonsentrasi pada pekerjaan.",
+            "en": "The quieter the place is, the easier it is to concentrate on work."
+          },
+          {
+            "jp": "{経験|けいけん}が{豊富|ほうふ}な{社員|しゃいん}__ほど__、{問題|もんだい}への{対応|たいおう}が{早|はや}い。",
+            "id": "Semakin berpengalaman pegawainya, semakin cepat penanganan masalahnya.",
+            "en": "The more experienced an employee is, the faster they handle problems."
+          },
+          {
+            "jp": "{値段|ねだん}が{高|たか}い__ほど__、{品質|ひんしつ}がよいとは{限|かぎ}らない。",
+            "id": "Semakin mahal harganya, belum tentu semakin baik kualitasnya.",
+            "en": "A higher price does not necessarily mean better quality."
+          }
+        ],
+        "pitfalls": [
+          "Dalam makna perbandingan ini, ほど tidak dapat diganti dengan くらい.",
+          "Untuk kata sifat-na, ほど mengikuti nomina yang diterangkan. ○ {静|しず}かな{場所|ばしょ}ほど. ✕ {静|しず}かほど.",
+          "Jangan menyamakan pola ini dengan 〜ば〜ほど, yang secara khusus membentuk hubungan \"semakin ... semakin ...\" melalui dua klausa."
+        ],
+        "tags": [
+          "correlation",
+          "degree"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:34:57.183Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -8836,8 +10185,102 @@
         "extractedAt": "2026-10-02T09:10:47.154Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜ば〜ほど",
+        "senseLabel": "korelasi bertingkat",
+        "meaningId": "semakin ... semakin ...",
+        "meaningEn": "the more ..., the more ...",
+        "connections": [
+          {
+            "form": "v-ba",
+            "pattern": "Vるほど"
+          },
+          {
+            "form": "i-adj",
+            "pattern": "ければイAいほど"
+          },
+          {
+            "form": "na-adj-stem",
+            "pattern": "ならばナAなほど"
+          },
+          {
+            "form": "na-adj-de-aru",
+            "pattern": "ばナAであるほど"
+          }
+        ],
+        "formation": [
+          {
+            "label": "kata kerja",
+            "input": "V bentuk ba",
+            "rule": "Ulangi kata kerja yang sama dalam bentuk kamus, lalu tambahkan ほど.",
+            "output": "VばVるほど",
+            "note": null
+          },
+          {
+            "label": "kata sifat-i",
+            "input": "kata sifat-i",
+            "rule": "Ubah i pertama menjadi ければ, ulangi kata sifat dalam bentuk dasarnya, lalu tambahkan ほど.",
+            "output": "AければAいほど",
+            "note": null
+          },
+          {
+            "label": "kata sifat-na",
+            "input": "kata sifat-na",
+            "rule": "Tambahkan ならば pada bagian pertama, lalu ulangi kata sifat dengan なほど.",
+            "output": "AならばAなほど",
+            "note": null
+          },
+          {
+            "label": "kata sifat-na resmi",
+            "input": "kata sifat-na",
+            "rule": "Gunakan であれば pada bagian pertama dan であるほど pada bagian kedua.",
+            "output": "AであればAであるほど",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "Pola 〜ば〜ほど menyatakan hubungan yang meningkat secara proporsional. Jika tingkat pada bagian pertama makin tinggi, keadaan pada bagian kedua juga makin meningkat.",
+          "Kata kerja atau kata sifat yang sama biasanya diulang dua kali. Bagian pertama memakai bentuk syarat ば, sedangkan bagian kedua diikuti ほど.",
+          "Untuk kata sifat-na, bentuk ならば〜なほど umum digunakan. Bentuk であれば〜であるほど memiliki makna yang sama, tetapi terdengar lebih resmi."
+        ],
+        "examples": [
+          {
+            "jp": "この{町|まち}は{歩|ある}けば{歩|ある}く__ほど__、{新|あたら}しい{発見|はっけん}がある。",
+            "id": "Semakin banyak berjalan di kota ini, semakin banyak penemuan baru yang ada.",
+            "en": "The more you walk around this town, the more new discoveries you make."
+          },
+          {
+            "jp": "{値段|ねだん}は{安|やす}ければ{安|やす}い__ほど__、{助|たす}かります。",
+            "id": "Semakin murah harganya, semakin meringankan bagi saya.",
+            "en": "The cheaper the price is, the more helpful it is."
+          },
+          {
+            "jp": "{部屋|へや}は{静|しず}かならば{静|しず}かな__ほど__、{仕事|しごと}に{集中|しゅうちゅう}できます。",
+            "id": "Semakin tenang kamarnya, semakin saya bisa berkonsentrasi pada pekerjaan.",
+            "en": "The quieter the room is, the better I can concentrate on my work."
+          },
+          {
+            "jp": "{経験|けいけん}が{豊富|ほうふ}であれば{豊富|ほうふ}である__ほど__、{任|まか}せられる{仕事|しごと}の{幅|はば}が{広|ひろ}がる。",
+            "id": "Semakin kaya pengalamannya, semakin luas jenis pekerjaan yang dapat dipercayakan kepadanya.",
+            "en": "The more extensive someone's experience is, the wider the range of work that can be entrusted to them."
+          }
+        ],
+        "pitfalls": [
+          "Bagian pertama memakai bentuk ば, lalu kata yang sama diulang pada bagian kedua. ○ {読|よ}めば{読|よ}むほど. ✕ {読|よ}めば{書|か}くほど.",
+          "Jangan memakai bentuk ば lagi pada bagian kedua. ○ {寒|さむ}ければ{寒|さむ}いほど. ✕ {寒|さむ}ければ{寒|さむ}ければほど.",
+          "Pola ini menunjukkan perubahan bertingkat, bukan sekadar hubungan sebab-akibat satu kali. {押|お}せば{開|あ}く hanya berarti \"jika ditekan, terbuka\"."
+        ],
+        "tags": [
+          "correlation"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:36:01.641Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -8868,8 +10311,83 @@
         "extractedAt": "2026-10-02T09:11:34.906Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜くらい／ほど〜はない",
+        "senseLabel": null,
+        "meaningId": "tidak ada yang se...",
+        "meaningEn": "there is nothing or no one as ...",
+        "connections": [
+          {
+            "form": "n",
+            "pattern": "くらい〜はいない",
+            "note": "Umumnya digunakan untuk membandingkan orang."
+          },
+          {
+            "form": "n",
+            "pattern": "ほど〜はない",
+            "note": "Umumnya digunakan untuk membandingkan benda, hal, atau peristiwa."
+          }
+        ],
+        "formation": [
+          {
+            "label": "perbandingan dengan orang",
+            "input": "N + くらい + sifat atau tindakan + {人|ひと}",
+            "rule": "Letakkan orang sebagai standar, lalu nyatakan bahwa tidak ada orang lain yang menyamainya.",
+            "output": "Nくらい...{人|ひと}はいない",
+            "note": null
+          },
+          {
+            "label": "perbandingan dengan benda atau hal",
+            "input": "N + ほど + sifat atau keadaan + もの／こと",
+            "rule": "Letakkan benda, hal, atau peristiwa sebagai standar, lalu nyatakan bahwa tidak ada yang menyamainya.",
+            "output": "Nほど...もの／ことはない",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "Pola ini menyatakan bahwa tidak ada orang, benda, atau hal lain yang menyamai standar yang disebutkan. Maknanya menekankan tingkat paling tinggi, sehingga sering setara dengan “yang paling ...”.",
+          "くらい sering muncul ketika standar perbandingannya adalah orang dan diikuti {人|ひと}はいない. ほど sering digunakan untuk benda, hal, atau peristiwa, lalu diikuti ものはない atau ことはない.",
+          "Walaupun memakai bentuk negatif, maksudnya bukan sekadar menyangkal keberadaan. Pola ini menegaskan bahwa subjek yang disebut adalah yang paling menonjol dalam sifat atau keadaan tersebut."
+        ],
+        "examples": [
+          {
+            "jp": "{姉|あね}__くらい{料理|りょうり}が{上手|じょうず}な{人|ひと}はいない__。",
+            "id": "Tidak ada orang yang pandai memasak seperti kakak perempuan saya.",
+            "en": "No one cooks as well as my older sister."
+          },
+          {
+            "jp": "{秋|あき}の{京都|きょうと}__ほど{美|うつく}しい{場所|ばしょ}はない__。",
+            "id": "Tidak ada tempat yang seindah Kyoto pada musim gugur.",
+            "en": "There is no place as beautiful as Kyoto in autumn."
+          },
+          {
+            "jp": "{健康|けんこう}__ほど{大切|たいせつ}なものはない__。",
+            "id": "Tidak ada yang sepenting kesehatan.",
+            "en": "Nothing is as important as health."
+          },
+          {
+            "jp": "{試験|しけん}の{前日|ぜんじつ}__ほど{時間|じかん}が{短|みじか}く{感|かん}じる{日|ひ}はない__。",
+            "id": "Tidak ada hari ketika waktu terasa sesingkat sehari sebelum ujian.",
+            "en": "There is no day when time feels as short as the day before an exam."
+          }
+        ],
+        "pitfalls": [
+          "Pola ini menyatakan penilaian paling tinggi dalam suatu konteks, bukan hanya arti harfiah “tidak ada”.",
+          "Gunakan いない jika yang dibandingkan adalah orang. Gunakan ない jika yang dibandingkan adalah benda, hal, atau peristiwa.",
+          "Bentuk sopannya dapat memakai いません atau ありません, misalnya {先生|せんせい}くらい{熱心|ねっしん}な{人|ひと}はいません."
+        ],
+        "tags": [
+          "degree",
+          "negation"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:36:05.961Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -8903,8 +10421,67 @@
         "extractedAt": "2026-10-02T09:38:04.361Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜ことはない",
+        "senseLabel": null,
+        "meaningId": "tidak perlu melakukan",
+        "meaningEn": "there is no need to do",
+        "connections": [
+          {
+            "form": "v-dict",
+            "pattern": "ことはない"
+          }
+        ],
+        "formation": [
+          {
+            "label": "kata kerja",
+            "input": "V bentuk kamus",
+            "rule": "Tambahkan ことはない setelah kata kerja bentuk kamus.",
+            "output": "V + ことはない",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "Pola ことはない menyatakan bahwa suatu tindakan tidak diperlukan. Pembicara menilai tidak ada alasan atau kebutuhan untuk melakukan tindakan tersebut.",
+          "Pola ini sering dipakai untuk menenangkan, menasihati, atau memberi tahu bahwa seseorang boleh tidak melakukan sesuatu. Nuansanya dapat terdengar lebih tegas atau lebih formal daripada なくてもいい."
+        ],
+        "examples": [
+          {
+            "jp": "この{申請|しんせい}はオンラインでできるから、{窓口|まどぐち}へ{行|い}く__ことはない__。",
+            "id": "Karena permohonan ini bisa dilakukan secara daring, tidak perlu pergi ke loket.",
+            "en": "Since this application can be made online, there is no need to go to the counter."
+          },
+          {
+            "jp": "まだ{時間|じかん}があるので、{結論|けつろん}を{急|いそ}ぐ__ことはない__。",
+            "id": "Karena masih ada waktu, tidak perlu terburu-buru mengambil kesimpulan.",
+            "en": "There is still time, so there is no need to rush to a conclusion."
+          },
+          {
+            "jp": "{小|ちい}さな{失敗|しっぱい}で、{自分|じぶん}を{責|せ}める__ことはない__。",
+            "id": "Tidak perlu menyalahkan diri sendiri hanya karena kesalahan kecil.",
+            "en": "There is no need to blame yourself for a small mistake."
+          },
+          {
+            "jp": "この{薬|くすり}は{食後|しょくご}に{飲|の}めばいいから、{今|いま}すぐ{飲|の}む__ことはない__。",
+            "id": "Obat ini cukup diminum setelah makan, jadi tidak perlu meminumnya sekarang juga.",
+            "en": "You only need to take this medicine after a meal, so there is no need to take it right now."
+          }
+        ],
+        "pitfalls": [
+          "Pola ini diikuti kata kerja bentuk kamus. ○ {急|いそ}ぐことはない。 ✕ {急|いそ}いでことはない.",
+          "Jangan menyamakannya dengan Vたことはない, yang berarti \"belum pernah melakukan V\"."
+        ],
+        "tags": [
+          "obligation"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:35:57.766Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -8933,8 +10510,70 @@
         "extractedAt": "2026-10-02T09:12:16.855Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜ということだ",
+        "senseLabel": "penyampaian informasi",
+        "meaningId": "katanya; menyampaikan informasi atau pesan yang diterima",
+        "meaningEn": "it is said that; reporting received information or a message",
+        "connections": [
+          {
+            "form": "plain",
+            "pattern": "ということだ",
+            "note": "Bentuk perintah atau maksud juga dapat digunakan sebelum pola ini."
+          }
+        ],
+        "formation": [
+          {
+            "label": "Predikat bentuk biasa",
+            "input": "kata kerja, kata sifat-i, kata sifat-na, atau nomina bentuk biasa",
+            "rule": "Tambahkan ということだ setelah isi informasi yang diterima.",
+            "output": "bentuk biasa + ということだ",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜ということだ dipakai untuk menyampaikan kembali informasi, pesan, pengumuman, atau instruksi yang diterima dari orang atau sumber lain. Dalam bahasa Indonesia, pola ini sering berarti “katanya”, “dikabarkan bahwa”, atau “disampaikan bahwa”.",
+          "Pola ini cenderung terdengar lebih formal dan objektif daripada sekadar mengulang kabar dalam percakapan santai. Sumber informasi dapat disebutkan dengan bentuk seperti ～から atau ～によると.",
+          "Bentuk です dan でした dapat digunakan sesuai ragam serta konteks kalimat. Isi yang dilaporkan juga dapat berupa instruksi atau permintaan tidak langsung."
+        ],
+        "examples": [
+          {
+            "jp": "{部長|ぶちょう}から、{会議|かいぎ}は{十分|じゅっぷん}{遅|おく}れて{始|はじ}める__ということです__。",
+            "id": "Dari kepala bagian, disampaikan bahwa rapat akan dimulai terlambat sepuluh menit.",
+            "en": "The department manager said that the meeting would start ten minutes late."
+          },
+          {
+            "jp": "{市役所|しやくしょ}から、{来週|らいしゅう}の{説明会|せつめいかい}は{中止|ちゅうし}だ__ということです__。",
+            "id": "Dari kantor pemerintah kota, disampaikan bahwa sesi penjelasan minggu depan dibatalkan.",
+            "en": "The city office announced that next week's information session would be canceled."
+          },
+          {
+            "jp": "{先生|せんせい}から、レポートの{締切|しめきり}は{金曜日|きんようび}だ__ということでした__。",
+            "id": "Guru menyampaikan bahwa tenggat laporan adalah hari Jumat.",
+            "en": "The teacher said that the report deadline was Friday."
+          },
+          {
+            "jp": "{案内|あんない}によると、この{列車|れっしゃ}は{大阪|おおさか}まで{止|と}まらない__ということです__。",
+            "id": "Menurut pengumuman, kereta ini tidak akan berhenti sampai Osaka.",
+            "en": "According to the announcement, this train will not stop until Osaka."
+          }
+        ],
+        "pitfalls": [
+          "Gunakan pola ini untuk informasi yang diterima atau disampaikan dari sumber lain, bukan untuk dugaan pribadi pembicara.",
+          "Jangan mencampurkannya dengan makna “artinya” atau “berarti bahwa”, yang merupakan sense lain dari 〜ということだ."
+        ],
+        "tags": [
+          "hearsay",
+          "formal"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:36:58.497Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -8963,8 +10602,80 @@
         "extractedAt": "2026-10-02T09:12:16.855Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜ということだ",
+        "senseLabel": "makna atau kesimpulan",
+        "meaningId": "artinya; menyatakan makna atau kesimpulan dari informasi sebelumnya",
+        "meaningEn": "in other words; indicates the meaning or conclusion drawn from prior information",
+        "connections": [
+          {
+            "form": "plain",
+            "pattern": "ということだ"
+          },
+          {
+            "form": "other",
+            "pattern": "ということだ",
+            "note": "Bentuk perintah dan bentuk ajakan kata kerja juga dapat mendahului pola ini."
+          }
+        ],
+        "formation": [
+          {
+            "label": "Predikat bentuk biasa",
+            "input": "V plain / i-adj plain / na-adj + だ / N + だ",
+            "rule": "Tambahkan ということだ setelah isi yang ingin dijelaskan maknanya atau disimpulkan.",
+            "output": "predikat + ということだ",
+            "note": null
+          },
+          {
+            "label": "Isi ujaran",
+            "input": "V bentuk perintah atau ajakan",
+            "rule": "Tambahkan ということだ untuk menjelaskan maksud dari ujaran tersebut.",
+            "output": "V perintah atau ajakan + ということだ",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜ということだ digunakan untuk menjelaskan arti suatu kata, tanda, atau keadaan dengan mengungkapkannya kembali dalam bentuk yang lebih jelas. Dalam bahasa Indonesia, pola ini sering berarti “artinya” atau “dengan kata lain”.",
+          "Pola ini juga dapat menyatakan kesimpulan yang logis dari informasi sebelumnya. Sering kali didahului oleh つまり, tetapi つまり tidak wajib digunakan.",
+          "Pada sense ini, pembicara sedang menafsirkan atau merangkum isi informasi. Penggunaan ini berbeda dari 〜ということだ yang berarti “katanya” untuk menyampaikan kabar dari sumber lain."
+        ],
+        "examples": [
+          {
+            "jp": "{案内板|あんないばん}の「{立入|たちい}り{禁止|きんし}」は、ここに{入|はい}ってはいけない__ということだ__。",
+            "id": "Tulisan “dilarang masuk” pada papan petunjuk itu artinya kita tidak boleh masuk ke sini.",
+            "en": "The “No Entry” sign means that we must not enter here."
+          },
+          {
+            "jp": "{部長|ぶちょう}は{来週|らいしゅう}まで{出張|しゅっちょう}で{不在|ふざい}だ。つまり、この{書類|しょるい}は{今日|きょう}{中|じゅう}に{承認|しょうにん}してもらえない__ということだ__。",
+            "id": "Kepala bagian sedang dinas luar sampai minggu depan. Artinya, dokumen ini tidak bisa mendapat persetujuan hari ini.",
+            "en": "The department manager is away on a business trip until next week. In other words, this document cannot be approved today."
+          },
+          {
+            "jp": "「{返金|へんきん}{不可|ふか}」とは、{払|はら}ったお{金|かね}は{戻|もど}らない__ということだ__。",
+            "id": "“Tidak dapat dikembalikan” artinya uang yang sudah dibayarkan tidak akan kembali.",
+            "en": "“Non-refundable” means that the money already paid will not be returned."
+          },
+          {
+            "jp": "{先生|せんせい}が「{静|しず}かにしろ」と{言|い}ったのは、{話|はな}すのをやめろ__ということだ__。",
+            "id": "Guru berkata, “Diamlah,” artinya kami harus berhenti berbicara.",
+            "en": "The teacher said, “Be quiet,” meaning that we should stop talking."
+          }
+        ],
+        "pitfalls": [
+          "Jangan otomatis menerjemahkan pola ini sebagai “katanya”. Pada sense ini, pola tersebut menjelaskan makna atau menarik kesimpulan, bukan melaporkan informasi dari sumber lain.",
+          "Bagian sebelum ということだ harus berupa isi yang dapat ditafsirkan atau disimpulkan. Pola ini sering cocok setelah penjelasan, fakta, atau tanda yang telah disebutkan."
+        ],
+        "tags": [
+          "judgment"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:37:13.758Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -8995,8 +10706,83 @@
         "extractedAt": "2026-10-02T09:12:16.855Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜ことだ",
+        "senseLabel": null,
+        "meaningId": "Sebaiknya melakukan atau tidak melakukan sesuatu.",
+        "meaningEn": "One should do or not do something.",
+        "connections": [
+          {
+            "form": "v-dict",
+            "pattern": "ことだ"
+          },
+          {
+            "form": "v-nai",
+            "pattern": "ことだ"
+          }
+        ],
+        "formation": [
+          {
+            "label": "nasihat untuk melakukan",
+            "input": "kata kerja bentuk kamus",
+            "rule": "Tambahkan ことだ setelah bentuk kamus.",
+            "output": "Vることだ",
+            "note": null
+          },
+          {
+            "label": "nasihat untuk tidak melakukan",
+            "input": "kata kerja bentuk nai",
+            "rule": "Tambahkan ことだ setelah bentuk nai.",
+            "output": "Vないことだ",
+            "note": null
+          }
+        ],
+        "variants": [
+          "〜ことです"
+        ],
+        "explanation": [
+          "〜ことだ dipakai untuk memberikan nasihat, saran, atau peringatan tentang tindakan yang sebaiknya dilakukan atau dihindari.",
+          "Pola ini mengikuti kata kerja bentuk kamus untuk saran positif dan bentuk nai untuk saran negatif. Bentuk 〜ことです menyampaikan isi yang sama dengan nada lebih sopan.",
+          "Nada 〜ことだ dapat terdengar tegas dan seperti nasihat dari orang yang lebih berpengalaman. Karena itu, umumnya tidak dipakai untuk menasihati atasan atau orang yang perlu sangat dihormati."
+        ],
+        "examples": [
+          {
+            "jp": "{風邪|かぜ}をひいたら、{今夜|こんや}は{早|はや}く{寝|ね}る__ことだ__。",
+            "id": "Kalau kamu terkena flu, sebaiknya tidur lebih awal malam ini.",
+            "en": "If you have a cold, you should go to bed early tonight."
+          },
+          {
+            "jp": "{大事|だいじ}な{書類|しょるい}は、{机|つくえ}の{上|うえ}に{置|お}かない__ことです__。",
+            "id": "Dokumen penting sebaiknya tidak diletakkan di atas meja.",
+            "en": "Important documents should not be left on the desk."
+          },
+          {
+            "jp": "{試験|しけん}の{前|まえ}は、{分|わ}からないところを{先生|せんせい}に{聞|き}く__ことだ__。",
+            "id": "Sebelum ujian, sebaiknya tanyakan bagian yang tidak dipahami kepada guru.",
+            "en": "Before an exam, you should ask the teacher about the parts you do not understand."
+          },
+          {
+            "jp": "{慌|あわ}てずに、まず{状況|じょうきょう}をよく{確認|かくにん}する__ことだ__。",
+            "id": "Jangan panik; sebaiknya periksa situasinya dengan saksama terlebih dahulu.",
+            "en": "Do not panic; you should first check the situation carefully."
+          }
+        ],
+        "pitfalls": [
+          "Pola ini bukan sekadar pernyataan fakta. Gunakan ketika memberi nasihat atau peringatan.",
+          "○ {夜|よる}ふかしをしないことだ。",
+          "✕ {昨日|きのう}は{夜|よる}ふかしをしないことだ。 Bentuk ini tidak cocok untuk melaporkan kejadian lampau.",
+          "Untuk lawan bicara yang lebih tinggi kedudukannya, pilih ungkapan saran yang lebih halus."
+        ],
+        "tags": [
+          "suggestion"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:36:49.787Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -9026,8 +10812,114 @@
         "extractedAt": "2026-10-02T09:12:56.902Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜ことか",
+        "senseLabel": null,
+        "meaningId": "Betapa ...; seruan untuk menegaskan perasaan atau derajat yang sangat tinggi.",
+        "meaningEn": "How ...; an exclamation emphasizing a very strong feeling or degree.",
+        "connections": [
+          {
+            "form": "v-dict",
+            "pattern": "ことか"
+          },
+          {
+            "form": "v-ta",
+            "pattern": "ことか"
+          },
+          {
+            "form": "i-adj-plain",
+            "pattern": "ことか"
+          },
+          {
+            "form": "na-adj-na",
+            "pattern": "ことか"
+          },
+          {
+            "form": "na-adj-plain",
+            "pattern": "ことか"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Kata kerja bentuk kamus",
+            "input": "V{辞書|じしょ}{形|けい}",
+            "rule": "Tambahkan ことか setelah kata kerja bentuk kamus.",
+            "output": "{会|あ}う → {会|あ}うことか",
+            "note": null
+          },
+          {
+            "label": "Kata kerja bentuk lampau",
+            "input": "Vた{形|けい}",
+            "rule": "Tambahkan ことか setelah kata kerja bentuk ta.",
+            "output": "{感動|かんどう}した → {感動|かんどう}したことか",
+            "note": null
+          },
+          {
+            "label": "Kata sifat-i",
+            "input": "イA{普通|ふつう}{形|けい}",
+            "rule": "Tambahkan ことか setelah bentuk biasa kata sifat-i, termasuk bentuk lampau.",
+            "output": "うれしい → うれしいことか、うれしかった → うれしかったことか",
+            "note": null
+          },
+          {
+            "label": "Kata sifat-na",
+            "input": "ナAな / ナA{普通|ふつう}{形|けい}",
+            "rule": "Gunakan な sebelum ことか untuk bentuk kini, atau だった sebelum ことか untuk bentuk lampau.",
+            "output": "{大切|たいせつ}な → {大切|たいせつ}なことか、{大切|たいせつ}だった → {大切|たいせつ}だったことか",
+            "note": null
+          },
+          {
+            "label": "Kata tanya derajat atau jumlah",
+            "input": "どんなに・どれほど・どれだけ・{何度|なんど}・{何時間|なんじかん}",
+            "rule": "Letakkan ungkapan derajat atau jumlah sebelum predikat untuk menonjolkan besarnya perasaan, tingkat, atau frekuensi.",
+            "output": "どれほど{会|あ}いたいことか、{何度|なんど}{質問|しつもん}したことか",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜ことか dipakai bersama kata tanya seperti どんなに, どれほど, どれだけ, atau {何度|なんど} untuk menyatakan seruan seperti “betapa ...”. Pembicara menekankan bahwa perasaan, tingkat, atau jumlahnya sangat besar.",
+          "Bentuk ini bukan pertanyaan yang meminta jawaban. Kalimatnya bersifat retoris dan sering menyampaikan rasa haru, senang, sedih, rindu, terkejut, atau penekanan atas tindakan yang berulang kali dilakukan.",
+          "Pola ini dapat mengikuti kata kerja, kata sifat-i, dan kata sifat-na. Untuk kata sifat-na bentuk kini digunakan なことか, sedangkan bentuk lampau menggunakan だったことか."
+        ],
+        "examples": [
+          {
+            "jp": "{日本|にほん}に{来|き}てから、どれほど{家族|かぞく}に{会|あ}いたい__ことか__。",
+            "id": "Sejak datang ke Jepang, betapa saya sangat ingin bertemu keluarga.",
+            "en": "Since coming to Japan, how much I have wanted to see my family."
+          },
+          {
+            "jp": "あの{景色|けしき}を{初|はじ}めて{見|み}た{瞬間|しゅんかん}、どんなに{感動|かんどう}した__ことか__。",
+            "id": "Saat pertama kali melihat pemandangan itu, betapa terharunya saya.",
+            "en": "When I first saw that scenery, how deeply moved I was."
+          },
+          {
+            "jp": "この{問題|もんだい}について、{先生|せんせい}に{何度|なんど}{質問|しつもん}した__ことか__。",
+            "id": "Betapa berkali-kali saya telah bertanya kepada guru tentang masalah ini.",
+            "en": "How many times I have asked the teacher about this problem."
+          },
+          {
+            "jp": "この{経験|けいけん}がこれからの{仕事|しごと}にどれだけ{大切|たいせつ}な__ことか__。",
+            "id": "Betapa pentingnya pengalaman ini bagi pekerjaan saya ke depan.",
+            "en": "How important this experience will be for my future work."
+          }
+        ],
+        "pitfalls": [
+          "〜ことか adalah seruan retoris, bukan pertanyaan biasa yang mengharapkan jawaban.",
+          "Gunakan kata tanya yang sesuai dengan makna: どれほど untuk derajat, sedangkan {何度|なんど} untuk jumlah pengulangan.",
+          "Untuk kata sifat-na bentuk kini, gunakan なことか. ○ {大切|たいせつ}なことか. ✕ {大切|たいせつ}だことか."
+        ],
+        "tags": [
+          "feeling",
+          "emphasis"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:38:07.666Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -9057,8 +10949,118 @@
         "extractedAt": "2026-10-02T09:12:56.902Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜っけ",
+        "senseLabel": null,
+        "meaningId": "memastikan kembali informasi yang terlupa",
+        "meaningEn": "recalling and confirming forgotten information",
+        "connections": [
+          {
+            "form": "v-ta",
+            "pattern": "っけ"
+          },
+          {
+            "form": "i-adj-stem",
+            "pattern": "かったっけ"
+          },
+          {
+            "form": "na-adj-stem",
+            "pattern": "だっけ／だったっけ"
+          },
+          {
+            "form": "n",
+            "pattern": "だっけ／だったっけ"
+          },
+          {
+            "form": "sentence",
+            "pattern": "っけ",
+            "note": "Bentuk sopan seperti Vました dan でした juga dapat diikuti っけ."
+          }
+        ],
+        "formation": [
+          {
+            "label": "kata kerja",
+            "input": "Vた",
+            "rule": "Tambahkan っけ.",
+            "output": "Vたっけ",
+            "note": null
+          },
+          {
+            "label": "kata sifat-i",
+            "input": "iA tanpa い",
+            "rule": "Tambahkan かったっけ.",
+            "output": "iAかったっけ",
+            "note": null
+          },
+          {
+            "label": "kata sifat-na",
+            "input": "naA",
+            "rule": "Tambahkan だっけ atau だったっけ.",
+            "output": "naAだっけ／naAだったっけ",
+            "note": null
+          },
+          {
+            "label": "nomina",
+            "input": "N",
+            "rule": "Tambahkan だっけ atau だったっけ.",
+            "output": "Nだっけ／Nだったっけ",
+            "note": null
+          },
+          {
+            "label": "bentuk sopan",
+            "input": "Vます / です",
+            "rule": "Gunakan bentuk lampau sopan, lalu tambahkan っけ.",
+            "output": "Vましたっけ / でしたっけ",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜っけ dipakai ketika pembicara berusaha mengingat kembali informasi yang pernah diketahui, lalu meminta konfirmasi kepada lawan bicara. Pola ini sering diterjemahkan sebagai “ya?”, “apa ya?”, atau “kalau tidak salah?”.",
+          "Pola ini juga dapat diucapkan kepada diri sendiri saat pembicara tiba-tiba mencoba mengingat sesuatu. Nuansanya bukan bertanya tentang informasi yang sama sekali belum diketahui, melainkan memastikan ingatan yang tidak jelas."
+        ],
+        "examples": [
+          {
+            "jp": "{会議|かいぎ}は{何時|なんじ}から__だったっけ__？",
+            "id": "Rapatnya jam berapa ya?",
+            "en": "What time was the meeting again?"
+          },
+          {
+            "jp": "{新|あたら}しい{住所|じゅうしょ}、もう{教|おし}えた__っけ__？",
+            "id": "Alamat baru itu, aku sudah memberitahumu belum ya?",
+            "en": "Did I already tell you my new address?"
+          },
+          {
+            "jp": "{田中|たなか}さんは{今週|こんしゅう}{休|やす}み__だったっけ__？",
+            "id": "Tanaka minggu ini libur, ya?",
+            "en": "Tanaka was off this week, right?"
+          },
+          {
+            "jp": "この{店|みせ}、{前|まえ}にも{来|き}た__っけ__。",
+            "id": "Aku pernah datang ke toko ini sebelumnya, ya?",
+            "en": "Have I been to this shop before?"
+          },
+          {
+            "jp": "{資料|しりょう}はもう{送|おく}りました__っけ__？",
+            "id": "Apakah saya sudah mengirim dokumennya?",
+            "en": "Have I already sent the documents?"
+          }
+        ],
+        "pitfalls": [
+          "Gunakan っけ untuk informasi yang pernah diketahui tetapi terlupa atau diragukan, bukan untuk pertanyaan baru yang murni mencari informasi.",
+          "Bentuk lampau sangat umum, tetapi っけ bukan sekadar penanda lampau. Fungsinya adalah mengingat dan mengonfirmasi.",
+          "Dalam kalimat sopan, bentuk seperti ましたっけ dan でしたっけ dapat digunakan. Jangan mengganti っけ dengan か bila ingin mempertahankan nuansa mengingat kembali."
+        ],
+        "tags": [
+          "conjecture"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:38:13.786Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -9090,8 +11092,68 @@
         "extractedAt": "2026-10-02T09:13:39.430Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜しかない",
+        "senseLabel": null,
+        "meaningId": "Tidak ada pilihan lain selain melakukan.",
+        "meaningEn": "Have no choice but to do.",
+        "connections": [
+          {
+            "form": "v-dict",
+            "pattern": "しかない"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Bentuk dasar",
+            "input": "Kata kerja bentuk kamus",
+            "rule": "Tambahkan しかない.",
+            "output": "V{辞書|じしょ}{形|けい} + しかない",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜しかない menyatakan bahwa, setelah mempertimbangkan keadaan yang ada, hanya satu tindakan yang tersisa. Pembicara menyampaikan bahwa tidak ada cara atau pilihan lain yang realistis.",
+          "Pola ini sering mengandung nuansa pasrah, terpaksa, atau menerima keadaan. Bentuk lampau しかなかった dipakai ketika satu-satunya pilihan tersebut berlaku pada masa lalu."
+        ],
+        "examples": [
+          {
+            "jp": "{電車|でんしゃ}が{止|と}まったので、{歩|ある}いて{家|いえ}に{帰|かえ}る__しかない__。",
+            "id": "Karena kereta berhenti, tidak ada pilihan lain selain pulang ke rumah dengan berjalan kaki.",
+            "en": "Because the train stopped, I have no choice but to walk home."
+          },
+          {
+            "jp": "{締切|しめきり}は{明日|あした}なので、{今夜|こんや}は{遅|おそ}くまで{働|はたら}く__しかない__。",
+            "id": "Tenggatnya besok, jadi tidak ada pilihan lain selain bekerja sampai larut malam ini.",
+            "en": "The deadline is tomorrow, so I have no choice but to work late tonight."
+          },
+          {
+            "jp": "{財布|さいふ}をなくしたから、{家族|かぞく}にお{金|かね}を{送|おく}ってもらう__しかない__。",
+            "id": "Karena dompet saya hilang, tidak ada pilihan lain selain meminta keluarga mengirimkan uang.",
+            "en": "Because I lost my wallet, I have no choice but to ask my family to send me money."
+          },
+          {
+            "jp": "{飛行機|ひこうき}が{欠航|けっこう}になり、{新幹線|しんかんせん}で{行|い}く__しかなかった__。",
+            "id": "Pesawatnya dibatalkan, sehingga tidak ada pilihan lain selain pergi dengan shinkansen.",
+            "en": "The flight was canceled, so I had no choice but to go by shinkansen."
+          }
+        ],
+        "pitfalls": [
+          "Gunakan kata kerja bentuk kamus sebelum しかない. ○ {行|い}くしかない. ✕ {行|い}きしかない.",
+          "Jangan menerjemahkan pola ini hanya sebagai \"hanya\". Pola ini menekankan bahwa pilihan lain tidak tersedia.",
+          "Untuk masa lampau, gunakan しかなかった, bukan しかない."
+        ],
+        "tags": [
+          "limitation"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:38:05.172Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -9121,8 +11183,102 @@
         "extractedAt": "2026-10-02T09:13:39.430Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜んだって",
+        "senseLabel": null,
+        "meaningId": "Katanya; menyampaikan kabar yang didengar secara santai.",
+        "meaningEn": "I heard that; casually relaying information heard from others.",
+        "connections": [
+          {
+            "form": "v-plain",
+            "pattern": "んだって"
+          },
+          {
+            "form": "i-adj-plain",
+            "pattern": "んだって"
+          },
+          {
+            "form": "na-adj-na",
+            "pattern": "んだって"
+          },
+          {
+            "form": "n-na",
+            "pattern": "んだって"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Kata kerja",
+            "input": "V bentuk biasa",
+            "rule": "Tambahkan んだって pada bentuk biasa.",
+            "output": "V plain + んだって",
+            "note": null
+          },
+          {
+            "label": "Kata sifat-i",
+            "input": "kata sifat-i bentuk biasa",
+            "rule": "Tambahkan んだって tanpa mengubah bentuk biasa.",
+            "output": "kata sifat-i plain + んだって",
+            "note": null
+          },
+          {
+            "label": "Kata sifat-na",
+            "input": "kata sifat-na + な",
+            "rule": "Tambahkan んだって setelah な.",
+            "output": "kata sifat-na + な + んだって",
+            "note": null
+          },
+          {
+            "label": "Nomina",
+            "input": "nomina + な",
+            "rule": "Tambahkan んだって setelah な.",
+            "output": "nomina + な + んだって",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜んだって digunakan dalam percakapan santai untuk menyampaikan informasi yang didengar dari orang lain. Dalam bahasa Indonesia, pola ini sering berarti \"katanya\" atau \"aku dengar\".",
+          "Pola ini menunjukkan bahwa pembicara meneruskan kabar, bukan menyatakan sesuatu yang diketahui dari pengalaman langsung. Bentuk yang lebih lengkap dan kurang santai adalah んだそうだ.",
+          "Kata kerja dan kata sifat-i memakai bentuk biasa sebelum んだって. Nomina serta kata sifat-na memakai な, seperti {医者|いしゃ}なんだって dan {有名|ゆうめい}なんだって."
+        ],
+        "examples": [
+          {
+            "jp": "{駅|えき}の{近|ちか}くに{新|あたら}しい{図書館|としょかん}ができる__んだって__。",
+            "id": "Katanya, perpustakaan baru akan dibangun di dekat stasiun.",
+            "en": "I heard that a new library will be built near the station."
+          },
+          {
+            "jp": "{部長|ぶちょう}は{来月|らいげつ}{大阪|おおさか}へ{転勤|てんきん}する__んだって__。",
+            "id": "Katanya, kepala departemen akan dipindahkan ke Osaka bulan depan.",
+            "en": "I heard that the department manager will be transferred to Osaka next month."
+          },
+          {
+            "jp": "あの{店|みせ}のケーキはすごくおいしい__んだって__。",
+            "id": "Katanya, kue di toko itu sangat enak.",
+            "en": "I heard that the cakes at that shop are very delicious."
+          },
+          {
+            "jp": "{佐藤|さとう}さんは{医者|いしゃ}な__んだって__。",
+            "id": "Katanya, Sato adalah dokter.",
+            "en": "I heard that Sato is a doctor."
+          }
+        ],
+        "pitfalls": [
+          "Jangan gunakan んだって untuk menyatakan pengamatan atau keyakinan pribadi. Pola ini menandai informasi yang diteruskan dari sumber lain.",
+          "Setelah nomina atau kata sifat-na, gunakan な sebelum んだって: ○ {医者|いしゃ}なんだって. ✕ {医者|いしゃ}だんだって."
+        ],
+        "tags": [
+          "hearsay",
+          "casual"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:39:10.488Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -9153,8 +11309,88 @@
         "extractedAt": "2026-10-02T09:14:23.655Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜だもん",
+        "senseLabel": null,
+        "meaningId": "alasan santai bernuansa membela diri",
+        "meaningEn": "a casual, self-justifying reason",
+        "connections": [
+          {
+            "form": "v-plain",
+            "pattern": "んだもん"
+          },
+          {
+            "form": "i-adj-plain",
+            "pattern": "んだもん"
+          },
+          {
+            "form": "na-adj-stem",
+            "pattern": "なんだもん"
+          },
+          {
+            "form": "n",
+            "pattern": "なんだもん"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Verba dan adjektiva-i",
+            "input": "bentuk biasa",
+            "rule": "Tambahkan んだもん setelah bentuk biasa.",
+            "output": "V / adjektiva-i + んだもん",
+            "note": null
+          },
+          {
+            "label": "Adjektiva-na dan nomina",
+            "input": "stem adjektiva-na atau nomina",
+            "rule": "Tambahkan なんだもん.",
+            "output": "adjektiva-na / nomina + なんだもん",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜だもん adalah ungkapan akhir kalimat santai untuk menyatakan alasan dengan nada membela diri, mengeluh ringan, atau terdengar manja. Dalam bahasa Indonesia, sering setara dengan “soalnya ...”.",
+          "Setelah verba dan adjektiva-i, bentuk yang umum adalah んだもん. Setelah nomina dan adjektiva-na, gunakan なんだもん. Pola ini dapat dipakai orang dewasa, tetapi bernuansa akrab dan kadang terdengar kekanak-kanakan, sehingga tidak cocok untuk situasi resmi."
+        ],
+        "examples": [
+          {
+            "jp": "どうしてその{映画|えいが}を{見|み}ないの。{怖|こわ}い__んだもん__。",
+            "id": "Kenapa kamu tidak menonton film itu? Soalnya menakutkan.",
+            "en": "Why are you not watching that movie? Because it is scary."
+          },
+          {
+            "jp": "{宿題|しゅくだい}は{夕食|ゆうしょく}のあとでやる。{今|いま}は{遊|あそ}びたい__んだもん__。",
+            "id": "PR akan kukerjakan setelah makan malam. Soalnya sekarang aku ingin bermain.",
+            "en": "I will do my homework after dinner. Because I want to play now."
+          },
+          {
+            "jp": "{私|わたし}はこの{部屋|へや}がいい。{静|しず}か__なんだもん__。",
+            "id": "Aku mau kamar ini. Soalnya tenang.",
+            "en": "I want this room. Because it is quiet."
+          },
+          {
+            "jp": "{弟|おとうと}を{一人|ひとり}で{行|い}かせないで。まだ{小学生|しょうがくせい}__なんだもん__。",
+            "id": "Jangan suruh adikku pergi sendirian. Soalnya dia masih murid sekolah dasar.",
+            "en": "Do not make my younger brother go alone. Because he is still an elementary school student."
+          }
+        ],
+        "pitfalls": [
+          "Pola ini terutama dipakai dalam percakapan akrab. Hindari dalam email bisnis, wawancara, atau permintaan resmi.",
+          "Setelah nomina dan adjektiva-na, gunakan なんだもん, bukan んだもん. ○ {静|しず}かなんだもん. ✕ {静|しず}かんだもん.",
+          "Nuansanya sering menunjukkan pembenaran diri atau keluhan ringan, bukan alasan objektif yang sangat formal."
+        ],
+        "tags": [
+          "reason",
+          "casual"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:38:29.570Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -9187,8 +11423,69 @@
         "extractedAt": "2026-10-02T09:50:12.977Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "つまり",
+        "senseLabel": null,
+        "meaningId": "dengan kata lain; maksudnya",
+        "meaningEn": "in other words; that is to say",
+        "connections": [
+          {
+            "form": "sentence",
+            "pattern": "つまり"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Pernyataan ulang",
+            "input": "Pernyataan atau informasi sebelumnya",
+            "rule": "Tambahkan つまり sebelum bagian yang merangkum, menjelaskan ulang, atau menyatakan inti informasi sebelumnya.",
+            "output": "Pernyataan A + つまり + penjelasan ulang B",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "つまり dipakai untuk menyatakan kembali isi sebelumnya dengan ungkapan yang lebih langsung, lebih mudah dipahami, atau lebih ringkas. Dalam bahasa Indonesia, artinya antara lain “dengan kata lain”, “maksudnya”, atau “jadi”.",
+          "Bagian setelah つまり harus menjelaskan inti atau kesimpulan dari informasi sebelumnya. Pola ini tidak sekadar menunjukkan urutan sebab dan akibat, melainkan menegaskan bagaimana informasi sebelumnya harus dipahami.",
+          "つまり umumnya muncul pada awal klausa atau kalimat penjelas. Dalam tulisan, pola ini sering diikuti koma untuk memberi jeda sebelum penjelasan inti."
+        ],
+        "examples": [
+          {
+            "jp": "この{薬|くすり}は{食後|しょくご}に1{日|にち}3{回|かい}{飲|の}みます。__つまり__、{朝|あさ}、{昼|ひる}、{晩|ばん}の{食事|しょくじ}のあとに{飲|の}む{薬|くすり}です。",
+            "id": "Obat ini diminum tiga kali sehari setelah makan. Dengan kata lain, obat ini diminum setelah sarapan, makan siang, dan makan malam.",
+            "en": "This medicine is taken three times a day after meals. In other words, it is taken after breakfast, lunch, and dinner."
+          },
+          {
+            "jp": "この{部屋|へや}は{午後|ごご}6{時|じ}{以降|いこう}は{使|つか}えません。__つまり__、{会議|かいぎ}は6{時|じ}までに{終|お}える{必要|ひつよう}があります。",
+            "id": "Ruangan ini tidak dapat digunakan setelah pukul enam sore. Jadi, rapat harus selesai sebelum pukul enam.",
+            "en": "This room cannot be used after 6 p.m. That is to say, the meeting needs to end by 6 p.m."
+          },
+          {
+            "jp": "{申込|もうしこ}みには{本人|ほんにん}{確認|かくにん}が{必要|ひつよう}です。__つまり__、{代理|だいり}の{人|ひと}だけでは{手続|てつづ}きできません。",
+            "id": "Pendaftaran memerlukan verifikasi identitas pemohon sendiri. Maksudnya, prosedurnya tidak dapat dilakukan hanya oleh perwakilan.",
+            "en": "The application requires identity verification by the applicant. In other words, the procedure cannot be completed by a representative alone."
+          },
+          {
+            "jp": "{山田|やまだ}さんは{来週|らいしゅう}から{海外|かいがい}で{働|はたら}きます。__つまり__、しばらく{日本|にほん}には{戻|もど}りません。",
+            "id": "Yamada akan bekerja di luar negeri mulai minggu depan. Artinya, ia tidak akan kembali ke Jepang untuk sementara waktu.",
+            "en": "Yamada will work overseas starting next week. That means he will not return to Japan for a while."
+          }
+        ],
+        "pitfalls": [
+          "つまり tidak selalu berarti “oleh karena itu”. Bagian sesudahnya harus berupa penjelasan ulang atau inti dari informasi sebelumnya, bukan akibat baru yang tidak setara.",
+          "Biasanya つまり diletakkan sebelum klausa yang menjelaskan. ○ {彼|かれ}は{医者|いしゃ}だ。つまり、{病院|びょういん}で{働|はたら}いている.",
+          "Jangan memakai つまり hanya untuk menambahkan informasi yang tidak menjelaskan bagian sebelumnya."
+        ],
+        "tags": [
+          "conjunction"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:39:35.067Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -9221,8 +11518,70 @@
         "extractedAt": "2026-10-02T09:50:12.977Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "そのため(に)",
+        "senseLabel": null,
+        "meaningId": "oleh karena itu; akibatnya",
+        "meaningEn": "therefore; as a result",
+        "connections": [
+          {
+            "form": "sentence",
+            "pattern": "そのため(に)"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Menghubungkan sebab dan akibat",
+            "input": "Kalimat yang menyatakan sebab, keadaan, atau peristiwa",
+            "rule": "Letakkan そのため atau そのために pada awal kalimat berikutnya untuk menyatakan akibatnya.",
+            "output": "Sebab. そのため(に)、akibat.",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "そのため(に) berarti “oleh karena itu” atau “akibatnya”. Pola ini menghubungkan suatu peristiwa, keadaan, atau alasan yang telah disebutkan dengan hasil atau kesimpulan yang terjadi sesudahnya.",
+          "Biasanya, そのため(に) muncul pada awal kalimat kedua. Ragam ini lebih formal daripada だから, sehingga cocok untuk penjelasan, berita, pengumuman, atau tulisan yang bernada objektif.",
+          "Kalimat sebelum そのため(に) umumnya menyatakan sebab yang dianggap sebagai fakta atau keadaan yang dapat menjadi dasar bagi akibat setelahnya."
+        ],
+        "examples": [
+          {
+            "jp": "{強|つよ}い{台風|たいふう}が{近|ちか}づいている。__そのため__、{明日|あした}の{船|ふね}は{欠航|けっこう}になる。",
+            "id": "Topan kuat sedang mendekat. Oleh karena itu, pelayaran besok akan dibatalkan.",
+            "en": "A strong typhoon is approaching. Therefore, tomorrow's ferry service will be canceled."
+          },
+          {
+            "jp": "{申請|しんせい}に{不備|ふび}があった。__そのために__、{手続|てつづ}きが{予定|よてい}より{遅|おく}れた。",
+            "id": "Ada kekurangan dalam pengajuan tersebut. Akibatnya, prosedurnya terlambat dari jadwal.",
+            "en": "There was an error in the application. As a result, the procedure was delayed."
+          },
+          {
+            "jp": "{新|あたら}しい{規則|きそく}が{導入|どうにゅう}された。__そのため__、{利用者|りようしゃ}は{事前|じぜん}の{登録|とうろく}が{必要|ひつよう}になった。",
+            "id": "Peraturan baru telah diperkenalkan. Oleh karena itu, pengguna kini perlu mendaftar terlebih dahulu.",
+            "en": "New regulations were introduced. Therefore, users now need to register in advance."
+          },
+          {
+            "jp": "{工事|こうじ}で{橋|はし}が{通行止|つうこうど}めになった。__そのために__、{配送|はいそう}が{一日|いちにち}{遅|おく}れます。",
+            "id": "Jembatan ditutup karena pekerjaan konstruksi. Akibatnya, pengiriman akan terlambat satu hari.",
+            "en": "The bridge was closed due to construction work. As a result, delivery will be delayed by one day."
+          }
+        ],
+        "pitfalls": [
+          "Gunakan pola ini untuk hubungan sebab dan akibat, bukan sekadar untuk menyambung dua peristiwa yang tidak memiliki kaitan hasil.",
+          "そのため(に) lebih objektif dan formal daripada だから. Dalam percakapan santai sehari-hari, だから sering terdengar lebih alami."
+        ],
+        "tags": [
+          "result",
+          "conjunction",
+          "formal"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:39:30.744Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -9253,8 +11612,65 @@
         "extractedAt": "2026-10-02T09:15:10.658Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "その{結果|けっか}",
+        "senseLabel": null,
+        "meaningId": "hasil atau akibat dari peristiwa sebelumnya",
+        "meaningEn": "as a result; consequently",
+        "connections": [
+          {
+            "form": "sentence",
+            "pattern": "その{結果|けっか}"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Penghubung antarkalimat",
+            "input": "Kalimat yang menyatakan sebab, proses, atau tindakan",
+            "rule": "Letakkan pola ini pada awal kalimat berikutnya untuk memperkenalkan akibatnya.",
+            "output": "sebab atau proses + その{結果|けっか} + akibat",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "その{結果|けっか} berarti \"hasilnya\" atau \"akibatnya\". Pola ini menghubungkan peristiwa, tindakan, atau keadaan yang telah disebutkan dengan hasil yang muncul sesudahnya.",
+          "Biasanya, その{結果|けっか} diletakkan pada awal kalimat baru. Akibat yang disampaikan dapat berupa hasil baik maupun buruk, selama merupakan konsekuensi dari bagian sebelumnya.",
+          "Pola ini cocok untuk penjelasan yang runtut dan objektif, misalnya dalam laporan, presentasi, atau uraian tentang proses dan hasilnya."
+        ],
+        "examples": [
+          {
+            "jp": "{毎日|まいにち}{三十分|さんじゅっぷん}{運動|うんどう}を{続|つづ}けた。__その{結果|けっか}__、{体力|たいりょく}がついた。",
+            "id": "Saya terus berolahraga selama tiga puluh menit setiap hari. Hasilnya, stamina saya meningkat.",
+            "en": "I continued exercising for thirty minutes every day. As a result, I built up my stamina."
+          },
+          {
+            "jp": "{会社|かいしゃ}は{新|あたら}しい{研修制度|けんしゅうせいど}を{始|はじ}めた。__その{結果|けっか}__、{社員|しゃいん}の{接客|せっきゃく}が{改善|かいぜん}した。",
+            "id": "Perusahaan memulai sistem pelatihan baru. Hasilnya, pelayanan pelanggan para karyawan membaik.",
+            "en": "The company introduced a new training system. As a result, the employees' customer service improved."
+          },
+          {
+            "jp": "{彼|かれ}は{締|し}め{切|き}りを{忘|わす}れていた。__その{結果|けっか}__、{申請書|しんせいしょ}を{出|だ}せなかった。",
+            "id": "Dia lupa tenggat waktunya. Akibatnya, dia tidak dapat menyerahkan formulir pendaftaran.",
+            "en": "He had forgotten the deadline. Consequently, he was unable to submit the application form."
+          }
+        ],
+        "pitfalls": [
+          "Gunakan pola ini bila kalimat sebelumnya benar-benar menjadi sebab atau proses yang menghasilkan akibat berikutnya.",
+          "Jangan memakai その{結果|けっか} hanya untuk menambahkan peristiwa berikutnya tanpa hubungan hasil atau akibat yang jelas."
+        ],
+        "tags": [
+          "result",
+          "conjunction",
+          "written"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:39:38.662Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -9286,8 +11702,73 @@
         "extractedAt": "2026-10-02T09:50:12.977Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "なぜなら(ば)",
+        "senseLabel": null,
+        "meaningId": "menyatakan alasan untuk pernyataan sebelumnya",
+        "meaningEn": "giving the reason for a preceding statement",
+        "connections": [
+          {
+            "form": "sentence",
+            "pattern": "なぜなら(ば)"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Klausa alasan",
+            "input": "klausa yang menyatakan alasan",
+            "rule": "Awali klausa alasan dengan なぜなら atau なぜならば. Klausa tersebut biasanya diakhiri dengan から atau ので.",
+            "output": "なぜなら(ば)、klausa alasan + から／ので",
+            "note": null
+          }
+        ],
+        "variants": [
+          "なぜかというと",
+          "どうしてかというと"
+        ],
+        "explanation": [
+          "なぜなら(ば) dipakai untuk memperkenalkan alasan atau dasar dari pernyataan yang sudah disebutkan sebelumnya. Pola ini kurang lebih berarti “alasannya adalah karena ...”.",
+          "Biasanya pola ini berada pada awal kalimat baru, lalu diikuti alasan yang ditutup dengan から atau ので. Bentuk なぜならば terdengar sedikit lebih lengkap dan cenderung lebih resmi daripada なぜなら.",
+          "なぜかというと dan どうしてかというと dapat digunakan dengan fungsi yang sama untuk mengantar penjelasan alasan."
+        ],
+        "examples": [
+          {
+            "jp": "{予定|よてい}を{変更|へんこう}しました。__なぜなら__、{参加者|さんかしゃ}が{十分|じゅうぶん}に{集|あつ}まらなかったからです。",
+            "id": "Jadwalnya diubah. Alasannya, karena peserta tidak terkumpul dalam jumlah yang cukup.",
+            "en": "The schedule was changed. The reason is that not enough participants gathered."
+          },
+          {
+            "jp": "{私|わたし}はこの{資料|しりょう}を{先|さき}に{読|よ}みます。__なぜならば__、{明日|あした}の{会議|かいぎ}で{必要|ひつよう}になるからです。",
+            "id": "Saya akan membaca dokumen ini lebih dahulu. Alasannya, karena dokumen ini akan diperlukan dalam rapat besok.",
+            "en": "I will read this document first. The reason is that it will be needed in tomorrow's meeting."
+          },
+          {
+            "jp": "{彼女|かのじょ}に{相談|そうだん}した。__なぜなら__、{同|おな}じ{経験|けいけん}をしているからだ。",
+            "id": "Saya berkonsultasi kepadanya. Alasannya, karena ia memiliki pengalaman yang sama.",
+            "en": "I consulted her. The reason is that she has had the same experience."
+          },
+          {
+            "jp": "{電車|でんしゃ}ではなく{歩|ある}いて{帰|かえ}ろう。__なぜなら__、{天気|てんき}がよくて{家|いえ}まで{近|ちか}いからだ。",
+            "id": "Mari pulang berjalan kaki, bukan naik kereta. Alasannya, cuacanya bagus dan rumah cukup dekat.",
+            "en": "Let's walk home instead of taking the train, because the weather is nice and home is nearby."
+          }
+        ],
+        "pitfalls": [
+          "Pola ini mengantar alasan bagi pernyataan sebelumnya, bukan sekadar kata tanya “mengapa”.",
+          "Dalam bentuk yang umum, klausa alasan setelah なぜなら(ば) diakhiri dengan から atau ので, misalnya なぜなら、{時間|じかん}がないからです."
+        ],
+        "tags": [
+          "reason",
+          "conjunction",
+          "written"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:40:15.628Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -9317,8 +11798,75 @@
         "extractedAt": "2026-10-02T09:15:51.934Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜はもちろん",
+        "senseLabel": null,
+        "meaningId": "Bukan hanya X yang sudah jelas, Y juga.",
+        "meaningEn": "Not only the obvious X, but also Y.",
+        "connections": [
+          {
+            "form": "n",
+            "pattern": "はもちろん"
+          },
+          {
+            "form": "sentence",
+            "pattern": "のはもちろん",
+            "note": "Gunakan klausa biasa yang dinominalkan dengan の."
+          }
+        ],
+        "formation": [
+          {
+            "label": "nomina",
+            "input": "N",
+            "rule": "Tambahkan はもちろん setelah nomina. Unsur tambahan biasanya diikuti も.",
+            "output": "N はもちろん、N も",
+            "note": null
+          },
+          {
+            "label": "klausa",
+            "input": "klausa bentuk biasa",
+            "rule": "Nominalkan klausa dengan の, lalu tambahkan はもちろん.",
+            "output": "klausa のはもちろん、klausa のも",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜はもちろん menyatakan bahwa X sudah pasti, wajar, atau diharapkan berlaku, lalu menambahkan bahwa Y juga berlaku. Pola ini sering diterjemahkan sebagai “bukan hanya X, tetapi juga Y” atau “X tentu saja, Y juga”.",
+          "Bagian setelah はもちろん biasanya disertai も untuk menegaskan tambahan tersebut. Dibandingkan だけでなく, pola ini lebih jelas menunjukkan bahwa unsur pertama dipandang sebagai hal yang sudah semestinya."
+        ],
+        "examples": [
+          {
+            "jp": "この{店|みせ}は、{料理|りょうり}__はもちろん__、{飲|の}み{物|もの}も{豊富|ほうふ}です。",
+            "id": "Di toko ini, bukan hanya makanannya, minumannya juga beragam.",
+            "en": "At this restaurant, not only the food but also the drinks are plentiful."
+          },
+          {
+            "jp": "{田中|たなか}さんは、{英語|えいご}__はもちろん__、{韓国語|かんこくご}も{話|はな}せます。",
+            "id": "Tanaka tentu saja bisa berbahasa Inggris, dan ia juga bisa berbahasa Korea.",
+            "en": "Mr. Tanaka can speak English, of course, and he can also speak Korean."
+          },
+          {
+            "jp": "{旅行|りょこう}では、{有名|ゆうめい}な{場所|ばしょ}を{見|み}る__のはもちろん__、{地元|じもと}の{人|ひと}と{話|はな}すのも{楽|たの}しみにしている。",
+            "id": "Saat bepergian, saya tentu saja ingin melihat tempat terkenal, tetapi saya juga menantikan berbicara dengan penduduk setempat.",
+            "en": "When traveling, I naturally want to see famous places, but I also look forward to talking with local people."
+          }
+        ],
+        "pitfalls": [
+          "Pola ini menambahkan unsur Y pada hal X yang dianggap sudah jelas; jangan memakainya bila X bukan hal yang wajar atau diharapkan dalam konteks.",
+          "Untuk menyambungkan tindakan atau klausa, gunakan の: ○ {参加|さんか}するのはもちろん. Bukan ✕ {参加|さんか}するはもちろん."
+        ],
+        "tags": [
+          "addition",
+          "emphasis"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:40:16.884Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -9349,8 +11897,104 @@
         "extractedAt": "2026-10-02T09:16:34.135Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜ばかりか",
+        "senseLabel": null,
+        "meaningId": "tidak hanya A, tetapi B juga",
+        "meaningEn": "not only A, but B as well",
+        "connections": [
+          {
+            "form": "v-plain",
+            "pattern": "ばかりか"
+          },
+          {
+            "form": "i-adj-plain",
+            "pattern": "ばかりか"
+          },
+          {
+            "form": "na-adj-na",
+            "pattern": "ばかりか"
+          },
+          {
+            "form": "n",
+            "pattern": "ばかりか"
+          }
+        ],
+        "formation": [
+          {
+            "label": "kata kerja",
+            "input": "V bentuk biasa",
+            "rule": "Tambahkan ばかりか setelah V bentuk biasa.",
+            "output": "V biasa + ばかりか",
+            "note": null
+          },
+          {
+            "label": "kata sifat-i",
+            "input": "kata sifat-i bentuk biasa",
+            "rule": "Tambahkan ばかりか setelah kata sifat-i bentuk biasa.",
+            "output": "kata sifat-i biasa + ばかりか",
+            "note": null
+          },
+          {
+            "label": "kata sifat-na",
+            "input": "kata sifat-na",
+            "rule": "Tambahkan な, lalu ばかりか.",
+            "output": "kata sifat-na + な + ばかりか",
+            "note": null
+          },
+          {
+            "label": "nomina",
+            "input": "nomina",
+            "rule": "Tambahkan ばかりか langsung setelah nomina.",
+            "output": "nomina + ばかりか",
+            "note": null
+          }
+        ],
+        "variants": [
+          "ばかりでなく（も）"
+        ],
+        "explanation": [
+          "〜ばかりか menyatakan bahwa B juga berlaku selain A, sering kali dengan B sebagai tambahan yang lebih menonjol atau lebih jauh daripada A. Dalam bahasa Indonesia, pola ini umumnya berarti \"tidak hanya A, tetapi B juga\".",
+          "Unsur setelah pola ini kerap diikuti も, さえ, atau まで untuk mempertegas tambahan tersebut. Jika seluruh pernyataannya bernada negatif, terjemahannya dapat menjadi \"jangankan A, B pun tidak ...\"."
+        ],
+        "examples": [
+          {
+            "jp": "{彼|かれ}は{英語|えいご}__ばかりか__、{韓国語|かんこくご}も{話|はな}せる。",
+            "id": "Dia tidak hanya bisa bahasa Inggris, tetapi juga bisa berbicara bahasa Korea.",
+            "en": "He can speak not only English but also Korean."
+          },
+          {
+            "jp": "この{映画|えいが}は{長|なが}い__ばかりか__、{内容|ないよう}も{複雑|ふくざつ}だ。",
+            "id": "Film ini tidak hanya panjang, tetapi isinya juga rumit.",
+            "en": "This movie is not only long, but its content is also complicated."
+          },
+          {
+            "jp": "{新|あたら}しい{図書館|としょかん}は{便利|べんり}な__ばかりか__、{夜|よる}まで{開|あ}いている。",
+            "id": "Perpustakaan baru itu tidak hanya praktis, tetapi juga buka sampai malam.",
+            "en": "The new library is not only convenient, but it is also open until night."
+          },
+          {
+            "jp": "{兄|あに}は{医者|いしゃ}__ばかりか__、{小説家|しょうせつか}でもある。",
+            "id": "Kakak laki-laki saya tidak hanya seorang dokter, tetapi juga seorang novelis.",
+            "en": "My older brother is not only a doctor, but also a novelist."
+          }
+        ],
+        "pitfalls": [
+          "Jangan gunakan pola ini untuk makna ばかり sebagai \"baru saja\" atau \"hanya\".",
+          "Pada kata sifat-na, gunakan な sebelum pola. ○ {便利|べんり}なばかりか. ✕ {便利|べんり}ばかりか.",
+          "Dalam kalimat negatif, pola ini sering diterjemahkan dengan \"jangankan A, B pun tidak\", tetapi fungsi dasarnya tetap menambahkan B di luar A."
+        ],
+        "tags": [
+          "addition",
+          "emphasis"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:40:53.853Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -9381,8 +12025,100 @@
         "extractedAt": "2026-10-02T09:16:34.135Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜に{比|くら}べて",
+        "senseLabel": null,
+        "meaningId": "dibandingkan dengan",
+        "meaningEn": "compared with",
+        "connections": [
+          {
+            "form": "n",
+            "pattern": "に{比|くら}べて"
+          },
+          {
+            "form": "n",
+            "pattern": "に{比|くら}べ"
+          },
+          {
+            "form": "other",
+            "pattern": "のに{比|くら}べて",
+            "note": "Klausa bentuk biasa yang dinominalkan dengan の."
+          },
+          {
+            "form": "other",
+            "pattern": "のに{比|くら}べ",
+            "note": "Klausa bentuk biasa yang dinominalkan dengan の."
+          },
+          {
+            "form": "sentence",
+            "pattern": "それに{比|くら}べて"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Nomina",
+            "input": "N",
+            "rule": "Tambahkan に, lalu gunakan bentuk dengan て atau bentuk tanpa て.",
+            "output": "N に{比|くら}べて / N に{比|くら}べ",
+            "note": null
+          },
+          {
+            "label": "Klausa",
+            "input": "Klausa bentuk biasa + の",
+            "rule": "Tambahkan に{比|くら}べて atau に{比|くら}べ setelah nominalisasi の.",
+            "output": "Klausa + のに{比|くら}べて / のに{比|くら}べ",
+            "note": null
+          },
+          {
+            "label": "Penghubung antarkalimat",
+            "input": "Kalimat sebelumnya",
+            "rule": "Gunakan それ untuk merujuk pada keadaan atau hal yang disebutkan sebelumnya.",
+            "output": "それに{比|くら}べて",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜に{比|くら}べて menyatakan bahwa sesuatu dinilai dengan menjadikan hal lain sebagai patokan perbandingan. Hal yang menjadi patokan ditempatkan sebelum pola ini, sedangkan perbedaan atau hasil perbandingannya disampaikan sesudahnya.",
+          "Pola ini dapat dipakai setelah nomina, atau setelah klausa yang diikuti の. Bentuk tanpa て, yaitu 〜に{比|くら}べ, juga benar dan sering muncul sebelum jeda dalam kalimat.",
+          "それに{比|くら}べて dapat menghubungkan kalimat dengan membandingkan informasi baru dengan keadaan yang telah disebutkan sebelumnya."
+        ],
+        "examples": [
+          {
+            "jp": "{去年|きょねん}__に{比|くら}べて__、{今年|ことし}の{夏|なつ}は{雨|あめ}が{多|おお}い。",
+            "id": "Dibandingkan tahun lalu, musim panas tahun ini lebih banyak hujan.",
+            "en": "Compared with last year, this summer has more rain."
+          },
+          {
+            "jp": "{大|おお}きい{会社|かいしゃ}で{働|はたら}く__のに{比|くら}べて__、{小|ちい}さな{会社|かいしゃ}では{仕事|しごと}の{決定|けってい}が{早|はや}い。",
+            "id": "Dibandingkan bekerja di perusahaan besar, keputusan di perusahaan kecil lebih cepat.",
+            "en": "Compared with working at a large company, decisions are made faster at a small company."
+          },
+          {
+            "jp": "{都市|とし}{部|ぶ}__に{比|くら}べ__、この{町|まち}は{夜|よる}がとても{静|しず}かだ。",
+            "id": "Dibandingkan daerah perkotaan, kota ini sangat tenang pada malam hari.",
+            "en": "Compared with urban areas, this town is very quiet at night."
+          },
+          {
+            "jp": "{兄|あに}は{車|くるま}で{通勤|つうきん}している。__それに{比|くら}べて__、{私|わたし}は{毎朝|まいあさ}{電車|でんしゃ}に{乗|の}る。",
+            "id": "Kakak laki-laki saya pergi kerja dengan mobil. Dibandingkan itu, saya naik kereta setiap pagi.",
+            "en": "My older brother commutes by car. Compared with that, I take the train every morning."
+          }
+        ],
+        "pitfalls": [
+          "Dalam bentuk klausa, の diperlukan sebelum に{比|くら}べて. ○ Vるのに{比|くら}べて. ✕ Vるに{比|くら}べて.",
+          "Patokan perbandingan ditempatkan sebelum pola ini. Unsur yang dibandingkan biasanya muncul sesudahnya."
+        ],
+        "tags": [
+          "contrast"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:41:23.118Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -9411,8 +12147,81 @@
         "extractedAt": "2026-10-02T09:17:25.313Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜に{対|たい}して",
+        "senseLabel": "sasaran sikap atau tindakan",
+        "meaningId": "terhadap atau kepada sebagai sasaran sikap, tindakan, atau kebijakan",
+        "meaningEn": "toward or regarding someone or something as the target of an attitude, action, or policy",
+        "connections": [
+          {
+            "form": "n",
+            "pattern": "に{対|たい}して",
+            "note": "Nomina menyatakan orang, kelompok, atau hal yang menjadi sasaran."
+          },
+          {
+            "form": "n",
+            "pattern": "に{対|たい}する",
+            "note": "Dipakai ketika frasa ini langsung menerangkan nomina berikutnya."
+          }
+        ],
+        "formation": [
+          {
+            "label": "sasaran tindakan atau sikap",
+            "input": "nomina",
+            "rule": "Tambahkan に{対|たい}して setelah nomina yang menjadi sasaran.",
+            "output": "N に{対|たい}して",
+            "note": null
+          },
+          {
+            "label": "modifikasi nomina",
+            "input": "nomina",
+            "rule": "Gunakan に{対|たい}する sebelum nomina yang diterangkan.",
+            "output": "N に{対|たい}する N",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "Pola ini ditempatkan setelah nomina untuk menandai orang, kelompok, atau hal yang menjadi sasaran sikap, perlakuan, tindakan, atau kebijakan. Terjemahannya lazim berupa “terhadap” atau “kepada”.",
+          "Pola ini menonjolkan arah hubungan secara jelas, sehingga sering digunakan saat membahas sikap seseorang, layanan, aturan, atau tindakan yang ditujukan kepada pihak tertentu.",
+          "Jika langsung menerangkan nomina, gunakan N に{対|たい}する N. Bentuk に{対|たい}し juga digunakan dengan makna yang sama, terutama dalam ragam yang lebih ringkas atau tertulis."
+        ],
+        "examples": [
+          {
+            "jp": "{店員|てんいん}は{客|きゃく}__に{対|たい}して__いつも{丁寧|ていねい}だ。",
+            "id": "Pegawai toko selalu sopan terhadap pelanggan.",
+            "en": "The store clerk is always polite toward customers."
+          },
+          {
+            "jp": "{市|し}は{高齢者|こうれいしゃ}__に{対|たい}して__{相談|そうだん}{窓口|まどぐち}を{増|ふ}やした。",
+            "id": "Pemerintah kota menambah loket konsultasi untuk para lansia.",
+            "en": "The city increased consultation desks for senior residents."
+          },
+          {
+            "jp": "{兄|あに}は{私|わたし}__に{対|たい}して__{正直|しょうじき}な{意見|いけん}を{言|い}ってくれる。",
+            "id": "Kakak laki-laki saya menyampaikan pendapatnya dengan jujur kepada saya.",
+            "en": "My older brother gives me his honest opinion."
+          },
+          {
+            "jp": "{会社|かいしゃ}は{顧客|こきゃく}__に{対|たい}する__{説明|せつめい}を{改善|かいぜん}した。",
+            "id": "Perusahaan memperbaiki penjelasan untuk pelanggan.",
+            "en": "The company improved its explanations for customers."
+          }
+        ],
+        "pitfalls": [
+          "Jangan memakai pola ini hanya untuk menunjukkan penerima pemberian. Untuk penerima benda atau informasi biasa, partikel に sering lebih alami.",
+          "Pola ini tidak berarti “sedangkan” atau kontras. Gunakan pemakaian kontras hanya ketika dua keadaan atau dua pihak benar-benar dibandingkan."
+        ],
+        "tags": [
+          "particle"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:41:19.552Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -9441,8 +12250,70 @@
         "extractedAt": "2026-10-02T09:17:25.313Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜に{対|たい}して",
+        "senseLabel": "kontras berlawanan",
+        "meaningId": "berlawanan dengan; berbeda dengan",
+        "meaningEn": "in contrast to; as opposed to",
+        "connections": [
+          {
+            "form": "n",
+            "pattern": "に{対|たい}して"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Nomina + ni taishite",
+            "input": "N",
+            "rule": "Letakkan に{対|たい}して setelah nomina yang menjadi acuan perbandingan.",
+            "output": "N に{対|たい}して",
+            "note": null
+          }
+        ],
+        "variants": [
+          "〜に{対|たい}し"
+        ],
+        "explanation": [
+          "〜に{対|たい}して menyatakan kontras antara dua orang, benda, keadaan, atau kelompok. Bagian setelah pola ini menunjukkan sisi yang berbeda atau berlawanan dengan nomina sebelumnya.",
+          "Pola ini lazim dipakai dalam susunan Aに{対|たい}して、B untuk membandingkan A dan B. Kontrasnya tidak harus berupa lawan mutlak, tetapi kedua unsur perlu dapat dibandingkan dari sudut yang sama.",
+          "それに{対|たい}して dapat dipakai di awal kalimat untuk menghubungkan pernyataan sebelumnya dengan informasi yang berlawanan atau berbeda."
+        ],
+        "examples": [
+          {
+            "jp": "{都市|とし}の{中心部|ちゅうしんぶ}に{住|す}む{姉|あね}__に{対|たい}して__、{弟|おとうと}は{海|うみ}の{近|ちか}くで{静|しず}かに{暮|く}らしている。",
+            "id": "Berbeda dengan kakaknya yang tinggal di pusat kota, adiknya hidup tenang di dekat laut.",
+            "en": "In contrast to his sister, who lives in the city center, the younger brother lives quietly near the sea."
+          },
+          {
+            "jp": "{大企業|だいきぎょう}__に{対|たい}して__、{小|ちい}さな{店|みせ}は{客|きゃく}ごとの{希望|きぼう}に{柔軟|じゅうなん}に{対応|たいおう}しやすい。",
+            "id": "Berbeda dengan perusahaan besar, toko kecil lebih mudah menanggapi harapan setiap pelanggan secara fleksibel.",
+            "en": "In contrast to large companies, small shops can respond more flexibly to each customer's requests."
+          },
+          {
+            "jp": "{父|ちち}__に{対|たい}して__、{母|はは}は{思|おも}い{立|た}ったらすぐに{行動|こうどう}する{性格|せいかく}だ。",
+            "id": "Berbeda dengan ayah, ibu memiliki sifat yang langsung bertindak ketika sudah memutuskan sesuatu.",
+            "en": "In contrast to my father, my mother is the type who acts immediately once she makes up her mind."
+          },
+          {
+            "jp": "{先月|せんげつ}は{雨|あめ}が{多|おお}かった。それ__に{対|たい}して__、{今月|こんげつ}は{晴|は}れの{日|ひ}が{続|つづ}いている。",
+            "id": "Bulan lalu banyak hujan. Sebaliknya, bulan ini hari cerah terus berlanjut.",
+            "en": "Last month had a lot of rain. In contrast, this month has had many sunny days."
+          }
+        ],
+        "pitfalls": [
+          "Gunakan pola ini bila B dikontraskan dengan A. Jangan memakainya untuk arti terhadap apabila A hanya menjadi sasaran tindakan.",
+          "〜に{対|たい}し adalah bentuk yang lebih ringkas dan cenderung lebih resmi, tetapi makna kontrasnya sama."
+        ],
+        "tags": [
+          "contrast"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:42:20.241Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -9481,8 +12352,80 @@
         "extractedAt": "2026-10-02T09:17:25.313Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜{上|あ}げる／〜{上|あ}がる",
+        "senseLabel": null,
+        "meaningId": "menyelesaikan tindakan hingga tuntas",
+        "meaningEn": "finish an action completely",
+        "connections": [
+          {
+            "form": "v-masu",
+            "pattern": "{上|あ}げる"
+          },
+          {
+            "form": "v-masu",
+            "pattern": "{上|あ}がる"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Verba transitif",
+            "input": "V bentuk masu",
+            "rule": "Hilangkan ます, lalu tambahkan {上|あ}げる.",
+            "output": "V-stem + {上|あ}げる",
+            "note": "Bentuk ini menekankan pelaku yang menuntaskan tindakan pada suatu objek."
+          },
+          {
+            "label": "Verba intransitif",
+            "input": "V bentuk masu",
+            "rule": "Hilangkan ます, lalu tambahkan {上|あ}がる.",
+            "output": "V-stem + {上|あ}がる",
+            "note": "Bentuk ini menyatakan bahwa hasil atau proses tersebut telah selesai."
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "{上|あ}げる／{上|あ}がる melekat pada bentuk masu verba untuk menyatakan bahwa suatu kegiatan telah dikerjakan sampai tuntas. Pola ini sering menunjukkan bahwa seluruh proses telah mencapai tahap akhir atau menghasilkan sesuatu yang jadi.",
+          "{上|あ}げる umumnya dipakai ketika pelaku secara aktif menyelesaikan tindakan terhadap objek. Sebaliknya, {上|あ}がる menyoroti hasil yang telah selesai atau keadaan ketika prosesnya selesai. Tidak semua verba dapat digabungkan dengan pola ini; pilih gabungan yang lazim digunakan."
+        ],
+        "examples": [
+          {
+            "jp": "{田|た}{中|なか}さんは{締|し}め{切|き}りの{前|まえ}に{長|なが}い{報|ほう}{告|こく}{書|しょ}を{書|か}き__{上|あ}げた__。",
+            "id": "Tanaka menyelesaikan laporan panjang sebelum tenggat waktu.",
+            "en": "Tanaka finished writing a long report before the deadline."
+          },
+          {
+            "jp": "{職|しょく}{人|にん}たちは{一|いっ}{週|しゅう}かけて{大|おお}きな{机|つくえ}を{作|つく}り__{上|あ}げた__。",
+            "id": "Para pengrajin menyelesaikan pembuatan meja besar itu dalam satu minggu.",
+            "en": "The craftsmen completed the large table in a week."
+          },
+          {
+            "jp": "{祖|そ}{母|ぼ}のためのセーターが、{昨|さく}{夜|や}ようやく{編|あ}み__{上|あ}がった__。",
+            "id": "Sweter untuk nenek akhirnya selesai dirajut tadi malam.",
+            "en": "The sweater for my grandmother was finally finished last night."
+          },
+          {
+            "jp": "オーブンから、こんがり{焼|や}き__{上|あ}がった__パンのにおいがした。",
+            "id": "Aroma roti yang baru selesai dipanggang dengan kecokelatan tercium dari oven.",
+            "en": "The smell of freshly baked golden-brown bread came from the oven."
+          }
+        ],
+        "pitfalls": [
+          "Gunakan {上|あ}げる ketika pelaku menuntaskan objek: ○ {報|ほう}{告|こく}{書|しょ}を{書|か}き{上|あ}げる.",
+          "Gunakan {上|あ}がる ketika hasilnya telah selesai: ○ {報|ほう}{告|こく}{書|しょ}が{書|か}き{上|あ}がる.",
+          "Jangan menganggap pola ini dapat ditambahkan pada semua verba. Banyak gabungan dengan {上|あ}げる atau {上|あ}がる merupakan verba majemuk yang penggunaannya terbatas. "
+        ],
+        "tags": [
+          "aspect",
+          "result"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:42:06.909Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -9524,8 +12467,84 @@
         "extractedAt": "2026-10-02T09:53:56.169Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜{切|き}る",
+        "senseLabel": null,
+        "meaningId": "menyelesaikan sampai tuntas atau menghabiskan seluruhnya",
+        "meaningEn": "do something to completion; use up all of something",
+        "connections": [
+          {
+            "form": "v-masu",
+            "pattern": "{切|き}る"
+          },
+          {
+            "form": "v-masu",
+            "pattern": "{切|き}れる"
+          },
+          {
+            "form": "v-masu",
+            "pattern": "{切|き}れない"
+          }
+        ],
+        "formation": [
+          {
+            "label": "penyelesaian tuntas",
+            "input": "{読|よ}みます",
+            "rule": "Hilangkan ます dari bentuk masu, lalu tambahkan {切|き}る.",
+            "output": "{読|よ}み{切|き}る",
+            "note": null
+          },
+          {
+            "label": "kemampuan menyelesaikan",
+            "input": "{食|た}べます",
+            "rule": "Hilangkan ます dari bentuk masu, lalu tambahkan {切|き}れる atau {切|き}れない.",
+            "output": "{食|た}べ{切|き}れる / {食|た}べ{切|き}れない",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜{切|き}る melekat pada bentuk masu kata kerja untuk menyatakan bahwa tindakan dilakukan hingga titik akhir, seluruh bagian selesai, atau sesuatu habis sepenuhnya.",
+          "Bentuk 〜{切|き}れない menyatakan bahwa pelaku tidak mampu menyelesaikan tindakan itu sampai tuntas, biasanya karena jumlah, waktu, tenaga, atau kemampuan tidak mencukupi.",
+          "Pola ini lazim dipakai dengan tindakan yang mempunyai batas atau keseluruhan yang jelas, seperti membaca sebuah buku, menghabiskan makanan, atau menyelesaikan pekerjaan."
+        ],
+        "examples": [
+          {
+            "jp": "{締|し}め{切|き}りまでに{報告書|ほうこくしょ}を{書|か}き__{切|き}った__。",
+            "id": "Saya menyelesaikan laporan itu sampai tuntas sebelum tenggat waktu.",
+            "en": "I completed the report fully before the deadline."
+          },
+          {
+            "jp": "{長編小説|ちょうへんしょうせつ}を{一週間|いっしゅうかん}で{読|よ}み__{切|き}った__。",
+            "id": "Saya membaca novel panjang itu sampai selesai dalam satu minggu.",
+            "en": "I finished reading the long novel in one week."
+          },
+          {
+            "jp": "この{量|りょう}の{料理|りょうり}は、{一人|ひとり}では{食|た}べ__{切|き}れない__。",
+            "id": "Makanan sebanyak ini tidak bisa dihabiskan sendirian.",
+            "en": "One person cannot finish this amount of food."
+          },
+          {
+            "jp": "{店|みせ}のパンは{昼前|ひるまえ}に{売|う}り__{切|き}れた__。",
+            "id": "Roti di toko itu habis terjual sebelum siang.",
+            "en": "The bread at the store sold out before noon."
+          }
+        ],
+        "pitfalls": [
+          "〜{切|き}れない bukan sekadar berarti tidak dapat melakukan tindakan. Bentuk ini menekankan bahwa tindakan tersebut tidak dapat diselesaikan seluruhnya.",
+          "Gunakan pola ini untuk tindakan yang memiliki batas akhir atau jumlah yang dapat dihabiskan. Tidak semua kata kerja cocok digabungkan dengan 〜{切|き}る."
+        ],
+        "tags": [
+          "aspect",
+          "result"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:42:11.637Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -9565,8 +12584,85 @@
         "extractedAt": "2026-10-02T09:53:56.169Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜かけ／〜かける",
+        "senseLabel": "tindakan belum selesai",
+        "meaningId": "tindakan yang sudah dimulai tetapi masih belum selesai",
+        "meaningEn": "an action that has started but remains unfinished",
+        "connections": [
+          {
+            "form": "v-masu",
+            "pattern": "かける"
+          },
+          {
+            "form": "v-masu",
+            "pattern": "かけだ"
+          },
+          {
+            "form": "v-masu",
+            "pattern": "かけの"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Predikat",
+            "input": "Vます{形|けい}",
+            "rule": "Hilangkan ます, lalu tambahkan かける. Bentuk ini dapat dikonjugasikan.",
+            "output": "Vます{形|けい} + かける",
+            "note": null
+          },
+          {
+            "label": "Keadaan belum selesai",
+            "input": "Vます{形|けい}",
+            "rule": "Hilangkan ます, lalu tambahkan かけだ untuk menyatakan keadaan tindakan yang tertunda atau belum rampung.",
+            "output": "Vます{形|けい} + かけだ",
+            "note": null
+          },
+          {
+            "label": "Penerang nomina",
+            "input": "Vます{形|けい}",
+            "rule": "Hilangkan ます, lalu tambahkan かけの sebelum nomina.",
+            "output": "Vます{形|けい} + かけの + N",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜かける menyatakan bahwa suatu tindakan telah dimulai, tetapi terhenti atau masih berada di tengah proses sehingga belum selesai.",
+          "Bentuk 〜かけだ menekankan keadaan sesuatu yang belum rampung. Bentuk 〜かけの dipakai untuk menerangkan nomina, misalnya benda yang sedang dikerjakan, dibaca, atau dimakan tetapi belum selesai.",
+          "Pola ini tidak dipakai untuk tindakan yang sama sekali belum dimulai atau tindakan yang hampir dimulai tetapi akhirnya tidak jadi dilakukan."
+        ],
+        "examples": [
+          {
+            "jp": "{会議|かいぎ}の{資料|しりょう}を{作|つく}り__かけた__まま、{帰宅|きたく}した。",
+            "id": "Saya pulang dalam keadaan bahan rapat masih belum selesai dibuat.",
+            "en": "I went home with the meeting materials still unfinished."
+          },
+          {
+            "jp": "{子|こ}どもは{食|た}べ__かけの__りんごを{冷蔵庫|れいぞうこ}に{入|い}れた。",
+            "id": "Anak itu memasukkan apel yang belum selesai dimakannya ke dalam kulkas.",
+            "en": "The child put the partly eaten apple in the refrigerator."
+          },
+          {
+            "jp": "まだ{書|か}き__かけの__{手紙|てがみ}が{机|つくえ}の{上|うえ}にある。",
+            "id": "Masih ada surat yang belum selesai ditulis di atas meja.",
+            "en": "There is still an unfinished letter on the desk."
+          }
+        ],
+        "pitfalls": [
+          "〜かけの harus langsung diikuti nomina. Untuk mengakhiri kalimat, gunakan 〜かけだ atau bentuk 〜かける yang sudah dikonjugasikan.",
+          "Pola ini menandakan tindakan sudah dimulai. Jangan memakainya bila tindakan itu belum dilakukan sama sekali."
+        ],
+        "tags": [
+          "aspect"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:43:16.567Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -9605,9 +12701,72 @@
         "extractedAt": "2026-10-02T09:53:56.169Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
-      "review": null
+      "content": {
+        "title": "〜かけ／〜かける",
+        "senseLabel": "mulai lalu terhenti",
+        "meaningId": "mulai atau hampir mulai melakukan sesuatu, lalu tindakan itu terhenti",
+        "meaningEn": "start or be about to do something, then stop before continuing",
+        "connections": [
+          {
+            "form": "v-masu",
+            "pattern": "かける"
+          }
+        ],
+        "formation": [
+          {
+            "label": "kata kerja",
+            "input": "V-masu tanpa ます",
+            "rule": "Hilangkan ます, lalu tambahkan かける. Bentuk ini dapat dikonjugasikan sesuai waktu atau hubungan kalimat.",
+            "output": "V-masu + かける",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜かける menyatakan bahwa suatu tindakan baru akan dimulai atau baru mulai berlangsung, tetapi kemudian terhenti dan tidak diteruskan.",
+          "Pola ini sering dipakai ketika tindakan terputus oleh kejadian lain, perubahan pikiran, atau campur tangan seseorang. Konteks biasanya menunjukkan bahwa tindakan tersebut tidak sampai berlanjut.",
+          "Untuk sense ini, fokusnya adalah titik awal tindakan yang terganggu. Jangan mencampurkannya dengan V-masu + かけの nomina yang menyatakan sesuatu yang sudah dikerjakan sebagian tetapi belum selesai."
+        ],
+        "examples": [
+          {
+            "jp": "{彼|かれ}は{質問|しつもん}に{答|こた}え__かけて__、{急|きゅう}に{黙|だま}った。",
+            "id": "Ia mulai akan menjawab pertanyaan itu, tetapi tiba-tiba diam.",
+            "en": "He started to answer the question, but suddenly fell silent."
+          },
+          {
+            "jp": "メールを{送|おく}り__かけた__が、{内容|ないよう}の{間違|まちが}いに{気|き}づいてやめた。",
+            "id": "Saya hampir mengirim surel itu, tetapi berhenti setelah menyadari ada kesalahan dalam isinya.",
+            "en": "I was about to send the email, but stopped after noticing a mistake in it."
+          },
+          {
+            "jp": "{赤|あか}ん{坊|ぼう}が{泣|な}き__かけた__ところで、{母親|ははおや}が{抱|だ}き{上|あ}げた。",
+            "id": "Ketika bayi itu mulai akan menangis, ibunya segera menggendongnya.",
+            "en": "Just as the baby was about to start crying, its mother picked it up."
+          },
+          {
+            "jp": "{猫|ねこ}が{窓|まど}から{出|で}__かけた__ので、すぐにドアを{閉|し}めた。",
+            "id": "Karena kucing itu hampir keluar melalui jendela, saya segera menutup pintunya.",
+            "en": "The cat was about to go out through the window, so I quickly shut the door."
+          }
+        ],
+        "pitfalls": [
+          "Gunakan bentuk V-masu, bukan bentuk kamus. ○ {言|い}いかける. ✕ {言|い}うかける.",
+          "Pola ini memerlukan konteks bahwa tindakan tidak berlanjut. Jika tindakan memang diteruskan hingga selesai, 〜かける tidak sesuai untuk sense ini."
+        ],
+        "tags": [
+          "aspect"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:43:15.340Z",
+        "doubt": null
+      },
+      "review": {
+        "reviewedAt": "2026-10-03T05:46:40.000Z",
+        "note": "Sense ini sengaja dibatasi pada V-masu + かける untuk tindakan yang mulai atau hampir mulai lalu terhenti; bentuk かけだ dan かけの diterbitkan pada anggota family kake-belum-selesai."
+      }
     },
     {
       "key": "tate",
@@ -9645,8 +12804,68 @@
         "extractedAt": "2026-10-02T09:18:56.597Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜たて",
+        "senseLabel": null,
+        "meaningId": "baru selesai dan masih dalam keadaan segar atau baru",
+        "meaningEn": "freshly made, done, or completed and still new",
+        "connections": [
+          {
+            "form": "v-masu",
+            "pattern": "たて"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Kata kerja",
+            "input": "bentuk ます tanpa ます",
+            "rule": "Tambahkan たて untuk menyatakan hasil tindakan yang baru selesai.",
+            "output": "Vます{形|けい} + たての + N / Vます{形|けい} + たてだ",
+            "note": "Umumnya digunakan sebagai pewatas nomina atau predikat."
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜たて menyatakan bahwa suatu tindakan baru saja selesai sehingga hasilnya masih berada dalam keadaan baru, segar, hangat, atau belum lama.",
+          "Pola ini terutama cocok untuk tindakan yang menghasilkan benda atau keadaan yang kualitas barunya masih dapat dirasakan. Pola ini juga dapat dipakai untuk keadaan seperti baru masuk perusahaan atau baru mulai mempelajari sesuatu."
+        ],
+        "examples": [
+          {
+            "jp": "{朝|あさ}、{店|みせ}で{焼|や}き__たて__のクッキーを{買|か}った。",
+            "id": "Pagi ini, saya membeli kukis yang baru dipanggang di toko.",
+            "en": "This morning, I bought freshly baked cookies at a shop."
+          },
+          {
+            "jp": "{新|あたら}しく{入|はい}った{社員|しゃいん}は、まだ{入社|にゅうしゃ}し__たて__です。",
+            "id": "Karyawan yang baru masuk itu masih baru bergabung dengan perusahaan.",
+            "en": "The new employee has only recently joined the company."
+          },
+          {
+            "jp": "{父|ちち}が{塗|ぬ}り__たて__のベンチに{座|すわ}らないように{注意|ちゅうい}した。",
+            "id": "Ayah memperingatkan kami agar tidak duduk di bangku yang baru dicat.",
+            "en": "My father warned us not to sit on the freshly painted bench."
+          },
+          {
+            "jp": "{畑|はたけ}から{届|とど}いた{採|と}れ__たて__のトマトでサラダを{作|つく}ろう。",
+            "id": "Mari membuat salad dengan tomat yang baru dipetik dan dikirim dari ladang.",
+            "en": "Let's make a salad with freshly picked tomatoes delivered from the farm."
+          }
+        ],
+        "pitfalls": [
+          "Tidak semua kata kerja dapat langsung memakai 〜たて. Pola ini terutama sesuai bila hasil tindakan masih memiliki kualitas baru yang terasa.",
+          "○ {炊|た}きたてのごはん。 ✕ {読|よ}みたての{本|ほん}。",
+          "〜たて berfokus pada keadaan hasil yang masih baru. 〜たばかり lebih luas dan hanya menekankan bahwa tindakan baru saja terjadi."
+        ],
+        "tags": [
+          "aspect"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:43:09.084Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -9691,8 +12910,100 @@
         "extractedAt": "2026-10-02T09:18:56.597Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜といいなあ",
+        "senseLabel": null,
+        "meaningId": "menyatakan harapan agar suatu keadaan terwujud",
+        "meaningEn": "expressing hope that a situation will happen",
+        "connections": [
+          {
+            "form": "plain",
+            "pattern": "といいなあ"
+          },
+          {
+            "form": "v-ta",
+            "pattern": "らいいなあ"
+          },
+          {
+            "form": "v-ba",
+            "pattern": "いいなあ"
+          },
+          {
+            "form": "i-adj-stem",
+            "pattern": "かったらいいなあ"
+          },
+          {
+            "form": "i-adj-stem",
+            "pattern": "ければいいなあ"
+          },
+          {
+            "form": "na-adj-stem",
+            "pattern": "だったらいいなあ"
+          },
+          {
+            "form": "na-adj-stem",
+            "pattern": "なら(ば)いいなあ"
+          },
+          {
+            "form": "other",
+            "pattern": "だったらいいなあ／なら(ば)いいなあ",
+            "note": "Untuk nomina, gunakan N + だったらいいなあ atau N + なら(ば)いいなあ."
+          }
+        ],
+        "formation": [
+          {
+            "label": "Bentuk biasa",
+            "input": "V bentuk biasa, A-i bentuk biasa, A-na + da, atau N + da",
+            "rule": "Tambahkan といいなあ.",
+            "output": "bentuk biasa + といいなあ",
+            "note": null
+          },
+          {
+            "label": "Bentuk pengandaian",
+            "input": "V-たら atau V-ば; A-i -かったら atau -ければ; A-na/N -だったら atau -なら(ば)",
+            "rule": "Tambahkan いいなあ.",
+            "output": "bentuk pengandaian + いいなあ",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜といいなあ dipakai untuk menyatakan harapan atau keinginan pribadi pembicara agar keadaan yang disebutkan terjadi. Dalam bahasa Indonesia, pola ini sering berarti “semoga” atau “andaikan ... terjadi”.",
+          "Pola ini biasanya dipakai untuk hal yang belum pasti, seperti cuaca, hasil ujian, atau kejadian pada masa depan. Pola ini tidak digunakan untuk meminta lawan bicara melakukan sesuatu secara langsung.",
+          "Harapan yang sama juga dapat diungkapkan dengan bentuk pengandaian seperti V-たらいいなあ, V-ばいいなあ, atau A-na/N ならいいなあ."
+        ],
+        "examples": [
+          {
+            "jp": "{試験|しけん}に{合格|ごうかく}できる__といいなあ__。",
+            "id": "Semoga aku bisa lulus ujian.",
+            "en": "I hope I can pass the exam."
+          },
+          {
+            "jp": "{週末|しゅうまつ}は{晴|は}れる__といいなあ__。",
+            "id": "Semoga akhir pekan ini cerah.",
+            "en": "I hope it will be sunny this weekend."
+          },
+          {
+            "jp": "{弟|おとうと}も{旅行|りょこう}に{行|い}ける__といいなあ__。",
+            "id": "Semoga adik laki-lakiku juga bisa pergi berwisata.",
+            "en": "I hope my younger brother can go on the trip too."
+          }
+        ],
+        "pitfalls": [
+          "Setelah bentuk pengandaian, jangan memakai と. ○ {行|い}けたらいいなあ. ✕ {行|い}けたらといいなあ.",
+          "Untuk berharap sesuatu tidak terjadi, gunakan bentuk negatif sebelum pola ini, misalnya {雨|あめ}が{降|ふ}らないといいなあ."
+        ],
+        "tags": [
+          "desire",
+          "casual"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:45:21.921Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -9751,8 +13062,107 @@
         "extractedAt": "2026-10-02T09:19:44.072Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜ばよかった",
+        "senseLabel": null,
+        "meaningId": "Seandainya melakukan atau tidak melakukan sesuatu; menyatakan penyesalan atas masa lalu.",
+        "meaningEn": "I wish I had done or had not done something; expresses regret about the past.",
+        "connections": [
+          {
+            "form": "v-ba",
+            "pattern": "よかった"
+          },
+          {
+            "form": "v-nai-stem",
+            "pattern": "なければよかった"
+          },
+          {
+            "form": "v-ta",
+            "pattern": "らよかった"
+          },
+          {
+            "form": "v-nai-stem",
+            "pattern": "なかったらよかった"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Bentuk positif ば",
+            "input": "Kata kerja",
+            "rule": "Ubah ke bentuk ば.",
+            "output": "Vばよかった",
+            "note": null
+          },
+          {
+            "label": "Bentuk negatif ば",
+            "input": "Kata kerja",
+            "rule": "Ubah ke bentuk negatif tanpa ない, lalu tambah なければ.",
+            "output": "Vなければよかった",
+            "note": null
+          },
+          {
+            "label": "Bentuk positif たら",
+            "input": "Kata kerja",
+            "rule": "Ubah ke bentuk た, lalu tambah ら.",
+            "output": "Vたらよかった",
+            "note": null
+          },
+          {
+            "label": "Bentuk negatif たら",
+            "input": "Kata kerja",
+            "rule": "Ubah ke bentuk negatif tanpa ない, lalu tambah なかったら.",
+            "output": "Vなかったらよかった",
+            "note": null
+          }
+        ],
+        "variants": [
+          "〜たらよかった",
+          "〜なければよかった",
+          "〜なかったらよかった"
+        ],
+        "explanation": [
+          "〜ばよかった menyatakan penyesalan terhadap tindakan yang seharusnya dilakukan atau tidak dilakukan pada masa lalu. Dalam bahasa Indonesia, pola ini sering diterjemahkan sebagai “seandainya tadi...” atau “coba tadi...”.",
+          "Bagian sebelum pola menunjukkan tindakan yang diharapkan berbeda dari kenyataan. Bentuk positif berarti penutur menyesal karena tidak melakukan tindakan itu, sedangkan bentuk negatif berarti penutur menyesal karena telah melakukannya.",
+          "〜たらよかった juga dapat dipakai dengan makna penyesalan yang sama. Pola ini biasanya digunakan ketika hasil atau situasi yang sudah terjadi tidak dapat diubah."
+        ],
+        "examples": [
+          {
+            "jp": "もっと{早|はや}く{寝|ね}れば__よかった__。",
+            "id": "Seandainya saya tidur lebih awal.",
+            "en": "I wish I had gone to bed earlier."
+          },
+          {
+            "jp": "あの{映画|えいが}を{映画館|えいがかん}で{見|み}た__らよかった__。",
+            "id": "Seandainya saya menonton film itu di bioskop.",
+            "en": "I wish I had watched that movie at the cinema."
+          },
+          {
+            "jp": "{大事|だいじ}な{書類|しょるい}を{捨|す}て__なければよかった__。",
+            "id": "Seandainya saya tidak membuang dokumen penting itu.",
+            "en": "I wish I had not thrown away the important document."
+          },
+          {
+            "jp": "{昨日|きのう}、あんなに{甘|あま}い{物|もの}を{食|た}べ__なかったらよかった__。",
+            "id": "Seandainya kemarin saya tidak makan terlalu banyak makanan manis.",
+            "en": "I wish I had not eaten so many sweet things yesterday."
+          }
+        ],
+        "pitfalls": [
+          "Pola ini terutama dipakai untuk penyesalan tentang masa lalu, bukan untuk harapan yang masih dapat diwujudkan.",
+          "Bentuk positif dan negatif memiliki arah penyesalan yang berbeda. ○ {行|い}けばよかった berarti menyesal karena tidak pergi. ○ {行|い}かなければよかった berarti menyesal karena pergi.",
+          "Jangan memakai 〜ばよかった untuk menyatakan kewajiban umum. Pola ini berfokus pada perasaan penutur setelah suatu keadaan terjadi."
+        ],
+        "tags": [
+          "feeling",
+          "condition"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:43:59.266Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -9798,8 +13208,79 @@
         "extractedAt": "2026-10-02T09:19:44.072Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜ば〜のに",
+        "senseLabel": null,
+        "meaningId": "Andaikan ..., hasil yang diinginkan akan terjadi; kenyataannya tidak demikian dan pembicara menyayangkannya.",
+        "meaningEn": "If only ...; the desired result would occur, but reality is different and regrettable.",
+        "connections": [
+          {
+            "form": "v-ba",
+            "pattern": "…のに",
+            "note": "Klausa hasil ditempatkan di antara bentuk ば dan のに."
+          },
+          {
+            "form": "v-ta",
+            "pattern": "ら…のに",
+            "note": "Klausa hasil ditempatkan di antara bentuk たら dan のに."
+          }
+        ],
+        "formation": [
+          {
+            "label": "Bentuk ば",
+            "input": "Kata kerja",
+            "rule": "Ubah kata kerja ke bentuk ば.",
+            "output": "Vば + klausa hasil + のに",
+            "note": null
+          },
+          {
+            "label": "Bentuk たら",
+            "input": "Kata kerja bentuk た",
+            "rule": "Tambahkan ら.",
+            "output": "Vたら + klausa hasil + のに",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "Pola ini menyatakan keadaan pengandaian yang berbeda dari kenyataan. Pembicara membayangkan bahwa apabila syarat tersebut terpenuhi, hasil yang diinginkan akan terjadi.",
+          "Akhiran のに menunjukkan rasa sayang, kecewa, atau penyesalan karena hasil itu tidak terwujud. Pola ini sering dipakai ketika membicarakan kesempatan yang sudah lewat, tetapi juga dapat dipakai untuk keadaan sekarang yang tidak terpenuhi.",
+          "Klausa hasil berada sebelum のに. Karena itu, ば atau たら tidak langsung diikuti oleh のに."
+        ],
+        "examples": [
+          {
+            "jp": "{地図|ちず}を{持|も}ってくれば、{迷|まよ}わなかった__のに__。",
+            "id": "Andaikan saya membawa peta, saya tidak akan tersesat.",
+            "en": "If I had brought a map, I would not have gotten lost."
+          },
+          {
+            "jp": "{時間|じかん}があったら、{手伝|てつだ}える__のに__。",
+            "id": "Seandainya saya punya waktu, saya bisa membantu.",
+            "en": "If I had time, I could help."
+          },
+          {
+            "jp": "もう{少|すこ}し{早|はや}く{申|もう}し{込|こ}めば、{希望|きぼう}の{講座|こうざ}に{入|はい}れた__のに__。",
+            "id": "Andaikan saya mendaftar sedikit lebih awal, saya bisa masuk ke kelas yang saya inginkan.",
+            "en": "If I had applied a little earlier, I could have joined the course I wanted."
+          }
+        ],
+        "pitfalls": [
+          "Pola ini bukan sekadar syarat netral. Pola ini biasanya menyiratkan bahwa syaratnya tidak terpenuhi atau hasil yang diharapkan tidak terjadi.",
+          "Jangan menerjemahkan のに di sini hanya sebagai \"meskipun\". Dalam pola ini, のに terutama menyampaikan penyesalan atau kekecewaan.",
+          "Pastikan ada klausa hasil sebelum のに. Contoh yang benar: {早|はや}く{出|で}れば、{間|ま}に{合|あ}ったのに."
+        ],
+        "tags": [
+          "condition",
+          "feeling",
+          "negative"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:44:41.162Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -9828,8 +13309,71 @@
         "extractedAt": "2026-10-02T09:22:23.368Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜かなあ",
+        "senseLabel": "harapan",
+        "meaningId": "Berharap suatu keadaan terjadi atau tidak terjadi.",
+        "meaningEn": "Expresses a hope that something will or will not happen.",
+        "connections": [
+          {
+            "form": "v-nai",
+            "pattern": "かなあ"
+          }
+        ],
+        "formation": [
+          {
+            "label": "kata kerja negatif",
+            "input": "V bentuk nai",
+            "rule": "Tambahkan かなあ setelah bentuk nai.",
+            "output": "Vないかなあ",
+            "note": null
+          }
+        ],
+        "variants": [
+          "〜ないかな"
+        ],
+        "explanation": [
+          "〜ないかなあ dipakai ketika pembicara mengungkapkan harapan secara spontan, seolah-olah berbicara kepada diri sendiri. Pola ini lazim muncul dalam percakapan santai.",
+          "Bentuk negatif sebelum かなあ tidak selalu berarti pembicara menginginkan hal negatif. Makna harapannya ditentukan oleh konteks. Misalnya, {来|く}る dalam {来|こ}ないかなあ biasanya menyatakan harapan agar seseorang datang.",
+          "Pola ini tidak sama dengan 〜かなあ untuk keraguan. Pada penggunaan ini, fokusnya adalah keinginan pembicara agar situasi tertentu terwujud."
+        ],
+        "examples": [
+          {
+            "jp": "{予約|よやく}した{本|ほん}、{明日|あした}{入荷|にゅうか}しない__かなあ__。",
+            "id": "Semoga buku yang sudah kupesan tersedia besok.",
+            "en": "I hope the book I ordered arrives tomorrow."
+          },
+          {
+            "jp": "{週末|しゅうまつ}は{雨|あめ}が{降|ふ}らない__かなあ__。",
+            "id": "Semoga akhir pekan ini tidak hujan.",
+            "en": "I hope it does not rain this weekend."
+          },
+          {
+            "jp": "{田中|たなか}さんも{会議|かいぎ}に{参加|さんか}できない__かなあ__。",
+            "id": "Semoga Tanaka juga bisa ikut rapat.",
+            "en": "I hope Tanaka can attend the meeting too."
+          },
+          {
+            "jp": "{今日|きょう}のうちに{返事|へんじ}が{来|こ}ない__かなあ__。",
+            "id": "Semoga balasannya datang hari ini.",
+            "en": "I hope a reply comes today."
+          }
+        ],
+        "pitfalls": [
+          "Jangan menafsirkan bentuk ない secara otomatis sebagai harapan negatif. {友達|ともだち}が{来|こ}ないかなあ berarti berharap temannya datang.",
+          "Pola ini terutama untuk harapan atau gumaman pembicara sendiri, bukan permintaan langsung kepada lawan bicara."
+        ],
+        "tags": [
+          "desire",
+          "casual"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:44:28.566Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -9859,8 +13403,70 @@
         "extractedAt": "2026-10-02T09:22:23.368Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜かなあ",
+        "senseLabel": "ketidakpastian",
+        "meaningId": "menyatakan rasa ragu atau bertanya-tanya pada diri sendiri",
+        "meaningEn": "expressing uncertainty or wondering to oneself",
+        "connections": [
+          {
+            "form": "v-plain",
+            "pattern": "かなあ"
+          }
+        ],
+        "formation": [
+          {
+            "label": "kata kerja bentuk biasa",
+            "input": "{行|い}く",
+            "rule": "Tambahkan かなあ setelah bentuk biasa.",
+            "output": "{行|い}くかなあ",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜かなあ dipakai pada akhir klausa untuk menyatakan bahwa pembicara tidak yakin dan sedang bertanya-tanya tentang kemungkinan, keadaan, atau hasil sesuatu.",
+          "Pola ini lazim diucapkan sebagai renungan atau pertanyaan ringan kepada diri sendiri. Pembicara tidak selalu secara langsung menuntut jawaban dari lawan bicara.",
+          "Akhiran あ membuat nada keraguan terdengar lebih memanjang atau lebih terasa daripada かな."
+        ],
+        "examples": [
+          {
+            "jp": "{明日|あした}の{会議|かいぎ}は{予定|よてい}どおりに{始|はじ}まる__かなあ__。",
+            "id": "Apakah rapat besok akan dimulai sesuai jadwal, ya?",
+            "en": "I wonder if tomorrow's meeting will start as scheduled."
+          },
+          {
+            "jp": "あの{店|みせ}はまだ{開|あ}いている__かなあ__。",
+            "id": "Apakah toko itu masih buka, ya?",
+            "en": "I wonder if that shop is still open."
+          },
+          {
+            "jp": "{田中|たなか}さんはもう{駅|えき}に{着|つ}いた__かなあ__。",
+            "id": "Apakah Tanaka sudah sampai di stasiun, ya?",
+            "en": "I wonder if Tanaka has arrived at the station already."
+          },
+          {
+            "jp": "この{電車|でんしゃ}で{空港|くうこう}まで{行|い}ける__かなあ__。",
+            "id": "Apakah kereta ini bisa pergi sampai bandara, ya?",
+            "en": "I wonder if this train goes all the way to the airport."
+          }
+        ],
+        "pitfalls": [
+          "Pola ini terutama menunjukkan keraguan pembicara, bukan pertanyaan langsung yang harus dijawab oleh lawan bicara.",
+          "Gunakan bentuk biasa sebelum かなあ. ○ {間|ま}に{合|あ}うかなあ。 ✕ {間|ま}に{合|あ}いますかなあ.",
+          "Jangan selalu menafsirkan bentuk negatif dengan かなあ sebagai harapan. Dalam sense ini, fokusnya tetap pada ketidakpastian pembicara."
+        ],
+        "tags": [
+          "conjecture",
+          "casual"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:44:59.492Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -9890,8 +13496,80 @@
         "extractedAt": "2026-10-02T09:22:23.368Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜まで",
+        "senseLabel": "batas sampai",
+        "meaningId": "sampai batas waktu atau suatu keadaan berakhir",
+        "meaningEn": "until a time limit or a state-changing event",
+        "connections": [
+          {
+            "form": "v-dict",
+            "pattern": "まで"
+          },
+          {
+            "form": "n",
+            "pattern": "まで"
+          }
+        ],
+        "formation": [
+          {
+            "label": "kata kerja",
+            "input": "V bentuk kamus",
+            "rule": "Tambahkan まで setelah bentuk kamus.",
+            "output": "V bentuk kamus + まで",
+            "note": null
+          },
+          {
+            "label": "nomina",
+            "input": "Nomina waktu atau batas",
+            "rule": "Tambahkan まで setelah nomina.",
+            "output": "N + まで",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "まで menandai titik akhir waktu ketika suatu tindakan atau keadaan berlangsung. Dalam bahasa Indonesia, pola ini umumnya berarti “sampai” atau “hingga”.",
+          "Setelah kata kerja bentuk kamus, titik batasnya berupa peristiwa yang belum terjadi. Tindakan pada bagian utama berlangsung terus hingga peristiwa tersebut terjadi.",
+          "Dengan nomina waktu, まで menunjukkan akhir masa berlakunya tindakan atau keadaan. Pola ini berbeda dari までに, yang menekankan tenggat penyelesaian tindakan."
+        ],
+        "examples": [
+          {
+            "jp": "{会議|かいぎ}が{終|お}わる__まで__、ここで{待|ま}ってください。",
+            "id": "Tolong tunggu di sini sampai rapat selesai.",
+            "en": "Please wait here until the meeting ends."
+          },
+          {
+            "jp": "{結果|けっか}が{出|で}る__まで__、{毎日|まいにち}{練習|れんしゅう}を{続|つづ}けます。",
+            "id": "Saya akan terus berlatih setiap hari sampai hasilnya keluar.",
+            "en": "I will continue practicing every day until the results come out."
+          },
+          {
+            "jp": "{雨|あめ}がやむ__まで__、{店|みせ}の{中|なか}にいましょう。",
+            "id": "Mari tetap berada di dalam toko sampai hujan berhenti.",
+            "en": "Let's stay inside the store until the rain stops."
+          },
+          {
+            "jp": "{今月|こんげつ}の{終|お}わり__まで__、この{資料|しりょう}を{借|か}りられます。",
+            "id": "Saya dapat meminjam bahan ini sampai akhir bulan ini.",
+            "en": "I can borrow these materials until the end of this month."
+          }
+        ],
+        "pitfalls": [
+          "まで menunjukkan tindakan atau keadaan yang berlangsung hingga batasnya. Untuk tenggat “harus selesai sebelum”, gunakan までに.",
+          "○ {金曜日|きんようび}までここで{働|はたら}きます。✕ {金曜日|きんようび}までレポートを{出|だ}します。 Untuk contoh kedua, までに lebih tepat bila maksudnya tenggat penyerahan."
+        ],
+        "tags": [
+          "time",
+          "range"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:45:34.193Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -9921,8 +13599,63 @@
         "extractedAt": "2026-10-02T09:22:23.368Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜まで",
+        "senseLabel": "bahkan untuk unsur ekstrem",
+        "meaningId": "bahkan; menambahkan unsur yang dianggap ekstrem atau tidak terduga",
+        "meaningEn": "even; includes an element seen as extreme or unexpected",
+        "connections": [
+          {
+            "form": "n",
+            "pattern": "まで"
+          }
+        ],
+        "formation": [
+          {
+            "label": "nomina",
+            "input": "N",
+            "rule": "Tambahkan まで setelah nomina yang ingin ditekankan sebagai unsur ekstrem atau mengejutkan.",
+            "output": "Nまで",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜まで dipakai setelah nomina untuk menambahkan unsur yang dianggap paling jauh, ekstrem, atau tidak terduga. Dalam bahasa Indonesia, maknanya sering diterjemahkan sebagai “bahkan”.",
+          "Pola ini mirip dengan も karena sama-sama menambahkan unsur, tetapi まで lebih kuat menonjolkan rasa terkejut atau penekanan. Pola ini bukan まで yang menyatakan batas waktu atau tempat."
+        ],
+        "examples": [
+          {
+            "jp": "{子|こ}ども__まで__そのニュースを{知|し}っている。",
+            "id": "Bahkan anak-anak mengetahui berita itu.",
+            "en": "Even children know that news."
+          },
+          {
+            "jp": "{部長|ぶちょう}__まで__{会議|かいぎ}に{参加|さんか}した。",
+            "id": "Bahkan kepala departemen ikut menghadiri rapat itu.",
+            "en": "Even the department manager attended the meeting."
+          },
+          {
+            "jp": "{専門家|せんもんか}__まで__この{問題|もんだい}の{答|こた}えを{間違|まちが}えた。",
+            "id": "Bahkan seorang ahli salah menjawab masalah ini.",
+            "en": "Even an expert got the answer to this problem wrong."
+          }
+        ],
+        "pitfalls": [
+          "Jangan menafsirkan pola ini sebagai batas “sampai”. Makna batas muncul pada penggunaan まで yang berbeda.",
+          "〜まで menekankan unsur yang mengejutkan. Jika hanya ingin menambahkan informasi tanpa penekanan khusus, も sering lebih sesuai."
+        ],
+        "tags": [
+          "addition",
+          "emphasis"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:45:17.085Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -9953,8 +13686,64 @@
         "extractedAt": "2026-10-02T09:23:01.311Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜から〜にかけて",
+        "senseLabel": null,
+        "meaningId": "dari ... hingga ..., mencakup rentang waktu atau wilayah",
+        "meaningEn": "from ... through ..., covering a span of time or area",
+        "connections": [
+          {
+            "form": "other",
+            "pattern": "から〜にかけて",
+            "note": "N1 dan N2 adalah nomina yang menyatakan waktu atau tempat. Pola lengkapnya N1からN2にかけて."
+          }
+        ],
+        "formation": [
+          {
+            "label": "Rentang waktu atau tempat",
+            "input": "N1 + N2",
+            "rule": "Letakkan から setelah titik awal dan にかけて setelah titik akhir.",
+            "output": "N1からN2にかけて",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜から〜にかけて menyatakan rentang dari satu waktu atau tempat ke waktu atau tempat lain. Pola ini sering dipakai ketika suatu keadaan, perubahan, atau peristiwa berlangsung maupun meluas di seluruh rentang tersebut.",
+          "Berbeda dari から〜まで, pola ini memberi kesan bahwa batas awal dan akhirnya tidak selalu tegas. Karena itu, pola ini alami untuk cuaca, musim, penyebaran, perubahan, atau keadaan yang berlangsung secara bertahap."
+        ],
+        "examples": [
+          {
+            "jp": "{今夜|こんや}は{九時|くじ}__から{深夜|しんや}にかけて__、{風|かぜ}が{強|つよ}くなります。",
+            "id": "Malam ini, angin akan menguat dari pukul sembilan hingga tengah malam.",
+            "en": "Tonight, the wind will become stronger from nine o'clock through midnight."
+          },
+          {
+            "jp": "{山|やま}の{麓|ふもと}__から{頂上|ちょうじょう}にかけて__、{紅葉|こうよう}が{見頃|みごろ}です。",
+            "id": "Dari kaki gunung hingga puncaknya, daun musim gugur sedang berada pada masa terbaik untuk dilihat.",
+            "en": "From the foot of the mountain through the summit, the autumn leaves are at their best."
+          },
+          {
+            "jp": "{江戸|えど}{時代|じだい}の{終|お}わり__から{明治|めいじ}{時代|じだい}の{初|はじ}めにかけて__、{社会|しゃかい}は{大|おお}きく{変化|へんか}した。",
+            "id": "Dari akhir zaman Edo hingga awal zaman Meiji, masyarakat berubah besar-besaran.",
+            "en": "From the end of the Edo period through the beginning of the Meiji period, society changed greatly."
+          }
+        ],
+        "pitfalls": [
+          "Pola ini terutama dipakai dengan nomina waktu atau tempat, bukan untuk menghubungkan dua tindakan secara langsung.",
+          "Gunakan から〜まで bila ingin menegaskan batas akhir yang jelas. から〜にかけて lebih menekankan rentang yang mencakup area atau periode di antaranya."
+        ],
+        "tags": [
+          "range",
+          "time"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:45:50.856Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -9985,8 +13774,70 @@
         "extractedAt": "2026-10-02T09:23:01.311Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜において",
+        "senseLabel": null,
+        "meaningId": "di; dalam tempat atau konteks terjadinya suatu peristiwa",
+        "meaningEn": "in; at; within the setting or context where something occurs",
+        "connections": [
+          {
+            "form": "n",
+            "pattern": "において"
+          }
+        ],
+        "formation": [
+          {
+            "label": "nomina",
+            "input": "N",
+            "rule": "Tambahkan において setelah nomina yang menyatakan tempat, bidang, masa, atau konteks.",
+            "output": "Nにおいて",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜において menyatakan tempat atau konteks terjadinya suatu peristiwa. Pola ini umumnya setara dengan で, sehingga dapat diterjemahkan sebagai \"di\", \"pada\", atau \"dalam\".",
+          "Pola ini sering dipakai untuk tempat fisik seperti kota dan gedung, tetapi juga untuk konteks abstrak seperti masyarakat, penelitian, pendidikan, atau sejarah.",
+          "〜において berkesan formal dan banyak digunakan dalam tulisan, pengumuman, laporan, pidato, serta pembahasan akademis. Dalam percakapan sehari-hari, で biasanya lebih alami."
+        ],
+        "examples": [
+          {
+            "jp": "{式典|しきてん}は{東京|とうきょう}__において__{開催|かいさい}されます。",
+            "id": "Upacara tersebut akan diselenggarakan di Tokyo.",
+            "en": "The ceremony will be held in Tokyo."
+          },
+          {
+            "jp": "{教育|きょういく}__において__、{子|こ}どもの{意見|いけん}を{尊重|そんちょう}することが{重要|じゅうよう}だ。",
+            "id": "Dalam pendidikan, penting untuk menghormati pendapat anak-anak.",
+            "en": "In education, it is important to respect children's opinions."
+          },
+          {
+            "jp": "{今回|こんかい}の{調査|ちょうさ}__において__、{多|おお}くの{課題|かだい}が{明|あき}らかになった。",
+            "id": "Dalam survei kali ini, banyak masalah menjadi jelas.",
+            "en": "Many issues became clear in this survey."
+          },
+          {
+            "jp": "{現代|げんだい}{社会|しゃかい}__において__、{情報|じょうほう}を{見分|みわ}ける{力|ちから}が{必要|ひつよう}だ。",
+            "id": "Dalam masyarakat modern, kemampuan memilah informasi diperlukan.",
+            "en": "In modern society, the ability to distinguish information is necessary."
+          }
+        ],
+        "pitfalls": [
+          "〜において terutama menyatakan lokasi atau konteks berlangsungnya peristiwa, bukan tujuan perpindahan. Untuk tujuan, gunakan に atau へ.",
+          "Dalam percakapan biasa, ○ {学校|がっこう}で{会議|かいぎ}をする lebih alami daripada {学校|がっこう}において{会議|かいぎ}をする."
+        ],
+        "tags": [
+          "particle",
+          "formal",
+          "written"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:45:34.413Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -10018,8 +13869,103 @@
         "extractedAt": "2026-10-02T09:53:56.169Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "たとえ〜ても",
+        "senseLabel": "konsesi hipotetis",
+        "meaningId": "meskipun seandainya; hasil utama tetap tidak berubah",
+        "meaningEn": "even if; the main result remains unchanged",
+        "connections": [
+          {
+            "form": "v-te",
+            "pattern": "も",
+            "note": "たとえ diletakkan sebelum klausa syarat."
+          },
+          {
+            "form": "i-adj-ku",
+            "pattern": "ても"
+          },
+          {
+            "form": "na-adj-stem",
+            "pattern": "でも"
+          },
+          {
+            "form": "n",
+            "pattern": "でも"
+          }
+        ],
+        "formation": [
+          {
+            "label": "kata kerja",
+            "input": "V-te",
+            "rule": "Tambahkan も setelah bentuk V-te, lalu letakkan たとえ sebelum klausa syarat.",
+            "output": "たとえ V-te + も",
+            "note": null
+          },
+          {
+            "label": "kata sifat-i",
+            "input": "A-i-ku",
+            "rule": "Tambahkan ても setelah bentuk A-i-ku, lalu letakkan たとえ sebelum klausa syarat.",
+            "output": "たとえ A-i-ku + ても",
+            "note": null
+          },
+          {
+            "label": "kata sifat-na",
+            "input": "A-na",
+            "rule": "Tambahkan でも setelah kata sifat-na, lalu letakkan たとえ sebelum klausa syarat.",
+            "output": "たとえ A-na + でも",
+            "note": null
+          },
+          {
+            "label": "nomina",
+            "input": "N",
+            "rule": "Tambahkan でも setelah nomina, lalu letakkan たとえ sebelum klausa syarat.",
+            "output": "たとえ N + でも",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "たとえ〜ても menyatakan bahwa hasil pada klausa utama tetap berlaku, bahkan jika keadaan pada klausa sebelumnya benar-benar terjadi. Pola ini sering diterjemahkan sebagai “meskipun seandainya” atau “sekalipun”.",
+          "たとえ memberi penekanan pada pengandaian, sering kali pengandaian yang berat atau ekstrem. Karena itu, pola ini lebih kuat daripada 〜ても biasa dan cocok untuk menyatakan tekad, keputusan, atau hasil yang tidak berubah.",
+          "Letakkan たとえ di depan klausa syarat, lalu gunakan ても atau でも pada akhir klausa tersebut. Klausa utama menyatakan tindakan, keputusan, atau keadaan yang tetap berlaku."
+        ],
+        "examples": [
+          {
+            "jp": "たとえ{計画|けいかく}が{変|か}わって__も__、{私|わたし}たちは{最後|さいご}まで{協力|きょうりょく}します。",
+            "id": "Meskipun seandainya rencananya berubah, kami akan bekerja sama sampai akhir.",
+            "en": "Even if the plan changes, we will cooperate until the end."
+          },
+          {
+            "jp": "たとえこの{店|みせ}の{料理|りょうり}が{高|たか}__くても__、{特別|とくべつ}な{日|ひ}には{行|い}きたいです。",
+            "id": "Meskipun makanan di restoran ini mahal, saya ingin pergi pada hari istimewa.",
+            "en": "Even if the food at this restaurant is expensive, I want to go on a special day."
+          },
+          {
+            "jp": "たとえ{休日|きゅうじつ}__でも__、{父|ちち}は{会社|かいしゃ}からの{電話|でんわ}に{出|で}ます。",
+            "id": "Meskipun hari libur, ayah menjawab telepon dari kantor.",
+            "en": "Even if it is a day off, my father answers calls from his company."
+          },
+          {
+            "jp": "たとえ{部屋|へや}が{静|しず}か__でも__、{私|わたし}は{家|いえ}では{勉強|べんきょう}できません。",
+            "id": "Meskipun kamarnya tenang, saya tidak bisa belajar di rumah.",
+            "en": "Even if the room is quiet, I cannot study at home."
+          }
+        ],
+        "pitfalls": [
+          "たとえ memperkuat pengandaian. Jika tidak perlu penekanan tersebut, 〜ても saja dapat digunakan.",
+          "Setelah たとえ, tetap gunakan bentuk konsesi ても atau でも. たとえ sendiri tidak menggantikan bentuk tersebut."
+        ],
+        "tags": [
+          "concession",
+          "emphasis"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-content-v5",
+        "generatedAt": "2026-10-03T04:46:34.512Z",
+        "doubt": null
+      },
       "review": null
     },
     {
