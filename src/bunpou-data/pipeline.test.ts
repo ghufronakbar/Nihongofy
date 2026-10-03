@@ -156,6 +156,21 @@ describe("kontrak content Bunpou", async () => {
     expect(problems).toContain("examples[1].en: tampak berbahasa Indonesia");
   });
 
+  it("menolak た atau だ di dalam target underline untuk sambungan v-ta saat strict", () => {
+    const content = validContent();
+    content.connections = [{ form: "v-ta", pattern: "たらどう" }];
+    content.examples = [
+      { jp: "お{茶|ちゃ}を{飲|の}ん__だらどう__？", id: "Bagaimana kalau minum teh?", en: "Why not drink tea?" },
+      { jp: "{先生|せんせい}に{聞|き}い__たらどう__？", id: "Bagaimana kalau bertanya kepada guru?", en: "Why not ask the teacher?" },
+      { jp: "ここに{書|か}い__たらどう__？", id: "Bagaimana kalau menulisnya di sini?", en: "Why not write it here?" },
+    ];
+    const problems = bunpouContentProblems(point(), content, taxonomy, {
+      strictConnectionBoundary: true,
+    }).join(" ");
+    expect(problems).toContain("connections[0].pattern: た／だ adalah bagian form v-ta");
+    expect(problems).toContain("examples[0].jp: た／だ bentuk v-ta harus berada di luar");
+  });
+
   it("membedakan pending, doubt, dan siap terbit tanpa menghilangkan overlap", () => {
     expect(pointPublicationFlags(point({ extract: { ...point().extract, doubt: "teks buram" } }))).toEqual({
       pending: true,
