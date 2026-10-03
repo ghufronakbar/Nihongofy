@@ -222,6 +222,153 @@
       "content": null,
       "ai": null,
       "review": null
+    },
+    {
+      "key": "mono-nara-difficult-condition",
+      "order": 7,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜ものなら",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "mono-nara"
+          }
+        ],
+        "title": "〜ものなら",
+        "meaning": "jika memang dapat dilakukan, meskipun pembicara menganggapnya sulit atau hampir mustahil",
+        "connection": "動詞可能形 + ものなら／もんなら",
+        "formation": [],
+        "notes": "Menyatakan pengandaian terhadap tindakan yang dinilai sulit atau hampir tidak mungkin diwujudkan. Klausa utama sering mengungkapkan keinginan pembicara apabila hal tersebut mungkin dilakukan. Dalam konteks menantang, pola ini juga dapat menyiratkan bahwa lawan bicara dianggap tidak mampu melakukannya. もんなら adalah variasi percakapan dari ものなら.",
+        "examples": [
+          "できるものなら、もう一度やり直したい。",
+          "帰れるものなら、今すぐ故郷へ帰りたい。",
+          "止められるもんなら、止めてみろ。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v2",
+        "extractedAt": "2026-10-03T23:20:40.301Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "mono-dakara-reason",
+      "order": 8,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜ものだから",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "mono-dakara"
+          }
+        ],
+        "title": "〜ものだから",
+        "meaning": "karena; menyampaikan alasan atau dalih sambil meminta pengertian lawan bicara",
+        "connection": "V bentuk biasa＋ものだから／イA bentuk biasa＋ものだから／ナA＋なものだから／N＋なものだから",
+        "formation": [],
+        "notes": "Dipakai untuk menjelaskan penyebab, terutama keadaan yang dianggap tidak terhindarkan atau berada di luar kendali pembicara. Sering mengandung nuansa membela diri, meminta pengertian, atau menyiratkan bahwa akibatnya tidak dapat dielakkan. Bentuk sopannya adalah 〜ものですから.",
+        "examples": [
+          "道が混んでいたものだから、遅れてしまいました。",
+          "初めてなものだから、やり方がよく分かりません。",
+          "まだ子供なものだから、どうか許してください。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v2",
+        "extractedAt": "2026-10-03T23:20:35.210Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "mono-reason-excuse",
+      "order": 9,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": null,
+      "title": "〜もの／〜もん",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "mono"
+          }
+        ],
+        "title": "〜もの／〜もん",
+        "meaning": "Soalnya; mengemukakan alasan atau dalih yang disertai perasaan pribadi pembicara.",
+        "connection": "動詞普通形＋もの／もん；い形容詞普通形＋もの／もん；な形容詞語幹＋だもの／だもん；名詞＋だもの／だもん；普通形＋んだもの／んだもん",
+        "formation": [],
+        "notes": "Dipakai pada akhir kalimat untuk memberikan alasan yang subjektif, sering sebagai pembelaan diri, dalih, keluhan, atau penjelasan bernada emosional. Bentuk もん lebih kasual daripada もの dan lazim dalam percakapan akrab. Bentuk dengan んだ, seperti んだもの atau んだもん, sangat umum dan memperkuat nada penjelasan.",
+        "examples": [
+          "だって、知らなかったんだもの。",
+          "今日は行けないよ。仕事があるんだもん。",
+          "まだ子供だもの、失敗することもあるよ。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v2",
+        "extractedAt": "2026-10-03T23:20:56.158Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "monono-concession",
+      "order": 10,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜ものの",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "monono"
+          }
+        ],
+        "title": "〜ものの",
+        "meaning": "walaupun suatu keadaan diakui benar, hasil atau kenyataannya tidak sesuai dengan yang diharapkan",
+        "connection": "V普通形＋ものの／イA普通形＋ものの／ナA＋なものの・であるものの／N＋であるものの",
+        "formation": [],
+        "notes": "Menghubungkan dua klausa secara konsesif. Klausa sebelum ものの menyatakan fakta yang diakui, sedangkan klausa sesudahnya menunjukkan keadaan yang bertentangan, tidak memadai, atau di luar harapan. Bernuansa agak formal dan lazim digunakan dalam bahasa tulis.",
+        "examples": [
+          "新しい仕事を始めたものの、まだ職場に慣れていない。",
+          "この部屋は静かなものの、駅から遠い。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v2",
+        "extractedAt": "2026-10-03T23:20:50.606Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
     }
   ]
 }
