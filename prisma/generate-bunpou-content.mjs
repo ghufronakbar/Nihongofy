@@ -178,6 +178,7 @@ async function generateBatch({ client, model, reasoningEffort, systemPrompt, tax
         problems = bunpouContentProblems(item.point, generated.content, taxonomy, {
           doubt: generated.doubt,
           strictConnectionBoundary: true,
+          detailed: level === "N2" || level === "N1",
         });
       }
       if (problems.length === 0) {

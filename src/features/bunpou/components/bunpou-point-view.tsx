@@ -241,6 +241,31 @@ export function BunpouPointView({
             </div>
           </section>
 
+          {content.usage ? (
+            <section>
+              <SectionHeading>Nuansa dan pemakaian</SectionHeading>
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                {[
+                  { label: "Nuansa", items: content.usage.nuance },
+                  { label: "Ragam", items: content.usage.register },
+                  { label: "Batasan", items: content.usage.restrictions },
+                  { label: "Konteks umum", items: content.usage.typicalContexts },
+                ].map(({ label, items }) => (
+                  <div key={label} className="neo-surface p-4">
+                    <h3 className="font-black">{label}</h3>
+                    <ul className="mt-2 list-disc space-y-1.5 pl-5 text-sm font-semibold">
+                      {items.map((item) => (
+                        <li key={item}>
+                          <JapaneseText text={item} />
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </section>
+          ) : null}
+
           {content.examples.length > 0 ? (
             <section>
               <SectionHeading>Contoh kalimat</SectionHeading>

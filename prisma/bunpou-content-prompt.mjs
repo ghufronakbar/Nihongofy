@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { bunpouContentSchema, aiTagGroups } from "./bunpou-data.mjs";
 
-export const PROMPT_VERSION = "bunpou-content-v9";
+export const PROMPT_VERSION = "bunpou-content-v10";
 
 const replySchema = z.object({
   items: z.array(
@@ -85,12 +85,16 @@ ISI CONTENT:
 - form other wajib note.
 - formation berisi aturan transformasi linguistik, bukan layout tabel slide. conjugation wajib memiliki formation.
 - Semua field objek wajib ditulis. Khusus formation[].note, tulis null bila tidak ada catatan. Jangan mengisi connections[].note dengan string kosong; hilangkan field tersebut bila tidak diperlukan.
-- explanation 1-4 paragraf Indonesia, masing-masing satu baris dan maksimal 700 karakter.
+- explanation 1-6 paragraf Indonesia, masing-masing satu baris dan maksimal 700 karakter.
+- Untuk N2 dan N1, tulis 3-6 paragraf yang benar-benar membedakan arti inti, cara pembentukan, nuansa pragmatis, serta batas penggunaan. Jangan mengulang kalimat yang sama dengan susunan berbeda.
+- usage merinci pemakaian dalam empat kelompok: nuance, register, restrictions, dan typicalContexts. Untuk N2/N1 setiap kelompok wajib berisi minimal satu butir yang konkret; jangan mengisi prosa generik seperti “tergantung konteks”.
 - Prosa Indonesia/Inggris (explanation, note, pitfalls, terjemahan) harus memakai tanda baca Latin . ! ?, bukan tanda Jepang 。！？ di ujung kalimat.
-- examples 3-5 kalimat baru, alami, memiliki terjemahan Indonesia dan Inggris, serta cukup jelas untuk kartu rumpang.
+- examples 3-7 kalimat baru, alami, memiliki terjemahan Indonesia dan Inggris, serta cukup jelas untuk kartu rumpang.
+- Untuk N2/N1, tulis 5-7 contoh dengan konteks dan kosakata bervariasi. Sertakan ragam formal/tulisan bila memang lazim, tetapi jangan memaksakan ragam yang tidak cocok.
 - Pola kontras seperti 反面 wajib menghubungkan dua sisi yang benar-benar berlawanan atau saling mengimbangi, bukan dua peran atau fakta yang hanya bersifat tambahan.
 - examples[].id wajib murni berbahasa Indonesia dan examples[].en wajib murni berbahasa Inggris; jangan mencampurkan kata dari bahasa lainnya.
-- pitfalls 0-4 butir; boleh memakai ○/✕ untuk bentuk benar/salah.
+- pitfalls 0-5 butir; boleh memakai ○/✕ untuk bentuk benar/salah.
+- Untuk N2/N1, pitfalls wajib minimal 2 butir dan harus membahas kesalahan sambungan, batasan makna, atau pola yang mudah tertukar.
 - variants hanya bentuk yang benar-benar setara, bukan grammar lain yang sekadar mirip.
 
 TAG YANG SAH:
@@ -113,6 +117,12 @@ KELUARAN WAJIB JSON MURNI:
         "formation": [{ "label": "...", "input": "...", "rule": "...", "output": "...", "note": null }],
         "variants": [],
         "explanation": ["..."],
+        "usage": {
+          "nuance": ["..."],
+          "register": ["..."],
+          "restrictions": ["..."],
+          "typicalContexts": ["..."]
+        },
         "examples": [{ "jp": "...__...__...", "id": "...", "en": "..." }],
         "pitfalls": [],
         "tags": ["..."]

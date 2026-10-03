@@ -27,6 +27,13 @@ const FormationRowSchema = z.object({
 
 const ExampleSchema = z.object({ jp: z.string(), id: z.string(), en: z.string() });
 
+const UsageSchema = z.object({
+  nuance: z.array(z.string()).catch([]),
+  register: z.array(z.string()).catch([]),
+  restrictions: z.array(z.string()).catch([]),
+  typicalContexts: z.array(z.string()).catch([]),
+});
+
 export const BunpouContentSchema: z.ZodType<BunpouContent> = z.object({
   title: z.string(),
   senseLabel: z.string().nullable().catch(null),
@@ -36,6 +43,7 @@ export const BunpouContentSchema: z.ZodType<BunpouContent> = z.object({
   formation: z.array(FormationRowSchema).catch([]),
   variants: z.array(z.string()).catch([]),
   explanation: z.array(z.string()).catch([]),
+  usage: UsageSchema.optional().catch(undefined),
   examples: z.array(ExampleSchema).catch([]),
   pitfalls: z.array(z.string()).catch([]),
   tags: z.array(z.string()).catch([]),

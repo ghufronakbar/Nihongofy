@@ -11,6 +11,7 @@ import {
   loadTaxonomy,
   normalizeBunpouContent,
   pointPublicationFlags,
+  readTextSources,
   recomputePointOrders,
   toRomaji,
   validateCatalog,
@@ -77,6 +78,13 @@ function validContent() {
 }
 
 describe("penemuan source Bunpou", () => {
+  it("memuat indeks teks N2 lengkap dengan 48 hari dan 195 label", async () => {
+    const sources = await readTextSources();
+    const source = sources.find((item) => item.key === "n2-48-days");
+    expect(source?.days).toHaveLength(48);
+    expect(source?.days.flatMap((day) => day.items)).toHaveLength(195);
+  });
+
   it("mengurutkan nomor slide secara numerik dan mengabaikan dotfile", async () => {
     const root = await mkdtemp(path.join(tmpdir(), "bunpou-raw-"));
     temporaryDirectories.push(root);
@@ -169,6 +177,15 @@ describe("kontrak content Bunpou", async () => {
     }).join(" ");
     expect(problems).toContain("connections[0].pattern: た／だ adalah bagian form v-ta");
     expect(problems).toContain("examples[0].jp: た／だ bentuk v-ta harus berada di luar");
+  });
+
+  it("mewajibkan pembahasan mendalam untuk materi N2 dan N1", () => {
+    const content = validContent();
+    const problems = bunpouContentProblems(point(), content, taxonomy, { detailed: true }).join(" ");
+    expect(problems).toContain("explanation: materi mendalam membutuhkan minimal 3 paragraf");
+    expect(problems).toContain("usage: wajib untuk materi N2/N1");
+    expect(problems).toContain("examples: materi mendalam membutuhkan minimal 5 contoh");
+    expect(problems).toContain("pitfalls: materi mendalam membutuhkan minimal 2 item");
   });
 
   it("membedakan pending, doubt, dan siap terbit tanpa menghilangkan overlap", () => {

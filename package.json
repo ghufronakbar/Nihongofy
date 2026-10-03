@@ -18,6 +18,7 @@
     "seed:flashcard": "node --env-file-if-exists=.env prisma/seed-flashcard.mjs",
     "seed:flashcard:check": "node --env-file-if-exists=.env prisma/seed-flashcard.mjs --validate-only",
     "bunpou:extract": "node --env-file-if-exists=.env prisma/extract-bunpou.mjs",
+    "bunpou:import-text": "node --env-file-if-exists=.env prisma/import-bunpou-text.mjs",
     "gen:bunpou": "node --env-file-if-exists=.env prisma/generate-bunpou-content.mjs",
     "gen:bunpou-comparisons": "node --env-file-if-exists=.env prisma/generate-bunpou-comparisons.mjs",
     "bunpou:doubts": "node prisma/report-bunpou-doubts.mjs",

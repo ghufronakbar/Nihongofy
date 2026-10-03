@@ -17,6 +17,10 @@ npm run bunpou:extract
 ```
 
 ```bash
+npm run bunpou:import-text
+```
+
+```bash
 npm run gen:bunpou
 ```
 
@@ -31,6 +35,7 @@ npm run seed:bunpou
 | Langkah | Membaca | Menulis | Database | Fase |
 |---|---|---|---|---|
 | `bunpou:extract` | `data/bunpou/raw_images/` + `slides.json` + fixture pola | fixture pola (entri baru), `slides.json` | tidak | A |
+| `bunpou:import-text` | `text-sources/*.json` + taxonomy + fixture pola | fixture pola (identitas dan source ternormalisasi) | tidak | A |
 | `gen:bunpou` | fixture pola + taxonomy | fixture pola (`content`, `ai`) | tidak | A |
 | `bunpou:doubts` | fixture pola | — | tidak | A |
 | `gen:bunpou-comparisons` | `comparisons.json` + fixture pola | `comparisons.json` (`content`, `ai`) | tidak | A |
@@ -56,6 +61,7 @@ data/bunpou/raw_images/<deck>/<deck>-<nomor>.<ext>  ← diisi pemilik project, d
 src/bunpou-data/
   taxonomy.json                  ← daftar section, tag, dan bentuk sambungan
   slides.json                    ← catatan slide yang sudah diekstraksi
+  text-sources/*.json            ← indeks teks/video, URL, timestamp, dan guidance manusia
   points/n5.json … n1.json       ← katalog pola, satu file per level
   comparisons.json               ← perbandingan pola mirip
   question-links/<paket>.json    ← tautan soal JLPT → pola (Fase B)
@@ -131,6 +137,19 @@ Untuk mengulang sebuah slide sebelum seed pertama, hapus catatannya di `slides.j
 entri pola yang hanya berasal dari slide itu, lalu jalankan ulang.
 
 ## Langkah 2 — Generate Isi (`gen:bunpou`)
+
+Sebelum generation, point dapat berasal dari ekstraksi slide atau importer teks. Source teks memakai
+`evidenceScope: "identity-only"`: URL dan timestamp membuktikan cakupan serta urutan materi, sedangkan
+judul baku, pemisahan sense, dan sambungan dinormalisasi model dengan guidance manusia. Importer tidak
+menghasilkan konten publik.
+
+```bash
+npm run bunpou:import-text -- --source n2-48-days --limit 4 --batch-size 1 --concurrency 3
+```
+
+Importer aman dijalankan ulang karena item yang sudah direferensikan fixture dilewati. Gunakan
+`--overwrite` untuk menormalisasi ulang item yang dipilih, serta `--day` atau `--key` untuk membatasi
+source. Setelah identitas diaudit, jalankan `gen:bunpou` seperti biasa.
 
 Model teks menulis `content` dari identitas pola, `source`, dan taxonomy. Hanya entri yang
 `content`-nya masih `null` yang diproses.
@@ -517,9 +536,12 @@ tanpa HTML/Markdown.
     notasi tanpa mengubah aturan sumber.
 - **`variants`**: 0-6 item bermarkup: bentuk lisan, bentuk berkanji, atau bentuk lain yang
   setara. Teks polosnya unik dan tidak sama dengan `title`.
-- **`explanation`**: 1-4 paragraf, masing-masing maksimal 700 karakter, satu baris, tanpa `__`.
+- **`explanation`**: 1-6 paragraf, masing-masing maksimal 700 karakter, satu baris, tanpa `__`.
   Disimpan sebagai array paragraf karena `JapaneseText` tidak mempertahankan baris baru.
-- **`examples`**: 3-5 contoh. Aturan ini juga menjadi bahan kartu kalimat rumpang di Fase C:
+- **`usage`**: objek opsional dengan kelompok `nuance`, `register`, `restrictions`, dan
+  `typicalContexts`. Field ini wajib untuk N2/N1 agar nuansa pragmatis tidak tercampur ke penjelasan
+  umum tanpa struktur.
+- **`examples`**: 3-7 contoh. N2/N1 wajib minimal 5. Aturan ini juga menjadi bahan kartu kalimat rumpang di Fase C:
   - `jp` satu baris, dengan `__…__` tepat satu kali.
   - `__…__` membungkus **hanya bagian pola** dalam bentuk konjugasinya di kalimat itu, tanpa kata
     sebelumnya: `{知|し}り__ながら__`, bukan `__{知|し}りながら__`.
@@ -528,7 +550,8 @@ tanpa HTML/Markdown.
   - `id` dan `en` berupa teks polos dan tidak kosong.
   - Contoh tidak boleh sama dengan `source.examples`; validator membandingkan teks polos tanpa
     spasi dan tanda baca.
-- **`pitfalls`**: 0-4 poin, masing-masing maksimal 300 karakter, bermarkup. Boleh memakai ○/✕
+- **`pitfalls`**: 0-5 poin, masing-masing maksimal 300 karakter, bermarkup. N2/N1 wajib minimal 2.
+  Boleh memakai ○/✕
   untuk bentuk benar dan salah.
 - **`tags`**: slug dari taxonomy, bukan dimensi `level`, dengan jumlah per dimensi sesuai tabel
   di bawah.

@@ -41,6 +41,13 @@ export type BunpouFormationRow = {
 
 export type BunpouExample = { jp: string; id: string; en: string };
 
+export type BunpouUsage = {
+  nuance: string[];
+  register: string[];
+  restrictions: string[];
+  typicalContexts: string[];
+};
+
 export type BunpouContent = {
   title: string;
   senseLabel: string | null;
@@ -50,6 +57,7 @@ export type BunpouContent = {
   formation: BunpouFormationRow[];
   variants: string[];
   explanation: string[];
+  usage?: BunpouUsage;
   examples: BunpouExample[];
   pitfalls: string[];
   tags: string[];

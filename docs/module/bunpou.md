@@ -28,6 +28,10 @@ ini. Tanpa migration, set `FEATURES_BUNPOU=false` atau build gagal.
   flashcard. Slide hanya acuan untuk daftar pola dan levelnya. Penjelasan dan contoh ditulis
   ulang AI dalam dua langkah: ekstraksi slide dengan model vision, lalu generate isi dengan model
   teks.
+- Source juga dapat berupa indeks teks/video dengan URL dan timestamp. Source jenis ini hanya
+  menjadi bukti identitas, urutan, dan level; importer menormalisasi judul serta sense sebelum
+  generator menulis konten publik. N2/N1 memakai pembahasan terstruktur yang lebih mendalam untuk
+  nuansa, ragam, batasan, konteks umum, dan sedikitnya lima contoh.
 - **Satu entri = satu makna.** Pola dengan bentuk sama tetapi makna berbeda (ばかり, ながら, ところ,
   わけ) dipecah menjadi beberapa entri yang masing-masing punya level dan URL sendiri, lalu
   dikelompokkan lewat `family`. Level disimpan per makna karena たばかり (N4) dan ばかりだ (N2)

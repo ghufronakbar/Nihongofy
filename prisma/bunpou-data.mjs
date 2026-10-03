@@ -19,6 +19,7 @@ export const POINTS_DIR = path.join(DATA_DIR, "points");
 export const TAXONOMY_FILE = path.join(DATA_DIR, "taxonomy.json");
 export const SLIDES_FILE = path.join(DATA_DIR, "slides.json");
 export const COMPARISONS_FILE = path.join(DATA_DIR, "comparisons.json");
+export const TEXT_SOURCES_DIR = path.join(DATA_DIR, "text-sources");
 export const RAW_IMAGES_DIR = fileURLToPath(new URL("../data/bunpou/raw_images/", import.meta.url));
 
 export const LEVELS = ["N5", "N4", "N3", "N2", "N1"];
@@ -29,11 +30,12 @@ export const DECK_PATTERN = /^n([1-5])-[a-z0-9]+(?:-[a-z0-9]+)*$/;
 export const LIMITS = {
   connectionNoteLength: 120,
   doubtLength: 400,
-  explanation: { min: 1, max: 4, itemLength: 700 },
-  examples: { min: 3, max: 5, jpLength: 400, translationLength: 300 },
+  explanation: { min: 1, max: 6, itemLength: 700 },
+  examples: { min: 3, max: 7, jpLength: 400, translationLength: 300 },
   formation: { max: 24, labelLength: 80, valueLength: 120, noteLength: 160 },
   meaningLength: 160,
-  pitfalls: { max: 4, itemLength: 300 },
+  pitfalls: { max: 5, itemLength: 300 },
+  usage: { max: 4, itemLength: 500 },
   variants: { max: 6, itemLength: 120 },
 };
 
@@ -50,15 +52,26 @@ const formationRowSchema = z.object({
   note: z.string().nullable(),
 });
 
-const sourceSchema = z.object({
-  slides: z.array(z.string().min(1)).min(1),
-  title: z.string(),
-  meaning: z.string(),
-  connection: z.string(),
-  formation: z.array(formationRowSchema),
-  notes: z.string(),
-  examples: z.array(z.string()),
+const sourceReferenceSchema = z.object({
+  type: z.literal("video-description"),
+  sourceKey: keySchema,
+  itemKey: keySchema,
 });
+
+const sourceSchema = z
+  .object({
+    slides: z.array(z.string().min(1)).default([]),
+    references: z.array(sourceReferenceSchema).default([]),
+    title: z.string(),
+    meaning: z.string(),
+    connection: z.string(),
+    formation: z.array(formationRowSchema),
+    notes: z.string(),
+    examples: z.array(z.string()),
+  })
+  .refine((source) => source.slides.length > 0 || source.references.length > 0, {
+    message: "source membutuhkan minimal satu slide atau reference",
+  });
 
 const extractMetaSchema = z.object({
   model: z.string().min(1),
@@ -79,6 +92,13 @@ const exampleSchema = z.object({
   en: z.string(),
 });
 
+const usageSchema = z.object({
+  nuance: z.array(z.string()),
+  register: z.array(z.string()),
+  restrictions: z.array(z.string()),
+  typicalContexts: z.array(z.string()),
+});
+
 export const bunpouContentSchema = z.object({
   title: z.string(),
   senseLabel: z.string().max(30).nullable(),
@@ -88,6 +108,7 @@ export const bunpouContentSchema = z.object({
   formation: z.array(formationRowSchema),
   variants: z.array(z.string()),
   explanation: z.array(z.string()),
+  usage: usageSchema.optional(),
   examples: z.array(exampleSchema),
   pitfalls: z.array(z.string()),
   tags: z.array(slugSchema),
@@ -146,6 +167,28 @@ const manifestSlideSchema = z.object({
 const manifestSchema = z.object({
   decks: z.array(manifestDeckSchema),
   slides: z.array(manifestSlideSchema),
+});
+
+const textSourceItemSchema = z.object({
+  key: keySchema,
+  raw: z.string().min(1),
+  guidance: z.string().default(""),
+});
+
+const textSourceDaySchema = z.object({
+  day: z.number().int().positive(),
+  timestampSeconds: z.number().int().nonnegative(),
+  items: z.array(textSourceItemSchema).min(1),
+});
+
+export const textSourceSchema = z.object({
+  version: z.literal(1),
+  key: keySchema,
+  level: levelSchema,
+  title: z.string().min(1),
+  url: z.url(),
+  evidenceScope: z.literal("identity-only"),
+  days: z.array(textSourceDaySchema).min(1),
 });
 
 const sectionSchema = z.object({
@@ -320,6 +363,45 @@ export async function readManifest() {
   return parsed.data;
 }
 
+export async function readTextSources() {
+  let entries;
+  try {
+    entries = await fs.readdir(TEXT_SOURCES_DIR, { withFileTypes: true });
+  } catch (error) {
+    if (error?.code === "ENOENT") return [];
+    throw error;
+  }
+
+  const sources = [];
+  const sourceKeys = new Set();
+  for (const entry of entries.sort((left, right) => left.name.localeCompare(right.name))) {
+    if (!entry.isFile() || !entry.name.endsWith(".json")) continue;
+    const file = path.join(TEXT_SOURCES_DIR, entry.name);
+    const parsed = textSourceSchema.safeParse(await readJson(file));
+    if (!parsed.success) throw new Error(`${entry.name} tidak valid: ${firstIssue(parsed.error)}`);
+    const source = parsed.data;
+    if (sourceKeys.has(source.key)) throw new Error(`text source key ganda: ${source.key}`);
+    sourceKeys.add(source.key);
+    const days = new Set();
+    const itemKeys = new Set();
+    let previousTimestamp = -1;
+    for (const day of source.days) {
+      if (days.has(day.day)) throw new Error(`${entry.name}: day ${day.day} ganda`);
+      days.add(day.day);
+      if (day.timestampSeconds <= previousTimestamp) {
+        throw new Error(`${entry.name}: timestamp day ${day.day} harus meningkat`);
+      }
+      previousTimestamp = day.timestampSeconds;
+      for (const item of day.items) {
+        if (itemKeys.has(item.key)) throw new Error(`${entry.name}: item key ganda: ${item.key}`);
+        itemKeys.add(item.key);
+      }
+    }
+    sources.push(source);
+  }
+  return sources;
+}
+
 export async function writeManifest(manifest) {
   const parsed = manifestSchema.safeParse(manifest);
   if (!parsed.success) throw new Error(`slides.json tidak valid: ${firstIssue(parsed.error)}`);
@@ -464,6 +546,12 @@ export function normalizeBunpouContent(content) {
     if (row.note != null) row.note = normalizeLatinProsePunctuation(row.note);
   }
   content.explanation = content.explanation.map(normalizeLatinProsePunctuation);
+  if (content.usage) {
+    content.usage.nuance = content.usage.nuance.map(normalizeLatinProsePunctuation);
+    content.usage.register = content.usage.register.map(normalizeLatinProsePunctuation);
+    content.usage.restrictions = content.usage.restrictions.map(normalizeLatinProsePunctuation);
+    content.usage.typicalContexts = content.usage.typicalContexts.map(normalizeLatinProsePunctuation);
+  }
   content.pitfalls = content.pitfalls.map(normalizeLatinProsePunctuation);
   for (const example of content.examples) {
     example.id = normalizeLatinProsePunctuation(example.id);
@@ -596,6 +684,34 @@ export function bunpouContentProblems(point, content, taxonomy, options = {}) {
     problems.push(...markedTextProblems(`explanation[${index}]`, paragraph, LIMITS.explanation.itemLength));
     problems.push(...latinProsePunctuationProblems(`explanation[${index}]`, paragraph));
   });
+  if (options.detailed && content.explanation.length < 3) {
+    problems.push(`explanation: materi mendalam membutuhkan minimal 3 paragraf`);
+  }
+
+  if (options.detailed && !content.usage) {
+    problems.push("usage: wajib untuk materi N2/N1");
+  }
+  if (content.usage) {
+    const usageGroups = [
+      ["nuance", content.usage.nuance],
+      ["register", content.usage.register],
+      ["restrictions", content.usage.restrictions],
+      ["typicalContexts", content.usage.typicalContexts],
+    ];
+    for (const [group, items] of usageGroups) {
+      if (items.length > LIMITS.usage.max) {
+        problems.push(`usage.${group}: maksimal ${LIMITS.usage.max} item`);
+      }
+      if (options.detailed && items.length === 0) {
+        problems.push(`usage.${group}: materi mendalam membutuhkan minimal 1 item`);
+      }
+      items.forEach((item, index) => {
+        const label = `usage.${group}[${index}]`;
+        problems.push(...markedTextProblems(label, item, LIMITS.usage.itemLength));
+        problems.push(...latinProsePunctuationProblems(label, item));
+      });
+    }
+  }
 
   if (content.examples.length < LIMITS.examples.min || content.examples.length > LIMITS.examples.max) {
     problems.push(
@@ -631,6 +747,9 @@ export function bunpouContentProblems(point, content, taxonomy, options = {}) {
       problems.push(`${label}.jp: tidak boleh menyalin contoh dari source`);
     }
   });
+  if (options.detailed && content.examples.length < 5) {
+    problems.push("examples: materi mendalam membutuhkan minimal 5 contoh");
+  }
 
   if (content.pitfalls.length > LIMITS.pitfalls.max) {
     problems.push(`pitfalls: maksimal ${LIMITS.pitfalls.max} item`);
@@ -639,6 +758,9 @@ export function bunpouContentProblems(point, content, taxonomy, options = {}) {
     problems.push(...markedTextProblems(`pitfalls[${index}]`, pitfall, LIMITS.pitfalls.itemLength));
     problems.push(...latinProsePunctuationProblems(`pitfalls[${index}]`, pitfall));
   });
+  if (options.detailed && content.pitfalls.length < 2) {
+    problems.push("pitfalls: materi mendalam membutuhkan minimal 2 item");
+  }
 
   const tagCounts = new Map();
   const seenTags = new Set();
@@ -686,8 +808,19 @@ export function pointIdentityProblems(level, point, taxonomy) {
       problems.push(`source slide "${sourcePath}" tidak sesuai level ${level}`);
     }
   }
+  const references = new Set();
+  for (const reference of point.source.references ?? []) {
+    const identity = `${reference.sourceKey}:${reference.itemKey}`;
+    if (references.has(identity)) problems.push(`source reference ganda: ${identity}`);
+    references.add(identity);
+  }
   if (point.content && point.ai) {
-    problems.push(...bunpouContentProblems(point, point.content, taxonomy, { doubt: point.ai.doubt }));
+    problems.push(
+      ...bunpouContentProblems(point, point.content, taxonomy, {
+        doubt: point.ai.doubt,
+        detailed: level === "N2" || level === "N1",
+      }),
+    );
   } else if (point.content || point.ai) {
     problems.push("content dan ai harus null atau terisi bersama");
   }
@@ -700,13 +833,21 @@ export function pointPublicationFlags(point) {
   return { pending, doubt, ready: !pending && !doubt };
 }
 
-export function validateCatalog(pointFiles, manifest, taxonomy) {
+export function validateCatalog(pointFiles, manifest, taxonomy, textSources = []) {
   const errors = [];
   const warnings = [];
   const pointsByKey = new Map();
   const families = new Map();
   const ordersByLevel = new Map();
   const slidePaths = new Set(manifest.slides.map((slide) => slide.path));
+  const textReferences = new Map();
+  for (const source of textSources) {
+    for (const day of source.days) {
+      for (const item of day.items) {
+        textReferences.set(`${source.key}:${item.key}`, source.level);
+      }
+    }
+  }
   const decksByKey = new Map(manifest.decks.map((deck) => [deck.key, deck]));
 
   const deckOrders = new Set();
@@ -763,6 +904,14 @@ export function validateCatalog(pointFiles, manifest, taxonomy) {
       }
       for (const sourcePath of point.source.slides) {
         if (!slidePaths.has(sourcePath)) errors.push(`${where}: source slide tidak ada di manifest: ${sourcePath}`);
+      }
+      for (const reference of point.source.references ?? []) {
+        const identity = `${reference.sourceKey}:${reference.itemKey}`;
+        const sourceLevel = textReferences.get(identity);
+        if (!sourceLevel) errors.push(`${where}: source reference tidak ditemukan: ${identity}`);
+        else if (sourceLevel !== level) {
+          errors.push(`${where}: source reference ${identity} berada di ${sourceLevel}`);
+        }
       }
     }
   }

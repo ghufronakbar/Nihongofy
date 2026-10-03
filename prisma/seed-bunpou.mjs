@@ -12,6 +12,7 @@ import {
   readAllPointFiles,
   readComparisons,
   readManifest,
+  readTextSources,
   toBunpouRow,
   validateCatalog,
 } from "./bunpou-data.mjs";
@@ -78,14 +79,37 @@ async function collect() {
   const taxonomy = await loadTaxonomy();
   const pointFiles = await readAllPointFiles();
   const manifest = await readManifest();
+  const textSources = await readTextSources();
   const comparisons = await readComparisons();
-  const validation = validateCatalog(pointFiles, manifest, taxonomy);
+  const validation = validateCatalog(pointFiles, manifest, taxonomy, textSources);
   const errors = [...validation.errors];
   const warnings = [...validation.warnings];
   const rows = [];
   const pendingByLevel = new Map();
   const doubtByLevel = new Map();
-  const activeLevels = [...new Set(manifest.decks.map((deck) => deck.level))];
+  const importedTextReferences = new Set(
+    [...pointFiles.values()].flatMap((file) =>
+      file.points.flatMap((point) =>
+        point.source.references.map((reference) => `${reference.sourceKey}:${reference.itemKey}`),
+      ),
+    ),
+  );
+  const completeTextSources = textSources.filter((source) => {
+    const missing = source.days
+      .flatMap((day) => day.items)
+      .filter((item) => !importedTextReferences.has(`${source.key}:${item.key}`));
+    if (missing.length > 0) {
+      warnings.push(`${source.key}: ${missing.length} item source text belum diimpor; retirement ${source.level} ditahan`);
+      return false;
+    }
+    return true;
+  });
+  const activeLevels = [
+    ...new Set([
+      ...manifest.decks.map((deck) => deck.level),
+      ...completeTextSources.map((source) => source.level),
+    ]),
+  ];
 
   for (const level of LEVELS) {
     let pending = 0;
