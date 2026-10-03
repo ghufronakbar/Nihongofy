@@ -15,7 +15,7 @@ import type { LegalDocument } from "../types";
 // Setiap klaim di dokumen ini harus dapat ditunjuk dasar kodenya. Saat alur data
 // berubah (cookie baru, pemroses baru, retensi baru), perbarui bagian yang
 // relevan, naikkan VERSION, dan ganti LAST_UPDATED. Riwayatnya cukup lewat git.
-export const VERSION = "1.1";
+export const VERSION = "1.2";
 export const LAST_UPDATED = "2026-10-03";
 export const EFFECTIVE_DATE = "2026-10-03";
 
@@ -113,6 +113,10 @@ export const PRIVACY_POLICY: LegalDocument = {
               <>
                 <strong>Bio dan target level JLPT</strong> bila Anda mengisinya, serta pilihan
                 visibility profil publik (public atau private).
+              </>,
+              <>
+                <strong>Relasi follow:</strong> akun yang Anda ikuti, akun yang mengikuti Anda,
+                permintaan follow yang menunggu, dan kapan permintaan disetujui.
               </>,
               <>
                 Status verifikasi email, preferensi privasi, tanggal pembuatan akun, peran akun
@@ -289,9 +293,19 @@ export const PRIVACY_POLICY: LegalDocument = {
               </>,
               <>
                 <strong>Private:</strong> orang lain, termasuk mesin pencari, hanya melihat bagian
-                &quot;selalu tampil&quot;. Datanya tetap tersimpan dan tetap ditampilkan untuk Anda
-                sendiri. Pengaturannya ada di{" "}
+                &quot;selalu tampil&quot;, kecuali follower yang sudah Anda setujui. Datanya tetap
+                tersimpan dan tetap ditampilkan untuk Anda sendiri. Pengaturannya ada di{" "}
                 <LegalLink href="/profile/privacy">Profil &gt; Privasi</LegalLink>.
+              </>,
+              <>
+                <strong>Follow:</strong> jumlah follower dan jumlah akun yang Anda ikuti selalu
+                tampil. Daftar namanya mengikuti aturan yang sama dengan isi profil: terbuka untuk
+                profil public, dan untuk profil private hanya bagi Anda serta follower yang disetujui.
+                Daftar follow tidak diindeks mesin pencari. Mengikuti akun private mengirim
+                permintaan yang dapat disetujui atau ditolak pemiliknya; menjadikan akun public
+                menyetujui semua permintaan yang masih menunggu. Anda dapat berhenti mengikuti,
+                membatalkan permintaan, atau menghapus follower kapan saja tanpa pemberitahuan ke
+                pihak lain.
               </>,
               <>
                 Akun yang dibuat sebelum fitur ini ada menjadi public secara otomatis, dan kami
@@ -575,6 +589,11 @@ export const PRIVACY_POLICY: LegalDocument = {
                 "Kepentingan yang sah untuk fitur komunitas belajar; Anda dapat menolaknya kapan saja dengan menjadikan profil private",
               ],
               [
+                "Fitur follow",
+                "Relasi follow dan permintaan follow",
+                "Pemenuhan perjanjian, untuk fitur yang Anda gunakan sendiri",
+              ],
+              [
                 "Menyimpan transkrip percakapan AI",
                 "Isi percakapan",
                 "Persetujuan (opt-in di Profil > Privasi)",
@@ -726,7 +745,8 @@ export const PRIVACY_POLICY: LegalDocument = {
           <LegalH3>Yang dihapus</LegalH3>
           <LegalP>
             Progres kana, seluruh data flashcard (kartu, riwayat review, langganan deck, dan
-            pengaturan), latihan cepat, attempt ujian, interaksi artikel, sesi dan pemakaian
+            pengaturan), latihan cepat, attempt ujian, interaksi artikel, relasi follow di kedua
+            arah (termasuk permintaan yang menunggu), sesi dan pemakaian
             percakapan, token email, koneksi akun Google, dan file avatar di R2.
           </LegalP>
           <LegalH3>Yang dianonimkan atau tetap ada</LegalH3>

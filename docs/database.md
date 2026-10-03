@@ -48,6 +48,12 @@ Stack: Next.js + Prisma + PostgreSQL (Supabase).
   tidak pernah dari cache. `publicProfileNoticeDismissedAt` menandai banner "profilmu kini publik"
   sudah ditutup: akun lama NULL, baris baru default `now()` (lihat ledger migration
   `20261003120000_public_profile`). `anonymizeAccount` mengosongkan bio dan target level.
+- `Follow` menyimpan relasi follow: PK `(followerId, followingId)`, `status` `PENDING` | `ACCEPTED`,
+  `respondedAt` saat permintaan disetujui. Permintaan yang ditolak dihapus. CHECK
+  `Follow_not_self_check` (follower <> following) hanya ada di SQL migration
+  `20261003150000_follow`. FK kedua sisi `Cascade` sebagai jaring pengaman; `anonymizeAccount`
+  menghapus baris di kedua arah. Dibaca per request, tidak di-cache, karena status follow ikut
+  menentukan akses ke isi akun private.
 - `AuthRateLimit.keyHash` menyimpan HMAC-SHA256 dari scope dan subject. Jangan simpan email atau alamat IP mentah pada tabel rate limit.
 - Update bucket rate limit harus atomik dengan `INSERT ... ON CONFLICT DO UPDATE`, bukan pola select lalu update.
 - Update profile dan password selalu mengambil user dari `session.userId`. Ganti password wajib membandingkan current password, memakai bcrypt cost 12 untuk hash baru, lalu membuat ulang cookie session.

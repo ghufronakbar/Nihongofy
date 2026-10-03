@@ -16,3 +16,29 @@ export const UsernameParamSchema = z
   .min(1)
   .max(USERNAME_MAX_LENGTH)
   .regex(/^[A-Za-z0-9._]+$/);
+
+export const SetFollowSchema = z.object({
+  username: UsernameParamSchema.transform((value) => value.toLowerCase()),
+  following: z.boolean(),
+});
+
+export type SetFollowInput = z.input<typeof SetFollowSchema>;
+
+const UserIdSchema = z.number().int().positive();
+
+export const FollowRequestResponseSchema = z.object({
+  followerId: UserIdSchema,
+  accept: z.boolean(),
+});
+
+export type FollowRequestResponseInput = z.infer<typeof FollowRequestResponseSchema>;
+
+export const RemoveFollowerSchema = z.object({
+  followerId: UserIdSchema,
+});
+
+export type RemoveFollowerInput = z.infer<typeof RemoveFollowerSchema>;
+
+// `?after=<id akun>` pada daftar follow. Nilai tidak valid diperlakukan sebagai
+// halaman pertama, bukan error.
+export const FollowCursorSchema = z.coerce.number().int().positive().catch(0);

@@ -13,12 +13,25 @@ import {
   Trophy,
   type LucideIcon,
 } from "lucide-react";
+import type { FollowStatus } from "@prisma/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { FeatureFlags } from "@/constants";
 import type { ProfileOverview } from "@/features/profile/overview";
 import { formatInTimeZone } from "@/lib/time-zone";
+import type { FollowCounts } from "../follow-queries";
 import type { ProfileActivity, ProfileCommunityStats, PublicProfileOwner } from "../queries";
 import { ActivityHeatmap } from "./activity-heatmap";
+import { FollowButton } from "./follow-button";
+
+/** Bagian follow halaman profil; null bila fitur follow mati. */
+export type PublicProfileFollow = {
+  counts: FollowCounts;
+  /** Status follow viewer ke pemilik; null = belum mengikuti (atau guest/pemilik). */
+  viewerStatus: FollowStatus | null;
+  isAuthenticated: boolean;
+  /** Permintaan masuk yang menunggu; hanya dihitung untuk pemilik. */
+  pendingRequests: number;
+};
 
 export type PublicProfileContent = {
   overview: ProfileOverview;
@@ -38,12 +51,14 @@ export function PublicProfileView({
   owner,
   isOwner,
   content,
+  follow,
   features,
 }: {
   owner: PublicProfileOwner;
   isOwner: boolean;
   /** null = viewer tidak boleh melihat isi profil (akun private). */
   content: PublicProfileContent | null;
+  follow: PublicProfileFollow | null;
   features: FeatureFlags;
 }) {
   const isPrivate = owner.profileVisibility === "PRIVATE";
@@ -88,11 +103,37 @@ export function PublicProfileView({
               ) : null}
             </div>
             {owner.bio ? <p className="mt-4 max-w-xl text-base leading-7 text-black/75">{owner.bio}</p> : null}
+            {follow ? (
+              <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3">
+                {/* Daftarnya mengikuti aturan akses yang sama dengan isi profil;
+                    jumlahnya selalu tampil, seperti kartu identitas. */}
+                <FollowCount
+                  label="follower"
+                  value={follow.counts.followers}
+                  href={content ? `/u/${owner.username}/followers` : null}
+                />
+                <FollowCount
+                  label="mengikuti"
+                  value={follow.counts.following}
+                  href={content ? `/u/${owner.username}/following` : null}
+                />
+                {!isOwner ? (
+                  <FollowButton
+                    username={owner.username}
+                    initialStatus={follow.viewerStatus}
+                    isPrivate={isPrivate}
+                    isAuthenticated={follow.isAuthenticated}
+                  />
+                ) : null}
+              </div>
+            ) : null}
           </div>
         </div>
       </section>
 
-      {isOwner ? <OwnerNotice isPrivate={isPrivate} /> : null}
+      {isOwner ? (
+        <OwnerNotice isPrivate={isPrivate} followEnabled={follow !== null} pendingRequests={follow?.pendingRequests ?? 0} />
+      ) : null}
 
       {content ? (
         <ProfileContent content={content} features={features} />
@@ -103,7 +144,11 @@ export function PublicProfileView({
           </span>
           <h2 className="text-3xl">Akun ini private</h2>
           <p className="max-w-md text-base font-semibold text-black/65">
-            Statistik dan aktivitas belajar @{owner.username} hanya terlihat oleh pemiliknya.
+            {follow === null
+              ? `Statistik dan aktivitas belajar @${owner.username} hanya terlihat oleh pemiliknya.`
+              : follow.viewerStatus === "PENDING"
+                ? `Permintaan mengikutimu sedang menunggu persetujuan @${owner.username}.`
+                : `Ikuti @${owner.username} untuk melihat statistik dan aktivitas belajarnya setelah permintaanmu disetujui.`}
           </p>
         </section>
       )}
@@ -111,15 +156,43 @@ export function PublicProfileView({
   );
 }
 
-function OwnerNotice({ isPrivate }: { isPrivate: boolean }) {
+function FollowCount({ label, value, href }: { label: string; value: number; href: string | null }) {
+  const body = (
+    <>
+      <span className="font-black tabular-nums">{value}</span> <span className="font-semibold text-black/65">{label}</span>
+    </>
+  );
+  return href ? (
+    <Link href={href} className="hover:underline">
+      {body}
+    </Link>
+  ) : (
+    <span>{body}</span>
+  );
+}
+
+function OwnerNotice({
+  isPrivate,
+  followEnabled,
+  pendingRequests,
+}: {
+  isPrivate: boolean;
+  followEnabled: boolean;
+  pendingRequests: number;
+}) {
   return (
     <section className="neo-surface flex flex-col gap-4 bg-neo-paper p-5 sm:flex-row sm:items-center sm:justify-between">
       <p className="font-semibold">
         {isPrivate
-          ? "Ini profilmu. Akunmu private: orang lain hanya melihat kartu identitas di atas."
+          ? `Ini profilmu. Akunmu private: orang lain hanya melihat kartu identitas di atas${followEnabled ? ", kecuali follower yang kamu setujui" : ""}.`
           : "Ini profilmu, persis seperti yang dilihat orang lain."}
       </p>
       <div className="flex shrink-0 flex-wrap gap-2">
+        {pendingRequests > 0 ? (
+          <Link href="/profile/follow-requests" className="neo-button bg-neo-coral text-sm">
+            {pendingRequests} permintaan follow
+          </Link>
+        ) : null}
         <Link href="/profile/info" className="neo-button bg-white text-sm">
           Edit profil
         </Link>

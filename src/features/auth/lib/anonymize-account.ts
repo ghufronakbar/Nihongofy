@@ -55,6 +55,12 @@ export async function anonymizeAccount(userId: number) {
     // milik mereka dan tidak disentuh.
     await tx.questionCommentVote.deleteMany({ where: { userId } });
 
+    // Relasi follow di kedua arah: siapa yang diikuti akun ini dan siapa yang
+    // mengikutinya, termasuk permintaan yang masih menunggu. Grafik sosial
+    // adalah data pribadi dan tidak punya nilai bagi thread siapa pun.
+    await tx.follow.deleteMany({ where: { followerId: userId } });
+    await tx.follow.deleteMany({ where: { followingId: userId } });
+
     // Anak dihapus lebih dulu agar tidak bergantung pada urutan cascade.
     await tx.flashcardRevlog.deleteMany({ where: { userId } });
     await tx.flashcardCard.deleteMany({ where: { userId } });

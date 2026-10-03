@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Database, LayoutDashboard, ShieldCheck, UserRound } from "lucide-react";
+import { Database, LayoutDashboard, ShieldCheck, UserPlus, UserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const ITEMS = [
@@ -12,13 +12,19 @@ const ITEMS = [
   { href: "/profile/privacy", label: "Privasi & Data", icon: Database },
 ];
 
-export function ProfileNav() {
+// `followRequests`: jumlah permintaan follow yang menunggu, atau null bila fitur
+// follow mati (menu-nya tidak dirender).
+export function ProfileNav({ followRequests }: { followRequests: number | null }) {
   const pathname = usePathname();
+  const items =
+    followRequests === null
+      ? ITEMS
+      : [...ITEMS, { href: "/profile/follow-requests", label: "Permintaan follow", icon: UserPlus, exact: false }];
 
   return (
     <nav aria-label="Navigasi pengaturan akun" className="overflow-x-auto pb-2">
       <div className="flex min-w-max gap-2">
-        {ITEMS.map((item) => {
+        {items.map((item) => {
           const active = item.exact ? pathname === item.href : pathname.startsWith(item.href);
 
           return (
@@ -33,6 +39,11 @@ export function ProfileNav() {
             >
               <item.icon className="size-4" aria-hidden="true" />
               {item.label}
+              {item.href === "/profile/follow-requests" && followRequests ? (
+                <span className="grid min-w-5 place-items-center border-2 border-black bg-neo-coral px-1 font-mono text-[11px] leading-4">
+                  {followRequests}
+                </span>
+              ) : null}
             </Link>
           );
         })}

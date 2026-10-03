@@ -205,6 +205,27 @@ export async function GET() {
         orderBy: { createdAt: "asc" },
         select: { commentId: true, createdAt: true },
       },
+      // Relasi follow di kedua arah, termasuk permintaan yang menunggu. Lawannya
+      // hanya disebut lewat username — handle publik yang memang tampil di
+      // daftar follow — tanpa data lain milik akun mereka.
+      follows: {
+        orderBy: { createdAt: "asc" },
+        select: {
+          status: true,
+          createdAt: true,
+          respondedAt: true,
+          following: { select: { username: true } },
+        },
+      },
+      followedBy: {
+        orderBy: { createdAt: "asc" },
+        select: {
+          status: true,
+          createdAt: true,
+          respondedAt: true,
+          follower: { select: { username: true } },
+        },
+      },
       articleInteractions: {
         orderBy: { updatedAt: "asc" },
         select: {

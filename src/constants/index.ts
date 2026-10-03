@@ -65,6 +65,7 @@ const envSchema = z
     FEATURES_CONVERSATION: featureFlag,
     FEATURES_SPEAKING: featureFlag,
     FEATURES_PUBLIC_PROFILE: featureFlag,
+    FEATURES_FOLLOW: featureFlag,
     CONVERSATION_PROVIDER: z.enum(["mock", "openai"]).default("mock"),
     CONVERSATION_CHAT_MODEL: optionalEnvString,
     OPENAI_API_KEY: optionalEnvString,
@@ -166,6 +167,14 @@ export const COMMENT_IMAGE_UPLOAD_RATE_LIMITS = [
 // tidak menghabiskan jatah menulis. Memberi dan menarik suara sama-sama dihitung.
 export const COMMENT_VOTE_RATE_LIMITS = [{ seconds: 60 * 60, max: 60 }] as const;
 
+// Follow dan permintaan follow baru per user. Tanpa batas ini satu akun dapat
+// membanjiri antrean permintaan akun private orang lain. Berhenti mengikuti,
+// membatalkan, menyetujui, dan menolak tidak dihitung.
+export const FOLLOW_RATE_LIMITS = [
+  { seconds: 60 * 60, max: 30 },
+  { seconds: 24 * 60 * 60, max: 200 },
+] as const;
+
 export const SITE_URL = new URL(env.APP_URL);
 export const GOOGLE_OAUTH_ENABLED = Boolean(
   env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET,
@@ -210,6 +219,10 @@ export const FEATURES = {
   // Profil publik /u/[username] dan pengaturan public/private-nya. Data
   // visibility tetap tersimpan saat dimatikan; hanya permukaannya yang hilang.
   publicProfile: env.FEATURES_PUBLIC_PROFILE,
+  // Follow, permintaan follow, dan daftar follower/following. Menumpang halaman
+  // profil publik, jadi ikut mati bila profil publik mati. Saat mati, isi akun
+  // private hanya terlihat oleh pemiliknya; baris follow tidak dihapus.
+  follow: env.FEATURES_FOLLOW && env.FEATURES_PUBLIC_PROFILE,
 };
 
 export type FeatureFlags = typeof FEATURES;

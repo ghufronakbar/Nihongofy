@@ -13,6 +13,7 @@ import {
   isValidTimeZone,
 } from "@/lib/time-zone";
 import { isProfileUnavailable } from "./access";
+import { UsernameParamSchema } from "./schemas";
 import {
   activityWindowStart,
   summarizeActivity,
@@ -73,6 +74,27 @@ export const getPublicProfileOwner = cache(async (username: string): Promise<Pub
     createdAt: user.createdAt,
   };
 });
+
+export type ResolvedProfile =
+  | { kind: "missing" }
+  | { kind: "redirect"; username: string }
+  | { kind: "found"; owner: PublicProfileOwner };
+
+/**
+ * Param `[username]` → pemilik profil. Username selalu disimpan lowercase;
+ * variasi huruf besar diarahkan ke satu URL canonical alih-alih menjadi halaman
+ * duplikat, jadi pemanggil wajib menangani `redirect`.
+ */
+export async function resolveProfileParam(raw: string): Promise<ResolvedProfile> {
+  const parsed = UsernameParamSchema.safeParse(raw);
+  if (!parsed.success) return { kind: "missing" };
+
+  const username = parsed.data.toLowerCase();
+  if (username !== parsed.data) return { kind: "redirect", username };
+
+  const owner = await getPublicProfileOwner(username);
+  return owner ? { kind: "found", owner } : { kind: "missing" };
+}
 
 // ============================================================
 // HEATMAP AKTIVITAS

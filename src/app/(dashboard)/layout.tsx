@@ -5,6 +5,7 @@ import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { AppSidebar } from "@/components/app-sidebar";
 import { PublicProfileNotice } from "@/features/public-profile/components/public-profile-notice";
+import { countPendingFollowRequests } from "@/features/public-profile/follow-queries";
 import {
   SidebarInset,
   SidebarProvider,
@@ -44,6 +45,8 @@ export default async function DashboardLayout({
     redirect("/login");
   }
 
+  const followRequestCount = FEATURES.follow ? await countPendingFollowRequests(session.userId) : 0;
+
   // Akun lama yang profilnya otomatis menjadi PUBLIC, sampai ditutup atau
   // sampai pemiliknya memilih visibility sendiri.
   const showPublicProfileNotice =
@@ -56,6 +59,7 @@ export default async function DashboardLayout({
       <AppSidebar
         displayName={user.displayName}
         avatarUrl={user.avatarUrl}
+        followRequestCount={followRequestCount}
         features={FEATURES}
       />
       <SidebarInset className="bg-background">

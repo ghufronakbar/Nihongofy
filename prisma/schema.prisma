@@ -243,6 +243,14 @@ enum ProfileVisibility {
   PRIVATE
 }
 
+// Follow ke akun PUBLIC langsung ACCEPTED; ke akun PRIVATE menjadi PENDING
+// sampai pemiliknya menyetujui. Permintaan yang ditolak dihapus, bukan diberi
+// status sendiri — tidak ada yang perlu diingat dari penolakan.
+enum FollowStatus {
+  PENDING
+  ACCEPTED
+}
+
 // ============================================================
 // USER
 // ============================================================
@@ -314,6 +322,8 @@ model User {
   reportReplies            Report[]                    @relation("ReportRepliedBy")
   postingSuspensionsIssued User[]                      @relation("PostingSuspendedBy")
   questionCommentVotes     QuestionCommentVote[]
+  follows                  Follow[]                    @relation("FollowFollower")
+  followedBy               Follow[]                    @relation("FollowFollowing")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1023,6 +1033,30 @@ model QuestionCommentVote {
   @@id([commentId, userId])
   // Penghapusan saat anonimisasi dan export data akun mencari per user.
   @@index([userId])
+}
+
+// Relasi follow antar-user. Satu baris per pasangan (PK), termasuk permintaan
+// yang belum disetujui. CHECK `Follow_not_self_check` (follower <> following)
+// hanya ada di SQL migration karena Prisma tidak dapat mengekspresikannya.
+//
+// Cascade di kedua sisi hanya jaring pengaman untuk hard delete; alur normal
+// menganonimkan User, jadi `anonymizeAccount` menghapus barisnya eksplisit.
+model Follow {
+  follower    User         @relation("FollowFollower", fields: [followerId], references: [id], onDelete: Cascade)
+  followerId  Int
+  following   User         @relation("FollowFollowing", fields: [followingId], references: [id], onDelete: Cascade)
+  followingId Int
+  status      FollowStatus
+  createdAt   DateTime     @default(now())
+  // Kapan permintaan disetujui. Null untuk follow ke akun public (langsung
+  // ACCEPTED) dan untuk permintaan yang masih PENDING.
+  respondedAt DateTime?
+
+  @@id([followerId, followingId])
+  // Daftar follower satu akun dan antrean permintaan masuk, terbaru dulu.
+  @@index([followingId, status, createdAt])
+  // Daftar akun yang diikuti dan tab "Mengikuti" (tahap 3).
+  @@index([followerId, status, createdAt])
 }
 
 // ============================================================

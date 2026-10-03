@@ -2,8 +2,8 @@
 
 ## Status Aktual
 
-**Tahap 1 (profil publik) selesai di kode dan migration-nya sudah diterapkan (3 Oktober 2026);
-menunggu uji manual.** Tahap 2–4 belum dikerjakan. Checklist pengerjaannya ada di `docs/plan.md`
+**Tahap 1 (profil publik) dan tahap 2 (follow) selesai di kode, migration keduanya sudah diterapkan
+(3 Oktober 2026); menunggu uji manual.** Tahap 3–4 belum dikerjakan. Checklist pengerjaannya ada di `docs/plan.md`
 (Fase 8.15). Fitur ini sebelumnya tercatat di luar scope awal
 (`plan/redesign-and-feature.md`: "Community feed, komentar publik, follower"); komentar publik sudah
 lebih dulu hadir lewat [Question comments](question-comment.md).
@@ -206,6 +206,28 @@ Jumlah follower/following hanya menghitung `ACCEPTED`. Jumlah permintaan `PENDIN
 oleh pemilik. Status follow milik viewer ditempel terpisah dari data profil yang di-cache, mengikuti
 pola `withViewerVotes()`.
 
+### Implementasi tahap 2
+
+- **Data:** tabel `Follow` (migration `20261003150000_follow`), PK `(followerId, followingId)`,
+  CHECK `Follow_not_self_check`, RLS aktif tanpa grant Data API.
+- **Akses:** `canViewProfileContent(owner, viewerId, viewerFollow)` — status follow viewer dibaca per
+  request lewat `getViewerFollowStatus`, yang mengembalikan null saat `FEATURES_FOLLOW` mati,
+  sehingga follower lama tidak lagi membuka akun private ketika fitur dimatikan.
+- **Action** (`src/features/public-profile/follow-actions.ts`): `setFollowAction({ username,
+  following })` dengan status awal dari `initialFollowStatus` dan `createMany` + `skipDuplicates`;
+  `respondFollowRequestAction` dan `removeFollowerAction` selalu dibatasi ke baris yang
+  `followingId`-nya milik session. Rate limit hanya untuk follow/permintaan baru.
+- **Query** (`follow-queries.ts`): tanpa `unstable_cache`. Akun lawan yang anonim atau menunggu
+  penghapusan tidak dihitung maupun ditampilkan. Daftar memakai kursor id akun lawan (`?after=`),
+  30 per halaman.
+- **UI:** `FollowButton` (Ikuti / Minta mengikuti / Diminta / Mengikuti, konfirmasi saat berhenti
+  mengikuti akun private, guest diarahkan ke login), jumlah follower/following di header profil
+  (menjadi tautan hanya bila daftar boleh dilihat), `FollowListView` untuk dua daftar, tombol
+  "Hapus" follower untuk pemilik, `/profile/follow-requests` dengan setujui/tolak, badge di
+  navigasi profile, keterangan di sidebar, dan tautan "N permintaan follow" di profil pemilik.
+- **Tidak ada pemberitahuan** ke pihak lain saat ditolak atau dihapus dari follower; notifikasi
+  baru datang di tahap 4.
+
 ## Tahap 3 — Postingan
 
 ### Isi postingan
@@ -313,7 +335,7 @@ Sesuai aturan `project-rules.md`, setiap relasi baru ke `User` wajib ikut ditang
 | Key | Cakupan | Ketergantungan |
 |---|---|---|
 | `FEATURES_PUBLIC_PROFILE` | `/u/*`, section "Profil publik" di `/profile/privacy`, field bio dan target level di `/profile/info`, banner di dashboard, tombol "Lihat profil publik" di `/profile`, keterangan di halaman daftar, tautan username ke profil di diskusi | — (aktif sejak tahap 1) |
-| `FEATURES_FOLLOW` | Tombol Follow, daftar follower/following, `/profile/follow-requests` | Ikut mati bila `FEATURES_PUBLIC_PROFILE` mati |
+| `FEATURES_FOLLOW` | Tombol Follow, jumlah dan daftar follower/following, `/profile/follow-requests`, badge permintaan | Ikut mati bila `FEATURES_PUBLIC_PROFILE` mati (aktif sejak tahap 2) |
 | `FEATURES_COMMUNITY` | `/community/*`, `/post/*`, tab Postingan, action postingan dan like | Ikut mati bila `FEATURES_PUBLIC_PROFILE` mati |
 
 Saat `FEATURES_FOLLOW` mati, konten akun private hanya terlihat oleh pemiliknya. Data tidak dihapus

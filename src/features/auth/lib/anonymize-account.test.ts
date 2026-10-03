@@ -53,6 +53,8 @@ const HANDLED_USER_RELATIONS: Record<string, Handling> = {
   conversationSessions: { kind: "dihapus" },
   conversationQuotas: { kind: "dihapus" },
   questionCommentVotes: { kind: "dihapus" },
+  follows: { kind: "dihapus" },
+  followedBy: { kind: "dihapus" },
   reports: { kind: "dikosongkan" },
   handledReports: {
     kind: "dibiarkan",

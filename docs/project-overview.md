@@ -23,6 +23,7 @@ Rules terkait: `database.md` (schema, markup teks, aturan query).
 | `/article/search` | Pencarian server-side berdasarkan query, kategori, multi-tag, sort, dan cursor pagination. |
 | `/article/[slug]` | Detail artikel dengan body terstruktur, related article, save/favorite, dan share/copy fallback. |
 | `/u/[username]` | Profil publik: identitas, statistik belajar, jejak belajar harian 12 bulan, streak, dan reputasi "Membantu". Akun private hanya menampilkan kartu identitas berlabel "Akun ini private". Lihat `docs/module/community.md`. |
+| `/u/[username]/followers`, `/u/[username]/following` | Daftar follower dan akun yang diikuti, mengikuti aturan akses isi profil; tidak diindeks. |
 
 ### Route group `(auth)` - layout auth
 
@@ -67,6 +68,7 @@ Mencakup juga `/exam` dan `/result` (awalnya direncanakan tanpa sidebar untuk mo
 | `/profile` | Overview akun dengan statistik kana, vocabulary, latihan cepat, dan mock exam dari data user nyata. |
 | `/profile/info` | Edit display name, normalized email, dan avatar R2; username legacy tampil read-only. |
 | `/profile/security` | Ganti password, daftar perangkat aktif, revoke session, dan logout perangkat lain. |
+| `/profile/follow-requests` | Setujui atau tolak permintaan follow masuk ke akun private. |
 | `/flashcard/settings` | Pengaturan flashcard per user: ukuran teks kartu, furigana sisi belakang, batas harian, learning/relearning steps, urutan tampil, dan FSRS, masing-masing dengan reset ke nilai bawaan. |
 | `/profile/auth` | Redirect kompatibilitas menuju `/profile/security`. |
 

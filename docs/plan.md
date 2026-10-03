@@ -1314,16 +1314,23 @@ postingan karena aturan akses akun private baru lengkap setelah follow ada.
 
 ### Tahap 2 — Follow
 
-- [ ] Migration: `enum FollowStatus`, tabel `Follow` + CHECK `followerId <> followingId`.
-- [ ] Flag `FEATURES_FOLLOW` (ikut mati bila `FEATURES_PUBLIC_PROFILE` mati).
-- [ ] Action follow/batal/berhenti mengikuti (keadaan yang diinginkan, idempoten), setujui, tolak,
-  hapus follower; `FOLLOW_RATE_LIMITS`.
-- [ ] Beralih private → public menyetujui seluruh permintaan `PENDING` dalam transaksi yang sama.
-- [ ] Helper akses menyertakan follower `ACCEPTED`; test diperbarui.
-- [ ] Jumlah follower/following di profil; `/u/[username]/followers` dan `/following`.
-- [ ] `/profile/follow-requests` dan badge jumlah permintaan.
-- [ ] `anonymizeAccount` (hapus follow dua arah) dan export.
-- [ ] `npx prisma migrate deploy`, `npm run verify`, lalu uji manual (user).
+- [x] Migration `20261003150000_follow`: `enum FollowStatus`, tabel `Follow` + CHECK
+  `followerId <> followingId`, RLS. Diterapkan 3 Oktober 2026; CHECK, `skipDuplicates`, dan kursor
+  daftar diuji di transaksi yang di-rollback.
+- [x] Flag `FEATURES_FOLLOW` (ikut mati bila `FEATURES_PUBLIC_PROFILE` mati).
+- [x] Action follow/batal/berhenti mengikuti (keadaan yang diinginkan, idempoten), setujui, tolak,
+  hapus follower; `FOLLOW_RATE_LIMITS` (30 per jam, 200 per hari).
+- [x] Beralih private → public menyetujui seluruh permintaan `PENDING` dalam transaksi yang sama.
+- [x] Helper akses menyertakan follower `ACCEPTED`; test diperbarui.
+- [x] Jumlah follower/following di profil; `/u/[username]/followers` dan `/following` (`noindex`).
+- [x] `/profile/follow-requests` dan badge jumlah permintaan (navigasi profile, sidebar, profil
+  pemilik).
+- [x] `anonymizeAccount` (hapus follow dua arah) dan export; Kebijakan Privasi versi 1.2.
+- [x] `npm run verify` lulus; render guest, akun private, dan daftar berisi data dicek dengan server
+  produksi lokal (data uji dibersihkan).
+- [ ] Uji manual (user, butuh dua akun): follow akun public, minta follow akun private, setujui/tolak
+  di `/profile/follow-requests`, isi akun private terbuka setelah disetujui, berhenti mengikuti,
+  hapus follower, dan beralih private → public menyetujui permintaan yang menunggu.
 
 ### Tahap 3 — Postingan
 

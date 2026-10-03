@@ -51,10 +51,13 @@ const NAV_ITEMS: {
 export function AppSidebar({
   displayName,
   avatarUrl,
+  followRequestCount,
   features,
 }: {
   displayName: string;
   avatarUrl: string | null;
+  /** Permintaan follow yang menunggu; 0 bila tidak ada atau fitur follow mati. */
+  followRequestCount: number;
   features: FeatureFlags;
 }) {
   const pathname = usePathname();
@@ -137,7 +140,9 @@ export function AppSidebar({
               </Avatar>
               <div className="flex min-w-0 flex-col group-data-[collapsible=icon]:hidden">
                 <span className="truncate text-xs font-black leading-tight">{displayName}</span>
-                <span className="truncate font-mono text-[10px] text-foreground/60">Lihat profil</span>
+                <span className="truncate font-mono text-[10px] text-foreground/60">
+                  {followRequestCount > 0 ? `${followRequestCount} permintaan follow` : "Lihat profil"}
+                </span>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>

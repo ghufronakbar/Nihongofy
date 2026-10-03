@@ -33,6 +33,27 @@ contract wajib memiliki migration dan catatan ringkas di dokumen/PR perubahan. J
 
 ## Ledger
 
+### 3 Oktober 2026 - Follow antar-user
+
+- Status: deployed (3 Oktober 2026, `migrate deploy`; diverifikasi di transaksi yang di-rollback:
+  CHECK menolak follow diri sendiri, duplikat diabaikan, kursor daftar benar; RLS aktif; tabel kosong)
+- Migration: `prisma/migrations/20261003150000_follow/migration.sql`. Ditulis tangan.
+- Alasan: tahap 2 modul komunitas, follow dengan persetujuan untuk akun private. Rancangan di
+  [community.md](../module/community.md#tahap-2--follow).
+- Object terdampak: enum baru `FollowStatus`; tabel baru `Follow` (PK `followerId, followingId`,
+  CHECK `Follow_not_self_check`, index `followingId, status, createdAt` dan
+  `followerId, status, createdAt`, FK kedua sisi ke `User` `ON DELETE CASCADE`), revoke grant Data
+  API, RLS aktif tanpa policy.
+- Data existing: tabel baru dan kosong; tidak ada backfill.
+- Risiko operasi: hanya membuat object baru. **Wajib diterapkan sebelum deploy kode**: `/u/[username]`,
+  layout dashboard (badge), `/profile`, export akun, dan cron anonimisasi membaca atau menghapus tabel
+  ini. Bergantung pada migration `20261003120000_public_profile`; `migrate deploy` menjalankan
+  keduanya berurutan.
+- Validasi: `npx prisma validate`, `npx prisma migrate status`, uji constraint di transaksi yang
+  di-rollback, `pg_class.relrowsecurity`.
+- Refresh setelah deploy: tidak ada.
+- Owner: Engineering Owner.
+
 ### 3 Oktober 2026 - Profil publik (visibility, bio, target level)
 
 - Status: deployed (3 Oktober 2026, `migrate deploy`; diverifikasi read-only: 5 akun lama

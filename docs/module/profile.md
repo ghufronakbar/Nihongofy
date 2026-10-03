@@ -21,6 +21,7 @@ Profile tidak punya flag sendiri. Section "Aktivitas belajar" dan "Lanjut belaja
 - `/profile/info`
 - `/profile/security`
 - `/profile/privacy`
+- `/profile/follow-requests` untuk permintaan follow masuk (`FEATURES_FOLLOW`).
 - `/u/[username]` sebagai profil publik — modul tersendiri, lihat [Komunitas](community.md).
 - `/flashcard/settings` sebagai pengaturan flashcard mandiri, di luar profile (lihat
   [Flashcard](flashcard.md)).

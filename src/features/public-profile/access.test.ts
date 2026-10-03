@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { canViewProfileContent, isProfileUnavailable, profilePath } from "./access";
+import {
+  canViewProfileContent,
+  initialFollowStatus,
+  isProfileUnavailable,
+  profilePath,
+} from "./access";
 
 const owner = { id: 7, profileVisibility: "PUBLIC" as const };
 
@@ -14,6 +19,19 @@ describe("canViewProfileContent", () => {
     expect(canViewProfileContent(privateOwner, null)).toBe(false);
     expect(canViewProfileContent(privateOwner, 99)).toBe(false);
     expect(canViewProfileContent(privateOwner, 7)).toBe(true);
+  });
+
+  it("follower yang disetujui boleh melihat akun private, permintaan PENDING tidak", () => {
+    const privateOwner = { ...owner, profileVisibility: "PRIVATE" as const };
+    expect(canViewProfileContent(privateOwner, 99, "ACCEPTED")).toBe(true);
+    expect(canViewProfileContent(privateOwner, 99, "PENDING")).toBe(false);
+  });
+});
+
+describe("initialFollowStatus", () => {
+  it("akun public langsung diterima, akun private menunggu persetujuan", () => {
+    expect(initialFollowStatus("PUBLIC")).toBe("ACCEPTED");
+    expect(initialFollowStatus("PRIVATE")).toBe("PENDING");
   });
 });
 

@@ -1,4 +1,4 @@
-import type { ProfileVisibility } from "@prisma/client";
+import type { FollowStatus, ProfileVisibility } from "@prisma/client";
 import { isAnonymizedUsername } from "@/lib/username";
 
 // Aturan akses profil publik, aman untuk client dan unit test (tanpa Prisma
@@ -24,8 +24,13 @@ export function isProfileUnavailable(owner: Pick<ProfileOwner, "anonymizedAt" | 
 }
 
 /**
- * Boleh melihat isi profil (statistik, heatmap, reputasi): akun PUBLIC, atau
- * viewer adalah pemiliknya. Follower yang disetujui menyusul di tahap 2.
+ * Boleh melihat isi profil (statistik, heatmap, reputasi, daftar follower):
+ * akun PUBLIC, atau viewer adalah pemiliknya, atau viewer follower yang sudah
+ * disetujui. Permintaan PENDING tidak membuka apa pun.
+ *
+ * `viewerFollow` adalah status follow viewer ke pemilik, dari
+ * `getViewerFollowStatus` — yang sudah mengembalikan null bila fitur follow
+ * mati, sehingga fungsi ini tidak perlu tahu soal flag.
  *
  * Kartu identitas (avatar, nama, username, bio, target level) bukan bagian dari
  * keputusan ini — kartu itu selalu tampil untuk akun yang tersedia.
@@ -33,8 +38,18 @@ export function isProfileUnavailable(owner: Pick<ProfileOwner, "anonymizedAt" | 
 export function canViewProfileContent(
   owner: Pick<ProfileOwner, "id" | "profileVisibility">,
   viewerId: number | null,
+  viewerFollow: FollowStatus | null = null,
 ) {
-  return owner.profileVisibility === "PUBLIC" || viewerId === owner.id;
+  return (
+    owner.profileVisibility === "PUBLIC" ||
+    (viewerId !== null && viewerId === owner.id) ||
+    viewerFollow === "ACCEPTED"
+  );
+}
+
+/** Status follow baru: langsung diterima untuk akun public, menunggu untuk private. */
+export function initialFollowStatus(visibility: ProfileVisibility): FollowStatus {
+  return visibility === "PUBLIC" ? "ACCEPTED" : "PENDING";
 }
 
 /** Path profil, atau null bila akun anonim (handle-nya bukan identitas lagi). */

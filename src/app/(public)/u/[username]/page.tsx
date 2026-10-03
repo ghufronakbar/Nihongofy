@@ -8,38 +8,29 @@ import { canViewProfileContent } from "@/features/public-profile/access";
 import {
   PublicProfileView,
   type PublicProfileContent,
+  type PublicProfileFollow,
 } from "@/features/public-profile/components/public-profile-view";
+import {
+  countPendingFollowRequests,
+  getFollowCounts,
+  getViewerFollowStatus,
+} from "@/features/public-profile/follow-queries";
 import {
   COMMUNITY_STATS_ENABLED,
   HEATMAP_ENABLED,
   getProfileActivity,
   getProfileCommunityStats,
-  getPublicProfileOwner,
+  resolveProfileParam,
   type PublicProfileOwner,
 } from "@/features/public-profile/queries";
-import { UsernameParamSchema } from "@/features/public-profile/schemas";
 import { getSession } from "@/lib/auth";
 import { profilePageJsonLd } from "@/lib/json-ld";
 import { pageMetadata, privateMetadata } from "@/lib/seo";
 
 type Props = { params: Promise<{ username: string }> };
 
-type Resolved =
-  | { kind: "missing" }
-  | { kind: "redirect"; username: string }
-  | { kind: "found"; owner: PublicProfileOwner };
-
-async function resolve(params: Props["params"]): Promise<Resolved> {
-  const parsed = UsernameParamSchema.safeParse((await params).username);
-  if (!parsed.success) return { kind: "missing" };
-
-  // Username selalu disimpan lowercase; variasi huruf besar diarahkan ke satu
-  // URL canonical alih-alih menjadi halaman duplikat.
-  const username = parsed.data.toLowerCase();
-  if (username !== parsed.data) return { kind: "redirect", username };
-
-  const owner = await getPublicProfileOwner(username);
-  return owner ? { kind: "found", owner } : { kind: "missing" };
+async function resolve(params: Props["params"]) {
+  return resolveProfileParam((await params).username);
 }
 
 // Didedup antara generateMetadata dan page dalam satu request. Isinya hanya
@@ -119,7 +110,23 @@ export default async function PublicProfilePage({ params }: Props) {
   const { owner } = resolved;
   const session = await getSession();
   const viewerId = session?.userId ?? null;
-  const content = canViewProfileContent(owner, viewerId) ? await loadContent(owner.id, owner.timeZone) : null;
+  const isOwner = viewerId === owner.id;
+  const viewerStatus = await getViewerFollowStatus(viewerId, owner.id);
+  const [content, follow] = await Promise.all([
+    canViewProfileContent(owner, viewerId, viewerStatus) ? loadContent(owner.id, owner.timeZone) : null,
+    FEATURES.follow
+      ? Promise.all([getFollowCounts(owner.id), isOwner ? countPendingFollowRequests(owner.id) : 0]).then(
+          ([counts, pendingRequests]): PublicProfileFollow => ({
+            counts,
+            viewerStatus,
+            isAuthenticated: viewerId !== null,
+            pendingRequests,
+          }),
+        )
+      : null,
+  ]);
+  // Hanya halaman yang dilihat crawler (guest) yang dinilai: isi yang terbuka
+  // karena viewer adalah follower tidak pernah ikut JSON-LD.
   const indexable = canViewProfileContent(owner, null) && content !== null && !isThin(owner, content);
 
   return (
@@ -136,7 +143,7 @@ export default async function PublicProfilePage({ params }: Props) {
           })}
         />
       ) : null}
-      <PublicProfileView owner={owner} isOwner={viewerId === owner.id} content={content} features={FEATURES} />
+      <PublicProfileView owner={owner} isOwner={isOwner} content={content} follow={follow} features={FEATURES} />
     </>
   );
 }

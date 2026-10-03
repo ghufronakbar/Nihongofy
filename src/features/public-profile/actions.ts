@@ -26,16 +26,30 @@ export async function updateProfileVisibilityAction(
   const validated = ProfileVisibilitySchema.safeParse(input);
   if (!validated.success) return { ok: false, message: "Pilihan visibility tidak valid." };
 
-  await prisma.user.update({
-    where: { id: session.userId },
-    data: {
-      profileVisibility: validated.data.profileVisibility,
-      // Memilih visibility sendiri berarti pemberitahuan default PUBLIC sudah
-      // tidak relevan.
-      publicProfileNoticeDismissedAt: new Date(),
-    },
-    select: { id: true },
-  });
+  const now = new Date();
+  await prisma.$transaction([
+    prisma.user.update({
+      where: { id: session.userId },
+      data: {
+        profileVisibility: validated.data.profileVisibility,
+        // Memilih visibility sendiri berarti pemberitahuan default PUBLIC sudah
+        // tidak relevan.
+        publicProfileNoticeDismissedAt: now,
+      },
+      select: { id: true },
+    }),
+    // Akun yang menjadi public tidak lagi butuh persetujuan: permintaan yang
+    // menunggu ikut diterima, supaya tidak ada follow PENDING ke akun public.
+    // Sebaliknya, beralih ke private tidak mengubah follower yang sudah ada.
+    ...(validated.data.profileVisibility === "PUBLIC"
+      ? [
+          prisma.follow.updateMany({
+            where: { followingId: session.userId, status: "PENDING" },
+            data: { status: "ACCEPTED", respondedAt: now },
+          }),
+        ]
+      : []),
+  ]);
 
   revalidatePath("/(dashboard)", "layout");
   return {
