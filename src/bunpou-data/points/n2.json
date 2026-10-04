@@ -1227,8 +1227,159 @@
         "extractedAt": "2026-10-03T23:20:56.158Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜もの／〜もん",
+        "senseLabel": null,
+        "meaningId": "Soalnya; menyatakan alasan atau dalih subjektif dengan nada emosional, biasanya sebagai pembelaan atau keluhan.",
+        "meaningEn": "Because, you see; gives a subjective, emotional reason or excuse, often in self-defense or complaint.",
+        "connections": [
+          {
+            "form": "plain",
+            "pattern": "もの"
+          },
+          {
+            "form": "plain",
+            "pattern": "もん"
+          },
+          {
+            "form": "v-plain",
+            "pattern": "んだもの"
+          },
+          {
+            "form": "v-plain",
+            "pattern": "んだもん"
+          },
+          {
+            "form": "i-adj-plain",
+            "pattern": "んだもの"
+          },
+          {
+            "form": "na-adj-na",
+            "pattern": "んだもの"
+          },
+          {
+            "form": "na-adj-na",
+            "pattern": "んだもん"
+          },
+          {
+            "form": "n-na",
+            "pattern": "んだもの"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Bentuk langsung setelah predikat biasa",
+            "input": "{帰|かえ}れない",
+            "rule": "Tambahkan もの atau もん pada predikat bentuk biasa.",
+            "output": "{帰|かえ}れないもの／{帰|かえ}れないもん",
+            "note": null
+          },
+          {
+            "label": "Bentuk langsung setelah nomina",
+            "input": "{新人|しんじん}",
+            "rule": "Pada nomina atau kata sifat-na afirmatif nonlampau, gunakan kopula だ sebelum もの atau もん.",
+            "output": "{新人|しんじん}だもの／{新人|しんじん}だもん",
+            "note": null
+          },
+          {
+            "label": "Bentuk penjelas setelah kata kerja",
+            "input": "{忘|わす}れた",
+            "rule": "Tambahkan んだもの atau んだもん pada kata kerja bentuk biasa untuk menegaskan nada penjelasan.",
+            "output": "{忘|わす}れたんだもの／{忘|わす}れたんだもん",
+            "note": null
+          },
+          {
+            "label": "Bentuk penjelas setelah kata sifat-na",
+            "input": "{不安|ふあん}",
+            "rule": "Tambahkan な sebagai penghubung, lalu ikuti dengan んだもの atau んだもん.",
+            "output": "{不安|ふあん}なんだもの／{不安|ふあん}なんだもん",
+            "note": null
+          },
+          {
+            "label": "Bentuk penjelas setelah nomina",
+            "input": "{学生|がくせい}",
+            "rule": "Tambahkan な sebagai penghubung, lalu ikuti dengan んだもの atau んだもん.",
+            "output": "{学生|がくせい}なんだもの／{学生|がくせい}なんだもん",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "Pola akhir kalimat ini menyampaikan alasan yang sangat dipengaruhi perasaan atau sudut pandang pembicara. Maknanya dekat dengan “soalnya” dan lazim dipakai ketika pembicara membela diri, mengeluh, membujuk, atau menjelaskan perilakunya.",
+          "もの atau もん dapat langsung mengikuti predikat bentuk biasa. Pada nomina dan kata sifat-na afirmatif nonlampau, kopula だ tetap digunakan. Bentuk んだもの dan んだもん menambahkan nuansa penjelasan yang lebih kuat; setelah nomina dan kata sifat-na, bentuk permukaannya menjadi なんだもの atau なんだもん.",
+          "Kesimpulan atau akibatnya sering tidak diucapkan karena sudah dapat dipahami dari konteks. Pembicara biasanya sedang menanggapi pertanyaan, kritik, permintaan, atau situasi yang membuatnya merasa perlu memberikan alasan.",
+          "Pola ini bukan penghubung sebab-akibat yang netral. Untuk menjelaskan alasan secara objektif atau menghubungkan sebab dengan akibat secara eksplisit dalam situasi resmi, bentuk seperti から atau ので umumnya lebih sesuai."
+        ],
+        "usage": {
+          "nuance": [
+            "Alasan terasa pribadi dan emosional, serta dapat mengandung pembelaan diri, rasa manja, keluhan, atau desakan agar lawan bicara memahami keadaan pembicara.",
+            "もの biasanya terdengar lebih lembut, sedangkan もん dapat terdengar lebih spontan, merajuk, atau kekanak-kanakan bergantung pada intonasi."
+          ],
+          "register": [
+            "Terutama digunakan dalam percakapan atau dialog tertulis. Bentuk もん merupakan bentuk yang lebih santai daripada もの.",
+            "Kurang cocok untuk laporan resmi, dokumen bisnis, atau penjelasan akademis yang menuntut alasan objektif."
+          ],
+          "restrictions": [
+            "Umumnya muncul pada akhir kalimat; akibat atau kesimpulan yang didukung oleh alasan tersebut sering dibiarkan tersirat.",
+            "Pada nomina dan kata sifat-na afirmatif nonlampau, bentuk langsung memerlukan だ, sedangkan bentuk penjelas memerlukan な sebelum んだもの atau んだもん.",
+            "Tidak cocok jika pembicara hanya menyatakan hubungan sebab-akibat netral tanpa keterlibatan perasaan atau kebutuhan untuk membela suatu sikap."
+          ],
+          "typicalContexts": [
+            "Menjawab pertanyaan tentang alasan tidak melakukan sesuatu.",
+            "Membela kesalahan, pilihan, atau keinginan pribadi.",
+            "Mengeluh, merajuk, membujuk, atau meminta pengertian dalam percakapan akrab."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "「どうして{傘|かさ}を{持|も}ってこなかったの？」「{朝|あさ}は{晴|は}れていた__んだもん__。」",
+            "id": "“Kenapa kamu tidak membawa payung?” “Soalnya pagi tadi cerah.”",
+            "en": "“Why didn't you bring an umbrella?” “Because it was sunny this morning.”"
+          },
+          {
+            "jp": "もう{少|すこ}し{休|やす}ませて。{昨日|きのう}からずっと{働|はたら}いている__んだもの__。",
+            "id": "Biarkan aku beristirahat sedikit lebih lama. Soalnya aku terus bekerja sejak kemarin.",
+            "en": "Let me rest a little longer. I've been working continuously since yesterday, you know."
+          },
+          {
+            "jp": "この{箱|はこ}は{一人|ひとり}では{運|はこ}べないよ。とても{重|おも}い__もの__。",
+            "id": "Kotak ini tidak bisa kubawa sendirian. Soalnya sangat berat.",
+            "en": "I can't carry this box by myself. It's very heavy, after all."
+          },
+          {
+            "jp": "{彼|かれ}を{責|せ}めないで。まだ{新人|しんじん}だ__もの__。",
+            "id": "Jangan menyalahkannya. Soalnya dia masih pegawai baru.",
+            "en": "Don't blame him. He's still new, after all."
+          },
+          {
+            "jp": "{今夜|こんや}の{集|あつ}まりには{出|で}たくないな。あの{人|ひと}が{苦手|にがて}な__んだもん__。",
+            "id": "Aku tidak ingin menghadiri pertemuan malam ini. Soalnya aku kurang nyaman dengan orang itu.",
+            "en": "I don't want to attend tonight's gathering. I'm uncomfortable around that person, you see."
+          },
+          {
+            "jp": "「またその{映画|えいが}を{見|み}るの？」「うん、{何度|なんど}{見|み}ても{感動|かんどう}する__もん__。」",
+            "id": "“Kamu menonton film itu lagi?” “Ya, soalnya film itu selalu mengharukan setiap kali kutonton.”",
+            "en": "“Are you watching that movie again?” “Yes, because it moves me every time I watch it.”"
+          }
+        ],
+        "pitfalls": [
+          "Sesudah nomina atau kata sifat-na afirmatif nonlampau, jangan langsung menempelkan もの. ○{新人|しんじん}だもの, ✕{新人|しんじん}もの.",
+          "Pada bentuk penjelas setelah nomina atau kata sifat-na, gunakan な sebelum んだもの. ○{学生|がくせい}なんだもの, ✕{学生|がくせい}んだもの.",
+          "Jangan memakai pola ini sebagai penghubung sebab-akibat objektif dalam penjelasan resmi. Pola ini menonjolkan alasan pribadi dan sikap emosional pembicara.",
+          "もん sangat kasual dan dapat terdengar merajuk atau kekanak-kanakan. Hindari bentuk ini dalam situasi resmi atau ketika berbicara kepada orang yang harus sangat dihormati."
+        ],
+        "tags": [
+          "reason",
+          "feeling",
+          "casual"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T12:26:44.586Z",
+        "doubt": null
+      },
       "review": null
     },
     {
