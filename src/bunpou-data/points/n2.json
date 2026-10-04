@@ -31058,8 +31058,114 @@
         "extractedAt": "2026-10-04T00:08:54.673Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "あるいは",
+        "senseLabel": null,
+        "meaningId": "atau; menyajikan pilihan, tindakan, atau kemungkinan kedua sebagai alternatif terhadap yang pertama",
+        "meaningEn": "or; presents a second choice, action, or possibility as an alternative to the first",
+        "connections": [
+          {
+            "form": "n",
+            "pattern": "あるいは",
+            "note": "Diletakkan setelah pilihan nominal pertama dan diikuti pilihan nominal kedua."
+          },
+          {
+            "form": "sentence",
+            "pattern": "あるいは",
+            "note": "Kalimat pertama diselesaikan, lalu あるいは ditempatkan pada awal kalimat berikutnya untuk memperkenalkan alternatif."
+          }
+        ],
+        "formation": [
+          {
+            "label": "Antara dua nomina",
+            "input": "{郵送|ゆうそう}／{窓口|まどぐち}",
+            "rule": "Letakkan あるいは setelah pilihan pertama dan sebelum pilihan kedua.",
+            "output": "{郵送|ゆうそう}、あるいは{窓口|まどぐち}",
+            "note": null
+          },
+          {
+            "label": "Antara dua kalimat",
+            "input": "{調査|ちょうさ}を{延期|えんき}する。{規模|きぼ}を{縮小|しゅくしょう}する。",
+            "rule": "Selesaikan kalimat pertama, lalu awali kalimat alternatif dengan あるいは.",
+            "output": "{調査|ちょうさ}を{延期|えんき}する。あるいは、{規模|きぼ}を{縮小|しゅくしょう}する。",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "あるいは menghubungkan dua pilihan, tindakan, atau kemungkinan dengan arti \"atau\". Unsur kedua disajikan sebagai alternatif terhadap unsur pertama, bukan sebagai tambahan yang harus berlaku bersamaan.",
+          "Pola ini dapat ditempatkan di antara dua nomina atau frasa yang sejajar. Untuk alternatif yang lebih panjang, kalimat pertama dapat diselesaikan terlebih dahulu, kemudian kalimat berikutnya diawali dengan あるいは.",
+          "Dibandingkan penghubung yang lazim dalam percakapan sehari-hari, あるいは terdengar relatif formal dan sering dijumpai dalam tulisan, pengumuman, laporan, instruksi, serta pembahasan pilihan atau hipotesis.",
+          "Kedua sisi yang dihubungkan harus dapat dipahami sebagai pilihan pada tingkat yang sejajar, misalnya dua metode, dua waktu, dua tindakan, atau dua kemungkinan penjelasan. Pola ini tidak digunakan untuk menyatakan dua fakta yang sekadar ditambahkan."
+        ],
+        "usage": {
+          "nuance": [
+            "Menampilkan unsur kedua sebagai jalan, pilihan, atau penjelasan alternatif terhadap unsur pertama.",
+            "Dalam pembahasan, dapat memberi kesan bahwa dua kemungkinan sedang dipertimbangkan secara hati-hati."
+          ],
+          "register": [
+            "Relatif formal dan lebih lazim dalam bahasa tulis, pengumuman, presentasi, serta pembicaraan resmi.",
+            "Dapat dipakai dalam percakapan, tetapi mungkin terdengar kaku dalam obrolan akrab."
+          ],
+          "restrictions": [
+            "Unsur sebelum dan sesudah あるいは harus sejajar secara makna, seperti dua benda, dua tindakan, atau dua kemungkinan.",
+            "Tidak digunakan untuk menghubungkan dua informasi yang keduanya dimaksudkan berlaku sekaligus."
+          ],
+          "typicalContexts": [
+            "Pilihan metode pengiriman, pembayaran, jadwal, atau dokumen.",
+            "Pembahasan beberapa tindakan yang dapat diambil.",
+            "Penyajian kemungkinan penyebab atau penjelasan dalam laporan dan analisis."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "{申請書|しんせいしょ}は{郵送|ゆうそう}、__あるいは__{窓口|まどぐち}で{提出|ていしゅつ}してください。",
+            "id": "Silakan serahkan formulir permohonan melalui pos atau di loket.",
+            "en": "Please submit the application form by mail or at the service counter."
+          },
+          {
+            "jp": "{会議|かいぎ}は{火曜日|かようび}、__あるいは__{木曜日|もくようび}に{開催|かいさい}します。",
+            "id": "Rapat akan diadakan pada hari Selasa atau Kamis.",
+            "en": "The meeting will be held on Tuesday or Thursday."
+          },
+          {
+            "jp": "この{数値|すうち}は{入力|にゅうりょく}ミスかもしれない。__あるいは__、{機器|きき}そのものに{問題|もんだい}がある{可能性|かのうせい}もある。",
+            "id": "Angka ini mungkin merupakan kesalahan pemasukan data. Atau, mungkin juga perangkatnya sendiri bermasalah.",
+            "en": "This figure may be a data entry error. Alternatively, there may be a problem with the equipment itself."
+          },
+          {
+            "jp": "{契約|けいやく}を{更新|こうしん}するか、__あるいは__{別|べつ}の{会社|かいしゃ}と{交渉|こうしょう}を{始|はじ}める{必要|ひつよう}がある。",
+            "id": "Kita perlu memperbarui kontrak atau mulai berunding dengan perusahaan lain.",
+            "en": "We need to renew the contract or begin negotiations with another company."
+          },
+          {
+            "jp": "{本人確認|ほんにんかくにん}には{運転免許証|うんてんめんきょしょう}、__あるいは__パスポートを{提示|ていじ}してください。",
+            "id": "Untuk verifikasi identitas, harap tunjukkan surat izin mengemudi atau paspor.",
+            "en": "For identity verification, please present a driver's license or a passport."
+          },
+          {
+            "jp": "{調査|ちょうさ}を{延期|えんき}する。__あるいは__、{対象地域|たいしょうちいき}を{限定|げんてい}して{続|つづ}けるという{方法|ほうほう}もある。",
+            "id": "Kita dapat menunda penelitian. Atau, ada juga pilihan untuk melanjutkannya dengan membatasi wilayah sasaran.",
+            "en": "We can postpone the study. Alternatively, we could continue it while limiting the target area."
+          }
+        ],
+        "pitfalls": [
+          "Jangan memakai あるいは untuk menambahkan dua fakta yang sama-sama berlaku. Pola ini menyatakan alternatif, bukan arti \"dan\".",
+          "Pastikan kedua sisi memiliki hubungan yang sejajar. Menghubungkan sebuah metode dengan alasan yang tidak setara akan membuat kalimat terasa tidak logis.",
+          "あるいは dapat mengawali kalimat baru, tetapi kalimat tersebut tetap harus menyajikan alternatif yang jelas terhadap isi sebelumnya."
+        ],
+        "tags": [
+          "conjunction",
+          "formal",
+          "written"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T20:34:37.568Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -31094,8 +31200,101 @@
         "extractedAt": "2026-10-04T00:09:03.736Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "だが",
+        "senseLabel": null,
+        "meaningId": "namun; memperkenalkan pernyataan yang berlawanan atau tidak sesuai dengan harapan dari kalimat sebelumnya",
+        "meaningEn": "however; introduces a statement that contrasts with or defies the expectation created by the preceding sentence",
+        "connections": [
+          {
+            "form": "sentence",
+            "pattern": "だが"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Penghubung antarkalimat",
+            "input": "P。Q。",
+            "rule": "Letakkan だが setelah P yang lengkap untuk mengawali Q yang berlawanan dengan P atau harapan darinya.",
+            "output": "P。だが、Q。",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "だが adalah kata sambung yang membuka kalimat baru dan menandai bahwa informasi berikutnya berlawanan dengan pernyataan, kecenderungan, atau harapan yang terbentuk dari kalimat sebelumnya.",
+          "Kontras tersebut dapat berupa hasil yang tidak sesuai dugaan, kelemahan yang membatasi penilaian positif, atau perkembangan positif setelah keadaan yang buruk. Hubungan pertentangannya biasanya terasa jelas dan tegas.",
+          "Pola ini lazim dalam artikel, laporan, esai, pidato, dan penjelasan formal. Dalam percakapan santai, でも biasanya terdengar lebih alami, sedangkan しかし juga dapat digunakan dalam ragam formal dengan kesan yang sedikit lebih netral.",
+          "Sebagai kata sambung mandiri, だが ditempatkan setelah kalimat lengkap. Bentuk Nだが atau ナAだが memiliki struktur berbeda karena が di sana mengikuti kopula だ dan bukan kata sambung mandiri yang dibahas pada poin ini."
+        ],
+        "usage": {
+          "nuance": [
+            "Menampilkan pertentangan secara tegas dan sering menyoroti bahwa fakta kedua membatasi atau membalik harapan dari fakta pertama."
+          ],
+          "register": [
+            "Lebih berciri tulisan dan situasi formal daripada percakapan sehari-hari.",
+            "Cocok untuk uraian objektif, argumentasi, pidato, dan narasi yang bernada serius."
+          ],
+          "restrictions": [
+            "Dalam pola ini, だが mengawali kalimat atau klausa baru setelah pernyataan yang sudah lengkap.",
+            "Tidak digunakan sebagai pengganti langsung pola konsesif seperti のに apabila maksudnya harus dinyatakan di dalam satu struktur kalimat."
+          ],
+          "typicalContexts": [
+            "Artikel berita, laporan penelitian, esai argumentatif, ulasan kebijakan, pidato, dan narasi formal.",
+            "Pemaparan yang mula-mula mengakui satu fakta lalu menunjukkan keterbatasan, pengecualian, atau hasil yang bertentangan."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "{新製品|しんせいひん}の{性能|せいのう}は{高|たか}い。__だが__、{価格|かかく}が{高|たか}すぎて{一般|いっぱん}の{消費者|しょうひしゃ}には{手|て}が{届|とど}きにくい。",
+            "id": "Kinerja produk baru itu tinggi. Namun, harganya terlalu mahal sehingga sulit dijangkau konsumen umum.",
+            "en": "The new product performs well. However, its price is too high for ordinary consumers to afford."
+          },
+          {
+            "jp": "{委員会|いいんかい}は{提案|ていあん}を{承認|しょうにん}した。__だが__、{実施|じっし}の{時期|じき}はまだ{決|き}まっていない。",
+            "id": "Komite telah menyetujui usulan itu. Akan tetapi, waktu pelaksanaannya belum ditentukan.",
+            "en": "The committee approved the proposal. However, the timing of its implementation has not yet been decided."
+          },
+          {
+            "jp": "{彼女|かのじょ}は{十分|じゅうぶん}に{準備|じゅんび}した。__だが__、{本番|ほんばん}では{緊張|きんちょう}して{力|ちから}を{出|だ}せなかった。",
+            "id": "Dia sudah mempersiapkan diri dengan baik. Namun, saat penampilan sebenarnya dia gugup dan tidak dapat menunjukkan kemampuan terbaiknya.",
+            "en": "She prepared thoroughly. However, she became nervous during the actual performance and could not do her best."
+          },
+          {
+            "jp": "{調査|ちょうさ}の{結果|けっか}は{状況|じょうきょう}の{改善|かいぜん}を{示|しめ}している。__だが__、{専門家|せんもんか}は{安易|あんい}な{楽観|らっかん}を{戒|いまし}めている。",
+            "id": "Hasil survei menunjukkan bahwa keadaan membaik. Namun, para ahli memperingatkan agar orang tidak terlalu cepat bersikap optimistis.",
+            "en": "The survey results indicate that the situation is improving. However, experts warn against premature optimism."
+          },
+          {
+            "jp": "{古|ふる}い{制度|せいど}には{欠点|けってん}が{多|おお}い。__だが__、{急|きゅう}に{廃止|はいし}すれば{社会|しゃかい}に{混乱|こんらん}を{招|まね}くおそれがある。",
+            "id": "Sistem lama itu memiliki banyak kekurangan. Namun, penghapusannya secara mendadak dapat menimbulkan kekacauan dalam masyarakat.",
+            "en": "The old system has many shortcomings. However, abolishing it abruptly could cause social disruption."
+          },
+          {
+            "jp": "{交渉|こうしょう}は{何度|なんど}も{行|い}き{詰|づ}まった。__だが__、{双方|そうほう}は{対話|たいわ}を{続|つづ}け、ついに{合意|ごうい}に{達|たっ}した。",
+            "id": "Perundingan itu berkali-kali menemui jalan buntu. Namun, kedua pihak terus berdialog dan akhirnya mencapai kesepakatan.",
+            "en": "The negotiations reached an impasse several times. However, both sides continued the dialogue and eventually reached an agreement."
+          }
+        ],
+        "pitfalls": [
+          "Jangan memasukkan だが ke bagian akhir kalimat pertama ketika menggunakannya sebagai kata sambung mandiri. ○ P。だが、Q。 ✕ Pだが。Q.",
+          "Nだが dan ナAだが bukan pemakaian kata sambung mandiri ini. Pada bentuk tersebut, だ adalah kopula dan が menghubungkan klausa di dalam kalimat yang sama.",
+          "だが terdengar lebih tegas dan formal daripada でも. Pemakaian berulang dalam percakapan akrab dapat terdengar kaku atau seperti bahasa tulisan.",
+          "Jangan memakai だが jika kalimat kedua hanya menambahkan informasi tanpa pertentangan. Harus ada kontras nyata atau hasil yang tidak sesuai dengan harapan dari kalimat pertama."
+        ],
+        "tags": [
+          "contrast",
+          "conjunction",
+          "formal",
+          "written"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T20:34:58.236Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -31130,8 +31329,101 @@
         "extractedAt": "2026-10-04T00:09:11.151Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "だって",
+        "senseLabel": null,
+        "meaningId": "soalnya; karena, untuk memberikan alasan atau membela diri dalam tanggapan",
+        "meaningEn": "because; the thing is, used to give a reason or defend oneself in a response",
+        "connections": [
+          {
+            "form": "other",
+            "pattern": "だって",
+            "note": "Ungkapan tetap yang diletakkan di awal tanggapan, lalu diikuti kalimat yang menyatakan alasan atau pembenaran."
+          }
+        ],
+        "formation": [
+          {
+            "label": "Tanggapan dengan alasan",
+            "input": "{行|い}けない。{雨|あめ}が{降|ふ}っているんだ。",
+            "rule": "Letakkan だって di awal kalimat yang menjelaskan alasan bagi pernyataan atau tanggapan sebelumnya.",
+            "output": "{行|い}けない。だって、{雨|あめ}が{降|ふ}っているんだ。",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "だって memperkenalkan alasan sebagai tanggapan terhadap pertanyaan, kritik, keberatan, atau tuntutan. Padanan yang alami antara lain “soalnya”, “karena”, atau “masalahnya”.",
+          "Pola ini biasanya berdiri di awal kalimat baru dan merujuk pada konteks yang sudah jelas. Pembicara tidak sekadar menyampaikan sebab secara netral, tetapi menunjukkan mengapa tindakan atau sikapnya dapat dimaklumi.",
+          "Kalimat setelah だって sering memakai bentuk penjelas seperti 〜んだ, 〜んだから, atau 〜んだもの. Bentuk-bentuk tersebut memperkuat kesan bahwa pembicara sedang menjelaskan, membela diri, atau mengajukan dalih.",
+          "Pemakaian ini berciri percakapan dan dapat terdengar spontan atau emosional. Dalam laporan resmi atau penjelasan objektif, penghubung sebab seperti ので atau ため lebih sesuai. Sense ini juga harus dibedakan dari だって yang berarti “bahkan” atau “juga”."
+        ],
+        "usage": {
+          "nuance": [
+            "Sering menyiratkan bahwa pembicara merasa tindakannya memiliki alasan yang wajar.",
+            "Dapat terdengar defensif, mengeluh, atau seperti mencari dalih, bergantung pada intonasi dan konteks."
+          ],
+          "register": [
+            "Lazim dalam percakapan santai dan tanggapan spontan.",
+            "Dapat diikuti bentuk sopan, tetapi だって sendiri tetap memberikan kesan percakapan dan kurang cocok untuk dokumen resmi."
+          ],
+          "restrictions": [
+            "Untuk sense ini, だって berdiri di awal kalimat alasan dan tidak ditempelkan langsung pada predikat sebelumnya.",
+            "Tidak digunakan sebagai penghubung sebab yang sepenuhnya netral dalam uraian ilmiah, laporan bisnis, atau tulisan administratif."
+          ],
+          "typicalContexts": [
+            "Menjawab pertanyaan tentang alasan seseorang melakukan atau tidak melakukan sesuatu.",
+            "Membela diri setelah ditegur, membantah kritik, atau menjelaskan keterbatasan yang tidak dapat dihindari."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "「どうして{連絡|れんらく}しなかったの？」「__だって__、{携帯|けいたい}の{電池|でんち}が{切|き}れていたんだ。」",
+            "id": "Mengapa kamu tidak menghubungiku? Soalnya baterai ponselku habis.",
+            "en": "Why didn't you contact me? Because my phone battery was dead."
+          },
+          {
+            "jp": "{彼|かれ}をそんなに{責|せ}めないでよ。__だって__、{事情|じじょう}を{何|なに}も{知|し}らなかったんだから。",
+            "id": "Jangan terlalu menyalahkannya. Soalnya, dia sama sekali tidak mengetahui situasinya.",
+            "en": "Do not blame him so harshly. After all, he knew nothing about the situation."
+          },
+          {
+            "jp": "「また{会議|かいぎ}に{遅|おく}れたの？」「__だって__、{電車|でんしゃ}が{途中|とちゅう}で{止|と}まったんです。」",
+            "id": "Kamu terlambat menghadiri rapat lagi? Soalnya keretanya berhenti di tengah perjalanan.",
+            "en": "Were you late for the meeting again? Because the train stopped along the way."
+          },
+          {
+            "jp": "{今|いま}から{計画|けいかく}を{変|か}えるのは{無理|むり}だよ。__だって__、もう{全員|ぜんいん}に{日程|にってい}を{知|し}らせてしまったんだ。",
+            "id": "Tidak mungkin mengubah rencananya sekarang. Soalnya, jadwalnya sudah diberitahukan kepada semua orang.",
+            "en": "It is impossible to change the plan now. We have already informed everyone of the schedule."
+          },
+          {
+            "jp": "「その{靴|くつ}、{買|か}わなかったの？」「__だって__、{試|ため}しに{履|は}いたら{痛|いた}かったんだもの。」",
+            "id": "Kamu tidak membeli sepatu itu? Soalnya, ketika kucoba, sepatu itu terasa sakit.",
+            "en": "Did you not buy those shoes? Because they hurt when I tried them on."
+          },
+          {
+            "jp": "{私|わたし}だけの{責任|せきにん}だと{決|き}めつけないでください。__だって__、{最終|さいしゅう}{判断|はんだん}をしたのは{部長|ぶちょう}です。",
+            "id": "Jangan langsung menyimpulkan bahwa hanya saya yang bertanggung jawab. Soalnya, kepala bagianlah yang mengambil keputusan akhir.",
+            "en": "Please do not assume that I alone am responsible. The department manager made the final decision."
+          }
+        ],
+        "pitfalls": [
+          "Jangan menempelkan だって pada akhir klausa penyebab untuk sense ini. Letakkan di awal tanggapan yang memberikan alasan.",
+          "Bedakan dari だって yang berarti “bahkan” atau “juga”, seperti dalam {子供|こども}だって{分|わ}かる. Pada sense sebab, だって memperkenalkan satu kalimat alasan.",
+          "Jangan mengganti ので dengan だって dalam laporan resmi tanpa mempertimbangkan ragamnya. だって terdengar seperti reaksi percakapan atau pembelaan pribadi."
+        ],
+        "tags": [
+          "reason",
+          "conjunction",
+          "casual"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T20:34:29.739Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -31166,8 +31458,136 @@
         "extractedAt": "2026-10-04T10:31:49.659Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜ということは",
+        "senseLabel": null,
+        "meaningId": "fakta atau keadaan tersebut berarti bahwa; menarik kesimpulan dari informasi sebelumnya",
+        "meaningEn": "the fact or situation means that; draws a conclusion from prior information",
+        "connections": [
+          {
+            "form": "v-plain",
+            "pattern": "ということは"
+          },
+          {
+            "form": "i-adj-plain",
+            "pattern": "ということは"
+          },
+          {
+            "form": "na-adj-plain",
+            "pattern": "ということは",
+            "note": "Pada bentuk afirmatif nonlampau, だ lazim dipakai, tetapi dapat dihilangkan dalam konteks tertentu."
+          },
+          {
+            "form": "n-plain",
+            "pattern": "ということは",
+            "note": "Pada bentuk afirmatif nonlampau, だ lazim dipakai, tetapi dapat dihilangkan dalam konteks tertentu."
+          }
+        ],
+        "formation": [
+          {
+            "label": "kata kerja bentuk biasa",
+            "input": "{電車|でんしゃ}が{止|と}まった",
+            "rule": "Tambahkan ということは setelah klausa kata kerja bentuk biasa.",
+            "output": "{電車|でんしゃ}が{止|と}まったということは",
+            "note": null
+          },
+          {
+            "label": "adjektiva-i bentuk biasa",
+            "input": "{料金|りょうきん}が{高|たか}い",
+            "rule": "Tambahkan ということは langsung setelah adjektiva-i bentuk biasa.",
+            "output": "{料金|りょうきん}が{高|たか}いということは",
+            "note": null
+          },
+          {
+            "label": "adjektiva-na bentuk biasa",
+            "input": "{会場|かいじょう}が{静|しず}かだ",
+            "rule": "Tambahkan ということは setelah bentuk biasa dengan だ.",
+            "output": "{会場|かいじょう}が{静|しず}かだということは",
+            "note": "Dalam konteks tertentu, だ dapat dihilangkan. Jangan menggantinya dengan な."
+          },
+          {
+            "label": "nomina bentuk biasa",
+            "input": "{彼女|かのじょ}が{責任者|せきにんしゃ}だ",
+            "rule": "Tambahkan ということは setelah bentuk biasa dengan だ.",
+            "output": "{彼女|かのじょ}が{責任者|せきにんしゃ}だということは",
+            "note": "Dalam konteks tertentu, だ dapat dihilangkan."
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜ということは menempatkan fakta, keadaan, atau informasi sebelumnya sebagai dasar untuk menarik suatu implikasi. Bagian sesudah pola menyatakan apa yang dapat dipahami atau disimpulkan dari dasar tersebut.",
+          "Pola ini mengikuti bentuk biasa. Pada adjektiva-na dan nomina afirmatif nonlampau, bentuk dengan だ merupakan sambungan yang jelas, meskipun だ dapat dihilangkan dalam konteks tertentu.",
+          "Kesimpulannya dapat dinyatakan sebagai kepastian, dugaan, atau pertanyaan untuk memastikan pemahaman. Karena itu, bagian sesudahnya sering memakai ungkapan seperti だろう, はずだ, ようだ, atau bentuk tanya.",
+          "Berbeda dari 〜というのは yang terutama mengangkat suatu istilah atau hal untuk dijelaskan atau didefinisikan, 〜ということは menyoroti konsekuensi logis dari informasi yang telah diketahui."
+        ],
+        "usage": {
+          "nuance": [
+            "Menunjukkan bahwa pembicara baru menyadari, menafsirkan, atau memastikan implikasi dari sebuah fakta.",
+            "Tingkat kepastian simpulan ditentukan oleh predikat sesudah pola, misalnya だろう untuk dugaan dan はずだ untuk keyakinan yang kuat."
+          ],
+          "register": [
+            "Bersifat netral dan lazim digunakan dalam percakapan maupun tulisan.",
+            "Dalam diskusi resmi, pola ini dapat dipakai untuk merumuskan konsekuensi dari data, keputusan, atau laporan."
+          ],
+          "restrictions": [
+            "Harus ada fakta atau informasi yang dapat diperlakukan sebagai dasar penalaran, baik disebutkan dalam klausa sebelumnya maupun sudah jelas dari konteks.",
+            "Pada adjektiva-na, jangan memakai な tepat sebelum ということは.",
+            "Pola ini bukan sekadar penanda urutan peristiwa; simpulan sesudahnya harus memiliki hubungan yang masuk akal dengan informasi sebelumnya."
+          ],
+          "typicalContexts": [
+            "Menarik kesimpulan dari tanda atau keadaan yang terlihat.",
+            "Menjelaskan konsekuensi suatu angka, keputusan, atau perubahan situasi.",
+            "Mengajukan pertanyaan untuk memastikan arti praktis dari ucapan lawan bicara."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "{駅|えき}のシャッターが{閉|し}まっている__ということは__、もう{終電|しゅうでん}は{出|で}たのだろう。",
+            "id": "Pintu penutup stasiun sudah tertutup; berarti kereta terakhir mungkin sudah berangkat.",
+            "en": "The station shutters are closed, which means the last train has probably already left."
+          },
+          {
+            "jp": "{申込者|もうしこみしゃ}の{数|かず}が{定員|ていいん}を{超|こ}えた__ということは__、{追加|ついか}の{会場|かいじょう}が{必要|ひつよう}になる。",
+            "id": "Jumlah pendaftar telah melebihi kapasitas; itu berarti tempat tambahan akan diperlukan.",
+            "en": "The number of applicants has exceeded capacity, which means an additional venue will be needed."
+          },
+          {
+            "jp": "この{薬|くすり}が{子|こ}どもには{強|つよ}い__ということは__、{量|りょう}を{調整|ちょうせい}しなければならない。",
+            "id": "Obat ini tergolong kuat bagi anak-anak; berarti dosisnya harus disesuaikan.",
+            "en": "This medicine is strong for children, which means the dosage must be adjusted."
+          },
+          {
+            "jp": "{町|まち}がこんなに{静|しず}かだ__ということは__、{祭|まつ}りはもう{終|お}わったようだ。",
+            "id": "Kota ini begitu sepi; tampaknya festivalnya sudah berakhir.",
+            "en": "The town is this quiet, which apparently means the festival has already ended."
+          },
+          {
+            "jp": "{佐藤|さとう}さんが{新|あたら}しい{責任者|せきにんしゃ}だ__ということは__、{今後|こんご}の{承認|しょうにん}は{彼女|かのじょ}に{頼|たの}むべきですね。",
+            "id": "Fakta bahwa Ibu Sato adalah penanggung jawab baru berarti mulai sekarang kita sebaiknya meminta persetujuan kepadanya.",
+            "en": "The fact that Ms. Sato is the new person in charge means we should ask her for approval from now on."
+          },
+          {
+            "jp": "{予算|よさん}が{半分|はんぶん}になった__ということは__、{計画|けいかく}そのものを{見直|みなお}せということですか。",
+            "id": "Anggarannya berkurang menjadi setengah; apakah itu berarti kita diminta meninjau kembali seluruh rencana?",
+            "en": "The budget has been cut in half; does that mean we are being told to reconsider the entire plan?"
+          }
+        ],
+        "pitfalls": [
+          "Jangan memakai な sebelum pola pada adjektiva-na: ✕{静|しず}かなということは, ○{静|しず}かだということは, atau ○{静|しず}かということは.",
+          "Jangan menyamakan 〜ということは dengan 〜というのは. Bentuk pertama menarik implikasi, sedangkan bentuk kedua biasanya memperkenalkan sesuatu untuk dijelaskan atau didefinisikan.",
+          "〜ということは tidak dengan sendirinya menyatakan sebab objektif seperti 〜から. Kesimpulan sesudahnya dapat berupa penafsiran atau dugaan pembicara."
+        ],
+        "tags": [
+          "conjecture",
+          "conjunction"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T20:36:12.403Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -31202,8 +31622,142 @@
         "extractedAt": "2026-10-04T10:32:15.293Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "というのは",
+        "senseLabel": "definisi istilah atau isi",
+        "meaningId": "Menjadikan istilah atau isi pernyataan sebagai topik, lalu menjelaskan arti, definisi, atau cakupannya.",
+        "meaningEn": "Introduces a term or proposition as a topic and then explains its meaning, definition, or scope.",
+        "connections": [
+          {
+            "form": "n",
+            "pattern": "というのは",
+            "note": "Dipakai langsung setelah nomina yang diperkenalkan sebagai istilah atau konsep."
+          },
+          {
+            "form": "v-plain",
+            "pattern": "というのは"
+          },
+          {
+            "form": "i-adj-plain",
+            "pattern": "というのは"
+          },
+          {
+            "form": "na-adj-plain",
+            "pattern": "というのは",
+            "note": "Pada bentuk kini positif, だ dapat dipertahankan ketika kata sifat tersebut menjadi predikat klausa."
+          },
+          {
+            "form": "n-plain",
+            "pattern": "というのは",
+            "note": "Pada bentuk kini positif, だ dapat dipertahankan ketika nomina tersebut menjadi predikat klausa."
+          }
+        ],
+        "formation": [
+          {
+            "label": "nomina sebagai istilah",
+            "input": "{防災|ぼうさい}",
+            "rule": "Tambahkan というのは langsung setelah nomina yang akan didefinisikan.",
+            "output": "{防災|ぼうさい}というのは",
+            "note": null
+          },
+          {
+            "label": "klausa dengan kata kerja",
+            "input": "{一人|ひとり}で{暮|く}らす",
+            "rule": "Pertahankan kata kerja dalam bentuk biasa, lalu tambahkan というのは.",
+            "output": "{一人|ひとり}で{暮|く}らすというのは",
+            "note": null
+          },
+          {
+            "label": "klausa dengan kata sifat-i",
+            "input": "{価格|かかく}が{高|たか}い",
+            "rule": "Pertahankan kata sifat-i dalam bentuk biasa, lalu tambahkan というのは.",
+            "output": "{価格|かかく}が{高|たか}いというのは",
+            "note": null
+          },
+          {
+            "label": "klausa dengan kata sifat-na atau predikat nomina",
+            "input": "{町|まち}が{静|しず}かだ",
+            "rule": "Pertahankan だ pada bentuk kini positif ketika seluruh klausa dijadikan topik, lalu tambahkan というのは.",
+            "output": "{町|まち}が{静|しず}かだというのは",
+            "note": "Nomina predikatif mengikuti pembentukan yang sama."
+          }
+        ],
+        "variants": [
+          "とは",
+          "っていうのは"
+        ],
+        "explanation": [
+          "というのは menyoroti istilah, konsep, atau isi pernyataan di depannya sebagai topik yang perlu diterangkan. Bagian sesudah pola kemudian menyatakan apa arti atau isi konkret topik tersebut.",
+          "Nomina yang merupakan nama istilah dapat langsung diikuti というのは. Jika yang dijelaskan adalah suatu tindakan, keadaan, atau proposisi, gunakan predikat dalam bentuk biasa sebelum pola.",
+          "Penjelasan setelah pola sering berbentuk definisi, parafrasa, penjabaran cakupan, atau uraian mengenai konsekuensi yang menjadi bagian dari arti topik. Karena itu, bentuk seperti ことだ, {意味|いみ}だ, dan bentuk yang berakhir dengan {指|さ}す sering muncul pada bagian penjelas.",
+          "Dalam sense ini, というのは tidak memperkenalkan sebab bagi pernyataan sebelumnya. Pola ini juga berbeda dari ということは yang lazim dipakai untuk menarik kesimpulan atau implikasi berdasarkan suatu fakta."
+        ],
+        "usage": {
+          "nuance": [
+            "Memberikan bingkai penjelas pada unsur sebelumnya dan mengisyaratkan bahwa pendengar mungkin memerlukan definisi, penafsiran, atau rincian tambahan.",
+            "Pada dasarnya netral dan tidak dengan sendirinya menyatakan penilaian positif maupun negatif."
+          ],
+          "register": [
+            "Bentuk というのは dapat dipakai dalam percakapan netral, pengajaran, presentasi, dan tulisan penjelas.",
+            "Bentuk とは lebih ringkas dan sering digunakan dalam definisi tertulis, sedangkan っていうのは berciri percakapan santai."
+          ],
+          "restrictions": [
+            "Bagian sesudah pola harus menjelaskan arti, isi, atau cakupan topik di depannya, bukan sekadar menyebutkan fakta tambahan yang tidak menjelaskannya.",
+            "Untuk istilah berupa nomina, gunakan nomina langsung. Untuk proposisi dengan predikat nomina atau kata sifat-na kini positif, だ dapat dipertahankan."
+          ],
+          "typicalContexts": [
+            "Definisi istilah teknis, akademis, sosial, atau budaya.",
+            "Penafsiran ungkapan abstrak seperti menghormati orang lain, hidup mandiri, atau menjadi sejahtera.",
+            "Penjelasan mengenai apa yang sebenarnya tercakup dalam suatu pernyataan atau peran."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "「デジタルデトックス」__というのは__、{一定|いってい}の{期間|きかん}スマートフォンなどから{離|はな}れることだ。",
+            "id": "Yang dimaksud dengan detoks digital adalah menjauhkan diri dari telepon pintar dan perangkat sejenis selama jangka waktu tertentu.",
+            "en": "A digital detox means staying away from smartphones and similar devices for a certain period."
+          },
+          {
+            "jp": "{地域|ちいき}で{支|ささ}え{合|あ}う__というのは__、{住民|じゅうみん}が{互|たが}いに{助|たす}けを{求|もと}められる{関係|かんけい}を{作|つく}ることだ。",
+            "id": "Saling menopang dalam komunitas berarti membangun hubungan yang memungkinkan warga saling meminta bantuan.",
+            "en": "Supporting one another in a community means building relationships in which residents can ask each other for help."
+          },
+          {
+            "jp": "{彼|かれ}が{今回|こんかい}の{責任者|せきにんしゃ}だ__というのは__、{最終的|さいしゅうてき}な{判断|はんだん}を{彼|かれ}が{下|くだ}すということだ。",
+            "id": "Pernyataan bahwa dia adalah penanggung jawab kali ini berarti bahwa dialah yang membuat keputusan akhir.",
+            "en": "Saying that he is in charge this time means that he will make the final decision."
+          },
+          {
+            "jp": "{本当|ほんとう}に{豊|ゆた}かだ__というのは__、{物|もの}をたくさん{持|も}つことだけではない。",
+            "id": "Menjadi benar-benar sejahtera bukan hanya berarti memiliki banyak barang.",
+            "en": "Being truly prosperous does not merely mean owning many things."
+          },
+          {
+            "jp": "「{可逆性|かぎゃくせい}」__というのは__、{変化|へんか}したものが{元|もと}の{状態|じょうたい}に{戻|もど}れる{性質|せいしつ}を{指|さ}す。",
+            "id": "Istilah reversibilitas merujuk pada sifat yang memungkinkan sesuatu yang telah berubah kembali ke keadaan semula.",
+            "en": "The term reversibility refers to the property that allows something changed to return to its original state."
+          },
+          {
+            "jp": "{相手|あいて}を{尊重|そんちょう}する__というのは__、ただ{反対|はんたい}しないことではなく、{意見|いけん}を{最後|さいご}まで{聞|き}くことでもある。",
+            "id": "Menghormati orang lain bukan sekadar tidak menentangnya, tetapi juga mendengarkan pendapatnya sampai selesai.",
+            "en": "Respecting another person means not merely refraining from opposition, but also listening to their opinion until the end."
+          }
+        ],
+        "pitfalls": [
+          "Jangan mencampurkan sense definisi ini dengan pemakaian というのは yang memperkenalkan alasan bagi pernyataan sebelumnya. Dalam sense ini, informasi sesudah pola menerangkan topik yang berada tepat di depannya.",
+          "Jangan menggantinya begitu saja dengan ということは. というのは memperkenalkan sesuatu untuk dijelaskan, sedangkan ということは sering menandai kesimpulan atau implikasi yang ditarik dari informasi sebelumnya.",
+          "Jangan menghapus だ secara otomatis dari klausa predikatif. ○ {彼|かれ}が{責任者|せきにんしゃ}だというのは menunjukkan bahwa seluruh proposisi dijelaskan, sedangkan {責任者|せきにんしゃ}というのは memperkenalkan nomina itu sendiri sebagai istilah."
+        ],
+        "tags": [
+          "topic"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T20:36:13.464Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -31238,8 +31792,100 @@
         "extractedAt": "2026-10-04T10:32:15.293Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "というのは",
+        "senseLabel": "alasan pernyataan sebelumnya",
+        "meaningId": "Memperkenalkan alasan atau keadaan yang menjelaskan pernyataan sebelumnya.",
+        "meaningEn": "Introduces the reason or circumstances explaining the preceding statement.",
+        "connections": [
+          {
+            "form": "sentence",
+            "pattern": "というのは",
+            "note": "Diletakkan pada awal kalimat berikutnya setelah pernyataan yang akan dijelaskan."
+          }
+        ],
+        "formation": [
+          {
+            "label": "Pernyataan diikuti alasan",
+            "input": "P。Qからだ。",
+            "rule": "Letakkan というのは pada awal kalimat kedua untuk menandai bahwa Q merupakan alasan atau latar belakang bagi P.",
+            "output": "P。というのは、Qからだ。",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "というのは menghubungkan suatu pernyataan dengan kalimat sesudahnya yang memberikan alasan, keadaan, atau latar belakang. Terjemahan yang sesuai antara lain \"sebabnya adalah\" dan \"hal itu karena\".",
+          "Pola ini biasanya muncul pada awal kalimat baru setelah keputusan, pendapat, penilaian, atau informasi yang memerlukan penjelasan. Bagian alasan sering diakhiri dengan からだ, ためだ, atau のだ.",
+          "Susunan ini menyampaikan kesimpulan atau keputusan terlebih dahulu, kemudian menjelaskan dasarnya. Karena itu, penyampaiannya terasa lebih terstruktur daripada menggabungkan alasan dan hasil dalam satu kalimat dengan から.",
+          "Dalam makna ini, というのは tidak digunakan untuk mendefinisikan istilah. Pola ini juga berbeda dari ということは, yang menarik kesimpulan atau implikasi berdasarkan informasi sebelumnya."
+        ],
+        "usage": {
+          "nuance": [
+            "Menunjukkan bahwa penutur menganggap pernyataan pertama perlu diberi pembenaran atau penjelasan tambahan.",
+            "Alasan disajikan sebagai informasi susulan sehingga perhatian pendengar tertuju lebih dahulu pada keputusan atau kesimpulan."
+          ],
+          "register": [
+            "Dapat digunakan dalam percakapan netral, penjelasan resmi, presentasi, dan tulisan argumentatif.",
+            "Dalam konteks resmi, bagian alasan sering memakai penutup seperti ためです atau のです."
+          ],
+          "restrictions": [
+            "Harus ada pernyataan sebelumnya yang menjadi sasaran penjelasan.",
+            "Kalimat sesudahnya harus menyatakan alasan atau keadaan pendukung, bukan kesimpulan baru yang diturunkan dari pernyataan pertama."
+          ],
+          "typicalContexts": [
+            "Menjelaskan alasan suatu keputusan, penolakan, perubahan rencana, atau penilaian.",
+            "Memberikan dasar bagi pendapat dalam rapat, laporan, pengumuman, atau diskusi."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "{来月|らいげつ}、{支店|してん}を{閉鎖|へいさ}することになった。__というのは__、{利用者|りようしゃ}が{大幅|おおはば}に{減|へ}ったためだ。",
+            "id": "Cabang itu akan ditutup bulan depan. Sebabnya, jumlah penggunanya telah berkurang secara drastis.",
+            "en": "The branch will be closed next month. The reason is that the number of users has decreased significantly."
+          },
+          {
+            "jp": "{彼|かれ}には{直接|ちょくせつ}{連絡|れんらく}しなかった。__というのは__、{出張中|しゅっちょうちゅう}だと{聞|き}いていたからです。",
+            "id": "Saya tidak menghubunginya secara langsung. Itu karena saya mendengar bahwa dia sedang melakukan perjalanan dinas.",
+            "en": "I did not contact him directly. That is because I had heard that he was away on a business trip."
+          },
+          {
+            "jp": "この{案|あん}を{今|いま}すぐ{採用|さいよう}するのは{難|むずか}しい。__というのは__、{安全性|あんぜんせい}を{示|しめ}す{資料|しりょう}がまだ{足|た}りないからだ。",
+            "id": "Sulit untuk segera menerima usulan ini. Sebabnya, dokumen yang menunjukkan keamanannya masih belum memadai.",
+            "en": "It is difficult to adopt this proposal immediately. The reason is that there is still insufficient documentation demonstrating its safety."
+          },
+          {
+            "jp": "{会議|かいぎ}の{開始|かいし}を{三十分|さんじゅっぷん}{遅|おく}らせます。__というのは__、{電車|でんしゃ}の{事故|じこ}で{参加者|さんかしゃ}の{多|おお}くが{到着|とうちゃく}していないためです。",
+            "id": "Kami akan menunda dimulainya rapat selama tiga puluh menit. Alasannya, banyak peserta belum tiba akibat kecelakaan kereta.",
+            "en": "We will delay the start of the meeting by thirty minutes. This is because many participants have not arrived due to a train accident."
+          },
+          {
+            "jp": "{私|わたし}は{中古|ちゅうこ}の{机|つくえ}を{選|えら}んだ。__というのは__、{新品|しんぴん}より{安|やす}いだけでなく、{丈夫|じょうぶ}そうだったからだ。",
+            "id": "Saya memilih meja bekas. Sebabnya, meja itu bukan hanya lebih murah daripada meja baru, tetapi juga tampak kokoh.",
+            "en": "I chose a used desk. The reason is that it was not only cheaper than a new one but also looked sturdy."
+          },
+          {
+            "jp": "この{地域|ちいき}では{夜間|やかん}の{外出|がいしゅつ}を{控|ひか}えたほうがよい。__というのは__、{街灯|がいとう}が{少|すく}なく、{道|みち}も{複雑|ふくざつ}だからだ。",
+            "id": "Sebaiknya hindari bepergian pada malam hari di daerah ini. Sebabnya, lampu jalannya sedikit dan jalannya juga rumit.",
+            "en": "It is better to avoid going out at night in this area. The reason is that there are few streetlights and the roads are also complicated."
+          }
+        ],
+        "pitfalls": [
+          "Jangan menggunakan というのは untuk menarik kesimpulan dari informasi sebelumnya. Untuk arti \"kalau begitu berarti...\", gunakan ということは.",
+          "Pernyataan yang dijelaskan harus muncul lebih dahulu. Setelah というのは, berikan alasan atau keadaan pendukung, bukan sekadar mengulangi pernyataan pertama.",
+          "Dalam kalimat lengkap, alasan lazim ditutup dengan bentuk seperti からだ, ためだ, atau のだ. というのは sendiri hanya memperkenalkan penjelasan tersebut."
+        ],
+        "tags": [
+          "reason",
+          "conjunction"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T20:36:45.465Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -31274,8 +31920,104 @@
         "extractedAt": "2026-10-04T10:31:44.237Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "したがって",
+        "senseLabel": null,
+        "meaningId": "oleh karena itu; dengan demikian; memperkenalkan akibat atau kesimpulan logis dari pernyataan sebelumnya",
+        "meaningEn": "therefore; thus; introduces a logical result or conclusion from the preceding statement",
+        "connections": [
+          {
+            "form": "sentence",
+            "pattern": "したがって",
+            "note": "Diletakkan pada awal kalimat yang menyatakan akibat atau kesimpulan dari kalimat sebelumnya."
+          }
+        ],
+        "formation": [
+          {
+            "label": "Hubungan antarkalimat",
+            "input": "P。Q。",
+            "rule": "Tempatkan したがって pada awal kalimat kedua untuk menunjukkan bahwa Q merupakan akibat atau kesimpulan logis dari P.",
+            "output": "P。したがって、Q。",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "したがって adalah konjungsi antarkalimat yang menyajikan pernyataan berikutnya sebagai akibat, keputusan, atau kesimpulan yang secara logis berasal dari informasi sebelumnya.",
+          "Pola ini diletakkan setelah satu kalimat atau rangkaian penjelasan yang lengkap. Biasanya terdapat jeda setelah したがって, yang dalam tulisan lazim ditandai dengan koma.",
+          "Nuansanya objektif dan argumentatif. Karena itu, したがって sering dipakai ketika hubungan antargagasan didasarkan pada data, aturan, kondisi resmi, atau penalaran yang dapat dijelaskan, bukan sekadar reaksi pribadi.",
+          "Pemakaiannya lebih formal daripada だから dan lebih menekankan kesimpulan logis daripada sekadar kelanjutan keadaan. Pola ini juga berbeda dari にしたがって, yang berarti mengikuti pedoman atau berubah seiring perubahan lain."
+        ],
+        "usage": {
+          "nuance": [
+            "Menampilkan bagian kedua sebagai konsekuensi atau kesimpulan yang dapat diturunkan secara masuk akal dari bagian pertama.",
+            "Hubungan sebab dan hasilnya terasa objektif, teratur, dan relatif kuat."
+          ],
+          "register": [
+            "Lazim dalam laporan, tulisan akademis, berita, presentasi, pengumuman, dan komunikasi bisnis.",
+            "Dapat digunakan dalam percakapan resmi, tetapi biasanya terdengar kaku dalam obrolan santai."
+          ],
+          "restrictions": [
+            "Harus ada hubungan logis yang jelas antara pernyataan sebelumnya dan kesimpulan sesudahnya.",
+            "Berfungsi sebagai konjungsi mandiri dan tidak ditempelkan langsung pada nomina.",
+            "Tidak digunakan hanya untuk menunjukkan bahwa dua peristiwa terjadi secara berurutan."
+          ],
+          "typicalContexts": [
+            "Penarikan kesimpulan dari hasil penelitian atau data.",
+            "Penjelasan akibat dari peraturan, kontrak, atau keputusan resmi.",
+            "Pemaparan konsekuensi dalam laporan, argumen, dan presentasi."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "{気温|きおん}が{零度|れいど}を{下回|したまわ}った。__したがって__、{路面|ろめん}が{凍結|とうけつ}する{可能性|かのうせい}が{高|たか}い。",
+            "id": "Suhu telah turun di bawah nol derajat. Oleh karena itu, kemungkinan permukaan jalan membeku cukup tinggi.",
+            "en": "The temperature has fallen below zero. Therefore, the road surface is highly likely to freeze."
+          },
+          {
+            "jp": "{契約期間|けいやくきかん}は{昨日|きのう}で{終了|しゅうりょう}した。__したがって__、{本日|ほんじつ}{以降|いこう}はこのサービスを{利用|りよう}できない。",
+            "id": "Masa kontrak berakhir kemarin. Dengan demikian, layanan ini tidak dapat digunakan mulai hari ini.",
+            "en": "The contract period ended yesterday. Therefore, this service cannot be used from today onward."
+          },
+          {
+            "jp": "{今回|こんかい}の{調査|ちょうさ}では{十分|じゅうぶん}なデータが{得|え}られなかった。__したがって__、その{方法|ほうほう}の{有効性|ゆうこうせい}が{証明|しょうめい}されたとは{結論|けつろん}づけられない。",
+            "id": "Data yang memadai tidak diperoleh dalam penelitian kali ini. Oleh karena itu, belum dapat disimpulkan bahwa keefektifan metode tersebut telah terbukti.",
+            "en": "Sufficient data were not obtained in this study. Therefore, we cannot conclude that the method has been proven effective."
+          },
+          {
+            "jp": "{今月|こんげつ}から{旧書式|きゅうしょしき}は{無効|むこう}となる。__したがって__、すべての{申請者|しんせいしゃ}は{新|あたら}しい{書式|しょしき}で{書類|しょるい}を{提出|ていしゅつ}する{必要|ひつよう}がある。",
+            "id": "Formulir lama tidak berlaku mulai bulan ini. Oleh karena itu, semua pemohon harus menyerahkan dokumen dengan formulir baru.",
+            "en": "The old forms are invalid from this month. Therefore, all applicants must submit their documents using the new forms."
+          },
+          {
+            "jp": "{大雨|おおあめ}のため、{鉄道会社|てつどうがいしゃ}は{一部区間|いちぶくかん}で{運転|うんてん}を{見合|みあ}わせている。__したがって__、{会場|かいじょう}への{到着|とうちゃく}が{遅|おく}れる{見込|みこ}みだ。",
+            "id": "Akibat hujan deras, perusahaan kereta menghentikan sementara perjalanan di beberapa jalur. Oleh karena itu, kedatangan di lokasi diperkirakan terlambat.",
+            "en": "Because of heavy rain, the railway company has suspended service on some sections. Therefore, arrival at the venue is expected to be delayed."
+          },
+          {
+            "jp": "{二|ふた}つの{三角形|さんかくけい}は、{二辺|にへん}の{長|なが}さとその{間|あいだ}の{角|かく}がそれぞれ{等|ひと}しい。__したがって__、この{二|ふた}つの{三角形|さんかくけい}は{合同|ごうどう}である。",
+            "id": "Kedua segitiga tersebut memiliki dua sisi dan sudut apit yang masing-masing sama. Dengan demikian, kedua segitiga itu kongruen.",
+            "en": "The two triangles have two corresponding sides and the included angle equal. Therefore, the two triangles are congruent."
+          }
+        ],
+        "pitfalls": [
+          "Jangan menempelkan pola ini langsung pada nomina. Untuk arti mengikuti aturan, gunakan bentuk seperti {規則|きそく}にしたがって, sedangkan konjungsi したがって mengikuti kalimat yang lengkap.",
+          "Jangan memakai したがって untuk dua kejadian yang hanya berurutan tanpa hubungan sebab atau penalaran yang jelas.",
+          "だから lebih wajar untuk alasan dan kesimpulan dalam percakapan sehari-hari. Menggantinya dengan したがって dapat membuat ucapan santai terdengar terlalu resmi."
+        ],
+        "tags": [
+          "conjunction",
+          "result",
+          "formal",
+          "written"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T20:37:32.369Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -31310,8 +32052,104 @@
         "extractedAt": "2026-10-04T10:31:57.152Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "ただし",
+        "senseLabel": null,
+        "meaningId": "akan tetapi, dengan batasan atau ketentuan bahwa",
+        "meaningEn": "however, subject to the condition or exception that",
+        "connections": [
+          {
+            "form": "sentence",
+            "pattern": "ただし"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Sambungan antarkalimat",
+            "input": "Kalimat utama。Kalimat pembatas。",
+            "rule": "Tempatkan ただし pada awal kalimat kedua untuk menambahkan syarat, pengecualian, atau batas terhadap isi kalimat pertama.",
+            "output": "Kalimat utama。ただし、kalimat pembatas。",
+            "note": null
+          }
+        ],
+        "variants": [
+          "{但|ただ}し"
+        ],
+        "explanation": [
+          "ただし adalah kata sambung yang menambahkan ketentuan, pengecualian, atau batasan pada pernyataan sebelumnya. Terjemahan seperti \"namun\" hanya tepat apabila kalimat kedua membatasi cakupan informasi pertama.",
+          "Pola ini biasanya muncul pada awal kalimat baru setelah aturan, izin, penawaran, atau penjelasan umum. Kalimat sesudah ただし menyatakan keadaan khusus yang harus diperhatikan agar pernyataan sebelumnya tidak dipahami secara terlalu luas.",
+          "Nuansanya tegas dan relatif resmi. Karena itu, ただし lazim digunakan dalam peraturan, kontrak, petunjuk penggunaan, pengumuman, serta penjelasan administratif.",
+          "ただし tidak sama dengan しかし yang dapat menyatakan pertentangan umum. Hubungan yang dibentuk ただし harus berupa catatan pembatas, syarat tambahan, atau pengecualian terhadap isi sebelumnya. Dibandingkan ただ sebagai kata sambung, ただし terdengar lebih eksplisit dan formal."
+        ],
+        "usage": {
+          "nuance": [
+            "Memberi kesan bahwa ketentuan pada kalimat kedua penting dan tidak boleh diabaikan.",
+            "Tidak selalu menunjukkan akibat negatif; isinya dapat berupa syarat netral, batas jumlah, atau pengecualian."
+          ],
+          "register": [
+            "Lazim dalam ragam resmi dan tulisan, terutama pada peraturan, pemberitahuan, kontrak, dan petunjuk.",
+            "Dapat digunakan dalam percakapan, tetapi terdengar lebih tegas dan formal daripada ただ."
+          ],
+          "restrictions": [
+            "Kalimat sesudah ただし harus membatasi, mengecualikan, atau menetapkan syarat bagi pernyataan sebelumnya.",
+            "Tidak cocok untuk menghubungkan dua fakta yang hanya berlawanan tanpa hubungan aturan dan pengecualian."
+          ],
+          "typicalContexts": [
+            "Menjelaskan syarat tambahan setelah memberikan izin.",
+            "Menetapkan pengecualian terhadap aturan umum.",
+            "Membatasi masa berlaku, jumlah, peserta, layanan, atau tanggung jawab."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "このサービスは{無料|むりょう}で{利用|りよう}できます。__ただし__、{通信料|つうしんりょう}は{利用者|りようしゃ}の{負担|ふたん}となります。",
+            "id": "Layanan ini dapat digunakan secara gratis. Akan tetapi, biaya komunikasi menjadi tanggungan pengguna.",
+            "en": "This service is available free of charge. However, users are responsible for communication fees."
+          },
+          {
+            "jp": "{館内|かんない}では{写真|しゃしん}を{撮|と}ってもかまいません。__ただし__、フラッシュは{使用|しよう}しないでください。",
+            "id": "Anda boleh mengambil foto di dalam gedung. Namun, jangan menggunakan lampu kilat.",
+            "en": "You may take photographs inside the building. However, please do not use a flash."
+          },
+          {
+            "jp": "{申請|しんせい}は9{月|がつ}30{日|にち}まで{受|う}け{付|つ}けます。__ただし__、{郵送|ゆうそう}の{場合|ばあい}は{当日|とうじつ}{必着|ひっちゃく}です。",
+            "id": "Permohonan diterima sampai 30 September. Namun, jika dikirim melalui pos, dokumen harus tiba paling lambat pada hari tersebut.",
+            "en": "Applications will be accepted until September 30. However, postal applications must arrive by that date."
+          },
+          {
+            "jp": "このセミナーには{高校生|こうこうせい}も{参加|さんか}できます。__ただし__、{保護者|ほごしゃ}の{同意書|どういしょ}が{必要|ひつよう}です。",
+            "id": "Siswa sekolah menengah atas juga boleh mengikuti seminar ini. Namun, surat persetujuan wali diperlukan.",
+            "en": "High school students may also attend this seminar. However, a guardian's written consent is required."
+          },
+          {
+            "jp": "{購入後|こうにゅうご}7{日|か}{以内|いない}なら{返品|へんぴん}できます。__ただし__、{開封済|かいふうず}みの{商品|しょうひん}は{対象外|たいしょうがい}です。",
+            "id": "Barang dapat dikembalikan dalam tujuh hari setelah pembelian. Namun, barang yang sudah dibuka tidak termasuk.",
+            "en": "Items may be returned within seven days of purchase. However, opened items are excluded."
+          },
+          {
+            "jp": "{社員|しゃいん}は{週|しゅう}3{日|みっか}まで{在宅|ざいたく}で{勤務|きんむ}できます。__ただし__、{重要|じゅうよう}な{会議|かいぎ}がある{日|ひ}は{出社|しゅっしゃ}しなければなりません。",
+            "id": "Karyawan dapat bekerja dari rumah hingga tiga hari seminggu. Namun, mereka wajib datang ke kantor pada hari yang memiliki rapat penting.",
+            "en": "Employees may work from home up to three days a week. However, they must come to the office on days with important meetings."
+          }
+        ],
+        "pitfalls": [
+          "Jangan memakai ただし untuk pertentangan umum yang tidak membatasi pernyataan sebelumnya. Jika dua fakta hanya berlawanan, しかし biasanya lebih tepat.",
+          "Ketentuan sesudah ただし tidak boleh berupa informasi tambahan yang tidak berkaitan dengan cakupan aturan pertama. Hubungannya harus jelas sebagai syarat, batasan, atau pengecualian.",
+          "Jangan menyamakan ただし dengan ただ yang berarti \"hanya\". ただし di sini berfungsi sebagai kata sambung antarkalimat."
+        ],
+        "tags": [
+          "conjunction",
+          "limitation",
+          "formal",
+          "written"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T20:37:30.151Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -31346,8 +32184,98 @@
         "extractedAt": "2026-10-04T10:31:59.948Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "ただ",
+        "senseLabel": null,
+        "meaningId": "namun; hanya saja, menambahkan pembatas, pengecualian, atau keberatan terhadap pernyataan sebelumnya",
+        "meaningEn": "however; only, adding a reservation, exception, or qualification to the preceding statement",
+        "connections": [
+          {
+            "form": "sentence",
+            "pattern": "ただ",
+            "note": "Diletakkan pada awal kalimat berikutnya setelah pernyataan yang akan dibatasi atau dikualifikasi."
+          }
+        ],
+        "formation": [
+          {
+            "label": "Penyambungan dua kalimat",
+            "input": "A。B。",
+            "rule": "Letakkan ただ pada awal kalimat B untuk menunjukkan bahwa B membatasi kesan atau cakupan pernyataan A.",
+            "output": "A。ただ、B。",
+            "note": "Koma setelah ただ lazim digunakan dalam tulisan, tetapi dapat ditiadakan sesuai gaya."
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "ただ dipakai sebagai kata sambung untuk menambahkan keberatan, pengecualian, kelemahan, atau syarat yang membatasi pernyataan sebelumnya. Kalimat pertama tetap diakui, tetapi kalimat setelah ただ mencegah pendengar menafsirkannya secara terlalu mutlak atau terlalu positif.",
+          "Pola ini biasanya muncul pada awal kalimat atau klausa baru. Bagian sebelum ただ menyampaikan penilaian, persetujuan, izin, atau kemungkinan, sedangkan bagian sesudahnya memberikan informasi yang perlu dipertimbangkan sebagai batas.",
+          "Dibandingkan ただし, ただ terdengar lebih lunak dan lebih alami dalam percakapan. ただし lebih cocok ketika pembicara menyatakan ketentuan, aturan, atau pengecualian secara tegas, terutama dalam pengumuman dan dokumen.",
+          "Makna pada poin ini adalah kata sambung, bukan ただ sebagai adverbia yang berarti \"hanya\" atau \"sekadar\". Hubungan pembatas dengan pernyataan sebelumnya harus dapat dipahami dengan jelas."
+        ],
+        "usage": {
+          "nuance": [
+            "Menyampaikan reservasi secara relatif lunak tanpa sepenuhnya menolak atau membatalkan pernyataan sebelumnya."
+          ],
+          "register": [
+            "Dapat digunakan dalam percakapan dan tulisan netral. Untuk ketentuan resmi yang tegas, ただし biasanya lebih sesuai."
+          ],
+          "restrictions": [
+            "Memerlukan pernyataan sebelumnya yang dapat dibatasi, dikoreksi, atau diberi pengecualian.",
+            "Kalimat sesudah ただ harus relevan sebagai batas atau keberatan, bukan sekadar informasi tambahan yang tidak berkaitan."
+          ],
+          "typicalContexts": [
+            "Menilai kelebihan sambil menyebutkan kekurangan, menyetujui usulan dengan keberatan, atau memberi izin dengan batas tertentu.",
+            "Menambahkan biaya, risiko, persyaratan, atau kendala setelah menjelaskan manfaat maupun kemungkinan."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "{新|あたら}しいソフトは{操作|そうさ}が{簡単|かんたん}で{便利|べんり}だ。__ただ__、{古|ふる}い{端末|たんまつ}では{動|うご}かない。",
+            "id": "Perangkat lunak baru ini mudah dioperasikan dan praktis. Hanya saja, perangkat lunak ini tidak berjalan pada perangkat lama.",
+            "en": "The new software is easy to operate and convenient. However, it does not run on older devices."
+          },
+          {
+            "jp": "{提案|ていあん}には{基本的|きほんてき}に{賛成|さんせい}です。__ただ__、{予算|よさん}については{再検討|さいけんとう}が{必要|ひつよう}です。",
+            "id": "Pada dasarnya saya setuju dengan usulan itu. Namun, anggarannya perlu ditinjau kembali.",
+            "en": "I basically agree with the proposal. However, the budget needs to be reconsidered."
+          },
+          {
+            "jp": "{今日中|きょうじゅう}に{修理|しゅうり}できます。__ただ__、{部品代|ぶひんだい}は{別|べつ}にかかります。",
+            "id": "Barang ini dapat diperbaiki hari ini. Hanya saja, biaya suku cadang akan dikenakan secara terpisah.",
+            "en": "It can be repaired today. However, the cost of the parts will be charged separately."
+          },
+          {
+            "jp": "この{講座|こうざ}は{誰|だれ}でも{受|う}けられます。__ただ__、{事前|じぜん}の{登録|とうろく}が{必要|ひつよう}です。",
+            "id": "Siapa pun dapat mengikuti kursus ini. Hanya saja, pendaftaran sebelumnya diperlukan.",
+            "en": "Anyone can take this course. However, advance registration is required."
+          },
+          {
+            "jp": "{海|うみ}が{見|み}える{静|しず}かな{宿|やど}でした。__ただ__、{食事|しょくじ}の{選択肢|せんたくし}はあまり{多|おお}くありませんでした。",
+            "id": "Penginapan itu tenang dan menghadap ke laut. Hanya saja, pilihan makanannya tidak begitu banyak.",
+            "en": "It was a quiet inn with an ocean view. However, there were not many meal options."
+          },
+          {
+            "jp": "{君|きみ}の{考|かんが}えは{理解|りかい}できる。__ただ__、{今|いま}すぐ{実行|じっこう}するのは{危険|きけん}だ。",
+            "id": "Aku dapat memahami gagasanmu. Namun, melaksanakannya sekarang juga berbahaya.",
+            "en": "I can understand your idea. However, putting it into action right now would be dangerous."
+          }
+        ],
+        "pitfalls": [
+          "Jangan menyamakan kata sambung ただ dengan adverbia ただ yang berarti \"hanya\" atau \"sekadar\". Pada pola ini, ただ menghubungkan pernyataan dengan pembatas setelahnya.",
+          "Jangan memakai ただ untuk informasi kedua yang sama sekali tidak membatasi informasi pertama. Hubungannya harus berupa keberatan, pengecualian, kekurangan, atau syarat.",
+          "Untuk aturan atau ketentuan yang harus dinyatakan secara tegas dan eksplisit, ただし umumnya lebih tepat daripada ただ."
+        ],
+        "tags": [
+          "conjunction",
+          "limitation"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T20:38:01.563Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -31382,8 +32310,101 @@
         "extractedAt": "2026-10-04T10:32:06.006Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "もっとも",
+        "senseLabel": null,
+        "meaningId": "akan tetapi; hanya saja; menambahkan syarat, pengecualian, atau batasan pada pernyataan sebelumnya",
+        "meaningEn": "however; mind you; adds a condition, exception, or qualification to the preceding statement",
+        "connections": [
+          {
+            "form": "sentence",
+            "pattern": "もっとも"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Penghubung antarkalimat",
+            "input": "{新|あたら}しい{機能|きのう}は{便利|べんり}です。",
+            "rule": "Selesaikan pernyataan utama, lalu awali kalimat berikutnya dengan もっとも untuk menambahkan batasan atau pengecualian.",
+            "output": "{新|あたら}しい{機能|きのう}は{便利|べんり}です。もっとも、すべての{端末|たんまつ}では{使|つか}えません。",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "もっとも adalah kata sambung yang menerima isi pernyataan sebelumnya secara umum, tetapi segera menambahkan syarat, pengecualian, atau batasan. Terjemahan yang sesuai antara lain “akan tetapi”, “hanya saja”, atau “meskipun demikian”.",
+          "Berbeda dari pertentangan penuh, informasi setelah もっとも biasanya tidak membatalkan pernyataan pertama. Fungsinya adalah mempersempit jangkauan pernyataan tersebut atau mencegah pembaca menarik kesimpulan yang terlalu luas.",
+          "もっとも umumnya diletakkan pada awal kalimat baru dan sering diikuti koma. Bentuknya tetap dan tidak mengalami perubahan konjugasi.",
+          "Pola ini lazim dalam uraian tertulis, penjelasan resmi, dan percakapan yang bernada hati-hati. Jangan mencampurkannya dengan もっともだ, yang menyatakan bahwa sesuatu dianggap wajar atau masuk akal."
+        ],
+        "usage": {
+          "nuance": [
+            "Pembicara tetap mempertahankan klaim utama, tetapi mengakui adanya keadaan yang membatasi penerapannya.",
+            "Sering memberi kesan bahwa pembicara sedang memperhalus, mengoreksi, atau melengkapi pernyataannya sendiri."
+          ],
+          "register": [
+            "Cukup lazim dalam tulisan argumentatif, laporan, penjelasan resmi, dan pembicaraan yang teratur.",
+            "Dapat digunakan dalam percakapan, tetapi terdengar lebih terstruktur daripada kata sambung santai."
+          ],
+          "restrictions": [
+            "Harus merujuk pada pernyataan yang sudah disampaikan; pola ini bukan partikel yang langsung ditempelkan pada sebuah kata.",
+            "Kalimat sesudahnya harus membatasi, mengecualikan, atau mengoreksi cakupan klaim sebelumnya, bukan sekadar menambahkan fakta yang tidak berkaitan."
+          ],
+          "typicalContexts": [
+            "Menjelaskan aturan umum beserta syarat khususnya.",
+            "Menyatakan penilaian positif lalu mengakui kekurangan tertentu.",
+            "Menyampaikan kesimpulan sementara yang masih memiliki pengecualian."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "この{制度|せいど}は{条件|じょうけん}を{満|み}たせば{誰|だれ}でも{利用|りよう}できる。__もっとも__、{事前|じぜん}の{登録|とうろく}は{必要|ひつよう}だ。",
+            "id": "Siapa pun dapat menggunakan sistem ini jika memenuhi persyaratan. Hanya saja, pendaftaran sebelumnya tetap diperlukan.",
+            "en": "Anyone can use this system if they meet the requirements. However, advance registration is still necessary."
+          },
+          {
+            "jp": "{駅|えき}から{会場|かいじょう}までは{歩|ある}いて10{分|ぷん}ほどです。__もっとも__、{雨|あめ}の{日|ひ}はバスを{使|つか}ったほうがいいでしょう。",
+            "id": "Tempat acara dapat dicapai sekitar sepuluh menit dengan berjalan kaki dari stasiun. Hanya saja, pada hari hujan sebaiknya naik bus.",
+            "en": "The venue is about a ten-minute walk from the station. Mind you, taking the bus would be better on a rainy day."
+          },
+          {
+            "jp": "{彼|かれ}の{説明|せつめい}はおおむね{正|ただ}しい。__もっとも__、{数字|すうじ}の{一部|いちぶ}には{再確認|さいかくにん}が{必要|ひつよう}だ。",
+            "id": "Penjelasannya secara umum benar. Akan tetapi, sebagian angkanya perlu diperiksa kembali.",
+            "en": "His explanation is generally correct. However, some of the figures need to be checked again."
+          },
+          {
+            "jp": "{報告書|ほうこくしょ}は{金曜日|きんようび}までに{提出|ていしゅつ}すればよい。__もっとも__、{部長|ぶちょう}の{承認|しょうにん}を{先|さき}に{得|え}なければならない。",
+            "id": "Laporan cukup diserahkan paling lambat hari Jumat. Hanya saja, persetujuan kepala bagian harus diperoleh terlebih dahulu.",
+            "en": "The report only needs to be submitted by Friday. However, the department head's approval must be obtained first."
+          },
+          {
+            "jp": "この{地域|ちいき}は{冬|ふゆ}でも{比較的|ひかくてき}{暖|あたた}かい。__もっとも__、{山間部|さんかんぶ}では{雪|ゆき}が{積|つ}もることもある。",
+            "id": "Daerah ini relatif hangat bahkan pada musim dingin. Meskipun demikian, salju terkadang menumpuk di kawasan pegunungan.",
+            "en": "This region is relatively warm even in winter. Nevertheless, snow sometimes accumulates in the mountainous areas."
+          },
+          {
+            "jp": "その{依頼|いらい}を{引|ひ}き{受|う}けてもかまいません。__もっとも__、{納期|のうき}を{一週間|いっしゅうかん}{延|の}ばしていただく{必要|ひつよう}があります。",
+            "id": "Saya bersedia menerima permintaan itu. Hanya saja, tenggat waktunya perlu diperpanjang satu pekan.",
+            "en": "I am willing to accept that request. However, the deadline will need to be extended by one week."
+          }
+        ],
+        "pitfalls": [
+          "Jangan menempelkan もっとも langsung di antara dua bagian tanpa pemisahan kalimat yang jelas. ○「{会員|かいいん}は{無料|むりょう}です。もっとも、{予約|よやく}は{必要|ひつよう}です。」; ✕「{会員|かいいん}は{無料|むりょう}もっとも{予約|よやく}は{必要|ひつよう}です。」.",
+          "Jangan selalu menggantinya dengan しかし. しかし dapat menyatakan pertentangan langsung, sedangkan もっとも biasanya mempertahankan klaim pertama sambil membatasi cakupannya.",
+          "Jangan mencampurkannya dengan もっともだ yang berarti “wajar” atau “masuk akal”, maupun {最|もっと}も yang berarti “paling”."
+        ],
+        "tags": [
+          "conjunction",
+          "limitation",
+          "written"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T20:39:03.696Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -31418,8 +32439,105 @@
         "extractedAt": "2026-10-04T10:32:08.461Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "なお",
+        "senseLabel": null,
+        "meaningId": "menambahkan informasi, penjelasan, atau pemberitahuan pelengkap",
+        "meaningEn": "adds supplementary information, an explanation, or an additional notice",
+        "connections": [
+          {
+            "form": "sentence",
+            "pattern": "なお"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Tambahan antarkalimat",
+            "input": "{主要|しゅよう}な{情報|じょうほう}。{補足|ほそく}する{情報|じょうほう}。",
+            "rule": "Selesaikan kalimat yang menyampaikan informasi utama, lalu awali kalimat pelengkap dengan なお、.",
+            "output": "{主要|しゅよう}な{情報|じょうほう}。なお、{補足|ほそく}する{情報|じょうほう}。",
+            "note": null
+          }
+        ],
+        "variants": [
+          "{尚|なお}"
+        ],
+        "explanation": [
+          "なお adalah konjungsi untuk menambahkan catatan, penjelasan, atau pemberitahuan setelah informasi utama selesai disampaikan. Bagian sesudahnya biasanya bersifat sekunder, tetapi tetap dianggap perlu diketahui oleh pembaca atau pendengar.",
+          "Pola ini ditempatkan pada awal kalimat baru dan lazim diikuti koma. Informasi tambahan tidak harus menjadi akibat langsung dari kalimat sebelumnya, tetapi biasanya masih berkaitan dengan perkara atau situasi yang sedang dibahas.",
+          "なお banyak digunakan dalam pengumuman, laporan, petunjuk, surat bisnis, dan penjelasan resmi. Dalam percakapan akrab, bentuk ini dapat terdengar kaku karena penyampaiannya teratur dan bernuansa informatif.",
+          "Berbeda dari もっとも, なお tidak secara khusus memperkenalkan pengecualian atau batasan terhadap pernyataan sebelumnya. Berbeda pula dari さて, pola ini mempertahankan topik dan menambahkan informasi, bukan mengalihkan pembicaraan ke topik baru."
+        ],
+        "usage": {
+          "nuance": [
+            "Menandai bahwa informasi utama telah disampaikan dan penutur kini menambahkan catatan yang berguna atau perlu diperhatikan.",
+            "Tambahan tersebut sering berupa ketentuan praktis, rincian, informasi lanjutan, atau pemberitahuan administratif."
+          ],
+          "register": [
+            "Sangat lazim dalam tulisan resmi seperti pengumuman, laporan, petunjuk, dan surel bisnis.",
+            "Dapat dipakai dalam presentasi atau penjelasan formal, tetapi biasanya terlalu kaku untuk obrolan akrab."
+          ],
+          "restrictions": [
+            "Dalam sense ini, なお berdiri pada awal kalimat atau unit wacana baru dan tidak ditempelkan langsung pada nomina atau verba.",
+            "Informasi sesudahnya harus dapat dipahami sebagai pelengkap bagi perkara yang sedang dibahas. Untuk perpindahan topik yang jelas, さて lebih sesuai.",
+            "Jika maksudnya membatasi atau mengoreksi pernyataan sebelumnya dengan pengecualian, もっとも biasanya lebih tepat."
+          ],
+          "typicalContexts": [
+            "Pemberitahuan mengenai tenggat, biaya, ketentuan, atau perubahan layanan.",
+            "Catatan tambahan dalam laporan, hasil penelitian, kontrak, dan dokumen bisnis.",
+            "Informasi praktis setelah penjelasan acara, produk, fasilitas, atau prosedur."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "{申|もう}し{込|こ}みの{締|し}め{切|き}りは9{月|がつ}30{日|にち}です。__なお__、{提出|ていしゅつ}した{書類|しょるい}は{返却|へんきゃく}いたしません。",
+            "id": "Batas akhir pendaftaran adalah 30 September. Perlu diketahui juga bahwa dokumen yang telah diserahkan tidak akan dikembalikan.",
+            "en": "The application deadline is September 30. Please also note that submitted documents will not be returned."
+          },
+          {
+            "jp": "{新製品|しんせいひん}は{全国|ぜんこく}の{店舗|てんぽ}で{販売|はんばい}しています。__なお__、{一部|いちぶ}の{地域|ちいき}では{取|と}り{扱|あつか}いがありません。",
+            "id": "Produk baru tersebut dijual di toko-toko di seluruh negeri. Namun, sebagai informasi tambahan, produk itu tidak tersedia di beberapa wilayah.",
+            "en": "The new product is sold in stores nationwide. Please note, however, that it is unavailable in some regions."
+          },
+          {
+            "jp": "{調査|ちょうさ}への{回答|かいとう}は{匿名|とくめい}で{集計|しゅうけい}されます。__なお__、{個人|こじん}を{特定|とくてい}できる{情報|じょうほう}は{収集|しゅうしゅう}しません。",
+            "id": "Jawaban survei akan dihimpun secara anonim. Selain itu, kami tidak akan mengumpulkan informasi yang dapat digunakan untuk mengenali individu.",
+            "en": "Survey responses will be compiled anonymously. In addition, we will not collect information that could identify individuals."
+          },
+          {
+            "jp": "{講演会|こうえんかい}はオンラインで{配信|はいしん}します。__なお__、{録画|ろくが}の{公開|こうかい}は{予定|よてい}していません。",
+            "id": "Ceramah tersebut akan disiarkan secara daring. Sebagai catatan tambahan, rekamannya tidak direncanakan untuk dipublikasikan.",
+            "en": "The lecture will be streamed online. Please note that there are no plans to release a recording."
+          },
+          {
+            "jp": "{改修工事|かいしゅうこうじ}は{来月|らいげつ}から{始|はじ}まります。__なお__、{工事期間中|こうじきかんちゅう}も{正面入口|しょうめんいりぐち}は{利用|りよう}できます。",
+            "id": "Pekerjaan renovasi akan dimulai bulan depan. Sebagai informasi tambahan, pintu masuk utama tetap dapat digunakan selama masa pengerjaan.",
+            "en": "Renovation work will begin next month. The main entrance will remain available during the construction period."
+          },
+          {
+            "jp": "{見積書|みつもりしょ}の{金額|きんがく}には{送料|そうりょう}が{含|ふく}まれています。__なお__、{消費税|しょうひぜい}は{別途|べっと}かかります。",
+            "id": "Jumlah dalam surat perkiraan biaya sudah mencakup ongkos kirim. Perlu diketahui bahwa pajak konsumsi dikenakan secara terpisah.",
+            "en": "The amount in the quotation includes shipping. Please note that consumption tax will be charged separately."
+          }
+        ],
+        "pitfalls": [
+          "Jangan memakai なお semata-mata untuk memulai topik yang sama sekali baru. Untuk pengalihan topik, さて lebih tepat.",
+          "Jangan menyamakan なお dengan もっとも. なお menambahkan informasi, sedangkan もっとも biasanya memperkenalkan batasan, pengecualian, atau koreksi.",
+          "Pada sense ini, tempatkan なお setelah kalimat atau unit informasi utama selesai, bukan sebagai akhiran yang langsung melekat pada kata sebelumnya."
+        ],
+        "tags": [
+          "addition",
+          "conjunction",
+          "formal",
+          "written"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T20:38:53.918Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -31454,8 +32572,101 @@
         "extractedAt": "2026-10-04T10:32:15.328Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "さて",
+        "senseLabel": null,
+        "meaningId": "nah; sekarang; menandai dimulainya, dilanjutkannya, atau dialihkannya pembicaraan ke pokok berikutnya",
+        "meaningEn": "well; now then; marks the start, resumption, or deliberate transition to the next topic",
+        "connections": [
+          {
+            "form": "other",
+            "pattern": "さて",
+            "note": "Ungkapan mandiri yang biasanya diletakkan pada awal kalimat untuk mengatur peralihan pembicaraan."
+          }
+        ],
+        "formation": [
+          {
+            "label": "Peralihan ke pokok berikutnya",
+            "input": "{話題|わだい}A。{話題|わだい}B。",
+            "rule": "Letakkan さて di awal kalimat kedua untuk menandai dimulainya atau beralihnya pembahasan.",
+            "output": "{話題|わだい}A。さて、{話題|わだい}B。",
+            "note": "Dalam tulisan, さて biasanya diikuti koma, sedangkan dalam ucapan sering disertai jeda."
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "さて adalah penanda wacana yang dipakai ketika pembicara hendak membuka pokok pembicaraan, beralih ke bagian berikutnya, atau kembali ke pokok utama setelah jeda maupun penyimpangan.",
+          "Pola ini mengatur alur pembicaraan dari sudut pandang pembicara. Karena itu, さて tidak menunjukkan bahwa kalimat sesudahnya merupakan akibat langsung atau kejadian yang otomatis mengikuti kalimat sebelumnya.",
+          "さて biasanya muncul pada awal kalimat dan sering diikuti jeda. Pola ini juga dapat digunakan tanpa pembahasan sebelumnya, misalnya untuk menarik perhatian pendengar sebelum rapat, penjelasan, atau pertimbangan dimulai.",
+          "Dalam pertanyaan seperti さて、どうするか, pola ini memberi kesan bahwa pembicara berhenti sejenak lalu mulai mempertimbangkan persoalan berikutnya. Nuansanya lebih terarah dan deliberatif daripada penghubung percakapan biasa."
+        ],
+        "usage": {
+          "nuance": [
+            "Menandai jeda mental atau perubahan tahap yang disengaja, sehingga perhatian pendengar diarahkan kembali kepada pokok yang akan dibahas.",
+            "Dapat memberi kesan bahwa pembicara sedang menata agenda atau mulai memikirkan langkah selanjutnya."
+          ],
+          "register": [
+            "Netral dan dapat digunakan dalam percakapan, rapat, presentasi, esai, maupun narasi.",
+            "Cukup lazim dalam penjelasan terstruktur dan tulisan karena membantu menunjukkan perpindahan antarbagian."
+          ],
+          "restrictions": [
+            "Tidak digunakan untuk menyatakan hubungan sebab-akibat langsung atau urutan kejadian yang terjadi dengan sendirinya.",
+            "Biasanya berdiri pada awal kalimat atau ujaran dan tidak melekat pada nomina maupun predikat sebelumnya."
+          ],
+          "typicalContexts": [
+            "Membuka pembahasan utama setelah pendahuluan.",
+            "Berpindah ke agenda, bab, pertanyaan, atau tahap berikutnya.",
+            "Kembali ke pokok utama setelah pembicaraan menyimpang.",
+            "Mengawali pertimbangan tentang keputusan atau tindakan selanjutnya."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "{準備|じゅんび}が{整|ととの}いました。__さて__、{本題|ほんだい}に{入|はい}りましょう。",
+            "id": "Persiapannya sudah selesai. Nah, mari kita masuk ke pokok utama.",
+            "en": "The preparations are complete. Now then, let us move on to the main topic."
+          },
+          {
+            "jp": "{前章|ぜんしょう}では{制度|せいど}の{歴史|れきし}を{確認|かくにん}した。__さて__、この{章|しょう}では{現在|げんざい}の{課題|かだい}を{検討|けんとう}する。",
+            "id": "Pada bab sebelumnya, kita telah meninjau sejarah sistem tersebut. Sekarang, bab ini akan membahas permasalahan saat ini.",
+            "en": "The previous chapter reviewed the history of the system. Now, this chapter will examine its current issues."
+          },
+          {
+            "jp": "{候補|こうほ}は{三|みっ}つに{絞|しぼ}られました。__さて__、どの{案|あん}を{選|えら}ぶべきでしょうか。",
+            "id": "Pilihannya telah dipersempit menjadi tiga. Nah, usulan mana yang sebaiknya kita pilih?",
+            "en": "The choices have been narrowed down to three. Now then, which proposal should we select?"
+          },
+          {
+            "jp": "{少|すこ}し{話|はなし}がそれました。__さて__、{先|さき}ほどの{質問|しつもん}に{戻|もど}りましょう。",
+            "id": "Pembicaraan kita sedikit menyimpang. Baiklah, mari kembali ke pertanyaan tadi.",
+            "en": "We have strayed from the subject a little. Now then, let us return to the earlier question."
+          },
+          {
+            "jp": "{休憩|きゅうけい}の{時間|じかん}は{終|お}わりました。__さて__、{発表|はっぴょう}を{再開|さいかい}します。",
+            "id": "Waktu istirahat telah berakhir. Baiklah, presentasinya akan kita lanjutkan.",
+            "en": "The break is over. Now then, we will resume the presentation."
+          },
+          {
+            "jp": "__さて__、{資料|しりょう}を{読|よ}んだ{皆|みな}さんは、この{結論|けつろん}をどう{考|かんが}えますか。",
+            "id": "Nah, setelah membaca materi itu, bagaimana pendapat kalian mengenai kesimpulan ini?",
+            "en": "Now then, having read the material, what do you all think about this conclusion?"
+          }
+        ],
+        "pitfalls": [
+          "Jangan memakai さて untuk menyatakan bahwa peristiwa kedua terjadi sebagai akibat langsung dari peristiwa pertama. Untuk hubungan hasil atau perkembangan kejadian, penghubung seperti すると atau そのため lebih tepat.",
+          "さて bukan terjemahan langsung dari kata waktu “sekarang”. Jika maksudnya hanya waktu saat ini, gunakan いま; さて berfungsi menata alur pembicaraan.",
+          "Jangan selalu menyamakannya dengan ところで. ところで cenderung memperkenalkan topik lain yang lebih terpisah, sedangkan さて sering mengarahkan pembicaraan ke bagian berikutnya atau kembali ke agenda utama."
+        ],
+        "tags": [
+          "conjunction"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T20:39:43.150Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -31490,8 +32701,100 @@
         "extractedAt": "2026-10-04T10:32:20.974Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "すると",
+        "senseLabel": null,
+        "meaningId": "lalu; kemudian; kalau begitu, mengantar kejadian, hasil, atau simpulan yang mengikuti konteks sebelumnya",
+        "meaningEn": "then; thereupon; if so, introducing an event, result, or conclusion arising from the preceding context",
+        "connections": [
+          {
+            "form": "sentence",
+            "pattern": "すると"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Kata sambung antarkalimat",
+            "input": "Satu atau beberapa kalimat yang menyatakan situasi, tindakan, atau fakta.",
+            "rule": "Selesaikan konteks sebelumnya, lalu letakkan すると di awal kalimat baru untuk mengantar perkembangan atau simpulan.",
+            "output": "Kalimat 1。すると、kalimat 2。",
+            "note": "すると di sini berdiri sebagai kata sambung mandiri. Predikat pada kalimat sebelumnya tidak memerlukan bentuk khusus."
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "すると menghubungkan konteks yang sudah selesai dengan kejadian, hasil, penemuan, atau kesadaran yang muncul sesudahnya. Dalam narasi, kalimat kedua sering terasa sebagai perkembangan langsung dari tindakan atau keadaan sebelumnya.",
+          "Pola ini kerap dipakai ketika pembicara melakukan sesuatu lalu mendapati keadaan yang sebelumnya belum diketahui. Peristiwa kedua dapat bersifat tidak terduga, tetapi unsur kejutan bukan syarat mutlak.",
+          "Dalam penalaran, すると dapat berarti \"kalau begitu\" atau \"jika demikian\". Informasi sebelumnya diperlakukan sebagai dasar untuk menarik simpulan pada kalimat berikutnya.",
+          "Bedakan kata sambung mandiri ini dari と yang langsung melekat pada predikat. Bentuk と yang melekat pada klausa membentuk hubungan syarat atau hasil otomatis, sedangkan すると di sini membuka kalimat baru dan menghubungkan bagian wacana."
+        ],
+        "usage": {
+          "nuance": [
+            "Memberi kesan bahwa isi kalimat kedua berkembang secara wajar atau langsung dari konteks sebelumnya.",
+            "Dalam narasi dapat menyoroti sesuatu yang baru terlihat, diketahui, atau terjadi setelah suatu tindakan."
+          ],
+          "register": [
+            "Bersifat netral dan dapat digunakan dalam percakapan, narasi tertulis, penjelasan, serta pembahasan logis."
+          ],
+          "restrictions": [
+            "Ditempatkan pada awal kalimat baru setelah konteks sebelumnya selesai.",
+            "Kalimat kedua harus memiliki hubungan perkembangan, hasil, penemuan, atau simpulan yang masuk akal dengan informasi sebelumnya.",
+            "Kurang cocok untuk sekadar mengurutkan beberapa tindakan yang semuanya direncanakan dan sengaja dilakukan oleh pelaku yang sama."
+          ],
+          "typicalContexts": [
+            "Narasi tentang kejadian yang muncul setelah suatu tindakan.",
+            "Pengungkapan sesuatu yang baru ditemukan atau disadari.",
+            "Penarikan simpulan berdasarkan fakta atau kondisi yang telah disebutkan."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "{雨|あめ}が{急|きゅう}にやんだ。__すると__、{雲|くも}の{間|あいだ}から{虹|にじ}が{見|み}えた。",
+            "id": "Hujan tiba-tiba berhenti. Lalu pelangi tampak dari sela-sela awan.",
+            "en": "The rain suddenly stopped. Then a rainbow appeared between the clouds."
+          },
+          {
+            "jp": "{装置|そうち}のボタンを{押|お}した。__すると__、{画面|がめん}に{警告|けいこく}が{表示|ひょうじ}された。",
+            "id": "Saya menekan tombol perangkat itu. Kemudian sebuah peringatan muncul di layar.",
+            "en": "I pressed the button on the device. Then a warning appeared on the screen."
+          },
+          {
+            "jp": "{窓|まど}を{開|あ}けてみた。__すると__、{向|む}かいの{屋根|やね}に{白|しろ}い{鳥|とり}が{止|と}まっていた。",
+            "id": "Saya mencoba membuka jendela. Ternyata ada seekor burung putih bertengger di atap seberang.",
+            "en": "I tried opening the window. Then I saw a white bird perched on the roof across the way."
+          },
+          {
+            "jp": "{今|いま}は{午後|ごご}4{時|じ}{半|はん}で、{会場|かいじょう}までは1{時間|じかん}かかる。__すると__、5{時|じ}の{受付|うけつけ}には{間|ま}に{合|あ}わない。",
+            "id": "Sekarang pukul setengah lima sore dan perjalanan ke tempat acara memerlukan satu jam. Kalau begitu, kita tidak akan sempat tiba untuk pendaftaran pukul lima.",
+            "en": "It is now 4:30 p.m., and it takes an hour to reach the venue. If so, we will not make the 5 p.m. registration."
+          },
+          {
+            "jp": "この{条件|じょうけん}を{満|み}たす{会社|かいしゃ}は3{社|しゃ}しかない。__すると__、{候補|こうほ}はかなり{絞|しぼ}られる。",
+            "id": "Hanya ada tiga perusahaan yang memenuhi persyaratan ini. Kalau begitu, pilihan kandidat dapat dipersempit secara signifikan.",
+            "en": "Only three companies meet this requirement. That means the candidates can be narrowed down considerably."
+          },
+          {
+            "jp": "{記録|きろく}によれば、{深夜|しんや}に{外部|がいぶ}からのアクセスはなかった。__すると__、{問題|もんだい}は{社内|しゃない}で{起|お}きた{可能性|かのうせい}が{高|たか}い。",
+            "id": "Menurut catatan, tidak ada akses dari luar pada tengah malam. Jika demikian, besar kemungkinan masalahnya berasal dari dalam perusahaan.",
+            "en": "According to the records, there was no external access late at night. If so, the problem most likely originated within the company."
+          }
+        ],
+        "pitfalls": [
+          "Jangan menulisnya seolah-olah akhiran yang langsung melekat pada predikat. Dalam sense ini, すると membuka kalimat baru setelah konteks sebelumnya selesai.",
+          "Jangan gunakan すると hanya untuk mendaftarkan dua tindakan yang sengaja dilakukan secara berurutan oleh pelaku yang sama. Untuk urutan sederhana seperti \"makan lalu belajar\", それから biasanya lebih netral.",
+          "Dalam pemakaian sebagai simpulan, kalimat kedua harus benar-benar dapat ditarik dari informasi sebelumnya. すると bukan penghubung kontras atau penambahan informasi bebas."
+        ],
+        "tags": [
+          "conjunction",
+          "result"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T20:40:42.268Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -31526,8 +32829,97 @@
         "extractedAt": "2026-10-04T10:32:25.854Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "{要|よう}するに",
+        "senseLabel": null,
+        "meaningId": "singkatnya; intinya; untuk merangkum uraian sebelumnya menjadi pokok utama",
+        "meaningEn": "in short; in essence; to sum up the main point of what was said",
+        "connections": [
+          {
+            "form": "other",
+            "pattern": "{要|よう}するに",
+            "note": "Ungkapan penghubung tetap yang diletakkan sebelum klausa berisi rangkuman."
+          }
+        ],
+        "formation": [
+          {
+            "label": "ungkapan penghubung tetap",
+            "input": "{要|よう}する",
+            "rule": "Tambahkan partikel に untuk membentuk ungkapan adverbial yang memperkenalkan inti atau kesimpulan.",
+            "output": "{要|よう}するに",
+            "note": "Bentuk ini telah menjadi ungkapan tetap dan tidak dibentuk secara produktif dari sembarang verba."
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "{要|よう}するに digunakan untuk menyaring penjelasan, fakta, atau pembicaraan sebelumnya menjadi satu pokok utama. Terjemahan yang sesuai antara lain “singkatnya”, “intinya”, dan “pendek kata”.",
+          "Pola ini berfungsi sebagai penghubung mandiri. Biasanya ditempatkan pada awal klausa rangkuman, sering sesudah jeda atau sesudah satu maupun beberapa kalimat yang memuat rincian.",
+          "Pembicara dapat memakai pola ini untuk menyatakan kembali informasi dengan lebih sederhana atau untuk menarik kesimpulan praktis dari sejumlah fakta. Nadanya cukup tegas karena pembicara menentukan sendiri apa yang dianggap sebagai inti persoalan.",
+          "Pola ini dekat dengan つまり, tetapi lebih menonjolkan tindakan merangkum uraian yang panjang atau rumit. Pola ini bukan penghubung penambahan seperti しかも atau おまけに, dan bukan penyisip informasi sampingan seperti ちなみに."
+        ],
+        "usage": {
+          "nuance": [
+            "Menandai bahwa rincian sebelumnya sedang dipadatkan menjadi pesan yang paling penting.",
+            "Dapat terdengar tegas atau agak menyederhanakan bila dipakai untuk merangkum pendapat orang lain."
+          ],
+          "register": [
+            "Lazim dalam percakapan, rapat, presentasi, penjelasan formal, dan tulisan argumentatif."
+          ],
+          "restrictions": [
+            "Klausa setelah pola ini harus berupa rangkuman, perumusan ulang, atau kesimpulan yang dapat ditarik dari informasi sebelumnya.",
+            "Tidak digunakan hanya untuk menambahkan fakta baru yang kedudukannya sejajar dengan fakta sebelumnya."
+          ],
+          "typicalContexts": [
+            "Merangkum diskusi, menjelaskan konsekuensi praktis, menyederhanakan persyaratan, atau menegaskan inti suatu pendapat."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "{会議|かいぎ}では{意見|いけん}が{何度|なんど}も{交|か}わされた。__{要|よう}するに__、{双方|そうほう}とも{条件|じょうけん}を{譲|ゆず}れなかったのだ。",
+            "id": "Berbagai pendapat dipertukarkan berkali-kali dalam rapat. Singkatnya, kedua pihak tidak dapat mengalah soal persyaratan.",
+            "en": "Opinions were exchanged repeatedly at the meeting. In short, neither side could compromise on the terms."
+          },
+          {
+            "jp": "{朝|あさ}から{電車|でんしゃ}が{止|と}まり、{代|か}わりのバスもない。__{要|よう}するに__、{今日中|きょうじゅう}に{帰|かえ}るのは{無理|むり}だ。",
+            "id": "Kereta berhenti beroperasi sejak pagi dan tidak ada bus pengganti. Intinya, mustahil pulang hari ini.",
+            "en": "The trains have been out of service since morning, and there are no replacement buses. In short, returning today is impossible."
+          },
+          {
+            "jp": "{応募|おうぼ}には{専門|せんもん}{資格|しかく}と3{年|ねん}{以上|いじょう}の{実務|じつむ}{経験|けいけん}が{必要|ひつよう}だ。__{要|よう}するに__、{未経験者|みけいけんしゃ}は{対象外|たいしょうがい}ということだ。",
+            "id": "Pendaftaran memerlukan kualifikasi khusus dan pengalaman kerja sekurang-kurangnya tiga tahun. Dengan kata lain, orang tanpa pengalaman tidak termasuk calon yang memenuhi syarat.",
+            "en": "Applicants need a professional qualification and at least three years of work experience. In essence, people without experience are not eligible."
+          },
+          {
+            "jp": "{予算|よさん}も{人員|じんいん}も{確保|かくほ}できていない。__{要|よう}するに__、この{事業|じぎょう}は{延期|えんき}せざるを{得|え}ない。",
+            "id": "Baik anggaran maupun tenaga kerja belum berhasil disiapkan. Singkatnya, proyek ini terpaksa ditunda.",
+            "en": "Neither the budget nor the personnel have been secured. In short, this project must be postponed."
+          },
+          {
+            "jp": "この{薬|くすり}は{痛|いた}みを{一時的|いちじてき}に{抑|おさ}えるだけで、{原因|げんいん}を{治|なお}すものではない。__{要|よう}するに__、{根本的|こんぽんてき}な{治療|ちりょう}にはならない。",
+            "id": "Obat ini hanya meredakan rasa sakit untuk sementara dan tidak mengobati penyebabnya. Intinya, ini bukan pengobatan yang menyelesaikan masalah dari akarnya.",
+            "en": "This medicine only relieves the pain temporarily and does not treat its cause. In short, it is not a fundamental treatment."
+          },
+          {
+            "jp": "{君|きみ}が{言|い}いたいのは、__{要|よう}するに__、この{提案|ていあん}には{賛成|さんせい}できないということだね。",
+            "id": "Jadi, inti dari hal yang ingin kamu katakan adalah bahwa kamu tidak dapat menyetujui usulan ini, bukan?",
+            "en": "What you are saying, in essence, is that you cannot agree with this proposal, right?"
+          }
+        ],
+        "pitfalls": [
+          "Jangan menempelkan {要|よう}するに langsung pada nomina atau verba sebagai akhiran. Ungkapan ini merupakan penghubung mandiri yang memperkenalkan klausa rangkuman.",
+          "Jangan menggunakannya untuk sekadar menambah informasi. Jika bagian sesudahnya tidak merangkum atau menyimpulkan bagian sebelumnya, penghubung penambahan seperti しかも lebih sesuai.",
+          "Jangan menganggapnya selalu sama dengan つまり. {要|よう}するに secara lebih jelas menandai bahwa uraian yang panjang atau rumit sedang disaring menjadi pokok utama."
+        ],
+        "tags": [
+          "conjunction"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T20:40:22.493Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -31562,8 +32954,106 @@
         "extractedAt": "2026-10-04T10:32:27.720Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "しかも",
+        "senseLabel": null,
+        "meaningId": "selain itu; terlebih lagi; menambahkan fakta kedua yang memperkuat informasi sebelumnya",
+        "meaningEn": "moreover; what is more; adds a second fact that reinforces the preceding information",
+        "connections": [
+          {
+            "form": "sentence",
+            "pattern": "しかも"
+          }
+        ],
+        "formation": [
+          {
+            "label": "antarkalimat",
+            "input": "A。B。",
+            "rule": "Letakkan しかも di awal pernyataan kedua untuk menambah fakta yang searah dan lebih berbobot.",
+            "output": "A。しかも、B。",
+            "note": null
+          },
+          {
+            "label": "dalam satu kalimat",
+            "input": "A、B。",
+            "rule": "Letakkan しかも sebelum unsur kedua setelah klausa atau frasa pertama dihubungkan dengan bentuk sambung.",
+            "output": "A、しかもB。",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "しかも menambahkan fakta kedua yang mendukung dan memperkuat informasi sebelumnya. Terjemahannya dapat berupa “selain itu”, “terlebih lagi”, atau “apalagi”, bergantung pada konteks.",
+          "Pola ini dapat menghubungkan dua kalimat terpisah atau muncul di tengah satu kalimat setelah klausa pertama. Fakta kedua biasanya dipandang penting, mencolok, atau lebih dari yang diperkirakan.",
+          "Kedua informasi umumnya memiliki arah penilaian yang sama. Fakta positif ditambah fakta positif, sedangkan masalah atau keadaan negatif ditambah masalah negatif lainnya.",
+          "Dibandingkan dengan そして yang dapat sekadar melanjutkan daftar atau urutan, しかも memberi penekanan bahwa tambahan kedua meningkatkan nilai, bobot, atau dampak informasi pertama. Pola ini bukan penghubung kontras seperti しかし."
+        ],
+        "usage": {
+          "nuance": [
+            "Menampilkan fakta kedua sebagai tambahan yang lebih berbobot, mengesankan, atau mengejutkan.",
+            "Dapat digunakan untuk penilaian positif maupun negatif selama kedua informasi bergerak ke arah yang sama."
+          ],
+          "register": [
+            "Bersifat netral dan lazim digunakan dalam percakapan, tulisan informatif, presentasi, serta argumentasi."
+          ],
+          "restrictions": [
+            "Informasi kedua harus memperkuat atau menambah informasi pertama, bukan menyangkalnya.",
+            "Kedua bagian biasanya membahas topik yang sama atau fakta-fakta yang memiliki hubungan sangat dekat."
+          ],
+          "typicalContexts": [
+            "Penilaian terhadap barang, layanan, tempat, atau kemampuan seseorang.",
+            "Pemaparan beberapa keuntungan atau penumpukan masalah.",
+            "Penjelasan dan argumentasi yang menonjolkan alasan tambahan."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "このホテルは{駅|えき}に{近|ちか}い。__しかも__、{朝食|ちょうしょく}が{無料|むりょう}だ。",
+            "id": "Hotel ini dekat dengan stasiun. Selain itu, sarapannya gratis.",
+            "en": "This hotel is close to the station. Moreover, breakfast is free."
+          },
+          {
+            "jp": "{彼|かれ}は{締|し}め{切|き}りに{遅|おく}れ、__しかも__{担当者|たんとうしゃ}へ{連絡|れんらく}もしなかった。",
+            "id": "Dia terlambat melewati tenggat, dan terlebih lagi, dia bahkan tidak menghubungi penanggung jawab.",
+            "en": "He missed the deadline, and what is more, he did not even contact the person in charge."
+          },
+          {
+            "jp": "この{新製品|しんせいひん}は{軽|かる}くて、__しかも__{丈夫|じょうぶ}だ。",
+            "id": "Produk baru ini ringan dan, terlebih lagi, tahan lama.",
+            "en": "This new product is light and, moreover, durable."
+          },
+          {
+            "jp": "その{案|あん}なら{費用|ひよう}を{抑|おさ}えられる。__しかも__、{短期間|たんきかん}で{実行|じっこう}できる。",
+            "id": "Dengan rencana itu, biaya dapat ditekan. Selain itu, rencana tersebut dapat dilaksanakan dalam waktu singkat.",
+            "en": "That plan would keep costs down. Moreover, it could be implemented in a short time."
+          },
+          {
+            "jp": "{雨|あめ}が{強|つよ}くなり、__しかも__{風|かぜ}まで{吹|ふ}き{始|はじ}めた。",
+            "id": "Hujan semakin deras, dan lebih buruk lagi, angin pun mulai bertiup.",
+            "en": "The rain grew heavier, and what was worse, the wind also began to blow."
+          },
+          {
+            "jp": "{彼女|かのじょ}の{説明|せつめい}は{正確|せいかく}で、__しかも__{初心者|しょしんしゃ}にも{分|わ}かりやすかった。",
+            "id": "Penjelasannya akurat dan, terlebih lagi, mudah dipahami oleh pemula.",
+            "en": "Her explanation was accurate and, moreover, easy for beginners to understand."
+          }
+        ],
+        "pitfalls": [
+          "Jangan memakai しかも untuk memperkenalkan fakta yang bertentangan dengan informasi sebelumnya. Gunakan penghubung kontras seperti しかし bila bagian kedua menyangkal atau membalik arah bagian pertama.",
+          "しかも tidak mengalami konjugasi dan tidak dilekatkan sebagai akhiran predikat. Dalam dua kalimat, bentuk dasarnya adalah A。しかも、B.",
+          "Jangan menyamakan semua pemakaian しかも dengan そして. そして dapat sekadar melanjutkan urutan, sedangkan しかも menunjukkan bahwa tambahan kedua meningkatkan bobot informasi pertama."
+        ],
+        "tags": [
+          "addition",
+          "conjunction"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T20:40:47.710Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -31598,8 +33088,102 @@
         "extractedAt": "2026-10-04T10:32:31.399Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "おまけに",
+        "senseLabel": null,
+        "meaningId": "selain itu; ditambah lagi sebagai fakta yang memperkuat keadaan sebelumnya",
+        "meaningEn": "moreover; on top of that, adding a fact that reinforces the preceding situation",
+        "connections": [
+          {
+            "form": "other",
+            "pattern": "おまけに",
+            "note": "Ungkapan tetap yang biasanya ditempatkan pada awal pernyataan tambahan."
+          }
+        ],
+        "formation": [
+          {
+            "label": "Penghubung dua pernyataan",
+            "input": "{道|みち}が{混|こ}んでいる。{駐車場|ちゅうしゃじょう}もない。",
+            "rule": "Letakkan おまけに di awal pernyataan kedua untuk menandai fakta tambahan yang memperkuat keadaan pertama.",
+            "output": "{道|みち}が{混|こ}んでいる。おまけに、{駐車場|ちゅうしゃじょう}もない。",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "おまけに menghubungkan fakta kedua sebagai tambahan terhadap fakta sebelumnya. Tambahan tersebut terasa seperti satu hal ekstra yang membuat keseluruhan keadaan semakin kuat atau menonjol.",
+          "Kedua fakta biasanya memiliki arah penilaian yang sama. Pola ini sering muncul ketika beberapa masalah menumpuk, tetapi juga dapat menggabungkan beberapa kelebihan atau keadaan positif.",
+          "おまけに tidak mengalami perubahan bentuk dan lazim ditempatkan pada awal pernyataan kedua, sering kali setelah jeda atau tanda koma. Pernyataan pertama dapat berupa kalimat tersendiri atau klausa yang telah lengkap secara makna.",
+          "Dibandingkan しかも, おまけに lebih menonjolkan kesan “ditambah satu hal lagi” dan cenderung lebih percakapan serta ekspresif. しかも dapat terdengar lebih netral atau logis dalam tulisan formal."
+        ],
+        "usage": {
+          "nuance": [
+            "Memberikan kesan kumulatif, seolah-olah fakta pertama belum cukup lalu muncul fakta tambahan.",
+            "Sering dipakai untuk memperberat situasi buruk, tetapi tidak memiliki makna negatif secara wajib dan dapat memperkuat penilaian positif."
+          ],
+          "register": [
+            "Lazim dalam percakapan dan tulisan bernada ringan atau ekspresif.",
+            "Dalam laporan atau uraian yang sangat formal, さらに atau しかも sering terasa lebih netral."
+          ],
+          "restrictions": [
+            "Fakta kedua harus dapat dipahami sebagai tambahan yang searah dengan keadaan atau penilaian sebelumnya.",
+            "Tidak cocok sebagai penghubung utama apabila fakta kedua justru menyangkal atau berlawanan langsung dengan fakta pertama.",
+            "Berfungsi sebagai penghubung antarfakta dan tidak digunakan untuk menerangkan nomina secara langsung."
+          ],
+          "typicalContexts": [
+            "Menumpuk beberapa keluhan, masalah, atau keadaan yang tidak menguntungkan.",
+            "Menyebutkan kelebihan tambahan pada produk, tempat, layanan, atau seseorang.",
+            "Menceritakan serangkaian fakta yang bersama-sama menguatkan suatu penilaian."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "{会議|かいぎ}は2{時間|じかん}も{延|の}びた。__おまけに__、{結論|けつろん}も{出|で}なかった。",
+            "id": "Rapat itu molor hingga dua jam. Lebih buruk lagi, tidak ada kesimpulan yang dicapai.",
+            "en": "The meeting ran two hours over time. On top of that, no conclusion was reached."
+          },
+          {
+            "jp": "このアパートは{駅|えき}に{近|ちか}い。__おまけに__、{部屋|へや}も{広|ひろ}くて{明|あか}るい。",
+            "id": "Apartemen ini dekat dengan stasiun. Selain itu, kamarnya juga luas dan terang.",
+            "en": "This apartment is close to the station. Moreover, the rooms are spacious and bright."
+          },
+          {
+            "jp": "{旅行|りょこう}の{初日|しょにち}に{財布|さいふ}をなくした。__おまけに__、スマートフォンまで{壊|こわ}れてしまった。",
+            "id": "Saya kehilangan dompet pada hari pertama perjalanan. Lebih buruk lagi, telepon pintar saya juga rusak.",
+            "en": "I lost my wallet on the first day of the trip. To make matters worse, my phone broke as well."
+          },
+          {
+            "jp": "このソフトは{操作|そうさ}が{簡単|かんたん}だ。__おまけに__、{無料|むりょう}で{使|つか}える。",
+            "id": "Perangkat lunak ini mudah digunakan. Ditambah lagi, perangkat ini dapat digunakan secara gratis.",
+            "en": "This software is easy to use. On top of that, it is available for free."
+          },
+          {
+            "jp": "{工事|こうじ}の{音|おと}で{眠|ねむ}れなかった。__おまけに__、{朝|あさ}から{水|みず}も{止|と}まった。",
+            "id": "Saya tidak dapat tidur karena suara pembangunan. Lebih buruk lagi, air juga mati sejak pagi.",
+            "en": "I could not sleep because of the construction noise. On top of that, the water was cut off in the morning."
+          },
+          {
+            "jp": "{彼女|かのじょ}は{説明|せつめい}が{丁寧|ていねい}だ。__おまけに__、どんな{質問|しつもん}にもすぐ{答|こた}えてくれる。",
+            "id": "Penjelasannya sangat teliti. Selain itu, dia segera menjawab pertanyaan apa pun.",
+            "en": "Her explanations are thorough. Moreover, she promptly answers any question."
+          }
+        ],
+        "pitfalls": [
+          "Jangan memakai おまけに untuk memperkenalkan pertentangan langsung. Jika pernyataan kedua membalik atau menyangkal pernyataan pertama, penghubung seperti しかし lebih sesuai.",
+          "Jangan menghilangkan に ketika bermaksud memakai penghubung ini. おまけ merupakan nomina yang berarti bonus atau tambahan, sedangkan おまけに menghubungkan fakta tambahan.",
+          "おまけに dan しかも tidak selalu sama dalam nuansa. おまけに lebih menonjolkan rasa kumulatif dan cenderung lebih ekspresif, sedangkan しかも dapat menyajikan tambahan secara lebih netral."
+        ],
+        "tags": [
+          "addition",
+          "conjunction"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T20:41:54.796Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -31634,8 +33218,96 @@
         "extractedAt": "2026-10-04T10:32:36.016Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "ちなみに",
+        "senseLabel": null,
+        "meaningId": "ngomong-ngomong; menambahkan informasi sampingan yang masih berkaitan dengan topik sebelumnya",
+        "meaningEn": "incidentally; adds supplementary information related to the preceding topic",
+        "connections": [
+          {
+            "form": "sentence",
+            "pattern": "ちなみに"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Setelah pernyataan",
+            "input": "A。B。",
+            "rule": "Tempatkan ちなみに di awal kalimat B ketika B memberikan informasi tambahan yang masih berkaitan dengan A.",
+            "output": "A。ちなみに、B。",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "ちなみに digunakan untuk menyisipkan fakta, keterangan, atau komentar tambahan yang masih berhubungan dengan topik sebelumnya. Informasi tersebut berguna atau menarik, tetapi bukan inti utama pembicaraan.",
+          "Pola ini biasanya diletakkan pada awal kalimat baru setelah pernyataan yang menjadi acuannya. Dalam percakapan, terdapat jeda sebelum ちなみに, sedangkan dalam tulisan biasanya diikuti tanda koma Jepang.",
+          "Tambahan yang diperkenalkan oleh ちなみに bersifat sampingan dan netral. Berbeda dari しかも atau おまけに, pola ini tidak menunjukkan bahwa informasi kedua memperkuat penilaian, pujian, keluhan, atau argumen sebelumnya.",
+          "ちなみに juga berbeda dari ところで. ちなみに mempertahankan hubungan dengan topik yang sedang dibahas, sedangkan ところで dapat digunakan untuk beralih ke topik lain. Dalam pemberitahuan resmi, なお sering dipilih untuk memberikan catatan tambahan secara lebih formal."
+        ],
+        "usage": {
+          "nuance": [
+            "Menandai informasi terkait sebagai catatan sampingan, bukan sebagai pokok utama atau kesimpulan."
+          ],
+          "register": [
+            "Netral dan lazim dalam percakapan, presentasi, surel, serta tulisan informatif; untuk pengumuman yang sangat resmi, なお sering lebih sesuai."
+          ],
+          "restrictions": [
+            "Informasi setelah ちなみに harus memiliki hubungan yang dapat dipahami dengan topik sebelumnya.",
+            "Tidak digunakan untuk menyatakan sebab, akibat, atau tambahan yang secara khusus memperkuat evaluasi."
+          ],
+          "typicalContexts": [
+            "Dipakai untuk menambahkan biaya, jadwal, latar belakang seseorang, fasilitas, hasil statistik, atau keterangan praktis lain yang terkait."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "{来月|らいげつ}のセミナーはオンラインで{開催|かいさい}されます。__ちなみに__、{参加費|さんかひ}は{無料|むりょう}です。",
+            "id": "Seminar bulan depan akan diadakan secara daring. Sebagai informasi tambahan, biaya partisipasinya gratis.",
+            "en": "Next month's seminar will be held online. Incidentally, participation is free."
+          },
+          {
+            "jp": "{田中|たなか}さんは{三|さん}か{国語|こくご}を{話|はな}せます。__ちなみに__、{大学|だいがく}では{言語学|げんごがく}を{専攻|せんこう}していました。",
+            "id": "Tanaka dapat berbicara dalam tiga bahasa. Ngomong-ngomong, dahulu ia mengambil jurusan linguistik di universitas.",
+            "en": "Tanaka can speak three languages. Incidentally, he majored in linguistics at university."
+          },
+          {
+            "jp": "{新|あたら}しい{図書館|としょかん}には{自習室|じしゅうしつ}があります。__ちなみに__、{席|せき}はアプリで{予約|よやく}できます。",
+            "id": "Perpustakaan baru itu memiliki ruang belajar mandiri. Sebagai informasi tambahan, tempat duduknya dapat dipesan melalui aplikasi.",
+            "en": "The new library has a self-study room. Incidentally, seats can be reserved through an application."
+          },
+          {
+            "jp": "この{製品|せいひん}の{保証期間|ほしょうきかん}は2{年|ねん}です。__ちなみに__、{修理|しゅうり}はウェブサイトから{申|もう}し{込|こ}めます。",
+            "id": "Masa garansi produk ini adalah dua tahun. Sebagai informasi tambahan, permohonan perbaikan dapat diajukan melalui situs web.",
+            "en": "This product has a two-year warranty. Incidentally, repair requests can be submitted through the website."
+          },
+          {
+            "jp": "{調査|ちょうさ}は{市内|しない}の{成人|せいじん}を{対象|たいしょう}に{行|おこな}われました。__ちなみに__、{回答者|かいとうしゃ}の{平均年齢|へいきんねんれい}は42{歳|さい}でした。",
+            "id": "Survei tersebut dilakukan terhadap penduduk dewasa di dalam kota. Sebagai informasi tambahan, usia rata-rata responden adalah 42 tahun.",
+            "en": "The survey was conducted among adult residents of the city. Incidentally, the respondents' average age was 42."
+          },
+          {
+            "jp": "{会場|かいじょう}には{駐車場|ちゅうしゃじょう}がありません。__ちなみに__、{最寄|もよ}り{駅|えき}からは{徒歩|とほ}5{分|ふん}です。",
+            "id": "Tempat acara tersebut tidak memiliki lahan parkir. Sebagai informasi tambahan, lokasinya dapat dicapai dalam lima menit berjalan kaki dari stasiun terdekat.",
+            "en": "The venue has no parking lot. Incidentally, it is a five-minute walk from the nearest station."
+          }
+        ],
+        "pitfalls": [
+          "Jangan memakai ちなみに untuk berpindah ke topik yang sama sekali tidak berhubungan. Untuk perubahan topik yang lebih jelas, ところで lebih sesuai.",
+          "ちなみに tidak setara dengan しかも atau おまけに. Kedua pola tersebut menambahkan hal yang memperkuat penilaian, sedangkan ちなみに hanya menyisipkan fakta terkait.",
+          "Jangan menggunakannya sebagai penghubung sebab-akibat. Kalimat setelah ちなみに merupakan informasi pelengkap, bukan hasil logis dari kalimat sebelumnya."
+        ],
+        "tags": [
+          "conjunction",
+          "addition"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T20:41:48.350Z",
+        "doubt": null
+      },
       "review": null
     }
   ]
