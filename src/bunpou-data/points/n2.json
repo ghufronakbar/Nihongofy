@@ -5398,6 +5398,1060 @@
       "content": null,
       "ai": null,
       "review": null
+    },
+    {
+      "key": "kara-iu-to",
+      "order": 149,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜からいうと",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "kara-iu-to"
+          }
+        ],
+        "title": "〜からいうと",
+        "meaning": "Dilihat dari segi, kriteria, atau sudut pandang tertentu",
+        "connection": "名詞＋からいうと",
+        "formation": [],
+        "notes": "Menetapkan nomina sebagai segi atau kriteria yang digunakan untuk memberikan penilaian. Variannya meliputi 〜からいえば dan 〜からいって. Berbeda dari 〜からすると yang sering menyatakan kesimpulan berdasarkan keadaan atau bukti, serta 〜から見ると yang lebih menonjolkan cara pandang pengamat.",
+        "examples": [
+          "値段からいうと、この店のほうが安い。",
+          "私の立場からいうと、その提案には賛成できない。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-03T23:58:14.682Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "kara-suru-to-perspective",
+      "order": 150,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜からすると",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "kara-suru-to"
+          }
+        ],
+        "title": "〜からすると",
+        "meaning": "dilihat atau dinilai dari sudut pandang maupun dasar tertentu",
+        "connection": "名詞＋からすると",
+        "formation": [],
+        "notes": "Menjadikan nomina sebagai sudut pandang atau dasar untuk memberikan penilaian dan menarik kesimpulan. Dapat memakai orang atau kedudukan sebagai perspektif, serta keadaan atau petunjuk sebagai dasar inferensi. Berbeda dari 〜からいうと yang menyoroti aspek yang dijadikan pokok pembicaraan, 〜から見ると yang lebih langsung menyatakan cara memandang atau hasil pengamatan, dan 〜からして yang mengambil satu unsur sebagai titik awal atau contoh penilaian. Variannya antara lain 〜からすれば dan 〜からしたら.",
+        "examples": [
+          "私からすると、その値段は高すぎる。",
+          "彼の表情からすると、結果を知っているようだ。",
+          "専門家の立場からすると、この計画には問題が多い。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-03T23:58:22.704Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "kara-shite-representative-example",
+      "order": 151,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "kara-shite",
+      "title": "〜からして",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "kara-shite"
+          }
+        ],
+        "title": "〜からして",
+        "meaning": "bahkan dari unsur yang dijadikan contoh pertama saja; mulai dari ... saja sudah",
+        "connection": "名詞＋からして",
+        "formation": [],
+        "notes": "Menyoroti satu unsur yang mencolok atau representatif sebagai titik awal penilaian, dengan implikasi bahwa unsur-unsur lainnya pun kemungkinan serupa. Sering dipakai untuk evaluasi yang tegas atau bernada negatif.",
+        "examples": [
+          "彼は言葉遣いからして失礼だ。",
+          "この学校は校則からして厳しい。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-03T23:58:31.162Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "kara-shite-judgment-basis",
+      "order": 152,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "kara-shite",
+      "title": "〜からして",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "kara-shite"
+          }
+        ],
+        "title": "〜からして",
+        "meaning": "menilai atau menyimpulkan berdasarkan petunjuk berupa ...",
+        "connection": "名詞＋からして",
+        "formation": [],
+        "notes": "Nomina menjadi petunjuk konkret yang dipakai sebagai dasar awal untuk menarik penilaian atau kesimpulan. Berbeda dari 〜からいうと yang menyatakan segi pembahasan serta 〜からすると dan 〜から見ると yang lebih langsung menandai sudut pandang penilaian.",
+        "examples": [
+          "この足跡からして、犯人は一人ではないだろう。",
+          "彼の表情からして、結果はよくなかったようだ。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-03T23:58:31.162Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "kara-miru-to-viewpoint",
+      "order": 153,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜から見ると",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "kara-miru-to"
+          }
+        ],
+        "title": "〜から見ると",
+        "meaning": "dilihat dari sudut pandang atau posisi tertentu",
+        "connection": "名詞＋から見ると",
+        "formation": [],
+        "notes": "Menunjukkan kesan atau penilaian ketika sesuatu diamati dari perspektif orang, kelompok, posisi, atau sudut tertentu. Variasinya meliputi 〜から見れば dan 〜から見て. Dibandingkan 〜からいうと, pola ini menekankan cara sesuatu terlihat dari suatu perspektif; dibandingkan 〜からすると, penekanannya lebih langsung pada sudut pengamatan daripada penarikan kesimpulan berdasarkan petunjuk.",
+        "examples": [
+          "外国人から見ると、この習慣は不思議に思えるかもしれない。",
+          "専門家の立場から見ると、この計画にはまだ問題が多い。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-03T23:58:34.976Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "kara-to-itte",
+      "order": 154,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜からといって",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "kara-to-itte"
+          }
+        ],
+        "title": "〜からといって",
+        "meaning": "Hanya karena suatu alasan atau keadaan, tidak berarti kesimpulan tertentu otomatis benar.",
+        "connection": "動詞普通形＋からといって／イ形容詞普通形＋からといって／ナ形容詞語幹＋だからといって／名詞＋だからといって",
+        "formation": [],
+        "notes": "Mengangkat suatu alasan lalu menolak kesimpulan, penilaian, atau tindakan yang dianggap langsung mengikuti alasan tersebut. Bagian sesudahnya sering berupa penyangkalan atau pembatasan seperti 〜とは限らない, 〜わけではない, atau bentuk negatif. Bentuk 〜であるからといって juga dapat digunakan setelah nomina atau kata sifat-na dalam ragam formal.",
+        "examples": [
+          "安いからといって、必要のない物まで買うべきではない。",
+          "日本に長く住んでいるからといって、日本語が上手だとは限らない。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-03T23:58:39.101Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "kara-de-nai-to-prerequisite",
+      "order": 155,
+      "kind": "pattern",
+      "sectionKey": "time-and-sequence",
+      "family": null,
+      "title": "〜からでないと／〜からでなければ",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "kara-de-nai-to"
+          }
+        ],
+        "title": "〜からでないと／〜からでなければ",
+        "meaning": "Jika suatu tindakan belum dilakukan terlebih dahulu, tindakan atau keadaan berikutnya tidak dapat berlangsung; hanya setelah ... barulah ...",
+        "connection": "動詞て形＋からでないと／からでなければ",
+        "formation": [],
+        "notes": "Menunjukkan bahwa tindakan pertama merupakan prasyarat bagi hal berikutnya. Klausa sesudahnya biasanya berbentuk negatif atau menyatakan ketidakmungkinan, larangan, atau kesulitan. 〜からでなければ bernuansa lebih formal daripada 〜からでないと.",
+        "examples": [
+          "実物を見てからでないと、買うかどうか決められない。",
+          "詳しい事情を聞いてからでなければ、判断できません。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-03T23:58:51.329Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "kara-ni-kakete-range",
+      "order": 156,
+      "kind": "pattern",
+      "sectionKey": "time-and-sequence",
+      "family": null,
+      "title": "〜から〜にかけて",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "kara-ni-kakete"
+          }
+        ],
+        "title": "〜から〜にかけて",
+        "meaning": "menunjukkan rentang waktu atau ruang dari suatu titik hingga titik lain dengan batas yang tidak tegas",
+        "connection": "名詞＋から＋名詞＋にかけて",
+        "formation": [],
+        "notes": "Dipakai untuk rentang waktu atau wilayah yang dipahami secara umum; titik awal dan akhirnya tidak harus tepat. Berbeda dari 〜から〜まで yang cenderung menunjukkan batas awal dan akhir secara lebih jelas. Jangan disamakan dengan 〜にかけては yang menyatakan keunggulan atau keterampilan dalam suatu bidang.",
+        "examples": [
+          "今夜から明日の朝にかけて雪が降るでしょう。",
+          "関東から東北にかけて強い風が吹いている。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-03T23:58:46.867Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ni-kakete-wa",
+      "order": 157,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜にかけては",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ni-kakete-wa"
+          }
+        ],
+        "title": "〜にかけては",
+        "meaning": "dalam hal bidang atau keterampilan tertentu, seseorang memiliki kemampuan atau keunggulan khusus",
+        "connection": "名詞＋にかけては",
+        "formation": [],
+        "notes": "Menyoroti bidang yang menjadi keahlian, kekuatan, atau keunggulan seseorang. Sering diikuti penilaian positif seperti tidak terkalahkan atau lebih unggul daripada orang lain. Berbeda dari 〜から〜にかけて yang menunjukkan rentang waktu atau ruang.",
+        "examples": [
+          "料理の腕にかけては、彼にかなう人はいない。",
+          "記憶力にかけては、彼女は誰にも負けない。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-03T23:58:51.558Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "toka-hearsay",
+      "order": 158,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜とか",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "toka"
+          }
+        ],
+        "title": "〜とか",
+        "meaning": "katanya; menyampaikan informasi yang didengar dari luar dan belum dipastikan kebenarannya",
+        "connection": "動詞普通形＋とか；イ形容詞普通形＋とか；ナ形容詞語幹＋だとか；名詞＋だとか",
+        "formation": [],
+        "notes": "Dipakai sebagai ungkapan informal untuk menyampaikan kabar atau desas-desus dari sumber lain. Pembicara menjaga jarak dari informasi tersebut dan tidak menjamin kebenarannya. Dalam percakapan, だ sebelum とか kadang dihilangkan.",
+        "examples": [
+          "天気予報では、明日は雪が降るとか。",
+          "田中さんは来月会社を辞めるとか。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-03T23:59:03.116Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "mai-negative-intention",
+      "order": 159,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜まい",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "mai"
+          }
+        ],
+        "title": "〜まい",
+        "meaning": "menyatakan tekad atau niat pembicara untuk tidak melakukan sesuatu",
+        "connection": "V bentuk kamus + まい; V kelompok II bentuk masu tanpa ます + まい; する + まい / すまい",
+        "formation": [],
+        "notes": "Mengungkapkan keputusan negatif yang cukup kuat dan bernuansa formal atau literer. Sense dugaan negatif seperti 'mungkin tidak' tidak termasuk di sini. Pola pilihan 〜か〜まいか juga merupakan item terpisah.",
+        "examples": [
+          "二度と同じ過ちを繰り返すまい。",
+          "もう彼には頼るまい。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-03T23:59:00.962Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "you-ka-mai-ka",
+      "order": 160,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜（よ）うか〜まいか",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "mai-ka"
+          }
+        ],
+        "title": "〜（よ）うか〜まいか",
+        "meaning": "Ragu atau mempertimbangkan apakah akan melakukan sesuatu atau tidak.",
+        "connection": "V意向形＋か＋V辞書形＋まいか",
+        "formation": [],
+        "notes": "Verba yang sama pada dasarnya diulang: bagian pertama menyatakan pilihan untuk melakukan, sedangkan bagian kedua menyatakan pilihan untuk tidak melakukannya. Pola ini menekankan kebimbangan dalam mengambil keputusan, bukan sekadar niat negatif seperti 〜まい yang berdiri sendiri. Pada bagian 〜まい, verba ichidan juga dapat memakai bentuk dasar tanpa る, sedangkan する dapat menjadi するまい atau すまい.",
+        "examples": [
+          "申し込もうか申し込むまいか、まだ決められない。",
+          "彼に話そうか話すまいか迷った。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-03T23:59:12.434Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "hoka-nai-no-choice",
+      "order": 161,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜ほかない",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "hoka-nai"
+          }
+        ],
+        "title": "〜ほかない",
+        "meaning": "tidak ada pilihan lain selain melakukan hal tersebut; terpaksa harus",
+        "connection": "動詞辞書形＋（より）ほか（は）ない",
+        "formation": [],
+        "notes": "Menyatakan bahwa dalam situasi tertentu hanya ada satu tindakan yang dapat dipilih. Variasinya meliputi 〜よりほかない, 〜ほかはない, dan 〜よりほかはない. Berbeda dari 〜にほかならない, yang menegaskan identitas atau satu-satunya penjelasan.",
+        "examples": [
+          "電車が止まっているので、歩いて帰るほかない。",
+          "ここまで来たら、最後までやるよりほかない。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-03T23:59:17.476Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ni-kimatteiru",
+      "order": 162,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜に決まっている",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ni-kimatteiru"
+          }
+        ],
+        "title": "〜に決まっている",
+        "meaning": "pasti; sudah tentu; tidak mungkin selain demikian",
+        "connection": "V bentuk biasa／イA bentuk biasa／ナA bentuk dasar tanpa だ／N + に決まっている",
+        "formation": [],
+        "notes": "Menyatakan keyakinan kuat penutur bahwa suatu kesimpulan sudah jelas atau tidak perlu diragukan. Ungkapan ini cenderung subjektif dan tegas; bentuk percakapannya dapat dipendekkan menjadi 〜に決まってる.",
+        "examples": [
+          "彼が勝つに決まっている。",
+          "そんな話はうそに決まっている。",
+          "一人で全部するのは無理に決まっている。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-03T23:59:24.150Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "to-wa-kagiranai-n2",
+      "order": 163,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜とは限らない",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "to-wa-kagiranai"
+          }
+        ],
+        "title": "〜とは限らない",
+        "meaning": "belum tentu; tidak selalu dapat dikatakan demikian",
+        "connection": "動詞普通形／イ形容詞普通形／ナ形容詞＋だ・である／名詞＋だ・である＋とは限らない",
+        "formation": [],
+        "notes": "Menyangkal bahwa suatu anggapan berlaku secara mutlak atau tanpa pengecualian. Sering dipakai bersama 必ずしも untuk menegaskan makna 'tidak selalu' atau 'belum tentu'.",
+        "examples": [
+          "高い商品が必ずしも品質もよいとは限らない。",
+          "経験があっても成功するとは限らない。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-03T23:59:29.047Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ni-hoka-naranai",
+      "order": 164,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜にほかならない",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "hoka-naranai"
+          }
+        ],
+        "title": "〜にほかならない",
+        "meaning": "tidak lain adalah; menegaskan bahwa sesuatu merupakan satu-satunya identitas, hakikat, atau penjelasan yang tepat",
+        "connection": "名詞＋にほかならない\n普通形＋からにほかならない",
+        "formation": [],
+        "notes": "Ungkapan tegas dan cenderung formal untuk menyatakan bahwa sesuatu tepat atau tidak lain adalah hal yang disebutkan. Bentuk 〜からにほかならない menegaskan bahwa alasan yang disebutkan merupakan satu-satunya penjelasan. Berbeda dari 〜ほかない yang menyatakan tidak adanya pilihan tindakan lain.",
+        "examples": [
+          "今回の成功は、皆の努力の結果にほかならない。",
+          "彼が信頼されているのは、常に誠実だからにほかならない。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-03T23:59:32.839Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "wo-hajime-representative-example",
+      "order": 165,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜をはじめ／〜をはじめとして",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "wo-hajime"
+          }
+        ],
+        "title": "〜をはじめ／〜をはじめとして",
+        "meaning": "dengan sesuatu sebagai contoh utama atau wakil, lalu mencakup hal-hal lain yang sejenis",
+        "connection": "名詞＋をはじめ（として）／名詞＋をはじめとする＋名詞",
+        "formation": [],
+        "notes": "Menonjolkan satu anggota yang representatif dari suatu kelompok dengan makna seperti “terutama”, “dimulai dari”, atau “termasuk”. Bentuk 〜をはじめとして lebih eksplisit, sedangkan 〜をはじめとする dipakai untuk menerangkan nomina.",
+        "examples": [
+          "東京をはじめ、日本の大都市では家賃が高い。",
+          "社長をはじめとして、社員全員が式に出席した。",
+          "日本には富士山をはじめとする美しい山が多い。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-03T23:59:37.654Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "wo-megutte",
+      "order": 166,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜をめぐって",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "wo-megutte"
+          }
+        ],
+        "title": "〜をめぐって",
+        "meaning": "mengenai atau seputar sesuatu yang menjadi pusat perdebatan, perselisihan, persaingan, atau pembahasan",
+        "connection": "名詞＋をめぐって／名詞＋をめぐる＋名詞",
+        "formation": [],
+        "notes": "Menunjukkan persoalan atau objek yang menjadi pusat berbagai tindakan, pendapat, atau kepentingan. Sering dipakai ketika terdapat perdebatan, konflik, persaingan, atau pembahasan dari beberapa pihak, sehingga tidak selalu dapat menggantikan ungkapan netral seperti 〜について.",
+        "examples": [
+          "その法案をめぐって激しい議論が続いている。",
+          "土地の所有権をめぐる争いが起きた。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-03T23:59:43.283Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ni-oite-context",
+      "order": 167,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": null,
+      "title": "〜において",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ni-oite"
+          }
+        ],
+        "title": "〜において",
+        "meaning": "di, pada, atau dalam suatu tempat, waktu, bidang, maupun situasi yang menjadi lingkup berlangsungnya hal tertentu",
+        "connection": "名詞＋において／名詞＋においては／名詞＋においても／名詞＋における＋名詞",
+        "formation": [],
+        "notes": "Ungkapan formal yang menandai tempat, waktu, bidang, atau konteks berlangsungnya tindakan maupun berlakunya keadaan. Banyak digunakan dalam bahasa tulis, pidato, laporan, dan pembahasan abstrak. Bentuk atributifnya adalah 〜における. Berbeda dari 〜にて yang terutama merupakan pengganti formal bagi partikel tempat atau sarana, 〜において juga lazim menandai bidang dan konteks abstrak.",
+        "examples": [
+          "会議は東京において開催された。",
+          "現代社会において情報は重要な資源である。",
+          "教育における技術の役割を考える。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-03T23:59:50.351Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "nite-formal-particle",
+      "order": 168,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": null,
+      "title": "〜にて",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "nite"
+          }
+        ],
+        "title": "〜にて",
+        "meaning": "menandai tempat, waktu, atau sarana berlangsungnya tindakan secara formal; padanan formal dari partikel で",
+        "connection": "名詞＋にて",
+        "formation": [],
+        "notes": "Terutama digunakan dalam tulisan, pengumuman, laporan, undangan, dan situasi resmi. Untuk tempat atau sarana, bentuk ini dapat diganti dengan で dalam bahasa yang lebih netral. Berbeda dari 〜において, 〜にて berfungsi sebagai penanda kasus formal yang ringkas dan tidak memiliki bentuk atributif seperti 〜における.",
+        "examples": [
+          "式典は本館ホールにて行います。",
+          "応募書類は郵送にて受け付けます。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:00:29.203Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "mo-kamawazu",
+      "order": 169,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜もかまわず",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "mo-kamawazu"
+          }
+        ],
+        "title": "〜もかまわず",
+        "meaning": "melakukan sesuatu tanpa memedulikan atau menghiraukan hal yang disebutkan",
+        "connection": "名詞＋もかまわず／名詞＋を＋もかまわず／普通形＋の＋もかまわず",
+        "formation": [],
+        "notes": "Menunjukkan bahwa pelaku tetap bertindak tanpa menghiraukan keadaan, risiko, pandangan orang, atau hal yang biasanya patut dipertimbangkan. Sering mengandung penilaian, keterkejutan, atau kritik terhadap sikap tersebut. Berbeda dari 〜を問わず yang secara netral menyatakan bahwa suatu kategori tidak menjadi pembatas, dan dari 〜にかかわらず yang menyatakan hasil tidak bergantung pada suatu kondisi.",
+        "examples": [
+          "彼は人目もかまわず大声で泣いた。",
+          "彼女は服が汚れるのもかまわず子犬を助けた。",
+          "彼は家族の反対をもかまわず一人で出発した。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:00:02.782Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ni-mo-kakawarazu-concessive",
+      "order": 170,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜にもかかわらず",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "nimo-kakawarazu"
+          }
+        ],
+        "title": "〜にもかかわらず",
+        "meaning": "meskipun; padahal, dengan hasil yang bertentangan dengan dugaan berdasarkan keadaan sebelumnya",
+        "connection": "V普通形＋にもかかわらず／イ形容詞普通形＋にもかかわらず／ナ形容詞語幹＋であるにもかかわらず／N＋であるにもかかわらず",
+        "formation": [],
+        "notes": "Pola konsesif formal yang menekankan bahwa hasil atau tindakan berikutnya berlawanan dengan hal yang sewajarnya diperkirakan dari keadaan sebelumnya. Dapat menyiratkan keterkejutan, kekecewaan, kritik, atau ketidakpuasan. Berbeda dari 〜にかかわらず yang berarti 'terlepas dari' dan menyatakan bahwa suatu keadaan tidak memengaruhi hasil.",
+        "examples": [
+          "雨が降っているにもかかわらず、試合は続けられた。",
+          "彼は十分に準備したにもかかわらず、試験に合格できなかった。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:00:07.363Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ni-kakawarazu",
+      "order": 171,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜にかかわらず",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ni-kakawarazu"
+          }
+        ],
+        "title": "〜にかかわらず",
+        "meaning": "terlepas dari atau tanpa dipengaruhi oleh keadaan, syarat, maupun perbedaan yang disebutkan",
+        "connection": "名詞＋にかかわらず／普通形＋かどうか＋にかかわらず／疑問詞節＋か＋にかかわらず",
+        "formation": [],
+        "notes": "Menunjukkan bahwa hasil, keputusan, atau tindakan tetap berlaku tanpa dipengaruhi unsur sebelumnya. Bentuk kanjinya adalah 〜に関わらず. Berbeda dari 〜にもかかわらず yang menyatakan hasil bertentangan dengan dugaan atau keadaan sebelumnya.",
+        "examples": [
+          "年齢にかかわらず、誰でも参加できます。",
+          "雨が降るかどうかにかかわらず、試合は行われます。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:00:20.563Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "wo-towazu",
+      "order": 172,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜を問わず",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "wo-towazu"
+          }
+        ],
+        "title": "〜を問わず",
+        "meaning": "tanpa membedakan atau mempermasalahkan kategori, kondisi, maupun jenis yang disebutkan",
+        "connection": "名詞＋を問わず",
+        "formation": [],
+        "notes": "Ungkapan formal yang menyatakan bahwa suatu hal berlaku secara luas tanpa menjadikan unsur sebelumnya sebagai kriteria pembatas. Sering mengikuti nomina yang menunjukkan kategori atau pasangan kontras, seperti 年齢, 性別, 国籍, 昼夜, dan 有無.",
+        "examples": [
+          "この大会には年齢を問わず参加できる。",
+          "昼夜を問わず工事が続けられた。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:00:19.126Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "yara-yara",
+      "order": 173,
+      "kind": "particle",
+      "sectionKey": "particles",
+      "family": null,
+      "title": "〜やら〜やら",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ya"
+          }
+        ],
+        "title": "〜やら〜やら",
+        "meaning": "menyebut A, B, dan hal-hal lain sebagai contoh dari daftar yang tidak teratur, beragam, atau bercampur",
+        "connection": "N + やら + N + やら／V bentuk kamus + やら + V bentuk kamus + やら／A-i bentuk biasa + やら + A-i bentuk biasa + やら／A-na tanpa だ + やら + A-na tanpa だ + やら",
+        "formation": [],
+        "notes": "Menunjukkan daftar contoh yang tidak lengkap. Berbeda dari daftar netral dengan 〜や atau 〜と, pola ini sering memberi kesan banyak hal bercampur, keadaan tidak teratur, atau pembicara merasa kewalahan. Unsur yang didaftarkan dapat berupa benda, tindakan, atau keadaan. Bukan pemakaian 〜のやら yang menyatakan ketidakpastian.",
+        "examples": [
+          "机の上には本やら書類やらが積み重なっている。",
+          "泣くやら笑うやら、彼の反応は忙しかった。",
+          "引っ越しの準備で、荷造りやら手続きやらに追われている。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:00:59.014Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ni-tsuke-whenever",
+      "order": 174,
+      "kind": "pattern",
+      "sectionKey": "time-and-sequence",
+      "family": "ni-tsuke",
+      "title": "〜につけ",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ni-tsuke"
+          }
+        ],
+        "title": "〜につけ",
+        "meaning": "setiap kali melakukan atau mengalami sesuatu",
+        "connection": "V bentuk kamus + につけ; ungkapan tetap 何か + につけ（て）",
+        "formation": [],
+        "notes": "Menunjukkan bahwa setiap terjadinya peristiwa tersebut, reaksi, pikiran, atau perasaan tertentu muncul secara alami. Sering dipakai dengan verba persepsi seperti 見る, 聞く, dan 考える. Bentuk 何かにつけ atau 何かにつけて berarti setiap ada kesempatan atau dalam berbagai kesempatan.",
+        "examples": [
+          "この写真を見るにつけ、故郷を思い出す。",
+          "彼の話を聞くにつけ、不安が募る。",
+          "彼は何かにつけて文句を言う。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:01:20.224Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ni-tsuke-paired",
+      "order": 175,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "ni-tsuke",
+      "title": "〜につけ〜につけ",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ni-tsuke"
+          }
+        ],
+        "title": "〜につけ〜につけ",
+        "meaning": "baik A maupun B; dalam keadaan A ataupun B",
+        "connection": "V bentuk kamus + につけ + V bentuk kamus + につけ; A-i bentuk dasar + につけ + A-i bentuk dasar + につけ; A-na tanpa だ + につけ + A-na tanpa だ + につけ; N + につけ + N + につけ",
+        "formation": [],
+        "notes": "A dan B biasanya merupakan keadaan yang berlawanan atau mewakili dua kemungkinan. Klausa berikutnya berlaku pada kedua keadaan tersebut. Dibandingkan 〜にしろ〜にしろ, pola ini lebih menyoroti kesempatan atau keadaan yang masing-masing memunculkan tanggapan yang sama. Pola ini juga tidak sekadar menyatakan bahwa dua sifat sama-sama dimiliki seperti 〜も〜ば〜も.",
+        "examples": [
+          "嬉しいにつけ悲しいにつけ、彼女はまず母に電話する。",
+          "いいにつけ悪いにつけ、結果はすぐ知らせてください。",
+          "賛成につけ反対につけ、自分の意見をはっきり述べるべきだ。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:01:20.224Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ni-shiro-ni-shiro",
+      "order": 176,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜にしろ〜にしろ",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ni-shiro"
+          }
+        ],
+        "title": "〜にしろ〜にしろ",
+        "meaning": "meskipun A maupun B; apa pun di antara dua kemungkinan itu, tindakan atau kesimpulan berikutnya tetap berlaku",
+        "connection": "V普通形／イ形容詞普通形／ナ形容詞語幹／N＋にしろ＋V普通形／イ形容詞普通形／ナ形容詞語幹／N＋にしろ",
+        "formation": [],
+        "notes": "A dan B biasanya merupakan dua kemungkinan, pilihan, atau keadaan yang kontras. Pembicara menyatakan bahwa perbedaan antara keduanya tidak memengaruhi tindakan, penilaian, atau kesimpulan sesudahnya. Bentuk setaranya antara lain 〜にせよ〜にせよ dan 〜にしても〜にしても. Berbeda dari pola yang sekadar menyatakan bahwa A dan B sama-sama memiliki suatu sifat.",
+        "examples": [
+          "行くにしろ行かないにしろ、今日中に返事をしてください。",
+          "賛成にしろ反対にしろ、理由を説明するべきだ。",
+          "雨にしろ雪にしろ、試合は予定どおり行われる。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:00:41.142Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "mo-ba-mo",
+      "order": 177,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜も〜ば〜も",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "mo-ba-mo"
+          }
+        ],
+        "title": "〜も〜ば〜も",
+        "meaning": "baik A maupun B; A dan B sama-sama memiliki keadaan atau melakukan hal yang disebutkan",
+        "connection": "N1も + V条件形、N2も + V普通形／N1も + イ形容詞ければ、N2も + イ形容詞普通形／N1も + ナ形容詞なら、N2も + ナ形容詞だ／N1も + Nなら、N2も + Nだ",
+        "formation": [],
+        "notes": "Pola korelatif untuk menyandingkan dua fakta, sifat, atau tindakan yang sama-sama berlaku. Bentuk ば atau なら di bagian pertama terutama berfungsi menghubungkan unsur A dengan unsur B dan tidak selalu menyatakan syarat nyata. Bergantung pada konteks, dapat diterjemahkan sebagai “baik A maupun B”, “A dan juga B”, atau “bukan hanya A, melainkan juga B”.",
+        "examples": [
+          "この店は料理もおいしければ、値段も安い。",
+          "彼は英語も話せば、中国語も話す。",
+          "あの町は交通も便利なら、自然も豊かだ。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:01:08.277Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
     }
   ]
 }
