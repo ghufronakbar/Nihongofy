@@ -782,8 +782,110 @@
         "extractedAt": "2026-10-03T23:11:18.934Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜{気味|ぎみ}",
+        "senseLabel": null,
+        "meaningId": "Agak berada dalam keadaan tertentu atau mulai menunjukkan kecenderungan ringan.",
+        "meaningEn": "To be somewhat in a state or show a slight tendency toward it.",
+        "connections": [
+          {
+            "form": "v-masu",
+            "pattern": "{気味|ぎみ}"
+          },
+          {
+            "form": "n",
+            "pattern": "{気味|ぎみ}"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Kata kerja bentuk masu",
+            "input": "{疲|つか}れます",
+            "rule": "Hilangkan ます dari bentuk masu, lalu tambahkan {気味|ぎみ}.",
+            "output": "{疲|つか}れ{気味|ぎみ}",
+            "note": null
+          },
+          {
+            "label": "Nomina",
+            "input": "{寝不足|ねぶそく}",
+            "rule": "Tambahkan {気味|ぎみ} langsung setelah nomina.",
+            "output": "{寝不足|ねぶそく}{気味|ぎみ}",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜{気味|ぎみ} menyatakan bahwa ciri suatu keadaan atau kecenderungan sudah tampak, tetapi kadarnya masih ringan. Pembicara belum menganggap keadaan tersebut kuat atau sepenuhnya terjadi.",
+          "Pola ini ditempelkan pada bentuk masu tanpa ます atau langsung pada nomina. Setelah 〜{気味|ぎみ}, dapat digunakan kopula atau partikel seperti だ, です, で, dan の sesuai fungsi dalam kalimat.",
+          "Pola ini sering dipakai untuk kondisi yang kurang ideal, misalnya kelelahan, gangguan kesehatan, keterlambatan, atau penurunan kinerja. Meskipun demikian, maknanya tidak selalu negatif; penilaian akhirnya bergantung pada keadaan yang diterangkan.",
+          "Dibandingkan dengan 〜がち, 〜{気味|ぎみ} lebih menyoroti keadaan ringan yang sedang dirasakan atau diamati. 〜がち lebih kuat mengarah pada kejadian yang mudah terulang atau kebiasaan tertentu, walaupun keduanya dapat bertumpang tindih dalam beberapa konteks."
+        ],
+        "usage": {
+          "nuance": [
+            "Memberikan kesan bahwa tanda-tanda suatu keadaan sudah ada, tetapi intensitasnya belum tinggi.",
+            "Sering digunakan untuk menyampaikan penilaian ringan dan berhati-hati terhadap keadaan yang kurang diinginkan."
+          ],
+          "register": [
+            "Bersifat netral dan lazim digunakan dalam percakapan, laporan kerja, penjelasan kesehatan, serta tulisan umum."
+          ],
+          "restrictions": [
+            "Kata kerja harus memakai bentuk masu tanpa ます; bentuk kamus tidak dapat langsung diikuti pola ini.",
+            "Pola ini tidak cocok untuk keadaan ekstrem atau fakta yang sudah terjadi secara jelas dan sepenuhnya.",
+            "Kata sifat tidak biasanya ditempelkan langsung pada {気味|ぎみ}; gunakan kata kerja atau nomina yang menyatakan keadaan tersebut."
+          ],
+          "typicalContexts": [
+            "Kondisi fisik atau kesehatan ringan, seperti kelelahan, kurang tidur, atau gejala pilek.",
+            "Keterlambatan jadwal, kecenderungan absen, perubahan berat badan, serta perkembangan ekonomi atau kinerja."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "{最近|さいきん}{仕事|しごと}が{立|た}て{込|こ}んでいて、{少|すこ}し{疲|つか}れ__{気味|ぎみ}__だ。",
+            "id": "Akhir-akhir ini pekerjaan sedang menumpuk, jadi saya merasa agak lelah.",
+            "en": "Work has been piling up lately, so I have been feeling somewhat tired."
+          },
+          {
+            "jp": "{今朝|けさ}から{風邪|かぜ}__{気味|ぎみ}__なので、{会議|かいぎ}にはオンラインで{参加|さんか}します。",
+            "id": "Sejak pagi saya merasa agak tidak enak badan seperti akan pilek, jadi saya akan mengikuti rapat secara daring.",
+            "en": "I have felt slightly under the weather since this morning, so I will attend the meeting online."
+          },
+          {
+            "jp": "{新|あたら}しい{計画|けいかく}は{予定|よてい}より{遅|おく}れ__{気味|ぎみ}__だが、{来月|らいげつ}には{追|お}いつける{見込|みこ}みだ。",
+            "id": "Rencana baru itu agak tertinggal dari jadwal, tetapi diperkirakan dapat mengejar ketertinggalannya bulan depan.",
+            "en": "The new project is running slightly behind schedule, but it is expected to catch up next month."
+          },
+          {
+            "jp": "{運動不足|うんどうぶそく}で、{最近|さいきん}は{体重|たいじゅう}が{増|ふ}え__{気味|ぎみ}__だ。",
+            "id": "Karena kurang berolahraga, berat badan saya belakangan ini cenderung sedikit bertambah.",
+            "en": "Because I have not been exercising enough, my weight has been increasing slightly lately."
+          },
+          {
+            "jp": "{彼|かれ}はこのところ{授業|じゅぎょう}を{休|やす}み__{気味|ぎみ}__で、{担任|たんにん}が{心配|しんぱい}している。",
+            "id": "Belakangan ini dia agak sering tidak masuk kelas, sehingga wali kelasnya merasa khawatir.",
+            "en": "He has been missing classes somewhat often lately, so his homeroom teacher is concerned."
+          },
+          {
+            "jp": "{景気|けいき}は{回復|かいふく}しつつあるが、{地方|ちほう}の{売|う}り{上|あ}げはまだ{低迷|ていめい}__{気味|ぎみ}__だ。",
+            "id": "Perekonomian mulai pulih, tetapi penjualan di daerah masih cenderung lesu.",
+            "en": "The economy is beginning to recover, but regional sales remain somewhat sluggish."
+          }
+        ],
+        "pitfalls": [
+          "Jangan memakai bentuk kamus sebelum pola ini: ✕ {疲|つか}れる{気味|ぎみ}, ○ {疲|つか}れ{気味|ぎみ}.",
+          "Jangan selalu menyamakan 〜{気味|ぎみ} dengan 〜がち. Yang pertama menyoroti keadaan ringan yang tampak, sedangkan yang kedua lebih sering menunjukkan kecenderungan berulang.",
+          "Pola ini menyatakan kadar ringan. Untuk keadaan yang sudah jelas atau parah, ungkapan langsung tanpa {気味|ぎみ} biasanya lebih tepat."
+        ],
+        "tags": [
+          "tendency",
+          "degree"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T11:28:46.546Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -819,8 +921,114 @@
         "extractedAt": "2026-10-03T23:20:40.301Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜ものなら",
+        "senseLabel": null,
+        "meaningId": "jika memang dapat dilakukan, meskipun dinilai sangat sulit atau hampir mustahil",
+        "meaningEn": "if it were at all possible, although it is considered very difficult or nearly impossible",
+        "connections": [
+          {
+            "form": "v-dict",
+            "pattern": "ものなら",
+            "note": "Bentuk sebelum pola wajib berupa kata kerja potensial dalam bentuk kamus, misalnya {読|よ}める."
+          },
+          {
+            "form": "v-dict",
+            "pattern": "もんなら",
+            "note": "Bentuk percakapan dari ものなら dan juga mengikuti kata kerja potensial."
+          }
+        ],
+        "formation": [
+          {
+            "label": "Kata kerja potensial",
+            "input": "{帰|かえ}れる",
+            "rule": "Tambahkan ものなら pada kata kerja potensial bentuk kamus.",
+            "output": "{帰|かえ}れるものなら",
+            "note": null
+          },
+          {
+            "label": "Variasi percakapan",
+            "input": "{止|と}められる",
+            "rule": "Tambahkan もんなら sebagai variasi percakapan dari ものなら.",
+            "output": "{止|と}められるもんなら",
+            "note": null
+          }
+        ],
+        "variants": [
+          "〜もんなら"
+        ],
+        "explanation": [
+          "Pola ものなら menyatakan pengandaian bahwa suatu tindakan dapat dilakukan, sementara pembicara sebenarnya menganggap tindakan tersebut sangat sulit, tidak realistis, atau hampir mustahil.",
+          "Pola ini umumnya mengikuti kata kerja potensial bentuk kamus. Kemampuan yang disebutkan bukan sekadar kemungkinan netral, melainkan syarat yang bertentangan dengan keadaan nyata atau berada jauh di luar jangkauan pembicara.",
+          "Klausa utama sering berisi keinginan, tekad, atau tindakan yang ingin dilakukan apabila syarat sulit tersebut dapat terwujud. Karena itu, pola ini lazim dipakai untuk angan-angan kuat, penyesalan, atau harapan yang tidak mudah dipenuhi.",
+          "Dalam kalimat perintah, pola ini dapat menjadi tantangan yang menyiratkan bahwa lawan bicara mungkin tidak sanggup melakukannya. Bentuk もんなら membawa arti yang sama, tetapi lebih santai dan dapat terdengar kasar apabila dipakai untuk menantang."
+        ],
+        "usage": {
+          "nuance": [
+            "Menekankan besarnya jarak antara keinginan pembicara dan kenyataan yang dihadapinya.",
+            "Dalam tantangan, menyiratkan keraguan kuat terhadap kemampuan lawan bicara."
+          ],
+          "register": [
+            "ものなら dapat digunakan dalam percakapan maupun tulisan dengan ragam netral.",
+            "もんなら terutama digunakan dalam percakapan santai dan dapat terdengar keras dalam perintah."
+          ],
+          "restrictions": [
+            "Untuk makna ini, pola biasanya mengikuti kata kerja potensial bentuk kamus, bukan kata sifat atau nomina.",
+            "Tidak cocok untuk syarat biasa yang realistis dan mudah terpenuhi; なら atau たら lebih sesuai untuk kondisi semacam itu."
+          ],
+          "typicalContexts": [
+            "Mengungkapkan keinginan yang sulit diwujudkan, seperti mengubah masa lalu atau bertemu kembali dengan seseorang yang telah tiada.",
+            "Menyatakan tekad untuk melakukan apa pun jika suatu hasil yang sulit masih dapat dicapai.",
+            "Menantang seseorang untuk membuktikan bahwa ia mampu melakukan hal yang dianggap mustahil."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "{過去|かこ}に{戻|もど}れる__ものなら__、{大学|だいがく}{時代|じだい}から{勉強|べんきょう}し{直|なお}したい。",
+            "id": "Seandainya benar-benar bisa kembali ke masa lalu, saya ingin mengulang belajar mulai dari masa kuliah.",
+            "en": "If I could possibly return to the past, I would like to start my studies over from my university days."
+          },
+          {
+            "jp": "{空|そら}を{自由|じゆう}に{飛|と}べる__ものなら__、{世界中|せかいじゅう}を{旅|たび}してみたい。",
+            "id": "Seandainya benar-benar bisa terbang bebas di langit, saya ingin berkeliling dunia.",
+            "en": "If I could possibly fly freely through the sky, I would like to travel around the world."
+          },
+          {
+            "jp": "{失|うしな}った{信頼|しんらい}を{取|と}り{戻|もど}せる__ものなら__、どんな{努力|どりょく}でもする。",
+            "id": "Jika kepercayaan yang telah hilang masih mungkin dipulihkan, saya akan melakukan upaya apa pun.",
+            "en": "If it were at all possible to regain the trust I lost, I would make any effort necessary."
+          },
+          {
+            "jp": "この{暗号|あんごう}を{五分|ごふん}で{解|と}ける__ものなら__、{解|と}いてみなさい。",
+            "id": "Kalau memang mampu memecahkan sandi ini dalam lima menit, coba buktikan.",
+            "en": "If you really can decipher this code in five minutes, go ahead and prove it."
+          },
+          {
+            "jp": "{誰|だれ}にも{気|き}づかれずにここから{逃|に}げられる__もんなら__、{逃|に}げてみろ。",
+            "id": "Kalau memang bisa melarikan diri dari sini tanpa diketahui siapa pun, coba saja.",
+            "en": "If you think you can escape from here without anyone noticing, just try it."
+          },
+          {
+            "jp": "{亡|な}くなった{母|はは}ともう{一度|いちど}{話|はな}せる__ものなら__、ただ「ありがとう」と{伝|つた}えたい。",
+            "id": "Seandainya saya bisa berbicara sekali lagi dengan ibu yang telah meninggal, saya hanya ingin menyampaikan terima kasih.",
+            "en": "If I could speak with my late mother just one more time, I would simply like to thank her."
+          }
+        ],
+        "pitfalls": [
+          "Untuk makna ini, gunakan bentuk potensial. ✕ {行|い}くものなら. ○ {行|い}けるものなら.",
+          "Jangan memakai pola ini hanya untuk menyatakan syarat netral. Pola tersebut harus menyiratkan bahwa tindakan itu sangat sulit atau hampir mustahil.",
+          "もんなら bukan bentuk yang cocok untuk dokumen resmi atau percakapan sopan karena merupakan kontraksi percakapan."
+        ],
+        "tags": [
+          "condition"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T11:28:34.793Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -856,8 +1064,134 @@
         "extractedAt": "2026-10-03T23:20:35.210Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜ものだから",
+        "senseLabel": null,
+        "meaningId": "karena; memberikan alasan yang dianggap tidak terhindarkan sambil meminta pengertian",
+        "meaningEn": "because; giving an extenuating or unavoidable reason while seeking understanding",
+        "connections": [
+          {
+            "form": "v-plain",
+            "pattern": "ものだから"
+          },
+          {
+            "form": "i-adj-plain",
+            "pattern": "ものだから"
+          },
+          {
+            "form": "na-adj-na",
+            "pattern": "ものだから"
+          },
+          {
+            "form": "n-na",
+            "pattern": "ものだから"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Kata kerja bentuk biasa",
+            "input": "{道|みち}に{迷|まよ}った",
+            "rule": "Tambahkan ものだから langsung setelah kata kerja bentuk biasa.",
+            "output": "{道|みち}に{迷|まよ}ったものだから",
+            "note": null
+          },
+          {
+            "label": "Kata sifat i bentuk biasa",
+            "input": "{難|むずか}しい",
+            "rule": "Tambahkan ものだから langsung setelah kata sifat i bentuk biasa.",
+            "output": "{難|むずか}しいものだから",
+            "note": null
+          },
+          {
+            "label": "Kata sifat na bentuk kini afirmatif",
+            "input": "{不慣|ふな}れ",
+            "rule": "Tambahkan なものだから setelah kata sifat na.",
+            "output": "{不慣|ふな}れなものだから",
+            "note": null
+          },
+          {
+            "label": "Nomina bentuk kini afirmatif",
+            "input": "{新人|しんじん}",
+            "rule": "Tambahkan なものだから setelah nomina.",
+            "output": "{新人|しんじん}なものだから",
+            "note": null
+          }
+        ],
+        "variants": [
+          "〜ものですから"
+        ],
+        "explanation": [
+          "〜ものだから menyatakan penyebab yang dipandang sulit dihindari atau berada di luar kendali. Pembicara tidak hanya menerangkan sebab, tetapi juga mengharapkan lawan bicara memahami akibat yang terjadi.",
+          "Pola ini mengikuti bentuk biasa kata kerja dan kata sifat i. Pada kata sifat na dan nomina bentuk kini afirmatif, gunakan な sebelum ものだから.",
+          "Nuansanya sering berupa pembelaan diri, permintaan maaf tersirat, atau dalih. Akibatnya kerap berupa keterlambatan, kegagalan, ketidakmampuan, perubahan rencana, atau tindakan yang mungkin dipertanyakan.",
+          "Dibandingkan から yang dapat menyatakan sebab secara langsung dan netral, ものだから lebih subjektif dan menonjolkan keadaan yang meringankan tanggung jawab. Karena itu, pola ini kurang sesuai untuk hukum ilmiah atau hubungan sebab-akibat objektif."
+        ],
+        "usage": {
+          "nuance": [
+            "Menampilkan penyebab sebagai keadaan yang wajar untuk dimaklumi atau sulit dicegah.",
+            "Sering mengandung nada membela diri, meskipun tidak selalu merupakan alasan yang dibuat-buat."
+          ],
+          "register": [
+            "Lazim dalam percakapan dan penjelasan pribadi.",
+            "Bentuk ものですから lebih sopan dan sesuai ketika menjelaskan keadaan kepada atasan, pelanggan, atau orang yang belum akrab."
+          ],
+          "restrictions": [
+            "Pada kata sifat na dan nomina bentuk kini afirmatif, な tidak boleh dihilangkan.",
+            "Kurang cocok untuk pernyataan ilmiah, definisi, atau laporan objektif yang tidak melibatkan permintaan pengertian."
+          ],
+          "typicalContexts": [
+            "Menjelaskan keterlambatan, ketidakhadiran, kesalahan, atau perubahan rencana.",
+            "Menjelaskan bahwa pembicara belum berpengalaman, kurang memahami sesuatu, atau terhalang keadaan mendadak."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "{目覚|めざ}ましが{鳴|な}らなかった__ものだから__、{朝|あさ}の{会議|かいぎ}に{間|ま}に{合|あ}いませんでした。",
+            "id": "Karena jam weker saya tidak berbunyi, saya tidak sempat tiba tepat waktu untuk rapat pagi.",
+            "en": "Because my alarm clock did not go off, I did not make it to the morning meeting on time."
+          },
+          {
+            "jp": "{資料|しりょう}の{量|りょう}が{予想|よそう}より{多|おお}い__ものだから__、{確認|かくにん}に{時間|じかん}がかかっています。",
+            "id": "Karena jumlah dokumennya lebih banyak daripada perkiraan, pemeriksaannya memerlukan waktu.",
+            "en": "Because there are more documents than expected, the review is taking some time."
+          },
+          {
+            "jp": "この{機械|きかい}の{操作|そうさ}に{不慣|ふな}れな__ものだから__、{設定|せってい}に{手間取|てまど}ってしまいました。",
+            "id": "Karena saya belum terbiasa mengoperasikan mesin ini, saya kesulitan saat mengaturnya.",
+            "en": "Because I am unfamiliar with operating this machine, I had trouble setting it up."
+          },
+          {
+            "jp": "{私|わたし}はまだ{新人|しんじん}な__ものだから__、{重要|じゅうよう}な{判断|はんだん}を{任|まか}されると{困|こま}ります。",
+            "id": "Karena saya masih pegawai baru, saya akan kesulitan jika dipercayakan keputusan penting.",
+            "en": "Because I am still a new employee, I would have difficulty being entrusted with important decisions."
+          },
+          {
+            "jp": "{家族|かぞく}が{急|きゅう}に{入院|にゅういん}した__ものだから__、{予定|よてい}していた{出張|しゅっちょう}を{取|と}りやめました。",
+            "id": "Karena seorang anggota keluarga mendadak dirawat di rumah sakit, saya membatalkan perjalanan dinas yang telah direncanakan.",
+            "en": "Because a family member was suddenly hospitalized, I canceled the planned business trip."
+          },
+          {
+            "jp": "{財布|さいふ}を{家|いえ}に{忘|わす}れた__ものだから__、{昼食代|ちゅうしょくだい}を{同僚|どうりょう}に{借|か}りました。",
+            "id": "Karena dompet saya tertinggal di rumah, saya meminjam uang makan siang dari rekan kerja.",
+            "en": "Because I left my wallet at home, I borrowed lunch money from a coworker."
+          }
+        ],
+        "pitfalls": [
+          "Jangan menghilangkan な setelah kata sifat na. ○ {不慣|ふな}れなものだから. ✕ {不慣|ふな}れものだから.",
+          "Jangan menghilangkan な setelah nomina bentuk kini afirmatif. ○ {新人|しんじん}なものだから. ✕ {新人|しんじん}ものだから.",
+          "Jangan memakai pola ini hanya sebagai pengganti から dalam setiap hubungan sebab-akibat. ものだから menyiratkan bahwa alasan tersebut patut dimaklumi atau meringankan tanggung jawab.",
+          "Jangan tertukar dengan ものの. ものだから menyatakan alasan, sedangkan ものの memperkenalkan pertentangan antara dua keadaan."
+        ],
+        "tags": [
+          "reason"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T11:29:00.618Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -929,8 +1263,151 @@
         "extractedAt": "2026-10-03T23:20:50.606Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜ものの",
+        "senseLabel": null,
+        "meaningId": "walaupun fakta pertama diakui, kenyataan berikutnya berlawanan dengan harapan atau tidak memadai",
+        "meaningEn": "although the first fact is acknowledged, the following reality runs against expectations or proves insufficient",
+        "connections": [
+          {
+            "form": "v-plain",
+            "pattern": "ものの"
+          },
+          {
+            "form": "i-adj-plain",
+            "pattern": "ものの"
+          },
+          {
+            "form": "na-adj-na",
+            "pattern": "ものの"
+          },
+          {
+            "form": "na-adj-de-aru",
+            "pattern": "ものの"
+          },
+          {
+            "form": "n-de-aru",
+            "pattern": "ものの"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Kata kerja bentuk biasa",
+            "input": "{申|もう}し{込|こ}む",
+            "rule": "Gunakan bentuk biasa kata kerja, termasuk bentuk lampau atau negatif bila diperlukan, lalu tambahkan ものの.",
+            "output": "{申|もう}し{込|こ}むものの",
+            "note": null
+          },
+          {
+            "label": "Kata sifat-i bentuk biasa",
+            "input": "{高|たか}い",
+            "rule": "Gunakan bentuk biasa kata sifat-i, lalu tambahkan ものの.",
+            "output": "{高|たか}いものの",
+            "note": null
+          },
+          {
+            "label": "Kata sifat-na dengan な",
+            "input": "{便利|べんり}だ",
+            "rule": "Ganti kopula だ pada bentuk afirmatif nonlampau dengan な, lalu tambahkan ものの.",
+            "output": "{便利|べんり}なものの",
+            "note": null
+          },
+          {
+            "label": "Kata sifat-na dengan である",
+            "input": "{複雑|ふくざつ}だ",
+            "rule": "Ganti kopula だ dengan である, lalu tambahkan ものの.",
+            "output": "{複雑|ふくざつ}であるものの",
+            "note": null
+          },
+          {
+            "label": "Nomina dengan である",
+            "input": "{責任者|せきにんしゃ}だ",
+            "rule": "Ganti kopula だ dengan である, lalu tambahkan ものの.",
+            "output": "{責任者|せきにんしゃ}であるものの",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "ものの mengakui isi klausa pertama sebagai fakta, lalu memperkenalkan keadaan kedua yang tidak sesuai dengan hasil atau kesimpulan yang secara wajar diharapkan dari fakta tersebut.",
+          "Pusat maknanya bukan sekadar perbedaan antara dua keadaan. Klausa sesudah ものの biasanya menunjukkan hasil yang belum tercapai, kekurangan, batasan, atau fakta lain yang mengurangi nilai keadaan pertama.",
+          "Pola ini mengikuti bentuk biasa kata kerja dan kata sifat-i. Kata sifat-na afirmatif memakai なものの atau bentuk lebih formal であるものの, sedangkan nomina afirmatif memakai であるものの.",
+          "Nuansanya lebih formal dan tertata daripada が atau けれども. Karena itu, ものの sering digunakan dalam laporan, ulasan, berita, esai, dan penjelasan yang mengakui satu fakta sebelum menyampaikan batasannya."
+        ],
+        "usage": {
+          "nuance": [
+            "Klausa pertama diakui sebagai fakta, tetapi klausa kedua menyoroti hasil yang menyimpang dari dugaan yang timbul dari fakta itu.",
+            "Sering menyiratkan bahwa hasil atau keadaan yang ada belum memadai, meskipun pola ini tidak selalu bernada negatif."
+          ],
+          "register": [
+            "Agak formal dan lazim dalam laporan, esai, berita, ulasan, serta penjelasan terencana.",
+            "Dapat digunakan dalam percakapan, tetapi が atau けれども biasanya lebih alami dalam obrolan santai."
+          ],
+          "restrictions": [
+            "Kedua klausa harus memiliki hubungan pertentangan atau penyimpangan dari harapan; pola ini tidak cocok untuk sekadar menambahkan fakta.",
+            "Klausa pertama umumnya menyatakan keadaan yang benar-benar terjadi atau diakui, bukan syarat hipotetis murni.",
+            "Untuk nomina afirmatif gunakan であるものの. Untuk kata sifat-na afirmatif gunakan なものの atau であるものの."
+          ],
+          "typicalContexts": [
+            "Mengevaluasi rencana atau tindakan yang sudah dimulai tetapi belum memberikan hasil yang diharapkan.",
+            "Mengakui kelebihan sebelum menunjukkan kekurangan suatu produk, tempat, sistem, atau kebijakan.",
+            "Menyampaikan penilaian berimbang dalam laporan, ulasan, dan tulisan argumentatif."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "{計画|けいかく}を{立|た}てた__ものの__、{予算|よさん}{不足|ぶそく}で{実行|じっこう}に{移|うつ}せなかった。",
+            "id": "Walaupun rencana sudah disusun, rencana itu tidak dapat dilaksanakan karena kekurangan anggaran.",
+            "en": "Although the plan had been drawn up, it could not be carried out because of a lack of funds."
+          },
+          {
+            "jp": "{薬|くすり}を{飲|の}んでいる__ものの__、{症状|しょうじょう}は{一向|いっこう}に{改善|かいぜん}しない。",
+            "id": "Walaupun sudah minum obat, gejalanya sama sekali belum membaik.",
+            "en": "Although I have been taking medicine, the symptoms have not improved at all."
+          },
+          {
+            "jp": "{価格|かかく}は{安|やす}い__ものの__、{維持費|いじひ}が{高|たか}い。",
+            "id": "Walaupun harganya murah, biaya pemeliharaannya tinggi.",
+            "en": "Although the price is low, the maintenance costs are high."
+          },
+          {
+            "jp": "この{地域|ちいき}は{交通|こうつう}が{便利|べんり}な__ものの__、{夜|よる}は{店|みせ}が{早|はや}く{閉|し}まる。",
+            "id": "Walaupun transportasi di daerah ini praktis, toko-tokonya tutup lebih awal pada malam hari.",
+            "en": "Although transportation in this area is convenient, the shops close early at night."
+          },
+          {
+            "jp": "{手続|てつづ}きは{複雑|ふくざつ}である__ものの__、{必要|ひつよう}な{書類|しょるい}はウェブサイトで{確認|かくにん}できる。",
+            "id": "Walaupun prosedurnya rumit, dokumen yang diperlukan dapat diperiksa di situs web.",
+            "en": "Although the procedure is complicated, the required documents can be checked on the website."
+          },
+          {
+            "jp": "{責任者|せきにんしゃ}である__ものの__、すべてを{自分|じぶん}だけで{決|き}められるわけではない。",
+            "id": "Walaupun merupakan orang yang bertanggung jawab, ia tidak dapat memutuskan semuanya seorang diri.",
+            "en": "Although this person is in charge, they cannot decide everything alone."
+          },
+          {
+            "jp": "{改善|かいぜん}の{兆|きざ}しは{見|み}られた__ものの__、{本格的|ほんかくてき}な{回復|かいふく}にはなお{時間|じかん}を{要|よう}する。",
+            "id": "Walaupun tanda-tanda perbaikan telah terlihat, pemulihan penuh masih membutuhkan waktu.",
+            "en": "Although signs of improvement have appeared, a full recovery will still take time."
+          }
+        ],
+        "pitfalls": [
+          "Jangan memakai だものの setelah kata sifat-na afirmatif. Gunakan ○{便利|べんり}なものの atau ○{便利|べんり}であるものの, bukan ✕{便利|べんり}だものの.",
+          "Untuk nomina afirmatif, gunakan であるものの. Bentuk ○{専門家|せんもんか}であるものの benar, sedangkan ✕{専門家|せんもんか}なものの tidak benar.",
+          "Jangan gunakan ものの untuk dua fakta yang hanya bersifat tambahan. Klausa kedua harus berlawanan dengan harapan atau membatasi penilaian terhadap klausa pertama."
+        ],
+        "tags": [
+          "concession",
+          "formal",
+          "written"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T11:29:49.942Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -966,8 +1443,102 @@
         "extractedAt": "2026-10-03T23:23:12.418Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜はもとより",
+        "senseLabel": null,
+        "meaningId": "A sudah tentu termasuk; bukan hanya A, tetapi B yang lebih luas atau lebih mengejutkan juga berlaku.",
+        "meaningEn": "A is naturally included; not only A, but also B, which is broader or more surprising.",
+        "connections": [
+          {
+            "form": "n",
+            "pattern": "はもとより"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Nomina",
+            "input": "{安全性|あんぜんせい}",
+            "rule": "Tambahkan はもとより langsung setelah nomina yang menjadi unsur A.",
+            "output": "{安全性|あんぜんせい}はもとより",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "Pola ini menyatakan bahwa A sudah jelas atau sewajarnya termasuk, kemudian menambahkan B yang cakupannya lebih luas, lebih jauh, atau agak tidak terduga. Artinya dekat dengan “bukan hanya A, tetapi B juga”, dengan penekanan bahwa A tidak perlu dipersoalkan lagi.",
+          "はもとより ditempatkan setelah nomina yang menjadi unsur A. Bagian B sering memakai penanda tambahan seperti も, にも, でも, atau まで untuk menegaskan perluasan dari A.",
+          "Pola ini memiliki gaya retoris yang lebih resmi daripada はもちろん atau だけでなく. Pemakaiannya lazim dalam tulisan, presentasi, laporan, pengumuman, dan percakapan resmi.",
+          "A dan B harus dapat dihubungkan dengan predikat atau penilaian yang sama. A biasanya merupakan contoh yang paling wajar atau sudah diperkirakan, sedangkan B memperluas cakupan ke sesuatu yang kurang jelas, lebih besar, atau lebih mengejutkan."
+        ],
+        "usage": {
+          "nuance": [
+            "Unsur A diperlakukan sebagai hal yang sudah pasti, sementara unsur B ditonjolkan sebagai tambahan yang memperluas cakupan."
+          ],
+          "register": [
+            "Berciri formal dan lebih umum dalam tulisan, pidato, presentasi, serta komunikasi bisnis.",
+            "Kurang alami untuk percakapan santai sehari-hari jika penutur hanya ingin membuat daftar sederhana."
+          ],
+          "restrictions": [
+            "はもとより langsung mengikuti nomina; kata kerja atau kata sifat tidak dapat disambungkan secara langsung.",
+            "A dan B tidak boleh berupa dua fakta yang tidak berhubungan. Keduanya harus berada dalam kategori atau cakupan penilaian yang sama.",
+            "Urutan A dan B penting: A merupakan hal yang sudah jelas, sedangkan B merupakan perluasan yang hendak ditekankan."
+          ],
+          "typicalContexts": [
+            "Menjelaskan cakupan penerapan kebijakan, layanan, atau peraturan.",
+            "Menonjolkan luasnya pengaruh, penggunaan, kemampuan, atau penilaian.",
+            "Menyampaikan klaim resmi dalam laporan, artikel, iklan, dan presentasi."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "{当社|とうしゃ}の{新制度|しんせいど}は、{正社員|せいしゃいん}__はもとより__、{契約社員|けいやくしゃいん}にも{適用|てきよう}されます。",
+            "id": "Peraturan baru perusahaan kami berlaku bukan hanya bagi karyawan tetap, tetapi juga bagi karyawan kontrak.",
+            "en": "Our company's new policy applies not only to permanent employees but also to contract employees."
+          },
+          {
+            "jp": "{本書|ほんしょ}は、{専門家|せんもんか}__はもとより__、{一般|いっぱん}の{読者|どくしゃ}からも{高|たか}く{評価|ひょうか}されている。",
+            "id": "Buku ini sangat dihargai bukan hanya oleh para ahli, tetapi juga oleh pembaca umum.",
+            "en": "This book is highly regarded not only by specialists but also by general readers."
+          },
+          {
+            "jp": "{今回|こんかい}の{地震|じしん}では、{鉄道|てつどう}__はもとより__、{主要道路|しゅようどうろ}まで{各地|かくち}で{寸断|すんだん}された。",
+            "id": "Dalam gempa kali ini, bukan hanya jalur kereta, tetapi bahkan jalan-jalan utama terputus di berbagai daerah.",
+            "en": "In this earthquake, not only railway lines but even major roads were severed in many areas."
+          },
+          {
+            "jp": "{管理職|かんりしょく}には、{業務|ぎょうむ}の{知識|ちしき}__はもとより__、{部下|ぶか}の{話|はなし}を{聞|き}く{姿勢|しせい}も{求|もと}められる。",
+            "id": "Seorang manajer dituntut bukan hanya memiliki pengetahuan tentang pekerjaan, tetapi juga kemauan untuk mendengarkan bawahannya.",
+            "en": "Managers are expected not only to possess job-related knowledge but also to be willing to listen to their subordinates."
+          },
+          {
+            "jp": "この{相談窓口|そうだんまどぐち}は、{平日|へいじつ}__はもとより__、{土日|どにち}や{祝日|しゅくじつ}も{利用|りよう}できます。",
+            "id": "Layanan konsultasi ini dapat digunakan bukan hanya pada hari kerja, tetapi juga pada akhir pekan dan hari libur.",
+            "en": "This consultation service is available not only on weekdays but also on weekends and public holidays."
+          },
+          {
+            "jp": "{新|あたら}しい{分析法|ぶんせきほう}は、{医学|いがく}__はもとより__、{農業|のうぎょう}の{分野|ぶんや}でも{活用|かつよう}が{期待|きたい}されている。",
+            "id": "Metode analisis baru ini diharapkan dapat dimanfaatkan bukan hanya dalam bidang kedokteran, tetapi juga dalam bidang pertanian.",
+            "en": "The new analytical method is expected to be used not only in medicine but also in agriculture."
+          }
+        ],
+        "pitfalls": [
+          "Sambungkan pola ini langsung pada nomina. ○ {専門家|せんもんか}はもとより. ✕ {詳|くわ}しいはもとより.",
+          "Jangan memakai pola ini untuk sekadar menyandingkan dua hal yang setara. Unsur A harus dianggap sudah jelas, lalu unsur B memperluas cakupannya.",
+          "Jangan menyamakan tingkat ragamnya dengan はもちろん. Keduanya dapat menyampaikan hubungan serupa, tetapi はもとより terasa lebih resmi dan retoris."
+        ],
+        "tags": [
+          "addition",
+          "emphasis",
+          "formal",
+          "written"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T11:30:05.778Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -1002,8 +1573,124 @@
         "extractedAt": "2026-10-03T23:23:12.949Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜はともかく",
+        "senseLabel": null,
+        "meaningId": "Mengesampingkan hal pertama agar perhatian tertuju pada hal lain yang dianggap lebih penting.",
+        "meaningEn": "Sets the first matter aside to focus on another matter considered more important.",
+        "connections": [
+          {
+            "form": "n",
+            "pattern": "はともかく"
+          },
+          {
+            "form": "sentence",
+            "pattern": "かはともかく",
+            "note": "Dipakai setelah klausa tanya tak langsung yang memuat kata tanya."
+          },
+          {
+            "form": "sentence",
+            "pattern": "かどうかはともかく",
+            "note": "Dipakai setelah klausa yang menyatakan pertanyaan ya atau tidak."
+          }
+        ],
+        "formation": [
+          {
+            "label": "Nomina",
+            "input": "{値段|ねだん}",
+            "rule": "Nomina langsung diikuti はともかく.",
+            "output": "{値段|ねだん}はともかく",
+            "note": null
+          },
+          {
+            "label": "Klausa tanya dengan kata tanya",
+            "input": "{誰|だれ}が{担当|たんとう}するか",
+            "rule": "Tambahkan はともかく setelah か yang menutup klausa tanya tak langsung.",
+            "output": "{誰|だれ}が{担当|たんとう}するかはともかく",
+            "note": null
+          },
+          {
+            "label": "Klausa pertanyaan ya atau tidak",
+            "input": "{成功|せいこう}する",
+            "rule": "Tambahkan かどうかはともかく setelah predikat bentuk biasa.",
+            "output": "{成功|せいこう}するかどうかはともかく",
+            "note": null
+          }
+        ],
+        "variants": [
+          "〜はともかくとして"
+        ],
+        "explanation": [
+          "Pola 〜はともかく menempatkan perkara A di luar pembahasan atau penilaian untuk sementara, lalu mengarahkan perhatian kepada perkara B. Pembicara tidak harus menyetujui, menolak, atau meremehkan A; A hanya tidak dijadikan fokus utama saat itu.",
+          "Setelah nomina, gunakan はともかく secara langsung. Jika hal yang dikesampingkan berupa pertanyaan tidak langsung, gunakan かはともかく atau かどうかはともかく sesuai jenis pertanyaannya.",
+          "Bagian sesudah pola memuat pesan utama pembicara. Hubungan A dan B dapat berupa perbandingan prioritas, pengalihan topik, atau penegasan bahwa B tetap penting tanpa bergantung pada penilaian terhadap A; keduanya tidak harus menjadi dua hal yang berlawanan.",
+          "Bentuk 〜はともかくとして memiliki makna dasar yang sama, tetapi pengesampingan topik pertama terasa sedikit lebih eksplisit. Keduanya dapat dipakai dalam percakapan maupun tulisan."
+        ],
+        "usage": {
+          "nuance": [
+            "Perkara pertama diperlakukan sebagai hal sekunder atau sesuatu yang belum perlu diputuskan, sedangkan perkara berikutnya ditonjolkan sebagai fokus."
+          ],
+          "register": [
+            "Bersifat netral dan dapat digunakan dalam percakapan, rapat, penjelasan, serta tulisan; tingkat kesopanan ditentukan oleh predikat kalimat."
+          ],
+          "restrictions": [
+            "Dalam pemakaian ini, pernyataan utama biasanya muncul setelah pola; jangan berhenti pada topik yang dikesampingkan tanpa konteks yang sudah jelas.",
+            "Klausa tanya tak langsung harus ditutup dengan か atau かどうか sebelum はともかく."
+          ],
+          "typicalContexts": [
+            "Memprioritaskan satu kriteria ketika menilai barang, rencana, atau keputusan.",
+            "Mengesampingkan ketidakpastian sementara agar tindakan atau pembahasan dapat dilanjutkan.",
+            "Mengalihkan rapat atau diskusi dari persoalan sampingan menuju masalah yang lebih mendesak."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "{見|み}た{目|め}__はともかく__、このかばんは{軽|かる}くて{丈夫|じょうぶ}だ。",
+            "id": "Terlepas dari tampilannya, tas ini ringan dan kuat.",
+            "en": "Leaving its appearance aside, this bag is light and durable."
+          },
+          {
+            "jp": "{誰|だれ}が{責任者|せきにんしゃ}になる__かはともかく__、{今日中|きょうじゅう}に{方針|ほうしん}を{決|き}める{必要|ひつよう}がある。",
+            "id": "Terlepas dari siapa yang akan menjadi penanggung jawab, kebijakan harus diputuskan hari ini.",
+            "en": "Regardless of who becomes responsible, we need to decide on the policy today."
+          },
+          {
+            "jp": "{新|あたら}しい{制度|せいど}が{成功|せいこう}する__かどうかはともかく__、まず{小規模|しょうきぼ}に{試|ため}す{価値|かち}はある。",
+            "id": "Terlepas dari apakah sistem baru itu akan berhasil, sistem tersebut layak diuji dalam skala kecil terlebih dahulu.",
+            "en": "Whether the new system will succeed or not, it is worth testing it on a small scale first."
+          },
+          {
+            "jp": "{費用|ひよう}__はともかく__、この{工事|こうじ}には{少|すく}なくとも3か{月|げつ}かかる。",
+            "id": "Mengesampingkan biayanya, pekerjaan konstruksi ini akan memerlukan setidaknya tiga bulan.",
+            "en": "Leaving the cost aside, this construction work will take at least three months."
+          },
+          {
+            "jp": "{勝敗|しょうはい}__はともかく__、{両|りょう}チームは{最後|さいご}まで{全力|ぜんりょく}を{尽|つ}くした。",
+            "id": "Terlepas dari hasil pertandingan, kedua tim telah berjuang sekuat tenaga sampai akhir.",
+            "en": "Regardless of the outcome, both teams gave their all until the end."
+          },
+          {
+            "jp": "{原因|げんいん}__はともかく__、{同|おな}じ{問題|もんだい}が{起|お}きないよう{対策|たいさく}を{急|いそ}ごう。",
+            "id": "Untuk sementara kesampingkan penyebabnya; mari segera mengambil langkah agar masalah yang sama tidak terjadi lagi.",
+            "en": "Leaving the cause aside for now, let us act quickly to prevent the same problem from happening again."
+          }
+        ],
+        "pitfalls": [
+          "Jangan menghilangkan は setelah nomina: ○{予算|よさん}はともかく, ✕{予算|よさん}ともかく.",
+          "Pola ini tidak dengan sendirinya berarti walaupun. Fokusnya adalah menunda pembahasan atau penilaian terhadap A, bukan menyatakan bahwa hasil B bertentangan dengan A.",
+          "Pada klausa tanya tak langsung, gunakan penanda pertanyaan sebelum はともかく: ○{誰|だれ}が{来|く}るかはともかく, ✕{誰|だれ}が{来|く}るはともかく."
+        ],
+        "tags": [
+          "topic",
+          "emphasis"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T11:31:10.707Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -1038,8 +1725,130 @@
         "extractedAt": "2026-10-03T23:23:10.093Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜ならまだしも",
+        "senseLabel": null,
+        "meaningId": "kalau X masih dapat diterima, Y justru tidak dapat diterima atau jauh lebih bermasalah",
+        "meaningEn": "if X would still be acceptable, Y is not or is much more problematic",
+        "connections": [
+          {
+            "form": "n",
+            "pattern": "ならまだしも"
+          },
+          {
+            "form": "na-adj-stem",
+            "pattern": "ならまだしも"
+          },
+          {
+            "form": "i-adj-plain",
+            "pattern": "ならまだしも"
+          },
+          {
+            "form": "v-plain",
+            "pattern": "ならまだしも"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Nomina",
+            "input": "{学生|がくせい}",
+            "rule": "Tambahkan ならまだしも langsung setelah nomina.",
+            "output": "{学生|がくせい}ならまだしも",
+            "note": null
+          },
+          {
+            "label": "Kata sifat-na",
+            "input": "{静|しず}か",
+            "rule": "Gunakan dasar kata sifat-na tanpa な atau だ, lalu tambahkan ならまだしも.",
+            "output": "{静|しず}かならまだしも",
+            "note": null
+          },
+          {
+            "label": "Kata sifat-i",
+            "input": "{高|たか}い",
+            "rule": "Pertahankan bentuk biasa kata sifat-i, lalu tambahkan ならまだしも.",
+            "output": "{高|たか}いならまだしも",
+            "note": null
+          },
+          {
+            "label": "Kata kerja",
+            "input": "{行|い}く",
+            "rule": "Tambahkan ならまだしも setelah kata kerja bentuk biasa.",
+            "output": "{行|い}くならまだしも",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "Pola ならまだしも menetapkan X sebagai keadaan yang relatif masih dapat dipahami, ditoleransi, atau diterima, kemudian membandingkannya dengan Y yang dinilai lebih berat atau lebih tidak wajar.",
+          "Pola ini dapat mengikuti nomina, dasar kata sifat-na, serta bentuk biasa kata sifat-i dan kata kerja. Bentuk lampau atau negatif juga dapat digunakan apabila termasuk bentuk biasa yang sesuai dengan konteks.",
+          "X tidak harus dianggap baik. Pembicara hanya menempatkannya sebagai batas yang masih lebih masuk akal dibandingkan Y. Karena itu, bagian sesudah pola biasanya memuat kritik, penolakan, keterkejutan, atau penilaian negatif yang lebih kuat.",
+          "Hubungan X dan Y harus menunjukkan peningkatan masalah atau penurunan tingkat penerimaan. Keduanya dapat berupa hal yang berbeda, asalkan jelas mengapa Y lebih sulit diterima daripada X.",
+          "Dibandingkan ならともかく yang dapat sekadar mengesampingkan X, ならまだしも lebih jelas menilai X sebagai pilihan atau keadaan yang masih lebih dapat ditoleransi daripada Y."
+        ],
+        "usage": {
+          "nuance": [
+            "X diperlakukan sebagai batas yang masih bisa ditoleransi, sedangkan Y dinilai lebih berat, tidak wajar, atau sulit diterima."
+          ],
+          "register": [
+            "Lazim dalam percakapan maupun tulisan; dalam konteks resmi pola ini dapat menyampaikan evaluasi atau kritik secara tegas melalui perbandingan."
+          ],
+          "restrictions": [
+            "Bagian sesudah pola harus menyajikan keadaan Y yang melampaui X dalam kesulitan, ketidakpantasan, atau tingkat masalah, bukan sekadar informasi tambahan.",
+            "Pola ini tidak cocok apabila Y lebih ringan daripada X atau jika pembicara menerima X dan Y pada tingkat yang sama."
+          ],
+          "typicalContexts": [
+            "Kritik terhadap perilaku, penilaian kelayakan, perbandingan biaya atau durasi, serta penolakan terhadap keadaan yang dianggap melewati batas wajar."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "{初心者|しょしんしゃ}__ならまだしも__、{経験|けいけん}のある{担当者|たんとうしゃ}がこの{基本的|きほんてき}な{確認|かくにん}を{怠|おこた}るのは{理解|りかい}しにくい。",
+            "id": "Kalau pemula mungkin masih dapat dimaklumi, tetapi sulit memahami mengapa petugas berpengalaman mengabaikan pemeriksaan dasar ini.",
+            "en": "It might be understandable for a beginner, but it is hard to understand an experienced staff member neglecting such a basic check."
+          },
+          {
+            "jp": "{数日|すうじつ}__ならまだしも__、1か{月|げつ}も{連絡|れんらく}がないと{計画|けいかく}を{進|すす}められない。",
+            "id": "Kalau hanya beberapa hari mungkin masih dapat diterima, tetapi tanpa kabar selama sebulan kami tidak bisa melanjutkan rencana.",
+            "en": "A few days might still be acceptable, but we cannot proceed with the plan if there is no contact for an entire month."
+          },
+          {
+            "jp": "{多少|たしょう}{不便|ふべん}__ならまだしも__、{夜|よる}に{一人|ひとり}で{歩|ある}けないほど{危険|きけん}な{地域|ちいき}には{住|す}めない。",
+            "id": "Kalau hanya agak tidak praktis mungkin masih bisa diterima, tetapi saya tidak dapat tinggal di daerah yang begitu berbahaya hingga tidak aman berjalan sendirian pada malam hari.",
+            "en": "Some inconvenience might be tolerable, but I cannot live in an area so dangerous that I cannot walk alone at night."
+          },
+          {
+            "jp": "{値段|ねだん}が{少|すこ}し{高|たか}い__ならまだしも__、{品質|ひんしつ}まで{悪|わる}ければ{買|か}う{理由|りゆう}がない。",
+            "id": "Kalau harganya hanya sedikit mahal mungkin masih bisa diterima, tetapi jika mutunya juga buruk, tidak ada alasan untuk membelinya.",
+            "en": "A slightly high price might be acceptable, but if the quality is poor as well, there is no reason to buy it."
+          },
+          {
+            "jp": "{手順|てじゅん}を{知|し}らない__ならまだしも__、{知|し}っていてわざと{規則|きそく}を{破|やぶ}ったのなら{見過|みす}ごせない。",
+            "id": "Kalau dia tidak mengetahui prosedurnya mungkin masih bisa dimaklumi, tetapi saya tidak dapat mengabaikannya jika dia sengaja melanggar aturan meskipun sudah tahu.",
+            "en": "It might be understandable if he did not know the procedure, but I cannot overlook it if he knowingly broke the rules."
+          },
+          {
+            "jp": "{会議|かいぎ}に{数分|すうふん}{遅|おく}れた__ならまだしも__、{説明|せつめい}もなく{欠席|けっせき}するのは{無責任|むせきにん}だ。",
+            "id": "Kalau hanya terlambat beberapa menit ke rapat mungkin masih dapat diterima, tetapi tidak hadir tanpa penjelasan adalah tindakan yang tidak bertanggung jawab.",
+            "en": "Being a few minutes late for the meeting might still be acceptable, but being absent without any explanation is irresponsible."
+          }
+        ],
+        "pitfalls": [
+          "Jangan membalik urutan penilaiannya. X sebelum ならまだしも harus relatif lebih dapat diterima, sedangkan Y sesudahnya harus lebih bermasalah.",
+          "Pada nomina dan kata sifat-na afirmatif nonlampau, jangan menambahkan だ sebelum pola. Gunakan ○{学生|がくせい}ならまだしも, bukan ✕{学生|がくせい}だならまだしも.",
+          "Jangan menafsirkan まだしも sebagai kata yang hanya berarti masih. Keseluruhan ならまだしも membentuk perbandingan evaluatif antara X dan Y."
+        ],
+        "tags": [
+          "contrast",
+          "judgment"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T11:31:37.739Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -1075,8 +1884,145 @@
         "extractedAt": "2026-10-03T23:23:47.872Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜{抜|ぬ}き",
+        "senseLabel": "pengecualian unsur",
+        "meaningId": "tanpa menyertakan N; dengan sengaja menghilangkan atau mengecualikan N",
+        "meaningEn": "without including N; deliberately omitting or excluding N",
+        "connections": [
+          {
+            "form": "n",
+            "pattern": "は{抜|ぬ}きにして"
+          },
+          {
+            "form": "n",
+            "pattern": "を{抜|ぬ}きにして"
+          },
+          {
+            "form": "n",
+            "pattern": "{抜|ぬ}きで"
+          },
+          {
+            "form": "n",
+            "pattern": "{抜|ぬ}きに"
+          },
+          {
+            "form": "n",
+            "pattern": "{抜|ぬ}きの"
+          }
+        ],
+        "formation": [
+          {
+            "label": "mengesampingkan topik",
+            "input": "{前置|まえお}き",
+            "rule": "Tambahkan は{抜|ぬ}きにして setelah nomina yang hendak dikesampingkan.",
+            "output": "{前置|まえお}きは{抜|ぬ}きにして",
+            "note": null
+          },
+          {
+            "label": "menghilangkan objek",
+            "input": "{乳製品|にゅうせいひん}",
+            "rule": "Tambahkan を{抜|ぬ}きにして setelah nomina yang sengaja dikeluarkan.",
+            "output": "{乳製品|にゅうせいひん}を{抜|ぬ}きにして",
+            "note": null
+          },
+          {
+            "label": "keterangan cara atau keadaan",
+            "input": "{朝食|ちょうしょく}",
+            "rule": "Tambahkan {抜|ぬ}きで langsung setelah nomina untuk menerangkan tindakan yang dilakukan tanpa unsur tersebut.",
+            "output": "{朝食|ちょうしょく}{抜|ぬ}きで",
+            "note": null
+          },
+          {
+            "label": "keterangan pengecualian",
+            "input": "{担当者|たんとうしゃ}",
+            "rule": "Tambahkan {抜|ぬ}きに langsung setelah nomina untuk menyatakan bahwa unsur tersebut tidak dilibatkan.",
+            "output": "{担当者|たんとうしゃ}{抜|ぬ}きに",
+            "note": null
+          },
+          {
+            "label": "penerang nomina",
+            "input": "{家族|かぞく}",
+            "rule": "Tambahkan {抜|ぬ}きの setelah nomina pertama, lalu letakkan nomina yang diterangkan.",
+            "output": "{家族|かぞく}{抜|ぬ}きの{旅行|りょこう}",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "Pola ini menyatakan bahwa orang, benda, bahan, bagian, atau kebiasaan yang mungkin biasanya disertakan sengaja tidak dilibatkan. Fokusnya terletak pada keadaan atau tindakan yang berlangsung tanpa unsur tersebut.",
+          "Bentuk N{抜|ぬ}きで dan N{抜|ぬ}きに berfungsi sebagai keterangan bagi tindakan berikutnya. Bentuk N{抜|ぬ}きの menerangkan nomina lain, sedangkan Nを{抜|ぬ}きにして menampilkan unsur yang dikeluarkan sebagai objek.",
+          "Bentuk Nは{抜|ぬ}きにして sering dipakai ketika pembicara ingin mengesampingkan suatu hal untuk sementara lalu beralih ke hal yang lebih penting. Karena itu, bentuk ini lazim muncul dalam rapat, diskusi, atau instruksi.",
+          "Pola ini hanya menyatakan peniadaan atau pengecualian. Pola ini tidak dengan sendirinya berarti bahwa suatu hasil mustahil dicapai tanpa N; makna syarat mutlak tersebut merupakan penggunaan yang berbeda."
+        ],
+        "usage": {
+          "nuance": [
+            "Peniadaan biasanya merupakan pilihan yang disengaja, bukan sekadar ketidakhadiran yang kebetulan.",
+            "Bentuk は{抜|ぬ}きにして dapat memberi kesan tegas bahwa suatu topik harus disisihkan agar pembicaraan dapat dilanjutkan."
+          ],
+          "register": [
+            "Pola ini netral dan dapat dipakai dalam percakapan maupun tulisan.",
+            "Bentuk は{抜|ぬ}きにして dan を{抜|ぬ}きにして juga lazim dalam rapat, pengumuman, dan komunikasi bisnis."
+          ],
+          "restrictions": [
+            "Nomina harus menunjuk pada unsur, orang, bahan, bagian, atau kebiasaan yang secara masuk akal dapat disertakan atau ditiadakan.",
+            "Untuk menerangkan nomina berikutnya, gunakan {抜|ぬ}きの; jangan langsung menempelkan dua nomina tanpa の.",
+            "Makna dasarnya bukan penyangkalan keberadaan, melainkan pengecualian unsur dari suatu kegiatan atau susunan."
+          ],
+          "typicalContexts": [
+            "Menghilangkan bahan tertentu dari makanan atau minuman.",
+            "Menjalankan rapat atau kegiatan tanpa peserta tertentu.",
+            "Melewatkan kebiasaan seperti sarapan, basa-basi, atau penjelasan pendahuluan.",
+            "Mengesampingkan rincian agar pembahasan berfokus pada pokok utama."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "{形式的|けいしきてき}な{挨拶|あいさつ}__は{抜|ぬ}きにして__、すぐ{話|はな}し{合|あ}いを{始|はじ}めましょう。",
+            "id": "Mari kita kesampingkan salam formal dan langsung memulai pembicaraan.",
+            "en": "Let us skip the formal greetings and begin the discussion right away."
+          },
+          {
+            "jp": "このスープは{乳製品|にゅうせいひん}__を{抜|ぬ}きにして__{作|つく}ってください。",
+            "id": "Tolong buat sup ini tanpa menyertakan produk susu.",
+            "en": "Please make this soup without any dairy products."
+          },
+          {
+            "jp": "けさは{朝食|ちょうしょく}__{抜|ぬ}きで__{出勤|しゅっきん}したので、{昼前|ひるまえ}にはおなかがすいた。",
+            "id": "Karena tadi pagi saya berangkat bekerja tanpa sarapan, saya sudah lapar sebelum tengah hari.",
+            "en": "Because I went to work without breakfast this morning, I was hungry before noon."
+          },
+          {
+            "jp": "{担当者|たんとうしゃ}__{抜|ぬ}きに__{契約|けいやく}の{条件|じょうけん}を{決|き}めるのは{避|さ}けたほうがいい。",
+            "id": "Sebaiknya kita tidak menentukan persyaratan kontrak tanpa melibatkan penanggung jawabnya.",
+            "en": "We should avoid deciding the contract terms without involving the person in charge."
+          },
+          {
+            "jp": "たまには{家族|かぞく}__{抜|ぬ}きの__{旅行|りょこう}をゆっくり{楽|たの}しみたい。",
+            "id": "Sesekali saya ingin menikmati perjalanan dengan santai tanpa keluarga.",
+            "en": "Once in a while, I would like to enjoy a relaxing trip without my family."
+          },
+          {
+            "jp": "{細|こま}かい{数字|すうじ}__は{抜|ぬ}きにして__、まず{全体|ぜんたい}の{方針|ほうしん}を{説明|せつめい}します。",
+            "id": "Dengan mengesampingkan angka-angka terperinci, saya akan menjelaskan kebijakan keseluruhannya terlebih dahulu.",
+            "en": "Leaving aside the detailed figures, I will first explain the overall policy."
+          }
+        ],
+        "pitfalls": [
+          "Jangan menambahkan を sebelum {抜|ぬ}きで. Bentuk yang wajar ialah ○ {砂糖|さとう}{抜|ぬ}きで, sedangkan ✕ {砂糖|さとう}を{抜|ぬ}きで mencampur dua pola sambungan.",
+          "Pada pola penerang nomina, の wajib digunakan: ○ {家族|かぞく}{抜|ぬ}きの{旅行|りょこう}, bukan ✕ {家族|かぞく}{抜|ぬ}き{旅行|りょこう}.",
+          "Jangan selalu menafsirkan pola ini sebagai syarat mutlak. Makna dasarnya hanya menyatakan bahwa N ditiadakan atau tidak dilibatkan."
+        ],
+        "tags": [
+          "limitation"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T11:33:36.485Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -1112,8 +2058,122 @@
         "extractedAt": "2026-10-03T23:23:47.872Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜{抜|ぬ}きにしては・〜{抜|ぬ}きでは・〜{抜|ぬ}きには",
+        "senseLabel": "syarat mutlak",
+        "meaningId": "Tanpa N, suatu tindakan atau hasil tidak mungkin terwujud karena N merupakan syarat yang mutlak diperlukan.",
+        "meaningEn": "Without N, an action or outcome is impossible because N is presented as an indispensable condition.",
+        "connections": [
+          {
+            "form": "n",
+            "pattern": "を{抜|ぬ}きにしては"
+          },
+          {
+            "form": "n",
+            "pattern": "{抜|ぬ}きでは"
+          },
+          {
+            "form": "n",
+            "pattern": "{抜|ぬ}きには"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Nomina dengan partikel を",
+            "input": "{協力|きょうりょく}",
+            "rule": "Tambahkan を{抜|ぬ}きにしては setelah nomina.",
+            "output": "{協力|きょうりょく}を{抜|ぬ}きにしては",
+            "note": null
+          },
+          {
+            "label": "Nomina langsung dengan bentuk では",
+            "input": "{準備|じゅんび}",
+            "rule": "Tambahkan {抜|ぬ}きでは langsung setelah nomina.",
+            "output": "{準備|じゅんび}{抜|ぬ}きでは",
+            "note": null
+          },
+          {
+            "label": "Nomina langsung dengan bentuk には",
+            "input": "{信頼|しんらい}",
+            "rule": "Tambahkan {抜|ぬ}きには langsung setelah nomina.",
+            "output": "{信頼|しんらい}{抜|ぬ}きには",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "Pola ini mengandaikan keadaan tanpa N, lalu menyatakan bahwa tindakan, penilaian, atau hasil sesudahnya tidak mungkin tercapai. Dengan demikian, N ditegaskan sebagai unsur yang mutlak diperlukan.",
+          "Dalam Nを{抜|ぬ}きにしては, partikel を menghubungkan nomina dengan {抜|ぬ}きにしては. Pada N{抜|ぬ}きでは dan N{抜|ぬ}きには, nomina langsung diikuti bentuk target tanpa を.",
+          "Predikat sesudah pola ini biasanya berupa bentuk potensial negatif atau ungkapan ketidakmungkinan, seperti tidak dapat dilakukan, sulit diwujudkan, atau tidak dapat diharapkan. Fokusnya adalah ketidakmungkinan akibat ketiadaan N, bukan sekadar keputusan untuk tidak menyertakan N.",
+          "Bentuk N{抜|ぬ}きでは menampilkan keadaan tanpa N sebagai kondisi yang membuat kelanjutan mustahil. N{抜|ぬ}きには cenderung menonjolkan N sebagai prasyarat, sedangkan Nを{抜|ぬ}きにしては sering dipakai ketika membahas persoalan atau pertimbangan abstrak.",
+          "Pola ini berbeda dari N{抜|ぬ}き yang hanya berarti melakukan sesuatu tanpa menyertakan N. Jika penghilangan N tidak menyebabkan ketidakmampuan atau ketidakmungkinan, bentuk sederhana N{抜|ぬ}き biasanya lebih tepat."
+        ],
+        "usage": {
+          "nuance": [
+            "Menekankan bahwa N bukan unsur tambahan, melainkan syarat penting yang tidak dapat diabaikan.",
+            "Sering mengandung penilaian kuat bahwa rencana atau hasil akan gagal apabila N tidak tersedia."
+          ],
+          "register": [
+            "Lazim dalam pembahasan analitis, tulisan, presentasi, dan percakapan yang membicarakan syarat penting.",
+            "Nを{抜|ぬ}きにしては dan N{抜|ぬ}きには terdengar relatif lebih formal daripada ungkapan sehari-hari dengan なしでは."
+          ],
+          "restrictions": [
+            "Klausa sesudahnya pada umumnya harus menyatakan ketidakmampuan, kesulitan serius, atau ketidakmungkinan.",
+            "Nomina sebelum pola harus dapat dipahami sebagai unsur yang diperlukan bagi tindakan atau hasil dalam klausa berikutnya.",
+            "Tidak digunakan hanya untuk menyatakan bahwa suatu bahan, orang, atau topik sengaja dikecualikan tanpa akibat berupa ketidakmungkinan."
+          ],
+          "typicalContexts": [
+            "Pembahasan kebijakan, penelitian, proyek, kerja sama, dan persyaratan keberhasilan.",
+            "Penjelasan mengenai dukungan, kepercayaan, pengetahuan, atau persiapan yang diperlukan untuk mencapai sesuatu."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "この{制度|せいど}の{改革|かいかく}は、{住民|じゅうみん}の{声|こえ}__を{抜|ぬ}きにしては__{論|ろん}じられない。",
+            "id": "Reformasi sistem ini tidak dapat dibahas tanpa suara warga.",
+            "en": "Reform of this system cannot be discussed without the voices of local residents."
+          },
+          {
+            "jp": "{専門家|せんもんか}の{分析|ぶんせき}__{抜|ぬ}きでは__、この{数値|すうち}の{意味|いみ}を{正確|せいかく}に{判断|はんだん}できない。",
+            "id": "Tanpa analisis ahli, arti angka-angka ini tidak dapat dinilai secara akurat.",
+            "en": "Without expert analysis, the meaning of these figures cannot be assessed accurately."
+          },
+          {
+            "jp": "{当事者|とうじしゃ}どうしの{信頼|しんらい}__{抜|ぬ}きには__、{長期的|ちょうきてき}な{和平|わへい}の{実現|じつげん}は{望|のぞ}めない。",
+            "id": "Tanpa rasa saling percaya di antara pihak-pihak terkait, perdamaian jangka panjang tidak dapat diharapkan.",
+            "en": "Without mutual trust between the parties concerned, lasting peace cannot be expected."
+          },
+          {
+            "jp": "{安全性|あんぜんせい}の{検証|けんしょう}__を{抜|ぬ}きにしては__、{新薬|しんやく}の{実用化|じつようか}を{進|すす}めることはできない。",
+            "id": "Penerapan obat baru tidak dapat dilanjutkan tanpa pemeriksaan keamanannya.",
+            "en": "The practical application of a new drug cannot proceed without verifying its safety."
+          },
+          {
+            "jp": "{家族|かぞく}の{支|ささ}え__{抜|ぬ}きでは__、あの{厳|きび}しい{治療|ちりょう}を{乗|の}り{越|こ}えられなかったと{思|おも}う。",
+            "id": "Saya rasa saya tidak akan mampu melewati perawatan berat itu tanpa dukungan keluarga.",
+            "en": "I do not think I could have endured that difficult treatment without my family's support."
+          },
+          {
+            "jp": "この{小説|しょうせつ}は、{時代背景|じだいはいけい}の{理解|りかい}__{抜|ぬ}きには__、その{深|ふか}い{意味|いみ}を{味|あじ}わえない。",
+            "id": "Makna mendalam novel ini tidak dapat dihayati tanpa memahami latar zamannya.",
+            "en": "The deeper meaning of this novel cannot be appreciated without understanding its historical setting."
+          }
+        ],
+        "pitfalls": [
+          "Perhatikan sambungannya: ○ Nを{抜|ぬ}きにしては, tetapi ○ N{抜|ぬ}きでは dan ○ N{抜|ぬ}きには. Jangan menambahkan を pada dua bentuk terakhir.",
+          "Jangan memakai pola ini jika klausa berikutnya hanya menyatakan pilihan netral. Untuk arti sekadar tanpa menyertakan sesuatu, gunakan N{抜|ぬ}き, bukan konstruksi syarat mutlak ini.",
+          "Nを{抜|ぬ}きにしては harus dipahami sebagai satu konstruksi. Jangan mencampurkannya dengan pola evaluatif にしては yang berarti hasilnya tidak sesuai dengan standar atau dugaan."
+        ],
+        "tags": [
+          "condition"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T11:37:47.862Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -1149,8 +2209,129 @@
         "extractedAt": "2026-10-03T23:30:23.352Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜てたまらない",
+        "senseLabel": null,
+        "meaningId": "merasakan emosi, keinginan, atau sensasi dengan begitu kuat hingga sulit ditahan",
+        "meaningEn": "to feel an emotion, desire, or physical sensation so intensely that it is unbearable",
+        "connections": [
+          {
+            "form": "v-te",
+            "pattern": "たまらない"
+          },
+          {
+            "form": "i-adj-ku",
+            "pattern": "てたまらない"
+          },
+          {
+            "form": "na-adj-stem",
+            "pattern": "でたまらない"
+          }
+        ],
+        "formation": [
+          {
+            "label": "kata kerja bentuk te",
+            "input": "{喉|のど}が{渇|かわ}く",
+            "rule": "Ubah kata kerja menjadi bentuk te, lalu tambahkan たまらない.",
+            "output": "{喉|のど}が{渇|かわ}いてたまらない",
+            "note": null
+          },
+          {
+            "label": "kata sifat-i",
+            "input": "{痛|いた}い",
+            "rule": "Lepaskan akhiran い, lalu tambahkan くてたまらない.",
+            "output": "{痛|いた}くてたまらない",
+            "note": null
+          },
+          {
+            "label": "kata sifat-na",
+            "input": "{心配|しんぱい}だ",
+            "rule": "Lepaskan kopula だ, lalu tambahkan でたまらない.",
+            "output": "{心配|しんぱい}でたまらない",
+            "note": null
+          },
+          {
+            "label": "bentuk keinginan",
+            "input": "{会|あ}いたい",
+            "rule": "Konjugasikan たい seperti kata sifat-i dengan mengganti い menjadi くて, lalu tambahkan たまらない.",
+            "output": "{会|あ}いたくてたまらない",
+            "note": "Bentuk たい digunakan ketika yang terasa tidak tertahankan adalah keinginan untuk melakukan sesuatu."
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜てたまらない menyatakan bahwa suatu emosi, keinginan, atau sensasi fisik terasa sangat kuat sampai penutur sulit menahannya. Pola ini tidak sekadar berarti sangat, tetapi juga membawa kesan bahwa keadaan tersebut terus mendesak atau mengganggu diri penutur.",
+          "Setelah kata kerja bentuk te, tambahkan たまらない secara langsung. Kata sifat-i berubah menjadi bentuk くて, sedangkan kata sifat-na diikuti で. Keinginan yang kuat dinyatakan dengan mengubah bentuk たい menjadi たくてたまらない.",
+          "Pola ini lazim digunakan untuk rasa sakit, haus, kantuk, kekhawatiran, kerinduan, kejengkelan, dan dorongan emosional lain yang sulit dikendalikan. Predikatnya biasanya menunjukkan keadaan atau reaksi yang muncul secara spontan, bukan tindakan sengaja yang dilakukan dengan intensitas tinggi.",
+          "Karena mengungkapkan pengalaman batin secara langsung, subjeknya paling alami adalah penutur. Untuk orang ketiga, diperlukan dasar pengamatan atau pelaporan, misalnya keterangan bahwa orang tersebut tampak demikian atau mengatakan perasaannya sendiri.",
+          "Dibandingkan てならない, 〜てたまらない lebih menonjolkan intensitas yang terasa tidak tertahankan dan sering terdengar lebih langsung dalam percakapan. Bentuk てならない cenderung lebih cocok untuk perasaan yang muncul dengan sendirinya dan dapat terdengar lebih formal."
+        ],
+        "usage": {
+          "nuance": [
+            "Menggambarkan tingkat perasaan atau sensasi yang amat kuat, seolah-olah penutur tidak sanggup menahannya.",
+            "Sering dipakai untuk keadaan tidak nyaman, tetapi juga dapat menyatakan keinginan atau kerinduan yang sangat kuat."
+          ],
+          "register": [
+            "Dapat digunakan dalam percakapan maupun tulisan, tetapi sifatnya subjektif dan emosional sehingga kurang cocok untuk dokumen resmi yang objektif."
+          ],
+          "restrictions": [
+            "Paling alami untuk perasaan, keinginan, sensasi tubuh, atau reaksi spontan, bukan untuk menyatakan bahwa tindakan biasa dilakukan dengan sangat giat.",
+            "Pernyataan langsung tentang keadaan batin orang ketiga memerlukan penanda pengamatan, kutipan, atau konteks yang menunjukkan sumber informasi."
+          ],
+          "typicalContexts": [
+            "Keluhan mengenai rasa sakit, rasa haus, kantuk, kebisingan, atau ketidaknyamanan lain.",
+            "Ungkapan kecemasan, penyesalan, kerinduan, rasa ingin tahu, atau keinginan yang sangat kuat."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "{昨夜|さくや}から{歯|は}が{痛|いた}く__てたまらない__。",
+            "id": "Sejak tadi malam, gigiku sakit sekali sampai tidak tertahankan.",
+            "en": "My tooth has hurt unbearably since last night."
+          },
+          {
+            "jp": "{海外|かいがい}で3{年|ねん}{働|はたら}き、{家族|かぞく}に{会|あ}いたく__てたまらない__。",
+            "id": "Setelah bekerja di luar negeri selama tiga tahun, aku sangat ingin bertemu keluargaku.",
+            "en": "After working abroad for three years, I desperately want to see my family."
+          },
+          {
+            "jp": "{明日|あした}、{面接|めんせつ}の{結果|けっか}が{出|で}るので、{心配|しんぱい}__でたまらない__。",
+            "id": "Karena hasil wawancaraku keluar besok, aku merasa sangat cemas.",
+            "en": "I am unbearably anxious because my interview results will be announced tomorrow."
+          },
+          {
+            "jp": "{炎天下|えんてんか}を2{時間|じかん}も{歩|ある}いたので、{喉|のど}が{渇|かわ}いて__たまらない__。",
+            "id": "Karena berjalan selama dua jam di bawah terik matahari, aku merasa sangat haus.",
+            "en": "After walking under the blazing sun for two hours, I am unbearably thirsty."
+          },
+          {
+            "jp": "{彼|かれ}は{試合|しあい}に{負|ま}けたことが{悔|くや}しく__てたまらない__{様子|ようす}だった。",
+            "id": "Ia tampak merasa luar biasa kecewa karena kalah dalam pertandingan.",
+            "en": "He looked unbearably frustrated about losing the match."
+          },
+          {
+            "jp": "{隣|となり}の{工事|こうじ}の{音|おと}がうるさく__てたまらない__。",
+            "id": "Suara pembangunan di sebelah sangat bising dan tidak tertahankan.",
+            "en": "The construction noise next door is unbearably loud."
+          }
+        ],
+        "pitfalls": [
+          "Kata sifat-na harus diikuti で, bukan て. ○ {心配|しんぱい}でたまらない。✕ {心配|しんぱい}てたまらない.",
+          "Untuk menyatakan keinginan yang tidak tertahankan, gunakan bentuk たい. ○ {会|あ}いたくてたまらない。Bentuk {会|あ}ってたまらない tidak berarti sangat ingin bertemu.",
+          "Jangan menggunakannya hanya sebagai penguat untuk tindakan yang disengaja. Pola ini memerlukan perasaan, sensasi, keinginan, atau reaksi spontan yang dialami sebagai sesuatu yang sulit ditahan.",
+          "Hindari menyatakan keadaan batin orang ketiga sebagai fakta langsung tanpa dasar pengamatan atau pelaporan. Tambahkan ungkapan seperti tampak demikian atau mengatakan bahwa ia merasa demikian."
+        ],
+        "tags": [
+          "feeling",
+          "degree"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T11:35:00.760Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -1186,8 +2367,138 @@
         "extractedAt": "2026-10-03T23:30:20.582Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜てしかたがない",
+        "senseLabel": null,
+        "meaningId": "Sangat kuat hingga tidak tertahankan; perasaan, keinginan, keadaan, atau sensasi sulit dikendalikan.",
+        "meaningEn": "So intense as to be unbearable; an emotion, desire, state, or sensation that is difficult to control.",
+        "connections": [
+          {
+            "form": "v-te",
+            "pattern": "しかたがない"
+          },
+          {
+            "form": "i-adj-ku",
+            "pattern": "てしかたがない"
+          },
+          {
+            "form": "na-adj-stem",
+            "pattern": "でしかたがない"
+          },
+          {
+            "form": "v-masu",
+            "pattern": "たくてしかたがない",
+            "note": "Dipakai untuk menyatakan keinginan kuat melalui bentuk Vたい."
+          }
+        ],
+        "formation": [
+          {
+            "label": "Kata kerja bentuk て",
+            "input": "{気|き}になる",
+            "rule": "Ubah kata kerja ke bentuk て, lalu tambahkan しかたがない.",
+            "output": "{気|き}になってしかたがない",
+            "note": null
+          },
+          {
+            "label": "Kata sifat-i",
+            "input": "{眠|ねむ}い",
+            "rule": "Ganti akhiran い dengan くて, lalu tambahkan しかたがない.",
+            "output": "{眠|ねむ}くてしかたがない",
+            "note": null
+          },
+          {
+            "label": "Kata sifat-na",
+            "input": "{不安|ふあん}",
+            "rule": "Tambahkan でしかたがない langsung setelah kata sifat-na.",
+            "output": "{不安|ふあん}でしかたがない",
+            "note": null
+          },
+          {
+            "label": "Keinginan dengan Vたい",
+            "input": "{帰|かえ}る",
+            "rule": "Ambil pangkal bentuk ます, lalu tambahkan たくてしかたがない.",
+            "output": "{帰|かえ}りたくてしかたがない",
+            "note": null
+          }
+        ],
+        "variants": [
+          "〜てしょうがない"
+        ],
+        "explanation": [
+          "〜てしかたがない menegaskan bahwa suatu perasaan, keinginan, keadaan, atau sensasi begitu kuat sehingga orang yang mengalaminya sulit menahan atau mengendalikannya. Pola ini lebih kuat daripada sekadar memakai とても.",
+          "Predikat sebelumnya biasanya mengacu pada sesuatu yang muncul secara spontan, seperti rasa khawatir, kantuk, kegembiraan, rasa sakit, atau pikiran yang terus mengganggu. Kata kerja yang lazim antara lain {気|き}になる dan bentuk keinginan Vたい.",
+          "Ungkapan ini pada dasarnya bersifat subjektif sehingga sangat alami untuk pengalaman pembicara sendiri. Pengalaman orang ketiga dapat dinyatakan jika diketahui dari ucapan, perilaku yang terlihat, atau konteks naratif yang memadai.",
+          "Walaupun {仕方|しかた}がない secara harfiah dapat berarti tidak ada cara, dalam pola ini keseluruhannya telah berfungsi sebagai penegas tingkat. Bentuk 〜てしょうがない hampir setara dan lebih lazim terdengar dalam percakapan santai."
+        ],
+        "usage": {
+          "nuance": [
+            "Menunjukkan intensitas yang melampaui とても dan menyiratkan bahwa keadaan tersebut terus dirasakan atau sukar dikendalikan.",
+            "Dapat dipakai untuk pengalaman negatif maupun positif, misalnya kecemasan, rasa gatal, kegembiraan, atau keinginan kuat."
+          ],
+          "register": [
+            "Bentuk 〜てしかたがない bersifat netral dan dapat digunakan dalam percakapan maupun tulisan.",
+            "Bentuk 〜てしょうがない cenderung lebih percakapan, sedangkan bentuk dengan {仕方|しかた} dapat tampil lebih rapi dalam tulisan."
+          ],
+          "restrictions": [
+            "Umumnya tidak dipakai hanya untuk menyatakan tindakan sengaja yang dilakukan berkali-kali; harus ada keadaan, dorongan, atau sensasi yang terasa sulit dikendalikan.",
+            "Untuk kata sifat-i, gunakan bentuk くて. Untuk kata sifat-na, gunakan で.",
+            "Pernyataan langsung tentang perasaan orang ketiga memerlukan dasar kontekstual, seperti pengakuan orang tersebut atau tanda yang dapat diamati."
+          ],
+          "typicalContexts": [
+            "Perasaan seperti kecemasan, kegembiraan, penyesalan, rasa ingin tahu, dan kerinduan.",
+            "Sensasi tubuh seperti kantuk, panas, nyeri, haus, atau rasa gatal.",
+            "Keinginan kuat dengan bentuk Vたくてしかたがない."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "{締|し}め{切|き}りが{近|ちか}づき、{作業|さぎょう}の{遅|おく}れが{気|き}になって__しかたがない__。",
+            "id": "Tenggat semakin dekat, dan saya tidak bisa berhenti memikirkan keterlambatan pekerjaan.",
+            "en": "The deadline is approaching, and I cannot stop worrying about the delay in the work."
+          },
+          {
+            "jp": "{海外|かいがい}にいる{娘|むすめ}と{連絡|れんらく}が{取|と}れず、{心配|しんぱい}__でしかたがない__。",
+            "id": "Saya sangat khawatir karena tidak dapat menghubungi putri saya yang berada di luar negeri.",
+            "en": "I am terribly worried because I cannot get in touch with my daughter overseas."
+          },
+          {
+            "jp": "{昨夜|さくや}はほとんど{眠|ねむ}れなかったので、{朝|あさ}から{眠|ねむ}く__てしかたがない__。",
+            "id": "Karena semalam hampir tidak bisa tidur, sejak pagi saya mengantuk sekali sampai tidak tertahankan.",
+            "en": "I could hardly sleep last night, so I have been unbearably sleepy since this morning."
+          },
+          {
+            "jp": "{採用|さいよう}の{知|し}らせを{受|う}け、{彼女|かのじょ}は{嬉|うれ}しく__てしかたがなかった__。",
+            "id": "Setelah menerima kabar bahwa ia diterima bekerja, dia merasa sangat gembira.",
+            "en": "After receiving the news that she had been hired, she was overcome with joy."
+          },
+          {
+            "jp": "{湿気|しっけ}のせいで{肌|はだ}がかゆく__てしかたがない__。",
+            "id": "Kulit saya terasa sangat gatal akibat kelembapan ini.",
+            "en": "My skin is unbearably itchy because of the humidity."
+          },
+          {
+            "jp": "{留学|りゅうがく}している{親友|しんゆう}に{会|あ}い__たくてしかたがない__。",
+            "id": "Saya sangat ingin bertemu dengan sahabat saya yang sedang belajar di luar negeri.",
+            "en": "I am dying to see my best friend who is studying abroad."
+          }
+        ],
+        "pitfalls": [
+          "Untuk kata sifat-i, jangan menambahkan で. ✕ {眠|ねむ}いでしかたがない. ○ {眠|ねむ}くてしかたがない.",
+          "Untuk kata sifat-na, gunakan で, bukan くて. ✕ {不安|ふあん}くてしかたがない. ○ {不安|ふあん}でしかたがない.",
+          "Jangan tertukar dengan kata kerja bentuk kamus + しかない yang berarti tidak ada pilihan selain. {待|ま}つしかない berbeda dari {待|ま}ちたくてしかたがない.",
+          "Pola ini bukan sekadar penanda frekuensi tinggi. Tindakan yang sepenuhnya disengaja harus ditafsirkan sebagai dorongan yang sulit ditahan agar pemakaiannya alami."
+        ],
+        "tags": [
+          "degree",
+          "feeling"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T11:36:37.272Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -1223,8 +2534,125 @@
         "extractedAt": "2026-10-03T23:30:28.536Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜てかなわない",
+        "senseLabel": null,
+        "meaningId": "begitu berat atau mengganggu hingga tidak tertahankan",
+        "meaningEn": "so severe or troublesome that it is unbearable",
+        "connections": [
+          {
+            "form": "v-te",
+            "pattern": "かなわない"
+          },
+          {
+            "form": "i-adj-ku",
+            "pattern": "てかなわない"
+          },
+          {
+            "form": "na-adj-stem",
+            "pattern": "でかなわない"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Kata kerja",
+            "input": "{待|ま}つ",
+            "rule": "Ubah kata kerja ke bentuk te, lalu tambahkan かなわない.",
+            "output": "{待|ま}ってかなわない",
+            "note": null
+          },
+          {
+            "label": "Adjektiva-i",
+            "input": "{暑|あつ}い",
+            "rule": "Ganti akhiran い dengan く, lalu tambahkan てかなわない.",
+            "output": "{暑|あつ}くてかなわない",
+            "note": null
+          },
+          {
+            "label": "Adjektiva-na",
+            "input": "{暇|ひま}だ",
+            "rule": "Hilangkan kopula だ, lalu tambahkan でかなわない.",
+            "output": "{暇|ひま}でかなわない",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "Pola ini menyatakan bahwa suatu keadaan, sensasi, atau pengalaman terasa begitu berat sehingga pembicara tidak sanggup menahannya. Fokusnya bukan sekadar pada tingkat yang tinggi, tetapi pada beban nyata yang ditimbulkan bagi orang yang mengalaminya.",
+          "Pola ini mengikuti kata kerja bentuk te, adjektiva-i dalam bentuk くて, atau adjektiva-na yang diikuti で. Kata kerja yang digunakan sering menggambarkan kejadian berulang atau sesuatu yang berada di luar kendali pembicara, termasuk bentuk pasif yang menyatakan gangguan.",
+          "Nuansanya umumnya berupa keluhan subjektif. Karena itu, pola ini lazim digunakan untuk rasa sakit, cuaca yang menyiksa, kebisingan, kebosanan, gangguan berulang, atau keadaan lain yang tidak menyenangkan.",
+          "てたまらない juga dapat menyatakan perasaan yang sangat kuat, termasuk perasaan positif. Sebaliknya, てかなわない lebih konsisten menggambarkan keadaan yang memberatkan atau mengganggu dan sering terdengar seperti keluhan."
+        ],
+        "usage": {
+          "nuance": [
+            "Menunjukkan bahwa dampak keadaan tersebut sudah melewati batas yang dapat ditoleransi pembicara.",
+            "Biasanya membawa nuansa negatif berupa keluhan, rasa terganggu, atau penderitaan."
+          ],
+          "register": [
+            "Lazim dalam percakapan netral dan tulisan yang menampilkan suara atau penilaian pribadi.",
+            "Kurang cocok untuk dokumen yang sepenuhnya objektif karena menyatakan pengalaman subjektif dengan kuat."
+          ],
+          "restrictions": [
+            "Umumnya digunakan untuk keadaan yang tidak menyenangkan, bukan untuk pujian atau kegembiraan yang sangat besar.",
+            "Kata kerja biasanya menggambarkan kejadian tidak terkendali, berulang, atau merugikan, bukan tindakan sengaja yang dilakukan satu kali.",
+            "Jika subjeknya orang ketiga, diperlukan konteks yang menunjukkan bahwa penutur mengetahui atau menyampaikan pengalaman orang tersebut."
+          ],
+          "typicalContexts": [
+            "Keluhan tentang rasa sakit, panas, dingin, gatal, kebisingan, atau kelelahan.",
+            "Gangguan berulang seperti dibangunkan, dibuat menunggu, atau terkena tindakan orang lain.",
+            "Keadaan berkepanjangan seperti kebosanan atau kurang tidur."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "{隣|となり}の{工事|こうじ}の{音|おと}がうるさく__てかなわない__。",
+            "id": "Suara pembangunan di sebelah sangat bising sampai tidak tertahankan.",
+            "en": "The construction noise next door is so loud that I cannot stand it."
+          },
+          {
+            "jp": "{最近|さいきん}、{夜中|よなか}に{何度|なんど}も{目|め}が{覚|さ}めて__かなわない__。",
+            "id": "Belakangan ini saya terus terbangun berkali-kali pada malam hari dan benar-benar tidak tahan.",
+            "en": "Lately, I keep waking up several times during the night, and it is unbearable."
+          },
+          {
+            "jp": "{花粉|かふん}の{季節|きせつ}は{目|め}がかゆく__てかなわない__。",
+            "id": "Pada musim serbuk sari, mata saya terasa sangat gatal sampai tidak tertahankan.",
+            "en": "During pollen season, my eyes itch so badly that I cannot stand it."
+          },
+          {
+            "jp": "{毎晩|まいばん}、{近所|きんじょ}の{犬|いぬ}に{遅|おそ}くまでほえられて__かなわない__。",
+            "id": "Saya tidak tahan karena setiap malam anjing tetangga terus menggonggong sampai larut.",
+            "en": "I cannot stand the neighbor's dog barking until late every night."
+          },
+          {
+            "jp": "{出張中|しゅっちょうちゅう}は{仕事|しごと}が{終|お}わった{後|あと}、{暇|ひま}で__かなわない__。",
+            "id": "Saat melakukan perjalanan dinas, saya sangat bosan setelah pekerjaan selesai.",
+            "en": "When I am away on business, I get unbearably bored after work."
+          },
+          {
+            "jp": "{冷房|れいぼう}が{強|つよ}すぎて、{体|からだ}が{冷|ひ}えて__かなわない__。",
+            "id": "Pendingin ruangannya terlalu kuat sehingga tubuh saya kedinginan dan saya tidak tahan.",
+            "en": "The air conditioning is too strong, and I cannot stand how cold my body gets."
+          }
+        ],
+        "pitfalls": [
+          "Adjektiva-i harus memakai bentuk くて: ○ {暑|あつ}くてかなわない, ✕ {暑|あつ}いてかなわない.",
+          "Pada kata kerja, gunakan bentuk te lengkap: ○ {待|ま}たされてかなわない, ✕ {待|ま}たされかなわない.",
+          "Pola ini tidak menyatakan ketidakmampuan gramatikal untuk melakukan tindakan. Makna utamanya adalah bahwa suatu keadaan terasa tidak tertahankan.",
+          "てたまらない dapat menyatakan keinginan positif yang sangat kuat, misalnya {会|あ}いたくてたまらない. てかなわない biasanya terdengar sebagai keluhan, sehingga keduanya tidak selalu dapat saling menggantikan."
+        ],
+        "tags": [
+          "degree",
+          "feeling",
+          "negative"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T11:37:59.217Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -1260,8 +2688,124 @@
         "extractedAt": "2026-10-03T23:30:36.864Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜てならない",
+        "senseLabel": null,
+        "meaningId": "perasaan, sensasi, atau pikiran muncul begitu kuat hingga tidak dapat ditahan",
+        "meaningEn": "to feel an emotion, sensation, or thought so strongly that it cannot be suppressed",
+        "connections": [
+          {
+            "form": "v-te",
+            "pattern": "ならない"
+          },
+          {
+            "form": "i-adj-ku",
+            "pattern": "てならない"
+          },
+          {
+            "form": "na-adj-stem",
+            "pattern": "でならない"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Kata kerja",
+            "input": "{彼|かれ}のことが{気|き}になる",
+            "rule": "Ubah kata kerja ke bentuk て, lalu tambahkan ならない.",
+            "output": "{彼|かれ}のことが{気|き}になってならない",
+            "note": null
+          },
+          {
+            "label": "Kata sifat-i",
+            "input": "{恋|こい}しい",
+            "rule": "Ganti akhiran い dengan く, lalu tambahkan てならない.",
+            "output": "{恋|こい}しくてならない",
+            "note": null
+          },
+          {
+            "label": "Kata sifat-na",
+            "input": "{不思議|ふしぎ}だ",
+            "rule": "Hilangkan kopula だ, lalu tambahkan でならない.",
+            "output": "{不思議|ふしぎ}でならない",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "Pola 〜てならない menyatakan bahwa suatu perasaan, sensasi, kekhawatiran, atau pikiran muncul dengan sangat kuat dan sulit dikendalikan. Keadaan tersebut terasa seolah-olah timbul dengan sendirinya, bukan sengaja diciptakan oleh pembicara.",
+          "Setelah kata kerja digunakan bentuk て diikuti ならない. Kata sifat-i memakai bentuk くてならない, sedangkan kata sifat-na memakai でならない.",
+          "Pola ini sering menggambarkan keadaan batin pembicara, seperti sangat penasaran, cemas, menyesal, rindu, atau gembira. Pola ini juga dapat menyatakan kesan atau keyakinan yang terus muncul, terutama bersama kata kerja seperti merasa atau berpikir.",
+          "Nuansanya agak formal dan lebih terkendali daripada ungkapan percakapan yang sangat emosional. Bentuk ini berbeda dari てはならない yang menyatakan larangan dan なくてはならない yang menyatakan kewajiban."
+        ],
+        "usage": {
+          "nuance": [
+            "Menekankan bahwa perasaan atau pikiran sangat kuat, terus muncul, dan sulit ditekan.",
+            "Dapat digunakan untuk emosi negatif maupun positif, meskipun kekhawatiran, penyesalan, dan rasa penasaran sangat lazim."
+          ],
+          "register": [
+            "Bernuansa agak formal dan lazim dalam tulisan, pidato, atau percakapan yang serius.",
+            "Dalam percakapan santai, bentuk ini dapat terdengar lebih berat atau lebih tertata daripada ungkapan sehari-hari."
+          ],
+          "restrictions": [
+            "Umumnya melekat pada predikat yang menyatakan emosi, sensasi, perhatian, atau penilaian spontan, bukan tindakan yang dilakukan dengan sengaja.",
+            "Biasanya menggambarkan keadaan batin pembicara. Perasaan orang ketiga memerlukan konteks naratif, laporan, atau dasar yang memungkinkan pembicara mengetahuinya."
+          ],
+          "typicalContexts": [
+            "Kekhawatiran terhadap seseorang atau suatu hasil yang belum diketahui.",
+            "Penyesalan, kerinduan, kegembiraan, atau rasa penasaran yang terus memenuhi pikiran.",
+            "Pernyataan formal bahwa suatu kesan atau kesimpulan terus terasa benar bagi pembicara."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "{来週|らいしゅう}{発表|はっぴょう}される{審査|しんさ}の{結果|けっか}が{気|き}になって__ならない__。",
+            "id": "Saya terus memikirkan hasil penilaian yang akan diumumkan minggu depan.",
+            "en": "I cannot stop wondering about the assessment results to be announced next week."
+          },
+          {
+            "jp": "{離|はな}れて{暮|く}らす{父|ちち}の{健康|けんこう}が{心配|しんぱい}__でならない__。",
+            "id": "Saya sangat mencemaskan kesehatan ayah yang tinggal jauh dari saya.",
+            "en": "I cannot help worrying about the health of my father, who lives far away."
+          },
+          {
+            "jp": "あのとき{勇気|ゆうき}を{出|だ}して{謝|あやま}れなかったのが、{悔|くや}しく__てならない__。",
+            "id": "Saya sangat menyesal karena saat itu tidak berani meminta maaf.",
+            "en": "I deeply regret that I could not bring myself to apologize at that time."
+          },
+          {
+            "jp": "{彼|かれ}がなぜあれほど{急|きゅう}に{態度|たいど}を{変|か}えたのか、{不思議|ふしぎ}__でならない__。",
+            "id": "Saya tidak habis pikir mengapa dia mengubah sikapnya secara begitu mendadak.",
+            "en": "I cannot help wondering why he changed his attitude so suddenly."
+          },
+          {
+            "jp": "{会議|かいぎ}で{示|しめ}された{計画|けいかく}は、{現場|げんば}の{負担|ふたん}を{増|ふ}やすだけのように{思|おも}えて__ならない__。",
+            "id": "Saya terus merasa bahwa rencana yang dipaparkan dalam rapat hanya akan menambah beban para pekerja lapangan.",
+            "en": "I cannot help feeling that the plan presented at the meeting will only increase the burden on field staff."
+          },
+          {
+            "jp": "{長年|ながねん}の{夢|ゆめ}がかなって、うれしく__てならない__。",
+            "id": "Saya sangat gembira karena impian yang telah lama saya miliki akhirnya terwujud.",
+            "en": "I am overwhelmingly happy that my long-held dream has finally come true."
+          }
+        ],
+        "pitfalls": [
+          "Kata sifat-na harus diikuti で: ✕{心配|しんぱい}てならない / ○{心配|しんぱい}でならない.",
+          "Jangan menyamakan 〜てならない dengan 〜てはならない. Bentuk pertama menyatakan perasaan yang tidak tertahan, sedangkan bentuk kedua menyatakan larangan.",
+          "Jangan menyamakan 〜てならない dengan 〜なくてはならない. Bentuk kedua berarti harus melakukan sesuatu.",
+          "〜てたまらない juga menyatakan intensitas yang sukar ditahan, tetapi umumnya lebih langsung dan lebih lazim dalam percakapan serta dapat dengan mudah menggambarkan sensasi fisik."
+        ],
+        "tags": [
+          "feeling",
+          "degree",
+          "formal"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T11:39:08.356Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -1296,8 +2840,116 @@
         "extractedAt": "2026-10-03T23:30:43.433Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜ないことはない",
+        "senseLabel": null,
+        "meaningId": "Bukannya tidak mungkin; dapat dilakukan, tetapi biasanya disertai keraguan, kesulitan, keengganan, atau syarat.",
+        "meaningEn": "It is not impossible; something can be done, though usually with reservations, difficulty, reluctance, or conditions.",
+        "connections": [
+          {
+            "form": "v-nai",
+            "pattern": "ことはない"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Kata kerja godan",
+            "input": "{話|はな}す",
+            "rule": "Ubah suku akhir ke baris a, tambahkan ない, lalu tambahkan ことはない.",
+            "output": "{話|はな}さないことはない",
+            "note": null
+          },
+          {
+            "label": "Kata kerja ichidan",
+            "input": "{食|た}べる",
+            "rule": "Hapus る, tambahkan ない, lalu tambahkan ことはない.",
+            "output": "{食|た}べないことはない",
+            "note": null
+          },
+          {
+            "label": "Kata kerja tidak beraturan",
+            "input": "する／{来|く}る",
+            "rule": "Ubah menjadi しない atau こない, lalu tambahkan ことはない.",
+            "output": "しないことはない／{来|こ}ないことはない",
+            "note": null
+          }
+        ],
+        "variants": [
+          "〜ないこともない"
+        ],
+        "explanation": [
+          "Pola 〜ないことはない memakai negasi ganda untuk mengakui bahwa suatu tindakan masih mungkin atau dapat dilakukan. Penegasannya lebih lemah daripada pernyataan positif langsung.",
+          "Pola ini dibentuk dengan menambahkan ことはない setelah kata kerja bentuk nai. Negasi pertama menyatakan ketidakmungkinan atau penolakan, lalu negasi kedua menyangkal hal tersebut sehingga menghasilkan makna positif yang terbatas.",
+          "Penutur biasanya mempunyai keberatan tertentu, misalnya tindakan itu sulit, kurang ideal, merepotkan, atau hanya dapat dilakukan jika syarat tertentu dipenuhi. Karena itu, pola ini sering diikuti が atau けど untuk menjelaskan batasannya.",
+          "Pola ini tidak tepat untuk menyatakan kemampuan atau kepastian secara tegas tanpa reservasi. Variasi 〜ないこともない hampir setara dan dapat terdengar sedikit lebih lunak karena も menekankan bahwa kemungkinan tersebut tetap ada."
+        ],
+        "usage": {
+          "nuance": [
+            "Menyampaikan persetujuan atau kemungkinan secara terbatas, bukan afirmasi yang penuh keyakinan.",
+            "Sering menyiratkan keraguan, keengganan, kesulitan, atau kompromi yang tidak dinyatakan secara langsung."
+          ],
+          "register": [
+            "Bersifat netral dan dapat digunakan dalam percakapan maupun tulisan, termasuk saat membahas kelayakan secara hati-hati dalam situasi kerja."
+          ],
+          "restrictions": [
+            "Harus mengikuti kata kerja bentuk nai; bentuk negatif tersebut tidak boleh dihilangkan.",
+            "Tidak cocok jika pembicara ingin menyatakan kemampuan atau kepastian secara tegas tanpa syarat.",
+            "Batasan atau keberatan sering dijelaskan sesudah pola ini dengan が atau けど, tetapi bagian tersebut tidak wajib."
+          ],
+          "typicalContexts": [
+            "Menilai apakah rencana yang sulit masih dapat dilaksanakan.",
+            "Memberikan persetujuan dengan syarat atau menawarkan bantuan secara enggan.",
+            "Mengakui bahwa sesuatu masih dapat dipahami, diterima, atau dilanjutkan meskipun kurang ideal."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "{距離|きょり}は{遠|とお}いが、{日帰|ひがえ}りできない__ことはない__。",
+            "id": "Walaupun jaraknya jauh, perjalanan pulang-pergi dalam sehari masih dapat dilakukan.",
+            "en": "Although the distance is long, making the round trip in one day is not impossible."
+          },
+          {
+            "jp": "{予算|よさん}を{少|すこ}し{増|ふ}やせば、この{仕様|しよう}でも{実現|じつげん}できない__ことはない__。",
+            "id": "Jika anggarannya sedikit ditambah, rancangan dengan spesifikasi ini masih mungkin diwujudkan.",
+            "en": "If the budget is increased slightly, implementing these specifications would still be possible."
+          },
+          {
+            "jp": "{彼|かれ}の{説明|せつめい}は{複雑|ふくざつ}だが、{理解|りかい}できない__ことはない__。",
+            "id": "Penjelasannya rumit, tetapi bukannya tidak dapat dipahami.",
+            "en": "His explanation is complicated, but it is not impossible to understand."
+          },
+          {
+            "jp": "{毎朝|まいあさ}5{時|じ}に{起|お}きるのはつらいが、{慣|な}れれば{続|つづ}けられない__ことはない__。",
+            "id": "Bangun pukul lima setiap pagi memang berat, tetapi kebiasaan itu masih dapat dilanjutkan setelah terbiasa.",
+            "en": "Getting up at five every morning is hard, but it could be continued once I get used to it."
+          },
+          {
+            "jp": "この{古|ふる}い{資料|しりょう}だけでも{調査|ちょうさ}を{進|すす}められない__ことはない__けれど、{追加|ついか}のデータが{欲|ほ}しい。",
+            "id": "Penelitian masih dapat dilanjutkan hanya dengan bahan lama ini, tetapi saya menginginkan data tambahan.",
+            "en": "The investigation could proceed with these old materials alone, but I would like some additional data."
+          },
+          {
+            "jp": "{頼|たの}まれれば{手伝|てつだ}わない__ことはない__が、{今日|きょう}はあまり{時間|じかん}がない。",
+            "id": "Kalau diminta, bukannya saya tidak mau membantu, tetapi hari ini saya tidak punya banyak waktu.",
+            "en": "It is not that I would refuse to help if asked, but I do not have much time today."
+          }
+        ],
+        "pitfalls": [
+          "Sambungan harus memakai bentuk nai: ○{行|い}かないことはない, bukan ✕{行|い}くことはない.",
+          "Jangan tertukar dengan kata kerja bentuk kamus + ことはない, seperti {急|いそ}ぐことはない, yang biasanya menyatakan bahwa sesuatu tidak perlu dilakukan.",
+          "Pola ini bukan afirmasi kuat. Kalimat seperti できないことはない mengakui adanya kemungkinan, tetapi biasanya tetap menyiratkan kesulitan atau syarat."
+        ],
+        "tags": [
+          "negation",
+          "possibility"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T11:39:12.807Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -1332,8 +2984,102 @@
         "extractedAt": "2026-10-03T23:30:42.576Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜ないこともない",
+        "senseLabel": null,
+        "meaningId": "bukannya mustahil; masih mungkin atau bersedia dalam kondisi tertentu",
+        "meaningEn": "not entirely impossible; may be possible or acceptable under certain conditions",
+        "connections": [
+          {
+            "form": "v-nai",
+            "pattern": "こともない"
+          }
+        ],
+        "formation": [
+          {
+            "label": "kata kerja bentuk nai",
+            "input": "{行|い}く",
+            "rule": "Ubah kata kerja ke bentuk nai, kemudian tambahkan こともない.",
+            "output": "{行|い}かないこともない",
+            "note": null
+          }
+        ],
+        "variants": [
+          "〜なくもない"
+        ],
+        "explanation": [
+          "Pola ini menyatakan kemungkinan secara tidak langsung melalui penyangkalan ganda. Pembicara tidak memberikan afirmasi penuh, tetapi menunjukkan bahwa suatu tindakan atau keadaan masih mungkin dilakukan.",
+          "Pola ini sering digunakan untuk menyatakan kesediaan yang terbatas atau persetujuan setengah hati. Biasanya terdapat syarat, keberatan, kesulitan, biaya, atau alasan lain yang membuat pembicara tidak ingin menjawab dengan tegas.",
+          "Pembentukannya adalah kata kerja bentuk nai diikuti こともない. Bentuk negatif dari kata kerja kemampuan juga dapat digunakan, seperti できないこともない, untuk menyatakan bahwa sesuatu sebenarnya masih dapat dilakukan meskipun mungkin tidak mudah.",
+          "Pola ini dekat dengan 〜なくもない. Dibandingkan afirmasi langsung, keduanya terdengar lebih berhati-hati. 〜ないわけではない juga dapat menyangkal penolakan secara sebagian, tetapi cakupannya lebih luas dan tidak selalu berfokus pada kemungkinan atau kesediaan melakukan tindakan."
+        ],
+        "usage": {
+          "nuance": [
+            "Afirmasinya lemah dan sering menyiratkan keraguan, syarat, kesulitan, atau keengganan.",
+            "Dalam jawaban terhadap permintaan, pola ini dapat terdengar seperti persetujuan setengah hati."
+          ],
+          "register": [
+            "Bersifat netral dan dapat digunakan dalam percakapan maupun tulisan.",
+            "Dalam situasi sopan, akhiran dapat diubah menjadi 〜ないこともありません."
+          ],
+          "restrictions": [
+            "Kata kerja harus berada dalam bentuk nai sebelum こともない; bentuk kamus tidak dapat langsung disambungkan.",
+            "Pola ini tidak cocok untuk menyatakan kemampuan tinggi, kepastian kuat, atau kesediaan tanpa syarat."
+          ],
+          "typicalContexts": [
+            "Menerima tawaran dengan syarat tertentu.",
+            "Menilai bahwa suatu rencana sulit tetapi masih dapat dilaksanakan.",
+            "Mengakui bahwa pendapat atau tindakan seseorang dapat dipahami sampai batas tertentu."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "{条件|じょうけん}が{合|あ}えば、その{仕事|しごと}を{引|ひ}き{受|う}けない__こともない__。",
+            "id": "Jika syaratnya sesuai, saya tidak menutup kemungkinan menerima pekerjaan itu.",
+            "en": "If the conditions are right, I would not rule out accepting the job."
+          },
+          {
+            "jp": "この{値段|ねだん}なら{買|か}えない__こともない__が、もう{少|すこ}し{考|かんが}えたい。",
+            "id": "Dengan harga ini, bukannya saya tidak mampu membelinya, tetapi saya ingin mempertimbangkannya sedikit lagi.",
+            "en": "At this price, it is not that I cannot buy it, but I would like to think a little longer."
+          },
+          {
+            "jp": "{事情|じじょう}を{聞|き}けば、{彼|かれ}の{判断|はんだん}も{理解|りかい}できない__こともない__。",
+            "id": "Setelah mendengar keadaannya, keputusan dia masih dapat dipahami sampai batas tertentu.",
+            "en": "After hearing the circumstances, his decision is understandable to some extent."
+          },
+          {
+            "jp": "{十分|じゅうぶん}な{時間|じかん}があれば、{私|わたし}{一人|ひとり}でも{修理|しゅうり}できない__こともない__。",
+            "id": "Jika tersedia cukup waktu, bukannya mustahil bagi saya untuk memperbaikinya sendiri.",
+            "en": "Given enough time, it would not be impossible for me to repair it by myself."
+          },
+          {
+            "jp": "{毎週|まいしゅう}は{難|むずか}しいが、{月|つき}に2{回|かい}なら{手伝|てつだ}わない__こともない__。",
+            "id": "Setiap minggu akan sulit, tetapi saya mungkin bersedia membantu jika hanya dua kali sebulan.",
+            "en": "Every week would be difficult, but I might be willing to help if it is only twice a month."
+          },
+          {
+            "jp": "{現行|げんこう}の{制度|せいど}でも{対応|たいおう}できない__こともない__が、{長期的|ちょうきてき}には{見直|みなお}しが{必要|ひつよう}だ。",
+            "id": "Sistem yang berlaku sekarang masih dapat digunakan untuk menanganinya, tetapi dalam jangka panjang perlu ditinjau kembali.",
+            "en": "The current system could still handle it, but a review will be necessary in the long term."
+          }
+        ],
+        "pitfalls": [
+          "Sambungkan pola ini pada bentuk nai. Untuk arti ini, ✕ {行|い}くこともない tidak dapat menggantikan ○ {行|い}かないこともない.",
+          "Jangan menyamakannya dengan 〜ことはない. Pola 〜ことはない biasanya menyatakan bahwa sesuatu tidak perlu dilakukan, sedangkan 〜ないこともない menyatakan bahwa tindakan tersebut masih mungkin dilakukan.",
+          "Pola ini bukan penolakan murni. Dalam konteks tawaran atau permintaan, pola tersebut justru dapat menunjukkan kesediaan terbatas yang bergantung pada syarat tertentu."
+        ],
+        "tags": [
+          "possibility",
+          "negation"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T11:40:21.414Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -1368,8 +3114,122 @@
         "extractedAt": "2026-10-03T23:30:43.328Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜ないではいられない",
+        "senseLabel": null,
+        "meaningId": "tidak sanggup menahan diri untuk tidak melakukan sesuatu karena dorongan atau perasaan yang kuat",
+        "meaningEn": "cannot help doing something because of a powerful feeling or irresistible urge",
+        "connections": [
+          {
+            "form": "v-nai",
+            "pattern": "ではいられない"
+          }
+        ],
+        "formation": [
+          {
+            "label": "verba godan",
+            "input": "{書|か}く",
+            "rule": "Ubah akhiran verba ke deret a dan tambahkan ない, lalu sambungkan dengan ではいられない.",
+            "output": "{書|か}かないではいられない",
+            "note": null
+          },
+          {
+            "label": "verba ichidan",
+            "input": "{見|み}る",
+            "rule": "Hilangkan る dan tambahkan ない, lalu sambungkan dengan ではいられない.",
+            "output": "{見|み}ないではいられない",
+            "note": null
+          },
+          {
+            "label": "verba tidak beraturan する",
+            "input": "する",
+            "rule": "Ubah する menjadi しない, lalu sambungkan dengan ではいられない.",
+            "output": "しないではいられない",
+            "note": null
+          },
+          {
+            "label": "verba tidak beraturan kuru",
+            "input": "{来|く}る",
+            "rule": "Ubah {来|く}る menjadi {来|こ}ない, lalu sambungkan dengan ではいられない.",
+            "output": "{来|こ}ないではいられない",
+            "note": null
+          }
+        ],
+        "variants": [
+          "〜ずにはいられない",
+          "〜ないじゃいられない"
+        ],
+        "explanation": [
+          "〜ないではいられない menyatakan bahwa seseorang tidak mampu terus berada dalam keadaan tidak melakukan suatu tindakan. Perasaan, dorongan batin, atau reaksi terhadap keadaan begitu kuat sehingga tindakan tersebut akhirnya dilakukan.",
+          "Pola ini dibentuk dari verba bentuk negatif biasa berakhiran ない, kemudian diikuti ではいられない. Bagian いられない dapat berubah mengikuti waktu, misalnya ではいられなかった untuk dorongan yang terjadi pada masa lampau.",
+          "Dorongan tersebut dapat berasal dari rasa haru, marah, kagum, penasaran, simpati, atau kebiasaan yang sulit dikendalikan. Karena menyoroti ketidakmampuan menahan diri, pola ini lebih ekspresif daripada sekadar menyatakan bahwa seseorang melakukan sesuatu.",
+          "Pola ini berbeda dari 〜ざるを{得|え}ない, yang biasanya menunjukkan bahwa keadaan luar tidak memberikan pilihan lain. 〜ないではいられない terutama menyoroti desakan emosional atau batin, bukan kewajiban objektif."
+        ],
+        "usage": {
+          "nuance": [
+            "Menekankan bahwa dorongan untuk bertindak terasa sangat kuat dan sulit dilawan.",
+            "Dapat mengungkapkan emosi positif maupun negatif, seperti haru, simpati, kemarahan, atau kegelisahan."
+          ],
+          "register": [
+            "Bentuk lengkap ではいられない bersifat netral dan dapat dipakai dalam percakapan maupun tulisan.",
+            "Dalam percakapan santai, では dapat berkontraksi menjadi じゃ sehingga muncul bentuk 〜ないじゃいられない."
+          ],
+          "restrictions": [
+            "Umumnya digunakan untuk tindakan yang timbul dari dorongan atau reaksi batin, bukan untuk kewajiban berdasarkan aturan.",
+            "Jika subjeknya orang ketiga, konteks perlu memberikan dasar untuk menyimpulkan dorongan tersebut, misalnya perilaku yang terlihat atau informasi mengenai perasaannya."
+          ],
+          "typicalContexts": [
+            "Reaksi emosional terhadap kenangan, musik, perkataan, ketidakadilan, atau kesulitan orang lain.",
+            "Tindakan spontan yang dilakukan karena rasa haru, marah, simpati, penasaran, atau keinginan kuat untuk menyampaikan sesuatu."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "その{映像|えいぞう}を{見|み}ると、{故郷|ふるさと}を{思|おも}い{出|だ}して{涙|なみだ}を{流|なが}さない__ではいられない__。",
+            "id": "Setiap melihat rekaman itu, saya tidak dapat menahan diri untuk meneteskan air mata karena teringat kampung halaman.",
+            "en": "Whenever I see that footage, I cannot help shedding tears as I remember my hometown."
+          },
+          {
+            "jp": "{彼|かれ}の{無責任|むせきにん}な{発言|はつげん}には、{一言|ひとこと}{反論|はんろん}しない__ではいられなかった__。",
+            "id": "Mendengar pernyataannya yang tidak bertanggung jawab, saya tidak dapat menahan diri untuk membantahnya.",
+            "en": "Faced with his irresponsible remark, I could not help speaking up against it."
+          },
+          {
+            "jp": "{子供|こども}たちが{懸命|けんめい}に{練習|れんしゅう}する{姿|すがた}を{見|み}ると、{応援|おうえん}しない__ではいられない__。",
+            "id": "Saat melihat anak-anak berlatih dengan sungguh-sungguh, saya tidak dapat menahan diri untuk menyemangati mereka.",
+            "en": "When I see the children practicing so earnestly, I cannot help cheering them on."
+          },
+          {
+            "jp": "{記者|きしゃ}はその{資料|しりょう}を{読|よ}み、{事実|じじつ}を{公表|こうひょう}しない__ではいられない__と{感|かん}じた。",
+            "id": "Setelah membaca dokumen itu, wartawan tersebut merasa tidak sanggup menahan diri untuk mengungkapkan fakta.",
+            "en": "After reading the documents, the reporter felt unable to keep from revealing the facts."
+          },
+          {
+            "jp": "この{曲|きょく}が{流|なが}れると、いつも{一緒|いっしょ}に{歌|うた}わない__ではいられない__。",
+            "id": "Setiap lagu ini diputar, saya selalu tidak dapat menahan diri untuk ikut bernyanyi.",
+            "en": "Whenever this song plays, I cannot help singing along."
+          },
+          {
+            "jp": "{被災地|ひさいち}の{状況|じょうきょう}を{知|し}り、{私|わたし}は{何|なに}か{行動|こうどう}を{起|お}こさない__ではいられなかった__。",
+            "id": "Setelah mengetahui keadaan daerah bencana, saya tidak dapat menahan diri untuk mengambil suatu tindakan.",
+            "en": "After learning about the situation in the disaster area, I could not help taking action."
+          }
+        ],
+        "pitfalls": [
+          "Bentuk negatif ない merupakan bagian sambungan yang wajib. Gunakan ○{言|い}わないではいられない, bukan ✕{言|い}うではいられない.",
+          "Jangan menyamakannya dengan kewajiban berdasarkan aturan. 〜ないではいられない menunjukkan dorongan yang sulit ditahan, sedangkan 〜なければならない menyatakan keharusan.",
+          "Bedakan dari 〜ざるを{得|え}ない. Pola tersebut menekankan tidak adanya pilihan karena keadaan luar, sedangkan 〜ないではいられない menekankan desakan emosional atau batin."
+        ],
+        "tags": [
+          "feeling"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T11:40:25.054Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -1404,8 +3264,126 @@
         "extractedAt": "2026-10-03T23:31:00.136Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜ずにはいられない",
+        "senseLabel": null,
+        "meaningId": "tidak mampu menahan dorongan untuk melakukan sesuatu",
+        "meaningEn": "cannot help doing something; be unable to resist doing it",
+        "connections": [
+          {
+            "form": "v-nai-stem",
+            "pattern": "ずにはいられない",
+            "note": "Hilangkan ない, lalu tambahkan pola ini. Untuk する dan kata kerja majemuk berakhiran する, gunakan せ."
+          }
+        ],
+        "formation": [
+          {
+            "label": "Kata kerja godan",
+            "input": "{書|か}かない",
+            "rule": "Hilangkan ない dari bentuk negatif, lalu tambahkan ずにはいられない.",
+            "output": "{書|か}かずにはいられない",
+            "note": null
+          },
+          {
+            "label": "Kata kerja ichidan",
+            "input": "{見|み}ない",
+            "rule": "Hilangkan ない dari bentuk negatif, lalu tambahkan ずにはいられない.",
+            "output": "{見|み}ずにはいられない",
+            "note": null
+          },
+          {
+            "label": "Kata kerja する",
+            "input": "{批判|ひはん}する",
+            "rule": "Ubah する menjadi bentuk khusus せ, lalu tambahkan ずにはいられない.",
+            "output": "{批判|ひはん}せずにはいられない",
+            "note": null
+          },
+          {
+            "label": "Kata kerja tidak beraturan くる",
+            "input": "{来|く}る",
+            "rule": "Gunakan pangkal bentuk negatif {来|こ}ない tanpa ない, lalu tambahkan ずにはいられない.",
+            "output": "{来|こ}ずにはいられない",
+            "note": null
+          }
+        ],
+        "variants": [
+          "〜ないではいられない"
+        ],
+        "explanation": [
+          "Pola ini menyatakan bahwa dorongan, emosi, atau reaksi batin begitu kuat sehingga subjek tidak mampu menahan diri untuk tidak melakukan suatu tindakan. Walaupun strukturnya mengandung bentuk negatif, makna akhirnya adalah bahwa tindakan tersebut benar-benar dilakukan atau hampir tidak mungkin dihindari.",
+          "Pembentukannya menggunakan pangkal bentuk ない yang diikuti ずにはいられない. Perubahan する menjadi せず merupakan pengecualian yang harus dihafalkan, termasuk pada kata kerja majemuk yang berakhiran する.",
+          "Pola ini berfokus pada dorongan dari dalam diri, bukan kewajiban yang ditetapkan aturan atau orang lain. Dorongan tersebut dapat muncul dari rasa haru, penasaran, khawatir, marah, simpati, atau penilaian yang terasa tidak dapat dibendung.",
+          "Bentuk 〜ないではいられない sangat dekat maknanya. Bentuk dengan ず terdengar lebih padat dan agak lebih formal, sehingga lazim dalam tulisan, komentar, pidato, atau pernyataan yang bernada serius, meskipun tetap dapat muncul dalam percakapan."
+        ],
+        "usage": {
+          "nuance": [
+            "Menekankan bahwa tindakan muncul hampir secara spontan karena dorongan psikologis atau emosional yang kuat.",
+            "Dapat menyampaikan reaksi positif maupun negatif; penilaiannya ditentukan oleh konteks."
+          ],
+          "register": [
+            "Bentuk dengan ず cenderung lebih formal dan lebih padat daripada 〜ないではいられない.",
+            "Lazim dalam tulisan, komentar resmi, pidato, serta percakapan yang bernada serius."
+          ],
+          "restrictions": [
+            "Dipakai setelah kata kerja dan biasanya menggambarkan tindakan atau reaksi subjek yang memiliki kesadaran.",
+            "Tidak dipakai untuk sekadar menyatakan kewajiban eksternal seperti peraturan atau perintah.",
+            "Untuk する, bentuk yang benar adalah せずにはいられない, bukan しずにはいられない."
+          ],
+          "typicalContexts": [
+            "Reaksi emosional seperti menangis, tertawa, menolong, memuji, atau memprotes.",
+            "Dorongan intelektual seperti mempertanyakan, menyelidiki, atau meragukan sesuatu.",
+            "Komentar yang menegaskan bahwa suatu keadaan secara alami memancing tindakan tertentu."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "{映画|えいが}の{最後|さいご}の{場面|ばめん}を{見|み}て、{涙|なみだ}を{流|なが}さ__ずにはいられなかった__。",
+            "id": "Setelah menyaksikan adegan terakhir film itu, saya tidak kuasa menahan air mata.",
+            "en": "After watching the final scene of the film, I could not help shedding tears."
+          },
+          {
+            "jp": "{駅|えき}で{泣|な}いている{迷子|まいご}を{見|み}かけると、{声|こえ}をかけ__ずにはいられない__。",
+            "id": "Ketika melihat anak tersesat yang menangis di stasiun, saya tidak mampu menahan diri untuk menyapanya.",
+            "en": "When I see a lost child crying at the station, I cannot help speaking to them."
+          },
+          {
+            "jp": "{研究者|けんきゅうしゃ}の{彼|かれ}は、データに{矛盾|むじゅん}を{見|み}つけると、その{原因|げんいん}を{調|しら}べ__ずにはいられない__。",
+            "id": "Sebagai peneliti, begitu menemukan pertentangan dalam data, dia tidak dapat menahan diri untuk menyelidiki penyebabnya.",
+            "en": "As a researcher, whenever he finds a contradiction in the data, he cannot resist investigating its cause."
+          },
+          {
+            "jp": "{彼|かれ}のあまりに{無責任|むせきにん}な{発言|はつげん}を{聞|き}いて、{一言|ひとこと}{注意|ちゅうい}せ__ずにはいられなかった__。",
+            "id": "Setelah mendengar ucapannya yang sangat tidak bertanggung jawab, saya tidak dapat menahan diri untuk menegurnya.",
+            "en": "After hearing his extremely irresponsible remark, I could not help reprimanding him."
+          },
+          {
+            "jp": "{一連|いちれん}の{報道|ほうどう}を{見|み}れば、{会社|かいしゃ}の{説明|せつめい}に{疑問|ぎもん}を{抱|いだ}か__ずにはいられない__。",
+            "id": "Setelah melihat rangkaian pemberitaan itu, orang pasti terdorong untuk meragukan penjelasan perusahaan.",
+            "en": "After seeing the series of reports, one cannot help questioning the company's explanation."
+          },
+          {
+            "jp": "{合格|ごうかく}の{知|し}らせを{受|う}けた{瞬間|しゅんかん}、{母|はは}に{電話|でんわ}せ__ずにはいられなかった__。",
+            "id": "Saat menerima kabar kelulusan, saya tidak dapat menahan diri untuk segera menelepon ibu.",
+            "en": "The moment I received the news that I had passed, I could not help calling my mother."
+          }
+        ],
+        "pitfalls": [
+          "Jangan mempertahankan ない. Bentuknya adalah ○{行|い}かずにはいられない, bukan ✕{行|い}かないずにはいられない.",
+          "Perubahan する bersifat khusus. Gunakan ○{批判|ひはん}せずにはいられない, bukan ✕{批判|ひはん}しずにはいられない.",
+          "Jangan menyamakannya dengan 〜なければならない. Pola ini menunjukkan dorongan dari dalam yang sulit ditahan, sedangkan 〜なければならない menyatakan keharusan atau kewajiban.",
+          "Walaupun mengandung unsur negatif ず, keseluruhan pola menyatakan bahwa subjek pada akhirnya melakukan tindakan tersebut atau merasa hampir mustahil untuk tidak melakukannya."
+        ],
+        "tags": [
+          "feeling",
+          "formal"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T11:42:38.980Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -1441,8 +3419,122 @@
         "extractedAt": "2026-10-03T23:30:52.480Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜ねばならない",
+        "senseLabel": null,
+        "meaningId": "harus melakukan sesuatu; berkewajiban untuk",
+        "meaningEn": "must do something; be obliged to",
+        "connections": [
+          {
+            "form": "v-nai-stem",
+            "pattern": "ねばならない",
+            "note": "Untuk する, gunakan bentuk khusus せ sebelum pola ini."
+          }
+        ],
+        "formation": [
+          {
+            "label": "Kata kerja godan",
+            "input": "{書|か}かない",
+            "rule": "Ganti ない pada bentuk negatif biasa dengan ねばならない.",
+            "output": "{書|か}かねばならない",
+            "note": null
+          },
+          {
+            "label": "Kata kerja ichidan",
+            "input": "{食|た}べない",
+            "rule": "Ganti ない pada bentuk negatif biasa dengan ねばならない.",
+            "output": "{食|た}べねばならない",
+            "note": null
+          },
+          {
+            "label": "Kata kerja tidak beraturan する",
+            "input": "しない",
+            "rule": "Ubah しない menjadi せねばならない.",
+            "output": "せねばならない",
+            "note": null
+          },
+          {
+            "label": "Kata kerja tidak beraturan くる",
+            "input": "{来|こ}ない",
+            "rule": "Ubah こない menjadi こねばならない.",
+            "output": "{来|こ}ねばならない",
+            "note": null
+          }
+        ],
+        "variants": [
+          "〜なければならない"
+        ],
+        "explanation": [
+          "〜ねばならない menyatakan bahwa suatu tindakan wajib dilakukan karena tanggung jawab, aturan, keadaan, atau kebutuhan yang tidak dapat diabaikan. Kewajiban tersebut dapat berlaku bagi pembicara maupun pihak lain.",
+          "Pola ini dibentuk dengan mengganti ない pada bentuk negatif kata kerja menjadi ねばならない. Kata kerja する merupakan pengecualian karena berubah menjadi せねばならない, bukan しねばならない.",
+          "Dibandingkan dengan 〜なければならない, bentuk ini terdengar lebih kaku, resmi, atau bernada tegas. Karena itu, pemakaiannya menonjol dalam dokumen, pidato, tulisan argumentatif, pernyataan kebijakan, dan ucapan yang bersifat serius.",
+          "Dalam konteks yang sudah jelas, bagian ならない kadang dihilangkan sehingga hanya tersisa 〜ねば. Pemendekan tersebut tetap menyatakan kewajiban, tetapi bernuansa ringkas dan tidak selalu cocok untuk percakapan sehari-hari."
+        ],
+        "usage": {
+          "nuance": [
+            "Menggambarkan tindakan sebagai kewajiban kuat atau sesuatu yang tidak dapat dihindari, bukan sekadar pilihan yang dianjurkan."
+          ],
+          "register": [
+            "Lazim dalam ragam resmi dan tulisan serta dapat terdengar kaku atau bersungguh-sungguh dalam percakapan."
+          ],
+          "restrictions": [
+            "Melekat pada kata kerja dan tidak langsung digunakan setelah nomina atau kata sifat.",
+            "Bentuk する berubah menjadi せねばならない."
+          ],
+          "typicalContexts": [
+            "Dokumen kebijakan, laporan resmi, pidato, pembahasan tanggung jawab profesional, dan pernyataan tekad yang serius."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "{委員会|いいんかい}は{調査|ちょうさ}の{結果|けっか}を{市民|しみん}に{公表|こうひょう}せ__ねばならない__。",
+            "id": "Komite harus mengumumkan hasil penyelidikan kepada warga.",
+            "en": "The committee must disclose the results of the investigation to the public."
+          },
+          {
+            "jp": "{研究者|けんきゅうしゃ}は{都合|つごう}の{悪|わる}い{事実|じじつ}も{正確|せいかく}に{報告|ほうこく}せ__ねばならない__。",
+            "id": "Peneliti harus melaporkan secara akurat bahkan fakta yang merugikan kepentingannya.",
+            "en": "Researchers must accurately report even facts that are inconvenient to them."
+          },
+          {
+            "jp": "この{文化財|ぶんかざい}を{次|つぎ}の{世代|せだい}に{残|のこ}すため、{今|いま}から{保護|ほご}せ__ねばならない__。",
+            "id": "Untuk mewariskan aset budaya ini kepada generasi berikutnya, kita harus melindunginya mulai sekarang.",
+            "en": "To preserve this cultural property for the next generation, we must protect it starting now."
+          },
+          {
+            "jp": "{締|し}め{切|き}りは{明朝|みょうちょう}だ。どうしても{今夜|こんや}{中|じゅう}に{仕上|しあ}げ__ねばならない__。",
+            "id": "Tenggatnya besok pagi. Apa pun yang terjadi, saya harus menyelesaikannya malam ini.",
+            "en": "The deadline is tomorrow morning. No matter what, I must finish it tonight."
+          },
+          {
+            "jp": "{契約|けいやく}の{内容|ないよう}を{変更|へんこう}するには、{双方|そうほう}の{同意|どうい}を{得|え}__ねばならない__。",
+            "id": "Untuk mengubah isi kontrak, persetujuan kedua belah pihak harus diperoleh.",
+            "en": "To change the terms of the contract, consent must be obtained from both parties."
+          },
+          {
+            "jp": "{緊急|きんきゅう}の{事故|じこ}が{起|お}きたため、{責任者|せきにんしゃ}はすぐ{現場|げんば}に{来|こ}__ねばならない__。",
+            "id": "Karena terjadi kecelakaan darurat, penanggung jawab harus segera datang ke lokasi.",
+            "en": "Because an emergency accident has occurred, the person in charge must come to the scene immediately."
+          }
+        ],
+        "pitfalls": [
+          "Jangan mempertahankan ない sebelum pola ini. ✕{書|か}かないねばならない; ○{書|か}かねばならない.",
+          "Untuk する, gunakan せねばならない, bukan しねばならない.",
+          "Jangan memakainya untuk saran ringan. ねばならない menyatakan kewajiban, sedangkan たほうがいい lebih sesuai untuk saran.",
+          "Perbedaan dari 〜なければならない terutama terletak pada ragam yang lebih resmi dan kaku, bukan pada adanya jenis kewajiban yang sepenuhnya berbeda."
+        ],
+        "tags": [
+          "obligation",
+          "formal",
+          "written"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T11:41:52.292Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -1477,8 +3569,122 @@
         "extractedAt": "2026-10-03T23:30:54.820Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜てはならない",
+        "senseLabel": null,
+        "meaningId": "menyatakan larangan tegas bahwa suatu tindakan tidak boleh dilakukan",
+        "meaningEn": "expresses a firm prohibition against performing an action",
+        "connections": [
+          {
+            "form": "v-te",
+            "pattern": "はならない"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Kata kerja kelompok 1 dengan bentuk て",
+            "input": "{書|か}く",
+            "rule": "Ubah kata kerja menjadi bentuk て, lalu tambahkan はならない.",
+            "output": "{書|か}いてはならない",
+            "note": null
+          },
+          {
+            "label": "Kata kerja kelompok 1 dengan bentuk で",
+            "input": "{読|よ}む",
+            "rule": "Ubah kata kerja menjadi bentuk で, lalu tambahkan はならない.",
+            "output": "{読|よ}んではならない",
+            "note": null
+          },
+          {
+            "label": "Kata kerja kelompok 2",
+            "input": "{食|た}べる",
+            "rule": "Ganti akhiran る dengan て, lalu tambahkan はならない.",
+            "output": "{食|た}べてはならない",
+            "note": null
+          },
+          {
+            "label": "Kata kerja tidak beraturan",
+            "input": "{来|く}る",
+            "rule": "Ubah menjadi bentuk て yang tidak beraturan, lalu tambahkan はならない.",
+            "output": "{来|き}てはならない",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "Pola ini menyatakan bahwa suatu tindakan dilarang secara tegas berdasarkan aturan, norma moral, tanggung jawab, atau prinsip yang harus dipatuhi. Larangannya terdengar kategoris dan tidak memberi banyak ruang untuk pengecualian.",
+          "Pola dibentuk dengan menambahkan はならない setelah kata kerja bentuk て. Jika bentuk sambungannya berakhir dengan で, hasilnya menjadi ではならない. Tindakan yang dinyatakan oleh kata kerja itulah yang dinilai tidak boleh dilakukan.",
+          "Ungkapan ini berciri formal dan berwibawa. Pemakaiannya lazim dalam peraturan tertulis, pedoman lembaga, peringatan resmi, pernyataan prinsip, serta pembahasan mengenai kewajiban profesional atau moral. Dalam percakapan sehari-hari, てはいけない biasanya lebih umum.",
+          "Berbeda dari ないでください yang meminta seseorang agar tidak melakukan sesuatu, pola ini menyatakan larangan sebagai ketentuan atau penilaian normatif. Karena itu, jika digunakan langsung kepada seseorang dalam percakapan biasa, nadanya dapat terdengar keras atau menggurui."
+        ],
+        "usage": {
+          "nuance": [
+            "Menyampaikan larangan kuat yang dipandang berlaku sebagai aturan, prinsip, atau kewajiban moral.",
+            "Sering memberi kesan bahwa pelanggaran terhadap larangan tersebut tidak dapat dibenarkan."
+          ],
+          "register": [
+            "Terutama digunakan dalam ragam formal, tulisan resmi, pidato, peraturan, dan pernyataan yang bernada serius.",
+            "Kurang lazim dalam percakapan santai karena terdengar lebih kaku daripada てはいけない."
+          ],
+          "restrictions": [
+            "Tidak menyatakan ketidakmungkinan faktual; pola ini menyatakan bahwa tindakan tersebut tidak diizinkan atau tidak dapat dibenarkan.",
+            "Untuk permintaan pribadi yang halus, ないでください biasanya lebih sesuai.",
+            "Penggunaan langsung kepada lawan bicara dapat terdengar otoritatif jika pembicara tidak memiliki wewenang atau alasan moral yang jelas."
+          ],
+          "typicalContexts": [
+            "Peraturan ujian, fasilitas umum, organisasi, dan tempat kerja.",
+            "Kode etik profesi serta kewajiban menjaga rahasia atau hak orang lain.",
+            "Pernyataan moral mengenai tindakan yang sama sekali tidak dapat diterima."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "{試験中|しけんちゅう}は{携帯電話|けいたいでんわ}を{使用|しよう}して__はならない__。",
+            "id": "Telepon seluler tidak boleh digunakan selama ujian.",
+            "en": "Mobile phones must not be used during the examination."
+          },
+          {
+            "jp": "{他人|たにん}の{個人情報|こじんじょうほう}を、{本人|ほんにん}の{許可|きょか}なく{公開|こうか}して__はならない__。",
+            "id": "Informasi pribadi orang lain tidak boleh dipublikasikan tanpa izin orang tersebut.",
+            "en": "Another person's private information must not be disclosed without their permission."
+          },
+          {
+            "jp": "{医師|いし}は{患者|かんじゃ}の{秘密|ひみつ}を{漏|も}らして__はならない__。",
+            "id": "Dokter tidak boleh membocorkan rahasia pasien.",
+            "en": "Doctors must not reveal their patients' confidential information."
+          },
+          {
+            "jp": "どんな{理由|りゆう}があっても、{子供|こども}に{暴力|ぼうりょく}を{振|ふ}るって__はならない__。",
+            "id": "Apa pun alasannya, kekerasan tidak boleh dilakukan terhadap anak-anak.",
+            "en": "Whatever the reason, violence must never be used against children."
+          },
+          {
+            "jp": "{歴史的資料|れきしてきしりょう}を{自分|じぶん}に{都合|つごう}よく{書|か}き{換|か}えて__はならない__。",
+            "id": "Dokumen sejarah tidak boleh diubah agar sesuai dengan kepentingan sendiri.",
+            "en": "Historical records must not be altered to suit one's own interests."
+          },
+          {
+            "jp": "{非常口|ひじょうぐち}の{前|まえ}に{荷物|にもつ}を{置|お}いて__はならない__。",
+            "id": "Barang bawaan tidak boleh diletakkan di depan pintu keluar darurat.",
+            "en": "Luggage must not be placed in front of the emergency exit."
+          }
+        ],
+        "pitfalls": [
+          "Gunakan bentuk て atau で sebelum はならない. ✕ {写真|しゃしん}を{撮|と}るはならない; ○ {写真|しゃしん}を{撮|と}ってはならない.",
+          "Jangan tertukar dengan 〜なければならない. 〜てはならない melarang suatu tindakan, sedangkan 〜なければならない menyatakan bahwa tindakan harus dilakukan.",
+          "Pola ini lebih tegas dan formal daripada 〜てはいけない. Untuk larangan ringan dalam percakapan biasa, pemakaiannya dapat terdengar terlalu keras."
+        ],
+        "tags": [
+          "permission",
+          "formal"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T11:43:00.961Z",
+        "doubt": null
+      },
       "review": null
     },
     {
