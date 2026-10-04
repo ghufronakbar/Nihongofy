@@ -34,8 +34,132 @@
         "extractedAt": "2026-10-03T23:11:17.128Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜げ",
+        "senseLabel": null,
+        "meaningId": "tampak memperlihatkan perasaan atau keadaan tertentu melalui ekspresi, sikap, atau perilaku",
+        "meaningEn": "to appear to show a certain feeling or state through one's expression, attitude, or behavior",
+        "connections": [
+          {
+            "form": "i-adj-stem",
+            "pattern": "げ"
+          },
+          {
+            "form": "na-adj-stem",
+            "pattern": "げ"
+          },
+          {
+            "form": "v-masu",
+            "pattern": "たげ",
+            "note": "Berasal dari bentuk 〜たい setelah い terakhir dihilangkan."
+          }
+        ],
+        "formation": [
+          {
+            "label": "Kata sifat-i",
+            "input": "{悲|かな}しい",
+            "rule": "Hilangkan い terakhir, lalu tambahkan げ.",
+            "output": "{悲|かな}しげ",
+            "note": null
+          },
+          {
+            "label": "Kata sifat-na",
+            "input": "{不安|ふあん}",
+            "rule": "Tambahkan げ langsung pada bentuk dasar kata sifat-na.",
+            "output": "{不安|ふあん}げ",
+            "note": null
+          },
+          {
+            "label": "Verba keinginan",
+            "input": "{帰|かえ}りたい",
+            "rule": "Hilangkan い terakhir dari 〜たい, lalu tambahkan げ. Ini setara dengan bentuk masu tanpa ます yang diikuti たげ.",
+            "output": "{帰|かえ}りたげ",
+            "note": null
+          },
+          {
+            "label": "Perubahan setelah pembentukan",
+            "input": "{不安|ふあん}げ",
+            "rule": "Perlakukan hasilnya seperti kata sifat-na: gunakan だ sebagai predikat, な sebelum nomina, dan に sebelum verba.",
+            "output": "{不安|ふあん}げだ／{不安|ふあん}げな{表情|ひょうじょう}／{不安|ふあん}げに{話|はな}す",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜げ menyatakan bahwa seseorang atau sesuatu tampak memancarkan perasaan, sikap, atau keadaan tertentu. Penilaian ini biasanya didasarkan pada tanda yang dapat diamati, seperti raut wajah, nada suara, gerakan, atau perilaku.",
+          "Pola ini terutama melekat pada kata sifat yang berkaitan dengan emosi atau keadaan batin, seperti {悲|かな}しい, {不安|ふあん}, atau {誇|ほこ}らしい. Bentuk 〜たい juga dapat diubah menjadi 〜たげ untuk menunjukkan bahwa seseorang terlihat ingin melakukan sesuatu.",
+          "Setelah terbentuk, ungkapan dengan 〜げ berperilaku seperti kata sifat-na. Bentuk 〜げだ menjadi predikat, 〜げな menerangkan nomina, sedangkan 〜げに menerangkan tindakan.",
+          "Dibandingkan 〜そう, 〜げ lebih berfokus pada kesan yang terpancar dari penampilan atau sikap, khususnya perasaan yang tidak dinyatakan secara langsung. 〜そう memiliki cakupan lebih luas dan juga dapat menyatakan perkiraan bahwa suatu kejadian akan segera terjadi.",
+          "Pola ini tidak dapat ditambahkan secara bebas pada setiap kata sifat atau verba. Pemakaiannya paling alami pada sejumlah kata yang secara konvensional menggambarkan emosi, suasana, sikap, atau keinginan yang terlihat dari luar."
+        ],
+        "usage": {
+          "nuance": [
+            "Memberikan kesan pengamatan tidak langsung: pembicara menyimpulkan keadaan batin dari tanda yang tampak.",
+            "Tidak selalu menyatakan kepastian bahwa orang tersebut benar-benar memiliki perasaan itu."
+          ],
+          "register": [
+            "Bersifat netral dan digunakan baik dalam percakapan maupun tulisan.",
+            "Sering muncul dalam narasi atau deskripsi yang menggambarkan ekspresi dan perilaku seseorang."
+          ],
+          "restrictions": [
+            "Tidak produktif dengan semua kata sifat; paling lazim dengan kata yang menyatakan emosi, suasana, sikap, atau keadaan batin.",
+            "Untuk verba, penggunaan produktif utamanya berasal dari bentuk 〜たい yang menjadi 〜たげ.",
+            "Kurang alami untuk menyatakan perasaan diri sendiri secara langsung, kecuali pembicara sedang menggambarkan dirinya dari sudut pandang luar."
+          ],
+          "typicalContexts": [
+            "Deskripsi raut wajah, tatapan, nada suara, gerakan, atau sikap.",
+            "Narasi sastra, laporan pengamatan, dan penjelasan mengenai perilaku yang mengisyaratkan perasaan.",
+            "Situasi ketika seseorang tampak ingin mengatakan atau melakukan sesuatu tanpa mengungkapkannya secara langsung."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "{面接|めんせつ}の{結果|けっか}を{待|ま}つ{彼|かれ}は、どこか{不安|ふあん}__げだった__。",
+            "id": "Ia tampak agak cemas ketika menunggu hasil wawancara.",
+            "en": "He looked somewhat anxious while waiting for the interview results."
+          },
+          {
+            "jp": "{会議|かいぎ}が{長引|ながび}くと、{田中|たなか}さんは{帰|かえ}り__たげに__{何度|なんど}も{時計|とけい}を{見|み}た。",
+            "id": "Ketika rapat berlangsung lama, Tanaka berkali-kali melihat jam seolah ingin pulang.",
+            "en": "As the meeting dragged on, Tanaka repeatedly looked at the clock as if wanting to go home."
+          },
+          {
+            "jp": "{迷子|まいご}の{少年|しょうねん}は、{心細|こころぼそ}__げに__{周囲|しゅうい}を{見回|みまわ}していた。",
+            "id": "Anak laki-laki yang tersesat itu melihat sekeliling dengan tampak gelisah dan tidak berdaya.",
+            "en": "The lost boy was looking around with an uneasy and helpless expression."
+          },
+          {
+            "jp": "{受賞者|じゅしょうしゃ}は{誇|ほこ}らし__げな__{笑顔|えがお}で{記者|きしゃ}の{質問|しつもん}に{答|こた}えた。",
+            "id": "Penerima penghargaan itu menjawab pertanyaan wartawan dengan senyum yang tampak bangga.",
+            "en": "The award recipient answered the reporters' questions with a proud-looking smile."
+          },
+          {
+            "jp": "{調査|ちょうさ}では、{多|おお}くの{住民|じゅうみん}が{地域|ちいき}の{将来|しょうらい}について{不安|ふあん}__げに__{語|かた}った。",
+            "id": "Dalam survei tersebut, banyak warga berbicara dengan tampak cemas mengenai masa depan daerah mereka.",
+            "en": "In the survey, many residents spoke anxiously about the future of their community."
+          },
+          {
+            "jp": "{祖父|そふ}は{古|ふる}い{写真|しゃしん}を{懐|なつ}かし__げに__{眺|なが}めていた。",
+            "id": "Kakek memandangi foto-foto lama dengan ekspresi penuh kerinduan.",
+            "en": "My grandfather was gazing nostalgically at the old photographs."
+          }
+        ],
+        "pitfalls": [
+          "Akhiran い pada kata sifat-i harus dihilangkan. ✕{悲|かな}しいげ／○{悲|かな}しげ.",
+          "Pada bentuk keinginan, jangan mempertahankan seluruh 〜たい. ✕{帰|かえ}りたいげ／○{帰|かえ}りたげ.",
+          "Jangan menganggap 〜げ sepenuhnya sama dengan 〜そう. Untuk perkiraan bahwa hujan akan segera turun, gunakan ○{雨|あめ}が{降|ふ}りそうだ, bukan ✕{雨|あめ}が{降|ふ}りげだ.",
+          "〜げ menunjukkan kesan yang terlihat dari luar, sehingga pernyataan langsung tentang perasaan sendiri seperti ✕{私|わたし}は{寂|さび}しげだ biasanya tidak alami."
+        ],
+        "tags": [
+          "appearance"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T10:36:36.777Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -71,8 +195,133 @@
         "extractedAt": "2026-10-03T23:11:08.178Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜がち",
+        "senseLabel": null,
+        "meaningId": "Cenderung sering melakukan sesuatu atau mengalami keadaan tertentu, biasanya yang kurang diinginkan.",
+        "meaningEn": "To have a recurring tendency to do something or fall into a certain state, usually an undesirable one.",
+        "connections": [
+          {
+            "form": "v-masu",
+            "pattern": "がちだ"
+          },
+          {
+            "form": "n",
+            "pattern": "がちだ"
+          },
+          {
+            "form": "v-masu",
+            "pattern": "がちな"
+          },
+          {
+            "form": "n",
+            "pattern": "がちな"
+          }
+        ],
+        "formation": [
+          {
+            "label": "kata kerja sebagai predikat",
+            "input": "{忘|わす}れます",
+            "rule": "Hilangkan ます, lalu tambahkan がちだ.",
+            "output": "{忘|わす}れがちだ",
+            "note": null
+          },
+          {
+            "label": "nomina sebagai predikat",
+            "input": "{病気|びょうき}",
+            "rule": "Tambahkan がちだ langsung setelah nomina.",
+            "output": "{病気|びょうき}がちだ",
+            "note": null
+          },
+          {
+            "label": "kata kerja sebelum nomina",
+            "input": "{忘|わす}れます",
+            "rule": "Hilangkan ます, tambahkan がち, lalu gunakan な untuk menerangkan nomina.",
+            "output": "{忘|わす}れがちな{人|ひと}",
+            "note": null
+          },
+          {
+            "label": "nomina sebelum nomina",
+            "input": "{病気|びょうき}",
+            "rule": "Tambahkan がちな setelah nomina pertama untuk menerangkan nomina berikutnya.",
+            "output": "{病気|びょうき}がちな{人|ひと}",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜がち menyatakan bahwa suatu tindakan atau keadaan berulang kali muncul sebagai kecenderungan. Pola ini menggambarkan kebiasaan atau situasi yang mudah terjadi, bukan satu kejadian sesaat.",
+          "Pada kata kerja, 〜がち disambungkan ke bentuk ます tanpa ます. Pada nomina, pola ini ditempelkan secara langsung. Sebagai predikat digunakan がちだ, sedangkan sebelum nomina digunakan がちな.",
+          "Kecenderungan yang dinyatakan biasanya dinilai kurang baik, seperti terlambat, lupa, kurang tidur, sakit, atau mengabaikan sesuatu. Karena nuansa ini, pemakaiannya kurang cocok untuk kebiasaan positif yang dilakukan dengan sengaja.",
+          "Berbeda dari 〜やすい yang menyoroti kemudahan atau sifat yang membuat sesuatu mudah terjadi, 〜がち menyoroti kecenderungan yang benar-benar sering terlihat akibat kebiasaan atau keadaan tertentu."
+        ],
+        "usage": {
+          "nuance": [
+            "Biasanya menunjukkan kecenderungan yang tidak diharapkan, merugikan, atau perlu diperbaiki.",
+            "Sering mengandung penilaian bahwa keadaan tersebut terjadi lebih kerap daripada yang semestinya."
+          ],
+          "register": [
+            "Dapat digunakan dalam percakapan netral maupun tulisan, termasuk penjelasan mengenai kebiasaan, kesehatan, pekerjaan, dan masalah sosial."
+          ],
+          "restrictions": [
+            "Kata kerja harus memakai bentuk ます tanpa ます; pola ini tidak langsung mengikuti bentuk kamus.",
+            "Nomina yang digunakan umumnya menyatakan keadaan yang dapat sering dialami, seperti {病気|びょうき}, {留守|るす}, atau {睡眠不足|すいみんぶそく}.",
+            "Tidak tepat untuk menyatakan satu kejadian yang pasti atau hanya terjadi sekali."
+          ],
+          "typicalContexts": [
+            "Kebiasaan buruk, kelalaian, masalah kesehatan, kondisi musiman, dan kecenderungan dalam pekerjaan atau masyarakat.",
+            "Peringatan atau analisis mengenai hal yang sering terabaikan atau mudah berkembang ke arah yang kurang baik."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "{在宅勤務|ざいたくきんむ}が{続|つづ}くと、{運動|うんどう}{不足|ぶそく}になり__がちだ__。",
+            "id": "Jika bekerja dari rumah terus-menerus, kita cenderung menjadi kurang berolahraga.",
+            "en": "When working from home continues, people tend to get insufficient exercise."
+          },
+          {
+            "jp": "{彼|かれ}は{締|し}め{切|き}りの{直前|ちょくぜん}まで{作業|さぎょう}を{先延|さきの}ばしにし__がちだ__。",
+            "id": "Dia cenderung menunda pekerjaannya sampai sesaat sebelum tenggat.",
+            "en": "He tends to postpone his work until just before the deadline."
+          },
+          {
+            "jp": "{冬|ふゆ}は{家|いえ}にこもり__がちな__{人|ひと}も{多|おお}い。",
+            "id": "Pada musim dingin, banyak orang cenderung terus berada di rumah.",
+            "en": "In winter, many people tend to stay shut inside their homes."
+          },
+          {
+            "jp": "{年末|ねんまつ}は{睡眠|すいみん}{不足|ぶそく}__がちだ__。",
+            "id": "Menjelang akhir tahun, orang cenderung kurang tidur.",
+            "en": "Toward the end of the year, people tend to be short on sleep."
+          },
+          {
+            "jp": "{新|あたら}しい{制度|せいど}では、{利点|りてん}だけが{注目|ちゅうもく}され、{問題点|もんだいてん}は{見落|みお}とされ__がちだ__。",
+            "id": "Dalam sistem baru, hanya kelebihannya yang mendapat perhatian, sedangkan masalahnya cenderung terlewatkan.",
+            "en": "With a new system, only the advantages receive attention, while the problems tend to be overlooked."
+          },
+          {
+            "jp": "{最近|さいきん}、{祖父|そふ}は{病気|びょうき}__がちだ__が、{散歩|さんぽ}は{欠|か}かさない。",
+            "id": "Belakangan ini kakek sering sakit, tetapi ia tidak pernah melewatkan kegiatan berjalan kaki.",
+            "en": "My grandfather has been prone to illness lately, but he never skips his walks."
+          }
+        ],
+        "pitfalls": [
+          "Gunakan bentuk ます tanpa ます. ✕ {休|やす}むがちだ; ○ {休|やす}みがちだ.",
+          "Nomina disambungkan secara langsung tanpa の. ✕ {病気|びょうき}のがちだ; ○ {病気|びょうき}がちだ.",
+          "Jangan menyamakan 〜がち dengan 〜やすい. 〜がち menunjukkan kecenderungan yang berulang, sedangkan 〜やすい terutama menunjukkan bahwa sesuatu mudah dilakukan atau mudah terjadi.",
+          "Kebiasaan positif yang sengaja dipertahankan biasanya tidak dinyatakan dengan 〜がち karena pola ini lazim membawa penilaian kurang baik."
+        ],
+        "tags": [
+          "tendency",
+          "negative"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T10:36:18.174Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -108,8 +357,99 @@
         "extractedAt": "2026-10-03T23:11:48.513Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜っぽい",
+        "senseLabel": "kecenderungan bertindak",
+        "meaningId": "cenderung mudah atau berulang kali melakukan sesuatu sebagai kebiasaan",
+        "meaningEn": "to be prone to or habitually do something",
+        "connections": [
+          {
+            "form": "v-masu",
+            "pattern": "っぽい"
+          }
+        ],
+        "formation": [
+          {
+            "label": "kata kerja bentuk masu",
+            "input": "{忘|わす}れます",
+            "rule": "Hilangkan ます, lalu tambahkan っぽい pada pangkal kata kerja.",
+            "output": "{忘|わす}れっぽい",
+            "note": "Bentuk hasilnya mengikuti konjugasi kata sifat-i, misalnya っぽくない, っぽかった, dan っぽくて."
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "Pola ini menyatakan bahwa seseorang mudah melakukan tindakan tertentu atau berulang kali menunjukkan perilaku tersebut. Kecenderungan itu dipandang sebagai kebiasaan atau sifat yang cukup menonjol, bukan sebagai satu kejadian sesaat.",
+          "Pembentukannya adalah pangkal bentuk ます ditambah っぽい. Setelah terbentuk, seluruh ungkapan berfungsi seperti kata sifat-i dan dapat berubah menjadi っぽくない, っぽかった, atau っぽくて.",
+          "Nuansanya sering berupa kritik ringan, keluhan, atau penilaian terhadap kelemahan seseorang, seperti mudah lupa, cepat bosan, atau gampang marah. Namun, tingkat negatifnya tetap bergantung pada tindakan dan konteks.",
+          "Pemakaian ini berbeda dari っぽい setelah nomina yang menyatakan kemiripan atau kesan. Dalam sense ini, unsur sebelum っぽい berasal dari pangkal kata kerja dan menunjukkan kecenderungan untuk melakukan tindakan tersebut."
+        ],
+        "usage": {
+          "nuance": [
+            "Menyoroti kecenderungan yang mudah muncul dan biasanya terjadi berulang kali.",
+            "Sering mengandung penilaian kurang baik atau kritik ringan terhadap watak dan kebiasaan."
+          ],
+          "register": [
+            "Lazim dalam percakapan sehari-hari dan tulisan umum.",
+            "Dalam laporan yang sangat resmi, ungkapan yang lebih objektif seperti kecenderungan atau frekuensi konkret biasanya lebih sesuai."
+          ],
+          "restrictions": [
+            "Ditempelkan pada pangkal bentuk ます, bukan langsung pada bentuk kamus.",
+            "Tidak sepenuhnya produktif untuk setiap kata kerja; pola ini terutama alami dalam kolokasi yang sudah lazim seperti {忘|わす}れっぽい, {怒|おこ}りっぽい, dan {飽|あ}きっぽい.",
+            "Tidak cocok bila pembicara hanya ingin melaporkan satu tindakan yang kebetulan terjadi sekali."
+          ],
+          "typicalContexts": [
+            "Menggambarkan kebiasaan, temperamen, atau kelemahan diri sendiri dan orang lain.",
+            "Menjelaskan perubahan perilaku, misalnya seseorang menjadi lebih mudah marah atau pelupa."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "{祖父|そふ}は{最近|さいきん}、{忘|わす}れ__っぽく__なり、{鍵|かぎ}の{置|お}き{場所|ばしょ}を{毎回|まいかい}{確認|かくにん}している。",
+            "id": "Kakek akhir-akhir ini menjadi pelupa dan selalu memeriksa tempat ia meletakkan kunci.",
+            "en": "My grandfather has become forgetful lately, so he checks where he has put his keys every time."
+          },
+          {
+            "jp": "{彼女|かのじょ}は{惚|ほ}れ__っぽい__ので、{親切|しんせつ}にされるとすぐ{相手|あいて}を{好|す}きになる。",
+            "id": "Dia mudah jatuh cinta, jadi ketika diperlakukan dengan baik, dia segera menyukai orang itu.",
+            "en": "She falls in love easily, so she quickly develops feelings for anyone who treats her kindly."
+          },
+          {
+            "jp": "{兄|あに}は{以前|いぜん}、{怒|おこ}り__っぽかった__が、{子供|こども}が{生|う}まれてから{穏|おだ}やかになった。",
+            "id": "Abang saya dahulu mudah marah, tetapi menjadi lebih tenang setelah anaknya lahir.",
+            "en": "My older brother used to be quick-tempered, but he became calmer after his child was born."
+          },
+          {
+            "jp": "このクラスには{飽|あ}き__っぽい__{生徒|せいと}が{多|おお}く、{一|ひと}つの{活動|かつどう}を{長|なが}く{続|つづ}けさせるのが{難|むずか}しい。",
+            "id": "Di kelas ini banyak siswa yang mudah bosan, sehingga sulit membuat mereka melanjutkan satu kegiatan dalam waktu lama.",
+            "en": "Many students in this class get bored easily, so it is difficult to keep them engaged in one activity for long."
+          },
+          {
+            "jp": "{疑|うたぐ}り__っぽい__{性格|せいかく}の{彼|かれ}は、{公式|こうしき}{発表|はっぴょう}を{読|よ}んでもすぐには{信|しん}じなかった。",
+            "id": "Karena sifatnya mudah curiga, ia tidak langsung percaya bahkan setelah membaca pengumuman resmi.",
+            "en": "Because he is naturally suspicious, he did not immediately believe it even after reading the official announcement."
+          },
+          {
+            "jp": "{試合|しあい}に{負|ま}けた{後|あと}、{彼|かれ}はひがみ__っぽく__なり、{仲間|なかま}の{助言|じょげん}まで{悪意|あくい}に{受|う}け{取|と}った。",
+            "id": "Setelah kalah dalam pertandingan, dia menjadi mudah iri dan bahkan menafsirkan nasihat rekan-rekannya sebagai niat buruk.",
+            "en": "After losing the match, he became resentful and even interpreted his teammates' advice as malicious."
+          }
+        ],
+        "pitfalls": [
+          "Gunakan pangkal bentuk ます: ○ {忘|わす}れっぽい, ✕ {忘|わす}れるっぽい.",
+          "Jangan menyamakan pola ini dengan 〜やすい. 〜やすい terutama menyatakan bahwa suatu tindakan mudah dilakukan atau terjadi, sedangkan っぽい menilai kecenderungan berulang pada watak atau perilaku.",
+          "Jangan memakai pola ini untuk satu kejadian kebetulan. Pernyataan seperti {怒|おこ}りっぽい berarti orang tersebut berulang kali mudah marah, bukan sekadar sedang marah pada satu kesempatan."
+        ],
+        "tags": [
+          "tendency"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T10:36:54.629Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -145,8 +485,120 @@
         "extractedAt": "2026-10-03T23:11:48.513Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜っぽい",
+        "senseLabel": "kemiripan atau kesan",
+        "meaningId": "tampak atau terasa menyerupai sesuatu tanpa benar-benar merupakan hal itu",
+        "meaningEn": "to look or feel like something without actually being that thing",
+        "connections": [
+          {
+            "form": "n",
+            "pattern": "っぽい"
+          },
+          {
+            "form": "i-adj-stem",
+            "pattern": "っぽい"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Nomina + っぽい",
+            "input": "{石|いし}",
+            "rule": "Tambahkan っぽい langsung setelah nomina.",
+            "output": "{石|いし}っぽい",
+            "note": null
+          },
+          {
+            "label": "Kata sifat-i + っぽい",
+            "input": "{青|あお}い",
+            "rule": "Hilangkan い terakhir, lalu tambahkan っぽい pada pangkal kata sifat.",
+            "output": "{青|あお}っぽい",
+            "note": null
+          },
+          {
+            "label": "Konjugasi っぽい",
+            "input": "{大人|おとな}っぽい",
+            "rule": "Konjugasikan bagian っぽい seperti kata sifat-i.",
+            "output": "{大人|おとな}っぽくない／{大人|おとな}っぽかった／{大人|おとな}っぽくて",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "〜っぽい menyatakan bahwa sesuatu memberikan kesan menyerupai benda, gaya, warna, suasana, atau sifat tertentu. Kemiripan tersebut berasal dari penampilan atau kesan pembicara, bukan dari identitas yang sebenarnya.",
+          "Pola ini dapat mengikuti nomina secara langsung. Pada sejumlah kata sifat-i, い terakhir dihilangkan sebelum っぽい. Karena っぽい berperilaku seperti kata sifat-i, bentuknya dapat berubah menjadi っぽく, っぽかった, atau っぽくない.",
+          "Penilaiannya bersifat subjektif dan sering didasarkan pada ciri yang mudah terlihat atau dirasakan. Pada kata warna, pola ini biasanya menunjukkan warna yang mendekati atau agak bercampur dengan warna tersebut, bukan warna yang tepat dan murni.",
+          "Pola ini dapat terdengar netral ketika menggambarkan warna atau desain, tetapi bisa bernada kritik jika kemiripannya dianggap tidak pantas, misalnya sikap yang terkesan kekanak-kanakan. Sense ini tidak mencakup pemakaian yang menyatakan kebiasaan mudah melakukan sesuatu atau kandungan suatu unsur yang terasa berlebihan."
+        ],
+        "usage": {
+          "nuance": [
+            "Menonjolkan kesan subjektif berdasarkan penampilan, gaya, perilaku, warna, atau suasana.",
+            "Dapat menyiratkan kritik ringan apabila sifat pembanding dianggap tidak dewasa, murahan, atau tidak sesuai."
+          ],
+          "register": [
+            "Lazim dalam percakapan sehari-hari dan tulisan informal.",
+            "Dalam laporan resmi, bentuk ini dapat terasa terlalu subjektif jika tidak disertai dasar pengamatan yang jelas."
+          ],
+          "restrictions": [
+            "Tidak menyatakan bahwa subjek benar-benar termasuk dalam kategori yang disebutkan; pola ini hanya menyatakan kemiripan atau kesan.",
+            "Tidak semua kata sifat-i dapat digabungkan secara produktif dengan っぽい; pemakaiannya paling alami pada bentuk yang telah lazim, terutama warna dan kualitas yang mudah diamati.",
+            "Sense ini tidak mencakup pola dengan pangkal kata kerja yang berarti mudah atau cenderung melakukan sesuatu."
+          ],
+          "typicalContexts": [
+            "Menggambarkan desain yang menyerupai bahan atau gaya tertentu.",
+            "Menyatakan warna yang tidak murni atau hanya mendekati warna tertentu.",
+            "Menilai perilaku yang memberi kesan dewasa, kekanak-kanakan, atau memiliki citra tertentu."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "そのジャケットを{着|き}ると、{兄|あに}はいつもより{大人|おとな}__っぽく__{見|み}える。",
+            "id": "Saat mengenakan jaket itu, kakak laki-laki saya tampak lebih dewasa daripada biasanya.",
+            "en": "When my older brother wears that jacket, he looks more mature than usual."
+          },
+          {
+            "jp": "この{床|ゆか}は{石|いし}__っぽい__けれど、{実際|じっさい}は{特殊|とくしゅ}な{樹脂|じゅし}でできている。",
+            "id": "Lantai ini terlihat seperti batu, tetapi sebenarnya terbuat dari resin khusus.",
+            "en": "This floor looks like stone, but it is actually made of a special resin."
+          },
+          {
+            "jp": "{照明|しょうめい}のせいで、{白|しろ}い{壁|かべ}が{少|すこ}し{青|あお}__っぽく__{見|み}えた。",
+            "id": "Karena pencahayaan, dinding putih itu terlihat agak kebiruan.",
+            "en": "Because of the lighting, the white wall looked slightly bluish."
+          },
+          {
+            "jp": "{彼女|かのじょ}の{新|あたら}しい{曲|きょく}には、1970{年代|ねんだい}の{映画|えいが}__っぽい__{雰囲気|ふんいき}がある。",
+            "id": "Lagu barunya memiliki suasana seperti film tahun 1970-an.",
+            "en": "Her new song has the atmosphere of a 1970s film."
+          },
+          {
+            "jp": "{失敗|しっぱい}を{全部|ぜんぶ}{他人|たにん}のせいにするのは、{少|すこ}し{子供|こども}__っぽい__と{思|おも}う。",
+            "id": "Menurut saya, menyalahkan orang lain atas semua kegagalan itu agak kekanak-kanakan.",
+            "en": "I think blaming others for every failure is a little childish."
+          },
+          {
+            "jp": "この{写真|しゃしん}は{色|いろ}を{加工|かこう}しすぎて、{写真|しゃしん}というより{絵|え}__っぽく__なっている。",
+            "id": "Warna foto ini terlalu banyak disunting sehingga hasilnya lebih menyerupai lukisan daripada foto.",
+            "en": "The colors in this photograph have been edited so heavily that it looks more like a painting than a photograph."
+          }
+        ],
+        "pitfalls": [
+          "Pada kata sifat-i, hilangkan い sebelum menambahkan っぽい. ✕{青|あお}いっぽい → ○{青|あお}っぽい.",
+          "Jangan memakai pola ini untuk menyatakan identitas faktual. {彼|かれ}は{医者|いしゃ}っぽい berarti ia terlihat seperti dokter, bukan bahwa ia benar-benar dokter.",
+          "Bentuk seperti {忘|わす}れっぽい menyatakan kecenderungan mudah lupa dan termasuk sense lain, bukan kemiripan berdasarkan penampilan.",
+          "Jangan selalu menerjemahkannya secara negatif. Pada warna, bahan, atau gaya, 〜っぽい sering hanya menyampaikan kemiripan yang netral."
+        ],
+        "tags": [
+          "appearance",
+          "casual"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T10:37:47.221Z",
+        "doubt": null
+      },
       "review": null
     },
     {
@@ -182,8 +634,119 @@
         "extractedAt": "2026-10-03T23:11:48.513Z",
         "doubt": null
       },
-      "content": null,
-      "ai": null,
+      "content": {
+        "title": "〜っぽい",
+        "senseLabel": "unsur yang menonjol",
+        "meaningId": "terasa mengandung suatu bahan atau unsur dengan kuat, sering kali secara berlebihan",
+        "meaningEn": "to noticeably contain a substance or quality, often to an excessive degree",
+        "connections": [
+          {
+            "form": "n",
+            "pattern": "っぽい"
+          }
+        ],
+        "formation": [
+          {
+            "label": "Bentuk dasar",
+            "input": "N",
+            "rule": "Tambahkan っぽい langsung setelah nomina yang menyatakan bahan, unsur, atau sifat.",
+            "output": "Nっぽい",
+            "note": "Hasil bentukan ini berkonjugasi seperti kata sifat-i."
+          },
+          {
+            "label": "Bentuk negatif",
+            "input": "Nっぽい",
+            "rule": "Ganti い terakhir dengan くない.",
+            "output": "Nっぽくない",
+            "note": null
+          },
+          {
+            "label": "Bentuk lampau",
+            "input": "Nっぽい",
+            "rule": "Ganti い terakhir dengan かった.",
+            "output": "Nっぽかった",
+            "note": null
+          },
+          {
+            "label": "Bentuk penghubung",
+            "input": "Nっぽい",
+            "rule": "Ganti い terakhir dengan くて.",
+            "output": "Nっぽくて",
+            "note": null
+          }
+        ],
+        "variants": [],
+        "explanation": [
+          "Pola ini menyatakan bahwa suatu benda atau keadaan terasa kuat mengandung bahan, unsur, atau sifat yang disebutkan oleh nomina. Unsur tersebut cukup menonjol sehingga mudah dikenali melalui rasa, tekstur, bau, sentuhan, atau kesan indrawi lainnya.",
+          "っぽい ditempelkan langsung pada nomina tanpa partikel atau kopula. Bentukan yang dihasilkan diperlakukan seperti kata sifat-i, sehingga dapat berubah menjadi っぽくない, っぽかった, っぽくて, dan bentuk lainnya.",
+          "Nuansanya sering menunjukkan kadar yang lebih tinggi daripada yang diharapkan atau diinginkan, misalnya terlalu berminyak, terlalu berair, atau terasa berdebu. Meskipun evaluasinya kerap negatif, pola ini tidak selalu menyatakan keluhan.",
+          "Sense ini berbeda dari pemakaian っぽい yang sekadar berarti tampak atau menyerupai sesuatu. Di sini, konteks menunjukkan bahwa bahan atau unsur tersebut benar-benar terasa hadir dan menonjol."
+        ],
+        "usage": {
+          "nuance": [
+            "Menekankan bahwa kadar atau keberadaan suatu unsur mudah dirasakan.",
+            "Sering menyiratkan bahwa unsur tersebut agak berlebihan atau mengurangi kualitas sesuatu."
+          ],
+          "register": [
+            "Dapat digunakan secara alami dalam percakapan maupun tulisan umum."
+          ],
+          "restrictions": [
+            "Nomina dasar biasanya menyatakan bahan, kandungan, tekstur, atau unsur yang dapat dirasakan.",
+            "Jika nomina hanya menjadi pembanding dan tidak dianggap benar-benar terkandung, pemakaiannya termasuk sense kemiripan, bukan sense ini."
+          ],
+          "typicalContexts": [
+            "Penilaian terhadap rasa dan kekentalan makanan atau minuman.",
+            "Deskripsi tekstur, kelembapan, debu, minyak, atau kandungan bahan pada suatu benda."
+          ]
+        },
+        "examples": [
+          {
+            "jp": "この{保湿|ほしつ}クリームは{油|あぶら}__っぽくなく__、{肌|はだ}にすぐなじむ。",
+            "id": "Krim pelembap ini tidak terasa berminyak dan cepat menyatu dengan kulit.",
+            "en": "This moisturizer does not feel oily and is quickly absorbed into the skin."
+          },
+          {
+            "jp": "{古|ふる}い{資料室|しりょうしつ}はほこり__っぽかった__ので、{窓|まど}を{開|あ}けて{換気|かんき}した。",
+            "id": "Ruang arsip lama itu terasa berdebu, jadi saya membuka jendela untuk menganginkannya.",
+            "en": "The old archive room was dusty, so I opened the windows to air it out."
+          },
+          {
+            "jp": "このパンは{生地|きじ}が{粉|こな}__っぽくて__、{口|くち}の{中|なか}にざらつきが{残|のこ}る。",
+            "id": "Adonan roti ini terasa terlalu bertepung dan meninggalkan tekstur kasar di mulut.",
+            "en": "This bread tastes powdery and leaves a gritty texture in the mouth."
+          },
+          {
+            "jp": "{煮込|にこ}み{時間|じかん}が{短|みじか}く、シチューが{水|みず}__っぽい__ままだ。",
+            "id": "Waktu merebusnya terlalu singkat sehingga rebusan ini masih terlalu encer.",
+            "en": "The cooking time was too short, so the stew is still watery."
+          },
+          {
+            "jp": "この{貝|かい}は{砂|すな}__っぽく__{感|かん}じたので、もう{一度|いちど}{洗|あら}った。",
+            "id": "Kerang ini terasa berpasir, jadi saya mencucinya sekali lagi.",
+            "en": "This shellfish felt gritty with sand, so I washed it again."
+          },
+          {
+            "jp": "この{挽|ひ}き{肉|にく}は{脂|あぶら}__っぽい__ので、{野菜|やさい}を{多|おお}めに{加|くわ}えよう。",
+            "id": "Daging cincang ini terasa terlalu berlemak, jadi mari tambahkan lebih banyak sayuran.",
+            "en": "This ground meat is rather fatty, so let us add more vegetables."
+          }
+        ],
+        "pitfalls": [
+          "Jangan menyisipkan kopula di antara nomina dan っぽい. ✕ {油|あぶら}だっぽい; ○ {油|あぶら}っぽい.",
+          "Karena bentukan ini mengikuti konjugasi kata sifat-i, bentuk negatifnya adalah っぽくない, bukan っぽいではない.",
+          "Jangan menganggap setiap Nっぽい menyatakan kandungan berlebihan. Jika maknanya hanya menyerupai atau memberi kesan seperti nomina tersebut, bentuk itu termasuk sense kemiripan."
+        ],
+        "tags": [
+          "degree",
+          "judgment"
+        ]
+      },
+      "ai": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-content-v10",
+        "generatedAt": "2026-10-04T10:38:00.685Z",
+        "doubt": null
+      },
       "review": null
     },
     {
