@@ -7574,6 +7574,510 @@
       "content": null,
       "ai": null,
       "review": null
+    },
+    {
+      "key": "to-iu-koto-wa-implication",
+      "order": 209,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜ということは",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "to-iu-koto-wa"
+          }
+        ],
+        "title": "〜ということは",
+        "meaning": "fakta atau keadaan tersebut berarti bahwa; menarik kesimpulan berdasarkan informasi sebelumnya",
+        "connection": "V bentuk biasa＋ということは／Aい bentuk biasa＋ということは／Aな＋だ＋ということは／N＋だ＋ということは",
+        "formation": [],
+        "notes": "Dipakai untuk mengambil kesimpulan atau memahami implikasi logis dari suatu fakta. Bagian だ setelah kata sifat-na atau nomina dapat dihilangkan dalam pemakaian tertentu. Berbeda dari 〜というのは yang terutama memperkenalkan topik untuk diberi definisi atau penjelasan.",
+        "examples": [
+          "電気が消えているということは、もう誰もいないのだろう。",
+          "毎日練習しているということは、本気で優勝したいのだ。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T10:31:49.659Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "to-iu-no-wa-definition",
+      "order": 210,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "to-iu-no-wa",
+      "title": "というのは",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "to-iu-nowa"
+          }
+        ],
+        "title": "というのは",
+        "meaning": "memperkenalkan istilah atau hal sebagai topik untuk kemudian menjelaskan arti, definisi, atau isinya",
+        "connection": "名詞＋というのは／普通形＋というのは（ナ形容詞・名詞の現在肯定は「だ＋というのは」も可）",
+        "formation": [],
+        "notes": "Sering diterjemahkan sebagai 'yang dimaksud dengan ... adalah' atau '... itu'. Bagian sesudahnya memberikan definisi atau penjelasan mengenai istilah maupun isi yang dikutip. Berbeda dari ということは yang dalam konteks terkait terutama menyatakan kesimpulan atau implikasi.",
+        "examples": [
+          "「終活」というのは、人生の終わりに向けて準備することだ。",
+          "自由であるというのは、何でもしてよいという意味ではない。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T10:32:15.293Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "to-iu-no-wa-reason",
+      "order": 211,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": "to-iu-no-wa",
+      "title": "というのは",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "to-iu-nowa"
+          }
+        ],
+        "title": "というのは",
+        "meaning": "memperkenalkan alasan atau penjelasan bagi pernyataan yang baru saja disampaikan",
+        "connection": "文。というのは、理由・事情を表す文（〜からだ／〜ためだ／〜のだ など）",
+        "formation": [],
+        "notes": "Dipakai setelah suatu pernyataan untuk menjelaskan dasar atau alasannya, setara dengan 'sebabnya' atau 'hal itu karena'. Bentuk というのも juga lazim dalam fungsi yang sangat dekat. Pola ini memberikan penjelasan, bukan menarik implikasi seperti ということは.",
+        "examples": [
+          "今日は早く帰ります。というのは、家に客が来るからです。",
+          "その計画には反対だ。というのは、費用が高すぎるからだ。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T10:32:15.293Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "shitagatte-n2",
+      "order": 212,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "したがって",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "shitagatte"
+          }
+        ],
+        "title": "したがって",
+        "meaning": "oleh karena itu; dengan demikian; menunjukkan kesimpulan atau akibat logis dari hal sebelumnya",
+        "connection": "文。したがって、文。",
+        "formation": [],
+        "notes": "Kata sambung bernuansa formal yang menghubungkan alasan atau fakta sebelumnya dengan akibat atau kesimpulan logis. Berbeda dari にしたがって yang menyatakan perubahan seiring perubahan lain atau tindakan sesuai aturan maupun petunjuk.",
+        "examples": [
+          "今日は祝日だ。したがって、学校は休みだ。",
+          "応募者が定員を超えた。したがって、選考を行う。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T10:31:44.237Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "tadashi-n2",
+      "order": 213,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "ただし",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "tadashi"
+          }
+        ],
+        "title": "ただし",
+        "meaning": "namun, dengan catatan atau syarat bahwa",
+        "connection": "文。＋ただし、＋文。",
+        "formation": [],
+        "notes": "Kata sambung yang menambahkan syarat, pengecualian, atau batasan terhadap pernyataan sebelumnya. Bernuansa lebih formal dan tegas daripada ただ, serta sering digunakan dalam peraturan, petunjuk, dan penjelasan.",
+        "examples": [
+          "図書館の本は借りられます。ただし、一人五冊までです。",
+          "参加は自由です。ただし、事前に申し込んでください。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T10:31:57.152Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "tada-reservation",
+      "order": 214,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "ただ",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "tada"
+          }
+        ],
+        "title": "ただ",
+        "meaning": "namun; hanya saja, untuk menambahkan pembatas, pengecualian, atau keberatan terhadap pernyataan sebelumnya",
+        "connection": "文。＋ただ、文。",
+        "formation": [],
+        "notes": "Dipakai sebagai kata sambung untuk menambahkan reservasi atau sisi yang membatasi pernyataan sebelumnya. Dibandingkan ただし, ただ cenderung lebih lunak dan percakapan, sedangkan ただし lebih tegas dalam menyatakan syarat, ketentuan, atau pengecualian eksplisit.",
+        "examples": [
+          "この部屋は広くて明るい。ただ、駅から少し遠い。",
+          "参加してもいい。ただ、時間は必ず守ってください。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T10:31:59.948Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "mottomo-conjunction",
+      "order": 215,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "もっとも",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "mottomo"
+          }
+        ],
+        "title": "もっとも",
+        "meaning": "akan tetapi; hanya saja; menambahkan syarat, pengecualian, atau batasan terhadap pernyataan sebelumnya",
+        "connection": "文。もっとも、文。",
+        "formation": [],
+        "notes": "Dipakai sebagai kata sambung untuk membatasi atau mengoreksi sebagian isi sebelumnya. Berbeda dari もっともだ yang berarti bahwa sesuatu itu wajar atau masuk akal.",
+        "examples": [
+          "参加は自由です。もっとも、事前の申し込みは必要です。",
+          "この仕事は難しくない。もっとも、時間はかなりかかる。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T10:32:06.006Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "nao-tsuika",
+      "order": 216,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "なお",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "nao"
+          }
+        ],
+        "title": "なお",
+        "meaning": "menambahkan informasi, penjelasan, atau pemberitahuan tambahan",
+        "connection": "文。なお、文。",
+        "formation": [],
+        "notes": "Ungkapan penghubung yang lazim dalam bahasa tulis atau situasi formal. Informasi sesudah なお bersifat tambahan dan tidak harus berhubungan langsung dengan kalimat sebelumnya. Berbeda dari もっとも yang menambahkan batasan atau pengecualian, dan dari さて yang terutama mengalihkan topik.",
+        "examples": [
+          "参加費は無料です。なお、事前の申し込みが必要です。",
+          "会議は三時に終了しました。なお、次回の日程は後日お知らせします。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T10:32:08.461Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "sate",
+      "order": 217,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "さて",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "sate"
+          }
+        ],
+        "title": "さて",
+        "meaning": "nah; sekarang; digunakan untuk memulai atau mengalihkan pembicaraan ke topik berikutnya",
+        "connection": "文。さて、文。",
+        "formation": [],
+        "notes": "Kata sambung yang menandai peralihan topik, dimulainya pembahasan baru, atau kembalinya pembicaraan ke pokok utama. Tidak menyatakan akibat langsung atau urutan kejadian seperti すると.",
+        "examples": [
+          "さて、次の問題に移りましょう。",
+          "さて、これからどうすればいいだろう。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T10:32:15.328Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "suruto-conjunction",
+      "order": 218,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "すると",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "suru-to"
+          }
+        ],
+        "title": "すると",
+        "meaning": "lalu; kemudian; kalau begitu—menghubungkan keadaan sebelumnya dengan kejadian, hasil, atau kesimpulan berikutnya",
+        "connection": "文。すると、文。",
+        "formation": [],
+        "notes": "Dipakai sebagai kata sambung mandiri pada awal kalimat. Biasanya memperkenalkan kejadian atau hasil yang timbul setelah konteks sebelumnya, termasuk sesuatu yang ditemukan atau disadari; dalam konteks penalaran juga dapat berarti 'kalau begitu'. Bedakan dari と yang langsung melekat pada klausa sebagai pola syarat atau hasil otomatis.",
+        "examples": [
+          "ドアを開けた。すると、猫が飛び出してきた。",
+          "彼は今日は休みだ。すると、会議には来ないということだ。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T10:32:20.974Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "you-suru-ni",
+      "order": 219,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "要するに",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "you-suru-ni"
+          }
+        ],
+        "title": "要するに",
+        "meaning": "singkatnya; intinya; dengan kata lain, untuk merangkum pokok pembicaraan",
+        "connection": "文。要するに、文。",
+        "formation": [],
+        "notes": "Ungkapan penghubung yang merangkum atau menyatakan kembali inti informasi sebelumnya secara lebih ringkas dan jelas. Berbeda dari しかも dan おまけに yang menambahkan informasi, serta ちなみに yang menyisipkan informasi terkait.",
+        "examples": [
+          "要するに、計画を最初から見直す必要がある。",
+          "説明は長かったが、要するに資金が足りないということだ。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T10:32:25.854Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "shikamo-n2",
+      "order": 220,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "しかも",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "shikamo"
+          }
+        ],
+        "title": "しかも",
+        "meaning": "apalagi; terlebih lagi; menambahkan fakta kedua yang memperkuat informasi sebelumnya",
+        "connection": "文。しかも、文。／節・語句＋て、しかも＋節・語句",
+        "formation": [],
+        "notes": "Kata sambung yang menambahkan informasi penting atau mengejutkan dengan arah penilaian yang umumnya sama dengan informasi sebelumnya. Dapat digunakan untuk hal positif maupun negatif dan sering memberi penekanan lebih kuat daripada penambahan biasa.",
+        "examples": [
+          "この店は安い。しかも、料理がおいしい。",
+          "彼は約束を破り、しかも謝らなかった。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T10:32:27.720Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "omake-ni",
+      "order": 221,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "おまけに",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "omake-ni"
+          }
+        ],
+        "title": "おまけに",
+        "meaning": "selain itu; ditambah lagi sebagai fakta atau keadaan tambahan",
+        "connection": "文1。おまけに、文2。",
+        "formation": [],
+        "notes": "Menghubungkan fakta kedua sebagai tambahan atas fakta sebelumnya, dengan kesan bahwa hal tersebut merupakan ekstra atau semakin memperkuat keadaan. Sering dipakai untuk rangkaian keadaan yang tidak menguntungkan, tetapi dapat pula digunakan untuk hal positif. Dibandingkan しかも, おまけに cenderung lebih percakapan dan lebih menonjolkan gagasan 'ditambah lagi'.",
+        "examples": [
+          "今日は寒い。おまけに雨まで降っている。",
+          "この店は料理がおいしくて、おまけに値段も安い。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T10:32:31.399Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "chinami-ni",
+      "order": 222,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "ちなみに",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "chinami-ni"
+          }
+        ],
+        "title": "ちなみに",
+        "meaning": "ngomong-ngomong; memperkenalkan informasi tambahan yang masih berkaitan dengan topik sebelumnya",
+        "connection": "文。ちなみに、文。",
+        "formation": [],
+        "notes": "Dipakai untuk menyisipkan informasi pelengkap atau fakta sampingan yang berkaitan dengan pembicaraan sebelumnya. Berbeda dari しかも dan おまけに, ちなみに tidak menyatakan penambahan yang memperkuat penilaian atau argumen.",
+        "examples": [
+          "この店は毎週月曜日が休みです。ちなみに、営業時間は午前十時から午後八時までです。",
+          "彼は京都の出身です。ちなみに、私も京都で育ちました。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T10:32:36.016Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
     }
   ]
 }
