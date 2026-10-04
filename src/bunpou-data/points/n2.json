@@ -6452,6 +6452,1128 @@
       "content": null,
       "ai": null,
       "review": null
+    },
+    {
+      "key": "mono-da-general-nature",
+      "order": 178,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "mono-da",
+      "title": "〜ものだ",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "mono-da"
+          }
+        ],
+        "title": "〜ものだ",
+        "meaning": "Menyatakan hakikat, kecenderungan umum, atau sesuatu yang sewajarnya demikian.",
+        "connection": "動詞普通形（非過去）＋ものだ；イ形容詞普通形（非過去）＋ものだ；ナ形容詞＋な＋ものだ",
+        "formation": [],
+        "notes": "Dipakai untuk menyampaikan sifat umum, kecenderungan alami, atau kewajaran yang tidak terbatas pada satu kejadian tertentu. Sense mengenang kebiasaan masa lalu, seruan emosional, dan nasihat dengan 〜ものではない tidak termasuk di sini.",
+        "examples": [
+          "人は誰でも間違えるものだ。",
+          "年を取ると体力が落ちるものだ。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:06:44.364Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "mono-da-strong-wish",
+      "order": 179,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "mono-da",
+      "title": "〜たいものだ／〜てほしいものだ",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "mono-da"
+          }
+        ],
+        "title": "〜たいものだ／〜てほしいものだ",
+        "meaning": "Mengungkapkan harapan atau keinginan kuat pembicara.",
+        "connection": "動詞ます形の語幹＋たい＋ものだ；動詞て形＋ほしい＋ものだ",
+        "formation": [],
+        "notes": "〜たいものだ menyatakan keinginan kuat pembicara untuk melakukan sesuatu, sedangkan 〜てほしいものだ menyatakan harapan kuat agar orang lain atau suatu keadaan menghasilkan tindakan tertentu. Nuansanya lebih reflektif dan emosional daripada sekadar 〜たい atau 〜てほしい.",
+        "examples": [
+          "いつか富士山に登りたいものだ。",
+          "若者にはもっと政治に関心を持ってほしいものだ。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:06:44.364Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "mono-dewa-nai",
+      "order": 180,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜ものではない",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "mono-dewa-nai"
+          }
+        ],
+        "title": "〜ものではない",
+        "meaning": "menyatakan nasihat atau peringatan bahwa suatu tindakan tidak semestinya dilakukan",
+        "connection": "動詞辞書形＋ものではない",
+        "formation": [],
+        "notes": "Dipakai untuk menilai suatu tindakan sebagai tidak patut berdasarkan norma umum atau kewajaran, bukan sekadar menyatakan fakta negatif. Bentuk percakapannya adalah 〜ものじゃない.",
+        "examples": [
+          "人の悪口を言うものではない。",
+          "約束を簡単に破るものではない。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:06:32.799Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "to-iu-mono-da-hyouka",
+      "order": 181,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜というものだ",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "to-iu-mono-da"
+          }
+        ],
+        "title": "〜というものだ",
+        "meaning": "menegaskan penilaian pembicara bahwa sesuatu memang sewajarnya, sepantasnya, atau patut disebut demikian",
+        "connection": "動詞普通形＋というものだ／イ形容詞普通形＋というものだ／ナ形容詞語幹＋というものだ／名詞＋というものだ",
+        "formation": [],
+        "notes": "Dipakai untuk menyampaikan penilaian tegas berdasarkan kewajaran, kepantasan, atau pandangan umum pembicara. Sering mengandung kritik atau penegasan seperti “itulah yang disebut…” dan berbeda dari 〜ものだ yang menyatakan hakikat atau kecenderungan umum secara langsung.",
+        "examples": [
+          "人の秘密を勝手に話すのは無責任というものだ。",
+          "困っている人を助けるのが友情というものだ。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:06:39.967Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "mono-ka-emphatic-denial",
+      "order": 182,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜ものか",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "mono-ka"
+          }
+        ],
+        "title": "〜ものか",
+        "meaning": "Mana mungkin; sama sekali tidak; menegaskan penolakan atau tekad kuat untuk tidak melakukan sesuatu.",
+        "connection": "動詞普通形＋ものか／イ形容詞普通形＋ものか／ナ形容詞語幹＋なものか／名詞＋なものか",
+        "formation": [],
+        "notes": "Berupa pertanyaan retoris yang sebenarnya menyatakan penyangkalan tegas dan sarat emosi. Jika dipakai pada tindakan yang dapat dikendalikan pembicara, pola ini dapat menunjukkan tekad kuat untuk tidak melakukannya. Dalam percakapan kasual sering menjadi 〜もんか. Nadanya kuat dan dapat terdengar kasar, sehingga perlu memperhatikan situasi dan lawan bicara.",
+        "examples": [
+          "あんな人の言うことを信じるものか。",
+          "この程度の失敗で諦めるものか。",
+          "もう二度とあの店へ行くものか。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:06:57.154Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "wo-chuushin-ni",
+      "order": 183,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜を中心に",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "wo-chuushin-ni"
+          }
+        ],
+        "title": "〜を中心に",
+        "meaning": "dengan sesuatu sebagai pusat, fokus, atau unsur utama",
+        "connection": "名詞＋を中心に（して）＋動詞・文／名詞＋を中心とした＋名詞",
+        "formation": [],
+        "notes": "Menunjukkan bahwa kegiatan, susunan, atau pembahasan berpusat pada suatu orang, tempat, hal, atau tema. Pusat tersebut dapat bersifat fisik maupun abstrak. Bentuk formal 〜を中心として dan bentuk pewatas 〜を中心とした juga lazim digunakan.",
+        "examples": [
+          "駅を中心に新しい店が増えている。",
+          "この会議では環境問題を中心に話し合った。",
+          "若者を中心とした活動が全国に広がっている。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:06:56.618Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "wo-komete",
+      "order": 184,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜を込めて",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "wo-komete"
+          }
+        ],
+        "title": "〜を込めて",
+        "meaning": "dengan mencurahkan atau menyertakan perasaan, harapan, atau ketulusan",
+        "connection": "名詞＋を込めて",
+        "formation": [],
+        "notes": "Menunjukkan bahwa suatu tindakan dilakukan dengan memasukkan perasaan atau maksud tertentu ke dalamnya. Nomina yang umum digunakan antara lain 感謝, 愛, 心, 願い, dan 祈り.",
+        "examples": [
+          "感謝を込めて、先生に手紙を書いた。",
+          "平和への願いを込めて、鐘を鳴らした。",
+          "母は愛情を込めて料理を作った。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:06:55.241Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "wo-tooshite-tsuujite-mediated",
+      "order": 185,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": "wo-tooshite-tsuujite",
+      "title": "〜を通して／〜を通じて",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "wo-tooshite"
+          }
+        ],
+        "title": "〜を通して／〜を通じて",
+        "meaning": "melalui atau dengan perantaraan seseorang, sarana, media, pengalaman, atau proses",
+        "connection": "名詞＋を通して／を通じて",
+        "formation": [],
+        "notes": "Menunjukkan bahwa informasi, hubungan, tindakan, atau hasil diperoleh melalui suatu perantara atau jalur. を通じて cenderung menonjolkan hubungan atau jalur tidak langsung, sedangkan を通して juga dapat menonjolkan proses atau pengalaman yang dilalui.",
+        "examples": [
+          "友人を通して彼と知り合った。",
+          "インターネットを通じて情報を集めた。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:07:16.107Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "wo-tooshite-tsuujite-throughout",
+      "order": 186,
+      "kind": "pattern",
+      "sectionKey": "time-and-sequence",
+      "family": "wo-tooshite-tsuujite",
+      "title": "〜を通して／〜を通じて",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "wo-tooshite"
+          }
+        ],
+        "title": "〜を通して／〜を通じて",
+        "meaning": "sepanjang atau selama keseluruhan suatu periode",
+        "connection": "名詞（期間）＋を通して／を通じて",
+        "formation": [],
+        "notes": "Dipakai setelah nomina yang menyatakan rentang waktu untuk menunjukkan bahwa keadaan atau kegiatan berlangsung, berlaku, atau berulang selama keseluruhan periode tersebut. Tidak selalu berarti berlangsung tanpa jeda secara harfiah.",
+        "examples": [
+          "この地域は一年を通して暖かい。",
+          "祭りは一年を通じて各地で行われる。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:07:16.107Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "wo-tayori-ni",
+      "order": 187,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜を頼りに",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "wo-tayori-ni"
+          }
+        ],
+        "title": "〜を頼りに",
+        "meaning": "dengan mengandalkan atau menjadikan sesuatu sebagai pegangan, petunjuk, atau sumber bantuan",
+        "connection": "名詞＋を頼りに（して）",
+        "formation": [],
+        "notes": "Menunjukkan bahwa seseorang bertindak dengan mengandalkan orang, informasi, kemampuan, atau benda yang dianggap dapat membantu atau menjadi petunjuk. Bentuk 〜を頼りにして dapat digunakan ketika tindakan mengandalkan itu dinyatakan lebih eksplisit.",
+        "examples": [
+          "地図を頼りに目的地まで歩いた。",
+          "友人の助言を頼りに計画を立てた。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:07:10.270Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "osore-ga-aru",
+      "order": 188,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜おそれがある",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "osore-ga-aru"
+          }
+        ],
+        "title": "〜おそれがある",
+        "meaning": "Ada kekhawatiran atau risiko bahwa sesuatu yang buruk mungkin terjadi.",
+        "connection": "V辞書形・Vない形・Vた形 + おそれがある; N + の + おそれがある",
+        "formation": [],
+        "notes": "Ungkapan formal untuk menyatakan kemungkinan yang tidak diinginkan atau berbahaya. Sering digunakan dalam berita, laporan, pengumuman, dan peringatan; umumnya tidak dipakai untuk kemungkinan yang positif.",
+        "examples": [
+          "大雨で川が氾濫するおそれがある。",
+          "このままでは計画が中止になるおそれがある。",
+          "個人情報が流出したおそれがある。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:07:04.914Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "mono-ga-aru-impression",
+      "order": 189,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜ものがある",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "mono-ga-aru"
+          }
+        ],
+        "title": "〜ものがある",
+        "meaning": "terasa memiliki suatu kualitas atau daya tertentu yang menimbulkan kesan atau perasaan kuat pada pembicara",
+        "connection": "V bentuk biasa nonlampau + ものがある; イA + ものがある; ナA + な + ものがある; objek yang dinilai sering ditandai dengan N + には",
+        "formation": [],
+        "notes": "Dipakai untuk menyatakan bahwa suatu hal mengandung kualitas yang terasa kuat atau mengesankan, meskipun kualitas tersebut tidak selalu mudah dijelaskan secara langsung. Penilaiannya dapat bersifat positif maupun negatif. もの di sini merupakan nomina formal, bukan benda konkret.",
+        "examples": [
+          "彼の演奏には人の心を動かすものがある。",
+          "この計画にはどこか不安なものがある。",
+          "彼女の言葉には考えさせられるものがあった。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:07:37.216Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "to-iu-mono-demo-nai",
+      "order": 190,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜というものでもない",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "to-iu-mono-demo-nai"
+          }
+        ],
+        "title": "〜というものでもない",
+        "meaning": "bukan berarti demikian; belum tentu selalu demikian",
+        "connection": "動詞普通形＋というものでもない／イ形容詞普通形＋というものでもない／ナ形容詞普通形＋というものでもない／名詞普通形＋というものでもない",
+        "formation": [],
+        "notes": "Menyangkal anggapan umum atau kesimpulan yang terlalu sederhana. Pola ini menyatakan bahwa suatu syarat atau keadaan tidak selalu menjamin hasil tertentu. Bentuk 〜というものではない lebih formal, sedangkan 〜というものでもない memberi penyangkalan yang relatif lebih lunak.",
+        "examples": [
+          "値段が高ければ品質もいいというものでもない。",
+          "努力すれば必ず成功するというものでもない。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:07:27.727Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "nai-mono-ka-kibou",
+      "order": 191,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜ないものか",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "nai-mono-ka"
+          }
+        ],
+        "title": "〜ないものか",
+        "meaning": "berharap agar sesuatu yang sulit dapat diwujudkan dan mempertanyakan apakah ada cara untuk mewujudkannya",
+        "connection": "動詞ナイ形＋ものか",
+        "formation": [],
+        "notes": "Ungkapan retoris yang menyatakan harapan kuat pembicara sambil mencari kemungkinan atau cara untuk mewujudkan sesuatu. Sering disertai どうにか atau 何とか. Bentuk yang lebih lunak, 〜ないものだろうか, memiliki fungsi serupa. Pola ini berbeda dari 〜ものか yang menyatakan penolakan keras.",
+        "examples": [
+          "どうにかしてこの問題を解決できないものか。",
+          "何とか彼を説得できないものかと考えている。",
+          "もう少し費用を安くできないものだろうか。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:07:34.649Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "wo-moto-ni",
+      "order": 192,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜をもとに",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "wo-moto-ni"
+          }
+        ],
+        "title": "〜をもとに",
+        "meaning": "berdasarkan atau dengan menjadikan sesuatu sebagai landasan, sumber, atau bahan",
+        "connection": "名詞＋をもとに（して）; 名詞＋をもとにした＋名詞",
+        "formation": [],
+        "notes": "Menunjukkan bahwa data, fakta, pengalaman, karya, atau bahan tertentu dipakai sebagai dasar untuk membuat, menyusun, atau mengembangkan sesuatu. Dapat ditulis 〜を基に dan juga digunakan dalam bentuk 〜をもとにして atau 〜をもとにした.",
+        "examples": [
+          "この報告書は最新の調査結果をもとに作成された。",
+          "これは実話をもとにした映画です。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:07:42.934Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "ni-tsuki-reason",
+      "order": 193,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜につき",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "ni-tsuki"
+          }
+        ],
+        "title": "〜につき",
+        "meaning": "karena atau dengan alasan tertentu",
+        "connection": "名詞＋につき",
+        "formation": [],
+        "notes": "Ungkapan sebab yang bersifat formal dan lazim digunakan dalam pemberitahuan, pengumuman, atau tulisan resmi. Dalam sense ini, につき tidak menyatakan arti 'mengenai' atau 'untuk setiap'.",
+        "examples": [
+          "工事中につき、立ち入りは禁止です。",
+          "悪天候につき、本日の試合は中止します。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:07:47.803Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "wo-kikkake-ni",
+      "order": 194,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜をきっかけに",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "wo-kikkake-ni"
+          }
+        ],
+        "title": "〜をきっかけに",
+        "meaning": "menjadikan suatu peristiwa sebagai pemicu atau kesempatan dimulainya perubahan atau tindakan",
+        "connection": "Nをきっかけに／V普通形＋ことをきっかけに／V普通形＋のをきっかけに",
+        "formation": [],
+        "notes": "Menunjukkan kejadian yang menjadi pemicu, titik awal, atau kesempatan bagi perubahan maupun tindakan berikutnya. Variasinya antara lain 〜をきっかけにして dan 〜をきっかけとして. Dibandingkan 〜を契機に, bentuk ini lebih umum dan tidak terlalu formal.",
+        "examples": [
+          "留学をきっかけに、日本文化に興味を持つようになった。",
+          "病気になったことをきっかけに、生活習慣を見直した。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:07:54.919Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "wo-keiki-ni",
+      "order": 195,
+      "kind": "pattern",
+      "sectionKey": "sentence-patterns",
+      "family": null,
+      "title": "〜を契機に",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "wo-keiki-ni"
+          }
+        ],
+        "title": "〜を契機に",
+        "meaning": "menjadikan suatu peristiwa sebagai momentum atau titik awal terjadinya perubahan dan tindakan berikutnya",
+        "connection": "名詞＋を契機に（して）／名詞＋を契機として／名詞＋を契機にした＋名詞／名詞＋を契機とした＋名詞",
+        "formation": [],
+        "notes": "Menunjukkan bahwa suatu kejadian menjadi pemicu penting atau titik balik bagi perkembangan setelahnya. Bernuansa formal dan sering digunakan dalam tulisan, berita, atau konteks bisnis; lebih formal daripada 〜をきっかけに.",
+        "examples": [
+          "留学を契機に、自分の将来について真剣に考え始めた。",
+          "新社長の就任を契機として、会社の制度が大きく変わった。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:07:56.663Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "sai-ni",
+      "order": 196,
+      "kind": "pattern",
+      "sectionKey": "time-and-sequence",
+      "family": null,
+      "title": "〜際に",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "sai-ni"
+          }
+        ],
+        "title": "〜際に",
+        "meaning": "ketika atau pada saat melakukan atau mengalami sesuatu",
+        "connection": "V bentuk kamus／V bentuk lampau + 際に; N + の + 際に",
+        "formation": [],
+        "notes": "Ungkapan formal yang menandai waktu atau kesempatan tertentu, terutama dalam pengumuman, petunjuk, dan situasi penting. Partikel に dapat dihilangkan menjadi 〜際.",
+        "examples": [
+          "申請する際に、身分証明書を提出してください。",
+          "日本を訪れた際に、京都にも立ち寄った。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:07:56.240Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "sore-nanoni",
+      "order": 197,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "それなのに",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "sore-nanoni"
+          }
+        ],
+        "title": "それなのに",
+        "meaning": "Meskipun begitu; padahal demikian, untuk menghubungkan keadaan sebelumnya dengan hasil yang bertentangan atau tidak sesuai harapan.",
+        "connection": "文。それなのに、文。",
+        "formation": [],
+        "notes": "Dipakai sebagai ungkapan penghubung antarkalimat dan sering menyiratkan keheranan, ketidakpuasan, atau kritik terhadap hasil yang tidak terduga. Berbeda dari それでも, yang lebih menekankan bahwa tindakan atau keadaan tetap berlangsung meskipun ada kondisi sebelumnya.",
+        "examples": [
+          "彼は十分に練習した。それなのに、試合では負けてしまった。",
+          "今日は休日だ。それなのに、会社へ行かなければならない。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:08:07.527Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "sore-demo-concessive",
+      "order": 198,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "それでも",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "sore-demo"
+          }
+        ],
+        "title": "それでも",
+        "meaning": "meskipun demikian; walaupun begitu",
+        "connection": "文1。それでも、文2。",
+        "formation": [],
+        "notes": "Menghubungkan keadaan sebelumnya dengan tindakan atau hasil yang tetap terjadi meskipun ada hambatan, alasan, atau kondisi yang berlawanan. Dibandingkan それなのに, それでも lebih menonjolkan bahwa tindakan, keputusan, atau keadaan berikutnya tetap berlaku.",
+        "examples": [
+          "雨が激しく降っていた。それでも、試合は続けられた。",
+          "何度も失敗した。それでも、彼は諦めなかった。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:08:18.989Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "sore-nara",
+      "order": 199,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "それなら",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "sore-nara"
+          }
+        ],
+        "title": "それなら",
+        "meaning": "jika begitu; kalau memang demikian",
+        "connection": "それなら＋文",
+        "formation": [],
+        "notes": "Menghubungkan informasi atau keadaan yang baru disebutkan dengan penilaian, keputusan, saran, atau tindakan yang berlaku berdasarkan keadaan tersebut. Dalam percakapan, bentuk yang lebih santai seperti じゃあ atau だったら juga sering digunakan. Berbeda dari それで yang terutama menyatakan akibat atau kelanjutan.",
+        "examples": [
+          "明日は休みですか。それなら、一緒に出かけませんか。",
+          "電車が止まっている。それなら、バスで行こう。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:08:08.475Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "sorede-causal-result",
+      "order": 200,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "それで",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "sore-de"
+          }
+        ],
+        "title": "それで",
+        "meaning": "karena itu; sebagai akibatnya",
+        "connection": "文A。それで、文B。",
+        "formation": [],
+        "notes": "Menghubungkan keadaan atau alasan pada kalimat sebelumnya dengan akibat yang wajar pada kalimat berikutnya. Berbeda dari それでも yang menyatakan hasil berlawanan dengan dugaan.",
+        "examples": [
+          "電車が止まっていた。それで、会社に遅れた。",
+          "急に熱が出た。それで、旅行を中止した。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:08:31.717Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "sore-ga",
+      "order": 201,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "それが",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "sore-ga"
+          }
+        ],
+        "title": "それが",
+        "meaning": "tetapi kenyataannya; sayangnya, hasilnya berbeda dari dugaan, harapan, atau rencana sebelumnya",
+        "connection": "Pernyataan, pertanyaan, dugaan, atau rencana sebelumnya。＋それが、文。",
+        "formation": [],
+        "notes": "Dipakai sebagai ungkapan penghubung untuk memperkenalkan keadaan nyata yang tidak sesuai dengan dugaan atau rencana sebelumnya. Sering muncul di awal jawaban atau kalimat lanjutan dan dapat bernuansa 'tetapi ternyata' atau 'sayangnya'. Dalam fungsi ini, それが bukan sekadar それ yang diikuti partikel subjek が.",
+        "examples": [
+          "旅行は楽しかったですか。―それが、ずっと雨だったんです。",
+          "今日中に終わる予定でした。それが、急な問題が起きてしまいました。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:08:25.988Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "soko-de",
+      "order": 202,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "そこで",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "soko-de"
+          }
+        ],
+        "title": "そこで",
+        "meaning": "oleh karena itu; lalu, sebagai tanggapan terhadap situasi yang telah disebutkan",
+        "connection": "文。そこで、文。",
+        "formation": [],
+        "notes": "Menghubungkan suatu keadaan atau masalah dengan tindakan, keputusan, atau upaya yang dilakukan untuk menanggapinya. Berbeda dari penghubung sebab-akibat yang hanya menyatakan hasil alami, klausa setelah そこで biasanya memuat tindakan yang disengaja.",
+        "examples": [
+          "道に迷った。そこで、近くの人に道を聞いた。",
+          "売り上げが落ちている。そこで、新しい広告を出すことにした。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:08:33.309Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "sou-ieba",
+      "order": 203,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "そういえば",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "sou-ie-ba"
+          }
+        ],
+        "title": "そういえば",
+        "meaning": "kalau dipikir-pikir; digunakan saat tiba-tiba teringat hal yang berkaitan dengan pembicaraan sebelumnya",
+        "connection": "そういえば、文",
+        "formation": [],
+        "notes": "Ungkapan penghubung untuk menyampaikan hal yang baru teringat karena dipicu oleh konteks sebelumnya. Topik yang disampaikan biasanya masih berkaitan dengan pembicaraan, berbeda dari それはそうと yang secara sengaja mengalihkan pembicaraan ke topik lain.",
+        "examples": [
+          "そういえば、来週は田中さんの誕生日ですね。",
+          "そういえば、昨日彼を駅で見かけました。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:08:37.538Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "sore-wa-sou-to-topic-shift",
+      "order": 204,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "それはそうと",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "sore-wa-sou-to"
+          }
+        ],
+        "title": "それはそうと",
+        "meaning": "ngomong-ngomong; mengesampingkan topik sebelumnya lalu beralih ke topik lain",
+        "connection": "文。それはそうと、文。",
+        "formation": [],
+        "notes": "Ungkapan penghubung yang dipakai untuk menghentikan atau mengesampingkan pembicaraan sebelumnya dan sengaja memperkenalkan topik baru. Berbeda dari そういえば, yang biasanya memperkenalkan hal yang baru teringat karena percakapan sebelumnya.",
+        "examples": [
+          "それはそうと、明日の予定は決まりましたか。",
+          "それはそうと、頼んでおいた資料はどうなった？"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:08:50.676Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "sunawachi",
+      "order": 205,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "すなわち",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "sunawashi"
+          }
+        ],
+        "title": "すなわち",
+        "meaning": "dengan kata lain; yaitu, untuk menyatakan kembali atau menjelaskan hal sebelumnya secara lebih tepat",
+        "connection": "文・語句 + すなわち + 言い換え atau penjelasan berupa文・語句",
+        "formation": [],
+        "notes": "Kata sambung yang menunjukkan bahwa bagian sesudahnya merupakan perumusan ulang, definisi, atau penjelasan yang setara dengan bagian sebelumnya. Lazim dalam ragam formal atau tulisan.",
+        "examples": [
+          "来週の月曜日、すなわち十日に出発します。",
+          "彼は私の母の兄、すなわち伯父です。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:08:46.836Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "aruiwa-alternative",
+      "order": 206,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "あるいは",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "aruiwa"
+          }
+        ],
+        "title": "あるいは",
+        "meaning": "atau; menyajikan pilihan atau kemungkinan lain sebagai alternatif",
+        "connection": "名詞A＋あるいは＋名詞B／文A。あるいは、文B。",
+        "formation": [],
+        "notes": "Kata sambung yang menyatakan alternatif. Bernuansa relatif formal dan sering digunakan dalam bahasa tulis.",
+        "examples": [
+          "電話、あるいはメールでご連絡ください。",
+          "計画を変更する。あるいは、中止することも考えられる。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:08:54.673Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "daga-contrast",
+      "order": 207,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "だが",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "daga"
+          }
+        ],
+        "title": "だが",
+        "meaning": "namun; akan tetapi, untuk menghubungkan pernyataan dengan hal yang berlawanan atau tidak sesuai harapan",
+        "connection": "文。だが、文。",
+        "formation": [],
+        "notes": "Kata sambung pertentangan yang lazim dalam ragam tulis atau formal. Dibandingkan でも, だが bernuansa lebih tegas dan kurang percakapan.",
+        "examples": [
+          "計画は順調だった。だが、問題が一つ残っていた。",
+          "彼は何度も挑戦した。だが、成功しなかった。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:09:03.736Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
+    },
+    {
+      "key": "datte-because",
+      "order": 208,
+      "kind": "pattern",
+      "sectionKey": "conjunctions-adverbs",
+      "family": null,
+      "title": "だって",
+      "source": {
+        "slides": [],
+        "references": [
+          {
+            "type": "video-description",
+            "sourceKey": "n2-48-days",
+            "itemKey": "datte"
+          }
+        ],
+        "title": "だって",
+        "meaning": "soalnya; karena, untuk mengemukakan alasan atau pembenaran",
+        "connection": "だって＋文",
+        "formation": [],
+        "notes": "Kata sambung bernuansa percakapan yang lazim dipakai pada awal tanggapan untuk memberikan alasan, pembelaan, atau dalih. Sering muncul bersama bentuk penjelas seperti 〜んだ atau 〜んだもの. Sense ini berbeda dari だって yang berarti “bahkan/juga” serta pemakaian yang menyampaikan kutipan atau kabar.",
+        "examples": [
+          "だって、そんな話は聞いていなかったんです。",
+          "どうして行かないの。だって、雨が降っているんだもの。"
+        ]
+      },
+      "extract": {
+        "model": "cx/gpt-5.6-sol",
+        "promptVersion": "bunpou-text-import-v5",
+        "extractedAt": "2026-10-04T00:09:11.151Z",
+        "doubt": null
+      },
+      "content": null,
+      "ai": null,
+      "review": null
     }
   ]
 }
