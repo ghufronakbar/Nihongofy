@@ -1,0 +1,1424 @@
+{
+  "package": "JLPT N4 - 2012年12月",
+  "questions": [
+    {
+      "mondaiType": "BUNPOU_GRAMMAR",
+      "order": 1,
+      "patterns": [
+        {
+          "form": "も",
+          "reading": "も",
+          "meaning": "juga; menambahkan unsur lain yang sama-sama berlaku",
+          "candidates": [
+            "mo-penekanan-negatif",
+            "mo-penekanan-banyak",
+            "mo-juga",
+            "mo-baik-maupun",
+            "mo-ba-mo-mo-nara-mo",
+            "mo-ba-mo"
+          ],
+          "key": "mo-juga",
+          "role": "tested"
+        },
+        {
+          "form": "が",
+          "reading": "が",
+          "meaning": "penanda objek yang dapat dilakukan/dikuasai dalam bentuk potensial",
+          "candidates": [
+            "ga-kedo-keredo-pembuka",
+            "jidoushi-tadoushi",
+            "ga-kata-tanya",
+            "kedo-ga",
+            "ga-subjek-umum",
+            "koto-wa-ga",
+            "ga-informasi-baru",
+            "ga-fenomena-alam",
+            "ga-subjek-anak-kalimat"
+          ],
+          "key": null,
+          "role": "distractor"
+        },
+        {
+          "form": "を",
+          "reading": "を",
+          "meaning": "penanda objek langsung tindakan",
+          "candidates": [
+            "wo-te-sashiageru",
+            "wo-te-kudasaru",
+            "wo-te-itadaku",
+            "o-objek",
+            "o-perpindahan"
+          ],
+          "key": "o-objek",
+          "role": "distractor"
+        }
+      ],
+      "confidence": "high",
+      "note": "が sebagai penanda objek verba potensial tidak tersedia dalam kandidat; entri が yang ada hanya untuk subjek, konjungsi, atau fungsi lain.",
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-link-v1",
+        "generatedAt": "2026-10-05T16:01:56.077Z"
+      }
+    },
+    {
+      "mondaiType": "BUNPOU_GRAMMAR",
+      "order": 2,
+      "patterns": [
+        {
+          "form": "で",
+          "reading": "で",
+          "meaning": "bahan atau material untuk membuat sesuatu",
+          "candidates": [
+            "de-tempat-aktivitas",
+            "de-alat-cara",
+            "de-batasan",
+            "de-alasan",
+            "de-bahan",
+            "te-de-alasan",
+            "de-tempat",
+            "de-cara",
+            "de-cakupan-jumlah",
+            "de-penghubung"
+          ],
+          "key": "de-bahan",
+          "role": "tested"
+        }
+      ],
+      "confidence": "high",
+      "note": null,
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-link-v1",
+        "generatedAt": "2026-10-05T04:00:27.467Z"
+      }
+    },
+    {
+      "mondaiType": "BUNPOU_GRAMMAR",
+      "order": 3,
+      "patterns": [
+        {
+          "form": "に",
+          "reading": "に",
+          "meaning": "sasaran atau acuan yang menjadi mirip",
+          "candidates": [
+            "ni-tsutomeru",
+            "ni-frekuensi",
+            "ni-tempat",
+            "ni-target-tujuan",
+            "ni-waktu",
+            "ni-kara-moraimasu"
+          ],
+          "key": "ni-target-tujuan",
+          "role": "tested"
+        },
+        {
+          "form": "へ",
+          "reading": "へ",
+          "meaning": "arah atau tujuan perpindahan",
+          "candidates": [
+            "e-arah"
+          ],
+          "key": "e-arah",
+          "role": "distractor"
+        },
+        {
+          "form": "を",
+          "reading": "を",
+          "meaning": "penanda objek langsung tindakan",
+          "candidates": [
+            "wo-te-sashiageru",
+            "wo-te-kudasaru",
+            "wo-te-itadaku",
+            "o-objek",
+            "o-perpindahan"
+          ],
+          "key": "o-objek",
+          "role": "distractor"
+        },
+        {
+          "form": "も",
+          "reading": "も",
+          "meaning": "juga; penambahan unsur",
+          "candidates": [
+            "mo-penekanan-negatif",
+            "mo-penekanan-banyak",
+            "mo-juga",
+            "mo-baik-maupun",
+            "mo-ba-mo-mo-nara-mo",
+            "mo-ba-mo"
+          ],
+          "key": "mo-juga",
+          "role": "distractor"
+        }
+      ],
+      "confidence": "high",
+      "note": null,
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-link-v1",
+        "generatedAt": "2026-10-05T16:01:56.077Z"
+      }
+    },
+    {
+      "mondaiType": "BUNPOU_GRAMMAR",
+      "order": 4,
+      "patterns": [
+        {
+          "form": "だけ",
+          "reading": "だけ",
+          "meaning": "hanya; membatasi pada hal atau waktu tertentu",
+          "candidates": [
+            "dake",
+            "dake-semaksimal-mungkin",
+            "te-kuremasen-ka-itadakemasen-ka",
+            "sasete-kudasai-moraemasuka-itadakemasuka",
+            "dake-shika",
+            "dakedo",
+            "tada-dake",
+            "dake-denaku",
+            "dake-mashi-da",
+            "dake-atte"
+          ],
+          "key": "dake",
+          "role": "tested"
+        },
+        {
+          "form": "〜しか〜ない",
+          "reading": "しかない",
+          "meaning": "hanya; digunakan bersama bentuk negatif",
+          "candidates": [
+            "shika",
+            "perubahan-kata-kerja-dasar",
+            "amari-nai",
+            "mada-masen",
+            "shikanai",
+            "hodo-nai",
+            "naide",
+            "nakereba-naranai",
+            "te-wa-ikenai",
+            "nai-hou-ga-ii",
+            "keredomo-keredo-demo-shikashi",
+            "kamoshiremasen",
+            "kana-kashira",
+            "nai-kana-kashira-harapan",
+            "kata-sifat-i-konjugasi",
+            "kata-sifat-na-konjugasi",
+            "kata-tanya-ka",
+            "naide-kudasai",
+            "demo-shikashi-keredomo",
+            "naito-nakucha-nakya"
+          ],
+          "key": "shika",
+          "role": "distractor"
+        }
+      ],
+      "confidence": "high",
+      "note": null,
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-link-v1",
+        "generatedAt": "2026-10-05T04:00:27.467Z"
+      }
+    },
+    {
+      "mondaiType": "BUNPOU_GRAMMAR",
+      "order": 5,
+      "patterns": [
+        {
+          "form": "〜からもらう",
+          "reading": "からもらう",
+          "meaning": "menerima sesuatu dari seseorang",
+          "candidates": [
+            "ni-kara-moraimasu",
+            "penggunaan-dua-partikel",
+            "kara-bahan",
+            "kara-dari",
+            "kara-karena",
+            "koto-kara-kara"
+          ],
+          "key": "ni-kara-moraimasu",
+          "role": "tested"
+        },
+        {
+          "form": "は",
+          "reading": "は",
+          "meaning": "menandai topik dengan nuansa kontras: kalau dari Tanaka",
+          "candidates": [
+            "wa-topik",
+            "wa-perbandingan",
+            "wa-mengangkat-topik",
+            "wa-fokus-penekanan-penyangkalan",
+            "wa-kontras"
+          ],
+          "key": "wa-perbandingan",
+          "role": "tested"
+        }
+      ],
+      "confidence": "high",
+      "note": null,
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-link-v1",
+        "generatedAt": "2026-10-05T04:00:27.467Z"
+      }
+    },
+    {
+      "mondaiType": "BUNPOU_GRAMMAR",
+      "order": 6,
+      "patterns": [
+        {
+          "form": "〜までに",
+          "reading": "までに",
+          "meaning": "paling lambat pada batas waktu suatu tindakan selesai",
+          "candidates": [
+            "madeni",
+            "made",
+            "made-sampai",
+            "made-sampai-n3",
+            "made-bahkan"
+          ],
+          "key": "madeni",
+          "role": "tested"
+        },
+        {
+          "form": "〜まで",
+          "reading": "まで",
+          "meaning": "sampai batas waktu ketika keadaan atau kegiatan berlangsung",
+          "candidates": [
+            "made",
+            "made-sampai",
+            "made-sampai-n3",
+            "made-bahkan",
+            "penggunaan-dua-partikel",
+            "madeni",
+            "made-wa",
+            "te-made"
+          ],
+          "key": "made",
+          "role": "distractor"
+        }
+      ],
+      "confidence": "high",
+      "note": null,
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-link-v1",
+        "generatedAt": "2026-10-05T04:00:27.467Z"
+      }
+    },
+    {
+      "mondaiType": "BUNPOU_GRAMMAR",
+      "order": 7,
+      "patterns": [
+        {
+          "form": "どういう",
+          "reading": "どういう",
+          "meaning": "seperti apa; dipakai untuk menanyakan jenis atau arti",
+          "candidates": [
+            "dou-iu",
+            "kou-sou-aa-dou"
+          ],
+          "key": "dou-iu",
+          "role": "tested"
+        },
+        {
+          "form": "どうやって",
+          "reading": "どうやって",
+          "meaning": "bagaimana caranya; menanyakan metode",
+          "candidates": [
+            "kou-sou-aa-dou",
+            "tte"
+          ],
+          "key": "kou-sou-aa-dou",
+          "role": "distractor"
+        },
+        {
+          "form": "どのぐらい",
+          "reading": "どのぐらい",
+          "meaning": "seberapa banyak, jauh, atau lama",
+          "candidates": [
+            "gurai",
+            "kurai-hodo"
+          ],
+          "key": "gurai",
+          "role": "distractor"
+        },
+        {
+          "form": "どう",
+          "reading": "どう",
+          "meaning": "bagaimana; menanyakan keadaan atau cara",
+          "candidates": [
+            "kou-sou-aa-dou",
+            "dou-iu",
+            "ka-dou-ka",
+            "tara-dou-ikaga-desuka",
+            "jidoushi-tadoushi",
+            "perubahan-kata-kerja-dasar",
+            "dou-desuka-ikaga-desuka",
+            "dou-shimasuka",
+            "kata-sifat-menerangkan-kata-kerja",
+            "dou-iimasuka-nanto-iimasuka",
+            "nazenara-ba",
+            "doumo",
+            "douka",
+            "tara-dou",
+            "mo-douzen-da"
+          ],
+          "key": "kou-sou-aa-dou",
+          "role": "distractor"
+        }
+      ],
+      "confidence": "high",
+      "note": null,
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-link-v1",
+        "generatedAt": "2026-10-05T04:00:27.467Z"
+      }
+    },
+    {
+      "mondaiType": "BUNPOU_GRAMMAR",
+      "order": 8,
+      "patterns": [
+        {
+          "form": "やっと",
+          "reading": "やっと",
+          "meaning": "akhirnya, setelah waktu lama atau usaha",
+          "candidates": [
+            "yatto"
+          ],
+          "key": "yatto",
+          "role": "tested"
+        },
+        {
+          "form": "ずっと",
+          "reading": "ずっと",
+          "meaning": "terus-menerus atau sepanjang waktu",
+          "candidates": [
+            "zutto-terus-menerus",
+            "zutto-jauh-lebih"
+          ],
+          "key": "zutto-terus-menerus",
+          "role": "distractor"
+        },
+        {
+          "form": "もっと",
+          "reading": "もっと",
+          "meaning": "lebih; dalam tingkat yang lebih tinggi",
+          "candidates": [
+            "motto",
+            "mottomo-paling",
+            "mottomo-da",
+            "mottomo-conjunction"
+          ],
+          "key": "motto",
+          "role": "distractor"
+        },
+        {
+          "form": "きっと",
+          "reading": "きっと",
+          "meaning": "pasti; menyatakan keyakinan tentang hal yang akan terjadi",
+          "candidates": [
+            "kitto"
+          ],
+          "key": "kitto",
+          "role": "distractor"
+        }
+      ],
+      "confidence": "high",
+      "note": null,
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-link-v1",
+        "generatedAt": "2026-10-05T16:01:56.077Z"
+      }
+    },
+    {
+      "mondaiType": "BUNPOU_GRAMMAR",
+      "order": 9,
+      "patterns": [
+        {
+          "form": "〜けれど",
+          "reading": "けれど",
+          "meaning": "tetapi (menyatakan pertentangan atau pengantar)",
+          "candidates": [
+            "keredomo-keredo-demo-shikashi",
+            "ga-kedo-keredo-pembuka",
+            "demo-shikashi-keredomo",
+            "kedo-ga"
+          ],
+          "key": "keredomo-keredo-demo-shikashi",
+          "role": "tested"
+        },
+        {
+          "form": "〜たい",
+          "reading": "たい",
+          "meaning": "ingin melakukan sesuatu",
+          "candidates": [
+            "tai",
+            "te-hoshii-moraitai-itadakitai",
+            "mitai",
+            "totemo-taihen",
+            "wa-taihen-desu",
+            "mitai-sepertinya",
+            "mitai-seperti",
+            "te-hoshii-moraitai",
+            "ni-taishite-terhadap",
+            "ni-taishite-berlawanan",
+            "marude-you-da",
+            "sore-ni-taishite-ippou",
+            "taishite-nai",
+            "choudo-mitai-da",
+            "gatai",
+            "ni-taishite-target",
+            "ni-taishite-contrast",
+            "gatai-n2",
+            "mono-da-strong-wish"
+          ],
+          "key": "tai",
+          "role": "tested"
+        },
+        {
+          "form": "〜から",
+          "reading": "から",
+          "meaning": "karena/sebab",
+          "candidates": [
+            "kara-bahan",
+            "kara-dari",
+            "kara-karena",
+            "kara-ni-kakete",
+            "koto-kara-kara",
+            "kara-ni-kakete-range",
+            "penggunaan-dua-partikel",
+            "sore-de-dakara",
+            "te-kara",
+            "sorekara-soshite",
+            "ni-kara-moraimasu",
+            "dakara",
+            "desukara",
+            "te-kara-denai-to",
+            "no-dakara",
+            "mono-dakara-reason",
+            "karakoso",
+            "koto-kara-basis",
+            "no-koto-dakara",
+            "kara-niwa-consequence"
+          ],
+          "key": "kara-karena",
+          "role": "distractor"
+        },
+        {
+          "form": "〜し",
+          "reading": "し",
+          "meaning": "dan juga (mendaftar alasan)",
+          "candidates": [
+            "shi-paralel",
+            "shi-alasan"
+          ],
+          "key": "shi-alasan",
+          "role": "distractor"
+        }
+      ],
+      "confidence": "high",
+      "note": null,
+      "ai": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-link-v1",
+        "generatedAt": "2026-10-05T04:29:52.028Z"
+      }
+    },
+    {
+      "mondaiType": "BUNPOU_GRAMMAR",
+      "order": 10,
+      "patterns": [
+        {
+          "form": "〜たあとで",
+          "reading": "たあとで",
+          "meaning": "setelah melakukan sesuatu",
+          "candidates": [
+            "ato-de",
+            "ato-soreto"
+          ],
+          "key": "ato-de",
+          "role": "tested"
+        },
+        {
+          "form": "〜ている",
+          "reading": "ている",
+          "meaning": "sedang melakukan atau berada dalam keadaan melakukan",
+          "candidates": [
+            "jidoushi-te-iru",
+            "te-imasu-progresif",
+            "te-imasu-keadaan",
+            "te-iru-sedang",
+            "te-iru-rutinitas",
+            "te-iru-hasil",
+            "te-iru-kondisi-bentuk",
+            "te-iru-selesai-belum-selesai",
+            "te-iru-tokoro",
+            "te-iru-tokoro-n3",
+            "koto-ni-natteiru",
+            "ni-kimatteiru"
+          ],
+          "key": "te-imasu-progresif",
+          "role": "distractor"
+        }
+      ],
+      "confidence": "high",
+      "note": null,
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-link-v1",
+        "generatedAt": "2026-10-05T04:00:09.457Z"
+      }
+    },
+    {
+      "mondaiType": "BUNPOU_GRAMMAR",
+      "order": 11,
+      "patterns": [
+        {
+          "form": "〜すぎる",
+          "reading": "すぎる",
+          "meaning": "terlalu; melebihi batas yang wajar",
+          "candidates": [
+            "sugiru",
+            "sugiru-sugida"
+          ],
+          "key": "sugiru",
+          "role": "tested"
+        }
+      ],
+      "confidence": "high",
+      "note": null,
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-link-v1",
+        "generatedAt": "2026-10-05T04:00:09.457Z"
+      }
+    },
+    {
+      "mondaiType": "BUNPOU_GRAMMAR",
+      "order": 12,
+      "patterns": [],
+      "confidence": null,
+      "note": null,
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-link-v1",
+        "generatedAt": "2026-10-05T04:00:09.457Z"
+      }
+    },
+    {
+      "mondaiType": "BUNPOU_GRAMMAR",
+      "order": 13,
+      "patterns": [
+        {
+          "form": "〜てくれる",
+          "reading": "てくれる",
+          "meaning": "orang lain melakukan sesuatu sebagai bantuan untuk penutur",
+          "candidates": [
+            "te-kureru",
+            "reru-rareru-fakta",
+            "sonkeigo"
+          ],
+          "key": "te-kureru",
+          "role": "tested"
+        },
+        {
+          "form": "〜ので",
+          "reading": "ので",
+          "meaning": "karena; menyatakan alasan dengan nuansa lebih lunak",
+          "candidates": [
+            "node",
+            "n-desu-no-desu",
+            "no-dewa-nai-ka-no-dewa-nai-darou-ka",
+            "te-wa-no-dewa",
+            "mono-dakara-reason",
+            "mono-da-general-nature",
+            "mono-dewa-nai",
+            "to-iu-mono-demo-nai"
+          ],
+          "key": "node",
+          "role": "distractor"
+        },
+        {
+          "form": "〜から",
+          "reading": "から",
+          "meaning": "karena; menyatakan alasan",
+          "candidates": [
+            "kara-bahan",
+            "kara-dari",
+            "kara-karena",
+            "koto-kara-kara",
+            "penggunaan-dua-partikel",
+            "sore-de-dakara",
+            "te-kara",
+            "sorekara-soshite",
+            "ni-kara-moraimasu",
+            "dakara",
+            "kara-ni-kakete",
+            "desukara",
+            "te-kara-denai-to",
+            "no-dakara",
+            "mono-dakara-reason",
+            "karakoso",
+            "koto-kara-basis",
+            "no-koto-dakara",
+            "kara-niwa-consequence",
+            "kara-iu-to"
+          ],
+          "key": "kara-karena",
+          "role": "distractor"
+        }
+      ],
+      "confidence": "high",
+      "note": null,
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-link-v1",
+        "generatedAt": "2026-10-05T04:00:09.457Z"
+      }
+    },
+    {
+      "mondaiType": "BUNPOU_GRAMMAR",
+      "order": 14,
+      "patterns": [
+        {
+          "form": "〜てもらう",
+          "reading": "てもらう",
+          "meaning": "menerima bantuan berupa tindakan dari orang lain",
+          "candidates": [
+            "te-morau",
+            "te-mo-meskipun",
+            "kata-tanya-te-mo-demo",
+            "temo-meskipun",
+            "moshimo-nara-temo"
+          ],
+          "key": "te-morau",
+          "role": "tested"
+        },
+        {
+          "form": "〜てあげる",
+          "reading": "てあげる",
+          "meaning": "melakukan sesuatu sebagai bantuan untuk orang lain",
+          "candidates": [
+            "te-ageru",
+            "ageru-agaru"
+          ],
+          "key": "te-ageru",
+          "role": "distractor"
+        },
+        {
+          "form": "〜てくれる",
+          "reading": "てくれる",
+          "meaning": "orang lain melakukan sesuatu sebagai bantuan untuk penutur",
+          "candidates": [
+            "te-kureru",
+            "reru-rareru-fakta",
+            "sonkeigo"
+          ],
+          "key": "te-kureru",
+          "role": "distractor"
+        },
+        {
+          "form": "〜てやる",
+          "reading": "てやる",
+          "meaning": "melakukan sesuatu untuk pihak lain dari sudut pandang pemberi",
+          "candidates": [
+            "te-yaru"
+          ],
+          "key": "te-yaru",
+          "role": "distractor"
+        }
+      ],
+      "confidence": "high",
+      "note": null,
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-link-v1",
+        "generatedAt": "2026-10-05T04:00:09.457Z"
+      }
+    },
+    {
+      "mondaiType": "BUNPOU_GRAMMAR",
+      "order": 15,
+      "patterns": [
+        {
+          "form": "〜たまま",
+          "reading": "たまま",
+          "meaning": "tetap dibiarkan dalam keadaan setelah melakukan sesuatu",
+          "candidates": [
+            "mama",
+            "mama-dalam-keadaan"
+          ],
+          "key": "mama",
+          "role": "tested"
+        },
+        {
+          "form": "〜ないで",
+          "reading": "ないで",
+          "meaning": "tanpa melakukan sesuatu",
+          "candidates": [
+            "naide",
+            "kata-sifat-i-konjugasi",
+            "kata-sifat-na-konjugasi",
+            "naide-kudasai",
+            "amari-nai",
+            "mada-masen",
+            "nai-dewa-irarenai",
+            "zuni-wa-irarenai",
+            "perubahan-kata-kerja-dasar"
+          ],
+          "key": "naide",
+          "role": "distractor"
+        },
+        {
+          "form": "〜そうだ",
+          "reading": "そうだ",
+          "meaning": "tampak atau kelihatannya akan terjadi",
+          "candidates": [
+            "sou-kelihatannya",
+            "sou-katanya",
+            "ima-nimo-souda",
+            "kou-sou-aa-dou"
+          ],
+          "key": "sou-kelihatannya",
+          "role": "distractor"
+        },
+        {
+          "form": "〜ている",
+          "reading": "ている",
+          "meaning": "sedang melakukan atau berada dalam keadaan tertentu",
+          "candidates": [
+            "jidoushi-te-iru",
+            "te-imasu-progresif",
+            "te-imasu-keadaan",
+            "te-iru-sedang",
+            "te-iru-rutinitas",
+            "te-iru-hasil",
+            "te-iru-kondisi-bentuk",
+            "te-iru-selesai-belum-selesai",
+            "te-iru-tokoro",
+            "te-iru-tokoro-n3",
+            "koto-ni-natteiru",
+            "ni-kimatteiru"
+          ],
+          "key": "te-imasu-progresif",
+          "role": "distractor"
+        }
+      ],
+      "confidence": "high",
+      "note": null,
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-link-v1",
+        "generatedAt": "2026-10-05T04:00:09.457Z"
+      }
+    },
+    {
+      "mondaiType": "BUNPOU_SENTENCE_COMPOSITION",
+      "order": 1,
+      "patterns": [
+        {
+          "form": "〜ば",
+          "reading": "ば",
+          "meaning": "jika; menyatakan syarat",
+          "candidates": [
+            "ba"
+          ],
+          "key": "ba",
+          "role": "tested"
+        },
+        {
+          "form": "〜かもしれない",
+          "reading": "かもしれない",
+          "meaning": "mungkin; menyatakan kemungkinan",
+          "candidates": [
+            "kamoshiremasen",
+            "moshikasuruto-kamoshirenai",
+            "perubahan-kata-kerja-dasar",
+            "amari-nai",
+            "mada-masen"
+          ],
+          "key": "kamoshiremasen",
+          "role": "tested"
+        },
+        {
+          "form": "〜から",
+          "reading": "から",
+          "meaning": "karena; menyatakan alasan bagi ajakan",
+          "candidates": [
+            "kara-bahan",
+            "kara-dari",
+            "kara-karena",
+            "koto-kara-kara",
+            "penggunaan-dua-partikel",
+            "sore-de-dakara",
+            "te-kara",
+            "sorekara-soshite",
+            "ni-kara-moraimasu",
+            "dakara",
+            "kara-ni-kakete",
+            "desukara",
+            "te-kara-denai-to",
+            "no-dakara",
+            "mono-dakara-reason",
+            "karakoso",
+            "koto-kara-basis",
+            "no-koto-dakara",
+            "kara-niwa-consequence",
+            "kara-iu-to"
+          ],
+          "key": "kara-karena",
+          "role": "tested"
+        }
+      ],
+      "confidence": "high",
+      "note": null,
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-link-v1",
+        "generatedAt": "2026-10-05T04:00:09.457Z"
+      }
+    },
+    {
+      "mondaiType": "BUNPOU_SENTENCE_COMPOSITION",
+      "order": 2,
+      "patterns": [
+        {
+          "form": "〜たところ",
+          "reading": "たところ",
+          "meaning": "baru saja selesai melakukan sesuatu",
+          "candidates": [
+            "tokoro-akan",
+            "te-iru-tokoro",
+            "ta-tokoro",
+            "ta-tokoro-setelah-ternyata",
+            "tokoro-akan-n3",
+            "te-iru-tokoro-n3",
+            "ta-tokoro-baru-saja-n3",
+            "ta-tokoro-discovery"
+          ],
+          "key": "ta-tokoro",
+          "role": "tested"
+        },
+        {
+          "form": "〜なのだ",
+          "reading": "なのだ",
+          "meaning": "memberi penjelasan atau penegasan; bentuk percakapan なんです",
+          "candidates": [],
+          "key": null,
+          "role": "tested"
+        }
+      ],
+      "confidence": "high",
+      "note": null,
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-link-v1",
+        "generatedAt": "2026-10-05T04:02:57.698Z"
+      }
+    },
+    {
+      "mondaiType": "BUNPOU_SENTENCE_COMPOSITION",
+      "order": 3,
+      "patterns": [
+        {
+          "form": "〜ではいけない",
+          "reading": "ではいけない",
+          "meaning": "tidak boleh; tidak dapat diterima dalam keadaan tersebut",
+          "candidates": [
+            "de-tempat-aktivitas",
+            "de-alat-cara",
+            "de-batasan",
+            "de-alasan",
+            "de-bahan",
+            "te-de-alasan",
+            "de-tempat",
+            "de-cara",
+            "de-cakupan-jumlah",
+            "de-penghubung",
+            "nakereba-naranai",
+            "te-wa-ikenai",
+            "hodo-nai",
+            "perubahan-kata-kerja-dasar",
+            "amari-nai",
+            "mada-masen",
+            "kesshite-nai",
+            "mattaku-nai",
+            "mettani-nai",
+            "sukoshimo-nai"
+          ],
+          "key": "te-wa-ikenai",
+          "role": "tested"
+        }
+      ],
+      "confidence": "high",
+      "note": null,
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-link-v1",
+        "generatedAt": "2026-10-05T12:37:07.394Z"
+      }
+    },
+    {
+      "mondaiType": "BUNPOU_SENTENCE_COMPOSITION",
+      "order": 4,
+      "patterns": [
+        {
+          "form": "〜し",
+          "reading": "し",
+          "meaning": "dan juga (mendaftar beberapa alasan)",
+          "candidates": [
+            "shi-paralel",
+            "shi-alasan"
+          ],
+          "key": "shi-alasan",
+          "role": "tested"
+        },
+        {
+          "form": "〜そうだ",
+          "reading": "そうだ",
+          "meaning": "kelihatannya/tampaknya (dugaan visual)",
+          "candidates": [
+            "sou-kelihatannya",
+            "sou-katanya",
+            "ima-nimo-souda",
+            "kou-sou-aa-dou",
+            "sou-nai"
+          ],
+          "key": "sou-kelihatannya",
+          "role": "tested"
+        },
+        {
+          "form": "〜から",
+          "reading": "から",
+          "meaning": "karena (menyatakan alasan/penyebab)",
+          "candidates": [
+            "kara-bahan",
+            "kara-dari",
+            "kara-karena",
+            "kara-ni-kakete",
+            "koto-kara-kara",
+            "kara-ni-kakete-range",
+            "penggunaan-dua-partikel",
+            "sore-de-dakara",
+            "te-kara",
+            "sorekara-soshite",
+            "ni-kara-moraimasu",
+            "dakara",
+            "desukara",
+            "te-kara-denai-to",
+            "no-dakara",
+            "mono-dakara-reason",
+            "karakoso",
+            "koto-kara-basis",
+            "no-koto-dakara",
+            "kara-niwa-consequence"
+          ],
+          "key": "kara-karena",
+          "role": "tested"
+        }
+      ],
+      "confidence": "high",
+      "note": null,
+      "ai": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-link-v1",
+        "generatedAt": "2026-10-05T04:29:52.028Z"
+      }
+    },
+    {
+      "mondaiType": "BUNPOU_SENTENCE_COMPOSITION",
+      "order": 5,
+      "patterns": [
+        {
+          "form": "〜(ら)れる",
+          "reading": "られる",
+          "meaning": "bentuk pasif: dikenai tindakan, seperti ditentang",
+          "candidates": [
+            "reru-rareru-fakta",
+            "reru-rareru-kesulitan",
+            "sonkeigo",
+            "kanou-kei",
+            "mieru-mirareru",
+            "ukemi-kei",
+            "shieki-ukemi-kei",
+            "perubahan-kata-kerja-potensial"
+          ],
+          "key": "ukemi-kei",
+          "role": "tested"
+        },
+        {
+          "form": "〜ても",
+          "reading": "ても",
+          "meaning": "meskipun; tetap terjadi walaupun ada keadaan tersebut",
+          "candidates": [
+            "te-mo-meskipun",
+            "kata-tanya-te-mo-demo",
+            "temo-meskipun",
+            "kata-tanya-temo",
+            "tatoe-temo",
+            "moshimo-nara-temo",
+            "donnani-temo",
+            "ikura-temo",
+            "te-mo-ii",
+            "nakute-mo-ii",
+            "te-morau",
+            "te-kuremasen-ka-itadakemasen-ka",
+            "te-hoshii-moraitai-itadakitai",
+            "totemo-taihen",
+            "sasete-kudasai-moraemasuka-itadakemasuka",
+            "to-ittemo",
+            "ni-shitemo",
+            "te-hoshii-moraitai",
+            "moshi-toshitemo",
+            "to-shitemo-concessive"
+          ],
+          "key": "te-mo-meskipun",
+          "role": "tested"
+        },
+        {
+          "form": "〜つもりだ",
+          "reading": "つもりだ",
+          "meaning": "berniat melakukan sesuatu",
+          "candidates": [
+            "tsumori-datta",
+            "tsumori"
+          ],
+          "key": "tsumori",
+          "role": "tested"
+        }
+      ],
+      "confidence": "high",
+      "note": null,
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-link-v1",
+        "generatedAt": "2026-10-05T04:02:57.698Z"
+      }
+    },
+    {
+      "mondaiType": "BUNPOU_TEXT_GRAMMAR",
+      "order": 1,
+      "patterns": [
+        {
+          "form": "〜ている",
+          "reading": "ている",
+          "meaning": "keadaan yang sedang berlangsung atau status saat ini",
+          "candidates": [
+            "jidoushi-te-iru",
+            "te-imasu-progresif",
+            "te-imasu-keadaan",
+            "te-iru-sedang",
+            "te-iru-rutinitas",
+            "te-iru-hasil",
+            "te-iru-kondisi-bentuk",
+            "te-iru-selesai-belum-selesai",
+            "te-iru-tokoro",
+            "te-iru-tokoro-n3",
+            "koto-ni-natteiru",
+            "ni-kimatteiru"
+          ],
+          "key": "te-imasu-keadaan",
+          "role": "tested"
+        },
+        {
+          "form": "〜でしょう",
+          "reading": "でしょう",
+          "meaning": "tampaknya/mungkin (perkiraan atau dugaan)",
+          "candidates": [
+            "deshou-darou"
+          ],
+          "key": "deshou-darou",
+          "role": "distractor"
+        },
+        {
+          "form": "〜ていた",
+          "reading": "ていた",
+          "meaning": "keadaan atau kebiasaan di masa lampau",
+          "candidates": [
+            "wo-te-itadaku",
+            "te-kuremasen-ka-itadakemasen-ka",
+            "te-hoshii-moraitai-itadakitai",
+            "sasete-kudasai-moraemasuka-itadakemasuka"
+          ],
+          "key": null,
+          "role": "distractor"
+        }
+      ],
+      "confidence": "high",
+      "note": null,
+      "ai": {
+        "model": "ag/gemini-3.8-flash",
+        "promptVersion": "bunpou-link-v1",
+        "generatedAt": "2026-10-05T04:29:52.028Z"
+      }
+    },
+    {
+      "mondaiType": "BUNPOU_TEXT_GRAMMAR",
+      "order": 2,
+      "patterns": [
+        {
+          "form": "〜てしまう",
+          "reading": "てしまう",
+          "meaning": "selesai melakukan sesuatu dengan nuansa penyesalan atau kejadian tak diharapkan",
+          "candidates": [
+            "te-shimau-selesai",
+            "te-shimau-penyesalan",
+            "chau-jau-selesai",
+            "chau-jau-penyesalan",
+            "tsui-te-shimau"
+          ],
+          "key": "te-shimau-penyesalan",
+          "role": "tested"
+        },
+        {
+          "form": "〜たところだ",
+          "reading": "たところだ",
+          "meaning": "baru saja melakukan sesuatu",
+          "candidates": [
+            "ta-tokoro",
+            "ta-tokoro-setelah-ternyata",
+            "tokoro-akan-n3",
+            "ta-tokoro-baru-saja-n3",
+            "ta-tokoro-discovery",
+            "tokoro-akan"
+          ],
+          "key": "ta-tokoro",
+          "role": "distractor"
+        },
+        {
+          "form": "〜(ら)れる",
+          "reading": "られる",
+          "meaning": "bentuk pasif: subjek mengalami tindakan",
+          "candidates": [
+            "reru-rareru-fakta",
+            "reru-rareru-kesulitan",
+            "sonkeigo",
+            "kanou-kei",
+            "mieru-mirareru",
+            "ukemi-kei",
+            "shieki-ukemi-kei",
+            "perubahan-kata-kerja-potensial"
+          ],
+          "key": "ukemi-kei",
+          "role": "distractor"
+        }
+      ],
+      "confidence": "high",
+      "note": null,
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-link-v1",
+        "generatedAt": "2026-10-05T04:02:57.698Z"
+      }
+    },
+    {
+      "mondaiType": "BUNPOU_TEXT_GRAMMAR",
+      "order": 3,
+      "patterns": [
+        {
+          "form": "〜くなくなる",
+          "reading": "くなくなる",
+          "meaning": "menjadi tidak lagi dalam keadaan yang dinyatakan oleh kata sifat",
+          "candidates": [
+            "ku-ni-naru",
+            "ku-narimasu-ni-narimasu"
+          ],
+          "key": "ku-ni-naru",
+          "role": "tested"
+        },
+        {
+          "form": "〜くなる",
+          "reading": "くなる",
+          "meaning": "menjadi dalam keadaan yang dinyatakan oleh kata sifat",
+          "candidates": [
+            "ku-ni-naru",
+            "ku-narimasu-ni-narimasu"
+          ],
+          "key": "ku-narimasu-ni-narimasu",
+          "role": "distractor"
+        },
+        {
+          "form": "〜かもしれない",
+          "reading": "かもしれない",
+          "meaning": "mungkin; menyatakan kemungkinan",
+          "candidates": [
+            "kamoshiremasen",
+            "moshikasuruto-kamoshirenai",
+            "perubahan-kata-kerja-dasar",
+            "amari-nai",
+            "mada-masen"
+          ],
+          "key": "kamoshiremasen",
+          "role": "distractor"
+        },
+        {
+          "form": "〜そうだ",
+          "reading": "そうだ",
+          "meaning": "katanya; menyampaikan informasi yang didengar",
+          "candidates": [
+            "sou-kelihatannya",
+            "sou-katanya",
+            "ima-nimo-souda",
+            "kou-sou-aa-dou"
+          ],
+          "key": "sou-katanya",
+          "role": "distractor"
+        }
+      ],
+      "confidence": "high",
+      "note": null,
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-link-v1",
+        "generatedAt": "2026-10-05T04:02:57.698Z"
+      }
+    },
+    {
+      "mondaiType": "BUNPOU_TEXT_GRAMMAR",
+      "order": 4,
+      "patterns": [
+        {
+          "form": "それに",
+          "reading": "それに",
+          "meaning": "selain itu; menambahkan informasi sejenis",
+          "candidates": [
+            "sore-ni-sono-ue",
+            "sore-ni-taishite-ippou"
+          ],
+          "key": "sore-ni-sono-ue",
+          "role": "tested"
+        },
+        {
+          "form": "たとえば",
+          "reading": "たとえば",
+          "meaning": "misalnya; memperkenalkan contoh",
+          "candidates": [
+            "tatoeba"
+          ],
+          "key": "tatoeba",
+          "role": "distractor"
+        },
+        {
+          "form": "だから",
+          "reading": "だから",
+          "meaning": "karena itu; menyatakan akibat dari hal sebelumnya",
+          "candidates": [
+            "sore-de-dakara",
+            "dakara",
+            "no-dakara",
+            "mono-dakara-reason",
+            "no-koto-dakara",
+            "kara-bahan",
+            "kara-dari",
+            "kara-karena",
+            "koto-kara-kara"
+          ],
+          "key": "dakara",
+          "role": "distractor"
+        },
+        {
+          "form": "それなら",
+          "reading": "それなら",
+          "meaning": "kalau begitu; berdasarkan keadaan yang baru disebut",
+          "candidates": [
+            "sore-nara",
+            "nara"
+          ],
+          "key": "sore-nara",
+          "role": "distractor"
+        }
+      ],
+      "confidence": "high",
+      "note": null,
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-link-v1",
+        "generatedAt": "2026-10-05T04:02:57.698Z"
+      }
+    },
+    {
+      "mondaiType": "BUNPOU_TEXT_GRAMMAR",
+      "order": 5,
+      "patterns": [
+        {
+          "form": "は",
+          "reading": "は",
+          "meaning": "penanda topik yang dibicarakan atau disimpulkan",
+          "candidates": [
+            "wa-topik",
+            "wa-perbandingan",
+            "wa-koto-da",
+            "wa-mengangkat-topik",
+            "wa-fokus-penekanan-penyangkalan",
+            "wa-kontras"
+          ],
+          "key": "wa-topik",
+          "role": "tested"
+        },
+        {
+          "form": "が",
+          "reading": "が",
+          "meaning": "penanda subjek atau informasi baru",
+          "candidates": [
+            "ga-kedo-keredo-pembuka",
+            "jidoushi-tadoushi",
+            "ga-kata-tanya",
+            "kedo-ga",
+            "ga-subjek-umum",
+            "koto-wa-ga",
+            "ga-informasi-baru",
+            "ga-fenomena-alam",
+            "ga-subjek-anak-kalimat"
+          ],
+          "key": "ga-subjek-umum",
+          "role": "distractor"
+        },
+        {
+          "form": "で",
+          "reading": "で",
+          "meaning": "penanda tempat terjadinya aktivitas atau alat/cara",
+          "candidates": [
+            "de-tempat-aktivitas",
+            "de-alat-cara",
+            "de-batasan",
+            "de-alasan",
+            "de-bahan",
+            "te-de-alasan",
+            "de-tempat",
+            "de-cara",
+            "de-cakupan-jumlah",
+            "de-penghubung"
+          ],
+          "key": "de-tempat-aktivitas",
+          "role": "distractor"
+        },
+        {
+          "form": "を",
+          "reading": "を",
+          "meaning": "penanda objek langsung tindakan",
+          "candidates": [
+            "wo-te-sashiageru",
+            "wo-te-kudasaru",
+            "wo-te-itadaku",
+            "o-objek",
+            "o-perpindahan"
+          ],
+          "key": "o-objek",
+          "role": "distractor"
+        }
+      ],
+      "confidence": "low",
+      "note": "Deskripsi で mencakup dua fungsi (tempat dan alat/cara), sedangkan konteks kalimat lengkap tidak diberikan. Dipilih entri tempat aktivitas sebagai kecocokan terdekat pada level N4.",
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-link-v1",
+        "generatedAt": "2026-10-05T16:01:56.077Z"
+      }
+    }
+  ],
+  "contexts": []
+}
