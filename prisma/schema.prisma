@@ -82,6 +82,16 @@ enum BunpouKind {
   FOUNDATION
 }
 
+enum BunpouLinkRole {
+  TESTED // pola yang diuji jawaban benar
+  DISTRACTOR // pola di pilihan salah; tidak ditampilkan ke user
+}
+
+enum BunpouLinkConfidence {
+  HIGH
+  LOW
+}
+
 enum FlashcardCardType {
   NEW
   LEARNING
@@ -490,9 +500,10 @@ model BunpouPoint {
 
   retiredAt DateTime?
 
-  comparisons BunpouComparisonPoint[]
-  reports     Report[]
-  comments    QuestionComment[]
+  comparisons   BunpouComparisonPoint[]
+  questionLinks QuestionBunpouLink[]
+  reports       Report[]
+  comments      QuestionComment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -533,6 +544,33 @@ model BunpouComparisonPoint {
   @@id([comparisonId, pointId])
   @@unique([comparisonId, order])
   @@index([pointId])
+}
+
+// Tautan soal JLPT asli -> pola katalog (Fase B1), dari
+// src/bunpou-data/question-links/ lewat seed:bunpou. Memberi petunjuk jawaban,
+// jadi diperlakukan seperti QuestionExplanation: tidak pernah dikirim di mode
+// ujian atau sebelum soal latihan dijawab.
+model QuestionBunpouLink {
+  questionId Int
+  pointId    Int
+  role       BunpouLinkRole
+  // confidence milik soal (satu nilai per soal), disalin ke setiap tautannya.
+  // Hanya HIGH yang ditampilkan ke user.
+  confidence BunpouLinkConfidence
+  order      Int // urutan pola di soal, mulai 0
+
+  question Question    @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  point    BunpouPoint @relation(fields: [pointId], references: [id], onDelete: Restrict)
+
+  aiModel       String   @db.VarChar(120)
+  promptVersion String   @db.VarChar(60)
+  generatedAt   DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([questionId, pointId])
+  @@index([pointId, role])
 }
 
 // Deck bawaan = satu tag taxonomy. Isinya tidak disimpan: kata masuk deck bila
@@ -821,6 +859,7 @@ model Question {
   questionContextId Int?
 
   questionComments QuestionComment[]
+  bunpouLinks      QuestionBunpouLink[]
   attemptAnswers   AttemptAnswer[]
   practiceAnswers  PracticeAnswer[]
   reports          Report[]
