@@ -87,7 +87,20 @@ Metadata memakai `pageMetadata()`, structured data `LearningResource`, dan halam
   memuat pola ini, dan sampai enam pola lain dengan tag fungsi yang sama (level terdekat dulu).
   Sebelum/sesudah hanya dalam level yang sama.
 - Perbandingan yang salah satu polanya sudah dipensiunkan dianggap tidak ada (404), karena
-  tabelnya tidak lagi utuh.
+  tabelnya tidak lagi utuh. Aturan yang sama berlaku bila `content` tidak lolos skema baca atau
+  ada anggota tanpa baris tabel. Perakitannya di `lib/comparison.ts` (diuji terhadap seluruh
+  fixture): baris tabel diurutkan menurut urutan anggota di `BunpouComparisonPoint`, bukan urutan
+  JSON.
+- Daftar perbandingan di katalog, halaman pola, dan sitemap memakai aturan anggota yang sama,
+  supaya tidak ada tautan ke halaman 404. Katalog mengurutkannya menurut level tersulit
+  anggotanya lalu level termudah, dengan badge level dan judul Jepang anggotanya.
+- Halaman perbandingan: tabel nuansa/ragam/batasan mulai `md`; di layar sempit setiap pola menjadi
+  kartu berlabel, karena tabel empat kolom berisi paragraf tidak terbaca bila digulir menyamping.
+  Verdict kalimat kontras selalu tampil sebagai teks (Wajar, Kurang wajar, Salah) di samping
+  simbolnya, bukan hanya warna atau `aria-label`. Key opsi boleh berulang dalam satu kontras
+  (bentuk benar dan salah dari pola yang sama).
+- Bunpou sengaja tanpa `loading.tsx`: halaman dirender dari cache, dan streaming membuat
+  `notFound()` menjawab 200 + `noindex` alih-alih status 404.
 - Catatan dan diskusi pola dijelaskan di [Catatan dan Diskusi Pola](#catatan-dan-diskusi-pola).
 - Tombol "Laporkan pola ini" dan "Laporkan perbandingan ini" (target `BUNPOU_POINT` dan
   `BUNPOU_COMPARISON`) tampil bila `FEATURES_REPORT` aktif; detailnya di

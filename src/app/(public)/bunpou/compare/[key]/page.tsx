@@ -3,10 +3,10 @@ import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/seo/json-ld";
 import { FEATURES } from "@/constants";
 import { BunpouComparisonView } from "@/features/bunpou/components/bunpou-comparison-view";
+import { comparisonDescription, comparisonLevels } from "@/features/bunpou/lib/comparison";
 import { getBunpouComparisonDetail } from "@/features/bunpou/queries";
 import { BunpouKeySchema } from "@/features/bunpou/schemas";
 import { breadcrumbJsonLd, learningResourceJsonLd } from "@/lib/json-ld";
-import { toPlainJapanese } from "@/lib/japanese-markup";
 import { pageMetadata, privateMetadata } from "@/lib/seo";
 
 type Props = { params: Promise<{ key: string }> };
@@ -14,13 +14,6 @@ type Props = { params: Promise<{ key: string }> };
 async function detailFromParams(params: Props["params"]) {
   const parsed = BunpouKeySchema.safeParse((await params).key);
   return parsed.success ? getBunpouComparisonDetail(parsed.data) : null;
-}
-
-/** Ringkasan untuk meta description: tanpa markup, dipotong di batas kata. */
-function describe(summary: string) {
-  const plain = toPlainJapanese(summary).replace(/\s+/g, " ").trim();
-  if (plain.length <= 160) return plain;
-  return `${plain.slice(0, 157).replace(/\s+\S*$/, "")}…`;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -34,7 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return pageMetadata({
     title: `${detail.title} – Perbandingan Bunpou`,
-    description: describe(detail.content.summary),
+    description: comparisonDescription(detail.content.summary),
     path: `/bunpou/compare/${detail.key}`,
     keywords: [...detail.points.map((point) => point.titlePlain), "bunpou", "文法"],
   });
@@ -46,15 +39,19 @@ export default async function BunpouComparisonPage({ params }: Props) {
 
   const path = `/bunpou/compare/${detail.key}`;
 
+  // Bukan <main>: layout (public) sudah menyediakan landmark utamanya.
   return (
-    <main className="mx-auto w-full max-w-4xl px-4 py-10">
+    <div className="mx-auto w-full max-w-4xl px-4 py-10">
       <JsonLd
         data={[
           learningResourceJsonLd({
             path,
             name: detail.title,
-            description: describe(detail.content.summary),
+            description: comparisonDescription(detail.content.summary),
             resourceType: "Reference",
+            educationalLevel: comparisonLevels(detail.points)
+              .map((level) => `JLPT ${level}`)
+              .join(", "),
           }),
           breadcrumbJsonLd([
             { name: "Beranda", path: "/" },
@@ -64,6 +61,6 @@ export default async function BunpouComparisonPage({ params }: Props) {
         ]}
       />
       <BunpouComparisonView detail={detail} reportEnabled={FEATURES.report} />
-    </main>
+    </div>
   );
 }

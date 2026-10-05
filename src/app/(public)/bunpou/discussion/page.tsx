@@ -33,7 +33,7 @@ export default async function BunpouDiscussionIndexPage({ searchParams }: Props)
   const pageHref = (target: number) => `/bunpou/discussion?page=${target}`;
 
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-10">
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-10">
       <Link href="/bunpou" className="text-sm font-black underline">
         ← Katalog bunpou
       </Link>
@@ -114,6 +114,6 @@ export default async function BunpouDiscussionIndexPage({ searchParams }: Props)
           </Link>
         ) : null}
       </nav>
-    </main>
+    </div>
   );
 }

@@ -3,7 +3,8 @@ import Link from "next/link";
 import { ChevronRight, Scale } from "lucide-react";
 import { JsonLd } from "@/components/seo/json-ld";
 import { BunpouCatalog } from "@/features/bunpou/components/bunpou-catalog";
-import { getBunpouCatalog, getBunpouComparisonList } from "@/features/bunpou/queries";
+import { comparisonLevels } from "@/features/bunpou/lib/comparison";
+import { getBunpouCatalog, getBunpouComparisonLinks } from "@/features/bunpou/queries";
 import { BUNPOU_LEVELS, BUNPOU_LICENSE } from "@/features/bunpou/taxonomy";
 import type { BunpouLevel } from "@/features/bunpou/types";
 import { breadcrumbJsonLd, learningResourceJsonLd } from "@/lib/json-ld";
@@ -29,7 +30,7 @@ function isLevel(value: unknown): value is BunpouLevel {
 export default async function BunpouPage({ searchParams }: Props) {
   const [points, comparisons, { level }] = await Promise.all([
     getBunpouCatalog(),
-    getBunpouComparisonList(),
+    getBunpouComparisonLinks(),
     searchParams,
   ]);
 
@@ -43,7 +44,7 @@ export default async function BunpouPage({ searchParams }: Props) {
       : (levelsWithPoints[0] ?? "N5");
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-4 py-10">
+    <div className="mx-auto w-full max-w-5xl px-4 py-10">
       <JsonLd
         data={[
           learningResourceJsonLd({
@@ -78,18 +79,34 @@ export default async function BunpouPage({ searchParams }: Props) {
             Perbandingan pola mirip
           </h2>
           <p className="mt-1 text-sm font-semibold text-muted-foreground">
-            Bentuk berbeda dengan makna mirip, lengkap dengan kalimat kontras.
+            Bentuk berbeda dengan makna mirip, lengkap dengan kalimat kontras. Diurutkan dari
+            level termudah.
           </p>
           <ul className="mt-4 grid gap-3 sm:grid-cols-2">
             {comparisons.map((comparison) => (
               <li key={comparison.key}>
                 <Link
                   href={`/bunpou/compare/${comparison.key}`}
-                  className="neo-surface neo-interactive flex h-full items-center gap-3 p-4"
+                  className="neo-surface neo-interactive flex h-full items-start gap-3 p-4"
                 >
-                  <Scale className="size-5 shrink-0" aria-hidden />
-                  <span className="min-w-0 flex-1 font-black">{comparison.title}</span>
-                  <ChevronRight className="size-5 shrink-0" aria-hidden />
+                  <Scale className="mt-0.5 size-5 shrink-0" aria-hidden />
+                  <span className="min-w-0 flex-1">
+                    <span className="flex flex-wrap gap-1 text-xs font-black">
+                      {comparisonLevels(comparison.points).map((item) => (
+                        <span
+                          key={item}
+                          className="rounded border-2 border-neo-ink bg-neo-yellow px-1.5 text-black"
+                        >
+                          {item}
+                        </span>
+                      ))}
+                    </span>
+                    <span className="mt-1.5 block font-black">{comparison.title}</span>
+                    <span lang="ja" className="font-japanese mt-1 block text-sm font-bold text-muted-foreground">
+                      {comparison.points.map((point) => point.titlePlain).join("・")}
+                    </span>
+                  </span>
+                  <ChevronRight className="mt-0.5 size-5 shrink-0" aria-hidden />
                 </Link>
               </li>
             ))}
@@ -98,6 +115,6 @@ export default async function BunpouPage({ searchParams }: Props) {
       ) : null}
 
       <p className="mt-10 text-xs font-semibold text-muted-foreground">Konten: {BUNPOU_LICENSE}</p>
-    </main>
+    </div>
   );
 }

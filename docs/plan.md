@@ -1222,12 +1222,17 @@ Rancangan: `docs/module/bunpou.md`; kontrak data: `docs/seed-bunpou.md`.
 - [x] `npm run seed:bunpou`: 227 point terbit (N5 90, N4 137); 2 point N4 masih pending
   (`nakereba-naranai`, `mitai`).
 - [ ] Uji manual `/bunpou` lalu nyalakan flag di Vercel.
-- [ ] Isi `comparisons.json` setelah katalog N5-N1 lengkap (ditunda 2 Oktober 2026). Calon kelompok
-  dari N5/N4: alasan (`kara-karena`, `node`, `de-alasan`); pengandaian (`tara`, `nara`,
-  `to-kondisi`); に vs で tempat (`ni-tempat`, `de-tempat`); topik vs subjek (`wa-topik`,
-  `ga-kata-tanya`); kesan (`sou-kelihatannya`, `mitai`); そう kesan vs kabar
-  (`sou-kelihatannya`, `sou-katanya`); pertentangan (`noni-padahal`, `kedo-ga`); keinginan
-  (`tai`, `ga-hoshii`).
+- [x] Isi `comparisons.json`: 55 kelompok N5–N2, semuanya ditinjau (`reviewedAt`) dan terbit
+  lewat `seed:bunpou` bersama 721 point (5 Oktober 2026).
+- [x] Audit integrasi perbandingan end-to-end (5 Oktober 2026): baris tabel mengikuti urutan anggota
+  di database dan perbandingan yang barisnya tidak lengkap menjadi 404; daftar perbandingan (katalog,
+  halaman pola, sitemap) memakai aturan anggota-pensiun yang sama dengan halaman detail; layar
+  sempit memakai kartu per pola alih-alih tabel bergulir; verdict ○/△/✕ selalu berlabel teks; level
+  anggota tampil di header, tabel, dan katalog (urut level); landmark `<main>` ganda di halaman
+  bunpou dihapus. Logika perakitan di `src/features/bunpou/lib/comparison.ts`, diuji terhadap
+  seluruh fixture.
+- [ ] Uji manual perbandingan di browser (desktop dan ponsel), termasuk kirim laporan
+  `BUNPOU_COMPARISON`.
 - [ ] Fase B: `gen:bunpou-links`, tabel `QuestionBunpouLink`, tampilan di halaman pola dan review.
   Ditunda sampai katalog N5-N1 lengkap. Keputusan yang diusulkan: mulai dari paket yang levelnya
   punya katalog; `distractors` hanya bila maknanya jelas dan tidak ditampilkan ke user; hanya

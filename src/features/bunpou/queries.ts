@@ -4,6 +4,11 @@ import { cache } from "react";
 import { unstable_cache } from "next/cache";
 import { CACHE_KEYS, CACHE_TAGS } from "@/constants/cache-key";
 import { prisma } from "@/lib/prisma";
+import {
+  compareComparisonLinks,
+  resolveComparisonPoints,
+  toComparisonDetail,
+} from "./lib/comparison";
 import { BunpouComparisonContentSchema, BunpouContentSchema } from "./schemas";
 import { BUNPOU_LEVELS, BUNPOU_TAG_BY_SLUG } from "./taxonomy";
 import type {
@@ -60,10 +65,16 @@ const getCachedCatalog = unstable_cache(
 /** Semua pola terbit, urut N5 → N1 lalu `order`. */
 export const getBunpouCatalog = cache(() => getCachedCatalog());
 
+const getBunpouCatalogByKey = cache(
+  async () => new Map((await getBunpouCatalog()).map((point) => [point.key, point])),
+);
+
 const getCachedComparisonList = unstable_cache(
   async () => {
     const rows = await prisma.bunpouComparison.findMany({
-      where: { retiredAt: null },
+      // Aturan yang sama dengan halaman detail (anggota pensiun = 404), supaya
+      // sitemap tidak mengiklankan URL yang tidak bisa dibuka.
+      where: { retiredAt: null, points: { every: { point: { retiredAt: null } } } },
       orderBy: { key: "asc" },
       select: {
         key: true,
@@ -92,6 +103,26 @@ const getCachedComparisonList = unstable_cache(
 export const getBunpouComparisonList = cache(async () => {
   const rows = await getCachedComparisonList();
   return rows.map((row) => ({ ...row, updatedAt: new Date(row.updatedAt) }));
+});
+
+/**
+ * Perbandingan yang semua polanya ada di katalog, urut level. Dicocokkan ulang
+ * dengan katalog karena keduanya cache terpisah yang bisa sesaat tidak selaras
+ * setelah seed; tautan ke perbandingan yang 404 tidak boleh tampil.
+ */
+export const getBunpouComparisonLinks = cache(async (): Promise<BunpouComparisonLink[]> => {
+  const [catalogByKey, comparisons] = await Promise.all([
+    getBunpouCatalogByKey(),
+    getBunpouComparisonList(),
+  ]);
+  return comparisons
+    .flatMap((comparison) => {
+      const points = resolveComparisonPoints(comparison.pointKeys, catalogByKey);
+      return points
+        ? [{ key: comparison.key, title: comparison.title, summary: comparison.summary, points }]
+        : [];
+    })
+    .sort(compareComparisonLinks);
 });
 
 const getCachedPointRow = (key: string) =>
@@ -167,7 +198,7 @@ export const getBunpouPointDetail = cache(
     const [catalog, row, comparisons] = await Promise.all([
       getBunpouCatalog(),
       getCachedPointRow(key),
-      getBunpouComparisonList(),
+      getBunpouComparisonLinks(),
     ]);
     const index = catalog.findIndex((item) => item.key === key);
     if (index === -1 || !row) return null;
@@ -178,13 +209,6 @@ export const getBunpouPointDetail = cache(
     const point = catalog[index];
     const previous = catalog[index - 1];
     const next = catalog[index + 1];
-    const comparisonLinks: BunpouComparisonLink[] = comparisons
-      .filter((comparison) => comparison.pointKeys.includes(key))
-      .map((comparison) => ({
-        key: comparison.key,
-        title: comparison.title,
-        summary: comparison.summary,
-      }));
 
     return {
       id: row.id,
@@ -192,7 +216,9 @@ export const getBunpouPointDetail = cache(
       content: content.data,
       updatedAt: new Date(row.updatedAt),
       family: distinctSenses(point, catalog),
-      comparisons: comparisonLinks,
+      comparisons: comparisons.filter((comparison) =>
+        comparison.points.some((member) => member.key === key),
+      ),
       related: findRelated(point, catalog),
       previous: previous?.level === point.level ? previous : null,
       next: next?.level === point.level ? next : null,
@@ -228,31 +254,14 @@ const getCachedComparisonRow = (key: string) =>
     CACHE_OPTIONS,
   )(key);
 
+/** Null (404) bila tidak ada, dipensiunkan, belum lengkap, atau ada anggota yang tidak terbit. */
 export const getBunpouComparisonDetail = cache(
   async (key: string): Promise<BunpouComparisonDetail | null> => {
-    const [catalog, row] = await Promise.all([getBunpouCatalog(), getCachedComparisonRow(key)]);
-    if (!row) return null;
-
-    const content = BunpouComparisonContentSchema.safeParse(row.content);
-    if (!content.success) return null;
-
-    const byKey = new Map(catalog.map((item) => [item.key, item]));
-    const points = row.pointKeys.flatMap((pointKey) => {
-      const point = byKey.get(pointKey);
-      return point ? [point] : [];
-    });
-    // Seed hanya menerbitkan perbandingan yang semua polanya terbit; kalau ada
-    // yang hilang (dipensiunkan belakangan), tabelnya tidak lagi utuh.
-    if (points.length !== row.pointKeys.length || points.length < 2) return null;
-
-    return {
-      id: row.id,
-      key: row.key,
-      title: row.title,
-      content: content.data,
-      updatedAt: new Date(row.updatedAt),
-      points,
-    };
+    const [catalogByKey, row] = await Promise.all([
+      getBunpouCatalogByKey(),
+      getCachedComparisonRow(key),
+    ]);
+    return row ? toComparisonDetail(row, catalogByKey) : null;
   },
 );
 

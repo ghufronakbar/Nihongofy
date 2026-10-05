@@ -309,8 +309,18 @@ export function BunpouPointView({
                   <Scale className="mt-0.5 size-5 shrink-0" aria-hidden />
                   <span className="min-w-0 flex-1">
                     <span className="block font-black">{comparison.title}</span>
+                    <span className="mt-1 block text-sm font-bold">
+                      <span className="text-muted-foreground">Dengan </span>
+                      <span lang="ja" className="font-japanese">
+                        {comparison.points
+                          .filter((member) => member.key !== point.key)
+                          .map((member) => member.titlePlain)
+                          .join("・")}
+                      </span>
+                    </span>
+                    {/* Tanpa `block`: utilitas itu menimpa display milik line-clamp. */}
                     {comparison.summary ? (
-                      <span className="mt-1 line-clamp-2 block text-sm font-semibold text-muted-foreground">
+                      <span className="mt-1 line-clamp-2 text-sm font-semibold text-muted-foreground">
                         <JapaneseText text={comparison.summary} />
                       </span>
                     ) : null}

@@ -63,7 +63,13 @@ export type BunpouContent = {
   tags: string[];
 };
 
-export type BunpouComparisonLink = { key: string; title: string; summary: string };
+/** Perbandingan terbit untuk daftar; `points` urut kolom, termasuk pola yang sedang dibuka. */
+export type BunpouComparisonLink = {
+  key: string;
+  title: string;
+  summary: string;
+  points: BunpouPointSummary[];
+};
 
 export type BunpouPointDetail = {
   /** `BunpouPoint.id`, untuk target laporan. */
@@ -100,8 +106,9 @@ export type BunpouComparisonDetail = {
   id: number;
   key: string;
   title: string;
+  /** `rows` satu per pola, dalam urutan `points`. */
   content: BunpouComparisonContent;
   updatedAt: Date;
-  /** Urut kolom tabel. */
+  /** Urutan anggota di database, juga urutan baris tabel. */
   points: BunpouPointSummary[];
 };

@@ -76,7 +76,7 @@ export default async function BunpouPointPage({ params }: Props) {
   const path = `/bunpou/${point.key}`;
 
   return (
-    <main className="mx-auto w-full max-w-3xl px-4 py-10">
+    <div className="mx-auto w-full max-w-3xl px-4 py-10">
       <JsonLd
         data={[
           learningResourceJsonLd({
@@ -94,6 +94,6 @@ export default async function BunpouPointPage({ params }: Props) {
         ]}
       />
       <BunpouPointView detail={detail} reportEnabled={FEATURES.report} community={community} />
-    </main>
+    </div>
   );
 }
