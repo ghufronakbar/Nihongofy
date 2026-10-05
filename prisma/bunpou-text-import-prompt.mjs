@@ -3,7 +3,8 @@
 import { z } from "zod";
 import { KINDS, KEY_PATTERN } from "./bunpou-data.mjs";
 
-export const PROMPT_VERSION = "bunpou-text-import-v5";
+export const PROMPT_VERSION = "bunpou-text-import-v6";
+export const GAP_PROMPT_VERSION = "bunpou-gap-import-v2";
 
 const formationSchema = z.object({
   label: z.string(),
@@ -65,17 +66,27 @@ export function parseTextImportReply(raw) {
   return { items };
 }
 
-export function buildTextImportSystemPrompt(taxonomy) {
-  const sections = taxonomy.sections
-    .map((section) => `- ${section.key}: ${section.label} — ${section.description}`)
-    .join("\n");
-
-  return `Anda menyusun identitas katalog bunpou JLPT untuk pelajar Indonesia dari indeks teks sebuah video.
+const VIDEO_EVIDENCE = `Anda menyusun identitas katalog bunpou JLPT untuk pelajar Indonesia dari indeks teks sebuah video.
 
 SUMBER DAN BATAS BUKTI:
 - Indeks video hanya membuktikan bahwa label tersebut dicantumkan pada level, hari, dan timestamp tertentu.
 - Guidance adalah hasil pemeriksaan manusia terhadap materi video dan harus diprioritaskan.
-- Anda boleh memakai pengetahuan bahasa Jepang untuk menormalisasi judul, sense, sambungan, dan catatan, tetapi jangan mengaku bahwa detail tersebut dikutip verbatim dari video.
+- Anda boleh memakai pengetahuan bahasa Jepang untuk menormalisasi judul, sense, sambungan, dan catatan, tetapi jangan mengaku bahwa detail tersebut dikutip verbatim dari video.`;
+
+const GAP_EVIDENCE = `Anda menyusun identitas katalog bunpou JLPT untuk pelajar Indonesia. Item berasal dari pola yang diuji soal JLPT asli tetapi belum memiliki entri katalog.
+
+SUMBER DAN BATAS BUKTI:
+- evidence berisi soal JLPT asli tempat pola ini diuji. Sense yang dibuat harus sesuai dengan pemakaian di soal tersebut. Level ditentukan manusia dan tidak boleh dipersoalkan hanya karena soalnya berasal dari level lain.
+- Guidance adalah keputusan manusia tentang bentuk, sense, dan scope item, dan harus diprioritaskan.
+- existing berisi entri katalog yang bentuknya mirip. Jangan membuat point untuk sense yang sudah ditangani entri existing pada level yang sama; bila item ternyata sudah sepenuhnya tercakup, tetap buat kandidat terbaik dan isi doubt dengan key entri yang sudah mencakupnya.
+- Anda boleh memakai pengetahuan bahasa Jepang untuk menormalisasi judul, sense, sambungan, dan catatan.`;
+
+export function buildTextImportSystemPrompt(taxonomy, kind = "video-description") {
+  const sections = taxonomy.sections
+    .map((section) => `- ${section.key}: ${section.label} — ${section.description}`)
+    .join("\n");
+
+  return `${kind === "jlpt-gap" ? GAP_EVIDENCE : VIDEO_EVIDENCE}
 - Jika guidance bertentangan dengan pemakaian Jepang yang benar atau masih terlalu ambigu, tetap buat kandidat terbaik dan isi doubt secara spesifik.
 - Jangan isi doubt hanya karena guidance tidak merinci seluruh sense. Jika sense baku dapat dinormalisasi dengan yakin dari label dan pengetahuan tata bahasa, pecah atau gabungkan secara tepat lalu gunakan doubt: null. doubt hanya untuk ketidakpastian nyata yang memerlukan pemeriksaan manusia.
 
@@ -93,7 +104,7 @@ ATURAN SOURCE TERNORMALISASI:
 - source.title adalah bentuk grammar yang sudah dinormalisasi dan mengikuti aturan title yang sama: tanpa label sense, arti, atau anotasi penjelas.
 - source.meaning adalah ringkasan Indonesia yang membedakan sense ini dari sense lain.
 - source.connection adalah notasi sambungan teks polos yang lengkap.
-- source.formation hanya diisi bila materi membutuhkan aturan perubahan bentuk yang terstruktur; semua field wajib teks polos dan note null bila tidak ada.
+- source.formation hanya diisi bila materi membutuhkan aturan perubahan bentuk yang terstruktur. Setiap baris wajib memiliki kelima field { "label": "nama bentuk", "input": "bentuk asal", "rule": "aturan perubahan", "output": "contoh hasil", "note": null }; semua teks polos dan note null bila tidak ada.
 - source.notes menjelaskan nuansa, batasan, variasi, dan perbedaan penting yang diketahui dari guidance atau pengetahuan tata bahasa.
 - source.examples berisi 0-3 contoh Jepang teks polos tanpa furigana. Contoh ini hanya bukti kerja internal dan tidak akan ditampilkan; jangan menyalin contoh terkenal secara panjang.
 
@@ -128,6 +139,30 @@ KELUARAN JSON MURNI:
 }
 
 Keluarkan tepat satu items[] untuk setiap itemKey input dan jangan tulis teks di luar JSON.`;
+}
+
+/**
+ * @param {object} source gap source
+ * @param {Array<object>} items item dengan `evidenceQuestions` dan `existing` hasil script
+ */
+export function buildGapImportUserPrompt(source, items) {
+  return [
+    `Source: ${source.key}`,
+    `Level: ${source.level}`,
+    `Judul: ${source.title}`,
+    "Normalisasi item berikut menjadi point katalog level ini.",
+    JSON.stringify(
+      items.map((item) => ({
+        itemKey: item.key,
+        raw: item.raw,
+        guidance: item.guidance,
+        evidence: item.evidenceQuestions,
+        existing: item.existing,
+      })),
+      null,
+      2,
+    ),
+  ].join("\n\n");
 }
 
 export function buildTextImportUserPrompt(source, items) {

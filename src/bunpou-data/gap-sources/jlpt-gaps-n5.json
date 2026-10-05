@@ -1,0 +1,313 @@
+{
+  "version": 1,
+  "key": "jlpt-gaps-n5",
+  "level": "N5",
+  "title": "Celah katalog dari soal JLPT N5–N4",
+  "evidenceScope": "identity-only",
+  "items": [
+    {
+      "key": "e-arah",
+      "raw": "へ",
+      "guidance": "Partikel arah/tujuan perpindahan (東京へ行く). Bedakan dari に tujuan; 〜へは sudah ada sebagai entri terpisah.",
+      "evidence": [
+        {
+          "package": "n5-2010-12",
+          "mondaiType": "BUNPOU_SENTENCE_COMPOSITION",
+          "order": 3
+        },
+        {
+          "package": "n5-2017-07",
+          "mondaiType": "BUNPOU_SENTENCE_COMPOSITION",
+          "order": 3
+        }
+      ]
+    },
+    {
+      "key": "ga-subjek",
+      "raw": "が",
+      "guidance": "Partikel が penanda subjek secara umum (父が作りました, 色がきれいです), di luar entri が yang sudah ada (kata tanya, ほしい, できる). Bila sense objek pada 好き/わかる/上手/potensial belum tercakup, pecah menjadi family が.",
+      "evidence": [
+        {
+          "package": "n5-2013-07",
+          "mondaiType": "BUNPOU_GRAMMAR",
+          "order": 4
+        },
+        {
+          "package": "n5-2013-07",
+          "mondaiType": "BUNPOU_SENTENCE_COMPOSITION",
+          "order": 4
+        },
+        {
+          "package": "n5-2018-07",
+          "mondaiType": "BUNPOU_SENTENCE_COMPOSITION",
+          "order": 3
+        }
+      ]
+    },
+    {
+      "key": "ka-kata-tanya-tak-tentu",
+      "raw": "何か／だれか／どこか",
+      "guidance": "Kata tanya + か untuk sesuatu/seseorang/suatu tempat yang tak tentu. Bedakan dari 〜か partikel tanya dan 何も (tidak ada apa pun).",
+      "evidence": [
+        {
+          "package": "n5-2010-12",
+          "mondaiType": "BUNPOU_GRAMMAR",
+          "order": 15
+        },
+        {
+          "package": "n5-2013-07",
+          "mondaiType": "BUNPOU_GRAMMAR",
+          "order": 6
+        },
+        {
+          "package": "n5-2017-07",
+          "mondaiType": "BUNPOU_GRAMMAR",
+          "order": 15
+        }
+      ]
+    },
+    {
+      "key": "ta-kei",
+      "raw": "た形",
+      "guidance": "Bentuk lampau biasa (た形) kata kerja dan kata sifat sebagai materi konjugasi; kind conjugation, formation dari kamus ke 〜た.",
+      "evidence": [
+        {
+          "package": "n4-2014-07",
+          "mondaiType": "BUNPOU_TEXT_GRAMMAR",
+          "order": 3
+        },
+        {
+          "package": "n5-2012-12",
+          "mondaiType": "BUNPOU_SENTENCE_COMPOSITION",
+          "order": 4
+        },
+        {
+          "package": "n5-2017-07",
+          "mondaiType": "BUNPOU_GRAMMAR",
+          "order": 12
+        }
+      ]
+    },
+    {
+      "key": "masu-kei",
+      "raw": "ます形",
+      "guidance": "Bentuk sopan 〜ます／〜ません／〜ました／〜ませんでした sebagai materi konjugasi; kind conjugation.",
+      "evidence": [
+        {
+          "package": "n5-2018-07",
+          "mondaiType": "BUNPOU_TEXT_GRAMMAR",
+          "order": 3
+        },
+        {
+          "package": "n5-2013-07",
+          "mondaiType": "BUNPOU_TEXT_GRAMMAR",
+          "order": 1
+        },
+        {
+          "package": "n5-2010-12",
+          "mondaiType": "BUNPOU_GRAMMAR",
+          "order": 12
+        }
+      ]
+    },
+    {
+      "key": "kosoado",
+      "raw": "こ・そ・あ・ど",
+      "guidance": "Sistem kata tunjuk: これ/この/ここ/こっち dan seri そ/あ/ど. Pecah per fungsi (benda, menerangkan nomina, tempat, arah) dengan family yang sama.",
+      "evidence": [
+        {
+          "package": "n5-2018-07",
+          "mondaiType": "BUNPOU_GRAMMAR",
+          "order": 9
+        },
+        {
+          "package": "n5-2013-07",
+          "mondaiType": "BUNPOU_GRAMMAR",
+          "order": 9
+        },
+        {
+          "package": "n4-2013-12",
+          "mondaiType": "BUNPOU_GRAMMAR",
+          "order": 10
+        }
+      ]
+    },
+    {
+      "key": "wo-kudasai",
+      "raw": "〜をください",
+      "guidance": "Meminta atau memesan barang (ケーキを二つください). Bedakan dari 〜てください.",
+      "evidence": [
+        {
+          "package": "n5-2018-07",
+          "mondaiType": "BUNPOU_GRAMMAR",
+          "order": 15
+        }
+      ]
+    },
+    {
+      "key": "wo-onegaishimasu",
+      "raw": "〜をお願いします",
+      "guidance": "Permintaan sopan untuk barang/layanan, termasuk saat menelepon (田中さんをお願いします) dan 〜でお願いします.",
+      "evidence": [
+        {
+          "package": "n5-2010-12",
+          "mondaiType": "BUNPOU_GRAMMAR",
+          "order": 16
+        },
+        {
+          "package": "n5-2017-07",
+          "mondaiType": "BUNPOU_GRAMMAR",
+          "order": 16
+        },
+        {
+          "package": "n5-2013-07",
+          "mondaiType": "BUNPOU_GRAMMAR",
+          "order": 16
+        }
+      ]
+    },
+    {
+      "key": "ga-ii-pilihan",
+      "raw": "〜がいい",
+      "guidance": "Menyatakan pilihan: Nがいいです (yang ini saja). Bedakan dari 〜たほうがいい.",
+      "evidence": [
+        {
+          "package": "n5-2010-12",
+          "mondaiType": "BUNPOU_SENTENCE_COMPOSITION",
+          "order": 5
+        },
+        {
+          "package": "n5-2017-07",
+          "mondaiType": "BUNPOU_SENTENCE_COMPOSITION",
+          "order": 5
+        }
+      ]
+    },
+    {
+      "key": "mou",
+      "raw": "もう",
+      "guidance": "Adverbia: もう sudah (肯定) dan もう〜ない tidak lagi. Pecah per sense dengan family yang sama.",
+      "evidence": [
+        {
+          "package": "n4-2013-12",
+          "mondaiType": "BUNPOU_GRAMMAR",
+          "order": 14
+        },
+        {
+          "package": "n5-2012-12",
+          "mondaiType": "BUNPOU_GRAMMAR",
+          "order": 8
+        }
+      ]
+    },
+    {
+      "key": "mata",
+      "raw": "また",
+      "guidance": "Adverbia: lagi/kembali (また来てください).",
+      "evidence": [
+        {
+          "package": "n5-2010-12",
+          "mondaiType": "BUNPOU_GRAMMAR",
+          "order": 9
+        },
+        {
+          "package": "n5-2018-07",
+          "mondaiType": "BUNPOU_GRAMMAR",
+          "order": 12
+        },
+        {
+          "package": "n4-2021-07",
+          "mondaiType": "BUNPOU_TEXT_GRAMMAR",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "key": "itsumo",
+      "raw": "いつも",
+      "guidance": "Adverbia frekuensi: selalu.",
+      "evidence": [
+        {
+          "package": "n5-2013-07",
+          "mondaiType": "BUNPOU_TEXT_GRAMMAR",
+          "order": 1
+        },
+        {
+          "package": "n5-2018-07",
+          "mondaiType": "BUNPOU_TEXT_GRAMMAR",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "key": "tokidoki",
+      "raw": "ときどき",
+      "guidance": "Adverbia frekuensi: kadang-kadang.",
+      "evidence": [
+        {
+          "package": "n5-2013-07",
+          "mondaiType": "BUNPOU_GRAMMAR",
+          "order": 8
+        }
+      ]
+    },
+    {
+      "key": "sugu-ni",
+      "raw": "すぐ(に)",
+      "guidance": "Adverbia: segera.",
+      "evidence": [
+        {
+          "package": "n5-2012-12",
+          "mondaiType": "BUNPOU_GRAMMAR",
+          "order": 8
+        }
+      ]
+    },
+    {
+      "key": "chotto",
+      "raw": "ちょっと",
+      "guidance": "Adverbia: sedikit/sebentar, termasuk penolakan halus (ちょっと…).",
+      "evidence": [
+        {
+          "package": "n5-2012-12",
+          "mondaiType": "BUNPOU_GRAMMAR",
+          "order": 9
+        }
+      ]
+    },
+    {
+      "key": "motto",
+      "raw": "もっと",
+      "guidance": "Adverbia: lebih (lagi). Bedakan dari もっとも.",
+      "evidence": [
+        {
+          "package": "n4-2012-12",
+          "mondaiType": "BUNPOU_GRAMMAR",
+          "order": 8
+        },
+        {
+          "package": "n5-2012-12",
+          "mondaiType": "BUNPOU_TEXT_GRAMMAR",
+          "order": 4
+        },
+        {
+          "package": "n5-2018-07",
+          "mondaiType": "BUNPOU_TEXT_GRAMMAR",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "key": "doushite",
+      "raw": "どうして",
+      "guidance": "Kata tanya alasan: mengapa. Bila sudah tercakup entri kata tanya dasar, isi doubt.",
+      "evidence": [
+        {
+          "package": "n5-2012-12",
+          "mondaiType": "BUNPOU_GRAMMAR",
+          "order": 14
+        }
+      ]
+    }
+  ]
+}

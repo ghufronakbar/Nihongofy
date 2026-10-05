@@ -1,6 +1,7 @@
-// Normalize identity-only text indexes into Bunpou point fixtures. This stage
-// creates point identities and source evidence; publishable content is still
-// produced separately by generate-bunpou-content.mjs.
+// Normalize identity-only sources into Bunpou point fixtures: video text
+// indexes (text-sources/) and patterns tested by JLPT questions but missing from
+// the catalog (gap-sources/). This stage creates point identities and source
+// evidence; publishable content is still produced by generate-bunpou-content.mjs.
 
 import OpenAI from "openai";
 import { z } from "zod";
@@ -10,16 +11,22 @@ import {
   loadTaxonomy,
   pointIdentityProblems,
   readAllPointFiles,
+  readGapSources,
   readTextSources,
   writePointFile,
 } from "./bunpou-data.mjs";
+import { buildCatalogIndex, explanationOf, lookupCandidates, questionId } from "./bunpou-links.mjs";
 import {
+  GAP_PROMPT_VERSION,
   PROMPT_VERSION,
+  buildGapImportUserPrompt,
   buildTextImportRetryPrompt,
   buildTextImportSystemPrompt,
   buildTextImportUserPrompt,
   parseTextImportReply,
 } from "./bunpou-text-import-prompt.mjs";
+import { stripJapaneseMarkup } from "./japanese-markup-check.mjs";
+import { loadAndValidateSeedFiles } from "./test-package-fixture.mjs";
 
 const REQUEST_TIMEOUT_MS = 300_000;
 const SDK_MAX_RETRIES = 4;
@@ -131,7 +138,12 @@ async function runPool(items, concurrency, worker) {
   await Promise.all(runners);
 }
 
+const EXISTING_LIMIT = 10;
+
 function flattenSource(source) {
+  if (source.kind === "jlpt-gap") {
+    return source.items.map((item, itemIndex) => ({ ...item, sourceKey: source.key, sourcePosition: itemIndex }));
+  }
   return source.days.flatMap((day) =>
     day.items.map((item, itemIndex) => ({
       ...item,
@@ -172,6 +184,7 @@ function sourcePositions(textSources) {
   const positions = new Map();
   let position = 0;
   for (const source of textSources) {
+    if (source.kind === "jlpt-gap") continue;
     for (const item of flattenSource(source)) {
       positions.set(referenceIdentity(source.key, item.key), position);
       position += 1;
@@ -217,12 +230,12 @@ function validateCandidates({ source, item, candidates, level, taxonomy, usedKey
       title: candidate.title,
       source: {
         slides: [],
-        references: [{ type: "video-description", sourceKey: source.key, itemKey: item.key }],
+        references: [{ type: source.kind, sourceKey: source.key, itemKey: item.key }],
         ...candidate.source,
       },
       extract: {
         model: "pending",
-        promptVersion: PROMPT_VERSION,
+        promptVersion: source.kind === "jlpt-gap" ? GAP_PROMPT_VERSION : PROMPT_VERSION,
         extractedAt,
         doubt: candidate.doubt,
       },
@@ -246,10 +259,54 @@ function validateCandidates({ source, item, candidates, level, taxonomy, usedKey
   return { problems, points };
 }
 
+function userPromptFor(source, items) {
+  return source.kind === "jlpt-gap" ? buildGapImportUserPrompt(source, items) : buildTextImportUserPrompt(source, items);
+}
+
+function plain(value) {
+  return value ? stripJapaneseMarkup(value).trim() : null;
+}
+
+/**
+ * Bukti soal dan entri katalog mirip untuk item gap. Soal yang tidak ditemukan
+ * di fixture paket adalah error, karena bukti adalah inti item gap.
+ */
+function enrichGapItems(source, items, packages, index) {
+  return items.map((item) => ({
+    ...item,
+    evidenceQuestions: item.evidence.map(({ package: packageFile, mondaiType, order }) => {
+      const pkg = packages.get(packageFile);
+      const question = pkg?.testPackageItems
+        .find((entry) => entry.mondaiType === mondaiType)
+        ?.questions.find((entry) => entry.order === order);
+      if (!question) {
+        throw new Error(`${source.key}:${item.key}: soal ${packageFile} ${questionId(mondaiType, order)} tidak ditemukan`);
+      }
+      const context = question.questionContextRef
+        ? pkg.questionContexts?.find((entry) => entry.id === question.questionContextRef)
+        : null;
+      return {
+        package: `${pkg.name} (${pkg.jlptLevel})`,
+        passage: plain(context?.storyText),
+        question: plain(question.questionText),
+        choices: Object.fromEntries(question.questionChoices.map((choice) => [choice.codeAnswer, plain(choice.answerText)])),
+        answer: question.questionAnswer,
+        summary: plain(explanationOf(question)?.summary),
+      };
+    }),
+    existing: lookupCandidates(index, { form: item.raw, reading: item.raw }, source.level)
+      .slice(0, EXISTING_LIMIT)
+      .map((key) => {
+        const point = index.points.get(key);
+        return { key, level: point.level, title: point.title, senseLabel: point.senseLabel, meaning: point.meaningId };
+      }),
+  }));
+}
+
 async function importBatch({ client, model, reasoningEffort, systemPrompt, source, items, taxonomy, usedKeys, owners }) {
   const messages = [
     { role: "system", content: systemPrompt },
-    { role: "user", content: buildTextImportUserPrompt(source, items) },
+    { role: "user", content: userPromptFor(source, items) },
   ];
   const pending = new Map(items.map((item) => [item.key, item]));
   const results = new Map();
@@ -319,12 +376,29 @@ async function importBatch({ client, model, reasoningEffort, systemPrompt, sourc
 async function main() {
   const options = parseArguments(process.argv.slice(2));
   const taxonomy = await loadTaxonomy();
-  const textSources = await readTextSources();
+  const textSources = [
+    ...(await readTextSources()).map((source) => ({ ...source, kind: "video-description" })),
+    ...(await readGapSources()).map((source) => ({ ...source, kind: "jlpt-gap" })),
+  ];
+  const sourceKeys = new Set();
+  for (const source of textSources) {
+    if (sourceKeys.has(source.key)) throw new Error(`key source ganda antara text-sources dan gap-sources: ${source.key}`);
+    sourceKeys.add(source.key);
+  }
   const files = await readAllPointFiles();
   const selectedSources = textSources.filter(
     (source) => (!options.source || source.key === options.source) && (!options.level || source.level === options.level),
   );
-  if (selectedSources.length === 0) throw new Error("source text yang cocok tidak ditemukan");
+  if (selectedSources.length === 0) throw new Error("source yang cocok tidak ditemukan");
+
+  let packages = new Map();
+  let catalogIndex = null;
+  if (selectedSources.some((source) => source.kind === "jlpt-gap")) {
+    const { seedFiles, errors } = await loadAndValidateSeedFiles(null);
+    if (errors.length > 0) throw new Error(`fixture paket tidak valid: ${errors[0].file} ${errors[0].message}`);
+    packages = new Map(seedFiles.map(({ file, pkg }) => [file.slice(0, -".json".length), pkg]));
+    catalogIndex = buildCatalogIndex(files);
+  }
 
   let env = null;
   if (!options.dryRun) {
@@ -355,7 +429,10 @@ async function main() {
     }
   }
 
-  const systemPrompt = buildTextImportSystemPrompt(taxonomy);
+  const systemPrompts = {
+    "video-description": buildTextImportSystemPrompt(taxonomy, "video-description"),
+    "jlpt-gap": buildTextImportSystemPrompt(taxonomy, "jlpt-gap"),
+  };
   const tasks = [];
   let remaining = options.limit;
   for (const source of selectedSources) {
@@ -371,7 +448,8 @@ async function main() {
       .filter((item) => options.overwrite || !existingReferences.has(referenceIdentity(source.key, item.key)))
       .slice(0, remaining);
     remaining -= selected.length;
-    const batches = chunk(selected, options.batchSize);
+    const prepared = source.kind === "jlpt-gap" ? enrichGapItems(source, selected, packages, catalogIndex) : selected;
+    const batches = chunk(prepared, options.batchSize);
     log(`${source.key}: ${selected.length} item dalam ${batches.length} batch`);
     batches.forEach((items, index) => tasks.push({ source, file, items, label: `${source.key}#${index + 1}` }));
   }
@@ -381,8 +459,9 @@ async function main() {
     return;
   }
   if (options.dryRun) {
-    log(`DRY-RUN system prompt (${PROMPT_VERSION}):\n${systemPrompt}\n---`);
-    log(`DRY-RUN prompt batch pertama:\n${buildTextImportUserPrompt(tasks[0].source, tasks[0].items)}\n---`);
+    const { source, items } = tasks[0];
+    log(`DRY-RUN system prompt (${source.kind}):\n${systemPrompts[source.kind]}\n---`);
+    log(`DRY-RUN prompt batch pertama:\n${userPromptFor(source, items)}\n---`);
     return;
   }
 
@@ -405,7 +484,7 @@ async function main() {
         client,
         model,
         reasoningEffort: options.reasoningEffort,
-        systemPrompt,
+        systemPrompt: systemPrompts[task.source.kind],
         source: task.source,
         items: task.items,
         taxonomy,
@@ -421,9 +500,12 @@ async function main() {
         if (options.overwrite) {
           task.file.points = task.file.points.filter((point) => !pointHasReference(point, identity));
         }
+        // Point gap tidak punya posisi di sumber berurutan, jadi diletakkan di
+        // akhir level; point teks diurutkan ulang lewat posisi sumbernya.
+        const base = task.source.kind === "jlpt-gap" ? Math.max(0, ...task.file.points.map((point) => point.order)) : 0;
         imported.points.forEach((point, index) => {
           point.key = uniqueKey(point.key, task.source.level, usedKeys, owners, identity);
-          point.order = index + 1;
+          point.order = base + index + 1;
           point.extract.model = model;
           task.file.points.push(point);
           usedKeys.add(point.key);

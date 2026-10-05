@@ -301,6 +301,38 @@ describe("validasi family lintas level", async () => {
   });
 });
 
+describe("sumber gap JLPT", () => {
+  const gapSource = {
+    version: 1 as const,
+    key: "jlpt-gaps-n5",
+    level: "N5",
+    title: "Celah katalog",
+    evidenceScope: "identity-only" as const,
+    items: [{ key: "e-arah", raw: "へ", guidance: "", evidence: [{ package: "n5-2010-12", mondaiType: "BUNPOU_GRAMMAR", order: 1 }] }],
+  };
+  const gapPoint = (type: string) =>
+    point({
+      key: "e-arah",
+      kind: "particle",
+      sectionKey: "particles",
+      title: "〜へ",
+      source: { ...point().source, slides: [], references: [{ type, sourceKey: "jlpt-gaps-n5", itemKey: "e-arah" }] },
+    });
+
+  it("menerima reference jlpt-gap dan menolak tipe yang tidak cocok", async () => {
+    const taxonomy = await loadTaxonomy();
+    const manifest = { decks: [], slides: [] };
+    const files = emptyPointFiles();
+    files.get("N5")!.points = [gapPoint("jlpt-gap")];
+    expect(validateCatalog(files, manifest, taxonomy, [], [gapSource]).errors).toEqual([]);
+
+    files.get("N5")!.points = [gapPoint("video-description")];
+    expect(validateCatalog(files, manifest, taxonomy, [], [gapSource]).errors.join(" ")).toContain(
+      "bertipe jlpt-gap, bukan video-description",
+    );
+  });
+});
+
 describe("kontrak comparison", () => {
   const points = new Map([
     ["a", { level: "N5", point: point({ key: "a" }) }],

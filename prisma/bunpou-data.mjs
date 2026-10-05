@@ -20,6 +20,7 @@ export const TAXONOMY_FILE = path.join(DATA_DIR, "taxonomy.json");
 export const SLIDES_FILE = path.join(DATA_DIR, "slides.json");
 export const COMPARISONS_FILE = path.join(DATA_DIR, "comparisons.json");
 export const TEXT_SOURCES_DIR = path.join(DATA_DIR, "text-sources");
+export const GAP_SOURCES_DIR = path.join(DATA_DIR, "gap-sources");
 export const RAW_IMAGES_DIR = fileURLToPath(new URL("../data/bunpou/raw_images/", import.meta.url));
 
 export const LEVELS = ["N5", "N4", "N3", "N2", "N1"];
@@ -52,8 +53,12 @@ const formationRowSchema = z.object({
   note: z.string().nullable(),
 });
 
+// video-description: indeks teks video (text-sources/); jlpt-gap: pola yang
+// diuji soal JLPT asli tetapi belum ada di katalog (gap-sources/).
+export const REFERENCE_TYPES = ["video-description", "jlpt-gap"];
+
 const sourceReferenceSchema = z.object({
-  type: z.literal("video-description"),
+  type: z.enum(REFERENCE_TYPES),
   sourceKey: keySchema,
   itemKey: keySchema,
 });
@@ -189,6 +194,28 @@ export const textSourceSchema = z.object({
   url: z.url(),
   evidenceScope: z.literal("identity-only"),
   days: z.array(textSourceDaySchema).min(1),
+});
+
+const gapEvidenceSchema = z.object({
+  package: z.string().regex(/^[a-z0-9-]+$/),
+  mondaiType: z.string().min(1),
+  order: z.number().int().positive(),
+});
+
+const gapSourceItemSchema = z.object({
+  key: keySchema,
+  raw: z.string().min(1),
+  guidance: z.string().default(""),
+  evidence: z.array(gapEvidenceSchema).min(1),
+});
+
+export const gapSourceSchema = z.object({
+  version: z.literal(1),
+  key: keySchema,
+  level: levelSchema,
+  title: z.string().min(1),
+  evidenceScope: z.literal("identity-only"),
+  items: z.array(gapSourceItemSchema).min(1),
 });
 
 const sectionSchema = z.object({
@@ -396,6 +423,34 @@ export async function readTextSources() {
         if (itemKeys.has(item.key)) throw new Error(`${entry.name}: item key ganda: ${item.key}`);
         itemKeys.add(item.key);
       }
+    }
+    sources.push(source);
+  }
+  return sources;
+}
+
+export async function readGapSources() {
+  let entries;
+  try {
+    entries = await fs.readdir(GAP_SOURCES_DIR, { withFileTypes: true });
+  } catch (error) {
+    if (error?.code === "ENOENT") return [];
+    throw error;
+  }
+
+  const sources = [];
+  const sourceKeys = new Set();
+  for (const entry of entries.sort((left, right) => left.name.localeCompare(right.name))) {
+    if (!entry.isFile() || !entry.name.endsWith(".json")) continue;
+    const parsed = gapSourceSchema.safeParse(await readJson(path.join(GAP_SOURCES_DIR, entry.name)));
+    if (!parsed.success) throw new Error(`gap-sources/${entry.name} tidak valid: ${firstIssue(parsed.error)}`);
+    const source = parsed.data;
+    if (sourceKeys.has(source.key)) throw new Error(`gap source key ganda: ${source.key}`);
+    sourceKeys.add(source.key);
+    const itemKeys = new Set();
+    for (const item of source.items) {
+      if (itemKeys.has(item.key)) throw new Error(`gap-sources/${entry.name}: item key ganda: ${item.key}`);
+      itemKeys.add(item.key);
     }
     sources.push(source);
   }
@@ -833,7 +888,7 @@ export function pointPublicationFlags(point) {
   return { pending, doubt, ready: !pending && !doubt };
 }
 
-export function validateCatalog(pointFiles, manifest, taxonomy, textSources = []) {
+export function validateCatalog(pointFiles, manifest, taxonomy, textSources = [], gapSources = []) {
   const errors = [];
   const warnings = [];
   const pointsByKey = new Map();
@@ -844,8 +899,16 @@ export function validateCatalog(pointFiles, manifest, taxonomy, textSources = []
   for (const source of textSources) {
     for (const day of source.days) {
       for (const item of day.items) {
-        textReferences.set(`${source.key}:${item.key}`, source.level);
+        textReferences.set(`${source.key}:${item.key}`, { level: source.level, type: "video-description" });
       }
+    }
+  }
+  for (const source of gapSources) {
+    if (textSources.some((text) => text.key === source.key)) {
+      errors.push(`gap source ${source.key}: key sama dengan text source`);
+    }
+    for (const item of source.items) {
+      textReferences.set(`${source.key}:${item.key}`, { level: source.level, type: "jlpt-gap" });
     }
   }
   const decksByKey = new Map(manifest.decks.map((deck) => [deck.key, deck]));
@@ -907,10 +970,12 @@ export function validateCatalog(pointFiles, manifest, taxonomy, textSources = []
       }
       for (const reference of point.source.references ?? []) {
         const identity = `${reference.sourceKey}:${reference.itemKey}`;
-        const sourceLevel = textReferences.get(identity);
-        if (!sourceLevel) errors.push(`${where}: source reference tidak ditemukan: ${identity}`);
-        else if (sourceLevel !== level) {
-          errors.push(`${where}: source reference ${identity} berada di ${sourceLevel}`);
+        const found = textReferences.get(identity);
+        if (!found) errors.push(`${where}: source reference tidak ditemukan: ${identity}`);
+        else if (found.level !== level) {
+          errors.push(`${where}: source reference ${identity} berada di ${found.level}`);
+        } else if (found.type !== reference.type) {
+          errors.push(`${where}: source reference ${identity} bertipe ${found.type}, bukan ${reference.type}`);
         }
       }
     }
