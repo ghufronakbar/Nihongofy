@@ -17,8 +17,10 @@ import { JapanesePassage } from "@/components/japanese-passage";
 import { JapaneseText } from "@/components/japanese-text";
 import { ImageWithLightbox } from "@/components/image-with-lightbox";
 import { JLPT_SECTION_LABELS, mondaiTypeFullLabel } from "@/constants/jlpt";
+import { QuestionBunpouPoints } from "@/components/question-bunpou-points";
 import { QuestionExplanationBody } from "@/components/question-explanation";
 import { ReportButton } from "@/features/report/components/report-button";
+import type { QuestionBunpouPointView } from "@/lib/question-bunpou-links";
 import type { QuestionExplanationView } from "@/lib/question-explanation";
 import { cn } from "@/lib/utils";
 import {
@@ -29,6 +31,7 @@ import {
 type Feedback = {
   correctAnswer: number;
   explanation: QuestionExplanationView | null;
+  bunpouPoints: QuestionBunpouPointView[];
 };
 
 type PracticeQuestion = {
@@ -152,6 +155,7 @@ export function PracticeRunner({ practiceSession, reportEnabled }: PracticeRunne
                 feedback: {
                   correctAnswer: result.correctAnswer,
                   explanation: result.explanation,
+                  bunpouPoints: result.bunpouPoints,
                 },
               }
             : question,
@@ -420,6 +424,9 @@ export function PracticeRunner({ practiceSession, reportEnabled }: PracticeRunne
                   <QuestionExplanationBody explanation={currentQuestion.feedback.explanation} />
                 ) : (
                   <p>Kunci jawaban sudah ditandai. Penjelasan untuk soal ini belum tersedia.</p>
+                )}
+                {currentQuestion.feedback && (
+                  <QuestionBunpouPoints points={currentQuestion.feedback.bunpouPoints} className="mt-3" />
                 )}
               </div>
               {reportEnabled && currentQuestion.feedback?.explanation && (

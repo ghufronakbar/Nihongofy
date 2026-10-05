@@ -84,6 +84,7 @@ import {
   getAttemptSummary,
   getGuestAttemptSummary,
 } from "@/features/result/actions";
+import { QUESTION_BUNPOU_LINKS_SELECT } from "@/lib/question-bunpou-links";
 import { QUESTION_EXPLANATION_SELECT } from "@/lib/question-explanation";
 
 // ============================================================
@@ -98,6 +99,7 @@ const FORBIDDEN_FIELDS: Record<string, readonly string[]> = {
   Question: [
     "questionAnswer",
     "explanation",
+    "bunpouLinks",
     "questionComments",
     "attemptAnswers",
     "practiceAnswers",
@@ -105,8 +107,9 @@ const FORBIDDEN_FIELDS: Record<string, readonly string[]> = {
   ],
   AttemptAnswer: ["isCorrect"],
 };
-// Model yang seluruh isinya pembahasan, dari jalur mana pun ia dicapai.
-const FORBIDDEN_MODELS = new Set(["QuestionExplanation", "QuestionExplanationChoice"]);
+// Model yang seluruh isinya pembahasan, dari jalur mana pun ia dicapai. Tautan
+// soal -> pola bunpou menyebut pola yang diuji, jadi termasuk di sini.
+const FORBIDDEN_MODELS = new Set(["QuestionExplanation", "QuestionExplanationChoice", "QuestionBunpouLink"]);
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -714,6 +717,29 @@ describe("QUESTION_EXPLANATION_SELECT", () => {
   });
 });
 
+describe("QUESTION_BUNPOU_LINKS_SELECT", () => {
+  it("bentuknya tetap: hanya pola yang diuji, yakin, dan belum pensiun", () => {
+    expect(QUESTION_BUNPOU_LINKS_SELECT).toEqual({
+      where: { role: "TESTED", confidence: "HIGH", point: { retiredAt: null } },
+      orderBy: { order: "asc" },
+      select: { point: { select: { key: true, title: true, level: true, meaningId: true } } },
+    });
+  });
+
+  it("hanya dipakai jalur yang memang boleh membuka pembahasan", () => {
+    const users = [...SOURCES]
+      .filter(([, source]) => source.includes("QUESTION_BUNPOU_LINKS_SELECT"))
+      .map(([path]) => path)
+      .sort();
+    expect(users).toEqual([
+      "src/features/practice/actions.ts", // hanya soal yang dijawab (dijaga test runtime)
+      "src/features/result/actions.ts", // review setelah submit
+      "src/features/test-package/actions.ts", // mode baca publik
+      "src/lib/question-bunpou-links.ts",
+    ]);
+  });
+});
+
 describe("pola query terlarang", () => {
   it("relasi pembahasan tidak pernah diambil utuh atau lewat include", () => {
     for (const [path, source] of SOURCES) {
@@ -782,6 +808,8 @@ describe("permukaan sampingan selama ujian dan latihan", () => {
         "correctAnswer",
         "explanation",
         "Explanation",
+        "bunpouPoints",
+        "BunpouPoints",
         "Discussion",
         "QuestionComment",
         "/discussion",
@@ -807,6 +835,10 @@ describe("permukaan sampingan selama ujian dan latihan", () => {
     expect(runner).toMatch(
       /currentQuestion\.feedback\?\.explanation && \([\s\S]{0,200}targetType: "QUESTION_EXPLANATION"/,
     );
+    // Tautan pola menyebut pola yang diuji: sama seperti pembahasan, hanya dari feedback.
+    expect(runner.match(/<QuestionBunpouPoints points=\{([^}]+)\}/g)).toEqual([
+      "<QuestionBunpouPoints points={currentQuestion.feedback.bunpouPoints}",
+    ]);
   });
 });
 
@@ -824,6 +856,21 @@ describe("cache ber-kunci terpisah dari jalur exam", () => {
       }
     }
     expect(keyedCaches).toEqual(["src/features/test-package/actions.ts"]);
+  });
+
+  it("cache tautan pola hanya di mode baca, dengan key dan tag katalog bunpou sendiri", () => {
+    const linkCaches: string[] = [];
+    for (const [path, source] of SOURCES) {
+      for (const match of source.matchAll(/\bunstable_cache\(/g)) {
+        const args = callArguments(source, match.index + match[0].length - 1);
+        if (/QUESTION_BUNPOU_LINKS_SELECT|bunpouLinks|questionBunpouLink/.test(args)) {
+          linkCaches.push(path);
+          expect(args).toContain("CACHE_KEYS.testPackageBunpouPoints(");
+          expect(args).toContain("CACHE_TAGS.bunpouCatalog");
+        }
+      }
+    }
+    expect(linkCaches).toEqual(["src/features/test-package/actions.ts"]);
   });
 
   it("jalur exam, latihan, dan result tidak memakai cache mode baca", () => {

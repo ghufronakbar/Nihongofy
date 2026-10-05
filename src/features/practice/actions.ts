@@ -5,6 +5,7 @@ import { notFound, redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import type { JlptLevel, JlptSection, MondaiType, Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { QUESTION_BUNPOU_LINKS_SELECT, toBunpouPoints } from "@/lib/question-bunpou-links";
 import { QUESTION_EXPLANATION_SELECT } from "@/lib/question-explanation";
 import { withoutUnderlineFurigana } from "@/lib/japanese-markup";
 import { getSession } from "@/lib/auth";
@@ -332,6 +333,7 @@ export async function getPracticeSession(input: PracticeSessionIdInput) {
           id: true,
           questionAnswer: true,
           explanation: { select: QUESTION_EXPLANATION_SELECT },
+          bunpouLinks: QUESTION_BUNPOU_LINKS_SELECT,
         },
       })
     : [];
@@ -357,6 +359,7 @@ export async function getPracticeSession(input: PracticeSessionIdInput) {
           ? {
               correctAnswer: feedback.questionAnswer,
               explanation: feedback.explanation,
+              bunpouPoints: toBunpouPoints(feedback.bunpouLinks),
             }
           : null,
         ...withoutReadingAnswer(answer.question),
@@ -404,6 +407,7 @@ export async function submitPracticeAnswerAction(input: SubmitPracticeAnswerInpu
       select: {
         questionAnswer: true,
         explanation: { select: QUESTION_EXPLANATION_SELECT },
+        bunpouLinks: QUESTION_BUNPOU_LINKS_SELECT,
         questionChoices: { select: { codeAnswer: true } },
       },
     });
@@ -424,6 +428,7 @@ export async function submitPracticeAnswerAction(input: SubmitPracticeAnswerInpu
       answeredAt: new Date().toISOString(),
       correctAnswer: question.questionAnswer,
       explanation: question.explanation,
+      bunpouPoints: toBunpouPoints(question.bunpouLinks),
       answeredCount: 1,
       correctCount: isCorrect ? 1 : 0,
       isComplete: false,
@@ -450,6 +455,7 @@ export async function submitPracticeAnswerAction(input: SubmitPracticeAnswerInpu
           select: {
             questionAnswer: true,
             explanation: { select: QUESTION_EXPLANATION_SELECT },
+            bunpouLinks: QUESTION_BUNPOU_LINKS_SELECT,
             questionChoices: { select: { codeAnswer: true } },
           },
         },
@@ -511,6 +517,7 @@ export async function submitPracticeAnswerAction(input: SubmitPracticeAnswerInpu
       answeredAt: persisted.answeredAt?.toISOString() ?? new Date().toISOString(),
       correctAnswer: assignment.question.questionAnswer,
       explanation: assignment.question.explanation,
+      bunpouPoints: toBunpouPoints(assignment.question.bunpouLinks),
       answeredCount,
       correctCount,
       isComplete,

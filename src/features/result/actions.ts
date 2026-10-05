@@ -6,6 +6,7 @@ import { cookies } from "next/headers";
 import { z } from "zod";
 import type { MondaiType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { QUESTION_BUNPOU_LINKS_SELECT, toBunpouPoints } from "@/lib/question-bunpou-links";
 import { QUESTION_EXPLANATION_SELECT } from "@/lib/question-explanation";
 import { getSession } from "@/lib/auth";
 import { CACHE_KEYS, CACHE_TAGS } from "@/constants/cache-key";
@@ -336,6 +337,7 @@ export async function getAttemptDetail(attemptId: number) {
           questionAudio: true,
           questionAnswer: true,
           explanation: { select: QUESTION_EXPLANATION_SELECT },
+          bunpouLinks: QUESTION_BUNPOU_LINKS_SELECT,
           questionContext: {
             select: { id: true, storyText: true, storyImage: true, storyAudio: true },
           },
@@ -377,8 +379,9 @@ export async function getAttemptDetail(attemptId: number) {
     attempt,
     testPackageItems: testPackageItems.map((item) => ({
       ...item,
-      questions: item.questions.map((question) => ({
+      questions: item.questions.map(({ bunpouLinks, ...question }) => ({
         ...question,
+        bunpouPoints: toBunpouPoints(bunpouLinks),
         discussionCount: discussionCounts.get(question.id) ?? 0,
       })),
     })),

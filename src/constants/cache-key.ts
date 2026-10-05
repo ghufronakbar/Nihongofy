@@ -49,6 +49,12 @@ export const CACHE_KEYS = {
   bunpouComparison: (key: string) => ["bunpou-comparison", key],
   bunpouComparisonList: ["bunpou-comparison-list"] as string[],
   bunpouSitemap: ["bunpou-sitemap"] as string[],
+  // Tautan pola per paket untuk mode baca. Dipisah dari testPackageQuestions
+  // karena berubah lewat seed:bunpou (tag bunpouCatalog), bukan lewat paket soal.
+  testPackageBunpouPoints: (testPackageId: number) => [
+    "test-package-bunpou-points",
+    String(testPackageId),
+  ],
   // Tanpa tag: diskusi tidak punya invalidasi per mutasi (docs/module/question-comment.md),
   // jadi sitemap-nya cukup diperbarui oleh `revalidate`.
   discussionSitemap: ["discussion-sitemap"] as string[],

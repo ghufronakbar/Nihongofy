@@ -17,6 +17,7 @@ import { ReportButton } from "@/features/report/components/report-button";
 import { QuestionNavList, type NavMondaiItem } from "@/components/question-nav";
 import { QuestionNavMobile } from "@/components/question-nav-mobile";
 import { JapaneseText } from "@/components/japanese-text";
+import { QuestionBunpouPoints } from "@/components/question-bunpou-points";
 import { QuestionExplanationBody } from "@/components/question-explanation";
 import { JapanesePassage } from "@/components/japanese-passage";
 import { FuriganaScope } from "@/components/furigana-scope";
@@ -429,6 +430,7 @@ export default async function ResultDetailPage({
                             )}
                           </div>
                           <QuestionExplanationBody explanation={question.explanation} />
+                          <QuestionBunpouPoints points={question.bunpouPoints} className="mt-3" />
                         </div>
                       )}
 

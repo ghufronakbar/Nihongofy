@@ -4,6 +4,11 @@ import { notFound, redirect } from "next/navigation";
 import { unstable_cache } from "next/cache";
 import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
+import {
+  QUESTION_BUNPOU_LINKS_SELECT,
+  toBunpouPoints,
+  type QuestionBunpouPointView,
+} from "@/lib/question-bunpou-links";
 import { QUESTION_EXPLANATION_SELECT } from "@/lib/question-explanation";
 import { getSession } from "@/lib/auth";
 import { DEFAULT_TIME_ZONE } from "@/lib/time-zone";
@@ -138,6 +143,26 @@ const getCachedTestPackageQuestions = (testPackageId: number) =>
     { tags: [CACHE_TAGS.testPackageQuestions(testPackageId)] },
   )(testPackageId);
 
+const BUNPOU_POINTS_REVALIDATE_SECONDS = 3600;
+
+// Tautan "Pola yang diuji" mode baca, per soal. Cache terpisah dari soal: datanya
+// berasal dari seed:bunpou yang berjalan di luar app, jadi mengikuti tag dan
+// revalidate katalog bunpou, bukan tag paket soal.
+const getCachedTestPackageBunpouPoints = (testPackageId: number) =>
+  unstable_cache(
+    async (id: number) =>
+      prisma.questionBunpouLink.findMany({
+        where: {
+          ...QUESTION_BUNPOU_LINKS_SELECT.where,
+          question: { testPackageItem: { testPackageId: id } },
+        },
+        orderBy: [{ questionId: "asc" }, QUESTION_BUNPOU_LINKS_SELECT.orderBy],
+        select: { questionId: true, ...QUESTION_BUNPOU_LINKS_SELECT.select },
+      }),
+    CACHE_KEYS.testPackageBunpouPoints(testPackageId),
+    { tags: [CACHE_TAGS.bunpouCatalog], revalidate: BUNPOU_POINTS_REVALIDATE_SECONDS },
+  )(testPackageId);
+
 // "Mode baca" (/test-package/[id]/questions) is not an attempt, so unlike exam
 // mode there's no restriction on sending questionAnswer/explanation here.
 export async function getTestPackageQuestions(testPackageId: number) {
@@ -182,6 +207,14 @@ export async function getTestPackageQuestions(testPackageId: number) {
 
   // Only the count, never the threads themselves: it feeds the "Diskusi (n)"
   // button, and the thread is fetched on demand when that button is opened.
+  const bunpouLinks = FEATURES.bunpou ? await getCachedTestPackageBunpouPoints(testPackageId) : [];
+  const bunpouLinksByQuestion = new Map<number, { point: QuestionBunpouPointView }[]>();
+  for (const link of bunpouLinks) {
+    const list = bunpouLinksByQuestion.get(link.questionId) ?? [];
+    list.push(link);
+    bunpouLinksByQuestion.set(link.questionId, list);
+  }
+
   const discussionCounts = FEATURES.questionDiscussion
     ? await getQuestionDiscussionCounts(
         testPackage.testPackageItems.flatMap((item) =>
@@ -197,6 +230,7 @@ export async function getTestPackageQuestions(testPackageId: number) {
       questions: item.questions.map((question) => ({
         ...question,
         questionComments: commentsByQuestion.get(question.id) ?? [],
+        bunpouPoints: toBunpouPoints(bunpouLinksByQuestion.get(question.id)),
         discussionCount: discussionCounts.get(question.id) ?? 0,
       })),
     })),
