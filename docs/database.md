@@ -265,6 +265,13 @@ User
 - `answerKeyDoubt` diisi generator saat model menilai kunci jawaban fixture keliru. Baris bertanda ini wajib ditinjau manusia sebelum ditampilkan sebagai pembahasan final.
 - Pembahasan diisi lewat `npm run seed:question-explanation`, bukan lewat `npm run seed:test-package`. Script paket hanya melewati (skip) paket yang strukturnya sudah cocok, jadi perubahan isi pembahasan tidak akan tersimpan dari sana.
 
+### Tautan soal → pola bunpou (`QuestionBunpouLink`)
+
+- Satu baris per `(questionId, pointId)`: satu pola punya satu peran per soal, `TESTED` (diuji jawaban benar) atau `DISTRACTOR` (muncul di pilihan salah, tidak ditampilkan ke user).
+- `confidence` milik soal dan disalin ke setiap tautannya; hanya `HIGH` yang ditampilkan. `order` adalah urutan pola di soal.
+- Diisi `npm run seed:bunpou` dari `src/bunpou-data/question-links/`, dicocokkan lewat nama paket → `mondaiType` → `order`. Tautan satu paket diganti utuh setiap seed; hanya tautan ke `BunpouPoint` yang terbit yang ditulis. Kontraknya di [seed-bunpou.md](seed-bunpou.md#langkah-4--tautan-ke-soal-jlpt-genbunpou-links-fase-b).
+- FK ke `Question` cascade; FK ke `BunpouPoint` restrict, karena pola tidak pernah dihapus, hanya dipensiunkan. Query tampilan harus menyaring `point.retiredAt = null`.
+
 ## Markup Teks Jepang
 
 Semua kolom teks soal (`questionText`, `answerText`, `storyText`, `instruction`, dan seluruh kolom teks `QuestionExplanation`) memakai markup ringan berikut. JANGAN menyimpan HTML mentah di database.
@@ -313,7 +320,7 @@ Saat import data soal, tangani pelanggaran constraint sebagai sinyal error ekstr
 - Analitik kelemahan per tipe mondai: `AttemptAnswer → Question → TestPackageItem`, group by `mondaiType`. Filter `Attempt.status = COMPLETED`.
 - Saat mengambil soal untuk mode attempt, JANGAN mengirim `questionAnswer` dan relasi `explanation` ke client sebelum attempt disubmit. Relasi 1:1 lebih mudah bocor daripada kolom teks: satu `include: { explanation: true }` yang lolos review sudah cukup membocorkan kunci jawaban.
   - "Dikirim ke client" mencakup props Server Component ke Client Component (ikut RSC payload, terbaca di view-source walau tidak dirender), bukan hanya return value Server Action.
-  - Larangan yang sama berlaku untuk turunannya: `AttemptAnswer.isCorrect` attempt yang belum `COMPLETED` (termasuk di `/api/account/export`), `QuestionExplanationChoice.isCorrect`, dan cara baca di dalam underline soal `MOJI_GOI_READ_KANJI`.
+  - Larangan yang sama berlaku untuk turunannya: `AttemptAnswer.isCorrect` attempt yang belum `COMPLETED` (termasuk di `/api/account/export`), `QuestionExplanationChoice.isCorrect`, tautan pola `Question.bunpouLinks` (`QuestionBunpouLink` menyebut pola yang diuji), dan cara baca di dalam underline soal `MOJI_GOI_READ_KANJI`.
   - Query baca pada model yang menyimpan kunci (`Question`, `AttemptAnswer`, `QuestionExplanation*`) selalu memakai `select`. Tanpa `select` — juga dengan `include` — seluruh kolom skalar ikut, termasuk `questionAnswer`.
   - Data ber-kunci yang di-cache (`unstable_cache` mode baca, key `testPackageQuestions`) tidak boleh dipakai ulang jalur exam/latihan.
   - Dijaga `src/lib/answer-key-guard.test.ts`. Mengubah select exam/latihan atau menambah pemakai `QUESTION_EXPLANATION_SELECT` akan menggagalkannya sampai ditinjau.

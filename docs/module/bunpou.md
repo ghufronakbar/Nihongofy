@@ -32,6 +32,10 @@ ini. Tanpa migration, set `FEATURES_BUNPOU=false` atau build gagal.
   menjadi bukti identitas, urutan, dan level; importer menormalisasi judul serta sense sebelum
   generator menulis konten publik. N2/N1 memakai pembahasan terstruktur yang lebih mendalam untuk
   nuansa, ragam, batasan, konteks umum, dan sedikitnya lima contoh.
+- Sumber ketiga adalah **celah dari soal JLPT** (`gap-sources/`): pola yang diuji soal asli tetapi
+  belum ada di katalog, dikurasi manusia dari laporan tautan Fase B dengan soal sebagai bukti.
+  Adverbia fungsional (やっと, きっと, ずっと) termasuk katalog bunpou, di section "Kata sambung dan
+  adverbia".
 - **Satu entri = satu makna.** Pola dengan bentuk sama tetapi makna berbeda (ばかり, ながら, ところ,
   わけ) dipecah menjadi beberapa entri yang masing-masing punya level dan URL sendiri, lalu
   dikelompokkan lewat `family`. Level disimpan per makna karena たばかり (N4) dan ばかりだ (N2)
@@ -132,17 +136,30 @@ moderasi, laporan `COMMENT`, anonimisasi akun, dan rate limit-nya sama.
 ## Fase B — Tautan ke Soal JLPT Asli
 
 Fixture bank soal memuat 1.065 soal bunpou, semuanya sudah berpembahasan. Namun `keyPoints`-nya
-teks bebas yang tidak konsisten (`"partikel で"`, `"~てしまう"`, `"{接続詞|せつぞくし}"`).
-`gen:bunpou-links` memetakan setiap soal ke key pola yang diuji (`tested`) dan pola yang muncul
-sebagai pengecoh (`distractors`).
+teks bebas yang tidak konsisten (`"partikel で"`, `"~てしまう"`, `"{接続詞|せつぞくし}"`), dan
+kecocokan langsungnya ke judul katalog hanya sekitar 53%, tanpa membedakan makna (〜で punya
+sembilan entri). `gen:bunpou-links` memakai pipeline dua tahap: model menyebut pola yang diuji tanpa
+melihat katalog, script mencarinya di seluruh katalog lintas level, lalu model memilih makna dari
+kandidat yang sempit. Kontrak lengkapnya di
+[seed-bunpou.md](../seed-bunpou.md#langkah-4--tautan-ke-soal-jlpt-genbunpou-links-fase-b).
 
-- Di halaman pola, bagian "Muncul di JLPT asli" menautkan ke mode baca paket.
-- Di review hasil, result detail, dan latihan cepat (setelah soal dijawab), muncul "Pola yang
-  diuji".
+- **B1, soal bunpou** (`BUNPOU_GRAMMAR`, `BUNPOU_SENTENCE_COMPOSITION`, `BUNPOU_TEXT_GRAMMAR`):
+  peran `tested` dan `distractor`. Dimulai dari paket N5 dan N4 (5 Oktober 2026).
+- **B2, bacaan dokkai**: peran `appears`, ditautkan per bacaan (`QuestionContext`), bukan per soal,
+  maksimal lima pola penting per bacaan. Kontraknya sudah ditetapkan, generatornya menyusul B1.
+- Choukai tidak ditautkan (tidak ada transkrip), moji-goi juga tidak (yang diuji kosakata).
+- Di halaman pola, bagian "Muncul di JLPT asli" (B1) dan "Contoh di bacaan JLPT asli" (B2)
+  menautkan ke mode baca paket.
+- Di result detail, mode baca paket, dan latihan cepat (setelah soal dijawab), muncul "Pola yang
+  diuji" di bawah pembahasan: chip level + judul + arti yang menaut ke `/bunpou/<key>`. Datanya
+  diambil lewat `QUESTION_BUNPOU_LINKS_SELECT` (`src/lib/question-bunpou-links.ts`) di query yang
+  sama dengan pembahasan; mode baca memakai cache terpisah bertag `bunpouCatalog` karena
+  tautannya berubah lewat `seed:bunpou`, bukan lewat paket soal. Bila `FEATURES_BUNPOU` mati,
+  daftarnya kosong.
 - Tautan diperlakukan seperti pembahasan: tidak pernah terkirim di mode ujian atau sebelum soal
   latihan dijawab.
-- Data pengecoh menjadi bahan usulan kelompok perbandingan. Akurasi per pola di analytics bisa
-  menyusul.
+- Hanya tautan dari soal `confidence: high` yang tampil. Data pengecoh tidak tampil ke user dan
+  menjadi bahan usulan kelompok perbandingan. Akurasi per pola di analytics bisa menyusul.
 
 ## Fase C — SRS Bunpou
 
@@ -173,5 +190,6 @@ Skema final ditulis saat implementasi. Migration ditulis tangan lalu `migrate de
 |---|---|---|
 | `BunpouPoint` | A | Seperti `FlashcardVocab`: `key` unik; level, order, kind, sectionKey, family; judul (markup, polos, bacaan, romaji); meaning dan search text; `content` JSONB tervalidasi untuk sambungan, formation, variasi, penjelasan, contoh, dan pitfalls; tag; provenance/audit AI dan review manusia; `retiredAt`. Tidak pernah dihapus. Unique `(level, order)`, index `(level, sectionKey, order)` dan `family`, serta GIN pada tag. |
 | `BunpouComparison` + `BunpouComparisonPoint` | A | Kelompok perbandingan dan urutan kolomnya. |
-| `QuestionBunpouLink` | B | `questionId`, `pointId`, peran `TESTED`/`DISTRACTOR`. |
+| `QuestionBunpouLink` | B1 | `questionId`, `pointId`, peran `TESTED`/`DISTRACTOR`, `confidence`. |
+| `ContextBunpouLink` | B2 | `questionContextId`, `pointId`, kutipan kalimat, `confidence`. Terpisah dari tautan soal karena identitas dan maknanya berbeda. |
 | `BunpouCard`, `BunpouRevlog`, pengaturan | C | Mengikuti `FlashcardCard`/`FlashcardRevlog`. |

@@ -35,11 +35,12 @@ npm run seed:bunpou
 | Langkah | Membaca | Menulis | Database | Fase |
 |---|---|---|---|---|
 | `bunpou:extract` | `data/bunpou/raw_images/` + `slides.json` + fixture pola | fixture pola (entri baru), `slides.json` | tidak | A |
-| `bunpou:import-text` | `text-sources/*.json` + taxonomy + fixture pola | fixture pola (identitas dan source ternormalisasi) | tidak | A |
+| `bunpou:import-text` | `text-sources/*.json` dan `gap-sources/*.json` + taxonomy + fixture pola (+ fixture paket untuk gap) | fixture pola (identitas dan source ternormalisasi) | tidak | A |
 | `gen:bunpou` | fixture pola + taxonomy | fixture pola (`content`, `ai`) | tidak | A |
 | `bunpou:doubts` | fixture pola | — | tidak | A |
 | `gen:bunpou-comparisons` | `comparisons.json` + fixture pola | `comparisons.json` (`content`, `ai`) | tidak | A |
 | `gen:bunpou-links` | `src/test-package-data/` + fixture pola | `question-links/*.json` | tidak | B |
+| `bunpou:links-report` | `question-links/*.json` + fixture pola + fixture paket | — | tidak | B |
 | `seed:bunpou` | taxonomy + semua file di atas | — | ya | A/B |
 
 Semua langkah AI memakai gateway yang sama dengan generator lain (`EXPLANATION_BASE_URL`,
@@ -62,9 +63,10 @@ src/bunpou-data/
   taxonomy.json                  ← daftar section, tag, dan bentuk sambungan
   slides.json                    ← catatan slide yang sudah diekstraksi
   text-sources/*.json            ← indeks teks/video, URL, timestamp, dan guidance manusia
+  gap-sources/*.json             ← pola yang diuji soal JLPT tetapi belum ada di katalog
   points/n5.json … n1.json       ← katalog pola, satu file per level
   comparisons.json               ← perbandingan pola mirip
-  question-links/<paket>.json    ← tautan soal JLPT → pola (Fase B)
+  question-links/<paket>.json    ← tautan soal dan bacaan JLPT → pola (Fase B)
 ```
 
 ## Menyiapkan Slide (untuk pengumpul data)
@@ -136,6 +138,28 @@ Model vision menyalin isi slide **apa adanya** ke `source`, lalu memecahnya menj
 Untuk mengulang sebuah slide sebelum seed pertama, hapus catatannya di `slides.json` beserta
 entri pola yang hanya berasal dari slide itu, lalu jalankan ulang.
 
+## Langkah 1b — Celah dari Soal JLPT (`gap-sources/`)
+
+Sumber ketiga setelah slide dan indeks video: pola yang diuji soal JLPT asli tetapi belum punya entri
+katalog. Daftarnya berasal dari `bunpou:links-report` (bagian "Bentuk belum di katalog" untuk bentuk
+yang tidak ditemukan, dan "Kandidat ada, semua ditolak model" untuk makna yang belum ada).
+
+1. **Manusia mengurasi** item ke `gap-sources/<key>.json`: bentuk (`raw`), guidance tentang sense dan
+   scope, level, serta 1-3 soal bukti. Level ditentukan manusia, bukan level paket soal buktinya
+   (へ masuk N5 walau buktinya soal N4). Tidak semua temuan laporan adalah celah: bentuk yang sudah
+   ada sebagai entri lain atau varian entri lain tidak dimasukkan.
+2. `bunpou:import-text --source <key>` menormalisasi identitas seperti text source. Model menerima
+   teks soal bukti (soal, pilihan, kunci, ringkasan pembahasan, bacaan) dan entri katalog yang bentuknya
+   mirip (`existing`, hasil lookup Langkah 4). Bila item ternyata sudah tercakup entri existing di level
+   yang sama, model mengisi `extract.doubt` dengan key entri tersebut.
+3. Point baru memakai reference `{ "type": "jlpt-gap", "sourceKey", "itemKey" }` dan ditempatkan di
+   akhir level-nya, setelah point dari slide. Lanjutkan dengan `gen:bunpou`, `bunpou:doubts`,
+   `seed:bunpou`, lalu `gen:bunpou-links --relookup` supaya soal yang tadinya tanpa tautan ditautkan.
+
+```bash
+npm run bunpou:import-text -- --source jlpt-gaps-n5 --dry-run
+```
+
 ## Langkah 2 — Generate Isi (`gen:bunpou`)
 
 Sebelum generation, point dapat berasal dari ekstraksi slide atau importer teks. Source teks memakai
@@ -202,33 +226,116 @@ sebelum 〜てください", padahal `危ないので、下がってください
 
 ## Langkah 4 — Tautan ke Soal JLPT (`gen:bunpou-links`, Fase B)
 
-Memetakan setiap soal `BUNPOU_GRAMMAR`, `BUNPOU_SENTENCE_COMPOSITION`, dan `BUNPOU_TEXT_GRAMMAR`
-di `src/test-package-data/` ke pola yang diujinya.
+Memetakan soal JLPT asli di `src/test-package-data/` ke entri katalog. Ada dua jenis tautan dengan
+makna berbeda:
 
-- Model menerima teks soal, keempat pilihan, kunci jawaban, pembahasan (`summary`, `keyPoints`),
-  bacaan bila soal punya `QuestionContext`, dan daftar kandidat pola (key, judul, `senseLabel`,
-  arti) dari level paket itu dan level di bawahnya.
-- `tested` berisi pola yang diuji jawaban benar, dan `distractors` berisi pola yang muncul di
-  pilihan salah. Keduanya boleh kosong: banyak soal menguji partikel, kata sambung, atau bentuk
-  keigo yang bukan entri katalog, dan model tidak boleh memaksakan tautan.
-- Soal yang sudah tercatat (termasuk yang `tested`-nya kosong) dilewati. `--refresh-empty`
-  memproses ulang soal tanpa tautan setelah katalog bertambah; `--overwrite` memproses ulang
-  semuanya.
-- Soal dikenali lewat nama paket, `mondaiType`, dan `order`, sama dengan
-  `seed:question-explanation`, sehingga tautan tetap berlaku walau database diimpor ulang.
-- **Aturan bocor jawaban:** tautan ini memberi petunjuk jawaban. Perlakukan sama dengan
+| Fase | Sasaran | Peran | Arti |
+|---|---|---|---|
+| B1 | soal `BUNPOU_GRAMMAR`, `BUNPOU_SENTENCE_COMPOSITION`, `BUNPOU_TEXT_GRAMMAR` | `tested`, `distractor` | pola yang diuji jawaban benar / pola di pilihan salah |
+| B2 | bacaan (`QuestionContext`) soal `DOKKAI_*` | `appears` | pola penting yang muncul di bacaan |
+
+Choukai tidak ditautkan karena fixture tidak punya transkrip (`storyText` konteks choukai kosong).
+Moji-goi menguji kosakata, jadi tempatnya di flashcard, bukan bunpou. **B2 baru kontrak**; generator
+saat ini hanya mengerjakan B1.
+
+```bash
+npm run gen:bunpou-links -- --package n5-2018-07
+```
+
+```bash
+npm run bunpou:links-report
+```
+
+### Pipeline dua tahap
+
+Katalog tidak dikirim utuh ke model. Selain boros, memilih satu dari ratusan entri mirip (〜で punya
+sembilan entri) rawan salah. Model juga tidak dibatasi ke level paket, karena soal N4 kadang memakai
+pola yang di katalog tercatat sebagai N3 atau N2.
+
+1. **Identifikasi (AI, tanpa katalog).** Model membaca soal (teks, pilihan, kunci, pembahasan
+   `summary`/`detail`/`keyPoints`, dan bacaan bila soal punya `QuestionContext`) lalu menyebut pola
+   yang diuji dan pengecohnya: bentuk baku (`form`), bacaan hiragana (`reading`), arti yang dipakai
+   di soal itu (`meaning`), dan peran.
+2. **Lookup (script, deterministik).** Setiap `form`/`reading` dicari di **seluruh** katalog yang
+   punya `content`, semua level. Normalisasinya:
+   - Judul dan `variants` dibuang markupnya, di-NFKC, katakana → hiragana, lalu `〜`, spasi, tanda
+     baca, dan semua karakter ASCII (placeholder `V`/`N`, teks Latin) dihapus. Judul dipecah di `／`,
+     dan tulisan maupun bacaan furigananya sama-sama diindeks.
+   - Bentuk 〜ます/〜です juga diindeks dalam turunan bentuk kamus (`〜に行きます` → `〜に行く`),
+     karena katalog N5 memakai bentuk sopan sedangkan model menulis bentuk kamus.
+   - Entri `conjugation`/`foundation` berjudul nama bentuk (`使役形`), jadi output tabel `formation`
+     (`食べさせる`) ikut diindeks, begitu juga judul berakhiran 形 tanpa 形 (`た形` → `た`).
+   - Bila tidak ada kecocokan persis dan query diawali partikel (`〜にもらう`, `〜の間`), partikel
+     dipisahkan: kecocokan persis sisa bentuk didahulukan, lalu partikelnya, lalu kecocokan
+     sebagian keduanya.
+   - Query pola majemuk juga dicari per segmen `〜` (`〜や〜など` → `や`, `など`).
+
+   Kecocokan persis didahulukan, lalu diperluas ke anggota `family` yang sama. Kecocokan sebagian
+   (salah satu bentuk memuat bentuk lain, minimal 2 karakter) ditambahkan sesudahnya. Urutan di
+   dalam tiap kelompok mengikuti kedekatan level ke paket. Kandidat dibatasi 20 per pola.
+3. **Pemilihan makna (AI, kandidat sempit).** Model menerima judul, `variants`, `senseLabel`, dan
+   arti setiap kandidat. Untuk setiap pola, model memilih satu key dari kandidatnya, atau `null`
+   bila tidak ada yang maknanya sesuai, lalu memberi `confidence`.
+4. **Validasi (script)** lalu tulis `question-links/<paket>.json`.
+
+Pola yang tidak punya kandidat langsung bernilai `key: null` tanpa ikut tahap 3. Pola seperti ini
+dikumpulkan `bunpou:links-report` sebagai daftar "diuji di JLPT tetapi belum ada di katalog".
+
+### Aturan
+
+- **Bocor jawaban:** tautan memberi petunjuk jawaban. Perlakukan sama dengan
   `QuestionExplanation`: tidak pernah ikut terkirim di mode ujian atau di latihan cepat sebelum
-  soalnya dijawab (lihat [database.md](database.md)).
+  soalnya dijawab (lihat [database.md](database.md)). Berlaku juga untuk tautan bacaan B2.
+- **Level terdekat.** Bila makna yang sama tercatat di beberapa level (judul ternormalisasi dan
+  `senseLabel` sama), tautan memakai entri yang levelnya paling dekat dengan level paket; bila
+  jaraknya sama, level yang lebih rendah. Prompt menyebut aturan ini, dan script menukar key yang
+  melanggarnya secara deterministik.
+- `tested` dan `distractor` masing-masing maksimal 3 key unik, dan satu key tidak boleh punya dua
+  peran dalam satu soal. Soal 並べ替え (`BUNPOU_SENTENCE_COMPOSITION`) tidak punya pengecoh karena
+  semua pilihan dipakai menyusun kalimat.
+- Hasil boleh kosong: banyak soal menguji kosakata, kata sambung, atau ungkapan yang bukan entri
+  katalog. Model tidak boleh memaksakan tautan.
+- `confidence` bernilai `high`/`low` bila ada key yang terisi, dan `null` bila tidak ada. Hanya
+  tautan dari soal `high` yang tampil ke user. `distractor` tidak ditampilkan ke user; datanya
+  menjadi bahan usulan kelompok perbandingan.
+- Soal dikenali lewat nama paket, `mondaiType`, dan `order`, sama dengan
+  `seed:question-explanation`, sehingga tautan tetap berlaku walau database diimpor ulang. Bacaan
+  B2 dikenali lewat id konteks di fixture paket (`ctx-dokkai-26`); seed memetakannya ke
+  `QuestionContext` lewat soal yang merujuknya.
+- Soal yang sudah tercatat (termasuk yang tanpa key) dilewati. Setelah katalog bertambah atau
+  aturan lookup diperbaiki, `--relookup` memproses ulang soal yang punya pola tanpa key yang kini
+  mendapat kandidat baru. `--refresh-empty` memproses ulang soal yang sama sekali tanpa key, dan
+  `--overwrite` memproses ulang semuanya.
+- Model bisa diganti per run lewat env `BUNPOU_MODEL`; setiap soal mencatat `ai.model`-nya.
+- Paket yang levelnya belum punya katalog (saat ini N1) dilewati dengan log.
+- File ditulis atomik setelah setiap batch, jadi proses boleh dihentikan kapan saja.
 
 | Flag | Fungsi |
 |---|---|
-| `--package n3-2019-12` | Satu fixture paket saja (nama file tanpa `.json`) |
-| `--level N3` | Paket satu level saja |
-| `--batch-size 10` | Soal per request |
-| `--concurrency 4` | Request paralel |
-| `--refresh-empty` | Proses ulang soal yang belum punya tautan |
-| `--overwrite` | Proses ulang semua soal |
-| `--dry-run` | Cetak prompt tanpa memanggil model |
+| `--package n5-2018-07` | Satu fixture paket saja (nama file tanpa `.json`, boleh diulang) |
+| `--level N4` | Paket satu level saja |
+| `--limit 20` | Maksimal jumlah soal |
+| `--batch-size 8` | Soal per request (1-10) |
+| `--concurrency 4` | Request paralel (1-16) |
+| `--relookup` | Proses ulang soal yang pola tanpa key-nya kini punya kandidat baru |
+| `--refresh-empty` | Proses ulang soal yang belum punya key |
+| `--overwrite` | Proses ulang semua soal terpilih |
+| `--dry-run` | Cetak prompt tahap 1 dan contoh hasil lookup tanpa memanggil model |
+| `--reasoning-effort high` | Diteruskan ke model |
+
+### Laporan (`bunpou:links-report`)
+
+Membaca semua `question-links/*.json` tanpa memanggil model dan menampilkan:
+
+- ringkasan per level: soal tercatat, soal dengan key, `confidence: low`;
+- **bentuk belum di katalog**: `form` tanpa kandidat, diurutkan menurut frekuensi;
+- **perlu dicek**: soal `confidence: low`; key `tested` (jenis `pattern`/`particle`) yang bentuknya
+  tidak muncul di teks soal, pilihan, maupun bacaan, termasuk tanpa kana terakhir untuk bentuk
+  terkonjugasi (kemungkinan model mengarang); dan `keyPoints` pembahasan yang cocok persis dengan
+  bentuk katalog tetapi tidak tertaut (kemungkinan terlewat). Daftar ini saran, bukan error;
+  sebagian adalah kecocokan kebetulan;
+- **pasangan pengecoh**: pasangan `tested` × `distractor` yang paling sering muncul, sebagai bahan
+  kelompok `comparisons.json`.
 
 ## Langkah 5 — Seed (`seed:bunpou`)
 
@@ -244,9 +351,10 @@ di `src/test-package-data/` ke pola yang diujinya.
   furigana `content.title`), romaji (dari bacaan, deterministik, bukan AI), dan teks pencarian.
 - Perbandingan hanya terbit bila sudah `reviewedAt` dan semua polanya terbit; selain itu
   dilewati dengan log.
-- Tautan soal dicocokkan ke `Question.id` lewat nama paket → `mondaiType` → `order`. Paket yang
-  belum ada di database dilewati dengan log (bukan gagal); soal yang tidak ditemukan dicatat
-  sebagai `missing`. Tautan ke pola yang belum terbit tidak ikut ditulis.
+- Tautan soal dicocokkan ke `Question.id` lewat nama paket → `mondaiType` → `order`; tautan
+  bacaan ke `QuestionContext.id` lewat soal yang merujuk id konteks fixture. Paket yang belum ada
+  di database dilewati dengan log (bukan gagal); soal yang tidak ditemukan dicatat sebagai
+  `missing`. Tautan ke pola yang belum terbit atau sudah dipensiunkan tidak ikut ditulis.
 
 ## Format Fixture
 
@@ -447,30 +555,87 @@ Contoh `family` yang melintasi level: ながら "sambil" di `points/n4.json` dan
 }
 ```
 
-### `question-links/<paket>.json` (Fase B)
-
-Nama file sama dengan fixture paketnya, mis. `question-links/n3-2019-12.json`.
+### `gap-sources/<key>.json`
 
 ```jsonc
 {
-  "package": "JLPT N3 - 2019年12月",  // TestPackage.name, sama dengan fixture paket
-  "questions": [
+  "version": 1,
+  "key": "jlpt-gaps-n5",                 // unik di antara text-sources dan gap-sources
+  "level": "N5",                         // level semua point yang dihasilkan
+  "title": "Celah katalog dari soal JLPT N5–N4",
+  "evidenceScope": "identity-only",
+  "items": [
     {
-      "mondaiType": "BUNPOU_GRAMMAR",
-      "order": 5,
-      "tested": ["wake-dewa-nai"],     // 0-3 key
-      "distractors": ["wake-ga-nai"],  // 0-3 key, tidak boleh sama dengan tested
-      "confidence": "high",            // high | low
-      "note": null,
-      "ai": {
-        "model": "cx/gpt-5.6-terra",
-        "promptVersion": "bunpou-link-v1",
-        "generatedAt": "2026-10-02T00:00:00.000Z"
-      }
+      "key": "e-arah",                   // item key, unik dalam file
+      "raw": "へ",
+      "guidance": "Partikel arah/tujuan perpindahan; bedakan dari に tujuan.",
+      "evidence": [                      // minimal 1, soal harus ada di fixture paket
+        { "package": "n5-2010-12", "mondaiType": "BUNPOU_SENTENCE_COMPOSITION", "order": 3 }
+      ]
     }
   ]
 }
 ```
+
+### `question-links/<paket>.json` (Fase B)
+
+Nama file sama dengan fixture paketnya, mis. `question-links/n4-2018-12.json`. `patterns` adalah
+satu-satunya sumber kebenaran; `tested`/`distractor` per soal diturunkan dari `patterns` yang
+`key`-nya terisi. Hasil tahap 1 (`form`, `reading`, `meaning`) dan tahap 2 (`candidates`) disimpan
+supaya kesalahan bisa dilacak ke tahapnya.
+
+```jsonc
+{
+  "package": "JLPT N4 - 2018年12月",   // TestPackage.name, sama dengan fixture paket
+  "questions": [                         // B1
+    {
+      "mondaiType": "BUNPOU_GRAMMAR",
+      "order": 5,
+      "patterns": [                      // 0-8
+        {
+          "form": "〜てしまう",            // tahap 1: bentuk baku, tanpa placeholder Latin
+          "reading": "てしまう",           // tahap 1: hiragana
+          "meaning": "menyesal karena sudah terjadi", // tahap 1: arti di soal ini
+          "role": "tested",              // tested | distractor
+          "candidates": ["te-shimau-penyesalan", "te-shimau-selesai"], // tahap 2: hasil lookup
+          "key": "te-shimau-penyesalan"  // tahap 3: salah satu candidates, atau null
+        }
+      ],
+      "confidence": "high",              // high | low; null bila tidak ada key
+      "note": null,                      // maks 300 karakter
+      "ai": {
+        "model": "cx/gpt-5.6-terra",
+        "promptVersion": "bunpou-link-v1",
+        "generatedAt": "2026-10-05T00:00:00.000Z"
+      }
+    }
+  ],
+  "contexts": [                          // B2, belum diisi generator
+    {
+      "ref": "ctx-dokkai-26",            // id QuestionContext di fixture paket
+      "patterns": [                      // 0-5, role selalu "appears"
+        {
+          "form": "〜ために",
+          "reading": "ために",
+          "meaning": "untuk (tujuan)",
+          "role": "appears",
+          "candidates": ["tame-ni-tujuan"],
+          "key": "tame-ni-tujuan",
+          "excerpt": "忘れ物を取りに来るために…" // kalimat dari bacaan, maks 120 karakter
+        }
+      ],
+      "confidence": "high",
+      "note": null,
+      "ai": { "model": "…", "promptVersion": "…", "generatedAt": "…" }
+    }
+  ]
+}
+```
+
+Validasi file: nama paket sama dengan fixture; setiap soal ada di fixture dan bertipe B1, setiap
+`ref` ada di fixture dan dipakai soal `DOKKAI_*`; tidak ada soal/ref ganda; `key` termasuk
+`candidates` dan ada di katalog; batas jumlah dan aturan peran di [Langkah 4](#langkah-4--tautan-ke-soal-jlpt-genbunpou-links-fase-b)
+terpenuhi; `confidence` `null` tepat ketika tidak ada key.
 
 ## Aturan Identitas
 

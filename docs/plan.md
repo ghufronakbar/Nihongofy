@@ -1233,10 +1233,46 @@ Rancangan: `docs/module/bunpou.md`; kontrak data: `docs/seed-bunpou.md`.
   seluruh fixture.
 - [ ] Uji manual perbandingan di browser (desktop dan ponsel), termasuk kirim laporan
   `BUNPOU_COMPARISON`.
-- [ ] Fase B: `gen:bunpou-links`, tabel `QuestionBunpouLink`, tampilan di halaman pola dan review.
-  Ditunda sampai katalog N5-N1 lengkap. Keputusan yang diusulkan: mulai dari paket yang levelnya
-  punya katalog; `distractors` hanya bila maknanya jelas dan tidak ditampilkan ke user; hanya
-  tautan `confidence: high` yang tampil; tautan tidak terkirim di mode ujian.
+- [x] Fase B, keputusan (5 Oktober 2026): pipeline dua tahap (identifikasi AI tanpa katalog →
+  lookup script lintas level → pemilihan makna AI dari kandidat), aturan level terdekat, B1 = soal
+  bunpou (`tested`/`distractor`), B2 = bacaan dokkai per `QuestionContext` (`appears`), choukai dan
+  moji-goi tidak ditautkan. Kontrak di `docs/seed-bunpou.md` Langkah 4.
+- [x] Fase B1: `gen:bunpou-links` + `bunpou:links-report` (5 Oktober 2026). Uji di `n5-2018-07`
+  (24/26 bertautan) dan `n4-2018-12` (24/25 bertautan), sekitar 1,8 ribu token input per soal.
+- [x] Fase B1: semua paket N5–N4 (326 soal) tercatat (5 Oktober 2026): N5 122/130 dan N4 180/196
+  bertautan, 5 low. Model campuran: 184 soal `cx/gpt-5.6-terra`, 142 soal `ag/gemini-3.8-flash`
+  (dipakai setelah kuota GPT habis, juga untuk `--relookup`). Gemini jauh lebih cepat tetapi tidak
+  pernah memberi `confidence: low`.
+- [ ] Fase B1: tinjau "Perlu dicek" di `bunpou:links-report`, dan putuskan apakah soal Gemini
+  diulang dengan GPT supaya kalibrasi `confidence` seragam.
+- [x] Fase B1: perbaikan lookup (partikel yang tergabung dengan kata, judul berkurung, segmen) dan
+  `--relookup` (5 Oktober 2026).
+- [x] Sumber katalog ketiga `gap-sources/` (kontrak, importer, validasi). Draf `jlpt-gaps-n5` (19
+  item) dan `jlpt-gaps-n4` (17 item) dari laporan tautan, termasuk adverbia (keputusan pemilik:
+  adverbia masuk bunpou).
+- [x] Draf `gap-sources/` disetujui dan diimpor (5 Oktober 2026): 39 point baru (N5 21, N4 18).
+  Dua item dibuang karena ternyata sudah ada (`ni-shimasu-pilihan`,
+  `kata-sifat-menerangkan-kata-kerja`); key baru dirapikan ke gaya romaji sebelum seed pertama.
+  Prompt importer kini menyebut bentuk baris `formation` (`bunpou-text-import-v6`,
+  `bunpou-gap-import-v2`); sebelumnya item konjugasi gagal karena `rule` hilang.
+- [x] `gen:bunpou` untuk 39 point baru (0 doubt; katalog fixture 760 point siap terbit) dan
+  `gen:bunpou-links --relookup` (5 Oktober 2026). Pola `tested` yang tertaut naik dari 86% ke 94%
+  (N5 129/130, N4 190/196 soal bertautan); 31 dari 39 entri baru langsung dipakai tautan.
+- [x] `npm run seed:bunpou`: 760 point dan 55 comparison terbit (5 Oktober 2026).
+- [ ] Varian untuk entri yang sudah ada, bukan entri baru: 〜てもらえますか pada
+  `te-kuremasen-ka-itadakemasen-ka`.
+- [x] Fase B1: tabel `QuestionBunpouLink` (migration `20261005120000_question_bunpou_link`, sudah
+  di-deploy) dan seed tautan lewat `seed:bunpou`: 772 tautan untuk 319 soal dari 13 paket
+  (`TESTED`/`HIGH` 398). Relasi `Question.bunpouLinks` masuk daftar terlarang
+  `answer-key-guard.test.ts`.
+- [x] Fase B1: "Pola yang diuji" di detail hasil ujian, latihan cepat (setelah dijawab), dan mode
+  baca paket (5 Oktober 2026). Select tunggal `QUESTION_BUNPOU_LINKS_SELECT` (hanya `TESTED` +
+  `HIGH`, point belum pensiun), komponen `QuestionBunpouPoints`, mati bersama `FEATURES_BUNPOU`.
+  Mode baca memakai cache terpisah bertag `bunpouCatalog`. Guard diperluas.
+- [ ] Uji manual: `/result/<attempt>/detail`, latihan cepat bunpou, `/test-package/42/questions`.
+- [ ] Fase B1: "Muncul di JLPT asli" di halaman pola (koordinasi dengan pekerjaan UI bunpou).
+- [ ] Fase B1: paket N3/N2, lalu N1 setelah katalog N1 ada.
+- [ ] Fase B2: tautan bacaan dokkai (`ContextBunpouLink`).
 - [ ] Fase C: SRS bunpou.
 
 ## Fase 8.14 — Kebijakan Privasi & Syarat Ketentuan
