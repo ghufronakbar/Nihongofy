@@ -59,13 +59,32 @@ export default async function AnalyticsPage({
     toIso: to?.toISOString(),
   });
 
-  const trendData = trend.map((point) => ({
+  // Sumbu X = urutan attempt (bukan tanggal): dua attempt di hari yang sama
+  // akan punya label tanggal kembar, dan Recharts menganggap kategori kembar
+  // sebagai satu titik sehingga tooltip menampilkan attempt yang salah.
+  const trendData = trend.map((point, index) => ({
     id: point.id,
+    attemptNumber: index + 1,
     dateLabel: point.finishedAt
       ? formatInTimeZone(point.finishedAt, timeZone, { day: "2-digit", month: "short" })
       : "-",
+    dateTimeLabel: point.finishedAt
+      ? formatInTimeZone(point.finishedAt, timeZone, {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+      : "-",
     packageLabel: point.packageName,
-    scorePercentage: point.scorePercentage,
+    sectionLabel: point.sectionScope ? JLPT_SECTION_LABELS[point.sectionScope] : null,
+    totalCorrect: point.totalCorrect,
+    totalQuestions: point.totalQuestions,
+    accuracy: point.accuracy,
+    plainScore: point.plainScore,
+    weightedScore: point.weightedScore,
+    maxScore: point.maxScore,
   }));
 
   return (
@@ -139,15 +158,15 @@ export default async function AnalyticsPage({
                 <LineChart className="size-5" strokeWidth={2.5} />
               </div>
               <div>
-                <h2 className="text-2xl font-black text-neo-ink uppercase">Tren Akurasi Skor</h2>
+                <h2 className="text-2xl font-black text-neo-ink uppercase">Tren Skor per Attempt</h2>
                 <p className="text-xs font-semibold text-foreground/70">
-                  Grafik riwayat akurasi skor (%) dari attempt yang selesai secara kronologis.
+                  Skor, skor berbobot, atau akurasi tiap attempt yang selesai, urut kronologis.
                 </p>
               </div>
             </div>
 
             <span className="font-mono text-xs font-black border-2 border-neo-ink bg-neo-paper px-2.5 py-1 shadow-neo-sm">
-              {trendData.length} DATA POINT
+              {trendData.length} ATTEMPT
             </span>
           </div>
 

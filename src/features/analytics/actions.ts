@@ -7,7 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { CACHE_KEYS, CACHE_TAGS } from "@/constants/cache-key";
 import { JLPT_LEVEL_ORDER } from "@/constants/jlpt";
-import type { MondaiStatInput } from "@/lib/jlpt-score";
+import { computeJlptScoreProjection, type MondaiStatInput } from "@/lib/jlpt-score";
 import {
   completedMockAttemptWhere,
   completedQuickPracticeWhere,
@@ -81,7 +81,7 @@ const getCachedAnalytics = (userId: number) =>
       const attemptWhere = buildAttemptWhere(id, filters);
       const practiceWhere = buildPracticeWhere(id, filters);
 
-      const [attempts, answers, practiceSessions] = await Promise.all([
+      const [attempts, practiceSessions] = await Promise.all([
         prisma.attempt.findMany({
           where: attemptWhere,
           orderBy: { finishedAt: "asc" },
@@ -90,18 +90,13 @@ const getCachedAnalytics = (userId: number) =>
             finishedAt: true,
             sectionScope: true,
             testPackage: { select: { name: true, jlptLevel: true } },
-            answers: { select: { isCorrect: true } },
-          },
-        }),
-        prisma.attemptAnswer.findMany({
-          where: { attempt: attemptWhere },
-          select: {
-            isCorrect: true,
-            question: {
-              select: { testPackageItem: { select: { mondaiType: true } } },
-            },
-            attempt: {
-              select: { testPackage: { select: { jlptLevel: true } } },
+            answers: {
+              select: {
+                isCorrect: true,
+                question: {
+                  select: { testPackageItem: { select: { mondaiType: true } } },
+                },
+              },
             },
           },
         }),
@@ -118,34 +113,49 @@ const getCachedAnalytics = (userId: number) =>
         }),
       ]);
 
+      const byLevel = new Map<JlptLevel, Map<MondaiType, { correct: number; total: number }>>();
+
+      // Satu pass per attempt mengisi dua hal: statistik mondai attempt itu
+      // (untuk skor /180 di tren) dan agregat per level (untuk tabel mondai).
       const trend = attempts.map((attempt) => {
-        const total = attempt.answers.length;
-        const correct = attempt.answers.filter((a) => a.isCorrect).length;
+        const level = attempt.testPackage.jlptLevel;
+        const levelMap = byLevel.get(level) ?? new Map();
+        const attemptMap = new Map<MondaiType, { correct: number; total: number }>();
+
+        for (const answer of attempt.answers) {
+          const mondaiType = answer.question.testPackageItem.mondaiType;
+          for (const map of [levelMap, attemptMap]) {
+            const stat = map.get(mondaiType) ?? { correct: 0, total: 0 };
+            stat.total += 1;
+            if (answer.isCorrect) stat.correct += 1;
+            map.set(mondaiType, stat);
+          }
+        }
+        // Level tanpa satu jawaban pun tidak ikut tabel mondai.
+        if (levelMap.size > 0) byLevel.set(level, levelMap);
+
+        // Akurasi (benar/total soal) dan skor /180 bisa jauh berbeda: mondai
+        // yang soalnya sedikit (mis. 読解) tetap bernilai 60 poin penuh. Tren
+        // butuh keduanya supaya attempt yang jeblok di satu seksi tidak
+        // tersamarkan oleh akurasi yang masih tinggi.
+        const projection = computeJlptScoreProjection(
+          Array.from(attemptMap, ([mondaiType, stat]) => ({ mondaiType, ...stat })),
+        );
+
         return {
           id: attempt.id,
           finishedAt: attempt.finishedAt,
           packageName: attempt.testPackage.name,
-          jlptLevel: attempt.testPackage.jlptLevel,
+          jlptLevel: level,
           sectionScope: attempt.sectionScope,
-          totalQuestions: total,
-          totalCorrect: correct,
-          scorePercentage: total > 0 ? Math.round((correct / total) * 100) : 0,
+          totalQuestions: projection.total,
+          totalCorrect: projection.correct,
+          accuracy: projection.accuracy,
+          plainScore: projection.plainScore,
+          weightedScore: projection.weightedScore,
+          maxScore: projection.maxScore,
         };
       });
-
-      const byLevel = new Map<JlptLevel, Map<MondaiType, { correct: number; total: number }>>();
-
-      for (const answer of answers) {
-        const level = answer.attempt.testPackage.jlptLevel;
-        const mondaiType = answer.question.testPackageItem.mondaiType;
-
-        const levelMap = byLevel.get(level) ?? new Map();
-        const stat = levelMap.get(mondaiType) ?? { correct: 0, total: 0 };
-        stat.total += 1;
-        if (answer.isCorrect) stat.correct += 1;
-        levelMap.set(mondaiType, stat);
-        byLevel.set(level, levelMap);
-      }
 
       const levelStats = JLPT_LEVEL_ORDER.filter((level) => byLevel.has(level)).map((level) => ({
         level,
