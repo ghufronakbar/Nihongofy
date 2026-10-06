@@ -95,12 +95,18 @@ penghapusan soal itu sendiri. Kewajiban itu ditegakkan `SubmitReportSchema` di
 ### Anti-banjir dari satu pelapor
 
 Partial unique index per kolom target (`questionId`, `articleId`, `commentId`, `vocabId`,
-`bunpouPointId`, `bunpouComparisonId`) melarang satu
+`bunpouPointId`, `bunpouComparisonId`, `postId`) melarang satu
 pelapor yang dikenal punya lebih dari satu laporan `OPEN` pada target yang sama. Beberapa keluhan
 pada satu kartu (mis. bacaan dan contoh kalimat) ditulis dalam satu laporan; begitu admin menyentuh
 laporannya, pelapor yang sama boleh mengirim laporan baru. Guest tidak punya identitas yang
 dapat dijadikan kunci, dan di sana rate limit per IP yang bekerja. Pelanggarannya muncul sebagai
 `P2002` dan diterjemahkan action menjadi pesan yang jelas, bukan error generik.
+
+**Pengecualian admin.** Admin memakai form laporan untuk mengaudit soal, dan satu soal bisa punya
+beberapa temuan terpisah. Partial index tidak dapat membaca role pelapor, jadi `submitReportAction`
+menyimpan snapshot role ke `Report.fromAdmin`, dan setiap index anti-banjir memakai
+`AND NOT "fromAdmin"` (migration `20261006120000_report_admin_audit`). Snapshot, bukan join: demote
+admin tidak membuat baris lamanya tiba-tiba melanggar index.
 
 ### Menambah nilai enum: dua migration
 
@@ -182,7 +188,9 @@ mungkin menemukan bug. Konsekuensinya ditangani berlapis:
    client.
 2. **Rate limit** lewat `consumeAuthRateLimits`: guest 5 laporan/jam per IP, user login 10/jam per
    akun ditambah 30/jam per IP. Subject-nya di-HMAC — tabel rate limit tidak pernah menyimpan IP
-   mentah.
+   mentah. Akun `ADMIN` (role dibaca dari database lewat `getSessionUser`, bukan dari client)
+   melewati semua bucket, termasuk bucket IP, supaya audit soal tidak terhambat dan tidak memakan
+   jatah user lain di jaringan yang sama.
 3. **Tanpa lampiran.** Jalur upload R2 untuk pengirim anonim adalah vektor penyalahgunaan yang tidak
    sebanding dengan manfaatnya di v1.
 

@@ -1072,6 +1072,18 @@ migration) ada di [docs/module/report.md](module/report.md).
   coba satu balasan email. Dengan `FEATURES_FLASHCARD=false`, laporan kartu lama tetap terbuka di
   admin
 
+### Lanjutan: laporan admin untuk audit soal (6 Oktober 2026)
+
+- [x] `submitReportAction` melewati semua bucket rate limit (akun dan IP) bila role pelapor `ADMIN`;
+  role dibaca dari database lewat `getSessionUser`
+- [x] Migration `20261006120000_report_admin_audit`: kolom `Report.fromAdmin` (snapshot role) dan
+  ketujuh index anti-banjir dibuat ulang dengan `AND NOT "fromAdmin"`, sehingga admin boleh punya
+  beberapa laporan `OPEN` pada target yang sama; test migration memeriksa definisi index terakhir
+- [x] `npm run typecheck`, lint modul report, dan test modul report lulus
+- [ ] `npx prisma migrate deploy` (pemilik project), lalu redeploy agar Prisma Client baru aktif
+- [ ] Verifikasi manual (user): sebagai admin, kirim lebih dari 10 laporan dalam satu jam dan dua
+  laporan pada soal yang sama; sebagai user biasa, laporan kedua pada soal yang sama tetap ditolak
+
 ## Fase 8.12 — Perombakan Flashcard: Katalog Kosakata Bawaan
 
 Flashcard tidak lagi meniru Anki sebagai koleksi pribadi. Isinya kini satu katalog kosakata JLPT

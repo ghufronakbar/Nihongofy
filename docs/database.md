@@ -131,9 +131,11 @@ Stack: Next.js + Prisma + PostgreSQL (Supabase).
   penghapusan soal. Kewajiban itu ditegakkan zod di `src/features/report/schemas.ts`.
 - `Report_reply_shape_check` memastikan `repliedAt` dan `replyMessage` terisi bersama — `repliedAt`
   tanpa isi balasan berarti ada email terkirim tanpa jejak.
-- Empat partial unique index melarang satu pelapor yang dikenal punya lebih dari satu laporan `OPEN`
-  pada target yang sama. Guest tidak punya identitas untuk dijadikan kunci; di sana rate limit per IP
-  yang bekerja. Keempat index dan kedua CHECK di atas hanya ada di SQL migration — Prisma tidak dapat
+- Partial unique index per kolom target melarang satu pelapor yang dikenal punya lebih dari satu
+  laporan `OPEN` pada target yang sama. Guest tidak punya identitas untuk dijadikan kunci; di sana
+  rate limit per IP yang bekerja. Laporan admin (`fromAdmin = true`, snapshot role saat laporan
+  dibuat) dikecualikan lewat `AND NOT "fromAdmin"` karena admin memakai form ini untuk audit soal.
+  Index-index ini dan kedua CHECK di atas hanya ada di SQL migration — Prisma tidak dapat
   mengekspresikannya, jadi jangan menganggap `schema.prisma` sebagai daftar lengkap constraint tabel
   ini. `src/features/report/report-migrations.test.ts` memeriksa bahwa setiap FK target di schema
   disebut CHECK dan punya index anti-banjir.

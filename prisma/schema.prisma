@@ -1575,6 +1575,11 @@ model Report {
   reporter   User? @relation("ReportReporter", fields: [reporterId], references: [id], onDelete: SetNull)
   reporterId Int?
 
+  // Snapshot role pelapor saat laporan dibuat. Laporan admin (audit soal)
+  // dikecualikan dari partial unique index anti-banjir di SQL migration, jadi
+  // admin boleh punya beberapa laporan OPEN pada target yang sama.
+  fromAdmin Boolean @default(false)
+
   // Konteks teknis untuk laporan bug. Tidak pernah memuat alamat IP mentah —
   // IP hanya dipakai sebagai subject bucket rate limit yang di-HMAC.
   pagePath  String? @db.VarChar(200)

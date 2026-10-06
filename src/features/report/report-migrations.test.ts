@@ -106,6 +106,24 @@ describe("FK target laporan", () => {
       expect(sql, column).toMatch(index);
     }
   });
+
+  // Admin mengaudit soal lewat form laporan dan boleh punya beberapa laporan OPEN
+  // pada target yang sama. Definisi index yang berlaku adalah yang TERAKHIR.
+  it("index anti-banjir terbaru mengecualikan laporan admin", () => {
+    const sql = migrations.map((migration) => migration.sql).join("\n");
+    for (const column of targetColumns) {
+      const name = escapeRegExp(column);
+      const definitions = [
+        ...sql.matchAll(
+          new RegExp(
+            `CREATE UNIQUE INDEX "[^"]+"\\s+ON "Report"\\("reporterId",[^)]*"${name}"\\)\\s+WHERE [^;]*;`,
+            "g",
+          ),
+        ),
+      ];
+      expect(definitions.at(-1)?.[0], column).toContain(`AND NOT "fromAdmin"`);
+    }
+  });
 });
 
 describe("migration enum", () => {

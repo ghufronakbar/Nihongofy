@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { Prisma } from "@prisma/client";
 import { env, FEATURES } from "@/constants";
 import { mondaiTypeFullLabel } from "@/constants/jlpt";
-import { getSession } from "@/lib/auth";
+import { getSession, getSessionUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { reportServerError } from "@/lib/server-logger";
 import { TURNSTILE_ACTIONS } from "@/features/auth/lib/turnstile-config";
@@ -376,15 +376,26 @@ export async function submitReportAction(
     if (!turnstileValid) return { ok: false, message: TURNSTILE_FAILED_MESSAGE };
   }
 
-  const rateLimit = await consumeAuthRateLimits(
-    createReportRateLimitBuckets(session?.userId ?? null, ipAddress),
-  );
-  if (!rateLimit.allowed) {
-    const minutes = Math.max(1, Math.ceil(rateLimit.retryAfterSeconds / 60));
-    return {
-      ok: false,
-      message: `Terlalu banyak laporan dari perangkat ini. Coba lagi dalam ${minutes} menit.`,
-    };
+  // Admin memakai form ini untuk mengaudit soal satu per satu, jadi puluhan
+  // laporan per jam memang wajar, begitu juga beberapa laporan OPEN pada soal
+  // yang sama (`fromAdmin` mengecualikannya dari index anti-banjir). Role dibaca
+  // dari database (lihat `getSessionUser`), bukan dari client, sehingga
+  // pengecualian ini tidak dapat dipalsukan. Bucket IP juga dilewati: IP admin
+  // bisa sama dengan user lain di jaringan yang sama, dan jatah mereka tidak
+  // boleh habis oleh audit admin.
+  const isAdmin = session ? (await getSessionUser())?.user.role === "ADMIN" : false;
+
+  if (!isAdmin) {
+    const rateLimit = await consumeAuthRateLimits(
+      createReportRateLimitBuckets(session?.userId ?? null, ipAddress),
+    );
+    if (!rateLimit.allowed) {
+      const minutes = Math.max(1, Math.ceil(rateLimit.retryAfterSeconds / 60));
+      return {
+        ok: false,
+        message: `Terlalu banyak laporan dari perangkat ini. Coba lagi dalam ${minutes} menit.`,
+      };
+    }
   }
 
   const target = await resolveTarget(values, session?.userId ?? null);
@@ -419,6 +430,7 @@ export async function submitReportAction(
         targetLabel: target.targetLabel,
         message: values.message,
         reporterId: session?.userId ?? null,
+        fromAdmin: isAdmin,
         replyEmail,
         pagePath: values.pagePath ?? null,
         userAgent: userAgent ? userAgent.slice(0, REPORT_USER_AGENT_MAX_LENGTH) : null,
