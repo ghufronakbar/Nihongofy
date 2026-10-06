@@ -46,6 +46,18 @@ export type ProgressLevelView = {
   rows: ProgressTableRow[];
 };
 
+// Kolom Paket + Tanggal dibekukan seperti freeze panes Excel supaya tetap
+// terlihat saat tabel di-scroll horizontal. Lebar kolom Paket dikunci lewat
+// div di dalam sel (w-32 / sm:w-48) agar offset `left` kolom Tanggal pas:
+// 12rem + padding sel 2×0.5rem = 13rem (sm:left-52). Di layar sempit hanya
+// kolom Paket yang dibekukan supaya kolom skor masih kebagian ruang. Garis
+// batasnya inset box-shadow karena border sel (border-collapse) tidak ikut
+// menempel saat sticky.
+const FROZEN_PACKAGE_CELL =
+  "sticky left-0 z-10 shadow-[inset_-2px_0_0_0_var(--neo-ink)] sm:shadow-none";
+const FROZEN_DATE_CELL =
+  "sm:sticky sm:left-52 sm:z-10 sm:shadow-[inset_-2px_0_0_0_var(--neo-ink)]";
+
 function accuracyClass(accuracy: number) {
   if (accuracy < WEAK_THRESHOLD) return "text-destructive font-black";
   if (accuracy >= STRONG_THRESHOLD) return "text-emerald-600 font-bold";
@@ -64,10 +76,22 @@ function LevelTable({
       <Table>
         <TableHeader className="bg-neo-paper border-b-[3px] border-neo-ink">
           <TableRow className="border-b-[2px] border-neo-ink/20 hover:bg-transparent">
-            <TableHead rowSpan={2} className="whitespace-normal align-bottom font-mono font-black text-xs uppercase text-neo-ink">
+            <TableHead
+              rowSpan={2}
+              className={cn(
+                "whitespace-normal align-bottom bg-neo-paper font-mono font-black text-xs uppercase text-neo-ink",
+                FROZEN_PACKAGE_CELL,
+              )}
+            >
               Paket Ujian
             </TableHead>
-            <TableHead rowSpan={2} className="align-bottom font-mono font-black text-xs uppercase text-neo-ink">
+            <TableHead
+              rowSpan={2}
+              className={cn(
+                "align-bottom bg-neo-paper font-mono font-black text-xs uppercase text-neo-ink",
+                FROZEN_DATE_CELL,
+              )}
+            >
               Tanggal
             </TableHead>
             <TableHead colSpan={view.mondaiColumns.length} className="border-l-2 border-neo-ink/20 text-center font-mono font-black text-xs uppercase text-neo-ink bg-neo-yellow/30">
@@ -115,20 +139,36 @@ function LevelTable({
         </TableHeader>
         <TableBody>
           {view.rows.map((row) => (
-            <TableRow key={row.attemptId} className="border-b border-neo-ink/10 hover:bg-neo-paper/60 transition-colors">
-              <TableCell className="whitespace-normal">
-                {resultLinksEnabled ? (
-                  <Link
-                    href={`/result/${row.attemptId}`}
-                    className="font-black text-neo-ink underline decoration-2 underline-offset-4 hover:text-neo-blue transition-colors"
-                  >
-                    {row.packageName}
-                  </Link>
-                ) : (
-                  <span className="font-black text-neo-ink">{row.packageName}</span>
+            // Hover harus opaque: sel beku butuh latar solid agar kolom yang
+            // di-scroll tidak tembus di bawahnya.
+            <TableRow key={row.attemptId} className="group border-b border-neo-ink/10 hover:bg-neo-paper transition-colors">
+              <TableCell
+                className={cn(
+                  "whitespace-normal bg-white transition-colors group-hover:bg-neo-paper",
+                  FROZEN_PACKAGE_CELL,
                 )}
+              >
+                <div className="w-32 break-words sm:w-48">
+                  {resultLinksEnabled ? (
+                    <Link
+                      href={`/result/${row.attemptId}`}
+                      className="font-black text-neo-ink underline decoration-2 underline-offset-4 hover:text-neo-blue transition-colors"
+                    >
+                      {row.packageName}
+                    </Link>
+                  ) : (
+                    <span className="font-black text-neo-ink">{row.packageName}</span>
+                  )}
+                </div>
               </TableCell>
-              <TableCell className="font-mono text-xs text-muted-foreground">{row.dateLabel}</TableCell>
+              <TableCell
+                className={cn(
+                  "bg-white font-mono text-xs text-muted-foreground transition-colors group-hover:bg-neo-paper",
+                  FROZEN_DATE_CELL,
+                )}
+              >
+                {row.dateLabel}
+              </TableCell>
               {view.mondaiColumns.map((column, index) => {
                 const accuracy = row.mondaiAccuracy[column.mondaiType];
                 return (
