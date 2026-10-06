@@ -1,17 +1,11 @@
 import * as XLSX from "xlsx";
-import { jsPDF } from "jspdf";
-import { autoTable } from "jspdf-autotable";
 import { MONDAI_TYPE_TRANSLATIONS } from "@/constants/jlpt";
 import { SCORING_SECTION_TRANSLATIONS } from "@/lib/jlpt-score";
 import { SECTION_COLUMNS, type ProgressLevelView } from "../components/progress-tabs";
 
-// Header/row shape is shared by both export formats so the exported file
-// always matches exactly what the table on screen shows. Labels here are
-// Indonesian-only (not the bilingual Japanese+Indonesian used on-screen) —
-// jsPDF's built-in fonts (Helvetica/Times/Courier) only cover WinAnsi/Latin-1,
-// so any Japanese character renders as mojibake, not just missing. Excel has
-// no such limitation, but it's kept Indonesian-only too so both exports stay
-// label-consistent with each other.
+// Header/row shape mirrors the table on screen. Labels are Indonesian-only
+// (the PDF report — rendered server-side, see app/api/progress/report — uses
+// the bilingual labels instead).
 function buildHeaderRow(view: ProgressLevelView): string[] {
   return [
     "Paket",
@@ -49,25 +43,31 @@ export function exportProgressToExcel(view: ProgressLevelView) {
   XLSX.writeFile(workbook, `progress-${view.level}.xlsx`);
 }
 
-// Package names carry kanji (e.g. "JLPT N2 - 2018年12月"), which jsPDF also
-// can't render — strip anything outside Latin-1 rather than leaking mojibake.
-function toPdfSafeText(value: string | number): string | number {
-  if (typeof value !== "string") return value;
-  return value
-    .replace(/[^\x00-\xFF]+/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
+// The PDF report is rendered on the server (it embeds a Japanese font), so the
+// client only downloads it.
+export async function downloadProgressReport(level: string) {
+  const response = await fetch(`/api/progress/report?level=${encodeURIComponent(level)}`);
+  if (!response.ok) {
+    const body = (await response.json().catch(() => null)) as { error?: string } | null;
+    throw new Error(body?.error ?? "Gagal membuat report PDF.");
+  }
+  // Sesi habis → proxy me-redirect ke /login dan fetch mengikuti redirect itu,
+  // jadi yang diterima HTML halaman login (status 200), bukan PDF.
+  if (!response.headers.get("Content-Type")?.includes("application/pdf")) {
+    throw new Error("Sesi kamu sudah berakhir. Silakan masuk lagi.");
+  }
 
-export function exportProgressToPdf(view: ProgressLevelView) {
-  const doc = new jsPDF({ orientation: "landscape" });
-  doc.text(`Progress - ${view.level}`, 14, 12);
-  autoTable(doc, {
-    head: [buildHeaderRow(view)],
-    body: buildDataRows(view).map((row) => row.map((cell) => String(toPdfSafeText(cell)))),
-    startY: 18,
-    styles: { fontSize: 7 },
-    headStyles: { fillColor: [40, 40, 40] },
-  });
-  doc.save(`progress-${view.level}.pdf`);
+  const filename =
+    response.headers.get("Content-Disposition")?.match(/filename="([^"]+)"/)?.[1] ??
+    `nihongofy-progress-${level}.pdf`;
+  const url = URL.createObjectURL(await response.blob());
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  // Revoke setelah jeda: Safari/Firefox bisa membatalkan unduhan kalau URL
+  // dicabut di tick yang sama dengan click().
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }

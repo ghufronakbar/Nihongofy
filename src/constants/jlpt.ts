@@ -42,6 +42,18 @@ export const JLPT_SESSION_TIMING: Record<
   ],
 };
 
+// Batas lulus total resmi JLPT (skala 0–180). Batas minimum per seksi (mis.
+// 19 poin) tidak dimodelkan karena app memakai skala 3×60 seragam untuk semua
+// level — lihat src/lib/jlpt-score.ts. Dipakai sebagai garis acuan di report.
+// Source: https://www.jlpt.jp/e/guideline/results.html
+export const JLPT_PASS_MARK: Record<JlptLevel, number> = {
+  N1: 100,
+  N2: 90,
+  N3: 95,
+  N4: 90,
+  N5: 80,
+};
+
 export const MONDAI_TYPE_LABELS: Record<MondaiType, string> = {
   MOJI_GOI_READ_KANJI: "漢字読み",
   MOJI_GOI_WRITE_KANJI: "表記",
