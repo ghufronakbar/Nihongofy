@@ -10,7 +10,7 @@ Rules terkait: `database.md` (schema, markup teks, aturan query).
 - **Mock test**: mengerjakan satu paket penuh, dibagi per sesi (1/2/3) mengikuti sesi ujian JLPT asli.
 - **Latihan per seksi**: mengerjakan satu seksi saja (mis. hanya dokkai). Di database ini adalah `Attempt` dengan `sectionScope` terisi.
 - **Timer tidak disediakan sistem** — user memasang timer sendiri. Halaman detail paket menampilkan informasi waktu resmi per sesi JLPT sebagai acuan.
-- Saat **mengerjakan**: furigana dan comment TIDAK ditampilkan (fokus seperti ujian asli). Saat **review/hasil**: furigana, kunci jawaban, explanation, dan comment ditampilkan.
+- Saat **mengerjakan** (exam dan Latihan Cepat): furigana dan comment TIDAK ditampilkan, termasuk furigana yang tercetak di soal asli. Furigana dibuang dari payload di server; data di database tetap lengkap. Saat **review/hasil**: furigana, kunci jawaban, explanation, dan comment ditampilkan.
 
 ## Routes
 
@@ -86,7 +86,7 @@ Aturan halaman exam:
 
 - Navigasi nomor soal memakai query param `?questionNumber=1` dikombinasikan dengan global state. Wajib ada fallback jika query param diubah manual/iseng (angka di luar range, bukan angka → fallback ke soal pertama yang belum dijawab atau soal 1).
 - Jawaban dan flag disimpan di global state dahulu; commit ke DB (upsert `AttemptAnswer`) hanya saat submit per sesi.
-- Furigana dan comment tidak dirender. Kunci jawaban dan explanation tidak boleh terkirim ke client (lihat `database.md`).
+- Furigana dan comment tidak dirender (furigana dibuang di server lewat `withoutFurigana`). Kunci jawaban dan explanation tidak boleh terkirim ke client (lihat `database.md`).
 - Guard: attempt yang sudah `COMPLETED` tidak boleh dibuka di route ini → redirect ke `/result/[attemptId]`.
 
 ### Hasil

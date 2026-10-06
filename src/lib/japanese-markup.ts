@@ -69,30 +69,53 @@ export function parseJapaneseMarkup(source: string): MarkupSegment[] {
 }
 
 /**
- * Markup yang sama, tetapi furigana di dalam underline dibuang (kanjinya tetap):
- * `__{人脈|じんみゃく}__を{広|ひろ}げる` → `__人脈__を{広|ひろ}げる`.
+ * Markup yang sama tanpa furigana (kanjinya tetap), underline dan slot utuh:
+ * `__{人脈|じんみゃく}__を{広|ひろ}げる` → `__人脈__を広げる`.
  *
- * Untuk payload soal 漢字読み sebelum dijawab: di sana cara baca kata bergaris
- * bawah adalah jawabannya. `hideFuriganaInUnderline` hanya menyembunyikannya saat
- * render, sedangkan props Client Component tetap terkirim utuh di RSC payload.
+ * Untuk payload soal di mode kerja (exam dan latihan): furigana hanya tampil saat
+ * review atau mode baca. Dibuang di server, bukan hanya tidak dirender, karena
+ * props Client Component terkirim utuh di RSC payload, dan pada 漢字読み cara baca
+ * kata bergaris bawah adalah jawabannya.
  */
-export function withoutUnderlineFurigana(source: string): string {
-  const serialize = (segments: MarkupSegment[], insideUnderline: boolean): string =>
+export function withoutFurigana(source: string): string {
+  const serialize = (segments: MarkupSegment[]): string =>
     segments
       .map((segment) => {
         switch (segment.type) {
           case "text":
             return segment.value;
           case "furigana":
-            return insideUnderline ? segment.kanji : `{${segment.kanji}|${segment.reading}}`;
+            return segment.kanji;
           case "underline":
-            return `__${serialize(segment.children, true)}__`;
+            return `__${serialize(segment.children)}__`;
           case "slot":
             return segment.kind === "blank" ? "[_]" : "[★]";
         }
       })
       .join("");
-  return serialize(parseJapaneseMarkup(source), false);
+  return serialize(parseJapaneseMarkup(source));
+}
+
+/** `withoutFurigana` untuk semua teks satu soal: soal, bacaan bersama, dan pilihan jawaban. */
+export function withoutQuestionFurigana<
+  T extends {
+    questionText: string;
+    questionContext: { storyText: string | null } | null;
+    questionChoices: { answerText: string }[];
+  },
+>(question: T): T {
+  return {
+    ...question,
+    questionText: withoutFurigana(question.questionText),
+    questionContext: question.questionContext && {
+      ...question.questionContext,
+      storyText: question.questionContext.storyText && withoutFurigana(question.questionContext.storyText),
+    },
+    questionChoices: question.questionChoices.map((choice) => ({
+      ...choice,
+      answerText: withoutFurigana(choice.answerText),
+    })),
+  };
 }
 
 /** Teks polos tanpa furigana dan penanda, mis. untuk TTS: `{食|た}べ__ながら__` → `食べながら`. */

@@ -7,7 +7,7 @@ import type { JlptLevel, JlptSection, MondaiType, Prisma } from "@prisma/client"
 import { prisma } from "@/lib/prisma";
 import { QUESTION_BUNPOU_LINKS_SELECT, toBunpouPoints } from "@/lib/question-bunpou-links";
 import { QUESTION_EXPLANATION_SELECT } from "@/lib/question-explanation";
-import { withoutUnderlineFurigana } from "@/lib/japanese-markup";
+import { withoutFurigana, withoutQuestionFurigana } from "@/lib/japanese-markup";
 import { getSession } from "@/lib/auth";
 import { CACHE_KEYS, CACHE_TAGS } from "@/constants/cache-key";
 import {
@@ -161,16 +161,23 @@ export async function createPracticeSessionAction(input: PracticeConfigurationIn
   redirect(`/exercises/${sessionId}`);
 }
 
-// Pada 漢字読み, furigana di dalam underline adalah jawabannya. Runner tidak
-// merendernya, tetapi props Client Component terkirim utuh di RSC payload, jadi
-// cara bacanya dibuang di server. Runner juga tidak menampilkannya setelah soal
-// dijawab, sehingga tidak perlu dibedakan per status jawaban.
-function withoutReadingAnswer<
-  T extends { questionText: string; testPackageItem: { mondaiType: MondaiType } },
+// Mode kerja tanpa furigana: furigana hanya tampil saat review atau mode baca.
+// Dibuang di server karena props Client Component terkirim utuh di RSC payload,
+// dan pada 漢字読み cara baca di dalam underline adalah jawabannya. Soal yang
+// sudah dijawab tetap tanpa furigana (pembahasan yang membawa furigananya sendiri).
+function withoutPracticeFurigana<
+  T extends Parameters<typeof withoutQuestionFurigana>[0] & {
+    testPackageItem: { instruction: string | null };
+  },
 >(question: T): T {
-  return question.testPackageItem.mondaiType === "MOJI_GOI_READ_KANJI"
-    ? { ...question, questionText: withoutUnderlineFurigana(question.questionText) }
-    : question;
+  const stripped = withoutQuestionFurigana(question);
+  return {
+    ...stripped,
+    testPackageItem: {
+      ...stripped.testPackageItem,
+      instruction: stripped.testPackageItem.instruction && withoutFurigana(stripped.testPackageItem.instruction),
+    },
+  };
 }
 
 export async function getPracticeSession(input: PracticeSessionIdInput) {
@@ -225,7 +232,7 @@ export async function getPracticeSession(input: PracticeSessionIdInput) {
         },
       });
 
-      const questionMap = new Map(questions.map((q) => [q.id, withoutReadingAnswer(q)]));
+      const questionMap = new Map(questions.map((q) => [q.id, withoutPracticeFurigana(q)]));
       const ordered = guestData.questionIds
         .map((id, index) => {
           const q = questionMap.get(id);
@@ -362,7 +369,7 @@ export async function getPracticeSession(input: PracticeSessionIdInput) {
               bunpouPoints: toBunpouPoints(feedback.bunpouLinks),
             }
           : null,
-        ...withoutReadingAnswer(answer.question),
+        ...withoutPracticeFurigana(answer.question),
       };
     }),
   };

@@ -118,7 +118,6 @@ export function PracticeRunner({ practiceSession, reportEnabled }: PracticeRunne
   const currentQuestion = questions[currentIndex];
   const isAnswered = currentQuestion.answeredAt !== null;
   const activeSelection = isAnswered ? currentQuestion.selectedAnswer : selectedAnswer;
-  const hideFurigana = currentQuestion.testPackageItem.mondaiType === "MOJI_GOI_READ_KANJI";
   const progressPercentage = Math.round((answeredCount / questions.length) * 100);
 
   function goToQuestion(index: number) {
@@ -314,10 +313,7 @@ export function PracticeRunner({ practiceSession, reportEnabled }: PracticeRunne
             </div>
             <div className="mt-3 font-japanese text-xl leading-9 font-bold sm:text-2xl">
               {currentQuestion.questionText ? (
-                <JapaneseText
-                  text={currentQuestion.questionText}
-                  hideFuriganaInUnderline={hideFurigana}
-                />
+                <JapaneseText text={currentQuestion.questionText} />
               ) : (
                 <span>Dengarkan audio, lalu pilih jawaban yang paling tepat.</span>
               )}

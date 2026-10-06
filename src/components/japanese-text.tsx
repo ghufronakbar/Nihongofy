@@ -5,7 +5,7 @@ const DEFAULT_UNDERLINE_CLASS = "underline underline-offset-4";
 
 function renderSegments(
   segments: MarkupSegment[],
-  opts: { hideFuriganaInUnderline: boolean; insideUnderline: boolean; underlineClassName: string },
+  opts: { underlineClassName: string },
 ): ReactNode {
   return segments.map((segment, index) => {
     switch (segment.type) {
@@ -13,11 +13,6 @@ function renderSegments(
         return <Fragment key={index}>{segment.value}</Fragment>;
 
       case "furigana":
-        // MOJI_GOI_READ_KANJI: furigana inside __underline__ is the answer itself
-        // and must stay hidden while the question is being worked on.
-        if (opts.insideUnderline && opts.hideFuriganaInUnderline) {
-          return <Fragment key={index}>{segment.kanji}</Fragment>;
-        }
         return (
           <ruby key={index}>
             {segment.kanji}
@@ -28,7 +23,7 @@ function renderSegments(
       case "underline":
         return (
           <span key={index} className={opts.underlineClassName}>
-            {renderSegments(segment.children, { ...opts, insideUnderline: true })}
+            {renderSegments(segment.children, opts)}
           </span>
         );
 
@@ -51,31 +46,23 @@ function renderSegments(
 // questions, where it is the literal 下線部 underline.
 export function renderInlineJapanese(
   text: string,
-  hideFuriganaInUnderline = false,
   underlineClassName = DEFAULT_UNDERLINE_CLASS,
 ): ReactNode {
-  const segments = parseJapaneseMarkup(text);
-  return renderSegments(segments, {
-    hideFuriganaInUnderline,
-    insideUnderline: false,
-    underlineClassName,
-  });
+  return renderSegments(parseJapaneseMarkup(text), { underlineClassName });
 }
 
 export function JapaneseText({
   text,
-  hideFuriganaInUnderline = false,
   underlineClassName,
   className,
 }: {
   text: string;
-  hideFuriganaInUnderline?: boolean;
   underlineClassName?: string;
   className?: string;
 }) {
   return (
     <span className={className}>
-      {renderInlineJapanese(text, hideFuriganaInUnderline, underlineClassName)}
+      {renderInlineJapanese(text, underlineClassName)}
     </span>
   );
 }

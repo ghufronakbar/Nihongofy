@@ -9,8 +9,8 @@ import { cn } from "@/lib/utils";
 // and toggles the <rt> readings via a CSS descendant selector — no need to thread
 // a visibility prop through the Server Component tree that renders the questions.
 // Note: only affects text that HAS {kanji|reading} markup in the data; readings
-// are not auto-generated. During the exam, MOJI_GOI_READ_KANJI answers use
-// hideFuriganaInUnderline (never rendered as <rt>) and stay hidden regardless.
+// are not auto-generated. Exam/practice payloads have furigana stripped on the
+// server (withoutFurigana), so this toggle only matters in review/read mode.
 export function FuriganaScope({ children }: { children: React.ReactNode }) {
   const [visible, setVisible] = useState(true);
 

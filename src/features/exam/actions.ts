@@ -2,31 +2,27 @@
 
 import { notFound, redirect } from "next/navigation";
 import { updateTag } from "next/cache";
-import type { MondaiType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
-import { withoutUnderlineFurigana } from "@/lib/japanese-markup";
+import { withoutFurigana, withoutQuestionFurigana } from "@/lib/japanese-markup";
 import { CACHE_TAGS } from "@/constants/cache-key";
 import { readGuestExamCookie } from "./guest-cookie";
 import { SubmitExamSessionSchema, type SubmitExamSessionInput } from "./schemas";
 
-// Pada 漢字読み, furigana di dalam underline adalah jawabannya. Runner memang tidak
-// merendernya, tetapi props Client Component terkirim utuh di RSC payload, jadi
-// cara bacanya dibuang di server sebelum dikirim.
-function withoutReadingAnswers<
-  T extends { mondaiType: MondaiType; questions: { questionText: string }[] },
+// Mode kerja tanpa furigana: furigana hanya tampil saat review atau mode baca.
+// Dibuang di server karena props Client Component terkirim utuh di RSC payload,
+// dan pada 漢字読み cara baca di dalam underline adalah jawabannya.
+function withoutFuriganaItems<
+  T extends {
+    instruction: string | null;
+    questions: Parameters<typeof withoutQuestionFurigana>[0][];
+  },
 >(items: T[]): T[] {
-  return items.map((item) =>
-    item.mondaiType === "MOJI_GOI_READ_KANJI"
-      ? {
-          ...item,
-          questions: item.questions.map((question) => ({
-            ...question,
-            questionText: withoutUnderlineFurigana(question.questionText),
-          })),
-        }
-      : item,
-  );
+  return items.map((item) => ({
+    ...item,
+    instruction: item.instruction && withoutFurigana(item.instruction),
+    questions: item.questions.map(withoutQuestionFurigana),
+  }));
 }
 
 // Exam-mode data-leak guard (docs/database.md): questionAnswer & explanation
@@ -85,7 +81,7 @@ export async function getExamQuestions(attemptId: number, urlSession: number) {
       },
     });
 
-    return { attempt, testPackageItems: withoutReadingAnswers(testPackageItems) };
+    return { attempt, testPackageItems: withoutFuriganaItems(testPackageItems) };
   }
 
   const attempt = await prisma.attempt.findUnique({
@@ -148,7 +144,7 @@ export async function getExamQuestions(attemptId: number, urlSession: number) {
     },
   });
 
-  return { attempt, testPackageItems: withoutReadingAnswers(testPackageItems) };
+  return { attempt, testPackageItems: withoutFuriganaItems(testPackageItems) };
 }
 
 export async function submitExamSessionAction(input: SubmitExamSessionInput) {

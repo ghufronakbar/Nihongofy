@@ -35,7 +35,7 @@ Tidak punya flag sendiri; ikut `FEATURES_TEST_PACKAGE` (lihat [Paket tes](test-p
 ## Perilaku yang Disengaja
 
 - Tidak ada timer internal. Detail paket hanya memberikan durasi resmi sebagai acuan timer mandiri.
-- Furigana yang berada di dalam underline pada `MOJI_GOI_READ_KANJI` adalah jawabannya. Ia dibuang dari payload di server (`withoutUnderlineFurigana` di `getExamQuestions`), bukan hanya tidak dirender: props Client Component ikut terkirim utuh di RSC payload.
+- Furigana tidak tampil selama pengerjaan, termasuk yang tercetak di soal asli. Semua furigana (instruksi, soal, bacaan, pilihan) dibuang dari payload di server (`withoutFurigana`/`withoutQuestionFurigana` di `getExamQuestions`), bukan hanya tidak dirender: props Client Component ikut terkirim utuh di RSC payload, dan pada `MOJI_GOI_READ_KANJI` furigana di dalam underline adalah jawabannya.
 - Comment tidak tampil selama pengerjaan.
 
 ## Keterbatasan dan Risiko

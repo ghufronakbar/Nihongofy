@@ -131,7 +131,6 @@ export function ExamRunner({
 
   const currentQuestion = questions[currentIndex];
   const answerState = currentQuestion ? getAnswer(currentQuestion.id) : { selectedAnswer: null, flagged: false };
-  const hideFurigana = currentQuestion?.mondaiType === "MOJI_GOI_READ_KANJI";
 
   function goToQuestion(index: number) {
     const clamped = Math.min(Math.max(index, 0), totalQuestions - 1);
@@ -438,10 +437,7 @@ export function ExamRunner({
             {/* Question Text */}
             <div className="font-japanese text-xl sm:text-2xl leading-relaxed font-bold text-neo-ink">
               {currentQuestion.questionText ? (
-                <JapaneseText
-                  text={currentQuestion.questionText}
-                  hideFuriganaInUnderline={hideFurigana}
-                />
+                <JapaneseText text={currentQuestion.questionText} />
               ) : (
                 <span className="text-base sm:text-lg font-semibold text-foreground/75 font-sans">
                   Dengarkan rekaman audio di bawah, lalu tentukan pilihan jawaban yang tepat.

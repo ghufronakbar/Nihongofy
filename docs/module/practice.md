@@ -54,8 +54,9 @@ Hasil audit 3 Oktober 2026 (tabel lengkap di [exam.md](exam.md#audit-data-leak-3
 - Penilaian di server. User login: pilihan yang tidak ada di soal, atau soal yang belum dijawab
   di sesi yang sudah ditutup, ditolak tanpa mengembalikan kunci. Guest: soal di luar daftar
   cookie sesi guest ditolak sebelum kunci dibaca, dan pilihan yang tidak ada di soal ditolak.
-- Cara baca soal 漢字読み di dalam underline dibuang dari payload di server
-  (`withoutUnderlineFurigana`). Runner tidak pernah menampilkannya, termasuk setelah dijawab.
+- Semua furigana (instruksi, soal, bacaan, pilihan) dibuang dari payload di server
+  (`withoutQuestionFurigana`), termasuk cara baca 漢字読み di dalam underline. Soal tetap tanpa
+  furigana setelah dijawab; furigana hanya ada di pembahasan.
 - Runner tidak memasang diskusi maupun catatan. Tombol laporan pembahasan baru muncul setelah
   feedback.
 - Dijaga `src/lib/answer-key-guard.test.ts`.

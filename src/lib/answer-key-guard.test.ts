@@ -240,8 +240,8 @@ function keysDeep(value: unknown): Set<string> {
   return keys;
 }
 
-function hasUnderlineFurigana(text: string) {
-  return /__[^_]*\{[^|}]+\|[^}]+\}[^_]*__/.test(text);
+function hasFurigana(text: string) {
+  return /\{[^|}]+\|[^}]+\}/.test(text);
 }
 
 // Contoh 漢字読み: cara baca di dalam underline sama dengan teks pilihan yang benar.
@@ -303,12 +303,28 @@ describe("exam runner", () => {
             },
             {
               id: 2,
-              mondaiType: "MOJI_GOI_CONTEXT",
-              section: "MOJI_GOI",
+              mondaiType: "DOKKAI_SHORT_TEXT",
+              section: "DOKKAI",
               session: 1,
               order: 2,
-              instruction: null,
-              questions: [questionRow(101, CONTEXT_TEXT)],
+              instruction: "{正|ただ}しいものを{選|えら}んでください。",
+              questions: [
+                {
+                  ...questionRow(101, CONTEXT_TEXT),
+                  questionContext: {
+                    id: 7,
+                    storyText: "{机|つくえ}の{上|うえ}に{切符|きっぷ}がある。",
+                    storyImage: null,
+                    storyAudio: null,
+                  },
+                  questionChoices: [1, 2, 3, 4].map((codeAnswer) => ({
+                    id: 1010 + codeAnswer,
+                    codeAnswer,
+                    answerText: `{田中|たなか}{先生|せんせい} ${codeAnswer}`,
+                    answerImage: null,
+                  })),
+                },
+              ],
             },
           ],
     );
@@ -347,7 +363,7 @@ describe("exam runner", () => {
     expect(mocks.delegates.attempt.findUnique).not.toHaveBeenCalled();
   });
 
-  it("cara baca 漢字読み dibuang sebelum dikirim; furigana mondai lain tetap", async () => {
+  it("semua furigana dibuang sebelum dikirim, termasuk cara baca 漢字読み", async () => {
     mocks.delegates.attempt.findUnique.mockResolvedValue(inProgress);
     mockExamItems();
 
@@ -355,8 +371,11 @@ describe("exam runner", () => {
     const [readKanji, context] = testPackageItems.flatMap((item) => item.questions);
 
     expect(readKanji!.questionText).toBe("社会活動に参加することで、__人脈__を広げた。");
-    expect(hasUnderlineFurigana(readKanji!.questionText)).toBe(false);
-    expect(context!.questionText).toBe(CONTEXT_TEXT);
+    expect(context!.questionText).toBe("私は__読める__");
+    expect(context!.questionContext?.storyText).toBe("机の上に切符がある。");
+    expect(context!.questionChoices[0]!.answerText).toBe("田中先生 1");
+    expect(testPackageItems[1]!.instruction).toBe("正しいものを選んでください。");
+    expect(JSON.stringify(testPackageItems)).not.toMatch(/\{[^|}]+\|[^}]+\}/);
   });
 });
 
@@ -418,7 +437,7 @@ describe("latihan cepat", () => {
     expect(unanswered!.feedback).toBeNull();
     expect(keysDeep(unanswered)).not.toContain("questionAnswer");
     for (const question of session.questions) {
-      expect(hasUnderlineFurigana(question.questionText)).toBe(false);
+      expect(hasFurigana(question.questionText)).toBe(false);
     }
   });
 
@@ -443,7 +462,7 @@ describe("latihan cepat", () => {
     expectNoAnswerKeyReads();
     for (const question of session.questions) {
       expect(question.feedback).toBeNull();
-      expect(hasUnderlineFurigana(question.questionText)).toBe(false);
+      expect(hasFurigana(question.questionText)).toBe(false);
     }
   });
 

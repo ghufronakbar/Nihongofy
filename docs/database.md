@@ -289,7 +289,7 @@ Aturan tambahan:
 
 - Markup boleh bersarang: `__{勉強|べんきょう}する__` valid.
 - `[_]` dan `[★]` TIDAK pernah punya isi — selalu literal persis seperti itu.
-- Pada mondai `MOJI_GOI_READ_KANJI`, furigana di dalam segmen `__...__` adalah jawabannya. Data tetap disimpan lengkap dengan furigananya, tetapi payload soal sebelum dijawab (exam dan latihan) membuangnya di server lewat `withoutUnderlineFurigana()` (`src/lib/japanese-markup.ts`). Menyembunyikannya hanya saat render (`hideFuriganaInUnderline`) tidak cukup, karena teks mentahnya tetap terkirim di RSC payload.
+- Furigana hanya tampil di mode review dan mode baca. Data tetap disimpan lengkap dengan furigananya (jangan dibersihkan), tetapi payload mode kerja (exam dan latihan) membuang SEMUA furigana di server lewat `withoutFurigana()` / `withoutQuestionFurigana()` (`src/lib/japanese-markup.ts`): instruksi, soal, bacaan bersama, dan pilihan jawaban. Menyembunyikannya hanya saat render tidak cukup, karena teks mentahnya tetap terkirim di RSC payload, dan pada mondai `MOJI_GOI_READ_KANJI` furigana di dalam `__...__` adalah jawabannya.
 - Markup yang sama dipakai kolom flashcard (`FlashcardVocab.word`, `examples[].jp`, `notes`). Di
   sana `__...__` menandai kata target contoh kalimat dan dirender sebagai sorotan, bukan garis bawah.
 
