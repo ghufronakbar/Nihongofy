@@ -5,6 +5,14 @@ const optionalEnvString = z.preprocess(
   z.string().trim().min(1).optional(),
 );
 
+const DEFAULT_GENTSUKI_DECK_URL =
+  "https://cdn-nihongofy.lans.my.id/gentsuki/SIM_Gentsuki_Jepang_Lengkap_Vision.apkg";
+
+const gentsukiDeckUrl = z.preprocess(
+  (value) => (value === "" ? undefined : value),
+  z.url().default(DEFAULT_GENTSUKI_DECK_URL),
+);
+
 // String kosong diperlakukan sama dengan tidak diisi, supaya baris `KEY=` di
 // .env tetap memakai default.
 const featureFlag = z.preprocess(
@@ -19,6 +27,9 @@ const envSchema = z
   .object({
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
     APP_URL: z.url(),
+    // URL publik ini aman masuk bundle browser. Nilai default menjaga halaman
+    // unduhan tetap berfungsi tanpa konfigurasi tambahan di setiap environment.
+    NEXT_PUBLIC_GENTSUKI_DECK_URL: gentsukiDeckUrl,
     DATABASE_URL: z.string().min(1),
     DIRECT_URL: z.string().min(1),
     SESSION_SECRET: z.string().min(1),
@@ -189,6 +200,7 @@ export const FOLLOW_RATE_LIMITS = [
 ] as const;
 
 export const SITE_URL = new URL(env.APP_URL);
+export const GENTSUKI_DECK_URL = env.NEXT_PUBLIC_GENTSUKI_DECK_URL;
 export const GOOGLE_OAUTH_ENABLED = Boolean(
   env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET,
 );

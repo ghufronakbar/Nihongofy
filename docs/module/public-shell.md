@@ -7,6 +7,7 @@
 ## Route
 
 - `/`
+- `/gentsuki` (landing statis untuk download deck Anki SIM gentsuki Jepang)
 - `/privacy` (Kebijakan Privasi) dan `/terms` (Syarat & Ketentuan) — lihat [Dokumen Hukum](#dokumen-hukum).
 - Layout bersama untuk route group `(public)`, termasuk home, article, kana, flashcard, exercises, test-package, exam, result, conversation, dan speaking.
 
@@ -18,6 +19,8 @@
 - Featured article berasal dari query artikel published, dengan empty state jika database kosong.
 - Metadata Open Graph dasar tersedia.
 - Footer menautkan Kebijakan Privasi dan Syarat & Ketentuan tanpa syarat flag.
+- `/gentsuki` berdiri sendiri tanpa feature flag, query database, atau ketergantungan modul. File deck
+  dilayani langsung dari URL `NEXT_PUBLIC_GENTSUKI_DECK_URL` dengan fallback ke CDN Nihongofy.
 
 ## Feature Flag
 
@@ -52,7 +55,7 @@ Route milik modul yang mati mengembalikan 404 lewat `layout.tsx` guard di segmen
 ## Keterbatasan
 
 - Tidak ada halaman publik khusus overview product selain home.
-- Sitemap memuat home, `/privacy`, `/terms`, test package, latihan cepat, kana, flashcard, bunpou (katalog, tiap pola, dan tiap perbandingan), dan artikel untuk modul yang aktif. `robots.ts` meng-`allow` `/privacy` dan `/terms` tanpa syarat, selebihnya hanya path modul aktif; route akun, exam, result, conversation, dan speaking selalu di-`disallow`. Diskusi (`/discussion`, `/flashcard/discussion`, dan diskusi di halaman pola) diindeks sejak 2 Oktober 2026; halaman diskusi tanpa entri diberi `noindex`.
+- Sitemap memuat home, `/gentsuki`, `/privacy`, `/terms`, test package, latihan cepat, kana, flashcard, bunpou (katalog, tiap pola, dan tiap perbandingan), dan artikel untuk modul yang aktif. `robots.ts` meng-`allow` `/gentsuki`, `/privacy`, dan `/terms` tanpa syarat, selebihnya hanya path modul aktif; route akun, exam, result, conversation, dan speaking selalu di-`disallow`. Diskusi (`/discussion`, `/flashcard/discussion`, dan diskusi di halaman pola) diindeks sejak 2 Oktober 2026; halaman diskusi tanpa entri diberi `noindex`.
 - `robots.txt` dan `sitemap.xml` di-prerender saat build, sehingga perubahan flag baru tercermin di keduanya setelah redeploy.
 - Header publik tidak menyediakan shortcut langsung ke history/progress/analytics; aksesnya melalui dashboard.
 - Routing tidak mewajibkan login untuk prefix belajar/exam/result. Proteksi akun dan ownership diterapkan secara selektif di page/action terkait; mode guest memang tersedia pada beberapa modul.
@@ -89,6 +92,7 @@ Kebijakan Privasi (`/privacy`) dan Syarat & Ketentuan (`/terms`) ditambahkan 2 O
 ## File Utama
 
 - `src/app/(public)/page.tsx`
+- `src/app/(public)/gentsuki/page.tsx`
 - `src/app/(public)/layout.tsx`
 - `src/components/marketing/public-header.tsx`
 - `src/components/marketing/public-footer.tsx`

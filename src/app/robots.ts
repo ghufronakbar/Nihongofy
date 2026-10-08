@@ -8,6 +8,8 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: [
         "/",
+        // Landing unduhan mandiri, tidak terikat feature flag modul mana pun.
+        "/gentsuki",
         // Dokumen hukum selalu terbuka, tanpa flag.
         PRIVACY_PATH,
         TERMS_PATH,

@@ -17,6 +17,7 @@ type StaticEntry = {
 
 const STATIC_ENTRIES: StaticEntry[] = [
   { path: "/", changeFrequency: "weekly", priority: 1 },
+  { path: "/gentsuki", changeFrequency: "monthly", priority: 0.75 },
   { path: "/test-package", changeFrequency: "weekly", priority: 0.9, feature: "testPackage" },
   { path: "/exercises", changeFrequency: "weekly", priority: 0.85, feature: "practice" },
   { path: "/kana/hiragana", changeFrequency: "monthly", priority: 0.8, feature: "kana" },
