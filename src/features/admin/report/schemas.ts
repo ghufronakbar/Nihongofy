@@ -10,12 +10,15 @@ import {
 // Tab antrean, bukan status mentah: yang ditanyakan admin saat membuka layar ini
 // adalah "apa yang belum selesai", dan itu mencakup OPEN maupun IN_REVIEW.
 export const ReportStateFilterSchema = z.enum(["open", "done", "all"]);
+export const ReportSortSchema = z.enum(["newest", "oldest"]);
 
 export const ReportQuerySchema = z.object({
   state: ReportStateFilterSchema,
   targetType: z.enum(REPORT_TARGET_TYPES).optional(),
   category: z.enum(REPORT_CATEGORIES).optional(),
   query: z.string().trim().max(200),
+  sort: ReportSortSchema,
+  page: z.number().int().positive(),
 });
 
 // Status yang boleh disetel manual. OPEN tidak termasuk: mengembalikan laporan ke
@@ -36,6 +39,7 @@ export const ReplyToReportSchema = z.object({
 });
 
 export type ReportStateFilter = z.infer<typeof ReportStateFilterSchema>;
+export type ReportSort = z.infer<typeof ReportSortSchema>;
 export type ReportQueryInput = z.infer<typeof ReportQuerySchema>;
 export type SetReportStatusInput = z.infer<typeof SetReportStatusSchema>;
 export type ReplyToReportInput = z.infer<typeof ReplyToReportSchema>;

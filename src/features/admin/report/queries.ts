@@ -9,7 +9,7 @@ import type { ReportQueryInput } from "./schemas";
 // Tidak di-cache, sama seperti antrean moderasi: layar ini dibuka justru untuk
 // melihat keadaan sekarang, termasuk tepat setelah satu laporan ditandai selesai.
 
-const QUEUE_PAGE_SIZE = 100;
+const QUEUE_PAGE_SIZE = 20;
 
 const OPEN_STATUSES: ReportStatus[] = ["OPEN", "IN_REVIEW"];
 const DONE_STATUSES: ReportStatus[] = ["RESOLVED", "REJECTED", "DUPLICATE"];
@@ -181,15 +181,20 @@ export async function listReportQueue(filter: ReportQueryInput) {
     ];
   }
 
-  const [rows, byStatus] = await Promise.all([
-    prisma.report.findMany({
-      where,
-      orderBy: { createdAt: "desc" },
-      take: QUEUE_PAGE_SIZE,
-      select: reportSelect,
-    }),
+  const [totalItems, byStatus] = await Promise.all([
+    prisma.report.count({ where }),
     prisma.report.groupBy({ by: ["status"], _count: { _all: true } }),
   ]);
+  const totalPages = Math.max(1, Math.ceil(totalItems / QUEUE_PAGE_SIZE));
+  const page = Math.min(filter.page, totalPages);
+  const sortDirection = filter.sort === "oldest" ? "asc" : "desc";
+  const rows = await prisma.report.findMany({
+    where,
+    orderBy: [{ createdAt: sortDirection }, { id: sortDirection }],
+    skip: (page - 1) * QUEUE_PAGE_SIZE,
+    take: QUEUE_PAGE_SIZE,
+    select: reportSelect,
+  });
 
   const counts = { all: 0, open: 0, done: 0 };
   for (const group of byStatus) {
@@ -321,5 +326,14 @@ export async function listReportQueue(filter: ReportQueryInput) {
     canReply: Boolean(row.replyEmail) && row.repliedAt === null,
   }));
 
-  return { entries, counts, truncated: rows.length === QUEUE_PAGE_SIZE };
+  return {
+    entries,
+    counts,
+    pagination: {
+      page,
+      pageSize: QUEUE_PAGE_SIZE,
+      totalItems,
+      totalPages,
+    },
+  };
 }

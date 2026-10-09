@@ -1,11 +1,12 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { ExternalLink, Search } from "lucide-react";
+import { ArrowDownUp, ChevronLeft, ChevronRight, ExternalLink, Search } from "lucide-react";
 import { requireAdmin } from "@/lib/auth";
 import { FEATURES } from "@/constants";
 import { listReportQueue } from "@/features/admin/report/queries";
 import {
   ReportQuerySchema,
+  ReportSortSchema,
   ReportStateFilterSchema,
 } from "@/features/admin/report/schemas";
 import { BunpouReportPanel } from "@/features/admin/report/components/bunpou-report-panel";
@@ -56,12 +57,21 @@ function formatTimestamp(value: Date) {
 export default async function AdminReportPage({
   searchParams,
 }: {
-  searchParams: Promise<{ state?: string; target?: string; category?: string; q?: string }>;
+  searchParams: Promise<{
+    state?: string;
+    target?: string;
+    category?: string;
+    q?: string;
+    sort?: string;
+    page?: string;
+  }>;
 }) {
   await requireAdmin();
 
   const params = await searchParams;
   const parsedState = ReportStateFilterSchema.safeParse(params.state);
+  const parsedSort = ReportSortSchema.safeParse(params.sort);
+  const parsedPage = Number(params.page);
   const targetType = isTargetType(params.target) ? params.target : undefined;
   const filter = ReportQuerySchema.parse({
     state: parsedState.success ? parsedState.data : "open",
@@ -75,22 +85,34 @@ export default async function AdminReportPage({
         ? params.category
         : undefined,
     query: (params.q ?? "").trim(),
+    sort: parsedSort.success ? parsedSort.data : "newest",
+    page: Number.isInteger(parsedPage) && parsedPage > 0 ? parsedPage : 1,
   });
 
-  const { entries, counts, truncated } = await listReportQueue(filter);
+  const { entries, counts, pagination } = await listReportQueue(filter);
 
   function hrefFor(
-    next: Partial<{ state: string; target: ReportTargetTypeValue; category: ReportCategoryValue }>,
+    next: Partial<{
+      state: string;
+      target: ReportTargetTypeValue | null;
+      category: ReportCategoryValue | null;
+      sort: typeof filter.sort;
+      page: number;
+    }>,
   ) {
     const search = new URLSearchParams();
     search.set("state", next.state ?? filter.state);
-    const target = next.target ?? filter.targetType;
-    let category = next.category ?? filter.category;
+    const target = next.target === null ? undefined : (next.target ?? filter.targetType);
+    let category = next.category === null ? undefined : (next.category ?? filter.category);
     // Berpindah target membuang kategori yang tidak berlaku untuk target barunya.
     if (target && category && !isReportCategoryAllowed(target, category)) category = undefined;
     if (target) search.set("target", target);
     if (category) search.set("category", category);
     if (filter.query) search.set("q", filter.query);
+    const sort = next.sort ?? filter.sort;
+    if (sort !== "newest") search.set("sort", sort);
+    const page = next.page ?? 1;
+    if (page > 1) search.set("page", String(page));
     return `/admin/report?${search.toString()}`;
   }
 
@@ -162,6 +184,7 @@ export default async function AdminReportPage({
           <input type="hidden" name="state" value={filter.state} />
           {filter.targetType && <input type="hidden" name="target" value={filter.targetType} />}
           {filter.category && <input type="hidden" name="category" value={filter.category} />}
+          {filter.sort !== "newest" && <input type="hidden" name="sort" value={filter.sort} />}
           <input
             type="search"
             name="q"
@@ -179,13 +202,44 @@ export default async function AdminReportPage({
         </form>
       </div>
 
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="font-mono text-[11px] font-bold text-foreground/60">
+          {pagination.totalItems === 0
+            ? "0 laporan"
+            : `${(pagination.page - 1) * pagination.pageSize + 1}-${Math.min(
+                pagination.page * pagination.pageSize,
+                pagination.totalItems,
+              )} dari ${pagination.totalItems} laporan`}
+        </p>
+        <div className="flex items-center gap-1.5" role="group" aria-label="Urutkan laporan">
+          <ArrowDownUp className="mr-1 size-3.5 text-foreground/60" aria-hidden="true" />
+          {(
+            [
+              { value: "newest", label: "Terbaru" },
+              { value: "oldest", label: "Terlama" },
+            ] as const
+          ).map((option) => (
+            <Link
+              key={option.value}
+              href={hrefFor({ sort: option.value })}
+              aria-current={filter.sort === option.value ? "page" : undefined}
+              className={`border-2 border-neo-ink px-2.5 py-1 font-mono text-[10px] font-black uppercase shadow-neo-sm transition-transform active:translate-x-px active:translate-y-px ${
+                filter.sort === option.value ? "bg-neo-ink text-white" : "bg-white text-black"
+              }`}
+            >
+              {option.label}
+            </Link>
+          ))}
+        </div>
+      </div>
+
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-[3px] border-neo-ink bg-neo-paper p-3 shadow-neo-sm">
         <span className="font-mono text-[10px] font-black uppercase text-foreground/60">
           Target
         </span>
         <div className="flex flex-wrap gap-1.5">
           <Link
-            href={`/admin/report?state=${filter.state}${filter.category ? `&category=${filter.category}` : ""}`}
+            href={hrefFor({ target: null })}
             className={`border-2 border-neo-ink px-2 py-0.5 font-mono text-[10px] font-black uppercase ${
               filter.targetType ? "bg-white" : "bg-neo-ink text-white"
             }`}
@@ -210,7 +264,7 @@ export default async function AdminReportPage({
         </span>
         <div className="flex flex-wrap gap-1.5">
           <Link
-            href={`/admin/report?state=${filter.state}${filter.targetType ? `&target=${filter.targetType}` : ""}`}
+            href={hrefFor({ category: null })}
             className={`border-2 border-neo-ink px-2 py-0.5 font-mono text-[10px] font-black uppercase ${
               filter.category ? "bg-white" : "bg-neo-ink text-white"
             }`}
@@ -363,10 +417,41 @@ export default async function AdminReportPage({
         </ul>
       )}
 
-      {truncated && (
-        <p className="font-mono text-[11px] font-bold text-foreground/60">
-          Hanya 100 laporan terbaru yang ditampilkan. Pakai filter atau pencarian untuk mempersempit.
-        </p>
+      {pagination.totalPages > 1 && (
+        <nav
+          aria-label="Pagination laporan"
+          className="flex flex-wrap items-center justify-between gap-3 border-[3px] border-neo-ink bg-neo-paper p-3 shadow-neo-sm"
+        >
+          <Link
+            href={hrefFor({ page: Math.max(1, pagination.page - 1) })}
+            aria-disabled={pagination.page === 1}
+            tabIndex={pagination.page === 1 ? -1 : undefined}
+            className={`inline-flex items-center gap-1 border-2 border-neo-ink px-3 py-1.5 font-mono text-xs font-black uppercase shadow-neo-sm ${
+              pagination.page === 1
+                ? "pointer-events-none bg-neo-paper text-foreground/35 shadow-none"
+                : "bg-white text-black active:translate-x-px active:translate-y-px"
+            }`}
+          >
+            <ChevronLeft className="size-4" aria-hidden="true" />
+            Sebelumnya
+          </Link>
+          <span className="font-mono text-xs font-black uppercase text-neo-ink">
+            Halaman {pagination.page} / {pagination.totalPages}
+          </span>
+          <Link
+            href={hrefFor({ page: Math.min(pagination.totalPages, pagination.page + 1) })}
+            aria-disabled={pagination.page === pagination.totalPages}
+            tabIndex={pagination.page === pagination.totalPages ? -1 : undefined}
+            className={`inline-flex items-center gap-1 border-2 border-neo-ink px-3 py-1.5 font-mono text-xs font-black uppercase shadow-neo-sm ${
+              pagination.page === pagination.totalPages
+                ? "pointer-events-none bg-neo-paper text-foreground/35 shadow-none"
+                : "bg-white text-black active:translate-x-px active:translate-y-px"
+            }`}
+          >
+            Berikutnya
+            <ChevronRight className="size-4" aria-hidden="true" />
+          </Link>
+        </nav>
       )}
     </div>
   );
