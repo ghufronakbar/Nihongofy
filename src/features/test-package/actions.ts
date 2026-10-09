@@ -140,7 +140,12 @@ const getCachedTestPackageQuestions = (testPackageId: number) =>
       });
     },
     CACHE_KEYS.testPackageQuestions(testPackageId),
-    { tags: [CACHE_TAGS.testPackageQuestions(testPackageId)] },
+    {
+      tags: [
+        CACHE_TAGS.testPackageQuestions(testPackageId),
+        CACHE_TAGS.testPackageQuestionBank,
+      ],
+    },
   )(testPackageId);
 
 const BUNPOU_POINTS_REVALIDATE_SECONDS = 3600;

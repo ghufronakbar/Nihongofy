@@ -557,9 +557,9 @@ tahap lain, dan tahap 2–3 menutup gap konten yang paling menyakitkan bila scop
 - [x] `/admin/question/[id]` — editor soal: `questionText`, teks/gambar tiap pilihan,
   `questionAnswer` lewat radio, dan `instruction` mondai. Markup diingatkan di UI. Pilihan
   di-update lewat id yang sudah ada, tidak dihapus-lalu-dibuat-ulang
-- [ ] Upload/ganti media soal ke Cloudinary. Saat ini editor hanya menerima URL yang ditempel;
-  belum ada uploader (per 25 September 2026: 227 context audio, 144 question image, 0
-  `questionAudio`)
+- [ ] Upload/ganti media soal ke R2. Saat ini editor hanya menerima URL yang ditempel;
+  belum ada uploader (per 10 Oktober 2026: 227 context audio, 1 context image, 144 question image,
+  68 answer image, dan 0 `questionAudio`)
 - [x] `/admin/context/[id]` — editor wacana bersama: teks, URL gambar, dan URL audio, dengan
   pratinjau media dan daftar soal yang memakainya. Memperingatkan bahwa perubahan terasa di
   semua soal itu sekaligus, dan menolak context yang tidak punya teks, gambar, maupun audio —
@@ -757,9 +757,8 @@ satu-satunya konten buatan user yang terlihat publik, termasuk oleh guest.
 
 ## Migrasi Storage — Cloudinary → Cloudflare R2 (S3-compatible)
 
-Ruang lingkup: **uploader user saja** (avatar profil dan lampiran gambar komentar). Media bank soal
-di `src/test-package-data/` tetap memakai URL Cloudinary read-only; migrasi aset tersebut belum
-dikerjakan. Detail operasional ada di `docs/operations/storage.md`.
+Ruang lingkup mencakup uploader user (avatar profil dan lampiran gambar komentar) serta seluruh media
+bank soal. Detail operasional ada di `docs/operations/storage.md`.
 
 - [x] Install `@aws-sdk/client-s3` + `@aws-sdk/s3-request-presigner`, copot package `cloudinary`
 - [x] Env `CLOUDINARY_*` diganti `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`,
@@ -783,6 +782,13 @@ dikerjakan. Detail operasional ada di `docs/operations/storage.md`.
 - [x] Redis sorted set pending avatar pindah key ke `{REDIS_PREFIX}:r2:pending-avatars`
 - [x] Aset lama tetap dibaca: URL Cloudinary diterima saat komentar disunting, dan `avatarPublicId`
   warisan dilewati saat penghapusan (`destroyManagedAvatar` → `"skipped"`)
+- [x] 440 referensi media pada 48 fixture bank soal dipindahkan ke key immutable R2, diverifikasi
+  lewat `HeadObject` dan SHA-256 public-CDN readback, lalu disinkronkan ke database lewat mode
+  `seed:question-media` yang tidak menyentuh teks atau kunci jawaban (10 Oktober 2026)
+- [x] Renderer soal tetap memakai `<img>`/`<audio>` native agar file dibaca langsung dari CDN R2,
+  bukan proxy image Vercel; dijaga `src/lib/question-media-delivery.test.ts`
+- [x] Cache mode baca dinaikkan ke `test-package-questions-v2` dan mendapat tag global
+  `test-package-question-bank` untuk migrasi batch berikutnya
 
 ### Bug yang ikut diperbaiki
 

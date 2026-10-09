@@ -15,9 +15,9 @@ import type { LegalDocument } from "../types";
 // Setiap klaim di dokumen ini harus dapat ditunjuk dasar kodenya. Saat alur data
 // berubah (cookie baru, pemroses baru, retensi baru), perbarui bagian yang
 // relevan, naikkan VERSION, dan ganti LAST_UPDATED. Riwayatnya cukup lewat git.
-export const VERSION = "1.3";
-export const LAST_UPDATED = "2026-10-03";
-export const EFFECTIVE_DATE = "2026-10-03";
+export const VERSION = "1.4";
+export const LAST_UPDATED = "2026-10-10";
+export const EFFECTIVE_DATE = "2026-10-10";
 
 const operator = <LegalValue value={LEGAL_FACTS.operatorName} />;
 
@@ -704,8 +704,8 @@ export const PRIVACY_POLICY: LegalDocument = {
               ],
               [
                 "Cloudflare",
-                "R2 untuk avatar dan gambar lampiran; Turnstile untuk verifikasi bot",
-                "File gambar; token Turnstile dan alamat IP",
+                "R2 untuk media bank soal, avatar, dan gambar lampiran; Turnstile untuk verifikasi bot",
+                "File audio dan gambar; token Turnstile dan alamat IP",
               ],
               [
                 <LegalValue key="s" value={LEGAL_FACTS.smtpProvider} />,
@@ -724,7 +724,7 @@ export const PRIVACY_POLICY: LegalDocument = {
               ],
               [
                 "Cloudinary",
-                "Media bank soal lama (audio dan gambar soal) dan avatar lama, hanya dibaca",
+                "Avatar dan gambar lampiran lama sebelum migrasi storage, hanya dibaca",
                 "Browser Anda memuat file langsung dari Cloudinary, sehingga Cloudinary menerima alamat IP dan user agent",
               ],
             ]}

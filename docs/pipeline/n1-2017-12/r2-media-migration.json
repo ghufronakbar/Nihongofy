@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "status": "verified",
+  "fixture": "n1-2017-12.json",
+  "packageName": "JLPT N1 - 2017年12月",
+  "migratedAt": "2026-10-09T17:44:16.706Z",
+  "bucket": "nihongofy-media",
+  "publicBaseUrl": "https://cdn-nihongofy.lans.my.id",
+  "cacheControl": "public, max-age=31536000, immutable",
+  "assets": [
+    {
+      "sourceUrl": "https://res.cloudinary.com/dankuh3tf/video/upload/v1788148986/n1-2017-12-01.mp3",
+      "targetUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n1-2017-12/audio/2a18d58befd3-n1-2017-12-01.mp3",
+      "objectKey": "jlpt-exam/test-packages/n1-2017-12/audio/2a18d58befd3-n1-2017-12-01.mp3",
+      "mediaType": "audio",
+      "contentType": "audio/mpeg",
+      "bytes": 5758130,
+      "sha256": "2a18d58befd340f4e11faa46b7a0ec321d34e4447e2390cbb0ea0d82caf7fbad",
+      "action": "uploaded",
+      "references": [
+        "$.questionContexts[12].storyAudio"
+      ],
+      "headVerified": true,
+      "publicReadbackVerified": true
+    },
+    {
+      "sourceUrl": "https://res.cloudinary.com/dankuh3tf/video/upload/v1788148989/n1-2017-12-02.mp3",
+      "targetUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n1-2017-12/audio/fc50cae1a6f5-n1-2017-12-02.mp3",
+      "objectKey": "jlpt-exam/test-packages/n1-2017-12/audio/fc50cae1a6f5-n1-2017-12-02.mp3",
+      "mediaType": "audio",
+      "contentType": "audio/mpeg",
+      "bytes": 6872114,
+      "sha256": "fc50cae1a6f5707e4db82d9cdd147b37f0eaa1cb51ba046aad10240a61f4ef41",
+      "action": "uploaded",
+      "references": [
+        "$.questionContexts[13].storyAudio"
+      ],
+      "headVerified": true,
+      "publicReadbackVerified": true
+    },
+    {
+      "sourceUrl": "https://res.cloudinary.com/dankuh3tf/video/upload/v1788148991/n1-2017-12-03.mp3",
+      "targetUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n1-2017-12/audio/c0097633e028-n1-2017-12-03.mp3",
+      "objectKey": "jlpt-exam/test-packages/n1-2017-12/audio/c0097633e028-n1-2017-12-03.mp3",
+      "mediaType": "audio",
+      "contentType": "audio/mpeg",
+      "bytes": 5439314,
+      "sha256": "c0097633e028500693003b17f56a9f6b0b55c772b1a642b7b05160a9f8ff2a4c",
+      "action": "uploaded",
+      "references": [
+        "$.questionContexts[14].storyAudio"
+      ],
+      "headVerified": true,
+      "publicReadbackVerified": true
+    },
+    {
+      "sourceUrl": "https://res.cloudinary.com/dankuh3tf/video/upload/v1788148992/n1-2017-12-04.mp3",
+      "targetUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n1-2017-12/audio/7d3a09f20af3-n1-2017-12-04.mp3",
+      "objectKey": "jlpt-exam/test-packages/n1-2017-12/audio/7d3a09f20af3-n1-2017-12-04.mp3",
+      "mediaType": "audio",
+      "contentType": "audio/mpeg",
+      "bytes": 3965906,
+      "sha256": "7d3a09f20af35fe904b62fdffd96a689a90d91577c7f64f4a7dfdfe5f820ae93",
+      "action": "uploaded",
+      "references": [
+        "$.questionContexts[15].storyAudio"
+      ],
+      "headVerified": true,
+      "publicReadbackVerified": true
+    },
+    {
+      "sourceUrl": "https://res.cloudinary.com/dankuh3tf/video/upload/v1788148994/n1-2017-12-05.mp3",
+      "targetUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n1-2017-12/audio/387b18eb7168-n1-2017-12-05.mp3",
+      "objectKey": "jlpt-exam/test-packages/n1-2017-12/audio/387b18eb7168-n1-2017-12-05.mp3",
+      "mediaType": "audio",
+      "contentType": "audio/mpeg",
+      "bytes": 4769138,
+      "sha256": "387b18eb71680ba65260a3d77a2932e72a50ed623490e0fdf4988a9075d74bfc",
+      "action": "uploaded",
+      "references": [
+        "$.questionContexts[16].storyAudio"
+      ],
+      "headVerified": true,
+      "publicReadbackVerified": true
+    },
+    {
+      "sourceUrl": "https://res.cloudinary.com/dankuh3tf/image/upload/v1788148995/n1-2017-12-m1-2.png",
+      "targetUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n1-2017-12/images/a95863aac334-n1-2017-12-m1-2.png",
+      "objectKey": "jlpt-exam/test-packages/n1-2017-12/images/a95863aac334-n1-2017-12-m1-2.png",
+      "mediaType": "images",
+      "contentType": "image/png",
+      "bytes": 57774,
+      "sha256": "a95863aac334124b1650acebad5a0e471d3f3ad86498237f7bca088fb2eee02b",
+      "action": "uploaded",
+      "references": [
+        "$.testPackageItems[13].questions[1].questionImage"
+      ],
+      "headVerified": true,
+      "publicReadbackVerified": true
+    }
+  ]
+}

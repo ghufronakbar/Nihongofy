@@ -9,6 +9,7 @@ import { CACHE_TAGS } from "@/constants/cache-key";
 // sini hanya akan mengundang tebakan id.
 export const INVALIDATABLE_TAGS = {
   testPackageList: CACHE_TAGS.testPackageList,
+  testPackageQuestionBank: CACHE_TAGS.testPackageQuestionBank,
   practiceCatalog: CACHE_TAGS.practiceCatalog,
   articleList: CACHE_TAGS.articleList,
   articleFacets: CACHE_TAGS.articleFacets,

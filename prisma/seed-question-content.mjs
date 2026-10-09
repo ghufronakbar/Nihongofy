@@ -29,7 +29,7 @@ function log(message) {
 }
 
 function parseArguments(argv) {
-  const options = { selectedFile: null, level: null, validateOnly: false };
+  const options = { selectedFile: null, level: null, validateOnly: false, mediaOnly: false };
 
   for (let index = 0; index < argv.length; index += 1) {
     const argument = argv[index];
@@ -39,6 +39,11 @@ function parseArguments(argv) {
 
     if (argument === "--validate-only") {
       options.validateOnly = true;
+      continue;
+    }
+
+    if (argument === "--media-only") {
+      options.mediaOnly = true;
       continue;
     }
 
@@ -74,7 +79,40 @@ function changedFields(stored, incoming) {
   return changes;
 }
 
-async function syncPackage({ pkg }) {
+async function countLegacyMediaUrls(packageNames) {
+  const legacyUrl = "https://res.cloudinary.com/";
+  const packageFilter = { name: { in: packageNames } };
+  const [contexts, questions, choices] = await Promise.all([
+    prisma.questionContext.count({
+      where: {
+        testPackage: packageFilter,
+        OR: [
+          { storyImage: { contains: legacyUrl } },
+          { storyAudio: { contains: legacyUrl } },
+        ],
+      },
+    }),
+    prisma.question.count({
+      where: {
+        testPackageItem: { testPackage: packageFilter },
+        OR: [
+          { questionImage: { contains: legacyUrl } },
+          { questionAudio: { contains: legacyUrl } },
+        ],
+      },
+    }),
+    prisma.questionChoice.count({
+      where: {
+        question: { testPackageItem: { testPackage: packageFilter } },
+        answerImage: { contains: legacyUrl },
+      },
+    }),
+  ]);
+
+  return { contexts, questions, choices, total: contexts + questions + choices };
+}
+
+async function syncPackage({ pkg, mediaOnly = false }) {
   return prisma.$transaction(
     async (transaction) => {
       const lockKey = `seed:question-content:${pkg.name}`;
@@ -151,7 +189,7 @@ async function syncPackage({ pkg }) {
           };
         }
 
-        if ((storedItem.instruction ?? null) !== (item.instruction ?? null)) {
+        if (!mediaOnly && (storedItem.instruction ?? null) !== (item.instruction ?? null)) {
           await transaction.testPackageItem.update({
             where: { id: storedItem.id },
             data: { instruction: item.instruction ?? null },
@@ -170,12 +208,20 @@ async function syncPackage({ pkg }) {
             };
           }
 
-          const changes = changedFields(stored, {
-            questionText: question.questionText,
-            questionImage: question.questionImage ?? null,
-            questionAudio: question.questionAudio ?? null,
-            questionAnswer: question.questionAnswer,
-          });
+          const changes = changedFields(
+            stored,
+            mediaOnly
+              ? {
+                  questionImage: question.questionImage ?? null,
+                  questionAudio: question.questionAudio ?? null,
+                }
+              : {
+                  questionText: question.questionText,
+                  questionImage: question.questionImage ?? null,
+                  questionAudio: question.questionAudio ?? null,
+                  questionAnswer: question.questionAnswer,
+                },
+          );
 
           if (Object.keys(changes).length > 0) {
             await transaction.question.update({ where: { id: stored.id }, data: changes });
@@ -222,10 +268,15 @@ async function syncPackage({ pkg }) {
               };
             }
 
-            const choiceChanges = changedFields(storedChoice, {
-              answerText: choice.answerText,
-              answerImage: choice.answerImage ?? null,
-            });
+            const choiceChanges = changedFields(
+              storedChoice,
+              mediaOnly
+                ? { answerImage: choice.answerImage ?? null }
+                : {
+                    answerText: choice.answerText,
+                    answerImage: choice.answerImage ?? null,
+                  },
+            );
             if (Object.keys(choiceChanges).length > 0) {
               await transaction.questionChoice.update({
                 where: { id: storedChoice.id },
@@ -245,26 +296,28 @@ async function syncPackage({ pkg }) {
         if (candidates.size === 1) contextIdByRef.set(ref, [...candidates][0]);
       }
 
-      for (const item of pkg.testPackageItems) {
-        const storedItem = storedItems.get(item.mondaiType);
-        const storedQuestions = new Map(storedItem.questions.map((q) => [q.order, q]));
+      if (!mediaOnly) {
+        for (const item of pkg.testPackageItems) {
+          const storedItem = storedItems.get(item.mondaiType);
+          const storedQuestions = new Map(storedItem.questions.map((q) => [q.order, q]));
 
-        for (const question of item.questions) {
-          const stored = storedQuestions.get(question.order);
-          const desired = question.questionContextRef
-            ? (contextIdByRef.get(question.questionContextRef) ?? null)
-            : null;
+          for (const question of item.questions) {
+            const stored = storedQuestions.get(question.order);
+            const desired = question.questionContextRef
+              ? (contextIdByRef.get(question.questionContextRef) ?? null)
+              : null;
 
-          // Ref yang tidak dapat dipetakan dilewati, bukan ditulis sebagai null:
-          // menghapus tautan yang benar lebih merugikan daripada membiarkannya.
-          if (question.questionContextRef && desired === null) continue;
-          if ((stored.questionContextId ?? null) === desired) continue;
+            // Ref yang tidak dapat dipetakan dilewati, bukan ditulis sebagai null:
+            // menghapus tautan yang benar lebih merugikan daripada membiarkannya.
+            if (question.questionContextRef && desired === null) continue;
+            if ((stored.questionContextId ?? null) === desired) continue;
 
-          await transaction.question.update({
-            where: { id: stored.id },
-            data: { questionContextId: desired },
-          });
-          result.contextLinks += 1;
+            await transaction.question.update({
+              where: { id: stored.id },
+              data: { questionContextId: desired },
+            });
+            result.contextLinks += 1;
+          }
         }
       }
 
@@ -279,11 +332,19 @@ async function syncPackage({ pkg }) {
         const storedContext = storedContexts.get([...candidates][0]);
         if (!storedContext) continue;
 
-        const changes = changedFields(storedContext, {
-          storyText: context.storyText ?? null,
-          storyImage: context.storyImage ?? null,
-          storyAudio: context.storyAudio ?? null,
-        });
+        const changes = changedFields(
+          storedContext,
+          mediaOnly
+            ? {
+                storyImage: context.storyImage ?? null,
+                storyAudio: context.storyAudio ?? null,
+              }
+            : {
+                storyText: context.storyText ?? null,
+                storyImage: context.storyImage ?? null,
+                storyAudio: context.storyAudio ?? null,
+              },
+        );
         if (Object.keys(changes).length === 0) continue;
 
         await transaction.questionContext.update({ where: { id: storedContext.id }, data: changes });
@@ -314,7 +375,10 @@ async function main() {
     ? seedFiles.filter((seedFile) => seedFile.pkg.jlptLevel === options.level)
     : seedFiles;
 
-  log(`VALIDATION OK - ${selected.length} package dari ${checkedFiles} file`);
+  log(
+    `VALIDATION OK - ${selected.length} package dari ${checkedFiles} file` +
+      (options.mediaOnly ? " (media-only)" : ""),
+  );
   if (options.validateOnly) return;
 
   const summary = {
@@ -331,7 +395,7 @@ async function main() {
   for (const seedFile of selected) {
     const { file, pkg } = seedFile;
     try {
-      const result = await syncPackage(seedFile);
+      const result = await syncPackage({ ...seedFile, mediaOnly: options.mediaOnly });
 
       if (result.status === "blocked") {
         log(`ERROR package "${pkg.name}" (${file}) - ${result.message}`);
@@ -361,6 +425,20 @@ async function main() {
       const message = error instanceof Error ? error.message : String(error);
       log(`ERROR package "${pkg.name}" (${file}) - ROLLED BACK: ${message}`);
       summary.errors.push({ context: file, message });
+    }
+  }
+
+  if (options.mediaOnly && selected.length > 0) {
+    const legacy = await countLegacyMediaUrls(selected.map(({ pkg }) => pkg.name));
+    log(
+      `VERIFY Cloudinary tersisa - ${legacy.contexts} context, ${legacy.questions} soal, ` +
+        `${legacy.choices} pilihan`,
+    );
+    if (legacy.total > 0) {
+      summary.errors.push({
+        context: "database",
+        message: `${legacy.total} baris media masih memakai Cloudinary`,
+      });
     }
   }
 

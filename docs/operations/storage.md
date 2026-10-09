@@ -9,10 +9,12 @@ key; byte file tidak pernah masuk PostgreSQL dan tidak pernah melewati server ap
 |---|---|---|
 | Avatar profil | `jlpt-exam/avatars/{userId}/<uuid v4>.webp` | 3 MB, tepat 512x512, `image/webp` |
 | Lampiran gambar komentar | `jlpt-exam/comments/{userId}/<uuid v4>.<ext>` | 5 MB, `image/jpeg`, `image/png`, `image/webp`, `image/gif` |
+| Media bank soal | `jlpt-exam/test-packages/{fixture}/{audio|images}/{sha12}-<nama-asli>` | Byte sumber dipertahankan; migrator menolak aset di atas 256 MB |
 
-Media bank soal (audio mondai dan gambar soal) **masih dilayani Cloudinary** sebagai URL read-only di
-`src/test-package-data/`. Tidak ada penulisan baru ke Cloudinary; migrasi aset tersebut belum
-dikerjakan.
+Media bank soal di `src/test-package-data/` memakai URL public CDN R2. Object-nya immutable dan
+content-addressed: 12 karakter awal SHA-256 masuk ke key, sedangkan hash lengkap disimpan sebagai
+metadata object dan manifest audit. Cloudinary hanya dipertahankan sementara sebagai sumber rollback;
+aset asal tidak dihapus oleh migrator.
 
 ## Environment
 
@@ -67,6 +69,45 @@ R2 tidak punya transformasi gambar seperti Cloudinary, jadi crop tengah dan resi
 di browser memakai Canvas sebelum upload. Konsekuensinya crop selalu di tengah, bukan content-aware
 seperti `g_auto` dulu.
 
+## Media bank soal
+
+Migrasi media bank soal dilakukan offline; credential R2 tidak pernah masuk aplikasi client.
+Perintah aman dimulai dari dry-run:
+
+```bash
+npm run migrate:test-media:r2 -- --dry-run --file n5-2012-12.json
+npm run migrate:test-media:r2 -- --apply --file n5-2012-12.json
+npm run migrate:test-media:r2 -- --apply
+npm run seed:question-media
+```
+
+`--apply` wajib ditulis eksplisit. Untuk setiap URL `https://res.cloudinary.com/...`, migrator:
+
+1. mengunduh satu aset pada satu waktu dan memeriksa kelompok MIME (`audio/*` atau `image/*`);
+2. menghitung SHA-256 dan mengunggah object dengan `Cache-Control: public, max-age=31536000,
+   immutable`;
+3. memverifikasi `HeadObject`, lalu mengunduh URL custom domain publik dan membandingkan ukuran serta
+   SHA-256;
+4. baru setelah seluruh aset satu paket lolos, menulis manifest
+   `docs/pipeline/<fixture>/r2-media-migration.json` dan mengganti URL fixture secara atomik.
+
+Script idempotent. Fixture yang sudah memakai R2 dilewati; object dengan key yang sudah ada dipakai
+ulang hanya bila metadata, ukuran, MIME, dan cache header cocok. `seed:question-media` adalah mode
+khusus yang hanya menyinkronkan lima kolom media ke PostgreSQL, sehingga teks, instruksi, relasi
+context, kunci jawaban, dan nilai attempt lama tidak ikut berubah.
+
+### Pengiriman langsung tanpa proxy Vercel
+
+Renderer bank soal sengaja memakai elemen native `<img>` dan `<audio>`. Browser mengambil byte
+langsung dari `R2_PUBLIC_BASE_URL`; tidak ada route handler aplikasi dan tidak ada optimizer
+`next/image`, sehingga trafik file tidak dihitung sebagai bandwidth media Vercel. Aturan ini dijaga
+oleh `src/lib/question-media-delivery.test.ts`.
+
+Cache mode baca memakai key `test-package-questions-v2` dan tag global
+`test-package-question-bank`. Versi key memutus cache lama yang masih menyimpan URL Cloudinary;
+untuk migrasi media berikutnya, invalidasi tag global tersedia di `/admin/ops` setelah sinkronisasi
+database.
+
 ## Cleanup
 
 Avatar yang sudah diunggah tapi profilnya tidak jadi disimpan akan menggantung. Setiap presign
@@ -79,6 +120,9 @@ record database. Ini keputusan lama yang tetap berlaku setelah pindah ke R2.
 
 ## Catatan migrasi dari Cloudinary
 
+- Seluruh 440 referensi media bank soal pada 48 fixture sudah dipindahkan dan diverifikasi di R2
+  pada 10 Oktober 2026. Manifest per paket adalah bukti readback; jangan menghapus aset Cloudinary
+  sebelum deployment baru dan uji browser diterima.
 - Avatar lama menyimpan `avatarPublicId` Cloudinary yang tidak berekstensi. Object-nya tidak ada di
   R2, jadi `destroyManagedAvatar` mengembalikan `"skipped"` dan file lama tertinggal di Cloudinary.
   Perlu dibersihkan manual di dashboard Cloudinary bila ingin ditutup.

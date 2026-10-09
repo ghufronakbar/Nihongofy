@@ -6,7 +6,7 @@
 |---|---|
 | Framework | Next.js (App Router) |
 | Database | PostgreSQL (Supabase) via Prisma |
-| File storage | Cloudflare R2 via S3 API (`@aws-sdk/client-s3`, presigned PUT; DB stores URLs only). Media bank soal lama masih dilayani Cloudinary read-only. |
+| File storage | Cloudflare R2 via S3 API (`@aws-sdk/client-s3`; presigned PUT untuk upload user, migrator offline untuk bank soal; DB stores URLs only). Cloudinary hanya sumber rollback dan aset user legacy. |
 | Styling | Tailwind CSS v4 + shadcn/ui |
 | State | React Context |
 | Auth | Custom credential + Google OIDC: `bcryptjs` + `jose`, Redis session registry/state, dan token PostgreSQL |

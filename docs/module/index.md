@@ -84,10 +84,10 @@ Snapshot ini bersifat lokal dan dapat berubah setelah seed/import berikutnya.
 
 | Data | Kondisi saat audit |
 |---|---|
-| Fixture paket tes | 50 file valid, 5.028 soal: N1 13, N2 14, N3 10, N4 8, N5 5. |
-| Database paket tes | 31 paket, 3.159 soal: N2 13, N3 10, N4 8. N1 dan N5 belum diimpor. |
-| Pembahasan soal | 20 dari 3.159 soal database memiliki `explanation`. |
-| Media bank soal | 147 context audio, 83 question image, 1 context image, dan 0 question audio pada database aktif. |
+| Fixture paket tes | 48 file valid, 4.825 soal: N1 13, N2 14, N3 8, N4 8, N5 5. |
+| Database paket tes | 48 paket, 4.825 soal: N1 13, N2 14, N3 8, N4 8, N5 5. |
+| Pembahasan soal | 3.408 dari 4.825 soal database memiliki `explanation`. |
+| Media bank soal | 227 context audio, 1 context image, 144 question image, 68 answer image, dan 0 question audio; seluruh 440 URL memakai CDN R2. |
 | Flashcard | Dirombak 1 Oktober 2026. Fixture daftar kata berisi 6.697 kata, isi kartunya belum digenerate; database masih memakai tabel lama sampai migration `20261001120000_flashcard_vocab_catalog` diterapkan. |
 | Artikel | 6 artikel published, 16 tag, 1 featured, dan 2 interaction row. |
 | Aktivitas user | 1 user; belum ada attempt, practice session, flashcard review, atau question comment. Hanya ada 2 kana progress dan 2 article interaction, sehingga banyak halaman masih berada pada empty state saat audit. |

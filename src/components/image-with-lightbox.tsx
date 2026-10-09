@@ -30,6 +30,7 @@ export function ImageWithLightbox({
 
   return (
     <>
+      {/* Native img keeps question media on the R2 CDN instead of the Vercel image proxy. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={src}

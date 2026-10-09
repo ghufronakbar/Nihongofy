@@ -5,6 +5,7 @@ export const CACHE_TAGS = {
   testPackageList: "test-package-list",
   testPackageDetail: (testPackageId: number) => `test-package-${testPackageId}`,
   testPackageQuestions: (testPackageId: number) => `test-package-questions-${testPackageId}`,
+  testPackageQuestionBank: "test-package-question-bank",
   attemptSummary: (attemptId: number) => `attempt-${attemptId}`,
   dashboardSummary: (userId: number) => `dashboard-${userId}`,
   profileAccount: (userId: number) => `profile-account-${userId}`,
@@ -23,7 +24,8 @@ export const CACHE_KEYS = {
   testPackageList: ["test-package-list"] as string[],
   testPackageDetail: (testPackageId: number) => ["test-package-detail", String(testPackageId)],
   testPackageQuestions: (testPackageId: number) => [
-    "test-package-questions",
+    // v2 memutus cache lama yang masih menyimpan URL media Cloudinary.
+    "test-package-questions-v2",
     String(testPackageId),
   ],
   testPackageMetadata: (testPackageId: number) => [
