@@ -9,7 +9,10 @@ import { JapaneseText } from "@/components/japanese-text";
 import { JapanesePassage } from "@/components/japanese-passage";
 import { ImageWithLightbox } from "@/components/image-with-lightbox";
 import { JLPT_SECTION_LABELS, mondaiTypeFullLabel } from "@/constants/jlpt";
-import { questionChoiceFallbackLabel } from "@/lib/question-choice-label";
+import {
+  questionChoiceFallbackLabel,
+  questionPromptFallbackLabel,
+} from "@/lib/question-choice-label";
 import { cn } from "@/lib/utils";
 import {
   AlertTriangle,
@@ -132,6 +135,9 @@ export function ExamRunner({
 
   const currentQuestion = questions[currentIndex];
   const answerState = currentQuestion ? getAnswer(currentQuestion.id) : { selectedAnswer: null, flagged: false };
+  const questionPromptFallback = currentQuestion
+    ? questionPromptFallbackLabel(currentQuestion)
+    : null;
 
   function goToQuestion(index: number) {
     const clamped = Math.min(Math.max(index, 0), totalQuestions - 1);
@@ -436,15 +442,17 @@ export function ExamRunner({
             </div>
 
             {/* Question Text */}
-            <div className="font-japanese text-xl sm:text-2xl leading-relaxed font-bold text-neo-ink">
-              {currentQuestion.questionText ? (
-                <JapaneseText text={currentQuestion.questionText} />
-              ) : (
-                <span className="text-base sm:text-lg font-semibold text-foreground/75 font-sans">
-                  Dengarkan rekaman audio di bawah, lalu tentukan pilihan jawaban yang tepat.
-                </span>
-              )}
-            </div>
+            {(currentQuestion.questionText || questionPromptFallback) && (
+              <div className="font-japanese text-xl sm:text-2xl leading-relaxed font-bold text-neo-ink">
+                {currentQuestion.questionText ? (
+                  <JapaneseText text={currentQuestion.questionText} />
+                ) : (
+                  <span className="text-base sm:text-lg font-semibold text-foreground/75 font-sans">
+                    {questionPromptFallback}
+                  </span>
+                )}
+              </div>
+            )}
 
             {currentQuestion.questionImage && (
               <ImageWithLightbox

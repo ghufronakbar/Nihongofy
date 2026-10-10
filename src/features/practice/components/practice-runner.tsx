@@ -21,7 +21,10 @@ import { QuestionBunpouPoints } from "@/components/question-bunpou-points";
 import { QuestionExplanationBody } from "@/components/question-explanation";
 import { ReportButton } from "@/features/report/components/report-button";
 import type { QuestionBunpouPointView } from "@/lib/question-bunpou-links";
-import { questionChoiceFallbackLabel } from "@/lib/question-choice-label";
+import {
+  questionChoiceFallbackLabel,
+  questionPromptFallbackLabel,
+} from "@/lib/question-choice-label";
 import type { QuestionExplanationView } from "@/lib/question-explanation";
 import { cn } from "@/lib/utils";
 import {
@@ -120,6 +123,7 @@ export function PracticeRunner({ practiceSession, reportEnabled }: PracticeRunne
   const isAnswered = currentQuestion.answeredAt !== null;
   const activeSelection = isAnswered ? currentQuestion.selectedAnswer : selectedAnswer;
   const progressPercentage = Math.round((answeredCount / questions.length) * 100);
+  const questionPromptFallback = questionPromptFallbackLabel(currentQuestion);
 
   function goToQuestion(index: number) {
     const nextIndex = Math.min(Math.max(index, 0), questions.length - 1);
@@ -312,13 +316,15 @@ export function PracticeRunner({ practiceSession, reportEnabled }: PracticeRunne
                 />
               )}
             </div>
-            <div className="mt-3 font-japanese text-xl leading-9 font-bold sm:text-2xl">
-              {currentQuestion.questionText ? (
-                <JapaneseText text={currentQuestion.questionText} />
-              ) : (
-                <span>Dengarkan audio, lalu pilih jawaban yang paling tepat.</span>
-              )}
-            </div>
+            {(currentQuestion.questionText || questionPromptFallback) && (
+              <div className="mt-3 font-japanese text-xl leading-9 font-bold sm:text-2xl">
+                {currentQuestion.questionText ? (
+                  <JapaneseText text={currentQuestion.questionText} />
+                ) : (
+                  <span>{questionPromptFallback}</span>
+                )}
+              </div>
+            )}
 
             {currentQuestion.questionImage && (
               <ImageWithLightbox

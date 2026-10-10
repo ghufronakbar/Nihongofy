@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { questionChoiceFallbackLabel } from "./question-choice-label";
+import {
+  questionChoiceFallbackLabel,
+  questionPromptFallbackLabel,
+} from "./question-choice-label";
 
 const baseQuestion = {
   questionAudio: null,
@@ -31,5 +34,47 @@ describe("questionChoiceFallbackLabel", () => {
 
   it("memberikan label netral bila tidak ada media", () => {
     expect(questionChoiceFallbackLabel(baseQuestion, 4)).toBe("Pilihan 4");
+  });
+});
+
+describe("questionPromptFallbackLabel", () => {
+  it("menampilkan instruksi audio untuk audio pada konteks", () => {
+    expect(
+      questionPromptFallbackLabel({
+        ...baseQuestion,
+        questionContext: { storyAudio: "https://cdn.example.test/audio.mp3", storyImage: null },
+      }),
+    ).toBe("Dengarkan rekaman audio di bawah, lalu tentukan pilihan jawaban yang tepat.");
+  });
+
+  it("menampilkan instruksi audio untuk audio pada soal", () => {
+    expect(
+      questionPromptFallbackLabel({
+        ...baseQuestion,
+        questionAudio: "https://cdn.example.test/question.mp3",
+      }),
+    ).toBe("Dengarkan rekaman audio di bawah, lalu tentukan pilihan jawaban yang tepat.");
+  });
+
+  it("tidak menampilkan fallback untuk konteks teks tanpa audio", () => {
+    expect(
+      questionPromptFallbackLabel({
+        ...baseQuestion,
+        questionContext: { storyAudio: null, storyImage: null },
+      }),
+    ).toBeNull();
+  });
+
+  it("tidak menampilkan fallback untuk soal berbasis gambar", () => {
+    expect(
+      questionPromptFallbackLabel({
+        ...baseQuestion,
+        questionImage: "https://cdn.example.test/question.png",
+      }),
+    ).toBeNull();
+  });
+
+  it("tidak menampilkan fallback bila soal tidak memiliki media", () => {
+    expect(questionPromptFallbackLabel(baseQuestion)).toBeNull();
   });
 });

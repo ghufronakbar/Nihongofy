@@ -7,6 +7,19 @@ type QuestionChoiceMedia = {
   } | null;
 };
 
+const AUDIO_QUESTION_PROMPT =
+  "Dengarkan rekaman audio di bawah, lalu tentukan pilihan jawaban yang tepat.";
+
+export function questionPromptFallbackLabel(
+  question: QuestionChoiceMedia,
+): string | null {
+  if (question.questionAudio || question.questionContext?.storyAudio) {
+    return AUDIO_QUESTION_PROMPT;
+  }
+
+  return null;
+}
+
 export function questionChoiceFallbackLabel(
   question: QuestionChoiceMedia,
   codeAnswer: number,
