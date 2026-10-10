@@ -368,7 +368,7 @@
         },
         {
           "order": 6,
-          "questionText": "アパートの __{南|みなみ}__がわに こうえんが あります。",
+          "questionText": "アパートの __{南|みなみ}がわ__に こうえんが あります。",
           "questionAnswer": 2,
           "questionChoices": [
             {
@@ -389,30 +389,30 @@
             }
           ],
           "explanation": {
-            "summary": "Soal menanyakan cara menulis bacaan __{南|みなみ}__ dengan hiragana. Bacaan yang tepat adalah __みなみ__, sehingga jawaban nomor 2 benar.",
-            "detail": "Kanji __{南|みなみ}__ berarti “selatan” dan dalam kata ini dibaca dengan {訓読み|くんよみ} __みなみ__. Kanji ini juga muncul, misalnya, pada {南口|みなみぐち} (pintu keluar selatan) dan {南|みなみ}の{方|ほう} (arah selatan). Kalimat soal memakai pola __{南|みなみ}がわ__, yaitu “sisi selatan”. Pilihan lain merupakan nama arah lain: __ひがし__ adalah timur, __きた__ adalah utara, dan __にし__ adalah barat. Perhatikan pula bahwa __がわ__ pada gabungan arah merupakan {連濁|れんだく}: {側|かわ} berubah bunyi menjadi __がわ__.",
+            "summary": "Soal menanyakan cara membaca seluruh bagian bergaris bawah, yaitu __{南|みなみ}がわ__. Bacaan yang tepat adalah __みなみがわ__, sehingga jawaban nomor 2 benar.",
+            "detail": "Bagian yang digarisbawahi adalah __{南|みなみ}がわ__ (sisi selatan), bukan hanya kanji {南|みなみ}. {南|みなみ} memakai {訓読み|くんよみ} みなみ, sedangkan akhiran がわ berarti sisi. Bentuk がわ berasal dari {側|かわ} yang mengalami {連濁|れんだく} ketika digabung dengan nama arah. Karena pilihan jawaban menuliskan bacaan seluruh bagian bergaris bawah, bentuk yang benar adalah __みなみがわ__. Pilihan lain masing-masing berarti sisi timur, utara, dan barat.",
             "translation": "Di sisi selatan apartemen ada taman.",
             "keyPoints": [
-              "{南|みなみ}",
+              "{南|みなみ}がわ",
               "{訓読み|くんよみ}",
               "{連濁|れんだく}"
             ],
             "choices": [
               {
                 "codeAnswer": 1,
-                "reason": "ひがしがわ (sisi timur). Pilihan ini menggoda karena sama-sama nama arah dan memiliki akhiran __がわ__, tetapi __ひがし__ adalah bacaan untuk {東|ひがし}, bukan {南|みなみ}."
+                "reason": "ひがしがわ berarti sisi timur. Akhiran がわ sesuai dengan bagian bergaris bawah, tetapi ひがし adalah bacaan untuk {東|ひがし}, bukan {南|みなみ}."
               },
               {
                 "codeAnswer": 2,
-                "reason": "みなみがわ (sisi selatan). __みなみ__ adalah bacaan {訓読み|くんよみ} yang tepat untuk {南|みなみ}, sedangkan __がわ__ berarti sisi."
+                "reason": "みなみがわ berarti sisi selatan dan merupakan bacaan lengkap dari bagian bergaris bawah __{南|みなみ}がわ__: みなみ adalah bacaan {訓読み|くんよみ} untuk {南|みなみ}, sedangkan がわ berarti sisi."
               },
               {
                 "codeAnswer": 3,
-                "reason": "きたがわ (sisi utara). Pilihan ini menggoda karena berpasangan arah dengan selatan, tetapi __きた__ adalah bacaan untuk {北|きた}, bukan {南|みなみ}."
+                "reason": "きたがわ berarti sisi utara. Akhiran がわ benar, tetapi きた adalah bacaan untuk {北|きた}, bukan {南|みなみ}."
               },
               {
                 "codeAnswer": 4,
-                "reason": "にしがわ (sisi barat). Pilihan ini menggoda karena juga menunjukkan arah dan bentuk katanya sama, tetapi __にし__ adalah bacaan untuk {西|にし}, bukan {南|みなみ}."
+                "reason": "にしがわ berarti sisi barat. Akhiran がわ benar, tetapi にし adalah bacaan untuk {西|にし}, bukan {南|みなみ}."
               }
             ],
             "answerKeyDoubt": false,
@@ -421,7 +421,8 @@
               "source": "AI",
               "aiModel": "cx/gpt-5.6-terra",
               "promptVersion": "explanation-v2",
-              "generatedAt": "2026-09-23T05:09:56.970Z"
+              "generatedAt": "2026-09-23T05:09:56.970Z",
+              "reviewedAt": "2026-10-10T08:15:07.000Z"
             }
           }
         },

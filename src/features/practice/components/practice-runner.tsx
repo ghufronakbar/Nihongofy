@@ -21,6 +21,7 @@ import { QuestionBunpouPoints } from "@/components/question-bunpou-points";
 import { QuestionExplanationBody } from "@/components/question-explanation";
 import { ReportButton } from "@/features/report/components/report-button";
 import type { QuestionBunpouPointView } from "@/lib/question-bunpou-links";
+import { questionChoiceFallbackLabel } from "@/lib/question-choice-label";
 import type { QuestionExplanationView } from "@/lib/question-explanation";
 import { cn } from "@/lib/utils";
 import {
@@ -375,7 +376,9 @@ export function PracticeRunner({ practiceSession, reportEnabled }: PracticeRunne
                         className="mt-2 max-h-64 max-w-full border-2 border-neo-ink object-contain"
                       />
                     )}
-                    {!choice.answerText && !choice.answerImage && "Pilihan dari audio"}
+                    {!choice.answerText &&
+                      !choice.answerImage &&
+                      questionChoiceFallbackLabel(currentQuestion, choice.codeAnswer)}
                   </span>
                   {isCorrectChoice && <Check className="mt-1 size-6 shrink-0" />}
                   {isWrongSelection && <X className="mt-1 size-6 shrink-0" />}

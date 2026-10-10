@@ -9,6 +9,7 @@ import { JapaneseText } from "@/components/japanese-text";
 import { JapanesePassage } from "@/components/japanese-passage";
 import { ImageWithLightbox } from "@/components/image-with-lightbox";
 import { JLPT_SECTION_LABELS, mondaiTypeFullLabel } from "@/constants/jlpt";
+import { questionChoiceFallbackLabel } from "@/lib/question-choice-label";
 import { cn } from "@/lib/utils";
 import {
   AlertTriangle,
@@ -500,7 +501,7 @@ export function ExamRunner({
                       )}
                       {!choice.answerText && !choice.answerImage && (
                         <span className="font-sans text-sm font-semibold opacity-80">
-                          Pilihan dari audio
+                          {questionChoiceFallbackLabel(currentQuestion, choice.codeAnswer)}
                         </span>
                       )}
                     </span>

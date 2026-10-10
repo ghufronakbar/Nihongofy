@@ -3351,9 +3351,9 @@
             }
           ],
           "explanation": {
-            "summary": "Soal menanyakan pilihan yang masuk pada posisi [★] setelah semua bagian disusun menjadi kalimat yang benar. Urutan yang tepat adalah 4 → 2 → 1 → 3, sehingga posisi [★] ditempati oleh __もらった__.",
-            "detail": "Kalimat lengkapnya adalah {先週|せんしゅう} ともだち に {外国|がいこく} の こうちゃ を もらった の こうちゃは とても おいしかったです tidak tepat karena ada pengulangan の こうちゃ. Susunan yang benar perlu memperhatikan bahwa bagian setelah [★] sudah berbunyi の こうちゃは, sehingga __もらった__ harus langsung diikuti oleh の: {先週|せんしゅう} ともだち に {外国|がいこく} の こうちゃを もらった の こうちゃは tidak alami. Data soal tampaknya tidak cukup atau ada bagian yang hilang, karena empat pilihan yang diberikan tidak dapat membentuk kalimat gramatikal dengan potongan tetap secara wajar.",
-            "translation": "Teh hitam yang saya terima dari teman minggu lalu sangat enak.",
+            "summary": "Soal menanyakan pilihan yang masuk pada posisi [★] setelah semua bagian disusun menjadi kalimat yang benar. Urutan yang tepat adalah 4 → 2 → 3 → 1, sehingga posisi [★] ditempati oleh __もらった__.",
+            "detail": "Kalimat lengkapnya adalah __{先週|せんしゅう} ともだち に もらった {外国|がいこく} の こうちゃは とても おいしかったです__ (Teh dari luar negeri yang saya terima dari teman minggu lalu sangat enak). Frasa __ともだち に もらった__ menerangkan {外国|がいこく}のこうちゃ: ともだち adalah pihak yang memberi, に menandai sumber pemberian, dan もらった adalah kata kerja bentuk lampau yang berada pada slot ketiga atau posisi [★]. Setelah itu, {外国|がいこく} langsung diikuti の untuk membentuk {外国|がいこく}のこうちゃ.",
+            "translation": "Teh dari luar negeri yang saya terima dari teman minggu lalu sangat enak.",
             "keyPoints": [
               "もらう",
               "に",
@@ -3363,19 +3363,19 @@
             "choices": [
               {
                 "codeAnswer": 1,
-                "reason": "{外国|がいこく} (negara asing) menggoda karena dapat menerangkan こうちゃ, seperti {外国|がいこく}の こうちゃ. Namun, dalam susunan yang paling mungkin, kata ini berada sebelum __もらった__, bukan pada posisi [★]."
+                "reason": "{外国|がいこく} (luar negeri) berada pada slot keempat dan langsung diikuti partikel の yang sudah tercetak, membentuk __{外国|がいこく}の こうちゃ__. Karena itu, kata ini bukan isi posisi [★]."
               },
               {
                 "codeAnswer": 2,
-                "reason": "に (dari/kepada) menggoda karena dipakai bersama ともだち untuk menandai pihak dalam pola もらう. Namun, posisinya harus setelah ともだち dan sebelum {外国|がいこく}, sehingga bukan [★]."
+                "reason": "に menandai teman sebagai pihak yang memberikan dalam pola __ともだち に もらう__. Partikel ini berada pada slot kedua, setelah ともだち dan sebelum もらった, sehingga bukan posisi [★]."
               },
               {
                 "codeAnswer": 3,
-                "reason": "もらった (telah menerima) merupakan bentuk lampau dari もらう (menerima). Berdasarkan kunci resmi, kata ini menempati [★], dengan urutan 4 → 2 → 1 → 3. Akan tetapi, susunan tersebut tidak dapat tersambung secara gramatikal dengan bagian tetap の こうちゃは tanpa adanya unsur lain yang tidak tercantum."
+                "reason": "もらった (telah menerima) merupakan bentuk lampau dari もらう. Kata ini berada pada slot ketiga dalam urutan 4 → 2 → 3 → 1, tepat pada posisi [★], dan membentuk frasa __ともだち に もらった__ yang menerangkan teh."
               },
               {
                 "codeAnswer": 4,
-                "reason": "ともだち (teman) menggoda karena merupakan pihak yang terkait dengan tindakan menerima. Namun, kata ini harus muncul paling awal dalam rangkaian pilihan, sebelum に, jadi tidak berada pada [★]."
+                "reason": "ともだち (teman) adalah pihak yang memberikan teh dan harus muncul pada slot pertama, tepat sebelum に. Karena itu, kata ini tidak berada pada posisi [★]."
               }
             ],
             "answerKeyDoubt": false,
@@ -3384,7 +3384,7 @@
               "aiModel": "cx/gpt-5.6-terra",
               "promptVersion": "explanation-v2",
               "generatedAt": "2026-09-23T05:24:38.779Z",
-              "reviewedAt": "2026-09-23T06:22:10.877Z"
+              "reviewedAt": "2026-10-10T08:15:07.000Z"
             }
           }
         }
