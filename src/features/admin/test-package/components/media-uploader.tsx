@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { type DragEvent, useId, useRef, useState } from "react";
 import { FileAudio, ImagePlus, Loader2, RefreshCw, Trash2, Upload } from "lucide-react";
 import {
   isTestPackageAudioContentType,
@@ -39,7 +39,9 @@ export function TestPackageMediaUploader({
 }) {
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
+  const dragDepthRef = useRef(0);
   const [isUploading, setIsUploading] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const isImage = kind === "image";
   const maxBytes = isImage
@@ -48,6 +50,8 @@ export function TestPackageMediaUploader({
 
   async function handleFile(file: File | undefined) {
     if (!file) return;
+    dragDepthRef.current = 0;
+    setIsDragging(false);
     setError(null);
 
     const validType = isImage
@@ -92,6 +96,50 @@ export function TestPackageMediaUploader({
     }
   }
 
+  function handleDragEnter(event: DragEvent<HTMLElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (isUploading || !Array.from(event.dataTransfer.types).includes("Files")) return;
+
+    dragDepthRef.current += 1;
+    setIsDragging(true);
+  }
+
+  function handleDragOver(event: DragEvent<HTMLElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (!isUploading) event.dataTransfer.dropEffect = "copy";
+  }
+
+  function handleDragLeave(event: DragEvent<HTMLElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+    dragDepthRef.current = Math.max(0, dragDepthRef.current - 1);
+    if (dragDepthRef.current === 0) setIsDragging(false);
+  }
+
+  function handleDrop(event: DragEvent<HTMLElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+    dragDepthRef.current = 0;
+    setIsDragging(false);
+    if (isUploading) return;
+
+    const files = Array.from(event.dataTransfer.files);
+    if (files.length > 1) {
+      setError("Masukkan satu file saja ke setiap box media.");
+      return;
+    }
+    void handleFile(files[0]);
+  }
+
+  const dropHandlers = {
+    onDragEnter: handleDragEnter,
+    onDragOver: handleDragOver,
+    onDragLeave: handleDragLeave,
+    onDrop: handleDrop,
+  };
+
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between gap-3">
@@ -104,7 +152,14 @@ export function TestPackageMediaUploader({
       </div>
 
       {value ? (
-        <div className="flex flex-col gap-3 border-2 border-neo-ink bg-neo-paper p-3">
+        <div
+          {...dropHandlers}
+          className={`relative flex flex-col gap-3 border-2 p-3 transition-colors ${
+            isDragging
+              ? "border-neo-blue bg-white ring-4 ring-neo-blue/15"
+              : "border-neo-ink bg-neo-paper"
+          }`}
+        >
           {isImage ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -137,13 +192,26 @@ export function TestPackageMediaUploader({
               Hapus
             </button>
           </div>
+          {isDragging && (
+            <div className="pointer-events-none absolute inset-0 grid place-items-center bg-white/90 p-4 text-center">
+              <span className="flex items-center gap-2 text-sm font-black text-neo-blue">
+                <Upload className="size-5" />
+                Lepaskan untuk mengganti {isImage ? "gambar" : "audio"}
+              </span>
+            </div>
+          )}
         </div>
       ) : (
         <button
+          {...dropHandlers}
           type="button"
           onClick={() => inputRef.current?.click()}
           disabled={isUploading}
-          className={`flex items-center justify-center gap-3 border-2 border-dashed border-neo-ink/35 bg-neo-paper px-4 text-left hover:border-neo-blue hover:bg-white disabled:opacity-60 ${compact ? "min-h-16" : "min-h-24"}`}
+          className={`flex items-center justify-center gap-3 border-2 border-dashed px-4 text-left transition-colors disabled:opacity-60 ${
+            isDragging
+              ? "border-neo-blue bg-white ring-4 ring-neo-blue/15"
+              : "border-neo-ink/35 bg-neo-paper hover:border-neo-blue hover:bg-white"
+          } ${compact ? "min-h-16" : "min-h-24"}`}
         >
           {isUploading ? (
             <Loader2 className="size-5 shrink-0 animate-spin text-neo-blue" />
@@ -154,7 +222,11 @@ export function TestPackageMediaUploader({
           )}
           <span>
             <span className="block text-sm font-extrabold">
-              {isUploading ? "Mengunggah ke R2..." : `Pilih ${isImage ? "gambar" : "audio"}`}
+              {isUploading
+                ? "Mengunggah ke R2..."
+                : isDragging
+                  ? `Lepaskan ${isImage ? "gambar" : "audio"} di sini`
+                  : `Pilih atau tarik ${isImage ? "gambar" : "audio"}`}
             </span>
             <span className="mt-0.5 block text-[11px] font-semibold text-foreground/55">
               Maksimal {fileSizeLabel(maxBytes)}. File langsung masuk ke folder paket ini.
