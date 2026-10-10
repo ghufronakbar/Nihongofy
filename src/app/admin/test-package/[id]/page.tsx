@@ -144,6 +144,9 @@ export default async function AdminTestPackageDetailPage({
                 <tr className="border-b-[3px] border-neo-ink bg-neo-paper text-left">
                   <th className="w-16 px-3 py-2 font-mono text-[10px] font-black uppercase">No</th>
                   <th className="px-3 py-2 font-mono text-[10px] font-black uppercase">Soal</th>
+                  <th className="w-28 px-3 py-2 font-mono text-[10px] font-black uppercase">
+                    Media
+                  </th>
                   <th className="w-20 px-3 py-2 font-mono text-[10px] font-black uppercase">Kunci</th>
                   <th className="w-44 px-3 py-2 font-mono text-[10px] font-black uppercase">
                     Pembahasan
@@ -151,75 +154,109 @@ export default async function AdminTestPackageDetailPage({
                 </tr>
               </thead>
               <tbody>
-                {item.questions.map((question) => (
-                  <tr key={question.id} className="border-b-2 border-neo-ink/15 last:border-b-0">
-                    <td className="px-3 py-2 font-mono text-xs font-black">{question.order}</td>
-                    <td className="px-3 py-2">
-                      <Link
-                        href={`/admin/question/${question.id}`}
-                        className="line-clamp-2 font-semibold text-neo-ink underline-offset-4 hover:underline"
-                      >
-                        {question.questionText.trim() || (
-                          <span className="text-foreground/50">(tanpa teks — soal audio)</span>
-                        )}
-                      </Link>
-                      <span className="mt-0.5 flex flex-wrap items-center gap-2 font-mono text-[10px] text-foreground/50">
-                        {question.questionContextId && <span>context #{question.questionContextId}</span>}
-                        {question.questionImage && (
-                          <span className="inline-flex items-center gap-0.5">
-                            <ImageIcon className="size-3" /> gambar
-                          </span>
-                        )}
-                        {question.questionAudio && (
-                          <span className="inline-flex items-center gap-0.5">
-                            <Volume2 className="size-3" /> audio
-                          </span>
-                        )}
-                        {question._count.questionChoices !== 4 && (
-                          <span className="font-black text-neo-coral">
-                            {question._count.questionChoices} pilihan
-                          </span>
-                        )}
-                      </span>
-                    </td>
-                    <td className="px-3 py-2 font-mono text-sm font-black">
-                      {question.questionAnswer}
-                    </td>
-                    <td className="px-3 py-2">
-                      {!question.explanation ? (
+                {item.questions.map((question) => {
+                  const imageSources = [
+                    question.questionContext?.storyImage ? "wacana" : null,
+                    question.questionImage ? "soal" : null,
+                    question.questionChoices.some((choice) => Boolean(choice.answerImage))
+                      ? "jawaban"
+                      : null,
+                  ].filter((source): source is string => source !== null);
+                  const audioSources = [
+                    question.questionContext?.storyAudio ? "wacana" : null,
+                    question.questionAudio ? "soal" : null,
+                  ].filter((source): source is string => source !== null);
+
+                  return (
+                    <tr
+                      key={question.id}
+                      className="border-b-2 border-neo-ink/15 last:border-b-0"
+                    >
+                      <td className="px-3 py-2 font-mono text-xs font-black">{question.order}</td>
+                      <td className="px-3 py-2">
                         <Link
-                          href={`/admin/explanation/${question.id}`}
-                          className="font-mono text-[10px] font-bold text-foreground/50 underline-offset-4 hover:text-neo-blue hover:underline"
+                          href={`/admin/question/${question.id}`}
+                          className="line-clamp-2 font-semibold text-neo-ink underline-offset-4 hover:underline"
                         >
-                          belum ada — tulis
-                        </Link>
-                      ) : (
-                        <Link
-                          href={`/admin/explanation/${question.id}`}
-                          className="flex flex-wrap items-center gap-1.5 underline-offset-4 hover:underline"
-                        >
-                          <span className="inline-flex items-center border-2 border-neo-ink bg-white px-1.5 py-0 font-mono text-[10px] font-black">
-                            {question.explanation.source}
-                          </span>
-                          {question.explanation.reviewedAt ? (
-                            <span className="inline-flex items-center border-2 border-neo-ink bg-neo-paper px-1.5 py-0 font-mono text-[10px] font-black">
-                              direview
-                            </span>
-                          ) : (
-                            <span className="font-mono text-[10px] font-bold text-foreground/50">
-                              belum direview
-                            </span>
-                          )}
-                          {question.explanation.answerKeyDoubt && (
-                            <span className="inline-flex items-center border-2 border-neo-ink bg-neo-coral px-1.5 py-0 font-mono text-[10px] font-black text-white">
-                              kunci ragu
-                            </span>
+                          {question.questionText.trim() || (
+                            <span className="text-foreground/50">(tanpa teks — soal audio)</span>
                           )}
                         </Link>
-                      )}
-                    </td>
-                  </tr>
-                ))}
+                        <span className="mt-0.5 flex flex-wrap items-center gap-2 font-mono text-[10px] text-foreground/50">
+                          {question.questionContextId && (
+                            <span>context #{question.questionContextId}</span>
+                          )}
+                          {question._count.questionChoices !== 4 && (
+                            <span className="font-black text-neo-coral">
+                              {question._count.questionChoices} pilihan
+                            </span>
+                          )}
+                        </span>
+                      </td>
+                      <td className="px-3 py-2">
+                        <span className="flex items-center gap-1.5">
+                          {imageSources.length > 0 && (
+                            <span
+                              className="grid size-7 place-items-center border-2 border-neo-ink bg-neo-yellow text-black shadow-neo-sm"
+                              aria-label={`Memiliki gambar dari ${imageSources.join(", ")}`}
+                              title={`Gambar: ${imageSources.join(", ")}`}
+                            >
+                              <ImageIcon className="size-3.5" aria-hidden="true" />
+                            </span>
+                          )}
+                          {audioSources.length > 0 && (
+                            <span
+                              className="grid size-7 place-items-center border-2 border-neo-ink bg-neo-blue text-white shadow-neo-sm"
+                              aria-label={`Memiliki audio dari ${audioSources.join(", ")}`}
+                              title={`Audio: ${audioSources.join(", ")}`}
+                            >
+                              <Volume2 className="size-3.5" aria-hidden="true" />
+                            </span>
+                          )}
+                          {imageSources.length === 0 && audioSources.length === 0 && (
+                            <span className="font-mono text-xs text-foreground/30">—</span>
+                          )}
+                        </span>
+                      </td>
+                      <td className="px-3 py-2 font-mono text-sm font-black">
+                        {question.questionAnswer}
+                      </td>
+                      <td className="px-3 py-2">
+                        {!question.explanation ? (
+                          <Link
+                            href={`/admin/explanation/${question.id}`}
+                            className="font-mono text-[10px] font-bold text-foreground/50 underline-offset-4 hover:text-neo-blue hover:underline"
+                          >
+                            belum ada — tulis
+                          </Link>
+                        ) : (
+                          <Link
+                            href={`/admin/explanation/${question.id}`}
+                            className="flex flex-wrap items-center gap-1.5 underline-offset-4 hover:underline"
+                          >
+                            <span className="inline-flex items-center border-2 border-neo-ink bg-white px-1.5 py-0 font-mono text-[10px] font-black">
+                              {question.explanation.source}
+                            </span>
+                            {question.explanation.reviewedAt ? (
+                              <span className="inline-flex items-center border-2 border-neo-ink bg-neo-paper px-1.5 py-0 font-mono text-[10px] font-black">
+                                direview
+                              </span>
+                            ) : (
+                              <span className="font-mono text-[10px] font-bold text-foreground/50">
+                                belum direview
+                              </span>
+                            )}
+                            {question.explanation.answerKeyDoubt && (
+                              <span className="inline-flex items-center border-2 border-neo-ink bg-neo-coral px-1.5 py-0 font-mono text-[10px] font-black text-white">
+                                kunci ragu
+                              </span>
+                            )}
+                          </Link>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

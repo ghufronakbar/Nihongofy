@@ -109,6 +109,12 @@ export async function getAdminTestPackage(id: number) {
               questionAudio: true,
               questionAnswer: true,
               questionContextId: true,
+              questionContext: {
+                select: { storyImage: true, storyAudio: true },
+              },
+              questionChoices: {
+                select: { answerImage: true },
+              },
               explanation: { select: { id: true, source: true, reviewedAt: true, answerKeyDoubt: true } },
               _count: { select: { questionChoices: true } },
             },
