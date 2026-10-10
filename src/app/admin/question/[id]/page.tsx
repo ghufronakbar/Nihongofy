@@ -6,6 +6,7 @@ import { requireAdmin } from "@/lib/auth";
 import { getAdminQuestion } from "@/features/admin/test-package/queries";
 import { QuestionForm } from "@/features/admin/test-package/components/question-form";
 import { JLPT_SECTION_LABELS, mondaiTypeFullLabel } from "@/constants/jlpt";
+import { testPackageStorageSlug } from "@/lib/storage-keys";
 
 export const metadata: Metadata = { title: "Edit Soal - Admin" };
 
@@ -24,6 +25,11 @@ export default async function AdminQuestionPage({
   if (!question) notFound();
 
   const { testPackageItem, explanation, questionContext } = question;
+  const packageSlug = testPackageStorageSlug(
+    testPackageItem.testPackage.name,
+    testPackageItem.testPackage.jlptLevel,
+  );
+  if (!packageSlug) notFound();
 
   return (
     <div className="flex flex-col gap-6">
@@ -84,6 +90,8 @@ export default async function AdminQuestionPage({
       )}
 
       <QuestionForm
+        testPackageId={testPackageItem.testPackage.id}
+        packageSlug={packageSlug}
         question={{
           id: question.id,
           questionText: question.questionText,

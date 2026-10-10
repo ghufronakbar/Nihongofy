@@ -3,12 +3,12 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, useWatch } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { CheckCircle2, Save } from "lucide-react";
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { updateQuestionContextAction } from "../actions";
+import { TestPackageMediaUploader } from "./media-uploader";
 import {
   UpdateQuestionContextSchema,
   type UpdateQuestionContextInput,
@@ -26,12 +26,17 @@ const MARKUP_HINTS = [
 export function ContextForm({
   context,
   questionCount,
+  testPackageId,
+  packageSlug,
 }: {
   context: UpdateQuestionContextInput;
   questionCount: number;
+  testPackageId: number;
+  packageSlug: string;
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [activeUploads, setActiveUploads] = useState(0);
   const [notice, setNotice] = useState<{ ok: boolean; message: string } | null>(null);
 
   const {
@@ -43,9 +48,9 @@ export function ContextForm({
     resolver: zodResolver(UpdateQuestionContextSchema),
     defaultValues: context,
   });
-
-  const storyImage = useWatch({ control, name: "storyImage" });
-  const storyAudio = useWatch({ control, name: "storyAudio" });
+  const handleUploadingChange = (uploading: boolean) => {
+    setActiveUploads((count) => Math.max(0, count + (uploading ? 1 : -1)));
+  };
 
   return (
     <form
@@ -102,60 +107,60 @@ export function ContextForm({
             <FieldError errors={[errors.storyText]} />
           </Field>
 
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 lg:grid-cols-2">
             <Field>
-              <FieldLabel htmlFor="storyImage">URL gambar wacana</FieldLabel>
-              <Input
-                id="storyImage"
-                {...register("storyImage", { setValueAs: (v) => (v === "" ? null : v) })}
-                className="font-mono text-xs"
+              <Controller
+                control={control}
+                name="storyImage"
+                render={({ field }) => (
+                  <TestPackageMediaUploader
+                    testPackageId={testPackageId}
+                    packageSlug={packageSlug}
+                    kind="image"
+                    label="Gambar wacana"
+                    value={field.value}
+                    onChange={field.onChange}
+                    onUploadingChange={handleUploadingChange}
+                  />
+                )}
               />
               <FieldDescription>Mis. brosur pada soal 情報検索.</FieldDescription>
               <FieldError errors={[errors.storyImage]} />
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="storyAudio">URL audio wacana</FieldLabel>
-              <Input
-                id="storyAudio"
-                {...register("storyAudio", { setValueAs: (v) => (v === "" ? null : v) })}
-                className="font-mono text-xs"
+              <Controller
+                control={control}
+                name="storyAudio"
+                render={({ field }) => (
+                  <TestPackageMediaUploader
+                    testPackageId={testPackageId}
+                    packageSlug={packageSlug}
+                    kind="audio"
+                    label="Audio wacana"
+                    value={field.value}
+                    onChange={field.onChange}
+                    onUploadingChange={handleUploadingChange}
+                  />
+                )}
               />
               <FieldDescription>Audio yang dipakai bersama beberapa soal choukai.</FieldDescription>
               <FieldError errors={[errors.storyAudio]} />
             </Field>
           </div>
-
-          {(storyImage || storyAudio) && (
-            <div className="flex flex-col gap-3 border-t-2 border-neo-ink/15 pt-4">
-              <p className="font-mono text-[10px] font-black uppercase tracking-wider text-foreground/60">
-                Pratinjau media
-              </p>
-              {storyAudio && (
-                // Diputar langsung dari URL-nya supaya operator tahu tautannya
-                // benar-benar hidup sebelum menyimpan.
-                <audio controls src={storyAudio} className="w-full max-w-md">
-                  <track kind="captions" />
-                </audio>
-              )}
-              {storyImage && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={storyImage}
-                  alt="Pratinjau gambar wacana"
-                  className="max-h-72 w-auto border-2 border-neo-ink object-contain"
-                />
-              )}
-            </div>
-          )}
         </div>
 
         <button
           type="submit"
+          disabled={isPending || activeUploads > 0}
           className="neo-button self-start bg-neo-blue text-sm font-extrabold text-white"
         >
           <Save className="size-4" />
-          {isPending ? "Menyimpan..." : "Simpan Wacana"}
+          {isPending
+            ? "Menyimpan..."
+            : activeUploads > 0
+              ? "Menunggu upload..."
+              : "Simpan Wacana"}
         </button>
       </fieldset>
     </form>

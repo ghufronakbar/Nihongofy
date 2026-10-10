@@ -20,12 +20,20 @@ import {
   COMMENT_IMAGE_CONTENT_TYPES,
   COMMENT_IMAGE_MAX_FILE_SIZE_BYTES,
   isCommentImageContentType,
+  isTestPackageAudioContentType,
+  isTestPackageImageContentType,
+  TEST_PACKAGE_AUDIO_CONTENT_TYPES,
+  TEST_PACKAGE_AUDIO_MAX_FILE_SIZE_BYTES,
+  TEST_PACKAGE_IMAGE_CONTENT_TYPES,
+  TEST_PACKAGE_IMAGE_MAX_FILE_SIZE_BYTES,
   type CommentImageContentType,
+  type TestPackageMediaContentType,
 } from "@/constants/storage";
 import { redis, redisKey } from "@/lib/redis";
 import {
   AVATAR_KEY_PREFIX,
   COMMENT_IMAGE_KEY_PREFIX,
+  TEST_PACKAGE_MEDIA_KEY_PREFIX,
   isLegacyCloudinaryUrl,
   isManagedAvatarKey,
   isManagedCommentImageKey,
@@ -259,4 +267,55 @@ export function isAllowedCommentImageUrl(url: string, userId: number) {
   if (!url.startsWith(base)) return false;
 
   return isManagedCommentImageKey(url.slice(base.length), userId);
+}
+
+function safeMediaBasename(originalFileName: string) {
+  const withoutExtension = originalFileName.replace(/\.[^.]+$/, "");
+  return (
+    withoutExtension
+      .normalize("NFKD")
+      .replace(/[^A-Za-z0-9_-]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 80) || "media"
+  );
+}
+
+export async function createTestPackageMediaUpload({
+  packageSlug,
+  mediaType,
+  contentType,
+  byteLength,
+  originalFileName,
+}: {
+  packageSlug: string;
+  mediaType: "images" | "audio";
+  contentType: TestPackageMediaContentType;
+  byteLength: number;
+  originalFileName: string;
+}): Promise<SignedUpload> {
+  if (!/^n[1-5]-\d{4}-(?:0[1-9]|1[0-2])$/.test(packageSlug)) {
+    throw new Error("Folder paket tidak valid.");
+  }
+
+  const contentTypes =
+    mediaType === "images" ? TEST_PACKAGE_IMAGE_CONTENT_TYPES : TEST_PACKAGE_AUDIO_CONTENT_TYPES;
+  const validContentType =
+    mediaType === "images"
+      ? isTestPackageImageContentType(contentType)
+      : isTestPackageAudioContentType(contentType);
+  const maxBytes =
+    mediaType === "images"
+      ? TEST_PACKAGE_IMAGE_MAX_FILE_SIZE_BYTES
+      : TEST_PACKAGE_AUDIO_MAX_FILE_SIZE_BYTES;
+
+  if (!validContentType || !Number.isInteger(byteLength) || byteLength <= 0 || byteLength > maxBytes) {
+    throw new Error("Tipe atau ukuran media di luar batas yang diizinkan.");
+  }
+
+  const extension = contentTypes[contentType as keyof typeof contentTypes];
+  const uniquePrefix = crypto.randomUUID().replaceAll("-", "").slice(0, 12);
+  const key = `${TEST_PACKAGE_MEDIA_KEY_PREFIX}${packageSlug}/${mediaType}/${uniquePrefix}-${safeMediaBasename(originalFileName)}.${extension}`;
+  const uploadUrl = await createPresignedPut({ key, contentType, contentLength: byteLength });
+
+  return { uploadUrl, key, url: publicUrl(key), contentType };
 }

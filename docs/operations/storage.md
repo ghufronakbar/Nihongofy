@@ -9,12 +9,14 @@ key; byte file tidak pernah masuk PostgreSQL dan tidak pernah melewati server ap
 |---|---|---|
 | Avatar profil | `jlpt-exam/avatars/{userId}/<uuid v4>.webp` | 3 MB, tepat 512x512, `image/webp` |
 | Lampiran gambar komentar | `jlpt-exam/comments/{userId}/<uuid v4>.<ext>` | 5 MB, `image/jpeg`, `image/png`, `image/webp`, `image/gif` |
-| Media bank soal | `jlpt-exam/test-packages/{fixture}/{audio|images}/{sha12}-<nama-asli>` | Byte sumber dipertahankan; migrator menolak aset di atas 256 MB |
+| Media bank soal (migrasi) | `jlpt-exam/test-packages/{fixture}/{audio|images}/{sha12}-<nama-asli>` | Byte sumber dipertahankan; migrator menolak aset di atas 256 MB |
+| Media bank soal (admin) | `jlpt-exam/test-packages/{fixture}/{audio|images}/{random12}-<nama-asli>` | Gambar 10 MB; audio 30 MB |
 
-Media bank soal di `src/test-package-data/` memakai URL public CDN R2. Object-nya immutable dan
-content-addressed: 12 karakter awal SHA-256 masuk ke key, sedangkan hash lengkap disimpan sebagai
-metadata object dan manifest audit. Cloudinary hanya dipertahankan sementara sebagai sumber rollback;
-aset asal tidak dihapus oleh migrator.
+Media bank soal di `src/test-package-data/` memakai URL public CDN R2. Object hasil migrasi bersifat
+immutable dan content-addressed: 12 karakter awal SHA-256 masuk ke key, sedangkan hash lengkap
+disimpan sebagai metadata object dan manifest audit. Upload dari editor admin memakai prefix acak
+12 karakter karena file baru belum memiliki manifest migrasi. Cloudinary hanya dipertahankan
+sementara sebagai sumber rollback; aset asal tidak dihapus oleh migrator.
 
 ## Environment
 
@@ -52,8 +54,9 @@ start bila ada yang kosong.
 
 ## Cara kerja upload
 
-1. Client meminta presigned URL lewat Server Action (`createAvatarUploadAction` atau
-   `createCommentImageUploadAction`), mengirim content-type dan ukuran byte.
+1. Client meminta presigned URL lewat Server Action (`createAvatarUploadAction`,
+   `createCommentImageUploadAction`, atau `createTestPackageMediaUploadAction`), mengirim
+   content-type dan ukuran byte.
 2. Server memvalidasi dengan zod, menyusun object key di namespace milik user, lalu menandatangani
    `PutObject` berumur **120 detik**. `content-type` dan `content-length` ikut ditandatangani —
    presigner S3 biasanya menandai content-type sebagai unsignable, jadi keduanya dipaksa masuk lewat
@@ -95,6 +98,12 @@ Script idempotent. Fixture yang sudah memakai R2 dilewati; object dengan key yan
 ulang hanya bila metadata, ukuran, MIME, dan cache header cocok. `seed:question-media` adalah mode
 khusus yang hanya menyinkronkan lima kolom media ke PostgreSQL, sehingga teks, instruksi, relasi
 context, kunci jawaban, dan nilai attempt lama tidak ikut berubah.
+
+Editor `/admin/question/[id]` dan `/admin/context/[id]` juga dapat mengunggah media langsung.
+Server membaca nama dan level paket dari database lalu memetakannya ke slug fixture, misalnya
+`JLPT N5 - 2018年07月` menjadi `n5-2018-07`. Browser hanya mengirim ID paket dan metadata file,
+sehingga tidak dapat mengarahkan upload ke namespace paket lain. Setelah PUT berhasil, URL CDN
+masuk ke state form dan baru dipakai record database saat operator menekan tombol simpan.
 
 ### Pengiriman langsung tanpa proxy Vercel
 

@@ -6,6 +6,7 @@ import { requireAdmin } from "@/lib/auth";
 import { getAdminQuestionContext } from "@/features/admin/test-package/queries";
 import { ContextForm } from "@/features/admin/test-package/components/context-form";
 import { mondaiTypeFullLabel } from "@/constants/jlpt";
+import { testPackageStorageSlug } from "@/lib/storage-keys";
 
 export const metadata: Metadata = { title: "Edit Wacana - Admin" };
 
@@ -22,6 +23,8 @@ export default async function AdminQuestionContextPage({
 
   const context = await getAdminQuestionContext(contextId);
   if (!context) notFound();
+  const packageSlug = testPackageStorageSlug(context.testPackage.name, context.testPackage.jlptLevel);
+  if (!packageSlug) notFound();
 
   return (
     <div className="flex flex-col gap-6">
@@ -50,6 +53,8 @@ export default async function AdminQuestionContextPage({
       )}
 
       <ContextForm
+        testPackageId={context.testPackage.id}
+        packageSlug={packageSlug}
         context={{
           id: context.id,
           storyText: context.storyText,

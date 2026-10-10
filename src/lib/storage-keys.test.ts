@@ -5,6 +5,7 @@ import {
   isManagedAvatarKey,
   isManagedCommentImageKey,
   readWebpDimensions,
+  testPackageStorageSlug,
 } from "./storage-keys";
 
 const UUID = "3f2504e0-4f89-41d3-9a0c-0305e82c3301";
@@ -165,5 +166,19 @@ describe("aset Cloudinary lama", () => {
   it("mengenali avatarPublicId warisan yang tidak bisa dihapus dari R2", () => {
     expect(isLegacyCloudinaryAvatarPublicId(`jlpt-exam/avatars/42/${UUID}`)).toBe(true);
     expect(isLegacyCloudinaryAvatarPublicId(`jlpt-exam/avatars/42/${UUID}.webp`)).toBe(false);
+  });
+});
+
+describe("testPackageStorageSlug", () => {
+  it("memetakan nama paket ke folder fixture R2", () => {
+    expect(testPackageStorageSlug("JLPT N5 - 2018年07月", "N5")).toBe("n5-2018-07");
+    expect(testPackageStorageSlug("JLPT N1 - 2024年7月", "N1")).toBe("n1-2024-07");
+    expect(testPackageStorageSlug("JLPT N2 - 2019年12月", "N2")).toBe("n2-2019-12");
+  });
+
+  it("menolak nama atau level yang tidak dapat dipetakan dengan aman", () => {
+    expect(testPackageStorageSlug("Paket latihan", "N5")).toBeNull();
+    expect(testPackageStorageSlug("JLPT N5 - 2018年13月", "N5")).toBeNull();
+    expect(testPackageStorageSlug("JLPT N5 - 2018年07月", "N0")).toBeNull();
   });
 });

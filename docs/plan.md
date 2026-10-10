@@ -557,10 +557,10 @@ tahap lain, dan tahap 2–3 menutup gap konten yang paling menyakitkan bila scop
 - [x] `/admin/question/[id]` — editor soal: `questionText`, teks/gambar tiap pilihan,
   `questionAnswer` lewat radio, dan `instruction` mondai. Markup diingatkan di UI. Pilihan
   di-update lewat id yang sudah ada, tidak dihapus-lalu-dibuat-ulang
-- [ ] Upload/ganti media soal ke R2. Saat ini editor hanya menerima URL yang ditempel;
-  belum ada uploader (per 10 Oktober 2026: 227 context audio, 1 context image, 144 question image,
+- [x] Upload/ganti media soal ke R2. Editor menampilkan preview dan melakukan PUT langsung ke
+  folder paket (per 10 Oktober 2026: 227 context audio, 1 context image, 144 question image,
   68 answer image, dan 0 `questionAudio`)
-- [x] `/admin/context/[id]` — editor wacana bersama: teks, URL gambar, dan URL audio, dengan
+- [x] `/admin/context/[id]` — editor wacana bersama: teks serta uploader gambar/audio, dengan
   pratinjau media dan daftar soal yang memakainya. Memperingatkan bahwa perubahan terasa di
   semua soal itu sekaligus, dan menolak context yang tidak punya teks, gambar, maupun audio —
   aturan yang sama dengan kontrak fixture

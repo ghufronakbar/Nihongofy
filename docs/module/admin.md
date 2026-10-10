@@ -10,8 +10,7 @@ draft/published/archived, antrean moderasi diskusi publik dengan takedown, antre
 dengan balasan email opsional, dan pengelolaan akun user.
 
 Tidak ada area yang masih berupa placeholder. Sisa pekerjaan yang tercatat terbuka di
-`docs/plan.md`: uploader media di bank soal (editor soal dan wacana baru menerima URL yang
-ditempel), rate limit posting dan notifikasi balasan di moderasi, serta aksi membersihkan
+`docs/plan.md`: rate limit posting dan notifikasi balasan di moderasi, serta aksi membersihkan
 retensi conversation yang sudah lewat.
 
 Operasi konten yang belum punya layar (pembahasan, katalog flashcard) **masih dijalankan lewat
@@ -192,8 +191,10 @@ Prioritas tertinggi karena inilah satu-satunya jalur konten yang sekarang sepenu
   beberapa soal sekaligus, jadi layarnya menyebut berapa banyak dan menautkan semuanya.
   Menolak wacana yang tidak punya teks, gambar, maupun audio, sama seperti kontrak fixture.
 - **Media** — upload dan ganti audio/gambar soal ke Cloudflare R2. Per 25 September 2026 database
-  punya 227 context audio, 144 question image, 1 context image, tetapi **0** question audio, dan
-  tidak ada jalur upload selain fixture.
+  punya 227 context audio, 144 question image, 1 context image, tetapi **0** question audio.
+  Editor soal dan wacana kini menampilkan preview media serta mengunggah langsung dari browser
+  ke folder paket `jlpt-exam/test-packages/{level}-{tahun}-{bulan}/{images|audio}/` lewat
+  presigned URL; operator tidak lagi menempel URL secara manual.
 - **Hapus paket** — porting `npm run test-package:delete` dengan konfirmasi dan pengecekan
   attempt.
 

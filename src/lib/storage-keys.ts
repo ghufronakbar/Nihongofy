@@ -12,6 +12,7 @@ const USER_ID = "[1-9][0-9]{0,9}";
 
 export const AVATAR_KEY_PREFIX = "jlpt-exam/avatars/";
 export const COMMENT_IMAGE_KEY_PREFIX = "jlpt-exam/comments/";
+export const TEST_PACKAGE_MEDIA_KEY_PREFIX = "jlpt-exam/test-packages/";
 
 const AVATAR_KEY_PATTERN = new RegExp(
   `^${AVATAR_KEY_PREFIX}(${USER_ID})/${UUID_V4}\\.${AVATAR_EXTENSION}$`,
@@ -46,6 +47,16 @@ export function isManagedAvatarKey(key: string, userId?: number) {
 
 export function isManagedCommentImageKey(key: string, userId: number) {
   return COMMENT_IMAGE_KEY_PATTERN.exec(key)?.[1] === String(userId);
+}
+
+export function testPackageStorageSlug(packageName: string, jlptLevel: string) {
+  const date = packageName.match(/(\d{4})年\s*(\d{1,2})月/);
+  const level = /^N[1-5]$/i.test(jlptLevel) ? jlptLevel.toLowerCase() : null;
+  if (!date || !level) return null;
+
+  const month = Number(date[2]);
+  if (!Number.isInteger(month) || month < 1 || month > 12) return null;
+  return `${level}-${date[1]}-${String(month).padStart(2, "0")}`;
 }
 
 /** `avatarPublicId` warisan Cloudinary tidak berekstensi dan bukan object R2. */

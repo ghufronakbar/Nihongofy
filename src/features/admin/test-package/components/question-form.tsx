@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { updateQuestionAction } from "../actions";
 import { UpdateQuestionSchema, type UpdateQuestionInput } from "../schemas";
+import { TestPackageMediaUploader } from "./media-uploader";
 
 // Markup teks Jepang yang dipahami renderer. Ditampilkan sebagai pengingat
 // karena editor ini adalah tempat hasil OCR diperbaiki.
@@ -20,9 +21,18 @@ const MARKUP_HINTS = [
   ["[★]", "slot berbintang"],
 ] as const;
 
-export function QuestionForm({ question }: { question: UpdateQuestionInput }) {
+export function QuestionForm({
+  question,
+  testPackageId,
+  packageSlug,
+}: {
+  question: UpdateQuestionInput;
+  testPackageId: number;
+  packageSlug: string;
+}) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [activeUploads, setActiveUploads] = useState(0);
   const [notice, setNotice] = useState<{ ok: boolean; message: string } | null>(null);
 
   const {
@@ -36,6 +46,9 @@ export function QuestionForm({ question }: { question: UpdateQuestionInput }) {
   });
 
   const answer = useWatch({ control, name: "questionAnswer" });
+  const handleUploadingChange = (uploading: boolean) => {
+    setActiveUploads((count) => Math.max(0, count + (uploading ? 1 : -1)));
+  };
 
   function onSubmit(values: UpdateQuestionInput) {
     setNotice(null);
@@ -95,22 +108,40 @@ export function QuestionForm({ question }: { question: UpdateQuestionInput }) {
             <FieldError errors={[errors.questionText]} />
           </Field>
 
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 lg:grid-cols-2">
             <Field>
-              <FieldLabel htmlFor="questionImage">URL gambar soal</FieldLabel>
-              <Input
-                id="questionImage"
-                {...register("questionImage", { setValueAs: (v) => (v === "" ? null : v) })}
-                className="font-mono text-xs"
+              <Controller
+                control={control}
+                name="questionImage"
+                render={({ field }) => (
+                  <TestPackageMediaUploader
+                    testPackageId={testPackageId}
+                    packageSlug={packageSlug}
+                    kind="image"
+                    label="Gambar soal"
+                    value={field.value}
+                    onChange={field.onChange}
+                    onUploadingChange={handleUploadingChange}
+                  />
+                )}
               />
               <FieldError errors={[errors.questionImage]} />
             </Field>
             <Field>
-              <FieldLabel htmlFor="questionAudio">URL audio soal</FieldLabel>
-              <Input
-                id="questionAudio"
-                {...register("questionAudio", { setValueAs: (v) => (v === "" ? null : v) })}
-                className="font-mono text-xs"
+              <Controller
+                control={control}
+                name="questionAudio"
+                render={({ field }) => (
+                  <TestPackageMediaUploader
+                    testPackageId={testPackageId}
+                    packageSlug={packageSlug}
+                    kind="audio"
+                    label="Audio soal"
+                    value={field.value}
+                    onChange={field.onChange}
+                    onUploadingChange={handleUploadingChange}
+                  />
+                )}
               />
               <FieldError errors={[errors.questionAudio]} />
             </Field>
@@ -158,13 +189,21 @@ export function QuestionForm({ question }: { question: UpdateQuestionInput }) {
                   className="font-japanese"
                 />
               </div>
-              <Input
-                aria-label={`URL gambar pilihan ${choice.codeAnswer}`}
-                placeholder="URL gambar pilihan (opsional)"
-                {...register(`choices.${index}.answerImage`, {
-                  setValueAs: (v) => (v === "" ? null : v),
-                })}
-                className="font-mono text-xs"
+              <Controller
+                control={control}
+                name={`choices.${index}.answerImage`}
+                render={({ field }) => (
+                  <TestPackageMediaUploader
+                    testPackageId={testPackageId}
+                    packageSlug={packageSlug}
+                    kind="image"
+                    label={`Gambar pilihan ${choice.codeAnswer}`}
+                    value={field.value}
+                    onChange={field.onChange}
+                    onUploadingChange={handleUploadingChange}
+                    compact
+                  />
+                )}
               />
             </div>
           ))}
@@ -179,11 +218,11 @@ export function QuestionForm({ question }: { question: UpdateQuestionInput }) {
 
         <button
           type="submit"
-          disabled={isPending}
+          disabled={isPending || activeUploads > 0}
           className="neo-button self-start bg-neo-blue text-sm font-extrabold text-white"
         >
           <Save className="size-4" />
-          {isPending ? "Menyimpan..." : "Simpan Soal"}
+          {isPending ? "Menyimpan..." : activeUploads > 0 ? "Menunggu upload..." : "Simpan Soal"}
         </button>
       </fieldset>
     </form>

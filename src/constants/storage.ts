@@ -40,3 +40,61 @@ export type CommentImageContentType = keyof typeof COMMENT_IMAGE_CONTENT_TYPES;
 export function isCommentImageContentType(value: string): value is CommentImageContentType {
   return Object.hasOwn(COMMENT_IMAGE_CONTENT_TYPES, value);
 }
+
+export const TEST_PACKAGE_IMAGE_MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
+export const TEST_PACKAGE_AUDIO_MAX_FILE_SIZE_BYTES = 30 * 1024 * 1024;
+
+export const TEST_PACKAGE_IMAGE_CONTENT_TYPES = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+  "image/gif": "gif",
+} as const;
+
+export const TEST_PACKAGE_AUDIO_CONTENT_TYPES = {
+  "audio/mpeg": "mp3",
+  "audio/mp4": "m4a",
+  "audio/x-m4a": "m4a",
+  "audio/wav": "wav",
+  "audio/x-wav": "wav",
+  "audio/ogg": "ogg",
+  "audio/webm": "webm",
+} as const;
+
+export const TEST_PACKAGE_IMAGE_CONTENT_TYPE_LIST = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+] as const satisfies ReadonlyArray<keyof typeof TEST_PACKAGE_IMAGE_CONTENT_TYPES>;
+
+export const TEST_PACKAGE_AUDIO_CONTENT_TYPE_LIST = [
+  "audio/mpeg",
+  "audio/mp4",
+  "audio/x-m4a",
+  "audio/wav",
+  "audio/x-wav",
+  "audio/ogg",
+  "audio/webm",
+] as const satisfies ReadonlyArray<keyof typeof TEST_PACKAGE_AUDIO_CONTENT_TYPES>;
+
+export const TEST_PACKAGE_IMAGE_ACCEPT = TEST_PACKAGE_IMAGE_CONTENT_TYPE_LIST.join(",");
+export const TEST_PACKAGE_AUDIO_ACCEPT = TEST_PACKAGE_AUDIO_CONTENT_TYPE_LIST.join(",");
+
+export type TestPackageImageContentType = keyof typeof TEST_PACKAGE_IMAGE_CONTENT_TYPES;
+export type TestPackageAudioContentType = keyof typeof TEST_PACKAGE_AUDIO_CONTENT_TYPES;
+export type TestPackageMediaContentType =
+  | TestPackageImageContentType
+  | TestPackageAudioContentType;
+
+export function isTestPackageImageContentType(
+  value: string,
+): value is TestPackageImageContentType {
+  return Object.hasOwn(TEST_PACKAGE_IMAGE_CONTENT_TYPES, value);
+}
+
+export function isTestPackageAudioContentType(
+  value: string,
+): value is TestPackageAudioContentType {
+  return Object.hasOwn(TEST_PACKAGE_AUDIO_CONTENT_TYPES, value);
+}
