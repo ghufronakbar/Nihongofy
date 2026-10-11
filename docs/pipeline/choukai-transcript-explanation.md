@@ -1,7 +1,8 @@
 # Pipeline Transkrip dan Pembahasan CHOUKAI
 
-Dokumen ini mendefinisikan target pipeline. Script dan schema transkrip belum dibuat; implementasi
-harus dilakukan bertahap dan diuji pada satu paket N5 sebelum dipakai massal.
+Dokumen ini mendefinisikan target pipeline. Schema, kontrak fixture, importer, dan ekstraktor OCR
+sudah tersedia; panggilan OCR nyata dan generator pembahasan tetap harus diuji pada satu paket N5
+sebelum dipakai massal.
 
 ## Status audio
 
@@ -32,6 +33,18 @@ PDF lebih disukai untuk dokumen banyak halaman karena urutan halaman terjaga. PN
 halaman tunggal atau potongan yang lebih jelas daripada PDF. PDF dirender menjadi gambar 250-300
 DPI sebelum dikirim ke model; file sumber asli tidak diunggah ke R2 dan tidak masuk Git.
 
+Nama folder mengikuti nama fixture tanpa `.json`. Contoh menjalankan ekstraksi:
+
+```bash
+npm run choukai:transcript:extract -- --file n5-2018-07.json --dry-run
+npm run choukai:transcript:extract -- --file n5-2018-07.json --limit 1
+npm run choukai:transcript:extract -- --file n5-2018-07.json
+```
+
+Default model adalah `ag/gemini-3.8-flash`, default reasoning effort `high`, dan setiap request
+memuat maksimal empat halaman dengan satu halaman overlap. `--limit 1` cocok untuk pilot biaya dan
+format respons sebelum seluruh dokumen diproses.
+
 ## Urutan kerja
 
 1. Script ekstraksi membaca PDF/PNG dan menghitung SHA-256 sumber.
@@ -51,11 +64,43 @@ DPI sebelum dikirim ke model; file sumber asli tidak diunggah ke R2 dan tidak ma
 8. Pembahasan diaudit di fixture sebelum diimpor melalui jalur
    `seed:question-explanation` yang sudah ada.
 
+## Audit staging dan penerapan
+
+Hasil OCR ditulis ke:
+
+```text
+data/generated/choukai-transcripts/<package-slug>/extraction.json
+```
+
+Sebelum diterapkan, audit dan perbaiki `merged.entries`, lalu pastikan `merged.conflicts`,
+`merged.missing`, dan `merged.unassigned` semuanya kosong. Setelah selesai, ubah metadata review:
+
+```json
+{
+  "review": {
+    "status": "APPROVED",
+    "reviewedAt": "2026-10-12T12:00:00+07:00"
+  }
+}
+```
+
+Kemudian jalankan berurutan:
+
+```bash
+npm run choukai:transcript:apply -- --file n5-2018-07.json --check
+npm run choukai:transcript:apply -- --file n5-2018-07.json
+npm run seed:question-transcript:check -- --file n5-2018-07.json
+npm run seed:question-transcript -- --file n5-2018-07.json
+```
+
+`apply` hanya mengubah fixture lokal. `seed:question-transcript` baru melakukan upsert ke database.
+Keduanya tidak mengubah ID soal, attempt, practice, report, media, kunci, atau pembahasan.
+
 ## Batas keamanan data
 
 - Transkrip tidak disimpan di `questionText` atau `QuestionContext.storyText` karena kedua field
   tersebut dapat tampil kepada peserta.
-- Target schema adalah relasi 1:1 terpisah dari `Question`, dengan teks dan metadata audit seperti
+- Transkrip memakai relasi 1:1 `QuestionAudioTranscript`, dengan teks dan metadata audit seperti
   model, versi prompt, waktu generate, dan waktu review.
 - Query ujian, Latihan Cepat, hasil, dan diskusi tidak boleh memilih relasi transkrip. Akses awal
   hanya untuk script offline dan halaman admin/audit.
@@ -74,10 +119,11 @@ DPI sebelum dikirim ke model; file sumber asli tidak diunggah ke R2 dan tidak ma
 
 ## Urutan implementasi
 
-1. Finalkan kontrak fixture dan schema relasi transkrip.
-2. Buat migration dan importer transkrip yang aman, lalu verifikasi database kosong untuk relasi
-   baru.
-3. Buat ekstraktor PDF/PNG ke staging dan uji pada satu paket N5.
-4. Audit hasil pilot, terapkan ke fixture, lalu sinkronkan ke database.
-5. Uji kemampuan audio multimodal gateway pada satu soal tanpa menulis pembahasan.
-6. Buat generator pembahasan CHOUKAI dan jalankan pilot kecil sebelum dipakai per level.
+1. [Selesai] Finalkan kontrak fixture dan schema relasi transkrip.
+2. [Selesai] Buat migration dan importer transkrip yang aman.
+3. Terapkan migration dan verifikasi tabel baru kosong serta tidak dapat diakses role Data API.
+4. [Selesai] Buat ekstraktor PDF/PNG ke staging dan jalur apply reviewed ke fixture.
+5. Uji panggilan OCR nyata pada satu batch paket N5.
+6. Audit hasil pilot, terapkan ke fixture, lalu sinkronkan ke database.
+7. Uji kemampuan audio multimodal gateway pada satu soal tanpa menulis pembahasan.
+8. Buat generator pembahasan CHOUKAI dan jalankan pilot kecil sebelum dipakai per level.

@@ -103,6 +103,31 @@ const explanationObjectSchema = z
 // sudah ada tidak perlu ditulis ulang; string dipetakan ke `summary`.
 const explanationSchema = z.union([z.string().trim().min(1), explanationObjectSchema]);
 
+const audioTranscriptSchema = z
+  .object({
+    text: z.string().trim().min(1),
+    meta: z
+      .object({
+        source: z.enum(["AI", "HUMAN", "IMPORTED"]).default("AI"),
+        aiModel: optionalNullableString,
+        promptVersion: optionalNullableString,
+        generatedAt: z.iso.datetime({ offset: true }),
+        reviewedAt: z.iso.datetime({ offset: true }),
+      })
+      .strict(),
+  })
+  .strict()
+  .superRefine((transcript, context) => {
+    if (transcript.meta.source !== "AI") return;
+
+    if (!transcript.meta.aiModel?.trim()) {
+      addValidationIssue(context, ["meta", "aiModel"], "wajib diisi untuk transkrip AI");
+    }
+    if (!transcript.meta.promptVersion?.trim()) {
+      addValidationIssue(context, ["meta", "promptVersion"], "wajib diisi untuk transkrip AI");
+    }
+  });
+
 const questionSchema = z
   .object({
     order: z.number().int().positive(),
@@ -110,6 +135,7 @@ const questionSchema = z
     questionImage: optionalNullableString,
     questionAudio: optionalNullableString,
     questionAnswer: z.number().int().min(1).max(4),
+    audioTranscript: audioTranscriptSchema.nullable().optional(),
     explanation: explanationSchema.nullable().optional(),
     questionContextRef: optionalNullableString,
     questionChoices: z.array(questionChoiceSchema).length(4),
@@ -238,6 +264,14 @@ export const seedTestPackageSchema = z
 
       const questionOrderIndexes = new Map();
       item.questions.forEach((question, questionIndex) => {
+        if (question.audioTranscript && item.section !== "CHOUKAI") {
+          addValidationIssue(
+            context,
+            ["testPackageItems", itemIndex, "questions", questionIndex, "audioTranscript"],
+            "audioTranscript hanya boleh dipakai pada section CHOUKAI",
+          );
+        }
+
         const previousQuestionIndex = questionOrderIndexes.get(question.order);
         if (previousQuestionIndex !== undefined) {
           addValidationIssue(
@@ -357,5 +391,21 @@ export function normalizeExplanation(question) {
           reason: choice.reason,
         }))
       : null,
+  };
+}
+
+// Bentuk kanonik transkrip reviewed untuk importer database. OCR mentah tidak
+// memakai kontrak fixture ini dan tetap berada di data/generated/ sampai audit.
+export function normalizeAudioTranscript(question) {
+  const transcript = question.audioTranscript;
+  if (!transcript) return null;
+
+  return {
+    text: transcript.text,
+    source: transcript.meta.source,
+    aiModel: transcript.meta.aiModel ?? null,
+    promptVersion: transcript.meta.promptVersion ?? null,
+    generatedAt: new Date(transcript.meta.generatedAt),
+    reviewedAt: new Date(transcript.meta.reviewedAt),
   };
 }

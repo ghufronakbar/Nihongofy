@@ -99,6 +99,7 @@ const FORBIDDEN_FIELDS: Record<string, readonly string[]> = {
   Question: [
     "questionAnswer",
     "explanation",
+    "audioTranscript",
     "bunpouLinks",
     "questionComments",
     "attemptAnswers",
@@ -109,7 +110,12 @@ const FORBIDDEN_FIELDS: Record<string, readonly string[]> = {
 };
 // Model yang seluruh isinya pembahasan, dari jalur mana pun ia dicapai. Tautan
 // soal -> pola bunpou menyebut pola yang diuji, jadi termasuk di sini.
-const FORBIDDEN_MODELS = new Set(["QuestionExplanation", "QuestionExplanationChoice", "QuestionBunpouLink"]);
+const FORBIDDEN_MODELS = new Set([
+  "QuestionExplanation",
+  "QuestionExplanationChoice",
+  "QuestionAudioTranscript",
+  "QuestionBunpouLink",
+]);
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -164,7 +170,7 @@ describe("penelusur select", () => {
     ]);
   });
 
-  it("menangkap relasi pembahasan dan relasi `true` di kedalaman mana pun", () => {
+  it("menangkap relasi pembahasan/transkrip dan relasi `true` di kedalaman mana pun", () => {
     expect(answerKeyPaths("TestPackageItem", { select: { questions: true } })).toEqual([
       "TestPackageItem.questions.questionAnswer",
     ]);
@@ -173,6 +179,11 @@ describe("penelusur select", () => {
         select: { questions: { select: { explanation: { select: { summary: true } } } } },
       }),
     ).toEqual(["TestPackageItem.questions.explanation"]);
+    expect(
+      answerKeyPaths("Question", {
+        select: { audioTranscript: { select: { text: true } } },
+      }),
+    ).toEqual(["Question.audioTranscript"]);
     expect(
       answerKeyPaths("Question", {
         select: { testPackageItem: { select: { questions: { select: { questionAnswer: true } } } } },

@@ -162,6 +162,12 @@ enum QuestionExplanationSource {
   IMPORTED // berasal dari buku pembahasan resmi
 }
 
+enum QuestionTranscriptSource {
+  AI // diekstrak model vision lalu ditinjau manusia
+  HUMAN // ditulis langsung oleh manusia
+  IMPORTED // berasal dari transkrip resmi atau sumber terkurasi
+}
+
 enum CommentVisibility {
   PRIVATE // catatan pribadi, hanya terlihat oleh pemiliknya
   PUBLIC // dibagikan ke diskusi, terlihat semua orang termasuk guest
@@ -853,7 +859,8 @@ model Question {
 
   // Pembahasan soal. Isinya terstruktur dan punya metadata audit sendiri,
   // jadi ditaruh di tabel terpisah (1:1) alih-alih satu kolom teks di sini.
-  explanation QuestionExplanation?
+  explanation     QuestionExplanation?
+  audioTranscript QuestionAudioTranscript?
 
   questionContext   QuestionContext? @relation(fields: [questionContextId], references: [id], onDelete: Cascade)
   questionContextId Int?
@@ -870,6 +877,27 @@ model Question {
   // mencegah nomor soal dobel saat ekstraksi AI
   @@unique([testPackageItemId, order])
   @@index([questionContextId])
+}
+
+// Transkrip audio per soal CHOUKAI. Dipisah dari questionText/storyText agar
+// tidak ikut terkirim atau dirender ke peserta. Pipeline hanya mengimpor hasil
+// yang sudah ditinjau manusia; hasil OCR mentah tetap berada di staging lokal.
+model QuestionAudioTranscript {
+  id Int @id @default(autoincrement())
+
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId Int      @unique
+
+  text String @db.Text
+
+  source        QuestionTranscriptSource @default(AI)
+  aiModel       String?                  @db.VarChar(120)
+  promptVersion String?                  @db.VarChar(60)
+  generatedAt   DateTime                 @default(now())
+  reviewedAt    DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model QuestionChoice {

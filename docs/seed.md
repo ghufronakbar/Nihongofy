@@ -155,11 +155,37 @@ type SeedQuestion = {
   questionImage?: string | null;
   questionAudio?: string | null;
   questionAnswer: number; // codeAnswer (1-4) pilihan yang BENAR — bukan index/id pilihan
+  audioTranscript?: SeedQuestionAudioTranscript | null; // CHOUKAI saja; wajib sudah diaudit
   explanation?: SeedQuestionExplanation | string | null; // pembahasan soal, lihat di bawah
   questionContextRef?: string | null; // isi dengan `id` dari questionContexts kalau soal ini
                                        // pakai bacaan/audio bersama; null/kosongkan kalau tidak
   questionChoices: SeedQuestionChoice[]; // WAJIB tepat 4 pilihan
 };
+```
+
+### `SeedQuestionAudioTranscript`
+
+Transkrip hanya boleh ditambahkan ke fixture setelah hasil OCR diaudit. `reviewedAt` wajib dan
+transkrip AI wajib mencantumkan model serta versi prompt.
+
+```ts
+type SeedQuestionAudioTranscript = {
+  text: string; // bahasa Jepang verbatim; bukan terjemahan atau rangkuman
+  meta: {
+    source?: "AI" | "HUMAN" | "IMPORTED"; // default AI
+    aiModel?: string | null; // wajib untuk source AI
+    promptVersion?: string | null; // wajib untuk source AI
+    generatedAt: string; // ISO-8601
+    reviewedAt: string; // ISO-8601; waktu audit manusia selesai
+  };
+};
+```
+
+Impor dilakukan terpisah supaya tidak mengubah struktur atau ID soal:
+
+```bash
+npm run seed:question-transcript:check -- --file n5-2018-07.json
+npm run seed:question-transcript -- --file n5-2018-07.json
 ```
 
 ### `SeedQuestionChoice`

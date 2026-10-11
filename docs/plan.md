@@ -469,8 +469,11 @@ Batch permintaan user lanjutan dari Fase 8.5.
   `npm run seed:question-explanation`
 - [x] Audio per soal CHOUKAI untuk seluruh paket N5 dan N4; level N3-N1 tetap dimigrasikan
   bertahap dan masih dapat memakai audio context per mondai sebagai fallback
-- [ ] Pipeline transkrip CHOUKAI: sumber PDF/PNG lokal yang di-ignore → OCR staging → audit
-  manusia → fixture → database
+- [x] Schema `QuestionAudioTranscript`, kontrak fixture reviewed, dan importer idempotent
+  `seed:question-transcript` yang tidak mengubah ID/data pengerjaan soal
+- [x] Script OCR PDF/PNG → staging ignored dan script apply reviewed → fixture; default
+  `ag/gemini-3.8-flash` dengan reasoning effort `high`, resumable per batch
+- [ ] Jalankan pilot OCR nyata satu batch N5, audit hasilnya, lalu sinkronkan fixture → database
 - [ ] Generator pembahasan CHOUKAI khusus dengan transkrip yang sudah diaudit, audio per soal,
   dan seluruh gambar terkait sebagai konteks multimodal
 - [ ] Transkrip audio CHOUKAI (1.494 soal) — prasyarat pembahasan; kerjakan per paket dan jangan

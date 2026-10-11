@@ -33,12 +33,26 @@ export type SeedQuestionExplanation = {
   };
 };
 
+export type SeedQuestionAudioTranscript = {
+  text: string; // transkrip Jepang verbatim yang sudah diaudit
+  meta: {
+    source?: "AI" | "HUMAN" | "IMPORTED";
+    aiModel?: string | null;
+    promptVersion?: string | null;
+    generatedAt: string; // ISO-8601
+    reviewedAt: string; // ISO-8601; wajib sebelum masuk fixture
+  };
+};
+
 export type SeedQuestion = {
   order: number; // nomor soal di dalam mondai, mulai dari 1
   questionText: string; // boleh string kosong; markup ringan, lihat docs/seed.md
   questionImage?: string | null;
   questionAudio?: string | null;
   questionAnswer: number; // codeAnswer yang benar (1-4), BUKAN id pilihan
+  // Hanya untuk CHOUKAI. OCR mentah tidak boleh masuk ke sini; field ini khusus
+  // transkrip yang sudah diaudit dan siap disinkronkan ke database.
+  audioTranscript?: SeedQuestionAudioTranscript | null;
   // String tunggal masih diterima (bentuk lama) dan dipetakan ke `summary`.
   explanation?: string | SeedQuestionExplanation | null;
   // Local reference ke `id` di SeedTestPackage.questionContexts — HANYA dipakai
