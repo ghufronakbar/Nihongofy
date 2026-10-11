@@ -253,7 +253,15 @@ User
 
 - `Question.questionText` HANYA berisi stem soal (mis. 「筆者の考えに合うものはどれか」). JANGAN menaruh bacaan panjang di sini.
 - Bacaan/audio/gambar yang dipakai lebih dari satu soal → `QuestionContext`. Konten yang hanya untuk satu soal → kolom di `Question` (`questionImage`, `questionAudio`).
-- **Khusus audio CHOUKAI**: default-nya SATU `QuestionContext.storyAudio` per `TestPackageItem` (mondai), dipakai bersama oleh SEMUA soal dalam mondai itu — walaupun tiap soal secara narasi independen (mis. 課題理解 yang isinya 5 dialog terpisah). Ini karena audio JLPT diputar tanpa jeda per mondai (tidak bisa diulang), dan sumber file audio biasanya memang dipotong per mondai (問題1.mp3, 問題2.mp3, dst.), bukan per butir soal. Jangan pakai `Question.questionAudio` individual untuk choukai kecuali memang ada file terpisah per soal. Gambar (`questionImage`) tetap per soal seperti biasa kalau memang cuma 1 soal yang butuh gambar (mis. 発話表現, atau soal visual-matching di 課題理解).
+- **Khusus audio CHOUKAI sedang dimigrasikan bertahap ke audio per soal.** Paket N5 dan N4
+  yang sudah diproses memakai `Question.questionAudio`; level lain masih dapat memakai satu
+  `QuestionContext.storyAudio` per mondai sampai pemotongan, unggah R2, dan verifikasi tiap
+  klip selesai. Selama masa transisi, aplikasi memakai `questionAudio` sebagai sumber utama dan
+  hanya menampilkan `storyAudio` sebagai fallback bila soal belum punya audio individual. Jangan
+  menghapus `storyAudio` lama hanya karena beberapa soal sudah memiliki klip: hapus atau
+  pensiunkan fallback hanya setelah seluruh soal dalam paket lolos verifikasi durasi dan hash.
+  Gambar (`questionImage`) tetap per soal bila hanya satu soal yang membutuhkannya, misalnya
+  発話表現 atau visual-matching pada 課題理解.
 - `QuestionContext` harus terikat ke `TestPackage` yang sama dengan soal yang memakainya. Jangan membuat context lintas paket.
 - `questionText` dan `answerText` boleh string kosong (bukan null) untuk soal/pilihan yang hanya berupa audio (mis. 即時応答).
 - `QuestionExplanation` = pembahasan "resmi" (hasil generator AI, dikurasi). `QuestionComment` = catatan belajar pribadi user. Jangan mencampur keduanya.

@@ -106,15 +106,17 @@ Bacaan panjang, gambar brosur, atau audio yang dipakai bersama oleh beberapa soa
 文章, choukai 統合理解). Kalau konten cuma dipakai 1 soal, JANGAN buat context — taruh langsung
 di `questionImage`/`questionAudio` milik `SeedQuestion`.
 
-**Pengecualian khusus CHOUKAI**: SEMUA mondai choukai (`CHOUKAI_TASK_BASED`,
-`CHOUKAI_MAIN_POINT`, `CHOUKAI_OUTLINE`, `CHOUKAI_QUICK_RESPONSE`, `CHOUKAI_INTEGRATED`) pakai
-**satu `SeedQuestionContext` per mondai** (per `SeedTestPackageItem`) untuk `storyAudio`, dipakai
-bareng oleh SEMUA soal di mondai itu — walaupun tiap soal isinya independen (dialog/skenario
-beda-beda). Ini bukan pengecualian dari "1 soal = jangan buat context", tapi memang konvensi
-khusus choukai: audio JLPT diputar tanpa jeda per mondai (tidak bisa diulang di ujian asli), dan
-biasanya file audio yang tersedia memang sudah dipotong per mondai, bukan per butir soal. Jangan
-isi `questionAudio` individual per soal choukai kecuali memang ada file terpisah per soal.
-`questionImage` tetap per soal seperti biasa (mis. soal visual-matching di 課題理解).
+**Transisi audio CHOUKAI**: target akhirnya adalah satu `questionAudio` per soal agar Latihan
+Cepat dapat memutar konteks yang tepat. Paket N5 dan N4 yang sudah diproses memakai bentuk ini.
+Paket pada level lain masih boleh memakai satu `SeedQuestionContext.storyAudio` per mondai sampai
+audio sumbernya dipotong, diunggah ke R2, dan setiap klip diverifikasi. Selama transisi:
+
+- isi `questionAudio` bila klip individual sudah tersedia;
+- pertahankan `storyAudio` sebagai fallback/sumber lama sampai seluruh soal paket terverifikasi;
+- aplikasi memprioritaskan `questionAudio` dan hanya menampilkan `storyAudio` bila audio per soal
+  belum tersedia;
+- jangan menganggap satu level selesai hanya karena sebagian paketnya sudah memiliki klip;
+- `questionImage` tetap per soal seperti biasa, misalnya visual-matching pada 課題理解.
 
 ```ts
 type SeedQuestionContext = {
@@ -375,13 +377,12 @@ pembungkus `testPackages`):
 }
 ```
 
-Contoh mondai CHOUKAI (satu context di-share seluruh soal dalam mondai, lihat pengecualian di
-atas):
+Contoh paket CHOUKAI selama transisi (audio context dipertahankan sebagai fallback):
 
 ```json
 {
   "id": "ctx-choukai-task-based",
-  "storyAudio": "https://res.cloudinary.com/.../choukai-mondai1.mp3"
+  "storyAudio": "https://cdn-nihongofy.lans.my.id/.../choukai-mondai1.mp3"
 }
 ```
 
@@ -396,6 +397,7 @@ atas):
     {
       "order": 1,
       "questionText": "女の人は壊れたパソコンをどうしますか?",
+      "questionAudio": "https://cdn-nihongofy.lans.my.id/.../question-01.mp3",
       "questionAnswer": 2,
       "questionContextRef": "ctx-choukai-task-based",
       "questionChoices": [
@@ -439,9 +441,10 @@ dikerjakan user dan idempotent bila dijalankan ulang.
 - Satu soal = satu permintaan ke model, lengkap dengan konteks bacaan bila soal memakainya.
 - Soal yang sudah punya `explanation` dilewati kecuali dipakai `--overwrite`, jadi proses boleh
   dihentikan kapan saja dan dilanjutkan lagi. File ditulis setiap satu mondai selesai.
-- Soal `CHOUKAI` dilewati secara bawaan: fixture hanya menyimpan URL audio tanpa transkrip,
-  sehingga model tidak punya bahan dan hanya akan mengarang. Pakai `--include-choukai` bila
-  transkrip sudah tersedia di `storyText`.
+- Soal `CHOUKAI` tetap dilewati secara bawaan sampai pipeline transkrip khusus selesai. Jangan
+  menaruh transkrip audio di `storyText`: field itu adalah konteks bacaan yang dapat dirender ke
+  peserta. Rencana penyimpanan dan generator khusus dijelaskan di
+  [`pipeline/choukai-transcript-explanation.md`](pipeline/choukai-transcript-explanation.md).
 - Keluaran model divalidasi sebelum ditulis (label lengkap, markup furigana/underline seimbang,
   tanpa HTML/markdown, tepat satu pilihan ditandai benar). Keluaran yang melanggar diminta ulang
   sekali, lalu dilaporkan sebagai gagal tanpa merusak file.

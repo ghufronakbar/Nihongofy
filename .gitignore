@@ -46,6 +46,9 @@ next-env.d.ts
 # source PDF soal (berhak cipta, jangan di-commit)
 /data/sources/
 
+# hasil sementara OCR transkrip choukai; hasil reviewed masuk fixture JSON
+/data/generated/choukai-transcripts/
+
 # audio mentah choukai (sudah diunggah ke storage; terlalu besar untuk repo)
 /data/audio/
 

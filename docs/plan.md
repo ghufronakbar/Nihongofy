@@ -467,7 +467,14 @@ Batch permintaan user lanjutan dari Fase 8.5.
 - [ ] Tentukan model produksi di `EXPLANATION_MODEL` — model reasoning lambat (1 soal = 2-4 menit)
 - [ ] Generate pembahasan seluruh level non-CHOUKAI (3.534 soal), lalu
   `npm run seed:question-explanation`
-- [ ] Transkrip audio CHOUKAI (1.494 soal) — prasyarat sebelum pembahasan choukai bisa dibuat
+- [x] Audio per soal CHOUKAI untuk seluruh paket N5 dan N4; level N3-N1 tetap dimigrasikan
+  bertahap dan masih dapat memakai audio context per mondai sebagai fallback
+- [ ] Pipeline transkrip CHOUKAI: sumber PDF/PNG lokal yang di-ignore → OCR staging → audit
+  manusia → fixture → database
+- [ ] Generator pembahasan CHOUKAI khusus dengan transkrip yang sudah diaudit, audio per soal,
+  dan seluruh gambar terkait sebagai konteks multimodal
+- [ ] Transkrip audio CHOUKAI (1.494 soal) — prasyarat pembahasan; kerjakan per paket dan jangan
+  menulis hasil OCR langsung ke fixture/database sebelum audit
 
 ## Fase 8.7 — Berbagi Catatan & Diskusi Publik per Soal
 
