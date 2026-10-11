@@ -3,6 +3,7 @@ import { JapanesePassage } from "@/components/japanese-passage";
 import { QuestionExplanationBody } from "@/components/question-explanation";
 import { FuriganaScope } from "@/components/furigana-scope";
 import { cn } from "@/lib/utils";
+import { shouldShowContextAudio, shouldShowQuestionContext } from "@/lib/question-media";
 import type { DiscussionQuestion } from "../queries";
 
 // Soal lengkap beserta kunci dan pembahasan resminya. Tidak ada kebocoran kunci
@@ -11,7 +12,8 @@ export function DiscussionQuestionCard({ question }: { question: DiscussionQuest
   return (
     <FuriganaScope>
       <div className="neo-surface bg-white p-6 border-[3px] border-neo-ink shadow-neo flex flex-col gap-4">
-        {question.questionContext && (
+        {question.questionContext &&
+          shouldShowQuestionContext(question.questionContext, question.questionAudio) && (
           <div className="rounded-lg border-[3px] border-neo-ink bg-neo-paper p-4 text-sm shadow-neo-sm">
             <span className="font-mono text-[10px] font-black uppercase text-foreground/60 block mb-2">
               WACANA / STIMULUS SOAL
@@ -27,8 +29,11 @@ export function DiscussionQuestionCard({ question }: { question: DiscussionQuest
                 className="mt-3 max-w-full rounded-md border-2 border-neo-ink shadow-neo-sm"
               />
             )}
-            {question.questionContext.storyAudio && (
-              <audio controls src={question.questionContext.storyAudio} className="mt-3 w-full" />
+            {shouldShowContextAudio(
+              question.questionContext!.storyAudio,
+              question.questionAudio,
+            ) && (
+              <audio controls src={question.questionContext!.storyAudio!} className="mt-3 w-full" />
             )}
           </div>
         )}

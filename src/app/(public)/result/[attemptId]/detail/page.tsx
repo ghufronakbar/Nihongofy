@@ -26,6 +26,7 @@ import { mondaiTypeFullLabel } from "@/constants/jlpt";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { privateMetadata } from "@/lib/seo";
+import { shouldShowContextAudio, shouldShowQuestionContext } from "@/lib/question-media";
 
 export const metadata: Metadata = privateMetadata(
   "Rincian jawaban",
@@ -270,7 +271,8 @@ export default async function ResultDetailPage({
                       id={`q-${question.order}`}
                       className="scroll-mt-24 flex flex-col gap-4 border-t-[3px] border-neo-ink/15 pt-6 first:border-t-0 first:pt-0"
                     >
-                      {showContext && question.questionContext && (
+                      {showContext && question.questionContext &&
+                        shouldShowQuestionContext(question.questionContext, question.questionAudio) && (
                         <div className="rounded-lg border-[3px] border-neo-ink bg-neo-paper p-4 text-sm shadow-neo-sm">
                           <span className="font-mono text-[10px] font-black uppercase text-foreground/60 block mb-2">
                             WACANA / STIMULUS SOAL
@@ -284,10 +286,13 @@ export default async function ResultDetailPage({
                               className="mt-3 max-w-full rounded-md border-2 border-neo-ink shadow-neo-sm"
                             />
                           )}
-                          {question.questionContext.storyAudio && (
+                          {shouldShowContextAudio(
+                            question.questionContext!.storyAudio,
+                            question.questionAudio,
+                          ) && (
                             <audio
                               controls
-                              src={question.questionContext.storyAudio}
+                              src={question.questionContext!.storyAudio!}
                               className="mt-3 w-full"
                             />
                           )}

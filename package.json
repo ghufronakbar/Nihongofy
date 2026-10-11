@@ -34,6 +34,7 @@
     "seed:question-media": "node --env-file-if-exists=.env prisma/seed-question-content.mjs --media-only",
     "seed:question-media:check": "node --env-file-if-exists=.env prisma/seed-question-content.mjs --media-only --validate-only",
     "migrate:test-media:r2": "node --env-file-if-exists=.env --env-file-if-exists=.env.local prisma/migrate-test-package-media-r2.mjs",
+    "segment:question-audio": "node --env-file-if-exists=.env --env-file-if-exists=.env.local prisma/segment-question-audio-r2.mjs",
     "seed:question-explanation": "node --env-file-if-exists=.env prisma/seed-question-explanation.mjs",
     "seed:question-explanation:check": "node --env-file-if-exists=.env prisma/seed-question-explanation.mjs --validate-only",
     "test-package:delete": "node --env-file-if-exists=.env prisma/delete-test-package.mjs",

@@ -13,6 +13,7 @@ import {
   questionChoiceFallbackLabel,
   questionPromptFallbackLabel,
 } from "@/lib/question-choice-label";
+import { shouldShowContextAudio, shouldShowQuestionContext } from "@/lib/question-media";
 import { cn } from "@/lib/utils";
 import {
   AlertTriangle,
@@ -363,7 +364,8 @@ export function ExamRunner({
           )}
 
           {/* Context / Stimulus Card */}
-          {currentQuestion.questionContext && (
+          {currentQuestion.questionContext &&
+            shouldShowQuestionContext(currentQuestion.questionContext, currentQuestion.questionAudio) && (
             <section className="neo-surface bg-white p-5 sm:p-7 space-y-4 border-[3px] border-neo-ink shadow-neo">
               <div className="border-b-2 border-neo-ink pb-2 flex items-center justify-between">
                 <span className="border-2 border-neo-ink bg-neo-paper px-2.5 py-0.5 font-mono text-[11px] font-black uppercase shadow-neo-sm text-neo-ink">
@@ -386,13 +388,16 @@ export function ExamRunner({
                 />
               )}
 
-              {currentQuestion.questionContext.storyAudio && (
+              {shouldShowContextAudio(
+                currentQuestion.questionContext!.storyAudio,
+                currentQuestion.questionAudio,
+              ) && (
                 <div className="border-[3px] border-neo-ink bg-[#e8fff4] p-4 text-black shadow-neo-sm">
                   <div className="mb-2 flex items-center gap-2 font-mono text-xs font-black uppercase">
                     <Headphones className="size-4" />
                     Audio Mondai / Wacana
                   </div>
-                  <audio controls preload="metadata" src={currentQuestion.questionContext.storyAudio} className="w-full" />
+                  <audio controls preload="metadata" src={currentQuestion.questionContext!.storyAudio!} className="w-full" />
                 </div>
               )}
             </section>

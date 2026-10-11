@@ -26,6 +26,7 @@ import {
   questionPromptFallbackLabel,
 } from "@/lib/question-choice-label";
 import type { QuestionExplanationView } from "@/lib/question-explanation";
+import { shouldShowContextAudio, shouldShowQuestionContext } from "@/lib/question-media";
 import { cn } from "@/lib/utils";
 import {
   restartPracticeSessionAction,
@@ -282,7 +283,8 @@ export function PracticeRunner({ practiceSession, reportEnabled }: PracticeRunne
             </div>
           )}
 
-          {currentQuestion.questionContext && (
+          {currentQuestion.questionContext &&
+            shouldShowQuestionContext(currentQuestion.questionContext, currentQuestion.questionAudio) && (
             <div className="neo-surface space-y-4 p-5 sm:p-7">
               {currentQuestion.questionContext.storyText && (
                 <JapanesePassage text={currentQuestion.questionContext.storyText} className="font-japanese leading-8" />
@@ -294,13 +296,16 @@ export function PracticeRunner({ practiceSession, reportEnabled }: PracticeRunne
                   className="max-h-[32rem] max-w-full border-[3px] border-neo-ink object-contain"
                 />
               )}
-              {currentQuestion.questionContext.storyAudio && (
+              {shouldShowContextAudio(
+                currentQuestion.questionContext!.storyAudio,
+                currentQuestion.questionAudio,
+              ) && (
                 <div className="border-[3px] border-neo-ink bg-[#e8fff4] p-4 text-black">
                   <div className="mb-3 flex items-center gap-2 font-black">
                     <Headphones className="size-5" />
                     Audio mondai
                   </div>
-                  <audio controls preload="metadata" src={currentQuestion.questionContext.storyAudio} className="w-full" />
+                  <audio controls preload="metadata" src={currentQuestion.questionContext!.storyAudio!} className="w-full" />
                 </div>
               )}
             </div>
