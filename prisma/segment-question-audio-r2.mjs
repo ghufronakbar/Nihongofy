@@ -15,6 +15,8 @@ const execFileAsync = promisify(execFile);
 const CACHE_CONTROL = "public, max-age=31536000, immutable";
 const FETCH_TIMEOUT_MS = 120_000;
 const READBACK_ATTEMPTS = 5;
+const SOURCE_END = "SOURCE_END";
+const SUPPORTED_SOURCE_CODECS = new Set(["aac", "mp3"]);
 const EXPECTED_MONDAI_TYPES = new Set([
   "CHOUKAI_TASK_BASED",
   "CHOUKAI_MAIN_POINT",
@@ -85,6 +87,11 @@ function timestampSeconds(value) {
   const seconds = Number(match[1]) * 60 + Number(match[2]);
   if (!Number.isFinite(seconds)) throw new Error(`timestamp tidak valid: ${value}`);
   return seconds;
+}
+
+function sourceExtension(url) {
+  const extension = path.extname(new URL(url).pathname).toLowerCase();
+  return [".aac", ".m4a", ".mp3"].includes(extension) ? extension : ".audio";
 }
 
 function sha256(buffer) {
@@ -257,20 +264,23 @@ async function loadPlan(manifestPath) {
       }
       const contextRef = [...contextRefs][0];
       const context = pkg.questionContexts.find((candidate) => candidate.id === contextRef);
-      if (context?.storyAudio !== mondai.sourceUrl) {
+      if (context?.storyAudio !== mondai.sourceUrl && mondai.allowSourceOverride !== true) {
         throw new Error(`${packageEntry.fixture}: sourceUrl ${mondai.mondaiType} tidak sama dengan storyAudio fixture`);
       }
 
       const clips = mondai.clips.map(([startText, endText], index) => {
         const start = timestampSeconds(startText);
-        const end = timestampSeconds(endText);
-        if (end <= start) {
+        const end = endText === SOURCE_END ? null : timestampSeconds(endText);
+        if (endText === SOURCE_END && index !== mondai.clips.length - 1) {
+          throw new Error(`${packageEntry.fixture}: ${mondai.mondaiType}#${index + 1} SOURCE_END hanya boleh untuk soal terakhir`);
+        }
+        if (end !== null && end <= start) {
           throw new Error(`${packageEntry.fixture}: ${mondai.mondaiType}#${index + 1} end <= start`);
         }
         return { order: index + 1, startText, endText, start, end };
       });
       for (let index = 1; index < clips.length; index += 1) {
-        const overlap = clips[index - 1].end - clips[index].start;
+        const overlap = (clips[index - 1].end ?? clips[index].start) - clips[index].start;
         if (overlap > 0) {
           log(`WARN ${packageEntry.fixture} ${mondai.mondaiType} #${index}->#${index + 1} overlap ${overlap}s`);
         }
@@ -302,12 +312,21 @@ async function main() {
   for (const group of plan) {
     if (!sourceProbes.has(group.sourceUrl)) {
       const probe = await probeAudio(group.sourceUrl);
-      if (!Number.isFinite(probe.duration) || probe.codec !== "mp3") {
-        throw new Error(`${group.sourceUrl}: sumber bukan MP3 valid`);
+      if (!Number.isFinite(probe.duration) || !SUPPORTED_SOURCE_CODECS.has(probe.codec)) {
+        throw new Error(`${group.sourceUrl}: sumber bukan MP3/AAC valid`);
       }
       sourceProbes.set(group.sourceUrl, probe);
     }
     const probe = sourceProbes.get(group.sourceUrl);
+    group.clips = group.clips.map((clip) => ({
+      ...clip,
+      end: clip.end ?? probe.duration,
+    }));
+    for (const clip of group.clips) {
+      if (clip.end <= clip.start) {
+        throw new Error(`${group.fixture}: ${group.mondaiType}#${clip.order} end <= start setelah SOURCE_END di-resolve`);
+      }
+    }
     const maximumEnd = Math.max(...group.clips.map((clip) => clip.end));
     if (maximumEnd > probe.duration + 0.1) {
       throw new Error(`${group.fixture} ${group.mondaiType}: end ${maximumEnd}s melewati durasi ${probe.duration}s`);
@@ -322,13 +341,24 @@ async function main() {
   const r2 = createR2Config();
   const temporaryDir = await fs.mkdtemp(path.join(os.tmpdir(), "nihongofy-question-audio-"));
   const packages = new Map();
+  const sourceFiles = new Map();
   try {
     for (const [groupIndex, group] of plan.entries()) {
-      log(`${groupIndex + 1}/${plan.length} ${group.fixture} ${group.mondaiType}: download dan trim`);
-      const sourceBuffer = await fetchBuffer(group.sourceUrl);
-      const sourceHash = sha256(sourceBuffer);
-      const sourcePath = path.join(temporaryDir, `${group.fixtureSlug}-${group.mondaiType}.mp3`);
-      await fs.writeFile(sourcePath, sourceBuffer);
+      log(`${groupIndex + 1}/${plan.length} ${group.fixture} ${group.mondaiType}: download/cache dan trim`);
+      let sourceFile = sourceFiles.get(group.sourceUrl);
+      if (!sourceFile) {
+        const buffer = await fetchBuffer(group.sourceUrl);
+        const hash = sha256(buffer);
+        const sourcePath = path.join(
+          temporaryDir,
+          `source-${String(sourceFiles.size + 1).padStart(2, "0")}${sourceExtension(group.sourceUrl)}`,
+        );
+        await fs.writeFile(sourcePath, buffer);
+        sourceFile = { hash, sourcePath };
+        sourceFiles.set(group.sourceUrl, sourceFile);
+      }
+      const sourceHash = sourceFile.hash;
+      const sourcePath = sourceFile.sourcePath;
 
       const packageResult = packages.get(group.fixture) ?? {
         schemaVersion: 1,
@@ -376,6 +406,8 @@ async function main() {
           sourceSha256: sourceHash,
           start: clip.startText,
           end: clip.endText,
+          resolvedEnd: clip.end,
+          sourceDuration: sourceProbes.get(group.sourceUrl).duration,
           intendedDuration: expectedDuration,
           outputDuration: probe.duration,
           bytes: outputBuffer.length,

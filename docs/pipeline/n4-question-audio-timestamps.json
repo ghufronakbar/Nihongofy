@@ -1,0 +1,166 @@
+{
+  "schemaVersion": 1,
+  "status": "human_timestamped_and_audited",
+  "notes": [
+    "Timestamp menggunakan posisi relatif terhadap audio di sourceUrl.",
+    "SOURCE_END di-resolve ke durasi presisi FFprobe agar bagian akhir tidak terpotong.",
+    "N4 2014-07 memakai satu audio M4A asli untuk seluruh mondai karena audio context fixture diketahui salah.",
+    "Report ID 61 tetap terbuka dan tidak diubah oleh pipeline ini."
+  ],
+  "packages": [
+    {
+      "fixture": "n4-2021-07.json",
+      "mondai": [
+        {
+          "mondaiType": "CHOUKAI_TASK_BASED",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2021-07/audio/38cf2f85bd74-n4-2021-07-n4-2021-07-01.mp3",
+          "clips": [["03:21", "04:38"], ["04:38", "06:02"], ["06:02", "07:33"], ["07:33", "08:50"], ["08:50", "10:00"], ["10:00", "11:15"], ["11:15", "12:45"], ["12:45", "14:05"]]
+        },
+        {
+          "mondaiType": "CHOUKAI_MAIN_POINT",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2021-07/audio/190b890514c0-n4-2021-07-n4-2021-07-02.mp3",
+          "clips": [["02:17", "03:50"], ["03:50", "05:28"], ["05:28", "07:26"], ["07:26", "09:22"], ["09:22", "11:02"], ["11:02", "12:35"], ["12:35", "14:15"]]
+        },
+        {
+          "mondaiType": "CHOUKAI_EXPRESSION",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2021-07/audio/685493a9a623-n4-2021-07-n4-2021-07-03.mp3",
+          "clips": [["01:21", "01:56"], ["01:56", "02:30"], ["02:30", "03:10"], ["03:10", "03:47"], ["03:47", "04:25"]]
+        },
+        {
+          "mondaiType": "CHOUKAI_QUICK_RESPONSE",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2021-07/audio/500518ed46a9-n4-2021-07-n4-2021-07-04.mp3",
+          "clips": [["01:25", "01:45"], ["01:45", "02:14"], ["02:14", "02:48"], ["02:48", "03:18"], ["03:18", "03:55"], ["03:55", "04:26"], ["04:26", "05:05"], ["05:05", "05:38"]]
+        }
+      ]
+    },
+    {
+      "fixture": "n4-2018-12.json",
+      "mondai": [
+        {
+          "mondaiType": "CHOUKAI_TASK_BASED",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2018-12/audio/95a8c0066c71-n4-2018-12-01.mp3",
+          "clips": [["02:40", "03:55"], ["03:55", "05:15"], ["05:15", "06:25"], ["06:25", "07:38"], ["07:38", "08:55"], ["08:55", "10:12"], ["10:12", "11:27"], ["11:27", "SOURCE_END"]]
+        },
+        {
+          "mondaiType": "CHOUKAI_MAIN_POINT",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2018-12/audio/8d896a8879ac-n4-2018-12-02.mp3",
+          "clips": [["02:34", "04:18"], ["04:18", "05:55"], ["05:55", "07:48"], ["07:48", "09:35"], ["09:35", "11:30"], ["11:30", "13:10"], ["13:10", "14:53"]]
+        },
+        {
+          "mondaiType": "CHOUKAI_EXPRESSION",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2018-12/audio/78d510cdf613-n4-2018-12-03.mp3",
+          "clips": [["01:36", "02:13"], ["02:13", "02:57"], ["02:57", "03:34"], ["03:34", "04:10"], ["04:10", "SOURCE_END"]]
+        },
+        {
+          "mondaiType": "CHOUKAI_QUICK_RESPONSE",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2018-12/audio/c4618611bf12-n4-2018-12-04.mp3",
+          "clips": [["01:35", "02:07"], ["02:07", "02:40"], ["02:40", "03:14"], ["03:14", "03:50"], ["03:50", "04:23"], ["04:23", "04:55"], ["04:55", "05:30"], ["05:30", "06:00"]]
+        }
+      ]
+    },
+    {
+      "fixture": "n4-2017-07.json",
+      "mondai": [
+        {
+          "mondaiType": "CHOUKAI_TASK_BASED",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2017-07/audio/8d334075e75f-n4-2017-07-01.mp3",
+          "clips": [["01:53", "02:55"], ["02:55", "04:10"], ["04:10", "05:15"], ["05:15", "06:32"], ["06:32", "07:47"], ["07:47", "08:52"], ["08:52", "10:05"], ["10:05", "11:18"]]
+        },
+        {
+          "mondaiType": "CHOUKAI_MAIN_POINT",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2017-07/audio/2d0a9fe60c1f-n4-2017-07-02.mp3",
+          "clips": [["02:26", "03:50"], ["03:50", "05:32"], ["05:32", "07:00"], ["07:00", "08:32"], ["08:32", "10:09"], ["10:09", "11:50"], ["11:50", "13:20"]]
+        },
+        {
+          "mondaiType": "CHOUKAI_EXPRESSION",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2017-07/audio/542da97df880-n4-2017-07-03.mp3",
+          "clips": [["01:28", "02:02"], ["02:02", "02:41"], ["02:41", "03:20"], ["03:20", "03:55"], ["03:55", "04:31"]]
+        },
+        {
+          "mondaiType": "CHOUKAI_QUICK_RESPONSE",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2017-07/audio/25a7f0a22c92-n4-2017-07-04.mp3",
+          "clips": [["01:31", "01:58"], ["01:58", "02:27"], ["02:27", "03:00"], ["03:00", "03:31"], ["03:31", "04:02"], ["04:02", "04:32"], ["04:32", "05:01"], ["05:01", "05:35"]]
+        }
+      ]
+    },
+    {
+      "fixture": "n4-2014-07.json",
+      "mondai": [
+        {
+          "mondaiType": "CHOUKAI_TASK_BASED",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/audio/Choukai%20N4-2014%E5%B9%B47%E6%9C%88.m4a",
+          "allowSourceOverride": true,
+          "clips": [["02:27", "03:32"], ["03:32", "04:42"], ["04:42", "06:00"], ["06:00", "07:07"], ["07:07", "08:34"], ["08:34", "09:52"], ["09:52", "11:15"], ["11:15", "12:50"]]
+        },
+        {
+          "mondaiType": "CHOUKAI_MAIN_POINT",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/audio/Choukai%20N4-2014%E5%B9%B47%E6%9C%88.m4a",
+          "allowSourceOverride": true,
+          "clips": [["15:15", "16:45"], ["16:45", "18:33"], ["18:33", "19:52"], ["19:52", "21:30"], ["21:30", "23:22"], ["23:22", "25:07"], ["25:07", "26:35"]]
+        },
+        {
+          "mondaiType": "CHOUKAI_EXPRESSION",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/audio/Choukai%20N4-2014%E5%B9%B47%E6%9C%88.m4a",
+          "allowSourceOverride": true,
+          "clips": [["28:50", "29:29"], ["29:29", "30:12"], ["30:12", "30:50"], ["30:50", "31:30"], ["31:30", "32:05"]]
+        },
+        {
+          "mondaiType": "CHOUKAI_QUICK_RESPONSE",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/audio/Choukai%20N4-2014%E5%B9%B47%E6%9C%88.m4a",
+          "allowSourceOverride": true,
+          "clips": [["33:35", "34:08"], ["34:08", "34:40"], ["34:40", "35:18"], ["35:18", "35:50"], ["35:50", "36:25"], ["36:25", "37:00"], ["37:00", "37:35"], ["37:35", "38:05"]]
+        }
+      ]
+    },
+    {
+      "fixture": "n4-2013-12.json",
+      "mondai": [
+        {
+          "mondaiType": "CHOUKAI_TASK_BASED",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2013-12/audio/faf07aa9272c-n4-2013-12-01.mp3",
+          "clips": [["01:50", "02:55"], ["02:55", "04:00"], ["04:00", "05:20"], ["05:20", "06:50"], ["06:50", "08:35"], ["08:35", "10:22"], ["10:22", "11:45"], ["11:45", "12:55"]]
+        },
+        {
+          "mondaiType": "CHOUKAI_MAIN_POINT",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2013-12/audio/c9b75a167e25-n4-2013-12-02.mp3",
+          "clips": [["02:18", "03:57"], ["03:57", "05:41"], ["05:41", "07:25"], ["07:25", "09:10"], ["09:10", "11:02"], ["11:02", "13:16"], ["13:16", "14:58"]]
+        },
+        {
+          "mondaiType": "CHOUKAI_EXPRESSION",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2013-12/audio/4b8480f2716a-n4-2013-12-03.mp3",
+          "clips": [["02:06", "02:37"], ["02:37", "03:16"], ["03:16", "03:51"], ["03:51", "04:29"], ["04:29", "05:10"]]
+        },
+        {
+          "mondaiType": "CHOUKAI_QUICK_RESPONSE",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2013-12/audio/a8cbe31d0d9a-n4-2013-12-04.mp3",
+          "clips": [["01:25", "01:52"], ["01:52", "02:26"], ["02:26", "02:57"], ["02:57", "03:30"], ["03:30", "04:05"], ["04:05", "04:38"], ["04:38", "05:10"], ["05:10", "05:46"]]
+        }
+      ]
+    },
+    {
+      "fixture": "n4-2013-07.json",
+      "mondai": [
+        {
+          "mondaiType": "CHOUKAI_TASK_BASED",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2013-07/audio/6763a9ba24e9-n4-2013-07-01.mp3",
+          "clips": [["03:21", "04:33"], ["04:33", "05:45"], ["05:45", "07:00"], ["07:00", "08:25"], ["08:25", "09:42"], ["09:42", "10:52"], ["10:52", "12:00"], ["12:00", "SOURCE_END"]]
+        },
+        {
+          "mondaiType": "CHOUKAI_MAIN_POINT",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2013-07/audio/1ce26efd990e-n4-2013-07-02.mp3",
+          "clips": [["02:30", "04:02"], ["04:02", "05:50"], ["05:50", "07:12"], ["07:12", "08:50"], ["08:50", "10:25"], ["10:25", "12:00"], ["12:00", "13:36"]]
+        },
+        {
+          "mondaiType": "CHOUKAI_EXPRESSION",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2013-07/audio/307d99ad1adb-n4-2013-07-03.mp3",
+          "clips": [["01:35", "02:10"], ["02:10", "02:43"], ["02:43", "03:23"], ["03:23", "04:00"], ["04:00", "SOURCE_END"]]
+        },
+        {
+          "mondaiType": "CHOUKAI_QUICK_RESPONSE",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2013-07/audio/417a7f62faa2-n4-2013-07-04.mp3",
+          "clips": [["01:35", "02:05"], ["02:05", "02:38"], ["02:38", "03:10"], ["03:10", "03:41"], ["03:41", "04:17"], ["04:17", "04:47"], ["04:47", "05:24"], ["05:24", "05:55"]]
+        }
+      ]
+    }
+  ]
+}
