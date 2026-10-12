@@ -29,7 +29,7 @@ const STAGING_ROOT = path.join(PROJECT_ROOT, "data/generated/choukai-transcripts
 const REQUEST_TIMEOUT_MS = 300_000;
 const SDK_MAX_RETRIES = 2;
 const MAX_ATTEMPTS = 3;
-const RENDER_DPI = 250;
+const RENDER_MAX_DIMENSION = 3000;
 const USER_AGENT = "nihongofy/1.0";
 const IMAGE_EXTENSIONS = new Set([".png", ".jpg", ".jpeg", ".webp"]);
 
@@ -250,7 +250,14 @@ async function preparePages(source) {
   const temporaryDirectory = await fs.mkdtemp(path.join(os.tmpdir(), "nihongofy-choukai-ocr-"));
   const prefix = path.join(temporaryDirectory, "page");
   try {
-    await execFileAsync("pdftoppm", ["-png", "-r", String(RENDER_DPI), source.sourcePath, prefix]);
+    // Batas piksel stabil mencegah PDF dengan page box tidak normal di-upscale berlebihan.
+    await execFileAsync("pdftoppm", [
+      "-png",
+      "-scale-to",
+      String(RENDER_MAX_DIMENSION),
+      source.sourcePath,
+      prefix,
+    ]);
     const rendered = (await fs.readdir(temporaryDirectory))
       .filter((name) => name.startsWith("page-") && name.endsWith(".png"))
       .sort(naturalCompare)
@@ -298,6 +305,10 @@ function expectedChoukai(pkg) {
     .map((item) => ({ mondaiType: item.mondaiType, questionCount: item.questions.length }));
 }
 
+function normalizeTranscriptForComparison(value) {
+  return value.normalize("NFKC").replace(/\s+/g, " ").trim();
+}
+
 function mergeExtraction(expected, batches) {
   const byKey = new Map();
   const conflicts = [];
@@ -313,8 +324,8 @@ function mergeExtraction(expected, batches) {
         continue;
       }
 
-      const left = existing.transcript.trim();
-      const right = entry.transcript.trim();
+      const left = normalizeTranscriptForComparison(existing.transcript);
+      const right = normalizeTranscriptForComparison(entry.transcript);
       if (left === right || left.includes(right) || right.includes(left)) {
         if (right.length > left.length) existing.transcript = entry.transcript;
         existing.sourcePages = [...new Set([...existing.sourcePages, ...entry.sourcePages])].sort(
@@ -489,7 +500,7 @@ async function main() {
         path: sourceRelativePath,
         sha256: prepared.sourceSha256,
         pageCount: prepared.pages.length,
-        renderDpi: source.kind === "pdf" ? RENDER_DPI : null,
+        renderMaxDimension: source.kind === "pdf" ? RENDER_MAX_DIMENSION : null,
         pages: prepared.pages.map((page) => ({
           page: page.page,
           fileName: page.fileName,

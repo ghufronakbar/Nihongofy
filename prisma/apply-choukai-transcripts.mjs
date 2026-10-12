@@ -166,7 +166,9 @@ async function writeFixtureAtomic(filePath, pkg) {
   }
 
   const temporary = `${filePath}.tmp`;
-  await fs.writeFile(temporary, `${JSON.stringify(parsed.data, null, 2)}\n`, "utf-8");
+  // Validate through Zod, but serialize the original object so unrelated key
+  // ordering in a hand-reviewed fixture is not rewritten by schema parsing.
+  await fs.writeFile(temporary, `${JSON.stringify(pkg, null, 2)}\n`, "utf-8");
   await fs.rename(temporary, filePath);
 }
 
@@ -185,10 +187,12 @@ async function main() {
   const seedFile = loaded.seedFiles[0];
   if (!seedFile) throw new Error(`fixture kosong atau tidak ditemukan: ${options.selectedFile}`);
   const { file: fixtureFile, pkg } = seedFile;
+  const fixturePath = path.join(SEED_DATA_DIR, fixtureFile);
+  const rawPkg = await readJson(fixturePath);
   const packageSlug = path.basename(fixtureFile, ".json");
   const stagingFile = path.join(STAGING_ROOT, packageSlug, "extraction.json");
   const staging = await readJson(stagingFile);
-  const expected = expectedQuestions(pkg);
+  const expected = expectedQuestions(rawPkg);
   const problems = validateStaging(staging, { fixtureFile, pkg, expected });
   if (problems.length > 0) {
     throw new Error(`staging belum siap diterapkan: ${problems.join("; ")}`);
@@ -228,8 +232,8 @@ async function main() {
   );
   if (options.check) return;
 
-  await writeFixtureAtomic(path.join(SEED_DATA_DIR, fixtureFile), pkg);
-  log(`fixture diperbarui: ${path.join(SEED_DATA_DIR, fixtureFile)}`);
+  await writeFixtureAtomic(fixturePath, rawPkg);
+  log(`fixture diperbarui: ${fixturePath}`);
 }
 
 main().catch((error) => {

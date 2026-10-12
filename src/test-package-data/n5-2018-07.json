@@ -4113,7 +4113,55 @@
               "answerText": ""
             }
           ],
-          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/5d2081f4fbcb-n5-2018-07-choukai-task-based-q01.mp3"
+          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/5d2081f4fbcb-n5-2018-07-choukai-task-based-q01.mp3",
+          "audioTranscript": {
+            "text": "男の人と女の人が話しています。男の人はどこへ行きますか。\n\n男:すみません、喫茶店ミドリはどこですか。\n女:喫茶店ミドリですね。あそこに交差点がありますね。\n男:はい。\n女:あの交差点を左に曲がってください。道の左側に銀行があります。喫茶店ミドリは銀行のとなりですよ。\n男:わかりました。ありがとうございます。\n\n男の人はどこへ行きますか。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-transcript-v1",
+              "generatedAt": "2026-10-11T22:18:39.122Z",
+              "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          },
+          "explanation": {
+            "summary": "Kunci jawaban benar karena wanita tersebut mengarahkan untuk belok ke kiri di perempatan, lalu di sisi kiri jalan terdapat bank dan kafe yang dicari terletak tepat di samping bank tersebut, yaitu bangunan nomor 3.",
+            "detail": "Soal menanyakan bangunan mana yang akan dituju oleh pria tersebut, yaitu kafe bernama {喫茶店|きっさてん}ミドリ (Kafe Midori).\nPada gambar, kedua orang berdiri di jalan bagian bawah menghadap ke arah {交差点|こうさてん} (persimpangan jalan/perempatan).\nUrutan petunjuk arah yang dijelaskan oleh {女|おんな}の {人|ひと} (wanita):\n1. Pertama, ia meminta pria berbelok di perempatan: あの {交差点|こうさてん}を __{左|ひだり}に {曲|ま}がってください__ (silakan belok ke kiri di persimpangan itu). Berdasarkan posisi mereka, belok ke kiri mengarah ke jalan horizontal di sebelah kiri peta.\n2. Kedua, ia menyebutkan patokan di jalan tersebut: __{道|みち}の {左側|ひだりがわ}に {銀行|ぎんこう}が あります__ (di sisi kiri jalan ada bank). Dari sudut pandang seseorang yang berbelok ke kiri lalu berjalan maju menyusuri jalan itu, sisi kirinya adalah sisi bawah peta, tempat berdirinya gedung bertuliskan ぎんこう (bank).\n3. Terakhir, letak kafe diperjelas: {喫茶店|きっさてん}ミドリは __{銀行|ぎんこう}の となり__ですよ (Kafe Midori ada di sebelah bank). Bangunan yang berada tepat di samping bank pada jalan sebelah kiri tersebut adalah gedung nomor 3.",
+            "translation": "Ke mana pria itu akan pergi?",
+            "keyPoints": [
+              "{交差点|こうさてん}",
+              "{左|ひだり}に{曲|ま}がる",
+              "{道|みち}の{左側|ひだりがわ}",
+              "~の{隣|となり}"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "Bangunan nomor 1 berada di sisi kanan jalan setelah berbelok ke kiri di persimpangan, serta tidak berada di samping bank. Pilihan ini mengecoh apabila pendengar keliru membayangkan orientasi kiri dan kanan jalan setelah berbelok."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "Bangunan nomor 2 berada di jalan sebelah kanan persimpangan, bertentangan dengan petunjuk awal untuk berbelok ke kiri. Pilihan ini mengecoh bila pendengar salah membedakan arah kiri dan kanan di perempatan."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "Bangunan nomor 3 berada di sebelah kiri perempatan, terletak di sisi kiri jalan yang dimasuki, dan posisinya persis berdampingan dengan bank sesuai seluruh rangkaian arahan."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Bangunan nomor 4 memang terletak di samping bank, namun bank tersebut berada di jalan sebelah kanan persimpangan. Pilihan ini mengecoh pendengar yang hanya menangkap informasi di sebelah bank tanpa menyimak arah belokan pertama."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-12T11:34:53.350Z",
+              "reviewedAt": "2026-10-12T11:58:19.000Z"
+            }
+          }
         },
         {
           "order": 2,
@@ -4139,7 +4187,54 @@
               "answerText": ""
             }
           ],
-          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/53bd5a3fa77d-n5-2018-07-choukai-task-based-q02.mp3"
+          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/53bd5a3fa77d-n5-2018-07-choukai-task-based-q02.mp3",
+          "audioTranscript": {
+            "text": "会社で女の人と男の人が話しています。男の人はどの雑誌を女の人に渡しますか。\n\n女:木村さん、すみません。木村さんの後ろにある雑誌を取ってください。\n男:時計の雑誌ですか、車の雑誌ですか。\n女:時計の雑誌です。\n男:一番新しい、8月のですか。\n女:いいえ、7月のでお願いします。\n男:はい。\n\n男の人はどの雑誌を女の人に渡しますか。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-transcript-v1",
+              "generatedAt": "2026-10-11T22:18:39.122Z",
+              "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          },
+          "explanation": {
+            "summary": "{男|おとこ}の{人|ひと} (laki-laki) menyerahkan majalah nomor 1 karena {女|おんな}の{人|ひと} (perempuan) secara spesifik meminta majalah {時計|とけい} (jam tangan) edisi {7月|しちがつ} (Juli).",
+            "detail": "Soal ini menanyakan majalah mana yang akan diserahkan oleh {男|おとこ}の{人|ひと} kepada {女|おんな}の{人|ひと}. Di awal pembicaraan, {女|おんな}の{人|ひと} meminta diambilkan majalah yang ada di belakang {男|おとこ}の{人|ひと}. Ketika {男|おとこ}の{人|ひと} menanyakan apakah yang dimaksud majalah {時計|とけい} atau {車|くるま} (mobil), {女|おんな}の{人|ひと} menjawab __{時計|とけい}の{雑誌|ざっし}です__ (majalah jam tangan), sehingga majalah mobil pada rak bawah langsung tereliminasi. Selanjutnya, {男|おとこ}の{人|ひと} menawarkan edisi paling baru yaitu bulan {8月|はちがつ} (Agustus), tetapi {女|おんな}の{人|ひと} menolaknya dengan mengatakan __いいえ、{7月|しちがつ}のでお{願|ねが}いします__ (bukan, tolong yang edisi Juli). Dengan demikian, majalah yang diambil dan diserahkan adalah majalah jam tangan edisi bulan Juli.",
+            "translation": "Bukan, tolong yang edisi Juli.",
+            "keyPoints": [
+              "お{願|ねが}いします",
+              "{7月|しちがつ}",
+              "{8月|はちがつ}"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "Gambar 1 menampilkan majalah {時計|とけい} edisi {7月|しちがつ}. Ini adalah pilihan yang benar karena sesuai dengan permintaan {女|おんな}の{人|ひと}."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "Gambar 2 menampilkan majalah {時計|とけい} edisi {8月|はちがつ}. Pilihan ini mengecoh karena {男|おとこ}の{人|ひと} sempat menawarkan edisi terbaru yaitu bulan Agustus, tetapi {女|おんな}の{人|ひと} menolaknya."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "Gambar 3 menampilkan majalah {車|くるま} edisi {7月|しちがつ}. Pilihan ini mengecoh karena edisi bulannya cocok, tetapi temanya adalah mobil, bukan jam tangan."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Gambar 4 menampilkan majalah {車|くるま} edisi {8月|はちがつ}. Pilihan ini salah karena tema majalahnya mobil dan edisinya bulan Agustus, keduanya bertentangan dengan permintaan {女|おんな}の{人|ひと}."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-12T11:35:48.935Z",
+              "reviewedAt": "2026-10-12T11:58:19.000Z"
+            }
+          }
         },
         {
           "order": 3,
@@ -4165,7 +4260,17 @@
               "answerText": ""
             }
           ],
-          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/8b6abdebca84-n5-2018-07-choukai-task-based-q03.mp3"
+          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/8b6abdebca84-n5-2018-07-choukai-task-based-q03.mp3",
+          "audioTranscript": {
+            "text": "学校で先生が話しています。学生はつぎ何日に学校に来ますか。\n\n女:皆さん、明日から休みですね。休みは四日から九日まで六日間です。十日はテストをします。休まないでください。では、六日間ゆっくり休んで、また学校に来てください。\n\n学生はつぎ何日に学校に来ますか。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-transcript-v1",
+              "generatedAt": "2026-10-11T22:18:39.122Z",
+              "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          }
         },
         {
           "order": 4,
@@ -4191,7 +4296,17 @@
               "answerText": ""
             }
           ],
-          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/3a7997acca39-n5-2018-07-choukai-task-based-q04.mp3"
+          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/3a7997acca39-n5-2018-07-choukai-task-based-q04.mp3",
+          "audioTranscript": {
+            "text": "家で女の学生と男の学生が話しています。男の学生は冷蔵庫から何を出しますか。\n\n女:あっ、12時ですね。お昼ご飯を食べましょう。私が作りますよ。\n男:何しましょうか。\n女:ありがとう。じゃあ、冷蔵庫からたまご2個と牛乳を出してください。\n男:はい。\n女:それから、魚も出してください。あっ、すみません。たまごは3個お願いします。\n男:はい。\n\n男の学生は冷蔵庫から何を出しますか。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-transcript-v1",
+              "generatedAt": "2026-10-11T22:18:39.122Z",
+              "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          }
         },
         {
           "order": 5,
@@ -4216,7 +4331,17 @@
               "answerText": "きんようび"
             }
           ],
-          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/e324cff5e92c-n5-2018-07-choukai-task-based-q05.mp3"
+          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/e324cff5e92c-n5-2018-07-choukai-task-based-q05.mp3",
+          "audioTranscript": {
+            "text": "日本語学校で女の人と男の人が話しています。女の人は何曜日のクラスで勉強しますか。\n\n女:すみません。一週間に1回、日本語で話す練習をしたいです。夜のクラスはありますか。\n男:はい。夜のクラスは毎週月曜日、火曜日、木曜日、金曜日です。夜6時からです。\n女:ううん。火曜日と金曜日は仕事が6時に終わりません。\n男:そうですか。では月曜日がいいですよ。木曜日のクラスは話す時間が短いです。\n女:わかりました。じゃあ、来週から勉強したいです。どうぞよろしくお願いします。\n\n女の人は何曜日のクラスで勉強しますか。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-transcript-v1",
+              "generatedAt": "2026-10-11T22:18:39.122Z",
+              "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          }
         },
         {
           "order": 6,
@@ -4241,7 +4366,17 @@
               "answerText": "2かいの 4ばん"
             }
           ],
-          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/1386f43516dc-n5-2018-07-choukai-task-based-q06.mp3"
+          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/1386f43516dc-n5-2018-07-choukai-task-based-q06.mp3",
+          "audioTranscript": {
+            "text": "日本語学校で先生が学生に話しています。学生は明日の午前どの教室に行きますか。午前です。\n\n男:明日の午前はクラスに日本人の学生が来ますから、広い教室で授業をします。2階の4番の教室に来てください。午後は1階の3番の教室で授業をします。\n\n学生は明日の午前どの教室に行きますか。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-transcript-v1",
+              "generatedAt": "2026-10-11T22:18:39.122Z",
+              "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          }
         },
         {
           "order": 7,
@@ -4267,7 +4402,17 @@
               "answerText": ""
             }
           ],
-          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/6fe0f4b3d35b-n5-2018-07-choukai-task-based-q07.mp3"
+          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/6fe0f4b3d35b-n5-2018-07-choukai-task-based-q07.mp3",
+          "audioTranscript": {
+            "text": "女の人と男の人が話しています。女の人は何を持って行きますか。\n\n女:佐藤さん、日曜日佐藤さんの家でパーティーをしますね。何か持って行きましょうか。飲み物はどうですか。\n男:ありがとうございます。飲み物はたくさんありますから、食べ物がいいです。じゃあ、おにぎりを持って来てください。わたしはスパゲッティを作ります。\n女:わかりました。\n男:それから、カメラはありますか。\n女:はい。\n男:パーティーの時使いたいですから、貸してください。\n女:はい、いいですよ。\n\n女の人は何を持って行きますか。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-transcript-v1",
+              "generatedAt": "2026-10-11T22:18:39.122Z",
+              "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          }
         }
       ]
     },
@@ -4302,7 +4447,54 @@
               "answerText": ""
             }
           ],
-          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/1117f319b04b-n5-2018-07-choukai-main-point-q01.mp3"
+          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/1117f319b04b-n5-2018-07-choukai-main-point-q01.mp3",
+          "audioTranscript": {
+            "text": "家で女の人と男の人が話しています。女の人は何のジュースをつくりましたか。\n\n女:果物のジュースを作りました。どうぞ飲んでください\n男:いただきます。これは何のジュースですか。\n女:リンゴと、それからミカンとバナナをすこし入れました。\n\n女の人は何のジュースをつくりましたか。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-transcript-v1",
+              "generatedAt": "2026-10-11T22:18:39.122Z",
+              "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          },
+          "explanation": {
+            "summary": "Kunci jawaban benar karena wanita tersebut menjelaskan bahwa ia memasukkan apel, jeruk mandarin, dan sedikit pisang ke dalam jusnya, yang sesuai dengan gambar pada pilihan 4.",
+            "detail": "Soal ini menanyakan buah apa saja yang digunakan oleh wanita tersebut untuk membuat jus. Pada percakapan, pria itu bertanya mengenai isi dari jus yang disuguhkan. Wanita tersebut kemudian menjelaskan bahwa ia memasukkan tiga macam buah, yaitu リンゴ (apel), ミカン (jeruk mandarin), dan sedikit バナナ (pisang). Kunci pemahamannya ada pada kalimat __リンゴと、それからミカンとバナナをすこし{入|い}れました__ yang menghubungkan ketiga buah tersebut dengan partikel と (dan) serta frasa それから (setelah itu/lalu). Berdasarkan gambar pada lembar soal, nomor 1 hanya memuat apel, nomor 2 memuat jeruk dan pisang, nomor 3 memuat apel dan pisang, sedangkan nomor 4 memuat apel, jeruk, dan pisang secara lengkap.",
+            "translation": "Saya memasukkan apel, lalu jeruk mandarin dan sedikit pisang.",
+            "keyPoints": [
+              "{果物|くだもの}",
+              "と",
+              "それから"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "Gambar hanya menampilkan satu buah リンゴ. Pilihan ini salah karena mengabaikan ミカン dan バナナ yang juga dimasukkan ke dalam jus."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "Gambar menampilkan ミカン dan バナナ. Pilihan ini mengecoh karena kedua buah tersebut memang disebutkan, tetapi リンゴ yang disebutkan paling awal terlewatkan."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "Gambar menampilkan リンゴ dan バナナ. Pilihan ini tidak tepat karena tidak menyertakan ミカン yang juga menjadi bahan jus tersebut."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Gambar menampilkan ketiga buah yaitu リンゴ, ミカン, dan バナナ. Pilihan ini benar karena memuat seluruh buah yang disebutkan oleh pembicara secara lengkap."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-12T11:36:24.521Z",
+              "reviewedAt": "2026-10-12T11:58:19.000Z"
+            }
+          }
         },
         {
           "order": 2,
@@ -4327,7 +4519,53 @@
               "answerText": "よにん"
             }
           ],
-          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/c71581fe6909-n5-2018-07-choukai-main-point-q02.mp3"
+          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/c71581fe6909-n5-2018-07-choukai-main-point-q02.mp3",
+          "audioTranscript": {
+            "text": "女の学生と男の学生が話しています。男の学生はお兄さんが何人いますか。\n\n女:中山さん、中山さんの家族は何人ですか。\n男:4人です。両親と兄が一人とぼくです。\n女:お兄さんは学生ですか。\n男:いいえ、会社員です。結婚して、子供が二人いますよ。\n\n男の学生はお兄さんが何人いますか。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-transcript-v1",
+              "generatedAt": "2026-10-11T22:18:39.122Z",
+              "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          },
+          "explanation": {
+            "summary": "Mahasiswa laki-laki tersebut menjelaskan bahwa keluarganya terdiri dari kedua orang tua, satu orang kakak laki-laki, dan dirinya sendiri, sehingga jumlah kakak laki-lakinya adalah satu orang.",
+            "detail": "Pertanyaan menanyakan berapa jumlah kakak laki-laki yang dimiliki mahasiswa laki-laki tersebut (__{男|おとこ}の{学生|がくせい}はお{兄|にい}さんが{何人|なんにん}いますか__). Saat ditanya mengenai jumlah anggota keluarga ({家族|かぞく}), ia menjawab keluarganya berjumlah empat orang yang terdiri dari orang tua (__{両親|りょうしん}__), satu orang kakak laki-laki (__{兄|あに}が{一人|ひとり}__), dan dirinya sendiri (ぼく). Walaupun setelah itu ia menyebutkan bahwa kakaknya sudah menikah ({結婚|けっこん}して) dan memiliki dua orang anak (__{子供|こども}が{二人|ふたり}__), angka dua tersebut merujuk pada anak dari sang kakak, bukan jumlah kakaknya. Oleh karena itu, jumlah kakak laki-lakinya tetap satu orang.",
+            "translation": "Empat orang. Kedua orang tua, satu orang kakak laki-laki, dan saya.",
+            "keyPoints": [
+              "{数詞|すうし}",
+              "{家族|かぞく}の{呼称|こしょう}"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "{一人|ひとり} (satu orang). Ini adalah jawaban yang tepat karena mahasiswa tersebut dengan jelas menyatakan __{兄|あに}が{一人|ひとり}__ saat menyebutkan susunan keluarganya."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{二人|ふたり} (dua orang). Angka ini mengecoh karena mahasiswa tersebut menyebutkan __{子供|こども}が{二人|ふたり}__ yang merujuk pada dua anak kakaknya (keponakan mahasiswa itu), bukan jumlah kakak laki-lakinya."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "{三人|さんにん} (tiga orang). Angka ini tidak tepat dan tidak pernah disebutkan dalam percakapan."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "{四人|よにん} (empat orang). Angka empat mengecoh karena ini adalah jumlah total seluruh anggota keluarganya ({家族|かぞく}は4{人|にん}です), bukan jumlah kakak laki-lakinya."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-12T11:36:50.739Z",
+              "reviewedAt": "2026-10-12T11:58:19.000Z"
+            }
+          }
         },
         {
           "order": 3,
@@ -4353,7 +4591,17 @@
               "answerText": ""
             }
           ],
-          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/8832f4b92fbb-n5-2018-07-choukai-main-point-q03.mp3"
+          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/8832f4b92fbb-n5-2018-07-choukai-main-point-q03.mp3",
+          "audioTranscript": {
+            "text": "会社で女の人と男の人が話しています。男の人は何で会社に来ていますか。\n\n女:加藤さん、加藤さんの家はどちらですか。\n男:南町です。\n女:私も南町ですよ。でも、駅や電車でぜんぜん加藤さんに会いませんね。電車じゃなくて、バスで会社に来ていますか。\n男:いいえ、僕は自転車です。前は車で来ていましたが、車はいろいろお金がかかりますから、今は乗っていません。\n女:そうですか。\n男:時間は50分ぐらいかかりますが、楽しいですよ。\n\n男の人は何で会社に来ていますか。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-transcript-v1",
+              "generatedAt": "2026-10-11T22:18:39.122Z",
+              "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          }
         },
         {
           "order": 4,
@@ -4379,7 +4627,17 @@
               "answerText": ""
             }
           ],
-          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/36b6e1846f92-n5-2018-07-choukai-main-point-q04.mp3"
+          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/36b6e1846f92-n5-2018-07-choukai-main-point-q04.mp3",
+          "audioTranscript": {
+            "text": "電話で女の学生と男の学生が話しています。二人今日一緒に何をしますか。\n\n女:もしもし、吉田さん。\n男:あ、おはようございます。\n女:今日、家で映画を見ませんか。おもしろいDVDをかりましたよ。\n男:あ、今日は今から友達とバスケットボールをして、それから皆と一緒にラーメンを食べに行きます。でも、午後は大丈夫です。\n女:じゃあ、ごご来てください。\n男:はい。じゃあ、行く前に電話します。何か美味しいお菓子を買って持って行きます。\n女:ありがとうございます。お菓子も待っています。\n\n二人は今日一緒に何をしますか。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-transcript-v1",
+              "generatedAt": "2026-10-11T22:18:39.122Z",
+              "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          }
         },
         {
           "order": 5,
@@ -4404,7 +4662,17 @@
               "answerText": "6じかん"
             }
           ],
-          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/d30ce6775cfd-n5-2018-07-choukai-main-point-q05.mp3"
+          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/d30ce6775cfd-n5-2018-07-choukai-main-point-q05.mp3",
+          "audioTranscript": {
+            "text": "大学で日本人の学生と男の留学生が話しています。日本から男の留学生の国まで飛行機で何時間かかりますか。\n\n女:ジョジさん、冬休みに国へ帰りますか。\n男:はい。\n女:日本からジョジさんの国まで飛行機でどのぐらいですか。5時間か6時間ぐらいですか。\n男:もっとはやいですよ。3時間半です。\n女:あ、近いですね。私も冬休みに両親に会いに帰りますが、ここから家まで電車で5時間ぐらいかかりますよ。\n男:5時間ですか。じゃあ、私の国の方が近いですね。1時間半はやいです。\n\n日本から男の留学生の国まで飛行機で何時間かかりますか。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-transcript-v1",
+              "generatedAt": "2026-10-11T22:18:39.122Z",
+              "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          }
         },
         {
           "order": 6,
@@ -4429,7 +4697,17 @@
               "answerText": "そば"
             }
           ],
-          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/3c3cab6f4bbf-n5-2018-07-choukai-main-point-q06.mp3"
+          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/3c3cab6f4bbf-n5-2018-07-choukai-main-point-q06.mp3",
+          "audioTranscript": {
+            "text": "電話で女の学生が話しています。今晩何の店にご飯を食べに行きますか。\n\n女:もしもし、もりさん、大田です。今晩クラスの皆とご飯を食べに行きますね。今朝学校では駅の前のカレー屋に来てくださいと言いましたが、今日は店が休みです。だからピザ屋に行きます。先週一緒に行ったすし屋の前のビルです。1階にそば屋があるビルで、ビルの3階です。\n\n今晩何の店にご飯を食べに行きますか。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-transcript-v1",
+              "generatedAt": "2026-10-11T22:18:39.122Z",
+              "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          }
         }
       ]
     },
@@ -4464,7 +4742,54 @@
               "answerText": ""
             }
           ],
-          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/80807cd2ef56-n5-2018-07-choukai-expression-q01.mp3"
+          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/80807cd2ef56-n5-2018-07-choukai-expression-q01.mp3",
+          "audioTranscript": {
+            "text": "山を歩いています。友達と一緒に休みたいです。なんと言いますか。\n1. あまり休みません。\n2. 今、休んでいますか。\n3. すこし休みましょう。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-transcript-v1",
+              "generatedAt": "2026-10-11T22:18:39.122Z",
+              "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          },
+          "explanation": {
+            "summary": "Pilihan 3 benar karena ungkapan __{休|やす}みましょう__ memakai bentuk ajakan untuk mengajak teman beristirahat bersama sesuai situasi pada soal dan gambar.",
+            "detail": "Soal ini menguji kemampuan memilih ungkapan ajakan yang tepat dalam situasi percakapan sehari-hari. Pada gambar terlihat dua orang sedang berjalan di jalur pendakian dan ada bangku di depan, lalu tanda panah menunjuk orang yang ingin mengajak temannya beristirahat. Situasi pada audio berbunyi bahwa pembicara sedang berjalan di gunung dan ingin beristirahat bersama teman (__{友達|ともだち}と{一緒|いっしょ}に{休|やす}みたい__ [ingin beristirahat bersama teman]). Pola kalimat yang digunakan untuk mengajak orang lain melakukan sesuatu bersama-sama adalah kata kerja bentuk __〜ましょう__ (mari / ayo). Oleh karena itu, ungkapan yang tepat adalah mengajak istirahat sebentar.",
+            "translation": "Sedang berjalan di gunung. Ingin beristirahat bersama teman. Apa yang dikatakan?",
+            "keyPoints": [
+              "〜ましょう",
+              "{休|やす}む",
+              "あまり"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "あまり__{休|やす}みません__ (tidak begitu beristirahat) adalah kalimat pernyataan tentang kebiasaan yang jarang beristirahat, bukan kalimat ajakan kepada teman. Pilihan ini menggoda karena memuat kata istirahat, tetapi bentuknya negatif dan bukan ajakan."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "__{今|いま}__ (sekarang)、__{休|やす}んでいますか__ (apakah sedang beristirahat?) adalah pertanyaan mengenai kondisi saat ini, padahal mereka berdua sedang berjalan dan belum beristirahat. Pilihan ini menggoda karena berbentuk kalimat tanya kepada lawan bicara, tetapi tidak masuk akal dalam situasi tersebut."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "すこし__{休|やす}みましょう__ (mari beristirahat sebentar) menggunakan bentuk ajakan yang tepat untuk mengajak teman berhenti sejenak dan beristirahat di bangku yang terlihat pada gambar."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Slot keempat tidak digunakan pada soal tipe ini karena soal bagian ini hanya memiliki tiga pilihan lisan."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-12T11:38:07.156Z",
+              "reviewedAt": "2026-10-12T11:58:19.000Z"
+            }
+          }
         },
         {
           "order": 2,
@@ -4490,7 +4815,52 @@
               "answerText": ""
             }
           ],
-          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/c83ef7195b85-n5-2018-07-choukai-expression-q02.mp3"
+          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/c83ef7195b85-n5-2018-07-choukai-expression-q02.mp3",
+          "audioTranscript": {
+            "text": "友達にチョコレートをあげます。なんと言いますか。\n1. どんなチョコレートですか。\n2. チョコレート、あげませんか。\n3. チョコレート、いかがですか。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-transcript-v1",
+              "generatedAt": "2026-10-11T22:18:39.122Z",
+              "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          },
+          "explanation": {
+            "summary": "Pilihan 3 benar karena ungkapan __いかがですか__ digunakan untuk menawarkan makanan atau minuman secara sopan kepada orang lain.",
+            "detail": "Soal ini menanyakan ungkapan yang tepat diucapkan oleh wanita yang ditunjuk panah saat hendak menyuguhkan atau menawarkan cokelat kepada temannya yang bertamu. Ketika kita menawarkan sesuatu kepada lawan bicara, bentuk tawaran yang lazim dan sopan adalah menyebutkan benda yang ditawarkan lalu diikuti ungkapan penawaran seperti __いかがですか__ (bagaimana kalau / maukah). Oleh karena itu, kalimat yang tepat adalah pilihan 3.",
+            "translation": "Memberikan cokelat kepada teman. Apa yang akan dikatakan?",
+            "keyPoints": [
+              "{勧誘|かんゆう}・{勧|すす}めの{表現|ひょうげん}（～はいかがですか）"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "__どんなチョコレートですか__ (cokelat yang bagaimana?). Kalimat ini merupakan pertanyaan untuk menanyakan jenis atau sifat cokelat kepada lawan bicara, bukan ungkapan untuk menawarkan cokelat milik sendiri kepada tamu."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "__チョコレート、あげませんか__ (maukah Anda memberi cokelat?). Bentuk ini menggoda karena memakai kata kerja あげる (memberi), tetapi akhiran ～ませんか menanyakan kesediaan lawan bicara untuk melakukan tindakan memberi, sehingga maknanya menjadi meminta lawan bicara agar memberi cokelat atau mengajak memberi cokelat kepada orang lain, bukan menawarkan cokelat kita kepada orang itu."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "__チョコレート、いかがですか__ (maukah cokelat? / bagaimana kalau cokelat?). Ungkapan ini adalah bentuk sopan yang sangat lazim digunakan saat menyuguhkan atau menawarkan makanan dan minuman kepada tamu atau teman."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Slot keempat tidak digunakan karena transkrip soal ini hanya memuat pilihan 1 sampai 3."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-12T11:38:42.609Z",
+              "reviewedAt": "2026-10-12T11:58:19.000Z"
+            }
+          }
         },
         {
           "order": 3,
@@ -4516,7 +4886,17 @@
               "answerText": ""
             }
           ],
-          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/19d3c673120c-n5-2018-07-choukai-expression-q03.mp3"
+          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/19d3c673120c-n5-2018-07-choukai-expression-q03.mp3",
+          "audioTranscript": {
+            "text": "エレベーターに乗りたいです。なんと言いますか。\n1. あ、乗ります！\n2. さあ、乗りましょう。\n3. すぐ乗ってください。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-transcript-v1",
+              "generatedAt": "2026-10-11T22:18:39.122Z",
+              "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          }
         },
         {
           "order": 4,
@@ -4542,7 +4922,17 @@
               "answerText": ""
             }
           ],
-          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/92ae715ced6f-n5-2018-07-choukai-expression-q04.mp3"
+          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/92ae715ced6f-n5-2018-07-choukai-expression-q04.mp3",
+          "audioTranscript": {
+            "text": "前に自転車があります。友達は見ていません。なんと言いますか。\n1. 見ませんよ。\n2. 危ないですよ。\n3. 痛いですよ。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-transcript-v1",
+              "generatedAt": "2026-10-11T22:18:39.122Z",
+              "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          }
         },
         {
           "order": 5,
@@ -4568,7 +4958,17 @@
               "answerText": ""
             }
           ],
-          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/20c4cd09d40e-n5-2018-07-choukai-expression-q05.mp3"
+          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/20c4cd09d40e-n5-2018-07-choukai-expression-q05.mp3",
+          "audioTranscript": {
+            "text": "レストランでコーヒーが来ません。長い時間待っています。店の人になんと言いますか。\n1. コーヒーを持ってきますよ。\n2. コーヒーはまだですか。\n3. コーヒーを飲みませんか。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-transcript-v1",
+              "generatedAt": "2026-10-11T22:18:39.122Z",
+              "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          }
         }
       ]
     },
@@ -4602,7 +5002,53 @@
               "answerText": ""
             }
           ],
-          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/bccda86e73f7-n5-2018-07-choukai-quick-response-q01.mp3"
+          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/bccda86e73f7-n5-2018-07-choukai-quick-response-q01.mp3",
+          "audioTranscript": {
+            "text": "リーさん、リーさんはいつ日本に来ましたか。\n1. 去年です。\n2. 5時間です。\n3. 三か月です。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-transcript-v1",
+              "generatedAt": "2026-10-11T22:18:39.122Z",
+              "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          },
+          "explanation": {
+            "summary": "Pertanyaan menanyakan titik waktu kedatangan dengan kata tanya いつ (kapan), sehingga jawaban yang tepat harus menyatakan titik waktu, yaitu pilihan 1.",
+            "detail": "Soal ini menguji pemahaman kata tanya waktu dalam percakapan sehari-hari. Pembicara menanyakan __いつ__ (kapan) Sdr. Lee datang ke {日本|にほん} (Jepang). Karena kata tanya yang digunakan adalah __いつ__, respons yang diperlukan adalah titik waktu tertentu di masa lalu, bukan durasi atau jangka waktu. Pilihan 1 menyebutkan __{去年|きょねん}__ (tahun lalu), yang merupakan titik waktu lampau yang tepat untuk menjawab pertanyaan bentuk lampau {来|き}ましたか (apakah sudah datang). Pilihan 2 dan 3 salah karena keduanya menyatakan jangka waktu atau durasi, yang biasanya digunakan untuk menjawab kata tanya {何時間|なんじかん} (berapa jam) atau どのくらい (berapa lama).",
+            "translation": "Sdr. Lee, kapan Sdr. Lee datang ke Jepang?",
+            "keyPoints": [
+              "kata tanya いつ",
+              "titik waktu versus durasi"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "__{去年|きょねん}です__ (Tahun lalu.), karena kata tanya __いつ__ menanyakan waktu terjadinya suatu peristiwa di masa lalu, dan __{去年|きょねん}__ merupakan keterangan titik waktu yang tepat untuk menjawabnya."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "__5{時間|じかん}です__ (5 jam.), karena ungkapan ini menyatakan durasi atau lama waktu, bukan titik waktu kejadian. Jawaban ini mengecoh karena sama-sama berhubungan dengan waktu, tetapi hanya cocok untuk pertanyaan mengenai lamanya waktu seperti {何時間|なんじかん}かかりましたか (memakan waktu berapa jam)."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "__{三|さん}か{月|げつ}です__ (Tiga bulan.), karena ungkapan ini juga menyatakan durasi atau rentang waktu, bukan titik waktu kedatangan. Jawaban ini menggoda karena tampak logis untuk pertanyaan tentang berapa lama tinggal di Jepang, padahal pertanyaan yang diajukan adalah __いつ__."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Slot keempat tidak digunakan karena transkrip soal ini hanya memuat pilihan 1 sampai 3."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-12T11:38:57.882Z",
+              "reviewedAt": "2026-10-12T11:58:19.000Z"
+            }
+          }
         },
         {
           "order": 2,
@@ -4627,7 +5073,53 @@
               "answerText": ""
             }
           ],
-          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/c9c16eeea8fa-n5-2018-07-choukai-quick-response-q02.mp3"
+          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/c9c16eeea8fa-n5-2018-07-choukai-quick-response-q02.mp3",
+          "audioTranscript": {
+            "text": "昼ご飯はもう食べましたか。\n1. そうしましょう。\n2. 食堂ですよ。\n3. いえ、今からです。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-transcript-v1",
+              "generatedAt": "2026-10-11T22:18:39.122Z",
+              "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          },
+          "explanation": {
+            "summary": "Pilihan 3 benar karena memberikan tanggapan yang tepat terhadap pertanyaan apakah sudah makan siang dengan menyatakan belum dan baru akan makan sekarang.",
+            "detail": "Soal ini menanyakan respons yang tepat terhadap kalimat tanya __{昼|ひる}ご{飯|はん}はもう{食|た}べましたか__ (apakah sudah makan siang?). Pertanyaan ini menggunakan kata もう (sudah) bersama bentuk lampau untuk mengonfirmasi apakah suatu tindakan sudah selesai dilakukan. Jawaban yang sesuai harus menjelaskan status kegiatan tersebut, yaitu apakah sudah selesai atau belum. Ungkapan yang menyatakan belum dan baru akan melakukannya saat ini adalah tanggapan yang paling alami.",
+            "translation": "Apakah Anda sudah makan siang?",
+            "keyPoints": [
+              "もう + kata kerja bentuk lampau",
+              "respons pertanyaan ya/tidak"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "そうしましょう (ayo kita lakukan begitu) digunakan untuk menyetujui ajakan atau saran orang lain, bukan untuk menjawab pertanyaan tentang konfirmasi tindakan yang sudah dilakukan atau belum."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "__{食堂|しょくどう}ですよ__ (kantin, lho) adalah jawaban yang menyebutkan lokasi. Pilihan ini mengecoh karena berkaitan dengan tempat makan, tetapi kalimat soal menanyakan waktu atau penyelesaian kegiatan, bukan menanyakan di mana tempat makannya."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "いえ、__{今|いま}からです__ (belum, baru mau sekarang) secara tepat menjawab pertanyaan konfirmasi tersebut dengan menyatakan penolakan atau belum lewat kata いえ, lalu menerangkan bahwa waktu makannya baru akan dimulai sekarang."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Pilihan 4 tidak digunakan karena jenis soal ini hanya memiliki tiga pilihan lisan pada rekaman audio."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-12T11:39:17.836Z",
+              "reviewedAt": "2026-10-12T11:58:19.000Z"
+            }
+          }
         },
         {
           "order": 3,
@@ -4652,7 +5144,17 @@
               "answerText": ""
             }
           ],
-          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/8c7aa53a5f8d-n5-2018-07-choukai-quick-response-q03.mp3"
+          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/8c7aa53a5f8d-n5-2018-07-choukai-quick-response-q03.mp3",
+          "audioTranscript": {
+            "text": "美味しいクッキーですね。どこで買いましたか。\n1. デパートで買いましょう。\n2. はい、そうです。\n3. 私が作りました。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-transcript-v1",
+              "generatedAt": "2026-10-11T22:18:39.122Z",
+              "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          }
         },
         {
           "order": 4,
@@ -4677,7 +5179,17 @@
               "answerText": ""
             }
           ],
-          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/32ab45cc856d-n5-2018-07-choukai-quick-response-q04.mp3"
+          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/32ab45cc856d-n5-2018-07-choukai-quick-response-q04.mp3",
+          "audioTranscript": {
+            "text": "あした、きょうとに行きますね。何時の飛行機に乗りますか。\n1. はい、飛行機で行きますよ。\n2. 4時半の飛行機です。\n3. 1時間ぐらい乗ります。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-transcript-v1",
+              "generatedAt": "2026-10-11T22:18:39.122Z",
+              "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          }
         },
         {
           "order": 5,
@@ -4702,7 +5214,17 @@
               "answerText": ""
             }
           ],
-          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/63a9dbc4edef-n5-2018-07-choukai-quick-response-q05.mp3"
+          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/63a9dbc4edef-n5-2018-07-choukai-quick-response-q05.mp3",
+          "audioTranscript": {
+            "text": "すみません、田中さんの電話番号を知っていますか。\n1. はい、わかりますよ。\n2. えっ、知りませんでした。\n3. 電話をしていません。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-transcript-v1",
+              "generatedAt": "2026-10-11T22:18:39.122Z",
+              "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          }
         },
         {
           "order": 6,
@@ -4727,7 +5249,17 @@
               "answerText": ""
             }
           ],
-          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/16b7e0e9720d-n5-2018-07-choukai-quick-response-q06.mp3"
+          "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n5-2018-07/audio/16b7e0e9720d-n5-2018-07-choukai-quick-response-q06.mp3",
+          "audioTranscript": {
+            "text": "夏休みはどこかへ出かけましたか。\n1. 旅行しましょう。\n2. どこへも行きませんでした。\n3. 外国から来ました。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-transcript-v1",
+              "generatedAt": "2026-10-11T22:18:39.122Z",
+              "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          }
         }
       ]
     }
