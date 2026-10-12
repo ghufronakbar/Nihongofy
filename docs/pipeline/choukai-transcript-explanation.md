@@ -125,6 +125,14 @@ npm run choukai:explanation:generate -- --file n5-2018-07.json --per-mondai 2 --
 npm run choukai:explanation:generate -- --file n5-2018-07.json --per-mondai 2
 ```
 
+Bila pilot parsial sudah sempat di-approve lalu paket yang sama akan dilanjutkan, buka kembali
+staging secara eksplisit. Entry lama dipertahankan dan hanya scope yang belum ada atau dipilih untuk
+overwrite yang diproses, sedangkan status review kembali menjadi `PENDING`:
+
+```bash
+npm run choukai:explanation:generate -- --file n5-2018-07.json --reopen
+```
+
 Setiap gambar diunduh lebih dahulu dan dikirim sebagai data URL. Jika satu gambar gagal diunduh,
 soal tersebut gagal secara eksplisit dan model tidak dipanggil tanpa konteks gambar. Transkrip
 reviewed menjadi sumber utama. Audio per soal hanya dikirim untuk kasus yang dieskalasikan:

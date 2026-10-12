@@ -51,6 +51,7 @@ function parseArguments(argv) {
     model: null,
     includeAudio: false,
     overwrite: false,
+    reopen: false,
     dryRun: false,
   };
 
@@ -67,6 +68,10 @@ function parseArguments(argv) {
     }
     if (argument === "--overwrite") {
       options.overwrite = true;
+      continue;
+    }
+    if (argument === "--reopen") {
+      options.reopen = true;
       continue;
     }
     if (argument === "--dry-run") {
@@ -159,6 +164,7 @@ Options:
   --model <name>           Override model (default ag/gemini-3.8-flash)
   --include-audio          Eskalasi: lampirkan audio sebagai bukti sekunder
   --overwrite              Generate ulang entry yang inputnya belum berubah
+  --reopen                 Buka kembali staging APPROVED untuk menambah/mengubah entry
   --dry-run                Validasi payload/media tanpa memanggil model/menulis staging
   --help                   Tampilkan bantuan`);
 }
@@ -367,8 +373,10 @@ async function main() {
     if (!identityMatches) {
       throw new Error("staging lama memakai fixture/model/mode berbeda; pindahkan file lama atau samakan opsi");
     }
-    if (existing.review?.status === "APPROVED") {
-      throw new Error("staging sudah APPROVED; jangan generate ulang, gunakan apply atau arsipkan staging");
+    if (existing.review?.status === "APPROVED" && !options.reopen) {
+      throw new Error(
+        "staging sudah APPROVED; gunakan --reopen bila memang ingin menambah atau mengubah entry",
+      );
     }
   }
 
@@ -420,6 +428,15 @@ async function main() {
     entries: [],
     review: { status: "PENDING", reviewedAt: null },
   };
+  if (existing?.review?.status === "APPROVED" && options.reopen) {
+    const previousReviewedAt = existing.review.reviewedAt;
+    const notes = Array.isArray(existing.review.notes) ? [...existing.review.notes] : [];
+    notes.push(
+      `Staging dibuka kembali setelah approval ${previousReviewedAt ?? "tanpa timestamp"} ` +
+        "untuk menambah atau memperbarui entry.",
+    );
+    staging.review = { status: "PENDING", reviewedAt: null, notes };
+  }
   let generated = 0;
   let failed = 0;
   let inputTokens = 0;

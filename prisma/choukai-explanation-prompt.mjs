@@ -133,8 +133,18 @@ export function parseExplanationReply(raw, question) {
     problems.push("KUNCI_MERAGUKAN: ya tetapi CATATAN_KUNCI kosong");
   }
 
-  const markupTarget = [summary, detail, fields.TERJEMAHAN ?? "", ...choices.map((choice) => choice.reason)]
-    .join("\n");
+  const keyPoints = isPlaceholder(fields.POIN)
+    ? []
+    : fields.POIN.split(";")
+        .map((point) => point.trim())
+        .filter(Boolean);
+  const markupTarget = [
+    summary,
+    detail,
+    fields.TERJEMAHAN ?? "",
+    ...keyPoints,
+    ...choices.map((choice) => choice.reason),
+  ].join("\n");
   problems.push(...markupProblems(markupTarget));
   if (problems.length > 0) return { problems };
 
@@ -142,11 +152,7 @@ export function parseExplanationReply(raw, question) {
     summary,
     detail,
     translation: isPlaceholder(fields.TERJEMAHAN) ? null : fields.TERJEMAHAN,
-    keyPoints: isPlaceholder(fields.POIN)
-      ? []
-      : fields.POIN.split(";")
-          .map((point) => point.trim())
-          .filter(Boolean),
+    keyPoints,
     choices,
     answerKeyDoubt,
     answerKeyDoubtNote,
