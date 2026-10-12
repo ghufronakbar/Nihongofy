@@ -4135,6 +4135,43 @@
               "generatedAt": "2026-10-11T22:18:36.215Z",
               "reviewedAt": "2026-10-12T00:57:32.000Z"
             }
+          },
+          "explanation": {
+            "summary": "Kunci jawaban benar karena guru secara tegas meminta para siswa untuk langsung datang ke stasiun dan menyatakan akan menunggu di sana pada pukul 8.30 pagi.",
+            "detail": "Pertanyaan menanyakan di mana para siswa akan bertemu guru pada besok pagi. Dalam percakapan, guru menjelaskan bahwa mereka akan pergi melihat kota tua naik kereta jam sembilan. Di kota tersebut terdapat hotel tertua di Jepang serta taman yang indah. Siswa perempuan kemudian menanyakan apakah mereka harus berkumpul di sekolah terlebih dahulu sebelum pergi. Guru menepis hal tersebut dengan berkata __いいえ__ (tidak), lalu menegaskan instruksinya yaitu __{駅|えき}に{来|き}てください。8{時半|じはん}に{待|ま}っています。__ (silakan datang ke stasiun; saya menunggu pada pukul 8.30). Oleh karena itu, tempat pertemuan yang ditentukan adalah stasiun.",
+            "translation": "Tidak, silakan datang ke stasiun; saya menunggu pada pukul 8.30.",
+            "keyPoints": [
+              "~てください",
+              "~てから",
+              "どこ"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "ホテル (hotel), tempat ini merupakan obyek wisata di kota tujuan yang akan dikunjungi, bukan lokasi titik kumpul sebelum berangkat."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "こうえん (taman), ini juga sekadar obyek wisata indah yang akan dilihat di kota tujuan, bukan tempat untuk bertemu guru besok pagi."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "がっこう (sekolah), murid sempat menanyakan apakah mereka harus datang ke sekolah terlebih dahulu, tetapi usulan ini langsung ditolak oleh guru."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "えき (stasiun), guru secara langsung menginstruksikan para siswa untuk datang ke stasiun karena ia akan menunggu di sana pada pukul 8.30."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-12T13:23:43.114Z",
+              "reviewedAt": "2026-10-12T13:53:32.000Z"
+            }
           }
         },
         {
@@ -4170,6 +4207,43 @@
               "promptVersion": "choukai-transcript-v1",
               "generatedAt": "2026-10-11T22:18:36.215Z",
               "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          },
+          "explanation": {
+            "summary": "Guru meminta kursi diletakkan di sebelah kiri meja yang berada di dekat jendela, sehingga posisi yang tepat adalah nomor 1.",
+            "detail": "Soal ini menanyakan lokasi peletakan kursi oleh siswa laki-laki. Dalam percakapan, guru memberikan arahan langsung dengan mengatakan __{机|つくえ}の{左側|ひだりがわ}に{置|お}いてください__ (tolong letakkan di sebelah kiri meja). Siswa laki-laki kemudian memperjelas letak tersebut dengan menyebutkan __{窓|まど}のそばですね__ (di dekat jendela, ya), yang langsung dibenarkan oleh guru. Berdasarkan gambar yang dilihat dari sudut pandang pembicara, sisi kiri meja adalah nomor 1 yang tepat berada di samping jendela.",
+            "translation": "Tolong letakkan di sebelah kiri meja.",
+            "keyPoints": [
+              "{左側|ひだりがわ}",
+              "{窓|まど}のそば",
+              "～てください"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "Posisi nomor 1 berada di sebelah kiri meja dan di dekat jendela, sangat sesuai dengan instruksi guru dan konfirmasi siswa."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "Posisi nomor 2 berada di bagian belakang meja dekat dinding, bukan di sebelah kiri meja."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "Posisi nomor 3 berada di sebelah kanan meja dekat pintu. Pilihan ini mengecoh bagi yang tertukar antara {左|ひだり} (kiri) dan {右|みぎ} (kanan)."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Posisi nomor 4 berada di sisi depan meja menghadap kedua pembicara, bukan di sebelah kiri meja."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-12T13:24:08.514Z",
+              "reviewedAt": "2026-10-12T13:53:32.000Z"
             }
           }
         },
@@ -4207,6 +4281,45 @@
               "generatedAt": "2026-10-11T22:18:36.215Z",
               "reviewedAt": "2026-10-12T00:57:32.000Z"
             }
+          },
+          "explanation": {
+            "summary": "Guru meminta murid mengambil buku yang berwarna putih dan tipis, sehingga buku nomor 1 adalah pilihan yang tepat sesuai gambar.",
+            "detail": "Soal ini menanyakan buku mana yang akan diambil dan dibawa oleh {男|おとこ}の{学生|がくせい} (siswa laki-laki). Pada gambar, terdapat empat buah buku di atas meja dengan variasi warna antara {黒|くろ}い (hitam) atau {白|しろ}い (putih), serta ketebalan antara {厚|あつ}い (tebal) atau {薄|うす}い (tipis). Di awal percakapan, siswa mengonfirmasi apakah buku yang dimaksud berwarna hitam, namun guru menyangkalnya dengan mengatakan __{白|しろ}い{本|ほん}__ (buku putih). Kemudian siswa bertanya lagi apakah bukunya tebal, dan guru kembali mengoreksi dengan mengatakan __{薄|うす}い{本|ほん}__ (buku tipis). Oleh karena itu, buku yang dimaksud adalah buku putih yang tipis, yaitu nomor 1.",
+            "translation": "Bukan, buku putih. / Bukan, buku tipis.",
+            "keyPoints": [
+              "{白|しろ}い",
+              "{黒|くろ}い",
+              "{厚|あつ}い",
+              "{薄|うす}い",
+              "~てください"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "Gambar menunjukkan buku berwarna putih dan tipis, sesuai dengan kedua kriteria yang diminta oleh guru."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "Gambar menunjukkan buku yang tipis tetapi berwarna hitam, padahal guru sudah menyatakan bahwa bukunya bukan buku hitam melainkan buku putih."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "Gambar menunjukkan buku yang berwarna putih tetapi berukuran tebal, padahal guru menegaskan bahwa buku yang diminta adalah buku tipis."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Gambar menunjukkan buku yang berwarna hitam dan tebal, yang sepenuhnya berlawanan dengan permintaan guru."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-12T13:24:50.756Z",
+              "reviewedAt": "2026-10-12T13:53:32.000Z"
+            }
           }
         },
         {
@@ -4242,6 +4355,43 @@
               "promptVersion": "choukai-transcript-v1",
               "generatedAt": "2026-10-11T22:18:36.215Z",
               "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          },
+          "explanation": {
+            "summary": "Gedung Sakura berada di sisi kanan jalan lurus dan posisinya di sebelah belakang toserba (デパート), sehingga nomor 2 adalah pilihan yang tepat.",
+            "detail": "Soal menanyakan di manakah letak Gedung Sakura (さくらビル). Berdasarkan percakapan, laki-laki memberi petunjuk jalan dengan mengatakan jalanlah lurus di jalan ini (この__{道|みち}__をまっすぐ__{行|い}__ってください), lalu menunjuk toserba besar di sana (__{大|おお}__きいデパート), dan menyebutkan bahwa letak gedungnya ada di seberang atau baliknya (その__{向|む}__こうです). Perempuan memastikan kembali bahwa posisinya ada di sisi kanan jalan ini (この__{道|みち}__の__{右側|みぎがわ}__ですね). Pada gambar, posisi laki-laki dan perempuan sedang menghadap ke atas menyusuri jalan lurus. Bangunan di sebelah kanan jalan dan berada di balik toserba adalah nomor 2.",
+            "translation": "Di manakah letak Gedung Sakura?",
+            "keyPoints": [
+              "まっすぐ",
+              "{向|む}こう",
+              "{右側|みぎがわ}"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "Bangunan nomor 1 terletak di sisi kiri jalan (__{左側|ひだりがわ}__ (sisi kiri)), padahal perempuan memastikan letaknya ada di sisi kanan jalan (__{右側|みぎがわ}__ (sisi kanan))."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "Bangunan nomor 2 tepat berada di sisi kanan jalan (__{右側|みぎがわ}__) dan posisinya berada di balik atau sebelah belakang toserba (その__{向|む}__こう (sebelah baliknya/seberangnya))."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "Bangunan nomor 3 berada di sisi kiri jalan (__{左側|ひだりがわ}__) di sudut persimpangan, sehingga bertentangan dengan keterangan arah kanan."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Bangunan nomor 4 terletak di sebelah samping toserba (__{隣|となり}__ (sebelah/samping)) di jalan yang berbelok ke kanan, bukan di seberang atau kelanjutan jalan lurus di balik toserba (その__{向|む}__こう)."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-12T13:26:57.162Z",
+              "reviewedAt": "2026-10-12T13:53:32.000Z"
             }
           }
         },
@@ -4279,6 +4429,43 @@
               "generatedAt": "2026-10-11T22:18:36.215Z",
               "reviewedAt": "2026-10-12T00:57:32.000Z"
             }
+          },
+          "explanation": {
+            "summary": "Pegawai toko akan membungkus tiga tangkai bunga tanpa pita karena pembeli menambah satu tangkai dari pesanan awal dan menolak pemakaian pita.",
+            "detail": "Soal ini menanyakan bagaimana pegawai toko akan menyiapkan pesanan bunga pelanggan ({店|みせ}の {人|ひと}は {花|はな}を どうしますか [apa yang akan dilakukan pegawai toko terhadap bunganya?]). Pelanggan pria awalnya memesan dua tangkai bunga dengan mengatakan __{二本|にほん}ください__ (tolong berikan dua tangkai). Namun, ia segera mengubah pesanannya dengan menambahkan もう__{一本|いっぽん}お{願|ねが}いします__ (tolong satu tangkai lagi), sehingga jumlah bunganya menjadi tiga tangkai ({三本|さんぼん} [tiga tangkai]). Kemudian, ketika pegawai wanita menanyakan apakah perlu diberi pita (リボンはどうしますか [bagaimana dengan pitanya?]), pria tersebut menjawab __{要|い}りません__ (tidak perlu). Oleh karena itu, buket yang disiapkan adalah buket berisi tiga tangkai bunga tanpa hiasan pita, yang tepat ditunjukkan oleh gambar nomor 3.",
+            "translation": "Apa yang akan dilakukan pegawai toko terhadap bunganya?",
+            "keyPoints": [
+              "{助数詞|じょすうし} 〜{本|ほん}",
+              "もう",
+              "{要|い}る / {要|い}りません"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "Gambar ini memperlihatkan dua tangkai bunga tanpa pita. Pilihan ini mengecoh jika pendengar hanya menangkap ucapan pesanan awal __{二本|にほん}__ tanpa memperhatikan bahwa pembeli menambahkan satu tangkai lagi sesudahnya."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "Gambar ini memperlihatkan dua tangkai bunga dengan hiasan pita. Pilihan ini keliru dari dua sisi sekaligus, yaitu jumlah bunga hanya dua tangkai dan memakai pita padahal pria tersebut mengatakan __{要|い}りません__."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "Gambar ini tepat karena memperlihatkan tiga tangkai bunga dan tidak menggunakan pita, sesuai dengan perubahan pesanan akhir menjadi tiga tangkai serta penolakan pemakaian pita."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Gambar ini memperlihatkan tiga tangkai bunga yang diikat pita. Jumlah bunganya memang tiga tangkai, tetapi penggunaan pita membuatnya salah karena pria tersebut sudah menolak tawaran pita dari pegawai toko."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-12T13:28:06.429Z",
+              "reviewedAt": "2026-10-12T13:53:32.000Z"
+            }
           }
         },
         {
@@ -4315,6 +4502,43 @@
               "generatedAt": "2026-10-11T22:18:36.215Z",
               "reviewedAt": "2026-10-12T00:57:32.000Z"
             }
+          },
+          "explanation": {
+            "summary": "Laki-laki meminta perempuan membawa topi karena cuaca panas dan membawa cangkir, sedangkan teh akan disiapkan oleh laki-laki itu sendiri, sehingga pilihan 4 benar.",
+            "detail": "Soal menanyakan barang apa saja yang harus dibawa oleh {女|おんな}の{人|ひと} (perempuan) untuk kegiatan kerja bakti di taman. Laki-laki menyampaikan dua permintaan penting. Pertama, ia berkata __{暑|あつ}いですから、{帽子|ぼうし}をわすれないでください__ (karena panas, tolong jangan lupakan topi). Kedua, ia menambahkan __{茶|ちゃ}はわたしが{持|も}っていきますから、カップを{持|も}ってきてください__ (karena teh untuk semuanya akan saya bawa, tolong bawalah cangkir). Dengan demikian, barang yang harus dibawa oleh perempuan adalah {帽子|ぼうし} (topi) dan カップ (cangkir). Gambar pada pilihan 4 menampilkan kedua benda tersebut secara tepat.",
+            "translation": "Karena panas, jangan lupakan topi. Lalu karena teh untuk semuanya akan saya bawa, tolong bawa cangkir.",
+            "keyPoints": [
+              "~ないでください",
+              "~てください",
+              "から (alasan)"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "Gambar cangkir saja menggoda karena laki-laki memang menyuruh membawa cangkir, tetapi pilihan ini mengabaikan instruksi untuk tidak melupakan topi."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "Gambar topi saja menggoda karena topi disebutkan pertama kali oleh laki-laki, namun pilihan ini melewatkan permintaan untuk membawa cangkir."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "Gambar cangkir beserta wadah teh tidak tepat karena laki-laki menegaskan bahwa teh untuk semua orang akan dibawa oleh dirinya sendiri ({私|わたし}が{持|も}っていきます), bukan oleh si perempuan."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Gambar topi dan cangkir sesuai sepenuhnya dengan kedua benda yang diminta oleh laki-laki agar dibawa oleh perempuan."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-12T13:28:29.076Z",
+              "reviewedAt": "2026-10-12T13:53:32.000Z"
+            }
           }
         },
         {
@@ -4349,6 +4573,43 @@
               "promptVersion": "choukai-transcript-v1",
               "generatedAt": "2026-10-11T22:18:36.215Z",
               "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          },
+          "explanation": {
+            "summary": "Wanita memutuskan naik bus nomor 2 setelah petugas menjelaskan bahwa bus tersebut akan segera tiba dan lebih cepat sampai daripada bus nomor 3.",
+            "detail": "Pertanyaan menanyakan bus mana yang akan dinaiki oleh wanita tersebut: __{女|おんな}の{人|ひと}は どの バスに {乗|の}りますか__ (Wanita itu akan naik bus yang mana?).\nAwalnya, wanita menanyakan apakah bus nomor 1 menuju ke {山川|やまかわ}{駅|えき} (Stasiun Yamakawa). Petugas menjawab bukan, melainkan bus nomor 2, 3, dan 4. Namun, bus nomor 4 hanya beroperasi pada akhir pekan sehingga hari ini tidak ada.\nKetika bus nomor 3 tiba, wanita itu berniat menaikinya. Akan tetapi, petugas menyarankan untuk menunggu bus nomor 2 yang akan segera datang karena bus nomor 3 memiliki banyak バス{停|てい} (halte bus) sehingga bus nomor 2 lebih cepat sampai. Wanita tersebut setuju dengan mengatakan __{少|すこ}し{待|ま}ちます__ (Kalau begitu, saya akan menunggu sebentar) dan berterima kasih. Dengan demikian, wanita itu akan naik bus nomor 2.",
+            "translation": "Kalau begitu, saya akan menunggu sebentar. Terima kasih.",
+            "keyPoints": [
+              "～のほうが{早|はや}い",
+              "{土曜日|どようび}と{日曜日|にちようび}",
+              "バス{停|てい}"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "1{番|ばん} (nomor 1) digugurkan sejak awal karena petugas menegaskan bahwa bus nomor 1 tidak pergi menuju ke Stasiun Yamakawa."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "2{番|ばん} (nomor 2) adalah pilihan yang diambil wanita tersebut karena bus ini segera datang dan perjalanannya lebih cepat daripada bus nomor 3."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "3{番|ばん} (nomor 3) sempat ingin dinaiki saat busnya tiba, tetapi dibatalkan setelah wanita tersebut mendengar penjelasan bahwa bus ini berhenti di banyak halte sehingga lebih lambat."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "4{番|ばん} (nomor 4) memang menuju ke Stasiun Yamakawa, tetapi tidak beroperasi hari ini karena jadwalnya khusus hari Sabtu dan Minggu."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-12T13:29:01.029Z",
+              "reviewedAt": "2026-10-12T13:53:32.000Z"
             }
           }
         }
@@ -4394,6 +4655,44 @@
               "generatedAt": "2026-10-11T22:18:36.215Z",
               "reviewedAt": "2026-10-12T00:57:32.000Z"
             }
+          },
+          "explanation": {
+            "summary": "{男|おとこ}の{学生|がくせい} (mahasiswa laki-laki) menjelaskan bahwa sweater didapat dari kakak-kakaknya, sedangkan {帽子|ぼうし} (topi) diberikan oleh ayahnya melalui ucapan __{父|ちち}がくれました__ (ayah yang memberikannya kepada saya), sehingga pilihan 3 adalah jawaban yang benar.",
+            "detail": "Pertanyaan menanyakan dari siapa mahasiswa laki-laki mendapatkan topi ({男|おとこ}の{学生|がくせい}は{帽子|ぼうし}を{誰|だれ}にもらいましたか).\nDalam percakapan, {女|おんな}の{学生|がくせい} (mahasiswa perempuan) memuji sweater yang warnanya indah. Mahasiswa laki-laki menjawab bahwa sweater itu ia terima dari kakak laki-laki dan kakak perempuan saat ulang tahun. Setelah itu, ia memperjelas benda yang ditanyakan soal dengan berkata bahwa topi itu juga hadiah dan ayahnya yang memberikan.\nBentuk __{父|ちち}がくれました__ bermakna ayah memberikannya kepada saya, yang setara dengan menerima topi dari ayah (おとうさん). Oleh karena itu, detail penentu jawaban ada pada penyebutan topi dan ayahnya, bukan sweater.",
+            "translation": "Topi ini juga hadiah. Ayah yang memberikannya kepada saya.",
+            "keyPoints": [
+              "{授受表現|じゅじゅひょうげん}",
+              "くれる",
+              "もらう",
+              "{家族|かぞく}の{呼|よ}び{方|かた}"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "おにいさん (kakak laki-laki), sosok {兄|あに} memang disebut dalam audio, tetapi ia bersama kakak perempuan memberikan sweater, bukan topi."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "おねえさん (kakak perempuan), {姉|あね} adalah orang yang memberikan sweater bersama kakak laki-laki, sehingga pilihan ini merupakan pengecoh bagi pendengar yang tidak membedakan kedua benda tersebut."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "おとうさん (ayah), mahasiswa laki-laki secara gamblang menyatakan bahwa ayahnya yang memberikan topi tersebut melalui kalimat __{父|ちち}がくれました__."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "おかあさん (ibu), sosok {母|はは} sama sekali tidak disebutkan dalam percakapan."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-12T13:29:34.355Z",
+              "reviewedAt": "2026-10-12T13:53:32.000Z"
+            }
           }
         },
         {
@@ -4428,6 +4727,42 @@
               "promptVersion": "choukai-transcript-v1",
               "generatedAt": "2026-10-11T22:18:36.215Z",
               "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          },
+          "explanation": {
+            "summary": "Kunci jawaban benar karena guru {山田|やまだ} secara gamblang menyatakan bahwa dirinya mengajar pada hari {月曜日|げつようび} (Senin).",
+            "detail": "Pertanyaan menanyakan hari pelaksanaan kelas guru {山田|やまだ} melalui kalimat __{山田|やまだ}{先生|せんせい}のクラスは{何曜日|なんようび}ですか__ (Kelas guru Yamada hari apa?). Dalam audio, guru {山田|やまだ} memperkenalkan diri lalu berkata __{私|わたし}は{月曜日|げつようび}に{教|おし}えます__ (Saya mengajar pada hari Senin). Setelah itu, ia juga menyebutkan hari-hari lain sebagai pengecoh, yaitu {木曜|もくよう} (Kamis) dan {金曜|きんよう} (Jumat) yang diajar oleh guru lain, serta {火曜|かよう} (Selasa) dan {水曜|すいよう} (Rabu) yang tidak memiliki jadwal kelas sama sekali. Dengan demikian, hari mengajar guru {山田|やまだ} adalah hari Senin.",
+            "translation": "Saya mengajar pada hari Senin.",
+            "keyPoints": [
+              "{何曜日|なんようび}",
+              "nama-nama hari dalam seminggu ({月曜日|げつようび}, {火曜日|かようび}, {水曜日|すいようび}, {木曜日|もくようび}, {金曜日|きんようび})"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "げつようび (hari Senin), sesuai dengan ucapan pembicara yaitu __{私|わたし}は{月曜日|げつようび}に{教|おし}えます__."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "かようび (hari Selasa), salah karena pada transkrip disebutkan __{火曜|かよう}と{水曜|すいよう}はクラスはありません__ (Hari Selasa dan Rabu tidak ada kelas). Pilihan ini mengecoh karena nama harinya ikut disebut."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "すいようび (hari Rabu), salah karena sama seperti hari Selasa, pada hari Rabu tidak diadakan kelas apapun."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "もくようび (hari Kamis), salah karena disebutkan __{木曜|もくよう}と{金曜|きんよう}はほかの{先生|せんせい}が{教|おし}えます__ (Hari Kamis dan Jumat diajar guru lain), bukan oleh guru {山田|やまだ}."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-12T13:30:02.535Z",
+              "reviewedAt": "2026-10-12T13:53:32.000Z"
             }
           }
         },
@@ -4464,6 +4799,43 @@
               "generatedAt": "2026-10-11T22:18:36.215Z",
               "reviewedAt": "2026-10-12T00:57:32.000Z"
             }
+          },
+          "explanation": {
+            "summary": "Pria menyatakan bahwa toilet sudah selesai dibersihkan, lalu ia berinisiatif membersihkan halaman sebelum pergi berbelanja, sehingga tempat yang akan dibersihkan pria adalah halaman.",
+            "detail": "Pertanyaan menanyakan tempat mana yang akan dibersihkan oleh si pria ({男|おとこ}の{人|ひと}は どこを {掃除|そうじ}しますか / Pria akan membersihkan mana?). Dalam percakapan, si wanita membagi tugas dengan mengatakan bahwa ia sendiri akan membersihkan pintu masuk ({玄関|げんかん}) lalu dapur ({台所|だいどころ}), dan meminta pria membersihkan toilet. Namun, pria merespons bahwa toilet sudah dibersihkan (トイレは もう {掃除|そうじ}をしたよ / toilet sudah dibersihkan). Setelah itu, pria menawarkan untuk membersihkan halaman ({庭|にわ}の {掃除|そうじ}をしてから、{買|か}い{物|もの}に {行|い}くね / kalau begitu, setelah membersihkan halaman, aku akan pergi belanja ya). Oleh karena itu, bagian yang akan dibersihkan oleh pria selanjutnya adalah halaman ({庭|にわ}).",
+            "translation": "Kalau begitu, setelah membersihkan halaman, aku pergi berbelanja ya.",
+            "keyPoints": [
+              "~てから",
+              "もう",
+              "{掃除|そうじ}する"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "__{玄関|げんかん}__ (pintu masuk). Bagian ini adalah area yang dibersihkan oleh si wanita, bukan si pria, sebagaimana diucapkan si wanita di awal percakapan."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "__{台所|だいどころ}__ (dapur). Bagian ini juga merupakan tugas si wanita setelah ia selesai membersihkan pintu masuk."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "__トイレ__ (toilet). Pilihan ini mengecoh karena si wanita sempat memintanya, tetapi pria menolak tugas tersebut dengan menjelaskan bahwa toilet sudah selesai ia bersihkan sebelumnya."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "__{庭|にわ}__ (halaman/kebun). Pria secara jelas menyatakan akan membersihkan area ini sebelum berangkat belanja."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-12T13:30:30.848Z",
+              "reviewedAt": "2026-10-12T13:53:32.000Z"
+            }
           }
         },
         {
@@ -4498,6 +4870,42 @@
               "promptVersion": "choukai-transcript-v1",
               "generatedAt": "2026-10-11T22:18:36.215Z",
               "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          },
+          "explanation": {
+            "summary": "Guru secara jelas menyatakan bahwa kamar para siswa berada di lantai 8, sementara lantai lainnya adalah fasilitas hotel seperti restoran dan tempat pemandian.",
+            "detail": "Pertanyaan menanyakan lantai tempat kamar para siswa berada, yaitu __{学生|がくせい}の {部屋|へや}は {何階|なんがい}ですか__ (Kamar siswa ada di lantai berapa?). Dalam pengumuman, guru menyebutkan beberapa lantai: lantai 1 dan 2 ada restoran, lantai paling atas yaitu lantai 10 ada tempat pemandian, dan kamar para siswa berada di lantai 8 dengan kalimat __{皆|みな}さんの {部屋|へや}は 8{階|かい}です__ (Kamar kalian ada di lantai 8). Guru kemudian meminta para siswa menaruh barang di kamar lalu berkumpul di restoran lantai 2. Dengan demikian, lantai kamar siswa yang tepat adalah lantai 8.",
+            "translation": "Kamar kalian ada di lantai 8.",
+            "keyPoints": [
+              "{階|かい}",
+              "~にあります"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "{1階|いっかい} (lantai 1) adalah salah satu lantai tempat restoran berada bersama lantai 2, bukan kamar siswa."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{2階|にかい} (lantai 2) adalah lokasi restoran tempat para siswa diminta berkumpul setelah menaruh barang bawaan mereka, bukan lokasi kamar."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "{8階|はっかい} (lantai 8) secara eksplisit disebutkan oleh guru sebagai lokasi kamar para siswa sebelum mereka diminta menaruh barang di sana."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "{10階|じゅっかい} (lantai 10) adalah lantai paling atas tempat pemandian berada, bukan kamar siswa."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-12T13:30:46.227Z",
+              "reviewedAt": "2026-10-12T13:53:32.000Z"
             }
           }
         },
@@ -4535,6 +4943,43 @@
               "generatedAt": "2026-10-11T22:18:36.215Z",
               "reviewedAt": "2026-10-12T00:57:32.000Z"
             }
+          },
+          "explanation": {
+            "summary": "Pria tersebut menyatakan bahwa kemarin ia membaca buku di rumah, sehingga gambar 2 adalah jawaban yang tepat.",
+            "detail": "Soal menanyakan apa yang dilakukan oleh pria ({男|おとこ}の{人|ひと}) pada hari kemarin ({昨日|きのう}). Pada percakapan, wanita membuka pembicaraan dengan menyinggung bahwa hari Minggu kemarin udaranya dingin dan berangin kencang. Pria tersebut merespons bahwa biasanya setiap hari Minggu ia bermain tenis bersama teman-temannya. Namun, khusus hari kemarin, ia menghabiskan waktu di rumah untuk membaca buku dan bahkan tidak pergi berbelanja. Lawan bicaranya, yaitu sang wanita, juga menceritakan bahwa kemarin ia menonton televisi dan membaca buku di rumah. Pilihan bermain tenis, berbelanja, dan menonton televisi sengaja dimunculkan sebagai pengalih, tetapi kegiatan nyata yang dilakukan oleh pria tersebut kemarin hanyalah membaca buku di rumah.",
+            "translation": "Kemarin saya membaca buku di rumah.",
+            "keyPoints": [
+              "~ました",
+              "~ています",
+              "~たり~たりする"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "Gambar 1 memperlihatkan pria bermain tenis di lapangan. Kegiatan bermain tenis memang disebut pria tersebut sebagai rutinitasnya setiap hari Minggu dengan ungkapan {毎週|まいしゅう}{日曜日|にちようび}は{友達|ともだち}とテニスをしています (setiap hari Minggu bermain tenis bersama teman), tetapi ia menegaskan bahwa kegiatan kemarin berbeda: ia membaca buku di rumah."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "Gambar 2 memperlihatkan pria membaca buku di dalam rumah. Pria tersebut menyatakan secara jelas kegiatan yang dilakukannya kemarin dengan ucapan __{昨日|きのう}は{家|いえ}で{本|ほん}を{読|よ}みました__ (kemarin membaca buku di rumah), sehingga ilustrasi ini tepat."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "Gambar 3 memperlihatkan pria berbelanja di toko bahan makanan. Pria tersebut menyebut kata {買|か}い{物|もの} (belanja), tetapi menegaskan bahwa ia tidak pergi dengan kalimat {買|か}い{物|もの}も{行|い}きませんでした (juga tidak pergi berbelanja)."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Gambar 4 memperlihatkan pria menonton televisi di rumah. Menonton televisi adalah kegiatan yang dilakukan oleh sang wanita melalui ucapannya yaitu テレビを{見|み}たり{本|ほん}を{読|よ}んだりしました (menonton televisi dan membaca buku), bukan kegiatan yang dilakukan oleh pria."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-12T13:31:40.812Z",
+              "reviewedAt": "2026-10-12T13:53:32.000Z"
+            }
           }
         },
         {
@@ -4569,6 +5014,42 @@
               "promptVersion": "choukai-transcript-v1",
               "generatedAt": "2026-10-11T22:18:36.215Z",
               "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          },
+          "explanation": {
+            "summary": "Kunci jawaban benar karena wanita tersebut akhirnya mengajak bertemu pada {八時五分前|はちじごふんまえ} (lima menit sebelum pukul delapan), yaitu pukul 7:55 ({七時五十五分|しちじごじゅうごふん}).",
+            "detail": "Soal ini menanyakan jam berapa kedua orang tersebut akan bertemu di depan pintu keluar toserba (デパート). Pada awalnya, wanita itu melihat sekarang pukul 7:20 ({七時二十分|しちじにじゅっぷん}) dan mengajak bertemu satu jam kemudian, yaitu pukul 8:20 ({八時二十分|はちじにじゅっぷん}). Akan tetapi, pria itu memberi tahu bahwa toserba tersebut tutup pada pukul 8:00 ({八時|はちじ}). Mendengar hal itu, sang wanita meralat ajakannya dan berkata __{八時五分前|はちじごふんまえ}に{会|あ}いましょう__ (mari bertemu pada lima menit sebelum pukul delapan). Lima menit sebelum pukul 8 tepat adalah pukul 7:55. Oleh karena itu, pilihan 2 adalah jawaban yang tepat.",
+            "translation": "Kalau begitu, mari bertemu pada lima menit sebelum pukul delapan.",
+            "keyPoints": [
+              "{時間|じかん}の{表現|ひょうげん}",
+              "～{分前|ふんまえ}"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "7:20 ({七時二十分|しちじにじゅっぷん} / pukul tujuh lebih dua puluh menit) adalah waktu saat percakapan sedang berlangsung, bukan waktu yang disepakati untuk bertemu. Pilihan ini mengecoh karena disebutkan langsung di awal percakapan."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "7:55 ({七時五十五分|しちじごじゅうごふん} / pukul tujuh lebih lima puluh lima menit) tepat dengan kesepakatan akhir kedua orang tersebut yang akan bertemu pada lima menit sebelum pukul delapan."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "8:05 ({八時五分|はちじごふん} / pukul delapan lebih lima menit) mengecoh pendengar yang salah mengartikan kata {前|まえ} (kurang atau sebelum) menjadi lewat, padahal toserba sudah tutup pada pukul 8:00."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "8:20 ({八時二十分|はちじにじゅっぷん}) adalah usulan pertama sang wanita yang akhirnya dibatalkan karena toserba sudah tutup pada pukul 8:00."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-12T13:32:23.657Z",
+              "reviewedAt": "2026-10-12T13:53:32.000Z"
             }
           }
         }
@@ -4615,6 +5096,42 @@
               "generatedAt": "2026-10-11T22:18:36.215Z",
               "reviewedAt": "2026-10-12T00:57:32.000Z"
             }
+          },
+          "explanation": {
+            "summary": "Kunci jawaban benar adalah pilihan 1 karena ungkapan standar bahasa Jepang saat hendak pergi tidur adalah お{休|やす}みなさい (selamat tidur).",
+            "detail": "Soal ini menguji pemahaman salam sehari-hari ({挨拶|あいさつ}) yang tepat sesuai situasi.\nPada gambar terlihat seorang laki-laki yang ditunjuk tanda panah sedang berjalan menuju kamar tidurnya dan menyapa anggota keluarganya yang sedang duduk di sofa. Situasi pada audio menyebutkan __{今|いま}から{寝|ね}ます。{家族|かぞく}に{何|なん}と{言|い}いますか__ (Sekarang mau tidur. Apa yang dikatakan kepada keluarga?).\nUngkapan yang alami dan tepat diucapkan kepada keluarga sebelum beranjak tidur adalah お{休|やす}みなさい. Oleh karena itu, pilihan 1 merupakan jawaban yang benar.",
+            "translation": "Sekarang mau tidur. Apa yang dikatakan kepada keluarga?",
+            "keyPoints": [
+              "お{休|やす}みなさい",
+              "{挨拶|あいさつ}"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "__お{休|やす}みなさい__ (selamat tidur). Ini adalah salam yang tepat dan lazim diucapkan sebelum beristirahat atau tidur di malam hari."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "__こんばんは__ (selamat malam). Pilihan ini menggoda karena sama-sama berlatar waktu malam, tetapi こんばんは adalah salam sapaan saat baru bertemu orang pada malam hari, bukan salam pamit hendak tidur."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "__さようなら__ (selamat tinggal). Pilihan ini menggoda karena merupakan salam perpisahan, tetapi さようなら dipakai saat berpisah pergi ke tempat lain atau untuk waktu yang lama, bukan untuk pamit tidur di dalam rumah."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Slot keempat tidak digunakan karena transkrip soal ini hanya memuat pilihan 1 sampai 3."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-12T13:32:53.310Z",
+              "reviewedAt": "2026-10-12T13:53:32.000Z"
+            }
           }
         },
         {
@@ -4650,6 +5167,43 @@
               "promptVersion": "choukai-transcript-v1",
               "generatedAt": "2026-10-11T22:18:36.215Z",
               "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          },
+          "explanation": {
+            "summary": "Pilihan 3 benar karena menanyakan waktu saat ini dengan ungkapan yang tepat, sesuai kondisi pembicara yang tidak memiliki jam tangan.",
+            "detail": "Soal ini menguji kemampuan memilih ungkapan yang tepat sesuai konteks gambar dan narasi. Narasi menjelaskan bahwa pembicara tidak memiliki jam dan ingin mengetahui waktu. Pada gambar, tampak orang yang ditunjuk tanda panah menoleh ke arah temannya yang memakai jam tangan di meja belajar. Pola kalimat yang tepat untuk menanyakan waktu atau jam saat ini adalah dengan memakai kata tanya __{何時|なんじ}__ (jam berapa). Oleh karena itu, ungkapan yang diucapkan adalah __{今|いま}{何時|なんじ}ですか__ (sekarang jam berapa?).",
+            "translation": "Tidak ada jam. Ingin tahu waktu. Apa yang akan dikatakan?",
+            "keyPoints": [
+              "{何時|なんじ}ですか",
+              "いくら",
+              "どのぐらい"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "あのう、いくらですか (permisi, berapa harganya?) digunakan untuk menanyakan harga suatu barang ketika berbelanja, bukan untuk menanyakan waktu. Pilihan ini menggoda bagi yang tertukar antara kata tanya harga dan waktu."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "あのう、どのぐらいですか (permisi, kira-kira berapa lama?) digunakan untuk menanyakan perkiraan durasi perjalanan/kegiatan atau jumlah kuantitas, bukan untuk menanyakan titik jam pada saat ini."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "あのう、__{今|いま}{何時|なんじ}ですか__ (permisi, sekarang jam berapa?) merupakan ungkapan yang tepat dan sopan untuk menanyakan waktu kepada lawan bicara."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Slot keempat tidak digunakan karena transkrip soal ini hanya memuat pilihan 1 sampai 3."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-12T13:33:15.346Z",
+              "reviewedAt": "2026-10-12T13:53:32.000Z"
             }
           }
         },
@@ -4687,6 +5241,42 @@
               "generatedAt": "2026-10-11T22:18:36.215Z",
               "reviewedAt": "2026-10-12T00:57:32.000Z"
             }
+          },
+          "explanation": {
+            "summary": "Orang yang ditunjuk tanda panah ingin duduk di kursi kosong dekat orang lain, sehingga ungkapan meminta izin yang tepat adalah pilihan 3.",
+            "detail": "Soal ini menanyakan ungkapan yang tepat saat ingin duduk di meja makan yang sudah ditempati orang lain. Pada gambar, seorang wanita yang membawa nampan makanan hendak duduk di satu kursi kosong yang tersisa. Situasi pada audio adalah __{昼|ひる}ごはんを{食|た}べます。{座|すわ}りたいです。{何|なん}と{言|い}いますか。__ (Akan makan siang. Ingin duduk. Mengatakan apa?). Untuk meminta izin menempati kursi tersebut secara sopan kepada orang yang sudah duduk di sana, ungkapan yang lazim digunakan adalah menanyakan apakah tempat itu boleh ditempati.",
+            "translation": "Akan makan siang. Ingin duduk. Mengatakan apa?",
+            "keyPoints": [
+              "{許可|きょか}を{求|もと}める{表現|ひょうげん}",
+              "ここ、いいですか"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "__{座|すわ}りませんでしたか__ (Tidakkah Anda duduk?) adalah bentuk lampau negatif untuk menanyakan apakah lawan bicara tadi tidak duduk. Ungkapan ini mengecoh karena memuat kata kerja duduk, tetapi artinya tidak cocok untuk meminta izin duduk."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "__どのいすですか__ (Kursi yang mana?) menanyakan pilihan kursi. Ungkapan ini tidak sesuai dengan situasi karena wanita tersebut sudah berdiri tepat di depan kursi yang kosong dan berniat meminta izin untuk menggunakannya."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "__ここ、いいですか__ (Boleh di sini?) adalah ungkapan santun yang tepat untuk meminta izin menggunakan tempat atau kursi yang kosong."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Slot keempat tidak digunakan karena transkrip soal ini hanya memuat pilihan 1 sampai 3."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-12T13:33:56.651Z",
+              "reviewedAt": "2026-10-12T13:53:32.000Z"
+            }
           }
         },
         {
@@ -4723,6 +5313,42 @@
               "generatedAt": "2026-10-11T22:18:36.215Z",
               "reviewedAt": "2026-10-12T00:57:32.000Z"
             }
+          },
+          "explanation": {
+            "summary": "Pilihan 2 benar karena ungkapan __いかがですか__ adalah bentuk sopan yang digunakan saat menawarkan sesuatu kepada orang lain.",
+            "detail": "Soal ini menguji pemahaman mengenai ungkapan yang tepat saat ingin menawarkan makanan kepada orang lain. Pada gambar, orang yang ditunjuk panah sedang menyodorkan sekotak お{菓子|かし} (kue/camilan) kepada teman-temannya yang sedang duduk di meja. Situasi dalam transkrip menyebutkan お{菓子|かし}をあげたいです (ingin memberikan kue). Untuk menawarkan sesuatu dengan sopan dan ramah, ungkapan yang tepat adalah menanyakan apakah lawan bicara mau mencobanya atau tidak, yaitu dengan frasa __いかがですか__ (bagaimana kalau yang ini / mau yang ini?). Oleh karena itu, pilihan 2 adalah jawaban yang paling tepat.",
+            "translation": "Ingin memberikan kue. Apa yang akan dikatakan?",
+            "keyPoints": [
+              "いかがですか",
+              "{勧誘|かんゆう}の{表現|ひょうげん}"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "これ、なんですか (ini apa?). Ungkapan ini digunakan untuk menanyakan identitas suatu benda yang tidak diketahui oleh penutur. Pilihan ini salah karena penuturlah yang membawa dan ingin membagikan kue tersebut, sehingga ia tidak sedang bertanya tentang benda miliknya."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "これ、いかがですか (bagaimana kalau yang ini / silakan mau coba yang ini?). Ungkapan ini merupakan bentuk sopan dari どうですか (bagaimana) dan sangat lazim digunakan saat menawarkan makanan, minuman, atau barang kepada orang lain."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "これ、どうしてですか (ini kenapa / ini mengapa?). Ungkapan ini digunakan untuk menanyakan alasan atau penyebab terjadinya sesuatu. Pilihan ini sama sekali tidak cocok dipakai saat menawarkan makanan."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Slot keempat tidak digunakan karena transkrip soal ini hanya memuat pilihan 1 sampai 3."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-12T13:34:49.352Z",
+              "reviewedAt": "2026-10-12T13:53:32.000Z"
+            }
           }
         },
         {
@@ -4758,6 +5384,42 @@
               "promptVersion": "choukai-transcript-v1",
               "generatedAt": "2026-10-11T22:18:36.215Z",
               "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          },
+          "explanation": {
+            "summary": "Kunci jawaban benar karena wanita tersebut ingin meminta pegawai toko memperlihatkan kamera di dalam etalase, sehingga ungkapan permohonan yang tepat adalah bentuk ~てください.",
+            "detail": "Soal ini menguji pemahaman ungkapan permohonan dalam situasi berbelanja. Pada gambar, tampak seorang wanita yang ditunjuk tanda panah sedang menunjuk barang di dalam etalase kaca yang tertutup. Pertanyaan menyebutkan bahwa wanita tersebut ingin melihat kamera dan menanyakan ungkapan apa yang harus ia katakan kepada {店|みせ}の{人|ひと} (pegawai toko). Karena kamera berada di dalam etalase, ia harus meminta pegawai untuk memperlihatkannya kepadanya. Dalam bahasa Jepang, permohonan sopan kepada orang lain dinyatakan dengan {動詞|どうし} (kata kerja) bentuk て disambung ください. Kata kerja yang tepat adalah {見|み}せる (memperlihatkan), yang diubah menjadi __{見|み}せてください__ (tolong perlihatkan).",
+            "translation": "Saya ingin melihat kamera. Apa yang dikatakan kepada pegawai toko?",
+            "keyPoints": [
+              "~てください",
+              "{見|み}せる"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "このカメラを__{見|み}せたいです__ (saya ingin memperlihatkan kamera ini). Pola ~たい menyatakan keinginan diri sendiri untuk melakukan tindakan tersebut, sehingga kalimat ini berarti wanita tersebut yang ingin memperlihatkan kamera miliknya kepada staf toko."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "このカメラを__{見|み}せますか__ (apakah Anda akan memperlihatkan kamera ini?). Bentuk tanya biasa ini terdengar kaku dan tidak wajar digunakan sebagai permintaan tolong atau permohonan pelayanan kepada pegawai toko."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "このカメラを__{見|み}せてください__ (tolong perlihatkan kamera ini). Ini adalah ungkapan yang sangat alami dan lazim digunakan pelanggan saat meminta pegawai toko mengeluarkan dan memperlihatkan barang yang dipajang."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Slot keempat tidak digunakan karena transkrip soal ini hanya memuat pilihan 1 sampai 3."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-12T13:35:15.735Z",
+              "reviewedAt": "2026-10-12T13:53:32.000Z"
             }
           }
         }
@@ -4803,6 +5465,42 @@
               "generatedAt": "2026-10-11T22:18:36.215Z",
               "reviewedAt": "2026-10-12T00:57:32.000Z"
             }
+          },
+          "explanation": {
+            "summary": "Pertanyaan menanyakan sarana transportasi untuk ke sekolah menggunakan kata tanya __{何|なん}で__, sehingga jawaban yang tepat adalah menyebutkan kendaraan yaitu __{自転車|じてんしゃ}で{来|き}ます__ (datang naik sepeda).",
+            "detail": "Soal ini menguji pemahaman respons cepat terhadap pertanyaan yang menggunakan kata tanya dan partikel. Kalimat pemicu adalah __{学校|がっこう}まで{何|なん}で{来|き}ますか__ (kamu datang sampai ke sekolah naik apa?). Frasa __{何|なん}で__ di sini berarti dengan apa atau naik apa, yang berfungsi menanyakan sarana atau moda transportasi. Oleh karena itu, lawan bicara harus menjawab dengan jenis transportasi yang diikuti partikel で. Pilihan yang menyebutkan sarana transportasi dengan benar hanyalah pilihan 3.",
+            "translation": "Kamu datang sampai ke sekolah naik apa?",
+            "keyPoints": [
+              "{何|なん}で",
+              "partikel で (sarana transportasi)"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "__{一人|ひとり}で{来|き}ます__ (datang sendirian) menggunakan partikel で untuk menyatakan jumlah pelaku, sehingga kalimat ini cocok untuk menjawab pertanyaan __{誰|だれ}と{来|き}ますか__ (datang dengan siapa?), bukan menanyakan sarana transportasi."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "__9{時|じ}に{来|き}ます__ (datang pada jam 9) adalah jawaban untuk waktu kedatangan, cocok untuk pertanyaan __{何時|なんじ}に{来|き}ますか__ (datang jam berapa?) atau __{何時|いつ}{来|き}ますか__ (kapan datang?), bukan sarana transportasi."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "__{自転車|じてんしゃ}で{来|き}ます__ (datang naik sepeda) tepat menjawab pertanyaan __{何|なん}で__ karena menyebutkan sarana transportasi yaitu sepeda yang diikuti partikel で."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Slot keempat tidak digunakan karena transkrip soal ini hanya memuat pilihan 1 sampai 3."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-12T13:35:40.602Z",
+              "reviewedAt": "2026-10-12T13:53:32.000Z"
+            }
           }
         },
         {
@@ -4837,6 +5535,42 @@
               "promptVersion": "choukai-transcript-v1",
               "generatedAt": "2026-10-11T22:18:36.215Z",
               "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          },
+          "explanation": {
+            "summary": "Pertanyaan menanyakan pemilik majalah dengan kata tanya __{誰|だれ}__ (siapa), sehingga jawaban yang paling tepat adalah menyatakan pemiliknya, yaitu __わたしのです__ (punya saya).",
+            "detail": "Soal ini menguji pemahaman terhadap fungsi kata tanya kepemilikan. Kalimat yang diucapkan penutur adalah __この{雑誌|ざっし}、{誰|だれ}のですか__ (majalah ini punya siapa?). Kata tanya __{誰|だれ}__ menanyakan orang, dan partikel の di sini berfungsi menunjukkan kepemilikan. Oleh karena itu, jawaban yang logis harus menyebutkan orang yang memiliki majalah tersebut. Dari ketiga pilihan yang diperdengarkan, hanya pilihan 3 yang menyebutkan pemilik barang.",
+            "translation": "Majalah ini punya siapa?",
+            "keyPoints": [
+              "{誰|だれ}の",
+              "{助詞|じょし}「の」"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "__{日本語|にほんご}のです__ (yang berbahasa Jepang). Pilihan ini menggoda karena kata __{日本語|にほんご}__ berhubungan erat dengan majalah, tetapi ungkapan ini menerangkan jenis atau bahasa majalah, bukan menjawab pertanyaan tentang siapa pemiliknya."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "__{五冊|ごさつ}です__ (lima eksemplar). Pilihan ini menggoda karena menggunakan kata bantu bilangan untuk buku atau majalah yaitu __{冊|さつ}__, namun jawaban ini ditujukan untuk menanggapi pertanyaan jumlah seperti __{何冊|なんさつ}ですか__ (ada berapa eksemplar?), bukan kepemilikan."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "__わたしのです__ (punya saya). Pilihan ini tepat dan wajar karena langsung menjawab identitas pemilik majalah tersebut."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Slot keempat tidak digunakan karena transkrip soal ini hanya memuat pilihan 1 sampai 3."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-12T13:35:58.319Z",
+              "reviewedAt": "2026-10-12T13:53:32.000Z"
             }
           }
         },
@@ -4873,6 +5607,42 @@
               "generatedAt": "2026-10-11T22:18:36.215Z",
               "reviewedAt": "2026-10-12T00:57:32.000Z"
             }
+          },
+          "explanation": {
+            "summary": "Pertanyaan menanyakan jumlah meja menggunakan kata tanya いくつ (berapa buah), sehingga jawaban yang tepat adalah menyebutkan jumlah benda yaitu {三|みっ}つ (tiga buah).",
+            "detail": "Pada soal ini, pembicara bertanya kepada guru dengan kalimat __{鈴木|すずき}{先生|せんせい}、{机|つくえ}はいくつ{並|なら}べますか__ (Pak/Bu Guru Suzuki, mejanya ditata berapa buah?). Kata tanya kuncinya adalah いくつ yang digunakan untuk menanyakan jumlah benda secara umum. Oleh karena itu, lawan bicara harus menjawab dengan bilangan penghitung umum. Respons yang sesuai langsung menyatakan jumlahnya.",
+            "translation": "Pak/Bu Guru Suzuki, mejanya mau ditata berapa buah?",
+            "keyPoints": [
+              "いくつ",
+              "bilangan satuan {一|ひと}つ、{二|ふた}つ、{三|みっ}つ"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "__{三|みっ}つです__ (Tiga buah). Ini jawaban yang tepat karena menjawab langsung pertanyaan jumlah benda yang ditanyakan dengan いくつ."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "__ええ、{並|なら}べましょう__ (Iya, ayo kita tata). Jawaban ini menggoda karena mengulang kata kerja {並|なら}べる (menata), tetapi salah karena bentuk ini adalah persetujuan atas ajakan, padahal pertanyaannya menanyakan jumlah spesifik dan bukan kalimat ajakan."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "__{教室|きょうしつ}です__ (Di ruang kelas). Jawaban ini menggoda karena meja berada di ruang kelas, tetapi salah karena merupakan jawaban untuk pertanyaan tempat seperti どこ (di mana), bukan pertanyaan jumlah."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Slot keempat tidak digunakan karena transkrip soal ini hanya memuat pilihan 1 sampai 3."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-12T13:36:11.949Z",
+              "reviewedAt": "2026-10-12T13:53:32.000Z"
+            }
           }
         },
         {
@@ -4907,6 +5677,42 @@
               "promptVersion": "choukai-transcript-v1",
               "generatedAt": "2026-10-11T22:18:36.215Z",
               "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          },
+          "explanation": {
+            "summary": "Pertanyaan menanyakan identitas seseorang dengan kata tanya だれ (siapa), sehingga respons yang tepat adalah menyebutkan siapa orang tersebut, yaitu adik perempuan pembicara.",
+            "detail": "Soal ini menguji pemahaman dalam merespons pertanyaan yang menanyakan identitas. Kalimat pemicu berbunyi __あそこにいる{髪|かみ}が{長|なが}い{人|ひと}はだれですか__ (Orang berambut panjang yang ada di sana itu siapa?). Kata kuncinya adalah kata tanya だれ (siapa). Oleh karena itu, jawaban yang logis harus menyebutkan nama, status, atau hubungan kekerabatan orang tersebut. Pilihan 3 secara tepat menjawab identitas orang yang dimaksud.",
+            "translation": "Siapakah orang berambut panjang yang ada di sana itu?",
+            "keyPoints": [
+              "だれ",
+              "{妹|いもうと}"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "とても__{長|なが}いです__ (Sangat panjang). Pilihan ini mengecoh karena mengulang kata sifat {長|なが}い (panjang) yang muncul di pertanyaan. Jawaban ini merespons seberapa panjang rambutnya, bukan menjawab kata tanya だれ (siapa)."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "ドアの__{近|ちか}くにいます__ (Ada di dekat pintu). Pilihan ini mengecoh karena menjelaskan letak keberadaan seseorang. Tanggapan ini cocok untuk pertanyaan letak seperti どこにいますか (ada di mana?), bukan pertanyaan identitas."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "わたしの__{妹|いもうと}です__ (Adik perempuan saya). Pilihan ini tepat karena langsung menjawab identitas orang yang ditanyakan dengan menyebutkan hubungan keluarga, yaitu adik perempuan pembicara."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Slot keempat tidak digunakan karena transkrip soal ini hanya memuat pilihan 1 sampai 3."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-12T13:36:41.738Z",
+              "reviewedAt": "2026-10-12T13:53:32.000Z"
             }
           }
         },
@@ -4943,6 +5749,42 @@
               "generatedAt": "2026-10-11T22:18:36.215Z",
               "reviewedAt": "2026-10-12T00:57:32.000Z"
             }
+          },
+          "explanation": {
+            "summary": "Pertanyaan menanyakan apakah lawan bicara akan pergi ke suatu tempat pada hari Minggu depan, sehingga respons yang tepat adalah menerangkan rencana kegiatannya, yaitu mendaki gunung.",
+            "detail": "Kalimat yang diucapkan penutur adalah __{来週|らいしゅう}の{日曜日|にちようび}、どこかへ{行|い}きますか__ (hari Minggu minggu depan, apakah kamu pergi ke suatu tempat?). Kata __どこかへ__ (ke suatu tempat) menanyakan ada atau tidaknya rencana bepergian. Respons yang tepat harus memberikan jawaban mengenai rencana tersebut, baik dengan menyatakan pergi ke suatu tempat atau tidak. Menyatakan kegiatan luar ruangan seperti mendaki gunung secara wajar menjawab bahwa pembicara memiliki rencana bepergian.",
+            "translation": "Hari Minggu minggu depan, apakah kamu pergi ke suatu tempat?",
+            "keyPoints": [
+              "どこか (suatu tempat)",
+              "kalimat tanya konfirmasi rencana"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "__そうですか__ (begitu ya) adalah respons untuk menerima kabar atau informasi baru dari orang lain, bukan untuk menjawab pertanyaan mengenai rencana diri sendiri."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "__{山|やま}に{登|のぼ}ります__ (saya akan mendaki gunung) secara langsung dan tepat menjawab pertanyaan tentang adanya rencana bepergian pada hari tersebut."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "__{電車|でんしゃ}で{行|い}きます__ (pergi naik kereta) memang menyatakan sarana perjalanan, tetapi tidak memberi tujuan atau kegiatan yang menjadi informasi paling alami untuk menjawab pertanyaan apakah ada rencana pergi ke suatu tempat."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Slot keempat tidak digunakan karena transkrip soal ini hanya memuat pilihan 1 sampai 3."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-12T13:37:12.421Z",
+              "reviewedAt": "2026-10-12T13:53:32.000Z"
+            }
           }
         },
         {
@@ -4977,6 +5819,43 @@
               "promptVersion": "choukai-transcript-v1",
               "generatedAt": "2026-10-11T22:18:36.215Z",
               "reviewedAt": "2026-10-12T00:57:32.000Z"
+            }
+          },
+          "explanation": {
+            "summary": "Pilihan 2 benar karena merespons pertanyaan tentang kebiasaan di masa lampau dengan bentuk lampau yang sesuai.",
+            "detail": "Pertanyaan pada audio adalah __{田中|たなか}さんは{子供|こども}のとき、よく{本|ほん}を{読|よ}みましたか__ (Apakah Tanaka-san sering membaca buku waktu masih anak-anak?). Bagian penting yang perlu diperhatikan adalah keterangan waktu __{子供|こども}のとき__ (waktu masih anak-anak) serta kata kerja bentuk lampau tanya __{読|よ}みましたか__ (apakah dulu membaca?). Oleh karena itu, jawaban yang dicari harus berupa penjelasan mengenai frekuensi membaca di masa lampau dengan bentuk lampau. Respons yang paling tepat adalah menyatakan bahwa dulu tidak begitu sering membaca buku menggunakan bentuk lampau negatif.",
+            "translation": "Tanaka-san, apakah Anda sering membaca buku waktu masih anak-anak?",
+            "keyPoints": [
+              "Bentuk lampau",
+              "Keterangan frekuensi",
+              "～のとき"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "__{毎週|まいしゅう}{図書館|としょかん}に{行|い}きます__ (Setiap minggu pergi ke perpustakaan). Pilihan ini menggoda karena perpustakaan berkaitan erat dengan buku, tetapi kalimat ini menyatakan kebiasaan masa kini dan tidak menjawab kebiasaan waktu kecil."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "__あまり{読|よ}みませんでした__ (Dulu tidak begitu sering membaca). Ini adalah respons yang paling tepat karena kata __{読|よ}みませんでした__ berbentuk lampau, cocok dengan pertanyaan tentang masa kanak-kanak."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "__ときどき{本|ほん}を{読|よ}みます__ (Kadang-kadang membaca buku). Pilihan ini menggoda karena menjawab frekuensi membaca buku, tetapi menggunakan bentuk waktu sekarang atau masa depan, bukan masa lampau yang ditanyakan pembicara."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Slot keempat tidak digunakan karena transkrip soal ini hanya memuat pilihan 1 sampai 3."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-12T13:37:29.834Z",
+              "reviewedAt": "2026-10-12T13:53:32.000Z"
             }
           }
         }
