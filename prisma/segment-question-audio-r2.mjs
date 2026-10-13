@@ -20,6 +20,7 @@ const SUPPORTED_SOURCE_CODECS = new Set(["aac", "mp3"]);
 const EXPECTED_MONDAI_TYPES = new Set([
   "CHOUKAI_TASK_BASED",
   "CHOUKAI_MAIN_POINT",
+  "CHOUKAI_OUTLINE",
   "CHOUKAI_EXPRESSION",
   "CHOUKAI_QUICK_RESPONSE",
 ]);
@@ -242,8 +243,30 @@ async function loadPlan(manifestPath) {
     const pkg = JSON.parse(await fs.readFile(fixturePath, "utf8"));
     const fixtureSlug = path.basename(packageEntry.fixture, ".json");
 
-    if (!Array.isArray(packageEntry.mondai) || packageEntry.mondai.length !== 4) {
-      throw new Error(`${packageEntry.fixture}: harus memiliki 4 mondai Choukai`);
+    const fixtureMondaiTypes = pkg.testPackageItems
+      .filter((item) => item.section === "CHOUKAI")
+      .map((item) => item.mondaiType);
+    const manifestMondaiTypes = Array.isArray(packageEntry.mondai)
+      ? packageEntry.mondai.map((mondai) => mondai.mondaiType)
+      : [];
+    const uniqueManifestMondaiTypes = new Set(manifestMondaiTypes);
+    const missingMondaiTypes = fixtureMondaiTypes.filter(
+      (mondaiType) => !uniqueManifestMondaiTypes.has(mondaiType),
+    );
+    const extraMondaiTypes = manifestMondaiTypes.filter(
+      (mondaiType) => !fixtureMondaiTypes.includes(mondaiType),
+    );
+    if (
+      !Array.isArray(packageEntry.mondai) ||
+      manifestMondaiTypes.length !== uniqueManifestMondaiTypes.size ||
+      missingMondaiTypes.length > 0 ||
+      extraMondaiTypes.length > 0
+    ) {
+      throw new Error(
+        `${packageEntry.fixture}: manifest harus memuat tepat mondai Choukai fixture ` +
+          `(${fixtureMondaiTypes.join(", ")}); missing=${missingMondaiTypes.join(",") || "-"}; ` +
+          `extra=${extraMondaiTypes.join(",") || "-"}`,
+      );
     }
 
     for (const mondai of packageEntry.mondai) {

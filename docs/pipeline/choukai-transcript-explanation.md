@@ -8,7 +8,9 @@ sebelum dipakai massal.
 
 - Seluruh paket N5 dan N4 yang sudah diproses memiliki `Question.questionAudio` per soal.
 - N3, N2, dan N1 masih dimigrasikan bertahap dan dapat memakai
-  `QuestionContext.storyAudio` per mondai.
+  `QuestionContext.storyAudio` per mondai. Paket N3 2021-07 dan N3 2022-07 sudah
+  memiliki `Question.questionAudio` per soal, tetapi transkrip dan pembahasannya
+  sengaja belum dijalankan.
 - Selama transisi, `questionAudio` adalah sumber utama; `storyAudio` hanya fallback bila soal
   belum memiliki klip individual.
 - Audio context lama tidak dihapus sampai seluruh soal dalam paket lolos pemeriksaan durasi,
