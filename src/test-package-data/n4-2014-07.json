@@ -4515,7 +4515,53 @@
           "questionContextRef": "ctx-choukai-1",
           "questionImage": null,
           "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/audio/4a6077736adc-n4-2014-07-choukai-task-based-q01.mp3",
-          "explanation": null
+          "explanation": {
+            "summary": "Laki-laki sedang menunggu di kafe sambil minum kopi, dan perempuan mengatakan akan segera menyusul ke tempat laki-laki berada.",
+            "detail": "Soal ini menanyakan lokasi tempat perempuan akan menemui laki-laki setelah percakapan telepon berlangsung. Dalam percakapan, perempuan mengabarkan bahwa ia baru saja tiba di halte bus dan menanyakan keberadaan {山田|やまだ} (Yamada). Laki-laki menjawab bahwa dirinya sedang minum kopi di kafe yang berada di dekat bioskop dan di sebelahnya ada toko buku. Perempuan kemudian menyetujui untuk segera pergi ke tempat tersebut dengan berkata {分|わ}かりました。すぐ{行|い}きます (Baik, saya akan segera ke sana). Oleh karena itu, tempat mereka akan bertemu adalah kafe. Tempat-tempat lain seperti bioskop dan toko buku hanya disebutkan sebagai patokan atau penunjuk jalan agar kafenya mudah ditemukan.",
+            "translation": "Di mana perempuan akan bertemu dengan laki-laki setelah ini?",
+            "keyPoints": [
+              "{喫茶店|きっさてん}",
+              "{近|ちか}く",
+              "{隣|となり}"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "バスてい (halte bus), menggoda karena perempuan menyebutkan bahwa ia baru saja tiba di halte bus, tetapi ini adalah lokasi awal si perempuan, bukan lokasi tempat mereka berdua akan bertemu."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "えいがかん (bioskop), menggoda karena laki-laki menyebutkan kata tersebut, padahal bioskop hanya dijadikan penanda lokasi untuk kafe yaitu __{映画館|えいがかん}の{近|ちか}く__ (di dekat bioskop)."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "きっさてん (kafe), laki-laki menjelaskan bahwa ia sedang minum kopi di kafe tersebut dan perempuan langsung memutuskan untuk menyusul ke sana."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "ほんや (toko buku), menggoda karena disebutkan oleh laki-laki, padahal toko buku hanya sebagai patokan bahwa lokasinya berada di sebelah kafe yaitu __{隣|となり}に{本屋|ほんや}がある__ (di sebelahnya ada toko buku)."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-13T10:06:42.159Z",
+              "reviewedAt": "2026-10-13T10:14:38.000Z"
+            }
+          },
+          "audioTranscript": {
+            "text": "携帯電話で女の人と男の人が話しています。女の人はこれから男の人とどこで会いますか？\n\n女：もしもし、今バス停に着きました。遅くなってすみません。山田さん、今どこにいますか？\n男：僕は映画館の近くの喫茶店でコーヒーを飲んでいます。隣に本屋があるから、すぐ分かりますよ。\n女：分かりました。すぐ行きます。\n\n女の人はこれから男の人とどこで会いますか？",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-audio-chat-fallback-v1",
+              "generatedAt": "2026-10-13T09:44:20.688Z",
+              "reviewedAt": "2026-10-13T10:04:52.000Z"
+            }
+          }
         },
         {
           "order": 2,
@@ -4546,7 +4592,52 @@
           "questionContextRef": "ctx-choukai-1",
           "questionImage": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/images/ce33a46166cd-32e3bcdb-c274-4a18-bc26-e8fe7a45a71f.jpg",
           "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/audio/9b471ff44a09-n4-2014-07-choukai-task-based-q02.mp3",
-          "explanation": null
+          "explanation": {
+            "summary": "Siswa diminta membawa handuk karena mereka akan sering mencuci tangan saat memasak, sedangkan teh, piring, sumpit, dan buku teks tidak perlu dibawa.",
+            "detail": "Soal ini menanyakan barang apa yang wajib dibawa oleh siswa untuk kegiatan memasak besok ({学生|がくせい}は{明日|あした}、{何|なに}を{持|も}ってこなければなりませんか？ (Apa yang harus dibawa siswa besok?)). Guru menyebutkan beberapa barang satu per satu beserta keterangannya: bahan makanan dan teh disiapkan oleh sekolah ({学校|がっこう}で{用意|ようい}します (disiapkan oleh sekolah)), piring dan sumpit memakai milik sekolah ({学校|がっこう}のものを{使|つか}います (memakai milik sekolah)), serta buku pelajaran tidak perlu dibawa ({持|も}ってこなくてもいい (tidak perlu dibawa)). Satu-satunya barang yang secara tegas diminta untuk tidak dilupakan adalah handuk melalui ungkapan __タオルを{忘|わす}れないでください__ (tolong jangan lupa handuk), sehingga gambar nomor 3 adalah jawaban yang tepat.",
+            "translation": "Karena akan sering mencuci tangan, tolong jangan lupa handuk.",
+            "keyPoints": [
+              "~ないでください",
+              "~なくてもいい"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "Gambar botol teh (お{茶|ちゃ}). Pilihan ini mengecoh karena teh ikut disebut oleh guru, tetapi guru mengatakan お{茶|ちゃ}も{用意|ようい}します (teh juga disiapkan [oleh sekolah]), sehingga siswa tidak perlu membawanya sendiri."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "Gambar piring dan sumpit ({箸|はし}やお{皿|さら}). Pilihan ini mengecoh karena kedua alat makan ini diperlukan untuk kegiatan makan atau memasak, tetapi guru menyatakan {箸|はし}やお{皿|さら}などは{学校|がっこう}のものを{使|つか}います (sumpit dan piring memakai milik sekolah), jadi siswa tidak perlu membawanya dari rumah."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "Gambar handuk (タオル). Pilihan ini benar karena guru menjelaskan {手|て}を{洗|あら}うことが{多|おお}いので、タオルを{忘|わす}れないでください (karena sering mencuci tangan, tolong jangan lupa handuk), yang berarti siswa wajib membawanya."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Gambar buku teks (テキスト). Pilihan ini mengecoh karena biasanya siswa membawa buku ke sekolah, namun guru menjelaskan {明日|あした}は{日本語|にほんご}の{授業|じゅぎょう}はないので、テキストは{持|も}ってこなくてもいいですよ (karena besok tidak ada pelajaran bahasa Jepang, buku teks tidak dibawa pun tidak apa-apa)."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-13T10:06:47.328Z",
+              "reviewedAt": "2026-10-13T10:14:38.000Z"
+            }
+          },
+          "audioTranscript": {
+            "text": "日本語学校で先生が話しています。学生は明日、何を持ってこなければなりませんか？\n先生：明日のクラスで日本の料理を作ります。料理に使う肉や魚などは学校で用意します。お茶も用意します。箸やお皿などは学校のものを使います。手を洗うことが多いので、タオルを忘れないでください。明日は日本語の授業はないので、テキストは持ってこなくてもいいですよ。\n学生は明日、何を持ってこなければなりませんか？",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-audio-chat-fallback-v1",
+              "generatedAt": "2026-10-13T09:44:20.688Z",
+              "reviewedAt": "2026-10-13T10:04:52.000Z"
+            }
+          }
         },
         {
           "order": 3,
@@ -4577,7 +4668,53 @@
           "questionContextRef": "ctx-choukai-1",
           "questionImage": null,
           "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/audio/9ffd1dfb721a-n4-2014-07-choukai-task-based-q03.mp3",
-          "explanation": null
+          "explanation": {
+            "summary": "{男|おとこ}の{人|ひと} (laki-laki) akan pergi ke コンビニ (minimarket) karena semua tempat belanja alternatif lain yang diusulkan (スーパー, {八百屋|やおや}, dan デパート) tidak memungkinkan untuk dikunjungi hari ini.",
+            "detail": "Soal ini menanyakan ke mana {男|おとこ}の{人|ひと} akan pergi setelah percakapan ini. Pada awalnya, {女|おんな}の{人|ひと} (perempuan) meminta tolong kepada si pria untuk pergi ke コンビニ membeli wortel dengan kalimat __ちょっとコンビニに{行|い}ってにんじんを{買|か}ってきてくれない？__ (bisa tolong pergi ke minimarket sebentar membelikan wortel?). {男|おとこ}の{人|ひと} kemudian menyarankan スーパー (supermarket) karena letaknya lebih dekat, tetapi wanita itu menjelaskan bahwa スーパー sedang libur hari ini. Selanjutnya, {男|おとこ}の{人|ひと} menanyakan tentang {八百屋|やおや} (toko sayur), namun toko itu sudah tutup sejak bulan lalu. {女|おんな}の{人|ひと} juga sempat menyinggung デパート (department store) yang barangnya lebih bagus, tetapi karena letaknya jauh, ia memutuskan tidak perlu ke sana hari ini. Oleh karena itu, si pria akhirnya tetap pergi ke tempat awal yang diminta, yaitu コンビニ.",
+            "translation": "Bisa tolong pergi ke minimarket sebentar membelikan wortel?",
+            "keyPoints": [
+              "～てくれる",
+              "～より～のほうが",
+              "bentuk penolakan dan pembatalan rencana"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "コンビニ (minimarket). Ini adalah permintaan awal {女|おんな}の{人|ひと}, dan setelah membahas semua opsi lain yang ternyata tutup atau terlalu jauh, tempat inilah yang akhirnya dikunjungi oleh {男|おとこ}の{人|ひと}."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "スーパー (supermarket). Pilihan ini menggoda karena {男|おとこ}の{人|ひと} sempat mengusulkannya karena lebih dekat, namun ditolak oleh {女|おんな}の{人|ひと} karena hari ini sedang tutup ({今日|きょう}は{休|やす}み)."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "やおや (toko sayur). Pilihan ini diusulkan oleh {男|おとこ}の{人|ひと} sebagai alternatif kedua, tetapi salah karena tokonya sudah berhenti beroperasi sejak bulan lalu ({先月|せんげつ}{店|みせ}をやめた)."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "デパート (department store). Tempat ini sempat disebut oleh {女|おんな}の{人|ひと} karena kualitas barangnya bagus, tetapi langsung dibatalkan karena letaknya agak jauh (ちょっと{遠|とお}いから、{今日|きょう}はいいよ)."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-13T10:07:15.530Z",
+              "reviewedAt": "2026-10-13T10:14:38.000Z"
+            }
+          },
+          "audioTranscript": {
+            "text": "うちで女の人と男の人が話しています。\n男の人はこの後、どこへ行きますか？\n\n女：ちょっとコンビニに行ってにんじんを買ってきてくれない？\n男：うん、いいよ。でも、コンビニよりスーパーのほうが近くない？\n女：ああ、スーパーは今日は休み。\n男：そうか。あ、近所の八百屋はどう？\n女：あそこは先月店をやめたんだよ。便利だったのに残念。本当はコンビニよりデパートのほうが品物がいいけど、ちょっと遠いから、今日はいいよ。\n男：そっか。じゃ、行ってくる。\n\n男の人はこの後、どこへ行きますか？",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-audio-chat-fallback-v1",
+              "generatedAt": "2026-10-13T09:44:20.688Z",
+              "reviewedAt": "2026-10-13T10:04:52.000Z"
+            }
+          }
         },
         {
           "order": 4,
@@ -4608,7 +4745,53 @@
           "questionContextRef": "ctx-choukai-1",
           "questionImage": null,
           "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/audio/03b0546f1494-n4-2014-07-choukai-task-based-q04.mp3",
-          "explanation": null
+          "explanation": {
+            "summary": "Guru meminta siswa berkumpul 5 menit sebelum waktu keberangkatan pukul 1, sehingga waktu yang ditentukan adalah pukul 12.55.",
+            "detail": "Pertanyaan menanyakan batas waktu siswa harus datang ke kelas, yaitu {学生|がくせい}は{何時|なんじ}までに{教室|きょうしつ}に{来|こ}なければなりませんか (mahasiswa harus datang ke kelas paling lambat pukul berapa?). Di dalam pengumuman, guru menjelaskan rencana kunjungan ke {美術館|びじゅつかん} (museum seni). Guru menyatakan bahwa mereka berencana berangkat dari kelas pada pukul 1, lalu meminta para siswa untuk berkumpul 5 menit sebelumnya: __{１時|いちじ}にここを{出|で}る{予定|よてい}ですから、５{分|ふん}{前|まえ}にこの{教室|きょうしつ}に{集|あつ}まってください__ (karena rencananya berangkat dari sini pukul 1, tolong berkumpul di ruang kelas ini 5 menit sebelumnya). Lima menit sebelum pukul 1 tepat adalah pukul 12 lewat 55 menit. Oleh karena itu, siswa harus tiba paling lambat pukul 12.55.",
+            "translation": "Mahasiswa harus datang ke kelas paling lambat pukul berapa?",
+            "keyPoints": [
+              "{時間|じかん}の{表現|ひょうげん}",
+              "～{分|ふん}{前|まえ}",
+              "～までに"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "12{時|じ}55{分|ふん} (pukul 12 lewat 55 menit). Waktu ini tepat 5 menit sebelum waktu keberangkatan pukul 1, sesuai permintaan guru agar berkumpul di ruang kelas."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "1{時|じ} (pukul 1 tepat). Ini adalah waktu mereka akan berangkat meninggalkan kelas, bukan waktu siswa diminta berkumpul. Pilihan ini mengecoh bagi yang hanya mendengar angka jam keberangkatan."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "1{時|じ}5{分|ふん} (pukul 1 lewat 5 menit). Angka 5 menit di sini dihitung setelah pukul 1, padahal guru mengatakan 5 menit sebelum keberangkatan, bukan sesudahnya."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "1{時|じ}10{分|ふん} (pukul 1 lewat 10 menit). Angka 10 menit muncul dalam kalimat {歩|ある}いて10{分|ぷん}ぐらいです (berjalan kaki kira-kira 10 menit) yang merujuk pada lama perjalanan ke museum seni, bukan jam kedatangan siswa di kelas."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-13T10:07:05.687Z",
+              "reviewedAt": "2026-10-13T10:14:38.000Z"
+            }
+          },
+          "audioTranscript": {
+            "text": "教室で先生が話しています。\n学生は何時までに教室に来なければなりませんか。\n\n皆さん、今日は午後、美術館へ行って、日本の古い絵を見ます。１時にここを出る予定ですから、５分前にこの教室に集まってください。みんな集まったら、すぐ出ます。ええ、ここから美術館まで歩いて10分ぐらいです。じゃ、今から昼休みです。\n\n学生は何時までに教室に来なければなりませんか。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-audio-chat-fallback-v1",
+              "generatedAt": "2026-10-13T09:44:20.688Z",
+              "reviewedAt": "2026-10-13T10:04:52.000Z"
+            }
+          }
         },
         {
           "order": 5,
@@ -4639,7 +4822,52 @@
           "questionContextRef": "ctx-choukai-1",
           "questionImage": null,
           "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/audio/1b90ce1d9891-n4-2014-07-choukai-task-based-q05.mp3",
-          "explanation": null
+          "explanation": {
+            "summary": "Mahasiswa perempuan diminta menyiapkan 10 botol air untuk pihak kampusnya sendiri dan 10 botol air lagi untuk tim Universitas Sakura, sehingga total yang harus disiapkan adalah 20 botol.",
+            "detail": "Soal ini menanyakan jumlah botol air yang harus disiapkan oleh {女|おんな}の{学生|がくせい} (mahasiswa perempuan).\nPada awalnya, mahasiswa perempuan mengira hanya perlu menyiapkan 5 botol karena anggota klub mereka berjumlah 5 orang. Namun, {先輩|せんぱい} (senior) mengoreksinya menjadi 10 botol karena ada {先生|せんせい} (guru/dosen) serta orang yang datang membantu.\nSetelah itu, senior teringat bahwa {会場|かいじょう} (tempat pertandingan) bertempat di kampus mereka, sehingga mereka juga bertanggung jawab menyiapkan air minum untuk lawan tanding dari {桜大学|さくらだいがく} (Universitas Sakura). Senior pun meminta mahasiswa perempuan untuk membeli 10 botol lagi untuk rombongan Universitas Sakura.\nOleh karena itu, total air yang harus disiapkan adalah 10 botol ditambah 10 botol, yaitu __{２０本|にじゅっぽん}__ (20 botol).",
+            "translation": "Berapa botol air yang harus disiapkan oleh mahasiswa perempuan?",
+            "keyPoints": [
+              "~ておく",
+              "penghitungan jumlah bertahap"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "{５本|ごほん} (5 botol) adalah perkiraan awal mahasiswa perempuan berdasarkan jumlah anggota klubnya saja, tetapi angka ini langsung dikoreksi oleh senior."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{１０本|じゅっぽん} (10 botol) hanya mencakup kebutuhan untuk pihak kampus mereka sendiri atau untuk pihak Universitas Sakura saja, bukan jumlah total keduanya."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "{１５本|じゅうごほん} (15 botol) adalah angka pengecoh jika pendengar salah menjumlahkan 5 botol awal dengan 10 botol untuk Universitas Sakura."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "{２０本|にじゅっぽん} (20 botol) tepat karena merupakan gabungan dari 10 botol untuk pihak kampus sendiri dan 10 botol untuk pihak Universitas Sakura."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-13T10:07:26.653Z",
+              "reviewedAt": "2026-10-13T10:14:38.000Z"
+            }
+          },
+          "audioTranscript": {
+            "text": "大学のクラブで女の学生と男の学生が話しています。女の学生は水を何本準備しなければなりませんか。\n\n女：先輩、明日桜大学と試合ですね。準備を手伝います。\n男：ありがとう。じゃ、水を買っておいてくれる？\n女：はい。えっと、私たちのクラブは５人ですから、水も５本ですね。\n男：うーん、先生と手伝いに来る人もいるから、１０本だね。\n女：はい。\n男：あ、そうだ。明日の会場は僕たちの大学だから、桜大学の人たちの水も僕たちが準備するんだよ。\n女：そうですか。\n男：じゃ、桜大学の人の水も１０本買っておいてくれる？\n女：はい。\n\n女の学生は水を何本準備しなければなりませんか。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-audio-chat-fallback-v1",
+              "generatedAt": "2026-10-13T09:44:20.688Z",
+              "reviewedAt": "2026-10-13T10:04:52.000Z"
+            }
+          }
         },
         {
           "order": 6,
@@ -4670,7 +4898,53 @@
           "questionContextRef": "ctx-choukai-1",
           "questionImage": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/images/3e52db0de932-d6a4ef55-5144-4d7d-a6dc-42b8952ca970.jpg",
           "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/audio/8b6d790319dc-n4-2014-07-choukai-task-based-q06.mp3",
-          "explanation": null
+          "explanation": {
+            "summary": "Kunci jawaban nomor 3 benar karena dosen meminta mahasiswa laki-laki untuk memindahkan sepuluh buah kursi tambahan, sedangkan tugas lainnya sudah selesai dikerjakan.",
+            "detail": "Soal ini menanyakan tindakan apa yang akan dilakukan oleh mahasiswa laki-laki setelah percakapan. Dosen menanyakan apakah penunjuk arah {会場|かいじょう} (tempat acara) untuk {音楽会|おんがくかい} (konser musik) besok sudah ditempel, dan mahasiswa menjawab sudah menempel sekitar enam {枚|まい} (lembar). Terkait persiapan ruangan, mahasiswa menjelaskan bahwa piano dan tiga puluh {個|こ} (buah) {椅子|いす} (kursi) sudah dipindahkan. Namun, dosen kemudian meminta __{椅子|いす}はもう１０{個|こ}{運|はこ}んでおいてください__ (tolong pindahkan sepuluh kursi lagi sebelumnya). Saat dosen mengingatkan tentang perlengkapan video, mahasiswa menjawab bahwa video juga sudah disiapkan. Jadi, hal yang akan dikerjakan mahasiswa laki-laki setelah ini adalah memindahkan kursi tambahan, seperti pada gambar 3.",
+            "translation": "Kalau begitu, tolong pindahkan sepuluh buah kursi lagi terlebih dahulu.",
+            "keyPoints": [
+              "~ておく",
+              "~てある",
+              "~てください"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "Gambar 1 memperlihatkan mahasiswa menempel kertas penunjuk arah konser. Pilihan ini mengecoh karena dibahas di awal, tetapi mahasiswa sudah menempelnya sebanyak enam lembar sebelum percakapan."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "Gambar 2 memperlihatkan mahasiswa memindahkan piano. Pilihan ini salah karena mahasiswa sudah memindahkan piano sebelum percakapan berlangsung."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "Gambar 3 memperlihatkan mahasiswa membawa kursi. Dosen secara jelas meminta mahasiswa untuk memindahkan sepuluh kursi tambahan untuk persiapan konser."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Gambar 4 memperlihatkan mahasiswa menyiapkan kamera video. Pilihan ini salah karena mahasiswa menegaskan bahwa kamera video sudah selesai disiapkan."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-13T10:08:02.385Z",
+              "reviewedAt": "2026-10-13T10:14:38.000Z"
+            }
+          },
+          "audioTranscript": {
+            "text": "大学で女の先生と男の学生が話しています。男の学生はこの後何をしますか。\n\n先生：明日の音楽会、会場の案内は貼ってきてくれましたか。\n男：はい。大学の入り口から会場まで６枚くらい貼りました。\n先生：ありがとう。会場の準備はどうですか。\n男：ピアノはもう運んであります。椅子も３０個運びました。\n先生：そうですか。そうね、椅子はもう１０個運んでおいてください。\n男：はい。\n先生：それからビデオの用意も忘れないでくださいね。\n男：はい、それはもう準備してあります。\n\n男の学生はこの後何をしますか。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-audio-chat-fallback-v1",
+              "generatedAt": "2026-10-13T09:44:20.688Z",
+              "reviewedAt": "2026-10-13T10:04:52.000Z"
+            }
+          }
         },
         {
           "order": 7,
@@ -4701,7 +4975,53 @@
           "questionContextRef": "ctx-choukai-1",
           "questionImage": null,
           "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/audio/093768f7dcfc-n4-2014-07-choukai-task-based-q07.mp3",
-          "explanation": null
+          "explanation": {
+            "summary": "Siswa laki-laki dan guru menyepakati waktu konsultasi pada istirahat siang besok karena jadwal hari ini bentrok dengan kelas, kerja sambilan, dan rapat.",
+            "detail": "Pertanyaan menanyakan kapan siswa laki-laki akan pergi ke ruangan guru ({男|おとこ}の{学生|がくせい}はいつ{先生|せんせい}の{部屋|へや}に{行|い}きますか？).\n\nMula-mula siswa bertanya apakah boleh bertanya sekarang, tetapi guru menolak karena akan masuk kelas berikutnya.\nGuru kemudian menawarkan setelah jam 6 hari ini saat semua kelasnya selesai, namun siswa tidak bisa karena harus kerja sambilan setiap hari mulai jam 6.\nSiswa berganti menawarkan istirahat siang hari ini, tetapi guru tidak bisa karena ada rapat.\nAkhirnya, guru menawarkan istirahat siang besok yang bebas dari jadwal rapat (__{明日|あした}の{昼休|ひるやす}みなら{会議|かいぎ}はありませんよ__). Siswa pun menyetujuinya (じゃ、{明日|あした}お{願|ねが}いします), lalu guru menyuruhnya datang ke ruangannya pada waktu tersebut. Oleh karena itu, waktu yang disepakati adalah istirahat siang besok.",
+            "translation": "Kalau istirahat siang besok, tidak ada rapat lho.",
+            "keyPoints": [
+              "～なら",
+              "{昼休|ひるやす}み",
+              "アルバイト"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "{今日|きょう}の ひるやすみ (istirahat siang hari ini). Siswa sempat mengusulkan waktu ini, tetapi guru menolaknya karena sedang ada {会議|かいぎ} (rapat)."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{今日|きょう}の 6{時|じ} (jam 6 hari ini). Guru sempat menyarankan waktu setelah kelasnya selesai pada jam 6, tetapi siswa menolaknya karena ada jadwal kerja sambilan."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "あしたの ひるやすみ (istirahat siang besok). Guru memastikan bahwa waktu istirahat siang besok tidak ada rapat, dan siswa menyetujui waktu tersebut untuk pergi ke ruangan guru."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "あしたの 6{時|じ} (jam 6 besok). Siswa sudah menjelaskan bahwa dirinya memiliki kerja sambilan setiap hari ({毎日|まいにち}) mulai jam 6, sehingga waktu ini sama sekali tidak pernah diusulkan untuk besok."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-13T10:07:54.593Z",
+              "reviewedAt": "2026-10-13T10:14:38.000Z"
+            }
+          },
+          "audioTranscript": {
+            "text": "教室で男の学生と先生が話しています。\n男の学生はいつ先生の部屋に行きますか？\n\n男：先生、すみません。テキストで分からないところがあります。今質問してもいいですか？\n先生：今から次の授業があるんです。今日の授業が全部終わるのは６時です。その後はどうですか？\n男：すみません。私、毎日６時からアルバイトがあるんです。今日の昼休みはいかがですか？\n先生：ああ、今日の昼休みは会議があるんです。明日の昼休みなら会議はありませんよ。\n男：じゃ、明日お願いします。\n先生：では、私の部屋に来てくださいね。\n男：はい。\n\n男の学生はいつ先生の部屋に行きますか？",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-audio-chat-fallback-v1",
+              "generatedAt": "2026-10-13T09:44:20.688Z",
+              "reviewedAt": "2026-10-13T10:04:52.000Z"
+            }
+          }
         },
         {
           "order": 8,
@@ -4732,7 +5052,54 @@
           "questionContextRef": "ctx-choukai-1",
           "questionImage": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/images/dc1bbcc4bf05-bdfb1b8f-20b0-4920-8798-76b14a2d6fe4.jpg",
           "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/audio/5ec911b46c14-n4-2014-07-choukai-task-based-q08.mp3",
-          "explanation": null
+          "explanation": {
+            "summary": "Mahasiswa laki-laki diminta mengumpulkan sisa buah ke dalam satu piring sebelum staf kantor datang, baru kemudian memungut sampah di lantai. Karena itu, tindakan yang paling pertama dilakukan adalah memindahkan sisa makanan ke piring seperti pada gambar 2.",
+            "detail": "Soal ini menanyakan tindakan yang paling pertama akan dilakukan oleh mahasiswa laki-laki setelah percakapan tersebut, ditandai dengan kata __{後|あと}まず{何|なに}をしますか__ (setelah ini pertama-tama melakukan apa?).\n\nAwalnya, mahasiswa laki-laki menawarkan diri untuk memindahkan meja, tetapi mahasiswa perempuan menjelaskan bahwa staf kantor universitas akan segera datang untuk membereskannya, sehingga mahasiswa laki-laki tidak perlu mengurus meja.\n\nBerikutnya, laki-laki memperhatikan ada buah yang tersisa di meja. Perempuan memintanya menyatukan buah tersebut ke dalam satu piring sebelum orang kantor tiba dengan berkata, __{事務所|じむしょ}の{人|ひと}が{来|く}る{前|まえ}にやってね__ (tolong lakukan sebelum staf kantor datang ya).\n\nUntuk urusan sampah, perempuan akan membuang sampah sisa makanan di atas meja, lalu meminta laki-laki memungut sampah yang jatuh di lantai setelah selesai membereskan buah, sebagaimana dikatakan: __{果物|くだもの}を{片付|かたづ}けたら{下|した}に{落|お}ちているゴミを{拾|ひろ}ってくれる？__ (setelah membereskan buah, maukah kamu memungut sampah yang jatuh di bawah?).\n\nDengan demikian, urutan tugas mahasiswa laki-laki adalah membereskan buah ke satu piring terlebih dahulu, baru kemudian memungut sampah di lantai. Maka, tindakan pertama yang dilakukannya sesuai dengan gambar 2.",
+            "translation": "Di universitas, seorang mahasiswa perempuan dan seorang mahasiswa laki-laki sedang berbicara. Apa yang pertama-tama akan dilakukan mahasiswa laki-laki setelah ini?",
+            "keyPoints": [
+              "~{前|まえ}に",
+              "~たら",
+              "{片付|かたづ}ける",
+              "{拾|ひろ}う"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "Gambar 1 memperlihatkan mahasiswa laki-laki mengangkat dan memindahkan meja. Pilihan ini menggoda karena laki-laki sempat bertanya apakah ia harus memindahkan meja, tetapi ditolak karena meja akan dibereskan oleh staf kantor kampus."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "Gambar 2 memperlihatkan mahasiswa laki-laki memindahkan buah atau makanan ke dalam piring. Ini adalah hal yang diminta perempuan untuk diselesaikan pertama kali sebelum staf kantor datang."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "Gambar 3 memperlihatkan mahasiswa perempuan merapikan meja dengan kantong sampah. Tindakan ini dilakukan oleh pihak perempuan, bukan tugas yang dikerjakan oleh mahasiswa laki-laki."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Gambar 4 memperlihatkan mahasiswa laki-laki memungut sampah yang jatuh di lantai ke kantong sampah. Pilihan ini menggoda karena laki-laki memang setuju melakukan tugas ini, tetapi tugas ini baru dilakukan setelah ia selesai membereskan buah, sehingga bukan tindakan yang paling pertama."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-13T10:08:16.491Z",
+              "reviewedAt": "2026-10-13T10:14:38.000Z"
+            }
+          },
+          "audioTranscript": {
+            "text": "大学で女の学生と男の学生が話しています。男の学生はこの後まず何をしますか？\n\n女：楽しいパーティーだったね。さあ、片付けよう。\n男：うん。テーブルはどこへ持っていく？\n女：テーブルはもうすぐ大学の事務所の人が片付けに来てくれるよ。\n男：そう。あ、でもテーブルの上には果物が残っているよ。\n女：そうだね。じゃあ、後でみんなで食べよう。一つのお皿に入る？\n男：うん、入りそう。\n女：じゃあ、お願い。事務所の人が来る前にやってね。それからゴミだね。\n男：うん。ゴミ袋はここにあるよ。\n女：私はテーブルの上の食べ物のゴミを捨てるから、果物を片付けたら下に落ちているゴミを拾ってくれる？\n男：分かった。\n\n男の学生はこの後まず何をしますか？",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-audio-chat-fallback-v1",
+              "generatedAt": "2026-10-13T09:44:20.688Z",
+              "reviewedAt": "2026-10-13T10:04:52.000Z"
+            }
+          }
         }
       ]
     },
@@ -4772,7 +5139,52 @@
           "questionContextRef": "ctx-choukai-2",
           "questionImage": null,
           "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/audio/b4b4badb28bd-n4-2014-07-choukai-main-point-q01.mp3",
-          "explanation": null
+          "explanation": {
+            "summary": "Mahasiswi tersebut menyatakan bahwa sekarang ia ingin melakukan penelitian di pascasarjana dan mengajar di universitas, yang berarti ia ingin menjadi dosen universitas.",
+            "detail": "Pertanyaan menanyakan apa cita-cita masa depan dari mahasiswi perempuan ({女|おんな}の{学生|がくせい}). Mahasiswi tersebut ({鈴木|すずき}さん) menjelaskan bahwa waktu kecil ia memang ingin menjadi dokter, tetapi sekarang keinginannya sudah berubah. Kalimat kunci yang diucapkan adalah __{大学|だいがく}で{教|おし}えたいと{思|おも}っています__ (berpikir ingin mengajar di universitas). Mengajar di universitas semakna dengan menjadi pengajar atau dosen universitas ({大学|だいがく}の{先生|せんせい}). Oleh karena itu, pilihan 2 adalah jawaban yang tepat.",
+            "translation": "Waktu kecil saya berpikir ingin menjadi dokter, tetapi sekarang saya berpikir ingin melakukan penelitian di pascasarjana dan mengajar di universitas.",
+            "keyPoints": [
+              "~たいと{思|おも}っています",
+              "{言|い}い{換|か}え (parafrasa mengajar di universitas menjadi dosen)"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "いしゃ (dokter) memang sempat disebut oleh mahasiswi tersebut, tetapi itu adalah cita-citanya pada masa kecil ({子供|こども}の{時|とき}は{医者|いしゃ}になりたいと{思|おも}っていましたが), bukan cita-citanya saat ini."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{大学|だいがく}の {先生|せんせい} (guru/dosen universitas) sesuai dengan pernyataan mahasiswi tersebut yang ingin mengajar di tingkat perguruan tinggi ({大学|だいがく}で{教|おし}えたい)."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "エンジニア (insinyur) adalah profesi yang sempat ditebak oleh mahasiswi tersebut kepada teman bicaranya, bukan cita-cita mahasiswi itu sendiri."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "ぎんこういん (pegawai bank) adalah profesi yang diminati oleh mahasiswa laki-laki ({銀行|ぎんこう}で{働|はたら}きたいと{思|おも}っています), bukan cita-cita mahasiswi yang ditanyakan soal."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-13T10:08:20.729Z",
+              "reviewedAt": "2026-10-13T10:14:38.000Z"
+            }
+          },
+          "audioTranscript": {
+            "text": "大学で男の学生と女の学生が話しています。女の学生は将来何になりたいと言っていますか。\n\n男：鈴木さんは大学を卒業した後、どうしますか。\n女：子供の時は医者になりたいと思っていましたが、今は大学院で研究をして、大学で教えたいと思っています。\n男：そうですか。\n女：田中君はコンピューターが専門だから、エンジニアですか。\n男：いいえ、銀行で働きたいと思っています。\n\n女の学生は将来何になりたいと言っていますか。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-audio-chat-fallback-v1",
+              "generatedAt": "2026-10-13T09:44:20.688Z",
+              "reviewedAt": "2026-10-13T10:04:52.000Z"
+            }
+          }
         },
         {
           "order": 2,
@@ -4803,7 +5215,52 @@
           "questionContextRef": "ctx-choukai-2",
           "questionImage": null,
           "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/audio/603a24752bd7-n4-2014-07-choukai-main-point-q02.mp3",
-          "explanation": null
+          "explanation": {
+            "summary": "Siswi perempuan menolak ajakan nonton film karena pada besok siang ia berencana membersihkan kamar dan memajang lukisan yang baru dibelinya minggu lalu.",
+            "detail": "Pertanyaan menanyakan apa yang dikatakan akan dilakukan oleh siswi perempuan pada besok siang ({女|おんな}の{学生|がくせい}は{明日|あした}の{午後|ごご}、{何|なに}をすると{言|い}っていますか). Pada awal percakapan, siswa laki-laki mengajaknya menonton film pada sabtu siang besok, tetapi siswi tersebut menjawab bahwa besok siang ia ingin membersihkan kamar dan memajang lukisan: __{明日|あした}の{午後|ごご}は{部屋|へや}を{掃除|そうじ}して、{先週|せんしゅう}{買|か}ってきた{絵|え}を{飾|かざ}りたいんです__ (besok siang saya ingin membersihkan kamar lalu memajang lukisan yang saya beli minggu lalu). Bagian tentang mengunjungi kamar teman adalah kegiatan yang sudah dilakukannya minggu lalu, bukan besok. Oleh karena itu, kegiatan yang akan dilakukan besok siang adalah membersihkan kamar dan memajang lukisan.",
+            "translation": "Ah, besok siang saya ingin membersihkan kamar, lalu memajang lukisan yang saya beli minggu lalu.",
+            "keyPoints": [
+              "~たいんです",
+              "~てから / ~て (urutan aktivitas)"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "__{映画|えいが}を{見|み}る__ (menonton film). Ini adalah ajakan dari siswa laki-laki di awal percakapan, tetapi siswi perempuan menolaknya karena sudah punya rencana lain."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "__{掃除|そうじ}をして{絵|え}を{飾|かざ}る__ (membersihkan kamar lalu memajang lukisan). Sesuai dengan ucapan siswi perempuan yang menyatakan ingin membersihkan kamar lalu memasang lukisan pada besok siang."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "__{友達|ともだち}の{部屋|へや}に{遊|あそ}びに{行|い}く__ (pergi main ke kamar teman). Pergi bermain ke kamar teman adalah peristiwa yang sudah terjadi pada minggu lalu ({先週|せんしゅう}), bukan rencana untuk besok siang."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "__{花|はな}を{買|か}いに{行|い}く__ (pergi membeli bunga). Siswa laki-laki menyebutkan akan membawa bunga saat berkunjung nanti ({花|はな}を{持|も}って{行|い}きますね), bukan siswi perempuan yang akan pergi membelinya besok siang."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-13T10:08:28.973Z",
+              "reviewedAt": "2026-10-13T10:14:38.000Z"
+            }
+          },
+          "audioTranscript": {
+            "text": "男の学生と女の学生が話しています。\n女の学生は明日の午後、何をすると言っていますか。\n\n男：山本さん、明日の土曜日の午後は忙しいですか。映画を見に行きませんか。\n女：あ、明日の午後は部屋を掃除して、先週買ってきた絵を飾りたいんです。\n男：ああ、絵を買ったんですか。\n女：ええ。先週、友達の部屋に遊びに行ったんですけど、絵や花が飾ってあって、とてもきれいでした。それで、私もやってみることにしたんです。今度、遊びに来てください。\n男：ありがとう。じゃ、花を持って行きますね。\n\n女の学生は明日の午後、何をすると言っていますか。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-audio-chat-fallback-v1",
+              "generatedAt": "2026-10-13T09:44:20.688Z",
+              "reviewedAt": "2026-10-13T10:04:52.000Z"
+            }
+          }
         },
         {
           "order": 3,
@@ -4834,7 +5291,53 @@
           "questionContextRef": "ctx-choukai-2",
           "questionImage": null,
           "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/audio/5b96552192fe-n4-2014-07-choukai-main-point-q03.mp3",
-          "explanation": null
+          "explanation": {
+            "summary": "Kunci jawaban benar karena ramalan cuaca menyatakan bahwa cuaca besok Jumat akan cerah tetapi anginnya dingin.",
+            "detail": "Pertanyaan menanyakan bagaimana cuaca pada hari esok, yaitu __{明日|あした}はどんな{天気|てんき}ですか__ (bagaimana cuaca besok?). Dalam siaran prakiraan cuaca, pembicara menyebutkan kondisi cuaca secara berurutan untuk beberapa hari. Untuk hari ini, cuacanya hangat. Untuk besok ({金曜日|きんようび} / hari Jumat), dikatakan __{晴|は}れますが、{風|かぜ}が{冷|つめ}たい{一日|いちにち}になるでしょう__ (akan cerah, tetapi seharian anginnya akan dingin). Kemudian untuk lusa ({土曜日|どようび} / hari Sabtu) cuaca menjadi mendung dari siang hari, dan pada {日曜日|にちようび} (hari Minggu) akan turun hujan deras sepanjang hari. Oleh karena itu, kondisi cuaca yang tepat untuk hari esok adalah pilihan 2.",
+            "translation": "Besok hari Jumat juga cerah, tetapi tampaknya akan menjadi hari yang anginnya dingin.",
+            "keyPoints": [
+              "{天気|てんき}の{表現|ひょうげん}",
+              "が (tetapi)",
+              "{日|ひ}にち・{曜日|ようび}の{聞|き}き{分|わ}け"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "はれて あたたかい (cerah dan hangat). Pilihan ini menggoda karena kata {暖|あたた}かい (hangat) memang muncul di awal audio, tetapi kondisi tersebut merujuk pada {今日|きょう} (hari ini), bukan besok."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "はれるが かぜが つめたい (cerah tetapi anginnya dingin). Ini tepat karena pembicara secara tegas menyatakan bahwa besok cerah tetapi anginnya dingin ({晴|は}れますが、{風|かぜ}が{冷|つめ}たい)."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "{午後|ごご}から くもりに なる (mulai siang hari menjadi berawan). Ini adalah ramalan cuaca untuk {明後日|あさって} (lusa) yaitu hari Sabtu, bukan untuk besok."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "{一日中|いちにちじゅう} つよい {雨|あめ}が ふる (hujan lebat turun sepanjang hari). Ini adalah ramalan cuaca untuk hari Minggu, bukan untuk besok."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-13T10:08:35.048Z",
+              "reviewedAt": "2026-10-13T10:14:38.000Z"
+            }
+          },
+          "audioTranscript": {
+            "text": "天気予報を聞いています。\n明日はどんな天気ですか？\n\n今日はとても暖かくて気持ちがいいお天気でしたね。明日金曜日も晴れますが、風が冷たい一日になるでしょう。明後日土曜日は午後から曇りになって、日曜日は一日中強い雨が降りそうです。\n\n明日はどんな天気ですか？",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-audio-chat-fallback-v1",
+              "generatedAt": "2026-10-13T09:44:20.688Z",
+              "reviewedAt": "2026-10-13T10:04:52.000Z"
+            }
+          }
         },
         {
           "order": 4,
@@ -4865,7 +5368,53 @@
           "questionContextRef": "ctx-choukai-2",
           "questionImage": null,
           "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/audio/05a9a3386f8c-n4-2014-07-choukai-main-point-q04.mp3",
-          "explanation": null
+          "explanation": {
+            "summary": "Pilihan 1 benar karena pembicara secara langsung menyatakan bahwa kegiatan yang paling banyak dipilih adalah makan bersama sebanyak 30 orang.",
+            "detail": "Soal ini menanyakan kegiatan apa yang paling banyak dilakukan ({一番|いちばん}{多|おお}い) oleh mahasiswa pada hari ulang tahun ibu mereka. Di dalam siaran radio, penyiar merinci hasil survei terhadap 60 mahasiswa. Kunci jawaban terletak pada kalimat __{最|もっと}も{多|おお}かったのは、{一緒|いっしょ}に{食事|しょくじ}をするという{人|ひと}で、30{人|にん}__ (yang paling banyak adalah orang yang makan bersama, yaitu 30 orang). Kosakata {最|もっと}も memiliki arti yang sama dengan {一番|いちばん} (paling/ter-). Pilihan lainnya sengaja dimunculkan sebagai pengalih dengan rincian angka yang lebih sedikit. Oleh karena itu, jawaban yang benar adalah kegiatan makan bersama.",
+            "translation": "Yang paling banyak adalah orang yang makan bersama, yaitu 30 orang.",
+            "keyPoints": [
+              "{最|もっと}も",
+              "{一番|いちばん}",
+              "{食事|しょくじ}をする"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "いっしょに しょくじを する{人|ひと} (orang yang makan bersama). Ini adalah jawaban yang benar karena pembicara secara tegas menyebutkan jumlah pemilihnya paling banyak, yaitu 30 orang."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{花|はな}や ようふくを プレゼントする{人|ひと} (orang yang memberi hadiah bunga atau pakaian). Pilihan ini mengecoh karena disebutkan di dalam audio, namun jumlahnya hanya 15 orang sehingga bukan yang terbanyak."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "てがみや カードを おくる{人|ひと} (orang yang mengirim surat atau kartu). Pilihan ini mengecoh karena turut disebutkan, tetapi jumlahnya hanya 10 orang."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "ケーキを つくる{人|ひと} (orang yang membuat kue). Pilihan ini salah karena hanya ada 5 orang yang melakukannya, menjadikannya pilihan dengan jumlah paling sedikit."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-13T10:08:53.265Z",
+              "reviewedAt": "2026-10-13T10:14:38.000Z"
+            }
+          },
+          "audioTranscript": {
+            "text": "ラジオでアナウンサーが話しています。お母さんの誕生日に何をする人が一番多いと言っていますか。\n男：皆さんは、お母さんの誕生日に何をしますか。大学生６０人にお母さんの誕生日に何をするか聞いてみました。最も多かったのは、一緒に食事をするという人で、３０人。花や洋服をプレゼントすると答えた人が１５人。手紙やカードを送る人が１０人でした。ケーキを作ると答えた人も５人いました。\nお母さんの誕生日に何をする人が一番多いと言っていますか。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-audio-chat-fallback-v1",
+              "generatedAt": "2026-10-13T09:44:20.688Z",
+              "reviewedAt": "2026-10-13T10:04:52.000Z"
+            }
+          }
         },
         {
           "order": 5,
@@ -4896,7 +5445,53 @@
           "questionContextRef": "ctx-choukai-2",
           "questionImage": null,
           "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/audio/ecc4b6c5d761-n4-2014-07-choukai-main-point-q05.mp3",
-          "explanation": null
+          "explanation": {
+            "summary": "Si wanita meminta bantuan karena komputer yang akan dipakai rapat tidak menyala, lalu si pria menyanggupi untuk memperbaikinya, sehingga kunci jawaban yang tepat adalah pilihan 3.",
+            "detail": "Soal ini menanyakan hal apa yang diminta oleh si wanita kepada rekan kerjanya. Dalam percakapan, si pria sempat menawarkan diri untuk menggantikan si wanita menghadiri rapat karena si wanita sedang demam. Namun, si wanita menolak tawaran itu dengan berkata bahwa urusan itu tidak apa-apa, melainkan ia sedang kesulitan karena komputer untuk rapat tidak berfungsi (__{今|いま}{会議|かいぎ}で{使|つか}うパソコンが{動|うご}かなくて{困|こま}っているんです__ / komputer yang dipakai untuk rapat sekarang tidak mau menyala dan saya bingung). Si pria pun merespons bahwa ia akan segera mengecek dan memperbaikinya. Si wanita kemudian berterima kasih dan memastikan kursi serta meja sudah diatur. Oleh karena itu, bantuan yang diminta si wanita adalah memperbaiki komputer.",
+            "translation": "Komputer yang akan digunakan untuk rapat sekarang tidak menyala sehingga saya merasa kesulitan.",
+            "keyPoints": [
+              "{困|こま}っている",
+              "～てみる",
+              "{直|なお}す"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "{会議|かいぎ}に{出|で}ること (menghadiri rapat). Ini adalah tawaran dari pihak pria karena melihat si wanita sedang tidak enak badan, bukan permintaan dari si wanita. Si wanita justru menolaknya dengan berkata bahwa hal tersebut tidak masalah."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{会議|かいぎ}{資料|しりょう}を{作|つく}ること (membuat dokumen rapat). Dokumen rapat disebutkan sudah dibuat bersama-sama sebelumnya oleh mereka berdua, sehingga bukan hal yang diminta si wanita saat ini."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "パソコンを{直|なお}すこと (memperbaiki komputer). Si wanita mengeluhkan komputernya tidak mau menyala saat sedang menyiapkan rapat, lalu si pria menawarkan untuk memeriksa dan memperbaikinya, yang langsung disetujui si wanita dengan ucapan terima kasih."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "{椅子|いす}と{机|つくえ}を{並|なら}べること (menata kursi dan meja). Si wanita menyebutkan bahwa kursi dan meja sudah selesai ditata rapi ({並|なら}べてある), jadi pekerjaan ini tidak diminta kepada si pria."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-13T10:08:51.042Z",
+              "reviewedAt": "2026-10-13T10:14:38.000Z"
+            }
+          },
+          "audioTranscript": {
+            "text": "会社で女の人と男の人が話しています。\n女の人は男の人に何を頼みましたか。\n\n女：山田さん、あの、会議の準備をしているんですけど、ちょっといいですか。\n男：あれ？元気がないね。\n女：ちょっと熱があるんです。\n男：ああ、具合が悪かったら、一緒に資料を作ったし、僕が会議に出てもいいよ。\n女：それは大丈夫なんですが、あの、今会議で使うパソコンが動かなくて困っているんです。\n男：ああ、そう。すぐに見てみるよ。直せると思うよ。\n女：ありがとうございます。椅子と机は並べてあるので、パソコンが動けば大丈夫です。\n男：分かった。会議に出るのが難しかったら言ってね。\n\n女の人は男の人に何を頼みましたか。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-audio-chat-fallback-v1",
+              "generatedAt": "2026-10-13T09:44:20.688Z",
+              "reviewedAt": "2026-10-13T10:04:52.000Z"
+            }
+          }
         },
         {
           "order": 6,
@@ -4927,7 +5522,53 @@
           "questionContextRef": "ctx-choukai-2",
           "questionImage": null,
           "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/audio/d6ccdbfae749-n4-2014-07-choukai-main-point-q06.mp3",
-          "explanation": null
+          "explanation": {
+            "summary": "Mahasiswa laki-laki mengantuk karena kepikiran ujian sehingga tidak bisa tidur sampai pagi hari.",
+            "detail": "Pertanyaan menanyakan alasan mahasiswa laki-laki mengantuk ({男|おとこ}の{学生|がくせい}はどうして{眠|ねむ}いと{言|い}っていますか。 [Mengapa mahasiswa laki-laki mengatakan bahwa dia mengantuk?]). Pada awal percakapan, teman perempuannya menebak apakah ia bekerja paruh waktu sampai larut atau bangun terlalu pagi, namun keduanya disangkal. Mahasiswa laki-laki menjelaskan bahwa awalnya berniat tidur lebih awal lalu belajar di pagi hari, namun karena memikirkan soal ujian yang akan keluar, ia justru menjadi tidak bisa tidur (__{眠|ねむ}れなくなってしまったんだよ__ [jadi tidak bisa tidur]). Ketika teman perempuannya memastikan apakah kondisi itu berlangsung hingga pagi ({朝|あさ}までずっと？ [terus-menerus sampai pagi?]), ia membenarkannya. Dengan demikian, penyebab ia mengantuk adalah tidak bisa tidur sampai pagi.",
+            "translation": "Mengapa mahasiswa laki-laki mengatakan bahwa dia mengantuk?",
+            "keyPoints": [
+              "{眠|ねむ}る",
+              "{眠|ねむ}れる",
+              "{気|き}になる"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "ゆうべ アルバイトを したから (karena tadi malam melakukan kerja paruh waktu). Ini adalah tebakan teman perempuannya di awal, tetapi mahasiswa laki-laki menjelaskan bahwa kemarin ia libur bekerja ({昨日|きのう}はバイトを{休|やす}んだんだ [kemarin saya libur kerja paruh waktu])."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "あさ はやく おきたから (karena tadi pagi bangun cepat). Teman perempuannya menduga ia bangun pagi-pagi ({今朝|けさ}{早|はや}く{起|お}きたんだ [oh, tadi pagi bangun cepat ya]), namun mahasiswa laki-laki langsung menyangkalnya dengan mengatakan ううん (bukan/tidak)."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "あさまで ねむれなかったから (karena tidak bisa tidur sampai pagi). Mahasiswa laki-laki menyatakan bahwa ia tidak bisa tidur (__{眠|ねむ}れなくなってしまった__) hingga pagi hari (__{朝|あさ}までずっと__) karena cemas memikirkan soal ujian, sehingga ia sangat mengantuk hari ini."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "ゆうべ おそくまで べんきょうしたから (karena tadi malam belajar sampai larut). Mahasiswa laki-laki awalnya berencana tidur awal dan belajar saat subuh, namun karena gelisah dan tidak bisa tidur semalaman, ia justru sama sekali tidak bisa belajar ({全然|ぜんぜん}{勉強|べんきょう}できなかったんだ [sama sekali tidak bisa belajar])."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-13T10:09:15.150Z",
+              "reviewedAt": "2026-10-13T10:14:38.000Z"
+            }
+          },
+          "audioTranscript": {
+            "text": "大学で女の学生と男の学生が話しています。\n男の学生はどうして眠いと言っていますか。\n\n女：眠そうね。昨日は遅くまでアルバイト？\n男：今日は試験だから、昨日はバイトを休んだんだ。でも、疲れていたから早く寝て、朝勉強しようと思ったんだ。\n女：ああ、今朝早く起きたんだ。\n男：ううん。早く寝ようと思ったんだけど、どんな問題が試験に出るか気になって眠れなくなってしまったんだよ。\n女：朝までずっと？\n男：うん。だから全然勉強できなかったんだ。\n女：それなら、次の試験のときは夜に勉強したほうがいいよ。\n男：そうするよ。\n\n男の学生はどうして眠いと言っていますか。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-audio-chat-fallback-v1",
+              "generatedAt": "2026-10-13T09:44:20.688Z",
+              "reviewedAt": "2026-10-13T10:04:52.000Z"
+            }
+          }
         },
         {
           "order": 7,
@@ -4958,7 +5599,52 @@
           "questionContextRef": "ctx-choukai-2",
           "questionImage": null,
           "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/audio/3b67f0dcb9f5-n4-2014-07-choukai-main-point-q07.mp3",
-          "explanation": null
+          "explanation": {
+            "summary": "Kunci jawaban benar karena guru menyampaikan bahwa pekerjaan rumah setiap hari adalah tiga halaman dan pekerjaan rumah hari ini dimulai dari halaman 7, sehingga rentangnya adalah halaman 7 sampai 9.",
+            "detail": "Hal yang ditanyakan dalam soal adalah rentang halaman pekerjaan rumah untuk hari ini (__{今日|きょう}の{宿題|しゅくだい}は{何|なん}ページから{何|なん}ページまでですか__ (Pekerjaan rumah hari ini dari halaman berapa sampai halaman berapa?)). Di dalam percakapan, guru menyebutkan beberapa informasi penentu dan pengalih. Pertama, guru menyebutkan bahwa tugas harian selalu sebanyak 3 halaman ({宿題|しゅくだい}は{毎日|まいにち}3ページずつですね (Pekerjaan rumah setiap hari masing-masing 3 halaman, kan)). Kedua, guru menyebutkan tugas kemarin adalah halaman 4 sampai 6 ({昨日|きのう}の{宿題|しゅくだい}は4ページから6ページまででしたから (karena pekerjaan rumah kemarin dari halaman 4 sampai 6)). Ketiga, guru menegaskan awal halaman untuk hari ini yaitu mulai halaman 7 (__{今日|きょう}の{宿題|しゅくだい}は7ページからですよ__ (pekerjaan rumah hari ini mulai dari halaman 7, ya)). Karena tugas harian selalu 3 halaman, maka tugas hari ini mencakup halaman 7, 8, dan 9 (7ページから9ページまで). Guru juga menyebutkan rentang halaman 4 sampai 9 untuk bahan ujian minggu depan ({来週|らいしゅう}のテスト (ujian minggu depan)), yang berfungsi sebagai pengecoh. Dengan demikian, rentang tugas hari ini yang benar adalah pilihan 4.",
+            "translation": "Karena pekerjaan rumah kemarin dari halaman 4 sampai halaman 6, pekerjaan rumah hari ini mulai dari halaman 7, ya.",
+            "keyPoints": [
+              "～から～まで (dari ... sampai ...)",
+              "～ずつ (masing-masing / per)"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "3ページから 6ページまで (dari halaman 3 sampai halaman 6). Angka 3 adalah jumlah halaman tugas per hari ({毎日|まいにち}3ページずつ), bukan nomor halaman awal tugas. Angka 6 adalah halaman akhir dari tugas kemarin, sehingga penggabungan rentang ini keliru."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "4ページから 6ページまで (dari halaman 4 sampai halaman 6). Ini adalah pengecoh karena merupakan rentang tugas kemarin ({昨日|きのう}の{宿題|しゅくだい}), bukan tugas hari ini."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "4ページから 9ページまで (dari halaman 4 sampai halaman 9). Rentang ini adalah materi cakupan untuk ujian minggu depan ({来週|らいしゅう}のテスト), bukan tugas rumah hari ini."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "7ページから 9ページまで (dari halaman 7 sampai halaman 9). Guru menyatakan bahwa tugas hari ini dimulai dari halaman 7, dan dengan ketentuan 3 halaman setiap hari, rentang tugasnya tepat sampai halaman 9."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-13T10:09:11.755Z",
+              "reviewedAt": "2026-10-13T10:14:38.000Z"
+            }
+          },
+          "audioTranscript": {
+            "text": "大学で先生が話しています。今日の宿題は何ページから何ページまでですか。\n\n先生：皆さん、今日の宿題について話します。宿題は毎日3ページずつですね。ええと、昨日の宿題は4ページから6ページまででしたから、今日の宿題は7ページからですよ。いいですか。それから、来週のテストは4ページから9ページまでですから、勉強しておいてください。\n\n今日の宿題は何ページから何ページまでですか。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-audio-chat-fallback-v1",
+              "generatedAt": "2026-10-13T09:44:20.688Z",
+              "reviewedAt": "2026-10-13T10:04:52.000Z"
+            }
+          }
         }
       ]
     },
@@ -4972,7 +5658,7 @@
         {
           "order": 1,
           "questionText": "",
-          "questionAnswer": 2,
+          "questionAnswer": 1,
           "questionChoices": [
             {
               "codeAnswer": 1,
@@ -4998,7 +5684,53 @@
           "questionContextRef": "ctx-choukai-3",
           "questionImage": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/images/fb2821cb79d6-1f85f0df-d4e0-4550-b7fa-d050e3364176.jpg",
           "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/audio/449f230a9ae9-n4-2014-07-choukai-expression-q01.mp3",
-          "explanation": null
+          "explanation": {
+            "summary": "Soal menguji ungkapan yang tepat saat berpamitan setelah menjenguk orang yang sedang sakit. Pilihan 1 benar karena __{先生|せんせい}、どうぞお{大事|だいじ}に__ (Guru, semoga lekas sembuh) adalah ungkapan baku untuk mendoakan kesembuhan orang sakit saat berpisah.",
+            "detail": "Situasi pada soal memperlihatkan seorang murid yang datang ke rumah sakit untuk menjenguk gurunya yang sedang sakit, lalu kini murid tersebut bersiap untuk pulang. Soal menanyakan apa yang harus diucapkan murid kepada gurunya pada saat hendak pulang. Dalam bahasa Jepang, ungkapan standar yang digunakan kepada orang yang sakit atau terluka ketika berpamitan adalah お{大事|だいじ}に (semoga lekas sembuh) atau bentuk lebih sopannya どうぞお{大事|だいじ}に. Oleh karena itu, ungkapan pada pilihan 1 adalah jawaban yang paling tepat.",
+            "translation": "Datang untuk menjenguk guru yang sakit. Sekarang akan pulang. Apa yang Anda katakan kepada guru?",
+            "keyPoints": [
+              "お{大事|だいじ}に",
+              "お{先|さき}に{失礼|しつれい}します",
+              "お{久|ひさ}しぶり"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "__{先生|せんせい}、どうぞお{大事|だいじ}に__ (Guru, semoga lekas sembuh). Ungkapan ini adalah salam yang tepat untuk mendoakan kesehatan dan kesembuhan seseorang yang sedang sakit, terutama ketika berpamitan setelah menjenguknya."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "__{先生|せんせい}、お{先|さき}に{失礼|しつれい}します__ (Guru, saya permisi pulang duluan). Ungkapan ini mengecoh karena memang dipakai saat akan pulang, namun konteks penggunaannya adalah di tempat kerja atau perkumpulan ketika pulang mendahului orang lain, bukan untuk menjenguk orang sakit di rumah sakit."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "__{先生|せんせい}、お{久|ひさ}しぶりです__ (Guru, sudah lama tidak bertemu). Ungkapan ini mengecoh karena murid mungkin memang sudah lama tidak bertemu gurunya, tetapi salam ini diucapkan di awal pertemuan, bukan saat berpamitan hendak pulang."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Pilihan keempat tidak digunakan pada soal ini karena format soal {発話表現|はつわひょうげん} (ungkapan berbicara) hanya memiliki tiga pilihan lisan."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-13T10:09:44.056Z",
+              "reviewedAt": "2026-10-13T10:14:38.000Z"
+            }
+          },
+          "audioTranscript": {
+            "text": "先生のお見舞いに来ました。\nこれから帰ります。\n先生に何と言いますか。\n\n1. 先生、どうぞお大事に。\n2. 先生、お先に失礼します。\n3. 先生、お久しぶりです。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-audio-chat-fallback-v1",
+              "generatedAt": "2026-10-13T09:44:20.688Z",
+              "reviewedAt": "2026-10-13T10:04:52.000Z"
+            }
+          }
         },
         {
           "order": 2,
@@ -5029,7 +5761,52 @@
           "questionContextRef": "ctx-choukai-3",
           "questionImage": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/images/c1c8e5f3b3df-6980e411-c7cb-4877-827a-1869d32ecea5.jpg",
           "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/audio/1982cf2960c5-n4-2014-07-choukai-expression-q02.mp3",
-          "explanation": null
+          "explanation": {
+            "summary": "Wanita bertanda panah sedang bertanya jalan di pos polisi untuk mencari kantor pos, sehingga ungkapan pembuka yang tepat untuk meminta petunjuk adalah menyatakan tujuannya dengan pola keinginan __〜たいんですが__.",
+            "detail": "Soal ini menguji kemampuan memilih ungkapan yang tepat saat menanyakan arah jalan kepada petugas di {交番|こうばん} (pos polisi). Berdasarkan situasi, wanita tersebut sedang {郵便局|ゆうびんきょく}を{探|さが}しています (mencari kantor pos). Saat ingin bertanya arah, cara bertutur yang lazim dan sopan dalam bahasa Jepang adalah mengawali pembicaraan dengan menyebutkan maksud atau tempat yang ingin dituju menggunakan bentuk __〜たいんですが__ (saya ingin... tapi/bisa tolong dibantu?). Dengan demikian, lawan bicara paham bahwa penutur membutuhkan bantuan petunjuk arah.",
+            "translation": "Permisi, saya ingin pergi ke kantor pos...",
+            "keyPoints": [
+              "〜たいんですが",
+              "{道|みち}の{尋|たず}ね{方|かた}"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "あのう、{郵便局|ゆうびんきょく}までの{地図|ちず}を{見|み}ますか (permisi, apakah Anda mau melihat peta menuju ke kantor pos?). Ungkapan ini menanyakan apakah polisi yang ingin melihat peta, padahal wanita itulah yang membutuhkan bantuan arah jalan."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "あのう、{郵便局|ゆうびんきょく}に{行|い}きたいんですが (permisi, saya ingin pergi ke kantor pos...). Kalimat ini adalah cara alami dan sopan untuk membuka percakapan saat meminta petunjuk arah ke suatu tempat."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "あのう、{郵便局|ゆうびんきょく}はまっすぐ{行|い}ってください (permisi, untuk kantor pos silakan jalan lurus). Kalimat ini merupakan instruksi atau penjelasan arah yang seharusnya diucapkan oleh polisi yang memberi petunjuk, bukan oleh orang yang bertanya."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Pilihan keempat tidak digunakan pada soal tipe ini karena rekaman audio hanya menyediakan tiga pilihan lisan."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-13T10:09:53.527Z",
+              "reviewedAt": "2026-10-13T10:14:38.000Z"
+            }
+          },
+          "audioTranscript": {
+            "text": "２番\n交番です。郵便局を探しています。何と言いますか。\n1. あのう、郵便局までの地図を見ますか。\n2. あのう、郵便局に行きたいんですが。\n3. あのう、郵便局はまっすぐ行ってください。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-audio-chat-fallback-v1",
+              "generatedAt": "2026-10-13T09:44:20.688Z",
+              "reviewedAt": "2026-10-13T10:04:52.000Z"
+            }
+          }
         },
         {
           "order": 3,
@@ -5060,7 +5837,52 @@
           "questionContextRef": "ctx-choukai-3",
           "questionImage": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/images/102510db7d3f-230097ed-b4b5-4194-b1e2-f31865cd8e7e.jpg",
           "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/audio/8943a48bfad5-n4-2014-07-choukai-expression-q03.mp3",
-          "explanation": null
+          "explanation": {
+            "summary": "Pilihan 1 benar karena menanyakan cara memakan buah kepada penjaga toko, sesuai dengan situasi yang tidak mengetahui cara makannya.",
+            "detail": "Soal ini menanyakan ungkapan yang tepat saat pembeli tidak mengetahui cara makan buah yang dipegangnya. Pada situasi disebutkan {果物|くだもの}の{食|た}べ{方|かた}がわかりません (tidak tahu cara makan buah). Oleh karena itu, wanita tersebut harus bertanya kepada {店|みせ}の{人|ひと} (penjaga toko) mengenai metode atau langkah memakannya. Pertanyaan mengenai cara melakukan sesuatu diungkapkan dengan kata tanya どうやって (bagaimana caranya). Dengan demikian, ungkapan yang tepat adalah __どうやって{食|た}べるんですか__ (bagaimana cara memakannya?).",
+            "translation": "Tidak tahu cara makan buah. Apa yang akan dikatakan kepada penjaga toko?",
+            "keyPoints": [
+              "どうやって",
+              "～{方|かた}"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "どうやって{食|た}べるんですか (bagaimana cara memakannya?) tepat digunakan untuk menanyakan tata cara atau metode memakan buah tersebut."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "これ、{食|た}べたほうがいいですか (apakah sebaiknya memakan ini?) digunakan untuk meminta anjuran apakah buah tersebut sebaiknya dimakan atau tidak, bukan menanyakan caranya."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "{一|ひと}つ{食|た}べてみませんか (maukah mencoba makan satu?) adalah bentuk ajakan kepada lawan bicara untuk mencicipi, bukan bertanya tentang cara makan."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Slot keempat tidak digunakan pada soal ini karena soal hanya menyediakan tiga pilihan lisan."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-13T10:10:15.759Z",
+              "reviewedAt": "2026-10-13T10:14:38.000Z"
+            }
+          },
+          "audioTranscript": {
+            "text": "果物の食べ方がわかりません。\n店の人に何と言いますか。\n\n1. どうやって食べるんですか。\n2. これ、食べたほうがいいですか。\n3. 一つ食べてみませんか。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-audio-chat-fallback-v1",
+              "generatedAt": "2026-10-13T09:44:20.688Z",
+              "reviewedAt": "2026-10-13T10:04:52.000Z"
+            }
+          }
         },
         {
           "order": 4,
@@ -5091,7 +5913,52 @@
           "questionContextRef": "ctx-choukai-3",
           "questionImage": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/images/8a0a7c4c50f4-aaef7002-5c92-412c-8ba8-829cafa1376c.jpg",
           "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/audio/e7b1237af7f2-n4-2014-07-choukai-expression-q04.mp3",
-          "explanation": null
+          "explanation": {
+            "summary": "Wanita yang ditunjuk tanda panah ingin memberitahu temannya bahwa bus yang mereka tunggu sudah tiba di halte, sehingga ungkapan yang tepat adalah バスが{来|き}たよ。",
+            "detail": "Soal ini menanyakan ungkapan yang tepat untuk memberitahu teman bahwa kendaraan yang dinanti telah tiba di tempat pembicara berada. Berdasarkan situasi pada transkrip dan gambar, bus yang akan dinaiki sedang sampai di halte, sementara teman si wanita sedang berdiri membeli minuman di {自動販売機|じどうはんばいき} (mesin penjual otomatis). Karena bus tersebut bergerak mendekati lokasi wanita dan temannya, arah gerak yang tepat dinyatakan dengan kata kerja __{来|き}た__ dari {来|く}る (datang), bukan {行|い}く (pergi).",
+            "translation": "Bus yang akan dinaiki sebentar lagi tiba di halte bus. Memberitahu teman. Apa yang diucapkan?",
+            "keyPoints": [
+              "{動詞|どうし} {来|く}る / {行|い}く",
+              "{知|し}らせる{表現|ひょうげん}"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "バスが__{行|い}った__よ (busnya sudah pergi lho), ungkapan ini mengecoh karena sama-sama menyatakan pergerakan bus, tetapi artinya bus sudah berlalu atau meninggalkan halte, bertentangan dengan kondisi bus yang baru saja tiba."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "バスに__{乗|の}った__よ (aku sudah naik bus lho), ungkapan ini tidak sesuai fakta pada gambar karena si wanita masih berdiri di trotoar dan belum naik ke dalam bus."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "バスが__{来|き}た__よ (busnya sudah datang lho), bentuk lampau {来|き}た dari {来|く}る tepat digunakan untuk menyatakan peristiwa kedatangan bus yang baru saja sampai di depan pembicara."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "slot keempat tidak digunakan pada jenis soal ini karena audio hanya menyajikan tiga pilihan jawaban."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-13T10:10:18.278Z",
+              "reviewedAt": "2026-10-13T10:14:38.000Z"
+            }
+          },
+          "audioTranscript": {
+            "text": "これから乗るバスがバス停に着きます。\n友達に知らせます。\n何と言いますか。\n1. バスが行ったよ。\n2. バスに乗ったよ。\n3. バスが来たよ。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-audio-chat-fallback-v1",
+              "generatedAt": "2026-10-13T09:44:20.688Z",
+              "reviewedAt": "2026-10-13T10:04:52.000Z"
+            }
+          }
         },
         {
           "order": 5,
@@ -5122,7 +5989,52 @@
           "questionContextRef": "ctx-choukai-3",
           "questionImage": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/images/bd23dc5df3c6-bba17135-7bb8-4f37-b39d-6506b4179b44.jpg",
           "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/audio/3d54836ad235-n4-2014-07-choukai-expression-q05.mp3",
-          "explanation": null
+          "explanation": {
+            "summary": "Pilihan 2 benar karena bentuk kalimat tanya negatif kasual __{一緒|いっしょ}にやらない？__ berfungsi untuk mengajak lawan bicara melakukan suatu kegiatan bersama.",
+            "detail": "Soal ini menanyakan ungkapan yang tepat ketika ingin mengajak teman ikut serta dalam sebuah permainan. Pada gambar terlihat pria yang ditunjuk tanda panah sedang duduk bermain kartu bersama teman lainnya, lalu melihat teman perempuan yang baru datang. Saat mengajak teman secara santai, bahasa Jepang umumnya menggunakan bentuk negatif kasual dengan intonasi bertanya, yaitu kata kerja bentuk negatif seperti やらない？ (maukah melakukan?) atau しない？ (maukah melakukan?). Pilihan 1 salah karena berfungsi meminta izin, sedangkan pilihan 3 salah karena menyatakan keinginan diri sendiri untuk ikut bermain.",
+            "translation": "Mengajak teman bermain game. Apa yang akan dikatakan?",
+            "keyPoints": [
+              "{誘|さそ}い",
+              "〜ない？"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "ゲームをしてもいい？ (Bolehkah bermain game?) adalah ungkapan untuk meminta izin bagi diri sendiri. Pilihan ini terdengar wajar karena mengandung kata game, tetapi fungsinya salah karena penutur bermaksud mengajak orang lain, bukan meminta izin untuk dirinya sendiri."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "__{一緒|いっしょ}にやらない？__ (Maukah bermain bersama?) adalah pola ajakan santai yang sangat tepat digunakan kepada teman sebaya untuk mengajak melakukan kegiatan bersama."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "{僕|ぼく}もしたいんだ (Aku juga ingin memainkannya) adalah ungkapan untuk menyatakan keinginan pribadi penutur agar diajak bermain. Kalimat ini biasanya diucapkan oleh orang luar yang ingin bergabung, bukan oleh orang yang sudah duduk bermain dan ingin mengajak temannya."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Slot keempat tidak digunakan pada soal ini karena bagian {発話表現|はつわひょうげん} hanya menyediakan tiga pilihan lisan."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-13T10:10:44.032Z",
+              "reviewedAt": "2026-10-13T10:14:38.000Z"
+            }
+          },
+          "audioTranscript": {
+            "text": "友達をゲームに誘います。何と言いますか？\n1. ゲームをしてもいい？\n2. 一緒にやらない？\n3. 僕もしたいんだ。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-audio-chat-fallback-v1",
+              "generatedAt": "2026-10-13T09:44:20.688Z",
+              "reviewedAt": "2026-10-13T10:04:52.000Z"
+            }
+          }
         }
       ]
     },
@@ -5162,7 +6074,53 @@
           "questionContextRef": "ctx-choukai-4",
           "questionImage": null,
           "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/audio/ac2a79cde847-n4-2014-07-choukai-quick-response-q01.mp3",
-          "explanation": null
+          "explanation": {
+            "summary": "Pilihan 3 benar karena menanggapi pertanyaan tentang tujuan kepergian seseorang dengan menjelaskan bahwa ia hendak pergi berbelanja sebentar.",
+            "detail": "Pada soal ini pembicara menyapa Suzuki dan bertanya apakah ia hendak pergi ke suatu tempat dengan ungkapan あ、{鈴木|すずき}さん、どこかへ{行|い}くんですか (Ah, Suzuki-san, apakah Anda mau pergi ke suatu tempat?). Pola kalimat ~んですか di sini digunakan untuk mengonfirmasi keadaan lawan bicara yang tampaknya sedang bersiap atau berjalan hendak pergi. Jawaban yang tepat harus menjelaskan ke mana atau untuk urusan apa orang tersebut pergi. Respons yang paling alami adalah pilihan 3, yaitu menyatakan maksud kepergiannya untuk berbelanja sebentar lalu kembali.",
+            "translation": "Ah, Suzuki-san, apakah Anda mau pergi ke suatu tempat?",
+            "keyPoints": [
+              "どこかへ (ke suatu tempat)",
+              "~んですか (mengonfirmasi situasi)",
+              "~てきます (pergi untuk ... lalu kembali)"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "__{駅前|えきまえ}のスーパーにあります__ (Ada di supermarket depan stasiun.) Kalimat ini menjawab pertanyaan tentang keberadaan suatu barang atau tempat seperti どこにありますか (Ada di mana?), bukan menjawab pertanyaan ke mana seseorang akan pergi."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "__{明日|あした}３{時|じ}に{会|あ}うつもりです__ (Saya berencana bertemu besok jam tiga.) Kalimat ini menyatakan rencana pertemuan di waktu mendatang, sehingga tidak cocok untuk merespons pertanyaan mengenai kepergian saat ini."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "__ちょっと{買|か}い{物|もの}に{行|い}ってきます__ (Saya mau pergi belanja sebentar lalu kembali.) Ini adalah tanggapan yang wajar dan tepat untuk mengonfirmasi tujuan kepergian kepada lawan bicara."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Pilihan 4 tidak digunakan karena jenis soal respons cepat pada bagian ini hanya menyediakan tiga pilihan lisan."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-13T10:10:46.126Z",
+              "reviewedAt": "2026-10-13T10:14:38.000Z"
+            }
+          },
+          "audioTranscript": {
+            "text": "あ、鈴木さん、どこかへ行くんですか。\n1. 駅前のスーパーにあります。\n2. 明日３時に会うつもりです。\n3. ちょっと買い物に行ってきます。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-audio-chat-fallback-v1",
+              "generatedAt": "2026-10-13T09:44:20.688Z",
+              "reviewedAt": "2026-10-13T10:04:52.000Z"
+            }
+          }
         },
         {
           "order": 2,
@@ -5193,7 +6151,52 @@
           "questionContextRef": "ctx-choukai-4",
           "questionImage": null,
           "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/audio/bf475c370f2e-n4-2014-07-choukai-quick-response-q02.mp3",
-          "explanation": null
+          "explanation": {
+            "summary": "Kunci jawaban benar adalah nomor 3 karena merupakan respons yang wajar untuk menyambut perhatian atau nasihat agar menjaga kesehatan dengan berjanji akan berhati-hati.",
+            "detail": "Soal ini menguji kemampuan merespons ungkapan perhatian atau anjuran dari lawan bicara. Kalimat pemicu adalah ヤンさん、{寒|さむ}いから{風邪|かぜ}を{引|ひ}かないようにしてくださいね (Tuan Yan, karena dingin, tolong jaga diri supaya tidak masuk angin ya). Pola __{風邪|かぜ}を{引|ひ}かないようにしてください__ (tolong jaga diri supaya tidak masuk angin) merupakan bentuk perhatian agar seseorang menjaga kondisi badannya. Respons yang paling alami dan sopan ketika diperhatikan atau diingatkan seperti ini adalah mengiyakan dan menyatakan bahwa diri sendiri akan berhati-hati.",
+            "translation": "Tuan Yan, karena dingin, tolong jaga diri supaya tidak masuk angin ya.",
+            "keyPoints": [
+              "~ようにしてください",
+              "{気|き}をつける"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "{病院|びょういん}に{行|い}くそうです (Katanya akan pergi ke rumah sakit). Kalimat ini menyampaikan kabar burung atau informasi tentang orang lain yang akan pergi ke rumah sakit, sehingga tidak cocok digunakan sebagai jawaban terhadap lawan bicara yang menasihati diri sendiri."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "どういたしまして (Sama-sama). Ungkapan ini menggoda karena terdengar ramah dan santun, tetapi fungsinya adalah membalas ucapan terima kasih, bukan membalas nasihat perhatian tentang kesehatan."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "はい、{気|き}をつけます (Ya, saya akan berhati-hati). Ini adalah respons yang tepat, alami, dan sopan untuk menanggapi perhatian seseorang agar kita menjaga kondisi tubuh."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Pilihan keempat tidak disediakan pada rekaman soal {即時応答|そくじおうとう} (respons spontan) level N4 ini karena hanya memiliki tiga pilihan lisan."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-13T10:10:57.182Z",
+              "reviewedAt": "2026-10-13T10:14:38.000Z"
+            }
+          },
+          "audioTranscript": {
+            "text": "ヤンさん、寒いから風邪を引かないようにしてくださいね。\n1. 病院に行くそうです。\n2. どういたしまして。\n3. はい、気をつけます。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-audio-chat-fallback-v1",
+              "generatedAt": "2026-10-13T09:44:20.688Z",
+              "reviewedAt": "2026-10-13T10:04:52.000Z"
+            }
+          }
         },
         {
           "order": 3,
@@ -5224,7 +6227,53 @@
           "questionContextRef": "ctx-choukai-4",
           "questionImage": null,
           "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/audio/9278afacbbec-n4-2014-07-choukai-quick-response-q03.mp3",
-          "explanation": null
+          "explanation": {
+            "summary": "Kunci jawaban benar adalah pilihan 2 karena pembicara menanyakan alasan terlambat, dan respons tersebut menjelaskan bahwa pembicara tidak bisa bangun pagi.",
+            "detail": "Soal ini menanyakan respons yang tepat terhadap pertanyaan kasual yang menanyakan alasan. Kalimat pemicu adalah __{山田|やまだ}さん、{今朝|けさ}1{時間|じかん}も{遅刻|ちこく}したけど、{何|なに}かあった？__ (Yamada, tadi pagi kamu terlambat sampai 1 jam lho, ada apa/terjadi sesuatu?). Frasa __{何|なに}かあった？__ digunakan untuk menanyakan apakah ada kejadian atau kendala tertentu yang menyebabkan keterlambatan tersebut. Oleh karena itu, lawan bicara harus memberikan alasan keterlambatannya. Pilihan 2 dengan tepat memberikan alasan bahwa ia tidak bisa bangun di pagi hari menggunakan bentuk potensial negatif __{起|お}きられなかった__ (tidak bisa bangun).",
+            "translation": "Yamada, tadi pagi kamu terlambat sampai 1 jam lho, ada masalah apa?",
+            "keyPoints": [
+              "{遅刻|ちこく}する (terlambat)",
+              "{何|なに}かあった？ (apa terjadi sesuatu?)",
+              "{可能形|かのうけい} (bentuk potensial)"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "10{分|ぷん}なら{時間|じかん}があるよ (kalau 10 menit sih aku ada waktu). Jawaban ini merespons seolah-olah penutur bertanya apakah lawan bicara punya waktu luang untuk berbicara, padahal yang dibahas adalah keterlambatan 1 jam yang sudah terjadi."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{朝|あさ}、{起|お}きられなかったんだ (tadi pagi aku tidak bisa bangun). Ini adalah alasan yang sangat tepat dan logis untuk menjelaskan mengapa ia terlambat sampai satu jam di pagi hari."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "{来|く}るまで{待|ま}っているね (aku tunggu sampai kamu datang ya). Jawaban ini membicarakan tindakan di masa depan untuk menunggu seseorang, tidak nyambung dengan konteks menjawab alasan keterlambatan tadi pagi."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Pilihan 4 tidak digunakan dalam jenis soal respons kilat bagian ini."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-13T10:11:02.657Z",
+              "reviewedAt": "2026-10-13T10:14:38.000Z"
+            }
+          },
+          "audioTranscript": {
+            "text": "山田さん、今朝1時間も遅刻したけど、何かあった？\n1. 10分なら時間があるよ。\n2. 朝、起きられなかったんだ。\n3. 来るまで待っているね。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-audio-chat-fallback-v1",
+              "generatedAt": "2026-10-13T09:44:20.688Z",
+              "reviewedAt": "2026-10-13T10:04:52.000Z"
+            }
+          }
         },
         {
           "order": 4,
@@ -5255,7 +6304,53 @@
           "questionContextRef": "ctx-choukai-4",
           "questionImage": null,
           "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/audio/ca8382864ba2-n4-2014-07-choukai-quick-response-q04.mp3",
-          "explanation": null
+          "explanation": {
+            "summary": "Lawan bicara mengeluhkan suara televisi yang terlalu keras, sehingga tawaran untuk mengecilkan volume sedikit pada pilihan 3 adalah respons yang paling tepat.",
+            "detail": "Soal ini menguji pemahaman respons wajar terhadap sebuah keluhan atau teguran halus. Kalimat pemicu berbunyi テレビの{音|おと}がちょっと{大|おお}きすぎませんか？ (bukankah suara televisinya agak terlalu keras?). Di sini, pembicara menggunakan pola ~すぎます (terlalu) dalam bentuk pertanyaan negatif ~ませんか untuk meminta konfirmasi sekaligus meminta secara tidak langsung agar volumenya diturunkan. Respons yang dicari adalah tindakan yang tepat untuk mengatasi masalah tersebut, yaitu mengecilkan suara TV.",
+            "translation": "Bukankah suara televisinya agak terlalu keras?",
+            "keyPoints": [
+              "~すぎる",
+              "~ませんか",
+              "~を~くする"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "{小|ちい}さいテレビにしましょうか (bagaimana kalau kita pilih televisi yang kecil?). Pilihan ini mengecoh karena memuat kata {小|ちい}さい (kecil), tetapi konteksnya salah karena merujuk pada ukuran fisik televisinya, bukan volume suaranya."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "ちょっと{大|おお}きくしましょうか (bagaimana kalau kita besarkan sedikit?). Pilihan ini tidak logis karena suara TV sudah dinilai terlalu keras, sehingga membesarkannya lagi justru berlawanan dengan maksud pembicara."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "もう{少|すこ}し{小|ちい}さくしましょうか (bagaimana kalau kita kecilkan sedikit?). Respons ini sangat tepat karena menawarkan diri dengan pola ~ましょうか (bagaimana kalau kita...) untuk mengecilkan volume TV ({小|ちい}さくする) sebagai tanggapan atas suara yang terlalu keras."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Pilihan keempat tidak digunakan pada soal tipe {即時応答|そくじおうとう} (respons cepat) N4 yang hanya menyediakan tiga pilihan lisan."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-13T10:11:18.455Z",
+              "reviewedAt": "2026-10-13T10:14:38.000Z"
+            }
+          },
+          "audioTranscript": {
+            "text": "テレビの音がちょっと大きすぎませんか？\n1. 小さいテレビにしましょうか。\n2. ちょっと大きくしましょうか。\n3. もう少し小さくしましょうか。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-audio-chat-fallback-v1",
+              "generatedAt": "2026-10-13T09:44:20.688Z",
+              "reviewedAt": "2026-10-13T10:04:52.000Z"
+            }
+          }
         },
         {
           "order": 5,
@@ -5286,7 +6381,52 @@
           "questionContextRef": "ctx-choukai-4",
           "questionImage": null,
           "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/audio/9007b3bcc458-n4-2014-07-choukai-quick-response-q05.mp3",
-          "explanation": null
+          "explanation": {
+            "summary": "Pembicara meminta bantuan kepada lawan bicara untuk memfotokopi dokumen rapat terlebih dahulu, sehingga respons yang tepat adalah menanyakan jumlah lembar yang dibutuhkan.",
+            "detail": "Soal ini menguji pemahaman terhadap fungsi ungkapan permohonan santai tetapi sopan. Pola kalimat __～ておいてくれない？__ berasal dari bentuk permohonan __～てくれない__ (maukah kamu / tolong...) yang digabungkan dengan __～ておく__ (melakukan sesuatu sebagai persiapan sebelumnya). Karena pembicara meminta bantuan kepada {佐藤|さとう} (Sato) untuk menyiapkan salinan materi rapat, Sato sewajarnya menerima permintaan tersebut atau menanyakan detail pekerjaannya, misalnya berapa jumlah salinan yang diperlukan. Pilihan 1 langsung menanyakan jumlah lembar yang harus disiapkan sehingga menjadi respons yang paling wajar.",
+            "translation": "Sato-san, bisakah tolong fotokopikan dokumen rapat ini sebelumnya?",
+            "keyPoints": [
+              "～てくれる",
+              "～ておく"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "__{何枚|なんまい}{必要|ひつよう}ですか？__ (Berapa lembar yang dibutuhkan?) merespons permohonan fotokopi dengan menanyakan informasi penting yang dibutuhkan untuk menjalankan tugas tersebut."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "__{会議室|かいぎしつ}に{持|も}っていってください__ (Tolong bawa ke ruang rapat) tidak tepat karena malah memberikan instruksi balik kepada orang yang meminta tolong, seolah-olah lawan bicara adalah atasannya atau tugas fotokopi sudah selesai."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "__まだコピーしていません__ (Saya belum memfotokopinya) terdengar menggoda karena menyebut kata fotokopi, tetapi ini adalah jawaban untuk pertanyaan konfirmasi status seperti sudahkah difotokopi, bukan respons terhadap permohonan tolong fotokopikan."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Pilihan keempat tidak digunakan karena bagian soal respon cepat pada ujian ini hanya menyediakan tiga pilihan lisan."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-13T10:11:27.737Z",
+              "reviewedAt": "2026-10-13T10:14:38.000Z"
+            }
+          },
+          "audioTranscript": {
+            "text": "佐藤さん、この会議の資料をコピーしておいてくれない？\n\n1. 何枚必要ですか？\n2. 会議室に持っていってください。\n3. まだコピーしていません。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-audio-chat-fallback-v1",
+              "generatedAt": "2026-10-13T09:44:20.688Z",
+              "reviewedAt": "2026-10-13T10:04:52.000Z"
+            }
+          }
         },
         {
           "order": 6,
@@ -5317,7 +6457,53 @@
           "questionContextRef": "ctx-choukai-4",
           "questionImage": null,
           "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/audio/a06f063039df-n4-2014-07-choukai-quick-response-q06.mp3",
-          "explanation": null
+          "explanation": {
+            "summary": "Pilihan 1 benar karena merespons tawaran tumpangan mobil dengan ucapan terima kasih dan konfirmasi kesediaan lawan bicara.",
+            "detail": "Soal ini menguji pemahaman terhadap fungsi tawaran bantuan dalam percakapan sehari-hari. Kalimat pemicu berbunyi {今|いま}から{帰|かえ}るなら、{車|くるま}で{送|おく}りますよ (kalau mau pulang sekarang, saya antar naik mobil, lho). Pola kalimat ini merupakan tawaran kebaikan dari lawan bicara untuk mengantar si pendengar pulang menggunakan mobil. Respon yang paling tepat terhadap tawaran seperti ini adalah menerima atau menolak secara sopan. Jawaban yang paling wajar adalah berterima kasih dan memastikan kembali apakah benar-benar tidak merepotkan lawan bicara.",
+            "translation": "Ah, kalau mau pulang sekarang, saya antar naik mobil, lho.",
+            "keyPoints": [
+              "{送|おく}る",
+              "tawaran bantuan",
+              "ungkapan penerimaan tawaran"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "ありがとう。いいんですか？ (terima kasih. apakah boleh/tidak apa-apa?). Kalimat ini adalah respons yang sangat alami ketika menerima tawaran kebaikan dari orang lain, yaitu berterima kasih sekaligus memastikan apakah lawan bicara sungguh tidak keberatan."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "もう{送|おく}ってありますよ (sudah diantar/dikirim, lho). Pola ～てある digunakan untuk menyatakan keadaan hasil perbuatan yang sengaja dilakukan. Pilihan ini menggoda karena memakai kata kerja yang sama yaitu {送|おく}る, tetapi makna dan fungsinya sama sekali tidak cocok untuk membalas tawaran bantuan saat itu."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "え、もう{帰|かえ}ったんですか？ (eh, apakah sudah pulang?). Pilihan ini tidak masuk akal karena lawan bicara sedang berada di hadapan pendengar dan menawarkan tumpangan, bukan orang yang sudah pulang."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Slot keempat tidak digunakan karena {問題|もんだい} 4 pada sesi {聴解|ちょうかい} JLPT N4 hanya memiliki tiga pilihan lisan."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-13T10:12:20.627Z",
+              "reviewedAt": "2026-10-13T10:14:38.000Z"
+            }
+          },
+          "audioTranscript": {
+            "text": "あ、今から帰るなら、車で送りますよ。\n1. ありがとう。いいんですか？\n2. もう送ってありますよ。\n3. え、もう帰ったんですか？",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-audio-chat-fallback-v1",
+              "generatedAt": "2026-10-13T09:44:20.688Z",
+              "reviewedAt": "2026-10-13T10:04:52.000Z"
+            }
+          }
         },
         {
           "order": 7,
@@ -5348,7 +6534,53 @@
           "questionContextRef": "ctx-choukai-4",
           "questionImage": null,
           "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/audio/435a405b703f-n4-2014-07-choukai-quick-response-q07.mp3",
-          "explanation": null
+          "explanation": {
+            "summary": "Pilihan 2 benar karena secara tepat menjawab pertanyaan tentang berapa lama durasi libur yang bisa diambil.",
+            "detail": "Pada soal ini pembicara memulai dengan basa-basi bahwa sebentar lagi libur musim panas, lalu mengajukan pertanyaan inti yaitu __{今年|ことし}はどれぐらい{休|やす}めますか__ (tahun ini bisa libur kira-kira berapa lama?). Kata tanya どれぐらい (kira-kira seberapa lama atau banyak) menanyakan durasi, dan kata kerja yang dipakai adalah bentuk potensial __{休|やす}める__ (bisa berlibur atau istirahat). Oleh karena itu, respons yang dicari adalah jawaban yang menyebutkan durasi libur yang dapat diambil. Pilihan 2 menjawab dengan menyebutkan jangka waktu liburnya menggunakan pola しか...ない (hanya), sehingga sangat tepat.",
+            "translation": "Sebentar lagi libur musim panas ya. Tahun ini bisa libur kira-kira berapa lama?",
+            "keyPoints": [
+              "どれぐらい",
+              "bentuk potensial {休|やす}める",
+              "pola ~しか~ない"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "{１週間|いっしゅうかん}ぐらいかかります (memerlukan waktu kira-kira satu minggu). Pilihan ini menggoda karena menyebutkan durasi satu minggu, tetapi kata kerja かかる (memerlukan waktu atau biaya) biasanya dipakai untuk durasi pengerjaan atau perjalanan, bukan untuk menjawab berapa lama jatah libur yang bisa diambil oleh pembicara."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "{３日|みっか}しか{休|やす}めません (hanya bisa libur tiga hari). Respons ini secara langsung dan tepat menjawab pertanyaan tentang durasi libur menggunakan bentuk potensial negatif bersama partikel pembatas しか."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "もうすぐ{取|と}れます (sebentar lagi bisa mengambilnya). Pilihan ini menggoda karena memakai bentuk potensial dari mengambil libur, tetapi kata もうすぐ (sebentar lagi) menunjukkan titik waktu, bukan durasi berapa lama libur yang ditanyakan oleh pembicara."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Pilihan keempat tidak digunakan pada jenis soal respons singkat ini karena hanya ada tiga pilihan lisan."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-13T10:12:34.831Z",
+              "reviewedAt": "2026-10-13T10:14:38.000Z"
+            }
+          },
+          "audioTranscript": {
+            "text": "そろそろ夏休みですね。今年はどれぐらい休めますか？\n1. １週間ぐらいかかります。\n2. ３日しか休めません。\n3. もうすぐ取れます。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-audio-chat-fallback-v1",
+              "generatedAt": "2026-10-13T09:44:20.688Z",
+              "reviewedAt": "2026-10-13T10:04:52.000Z"
+            }
+          }
         },
         {
           "order": 8,
@@ -5379,7 +6611,54 @@
           "questionContextRef": "ctx-choukai-4",
           "questionImage": null,
           "questionAudio": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n4-2014-07/audio/ca6bba93b06c-n4-2014-07-choukai-quick-response-q08.mp3",
-          "explanation": null
+          "explanation": {
+            "summary": "Lawan bicara bertanya apakah Tanaka sudah mengabari yang lain mengenai waktu rapat, sehingga jawaban tepat adalah menyatakan bahwa hal itu sudah dilakukan sebelumnya.",
+            "detail": "Soal ini menguji pemahaman terhadap fungsi pertanyaan permohonan konfirmasi tindakan masa lalu dengan pola ~てくれた (__{連絡|れんらく}してくれた？__: apakah kamu sudah menghubungi/mengabari untuk saya/kita?). Pembicara ingin memastikan apakah tugas menghubungi semua orang mengenai waktu rapat besok sudah selesai dikerjakan atau belum. Respons yang paling tepat harus menjelaskan status tindakan tersebut, yaitu dengan menyatakan bahwa pemberitahuan sudah selesai dilakukan menggunakan pola persiapan atau keadaan yang disengaja ~てある.",
+            "translation": "Tanaka, apakah kamu sudah mengabari semua orang tentang waktu rapat besok?",
+            "keyPoints": [
+              "~てくれる",
+              "~てある",
+              "{連絡|れんらく}する",
+              "{知|し}らせる"
+            ],
+            "choices": [
+              {
+                "codeAnswer": 1,
+                "reason": "もう__{知|し}らせてあります__ (Sudah saya beritahukan sebelumnya). Kalimat ini secara tepat menjawab konfirmasi bahwa tindakan mengabari ({知|し}らせる yang semakna dengan {連絡|れんらく}する) sudah selesai dilakukan sebagai bentuk persiapan sebelumnya."
+              },
+              {
+                "codeAnswer": 2,
+                "reason": "10{時|じ}の{会議|かいぎ}です (Rapat jam 10). Pilihan ini menggoda karena menyebutkan waktu rapat, namun tidak menjawab pertanyaan apakah Tanaka sudah mengabari anggota yang lain."
+              },
+              {
+                "codeAnswer": 3,
+                "reason": "あまり{知|し}りません (Saya tidak begitu tahu). Pilihan ini keliru karena pembicara menanyakan tindakan menyampaikan kabar, bukan menanyakan seberapa banyak Tanaka tahu tentang informasi tersebut."
+              },
+              {
+                "codeAnswer": 4,
+                "reason": "Slot pilihan keempat tidak digunakan pada jenis soal respons cepat tingkat N4 yang hanya menyediakan tiga pilihan lisan."
+              }
+            ],
+            "answerKeyDoubt": false,
+            "answerKeyDoubtNote": null,
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-explanation-v1",
+              "generatedAt": "2026-10-13T10:12:38.986Z",
+              "reviewedAt": "2026-10-13T10:14:38.000Z"
+            }
+          },
+          "audioTranscript": {
+            "text": "田中さん、明日の会議の時間をみんなに連絡してくれた？\n1　もう知らせてあります。\n2　10時の会議です。\n3　あまり知りません。",
+            "meta": {
+              "source": "AI",
+              "aiModel": "ag/gemini-3.8-flash",
+              "promptVersion": "choukai-audio-chat-fallback-v1",
+              "generatedAt": "2026-10-13T09:44:20.688Z",
+              "reviewedAt": "2026-10-13T10:04:52.000Z"
+            }
+          }
         }
       ]
     }
