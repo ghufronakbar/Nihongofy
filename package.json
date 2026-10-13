@@ -37,6 +37,7 @@
     "seed:question-transcript:check": "node --env-file-if-exists=.env prisma/seed-question-transcript.mjs --validate-only",
     "choukai:transcript:extract": "node --env-file-if-exists=.env prisma/extract-choukai-transcripts.mjs",
     "choukai:transcript:audio-audit": "node --env-file-if-exists=.env prisma/audit-choukai-transcripts-with-audio.mjs",
+    "choukai:transcript:question-audio": "node --env-file-if-exists=.env prisma/transcribe-choukai-question-audio.mjs",
     "choukai:transcript:apply": "node prisma/apply-choukai-transcripts.mjs",
     "choukai:explanation:generate": "node --env-file-if-exists=.env prisma/generate-choukai-explanations.mjs",
     "choukai:explanation:apply": "node prisma/apply-choukai-explanations.mjs",
