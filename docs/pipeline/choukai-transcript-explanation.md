@@ -161,10 +161,12 @@ atau kunci setelah generate tidak dapat diterapkan diam-diam.
   tersebut dapat tampil kepada peserta.
 - Transkrip memakai relasi 1:1 `QuestionAudioTranscript`, dengan teks dan metadata audit seperti
   model, versi prompt, waktu generate, dan waktu review.
-- Query ujian, Latihan Cepat, hasil, dan diskusi tidak boleh memilih relasi transkrip. Akses awal
-  hanya untuk script offline dan halaman admin/audit.
-- Menyembunyikan elemen di komponen client tidak cukup; transkrip tidak boleh ikut masuk payload
-  Server Component atau Server Action publik.
+- Query ujian aktif, Latihan Cepat, result summary, dan diskusi tidak boleh memilih relasi
+  transkrip. Mode baca dan review attempt milik user yang sudah `COMPLETED` boleh memilih teksnya
+  tanpa metadata audit.
+- Tombol show/hide pada mode baca dan review hanya fitur belajar. Pada permukaan yang belum boleh
+  membuka transkrip, datanya sama sekali tidak boleh masuk payload Server Component atau Server
+  Action.
 
 ## Guard wajib
 

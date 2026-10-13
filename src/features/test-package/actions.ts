@@ -10,6 +10,7 @@ import {
   type QuestionBunpouPointView,
 } from "@/lib/question-bunpou-links";
 import { QUESTION_EXPLANATION_SELECT } from "@/lib/question-explanation";
+import { QUESTION_AUDIO_TRANSCRIPT_SELECT } from "@/lib/question-audio-transcript";
 import { getSession } from "@/lib/auth";
 import { DEFAULT_TIME_ZONE } from "@/lib/time-zone";
 import { getUserTimeZone } from "@/lib/user-time-zone";
@@ -114,6 +115,7 @@ const getCachedTestPackageQuestions = (testPackageId: number) =>
                   questionImage: true,
                   questionAudio: true,
                   questionAnswer: true,
+                  audioTranscript: { select: QUESTION_AUDIO_TRANSCRIPT_SELECT },
                   explanation: { select: QUESTION_EXPLANATION_SELECT },
                   questionChoices: {
                     orderBy: { codeAnswer: "asc" },

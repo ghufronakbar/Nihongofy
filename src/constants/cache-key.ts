@@ -24,8 +24,8 @@ export const CACHE_KEYS = {
   testPackageList: ["test-package-list"] as string[],
   testPackageDetail: (testPackageId: number) => ["test-package-detail", String(testPackageId)],
   testPackageQuestions: (testPackageId: number) => [
-    // v2 memutus cache lama yang masih menyimpan URL media Cloudinary.
-    "test-package-questions-v2",
+    // v3 memutus cache lama yang belum membawa transkrip audio CHOUKAI.
+    "test-package-questions-v3",
     String(testPackageId),
   ],
   testPackageMetadata: (testPackageId: number) => [

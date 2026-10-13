@@ -29,9 +29,14 @@
 - Detail menampilkan section yang tersedia, durasi resmi per session sebagai referensi, dan history attempt user.
 - User dapat memilih full mock atau latihan satu section.
 - Guest dapat mulai tanpa membuat row `Attempt`.
-- Mode baca menampilkan seluruh soal, kunci, explanation bila ada, furigana, audio/image, copy question, dan comment user login.
+- Mode baca menampilkan seluruh soal, kunci, explanation bila ada, furigana, audio/image, serta
+  transkrip CHOUKAI yang dapat ditampilkan/disembunyikan per soal. Copy question dan comment user
+  login tetap tersedia.
 - Query content global dicache, sedangkan attempt/comment user dibaca terpisah agar tidak bocor lintas akun.
-- Cache mode baca (`CACHE_KEYS.testPackageQuestions`) berisi kunci dan pembahasan, dan hanya dipakai halaman mode baca. Exam, latihan, dan result tidak memakainya; `unstable_cache` lain tidak boleh menyimpan soal ber-kunci (dijaga `src/lib/answer-key-guard.test.ts`).
+- Cache mode baca (`CACHE_KEYS.testPackageQuestions`) berisi kunci, pembahasan, dan teks transkrip,
+  dan hanya dipakai halaman mode baca. Exam, latihan, dan result tidak memakainya;
+  `unstable_cache` lain tidak boleh menyimpan soal ber-kunci (dijaga
+  `src/lib/answer-key-guard.test.ts`).
 
 ## Struktur Data
 

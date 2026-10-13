@@ -17,6 +17,7 @@ import { QuestionNavMobile } from "@/components/question-nav-mobile";
 import { JapaneseText } from "@/components/japanese-text";
 import { QuestionBunpouPoints } from "@/components/question-bunpou-points";
 import { QuestionExplanationBody } from "@/components/question-explanation";
+import { QuestionAudioTranscript } from "@/components/question-audio-transcript";
 import { JapanesePassage } from "@/components/japanese-passage";
 import { FuriganaScope } from "@/components/furigana-scope";
 import { mondaiTypeFullLabel } from "@/constants/jlpt";
@@ -286,6 +287,10 @@ export default async function TestPackageQuestionsPage({
                         )}
                       </div>
                     </div>
+
+                    {question.audioTranscript && (
+                      <QuestionAudioTranscript text={question.audioTranscript.text} />
+                    )}
 
                     {/* Choices */}
                     <div className="grid gap-2 sm:grid-cols-2">

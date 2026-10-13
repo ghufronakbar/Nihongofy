@@ -8,6 +8,7 @@ import type { MondaiType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { QUESTION_BUNPOU_LINKS_SELECT, toBunpouPoints } from "@/lib/question-bunpou-links";
 import { QUESTION_EXPLANATION_SELECT } from "@/lib/question-explanation";
+import { QUESTION_AUDIO_TRANSCRIPT_SELECT } from "@/lib/question-audio-transcript";
 import { getSession } from "@/lib/auth";
 import { CACHE_KEYS, CACHE_TAGS } from "@/constants/cache-key";
 import { FEATURES } from "@/constants";
@@ -336,6 +337,7 @@ export async function getAttemptDetail(attemptId: number) {
           questionImage: true,
           questionAudio: true,
           questionAnswer: true,
+          audioTranscript: { select: QUESTION_AUDIO_TRANSCRIPT_SELECT },
           explanation: { select: QUESTION_EXPLANATION_SELECT },
           bunpouLinks: QUESTION_BUNPOU_LINKS_SELECT,
           questionContext: {

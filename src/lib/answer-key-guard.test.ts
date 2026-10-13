@@ -85,6 +85,7 @@ import {
   getGuestAttemptSummary,
 } from "@/features/result/actions";
 import { QUESTION_BUNPOU_LINKS_SELECT } from "@/lib/question-bunpou-links";
+import { QUESTION_AUDIO_TRANSCRIPT_SELECT } from "@/lib/question-audio-transcript";
 import { QUESTION_EXPLANATION_SELECT } from "@/lib/question-explanation";
 
 // ============================================================
@@ -624,7 +625,7 @@ describe("result", () => {
     expect(mocks.delegates.testPackageItem.findMany).not.toHaveBeenCalled();
   });
 
-  it("review per soal pemilik attempt yang selesai membaca kunci", async () => {
+  it("review per soal pemilik attempt yang selesai membaca kunci dan transkrip", async () => {
     mocks.delegates.attempt.findUnique.mockResolvedValue(attempt("COMPLETED"));
     mocks.delegates.testPackageItem.findMany.mockResolvedValue([]);
 
@@ -633,6 +634,9 @@ describe("result", () => {
     const [read] = mocks.delegates.testPackageItem.findMany.mock.calls[0] ?? [];
     expect(answerKeyPaths("TestPackageItem", read)).toContain(
       "TestPackageItem.questions.questionAnswer",
+    );
+    expect(answerKeyPaths("TestPackageItem", read)).toContain(
+      "TestPackageItem.questions.audioTranscript",
     );
   });
 
@@ -743,6 +747,24 @@ describe("QUESTION_EXPLANATION_SELECT", () => {
       "src/features/result/actions.ts", // review setelah submit
       "src/features/test-package/actions.ts", // mode baca publik
       "src/lib/question-explanation.ts",
+    ]);
+  });
+});
+
+describe("QUESTION_AUDIO_TRANSCRIPT_SELECT", () => {
+  it("hanya mengirim teks transkrip tanpa metadata audit", () => {
+    expect(QUESTION_AUDIO_TRANSCRIPT_SELECT).toEqual({ text: true });
+  });
+
+  it("hanya dipakai mode baca dan review attempt selesai", () => {
+    const users = [...SOURCES]
+      .filter(([, source]) => source.includes("QUESTION_AUDIO_TRANSCRIPT_SELECT"))
+      .map(([path]) => path)
+      .sort();
+    expect(users).toEqual([
+      "src/features/result/actions.ts",
+      "src/features/test-package/actions.ts",
+      "src/lib/question-audio-transcript.ts",
     ]);
   });
 });
@@ -873,12 +895,16 @@ describe("permukaan sampingan selama ujian dan latihan", () => {
 });
 
 describe("cache ber-kunci terpisah dari jalur exam", () => {
-  it("hanya mode baca yang men-cache soal beserta kunci dan pembahasannya", () => {
+  it("hanya mode baca yang men-cache soal beserta kunci, pembahasan, dan transkrip", () => {
     const keyedCaches: string[] = [];
     for (const [path, source] of SOURCES) {
       for (const match of source.matchAll(/\bunstable_cache\(/g)) {
         const args = callArguments(source, match.index + match[0].length - 1);
-        if (/questionAnswer|QUESTION_EXPLANATION_SELECT|explanation/.test(args)) {
+        if (
+          /questionAnswer|QUESTION_EXPLANATION_SELECT|explanation|QUESTION_AUDIO_TRANSCRIPT_SELECT|audioTranscript/.test(
+            args,
+          )
+        ) {
           keyedCaches.push(path);
           expect(args).toContain("CACHE_KEYS.testPackageQuestions(");
           expect(args).toContain("CACHE_TAGS.testPackageQuestions(");

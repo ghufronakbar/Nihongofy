@@ -880,8 +880,9 @@ model Question {
 }
 
 // Transkrip audio per soal CHOUKAI. Dipisah dari questionText/storyText agar
-// tidak ikut terkirim atau dirender ke peserta. Pipeline hanya mengimpor hasil
-// yang sudah ditinjau manusia; hasil OCR mentah tetap berada di staging lokal.
+// tidak ikut terkirim saat peserta mengerjakan soal. Mode baca dan review hasil
+// boleh memilih teksnya. Pipeline hanya mengimpor hasil yang sudah ditinjau
+// manusia; hasil OCR mentah tetap berada di staging lokal.
 model QuestionAudioTranscript {
   id Int @id @default(autoincrement())
 

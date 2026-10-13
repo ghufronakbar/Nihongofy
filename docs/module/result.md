@@ -22,7 +22,8 @@ Tidak punya flag sendiri; ikut `FEATURES_TEST_PACKAGE` (lihat [Paket tes](test-p
 
 ## Result Detail
 
-- Menampilkan jawaban user, kunci, explanation, stimulus, media, dan flag.
+- Menampilkan jawaban user, kunci, explanation, stimulus, media, flag, serta transkrip CHOUKAI
+  yang dapat ditampilkan/disembunyikan per soal.
 - Furigana dapat ditampilkan/disembunyikan.
 - Navigasi per mondai tersedia pada desktop dan mobile.
 - User dapat copy soal ke clipboard serta mengelola catatan pribadi.
@@ -77,4 +78,3 @@ Tidak punya flag sendiri; ikut `FEATURES_TEST_PACKAGE` (lihat [Paket tes](test-p
 - `src/app/(public)/result/[attemptId]/detail/page.tsx`
 - `src/app/(public)/result/guest/page.tsx`
 - `src/lib/jlpt-score.ts`
-

@@ -277,8 +277,10 @@ User
   model dan versi prompt wajib terisi.
 - `text` menyimpan transkrip Jepang verbatim dengan label pembicara dan baris baru bila tersedia.
   Jangan menambahkan furigana, terjemahan, atau rangkuman ke teks sumber.
-- Query publik untuk ujian, Latihan Cepat, hasil, dan diskusi tidak boleh memilih relasi ini.
-  Transkrip tidak boleh dikirim lalu sekadar disembunyikan di komponen client.
+- Query ujian aktif, Latihan Cepat, result summary, dan diskusi tidak boleh memilih relasi ini.
+  Transkrip hanya boleh dikirim ke mode baca atau review attempt milik user yang sudah
+  `COMPLETED`; UI pada kedua permukaan tersebut menyembunyikannya secara default untuk kebutuhan
+  belajar, bukan sebagai batas keamanan.
 - Sinkronisasi memakai `npm run seed:question-transcript`, dicocokkan lewat nama paket →
   `mondaiType` → nomor soal dan tidak mengubah ID maupun data pengerjaan pengguna.
 
@@ -346,12 +348,14 @@ Saat import data soal, tangani pelanggaran constraint sebagai sinyal error ekstr
 - Analitik kelemahan per tipe mondai: `AttemptAnswer → Question → TestPackageItem`, group by `mondaiType`. Filter `Attempt.status = COMPLETED`.
 - Saat mengambil soal untuk mode attempt, JANGAN mengirim `questionAnswer`, relasi `explanation`,
   atau relasi `audioTranscript` ke client. Relasi 1:1 lebih mudah bocor daripada kolom teks: satu
-  `include` yang lolos review sudah cukup mengirim seluruh isinya.
+  `include` yang lolos review sudah cukup mengirim seluruh isinya. `audioTranscript` hanya boleh
+  dipilih oleh mode baca dan review attempt milik user yang sudah `COMPLETED`, dengan select teks
+  minimum tanpa metadata audit.
   - "Dikirim ke client" mencakup props Server Component ke Client Component (ikut RSC payload, terbaca di view-source walau tidak dirender), bukan hanya return value Server Action.
   - Larangan yang sama berlaku untuk turunannya: `AttemptAnswer.isCorrect` attempt yang belum `COMPLETED` (termasuk di `/api/account/export`), `QuestionExplanationChoice.isCorrect`, tautan pola `Question.bunpouLinks` (`QuestionBunpouLink` menyebut pola yang diuji), dan cara baca di dalam underline soal `MOJI_GOI_READ_KANJI`.
   - Query baca pada model yang menyimpan kunci (`Question`, `AttemptAnswer`, `QuestionExplanation*`) selalu memakai `select`. Tanpa `select` — juga dengan `include` — seluruh kolom skalar ikut, termasuk `questionAnswer`.
   - Data ber-kunci yang di-cache (`unstable_cache` mode baca, key `testPackageQuestions`) tidak boleh dipakai ulang jalur exam/latihan.
-  - Dijaga `src/lib/answer-key-guard.test.ts`. Mengubah select exam/latihan atau menambah pemakai `QUESTION_EXPLANATION_SELECT` akan menggagalkannya sampai ditinjau.
+  - Dijaga `src/lib/answer-key-guard.test.ts`. Mengubah select exam/latihan atau menambah pemakai `QUESTION_EXPLANATION_SELECT`/`QUESTION_AUDIO_TRANSCRIPT_SELECT` akan menggagalkannya sampai ditinjau.
 - Gunakan `include`/`select` eksplisit di Prisma — jangan fetch semua relasi tanpa perlu (bacaan `storyText` bisa panjang).
 - Urutan render soal: `TestPackageItem.session` → `TestPackageItem.order` → `Question.order`.
 
