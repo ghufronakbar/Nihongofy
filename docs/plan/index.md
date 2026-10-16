@@ -7,6 +7,13 @@ Urutan disusun berdasarkan dependensi, risiko terhadap kepercayaan user, dan bia
 Audit dasar: **2 September 2026 (WIB)**. Dokumen ini bersifat living document; centang item hanya
 setelah implementasi selesai dan perilakunya sudah diverifikasi user.
 
+## Rencana Fitur Tambahan
+
+- [Mini Games dan Kotoba Clash](mini-games-kotoba-clash.md), dirancang 16 Oktober 2026:
+  katalog publik untuk beberapa game, dengan battle kuis JLPT teks sebagai game pertama.
+  WebSocket sendiri pada Vercel Hobby harus melewati spike deployment dan pengukuran free tier
+  sebelum implementasi lengkap. Status saat ini dokumentasi saja; belum ada kode atau migration.
+
 ## Rekomendasi Utama
 
 Jangan mulai dari Dashboard, Analytics, atau Conversation. Ketiga area tersebut adalah consumer

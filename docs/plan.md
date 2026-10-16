@@ -4,6 +4,11 @@ Rujukan: `project-overview.md` (routes & flow), `project-rules.md` (arsitektur/k
 
 Checklist ini dikerjakan berurutan per fase (fase belakang bergantung pada fase depan). Centang `[x]` saat selesai & terverifikasi (bukan sekadar ditulis).
 
+Rencana fitur tambahan **16 Oktober 2026**: [Mini Games dan Kotoba Clash](plan/mini-games-kotoba-clash.md).
+Dokumen [hub](module/mini-games.md), [aturan game](module/kotoba-clash.md), dan
+[UAT](verification/mini-games-kotoba-clash-uat.md) tersedia. Status masih dokumentasi; validasi
+WebSocket pada Vercel Hobby/free tier didahulukan sebelum perubahan schema dan fitur lengkap.
+
 > Catatan 26 Agustus 2026: bagian auth awal di bawah adalah catatan implementasi historis. Model one-time setup telah dihentikan. Status dan rencana aktif ada di `plan/redesign-and-feature.md` serta `plan/phase-1-foundation.md`.
 
 ## Fase 0 — Setup & Konfigurasi Dasar
