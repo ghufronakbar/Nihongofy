@@ -27,7 +27,9 @@
 2. User memilih 1-20 soal; UI menawarkan 5/10/15/20 bila jumlah tersedia cukup.
 3. Server mengacak kandidat dari seed waktu, membuat `PracticeSession`, lalu membuat semua `PracticeAnswer` dalam transaksi.
 4. Runner menampilkan satu soal per langkah.
-5. Kunci dan explanation baru diambil untuk soal yang sudah dijawab.
+5. Kunci, explanation, dan transkrip audio baru dikirim untuk soal yang sudah dijawab.
+   Tombol "Tampilkan transkrip" muncul di bawah media soal bila transkrip tersedia; transkrip
+   tersembunyi secara default dan ditutup kembali saat berpindah soal.
 6. Jawaban pertama bersifat final; setelah semua selesai session menjadi `COMPLETED`.
 7. Restart membuat session baru dengan membership soal yang sama; session lama yang masih aktif menjadi `ABANDONED`.
 
@@ -44,13 +46,14 @@
 - Tidak ada `PracticeSession` atau `PracticeAnswer` database.
 - Jawaban dan ringkasan hanya bertahan dalam state React pada page yang sedang terbuka; refresh mengulang dari awal.
 - Restart guest kembali ke configurator, bukan mengulang set yang sama.
+- Transkrip tersedia setelah jawaban dinilai, sama seperti user login.
 
 ## Data-Leak Guard
 
 Hasil audit 3 Oktober 2026 (tabel lengkap di [exam.md](exam.md#audit-data-leak-3-oktober-2026)):
 
-- Payload sesi (`getPracticeSession`) tidak memuat kunci maupun pembahasan untuk soal yang belum
-  dijawab. Query kunci hanya meminta id soal yang `answeredAt`-nya terisi.
+- Payload sesi (`getPracticeSession`) tidak memuat kunci, pembahasan, maupun transkrip untuk soal
+  yang belum dijawab. Query feedback hanya meminta id soal yang `answeredAt`-nya terisi.
 - Penilaian di server. User login: pilihan yang tidak ada di soal, atau soal yang belum dijawab
   di sesi yang sudah ditutup, ditolak tanpa mengembalikan kunci. Guest: soal di luar daftar
   cookie sesi guest ditolak sebelum kunci dibaca, dan pilihan yang tidak ada di soal ditolak.

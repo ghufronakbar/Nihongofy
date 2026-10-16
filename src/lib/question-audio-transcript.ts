@@ -1,5 +1,5 @@
-// Public transcript payload for surfaces that may reveal answers: read mode and
-// completed-attempt review. Audit metadata remains server-side.
+// Transcript payload for read mode, completed-attempt review, and answered
+// practice feedback. Audit metadata remains server-side.
 export const QUESTION_AUDIO_TRANSCRIPT_SELECT = {
   text: true,
 } as const;

@@ -19,6 +19,7 @@ import { ImageWithLightbox } from "@/components/image-with-lightbox";
 import { JLPT_SECTION_LABELS, mondaiTypeFullLabel } from "@/constants/jlpt";
 import { QuestionBunpouPoints } from "@/components/question-bunpou-points";
 import { QuestionExplanationBody } from "@/components/question-explanation";
+import { QuestionAudioTranscript } from "@/components/question-audio-transcript";
 import { ReportButton } from "@/features/report/components/report-button";
 import type { QuestionBunpouPointView } from "@/lib/question-bunpou-links";
 import {
@@ -26,6 +27,7 @@ import {
   questionPromptFallbackLabel,
 } from "@/lib/question-choice-label";
 import type { QuestionExplanationView } from "@/lib/question-explanation";
+import type { QuestionAudioTranscriptView } from "@/lib/question-audio-transcript";
 import { shouldShowContextAudio, shouldShowQuestionContext } from "@/lib/question-media";
 import { cn } from "@/lib/utils";
 import {
@@ -36,6 +38,7 @@ import {
 type Feedback = {
   correctAnswer: number;
   explanation: QuestionExplanationView | null;
+  audioTranscript: QuestionAudioTranscriptView | null;
   bunpouPoints: QuestionBunpouPointView[];
 };
 
@@ -160,6 +163,7 @@ export function PracticeRunner({ practiceSession, reportEnabled }: PracticeRunne
                 feedback: {
                   correctAnswer: result.correctAnswer,
                   explanation: result.explanation,
+                  audioTranscript: result.audioTranscript,
                   bunpouPoints: result.bunpouPoints,
                 },
               }
@@ -349,6 +353,13 @@ export function PracticeRunner({ practiceSession, reportEnabled }: PracticeRunne
               </div>
             )}
           </div>
+
+          {isAnswered && currentQuestion.feedback?.audioTranscript && (
+            <QuestionAudioTranscript
+              key={currentQuestion.id}
+              text={currentQuestion.feedback.audioTranscript.text}
+            />
+          )}
 
           <div className="grid gap-3">
             {currentQuestion.questionChoices.map((choice) => {

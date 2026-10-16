@@ -286,6 +286,8 @@ const EXPLANATION = {
   choices: [{ codeAnswer: 2, isCorrect: true, reason: "Benar" }],
 };
 
+const AUDIO_TRANSCRIPT = { text: "男：もう一度お願いします。" };
+
 beforeEach(() => {
   mocks.cookies.clear();
   mocks.getSession.mockResolvedValue({ userId: 5, sessionId: "sesi" });
@@ -399,7 +401,7 @@ describe("latihan cepat", () => {
     };
   }
 
-  it("payload sesi hanya memuat kunci untuk soal yang sudah dijawab", async () => {
+  it("payload sesi hanya memuat kunci dan transkrip untuk soal yang sudah dijawab", async () => {
     mocks.delegates.practiceSession.findUnique.mockResolvedValue({
       id: 3,
       userId: 5,
@@ -433,7 +435,12 @@ describe("latihan cepat", () => {
     mocks.delegates.question.findMany.mockImplementation(async (args: unknown) => {
       const where = isRecord(args) && isRecord(args.where) ? args.where : {};
       const ids = isRecord(where.id) && Array.isArray(where.id.in) ? where.id.in : [];
-      return ids.map((id: unknown) => ({ id, questionAnswer: 2, explanation: EXPLANATION }));
+      return ids.map((id: unknown) => ({
+        id,
+        questionAnswer: 2,
+        explanation: EXPLANATION,
+        audioTranscript: AUDIO_TRANSCRIPT,
+      }));
     });
 
     const session = await getPracticeSession({ sessionId: 3 });
@@ -443,11 +450,13 @@ describe("latihan cepat", () => {
     // Satu-satunya query ber-kunci adalah untuk soal yang sudah dijawab.
     expect(keyed).toHaveLength(1);
     expect(keyed[0]!.args).toMatchObject({ where: { id: { in: [100] } } });
+    expect(answerKeyPaths(keyed[0]!.model, keyed[0]!.args)).toContain("Question.audioTranscript");
 
     const [answered, unanswered] = session.questions;
-    expect(answered!.feedback).toMatchObject({ correctAnswer: 2 });
+    expect(answered!.feedback).toMatchObject({ correctAnswer: 2, audioTranscript: AUDIO_TRANSCRIPT });
     expect(unanswered!.feedback).toBeNull();
     expect(keysDeep(unanswered)).not.toContain("questionAnswer");
+    expect(keysDeep(unanswered)).not.toContain("audioTranscript");
     for (const question of session.questions) {
       expect(hasFurigana(question.questionText)).toBe(false);
     }
@@ -474,20 +483,22 @@ describe("latihan cepat", () => {
     expectNoAnswerKeyReads();
     for (const question of session.questions) {
       expect(question.feedback).toBeNull();
+      expect(keysDeep(question)).not.toContain("audioTranscript");
       expect(hasFurigana(question.questionText)).toBe(false);
     }
   });
 
-  function mockAssignment(status: string, answeredAt: Date | null) {
+  function mockAssignment(status: string, answeredAt: Date | null, userId = 5) {
     mocks.delegates.practiceAnswer.findUnique.mockResolvedValue({
       id: 9,
-      selectedAnswer: null,
-      isCorrect: null,
+      selectedAnswer: answeredAt ? 2 : null,
+      isCorrect: answeredAt ? true : null,
       answeredAt,
-      practiceSession: { id: 3, userId: 5, status, questionCount: 2 },
+      practiceSession: { id: 3, userId, status, questionCount: 2 },
       question: {
         questionAnswer: 2,
         explanation: EXPLANATION,
+        audioTranscript: AUDIO_TRANSCRIPT,
         questionChoices: [1, 2, 3].map((codeAnswer) => ({ codeAnswer })),
       },
     });
@@ -501,6 +512,7 @@ describe("latihan cepat", () => {
     expect(result.ok).toBe(false);
     expect(keysDeep(result)).not.toContain("correctAnswer");
     expect(keysDeep(result)).not.toContain("explanation");
+    expect(keysDeep(result)).not.toContain("audioTranscript");
     expect(mocks.delegates.practiceAnswer.updateMany).not.toHaveBeenCalled();
   });
 
@@ -512,6 +524,16 @@ describe("latihan cepat", () => {
     expect(result.ok).toBe(false);
     expect(keysDeep(result)).not.toContain("correctAnswer");
     expect(keysDeep(result)).not.toContain("explanation");
+    expect(keysDeep(result)).not.toContain("audioTranscript");
+  });
+
+  it("transkrip tidak dikirim untuk assignment milik user lain", async () => {
+    mockAssignment("IN_PROGRESS", null, 6);
+
+    await expect(
+      submitPracticeAnswerAction({ sessionId: 3, questionId: 100, selectedAnswer: 1 }),
+    ).rejects.toThrow("NEXT_NOT_FOUND");
+    expect(mocks.delegates.practiceAnswer.updateMany).not.toHaveBeenCalled();
   });
 
   describe("submit guest", () => {
@@ -524,6 +546,7 @@ describe("latihan cepat", () => {
       mocks.delegates.question.findUnique.mockResolvedValue({
         questionAnswer: 2,
         explanation: EXPLANATION,
+        audioTranscript: AUDIO_TRANSCRIPT,
         questionChoices: [1, 2, 3, 4].map((codeAnswer) => ({ codeAnswer })),
       });
     });
@@ -532,6 +555,7 @@ describe("latihan cepat", () => {
       expect(result).toMatchObject({ ok: false });
       expect(keysDeep(result)).not.toContain("correctAnswer");
       expect(keysDeep(result)).not.toContain("explanation");
+      expect(keysDeep(result)).not.toContain("audioTranscript");
       // Ditolak sebelum kunci dibaca dari database.
       expect(mocks.delegates.question.findUnique).not.toHaveBeenCalled();
     }
@@ -574,18 +598,38 @@ describe("latihan cepat", () => {
       expect(result).toMatchObject({ ok: false, message: "Pilihan jawaban tidak tersedia untuk soal ini." });
       expect(keysDeep(result)).not.toContain("correctAnswer");
       expect(keysDeep(result)).not.toContain("explanation");
+      expect(keysDeep(result)).not.toContain("audioTranscript");
     });
 
-    it("soal anggota sesi guest dinilai dan mendapat kunci", async () => {
+    it("soal anggota sesi guest dinilai dan mendapat kunci serta transkrip", async () => {
       setGuestCookie(JSON.stringify({ jlptLevel: "N2", questionIds: [100, 101] }));
 
       const result = await submitPracticeAnswerAction({ sessionId: 0, questionId: 101, selectedAnswer: 2 });
 
-      expect(result).toMatchObject({ ok: true, isCorrect: true, correctAnswer: 2 });
+      expect(result).toMatchObject({
+        ok: true,
+        isCorrect: true,
+        correctAnswer: 2,
+        audioTranscript: AUDIO_TRANSCRIPT,
+      });
+    });
+
+    it("feedback tetap tersedia untuk soal tanpa transkrip", async () => {
+      setGuestCookie(JSON.stringify({ questionIds: [100] }));
+      mocks.delegates.question.findUnique.mockResolvedValue({
+        questionAnswer: 2,
+        explanation: null,
+        audioTranscript: null,
+        questionChoices: [{ codeAnswer: 2 }],
+      });
+
+      expect(
+        await submitPracticeAnswerAction({ sessionId: 0, questionId: 100, selectedAnswer: 2 }),
+      ).toMatchObject({ ok: true, audioTranscript: null });
     });
   });
 
-  it("kunci dan pembahasan baru dikirim setelah jawaban dinilai server", async () => {
+  it("kunci, pembahasan, dan transkrip baru dikirim setelah jawaban dinilai server", async () => {
     mockAssignment("IN_PROGRESS", null);
     mocks.delegates.practiceAnswer.count.mockResolvedValue(1);
     mocks.delegates.practiceAnswer.findUniqueOrThrow.mockResolvedValue({
@@ -597,7 +641,27 @@ describe("latihan cepat", () => {
     const result = await submitPracticeAnswerAction({ sessionId: 3, questionId: 100, selectedAnswer: 1 });
 
     expect(mocks.delegates.practiceAnswer.updateMany).toHaveBeenCalledOnce();
-    expect(result).toMatchObject({ ok: true, isCorrect: false, correctAnswer: 2 });
+    expect(result).toMatchObject({
+      ok: true,
+      isCorrect: false,
+      correctAnswer: 2,
+      audioTranscript: AUDIO_TRANSCRIPT,
+    });
+  });
+
+  it("jawaban final tetap sama ketika transkrip diminta ulang pada sesi selesai", async () => {
+    mockAssignment("COMPLETED", new Date("2026-10-03T00:02:00Z"));
+    mocks.delegates.practiceAnswer.count.mockResolvedValue(2);
+
+    const result = await submitPracticeAnswerAction({ sessionId: 3, questionId: 100, selectedAnswer: 1 });
+
+    expect(result).toMatchObject({
+      ok: true,
+      selectedAnswer: 2,
+      isCorrect: true,
+      audioTranscript: AUDIO_TRANSCRIPT,
+    });
+    expect(mocks.delegates.practiceAnswer.updateMany).not.toHaveBeenCalled();
   });
 });
 
@@ -756,12 +820,13 @@ describe("QUESTION_AUDIO_TRANSCRIPT_SELECT", () => {
     expect(QUESTION_AUDIO_TRANSCRIPT_SELECT).toEqual({ text: true });
   });
 
-  it("hanya dipakai mode baca dan review attempt selesai", () => {
+  it("hanya dipakai mode baca, review attempt selesai, dan feedback latihan yang sudah dijawab", () => {
     const users = [...SOURCES]
       .filter(([, source]) => source.includes("QUESTION_AUDIO_TRANSCRIPT_SELECT"))
       .map(([path]) => path)
       .sort();
     expect(users).toEqual([
+      "src/features/practice/actions.ts", // hanya feedback soal yang dijawab (dijaga test runtime)
       "src/features/result/actions.ts",
       "src/features/test-package/actions.ts",
       "src/lib/question-audio-transcript.ts",
@@ -891,6 +956,9 @@ describe("permukaan sampingan selama ujian dan latihan", () => {
     expect(runner.match(/<QuestionBunpouPoints points=\{([^}]+)\}/g)).toEqual([
       "<QuestionBunpouPoints points={currentQuestion.feedback.bunpouPoints}",
     ]);
+    expect(runner).toMatch(
+      /isAnswered && currentQuestion\.feedback\?\.audioTranscript && \([\s\S]{0,200}text=\{currentQuestion\.feedback\.audioTranscript\.text\}/,
+    );
   });
 });
 

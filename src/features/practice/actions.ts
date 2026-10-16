@@ -7,6 +7,7 @@ import type { JlptLevel, JlptSection, MondaiType, Prisma } from "@prisma/client"
 import { prisma } from "@/lib/prisma";
 import { QUESTION_BUNPOU_LINKS_SELECT, toBunpouPoints } from "@/lib/question-bunpou-links";
 import { QUESTION_EXPLANATION_SELECT } from "@/lib/question-explanation";
+import { QUESTION_AUDIO_TRANSCRIPT_SELECT } from "@/lib/question-audio-transcript";
 import { withoutFurigana, withoutQuestionFurigana } from "@/lib/japanese-markup";
 import { getSession } from "@/lib/auth";
 import { CACHE_KEYS, CACHE_TAGS } from "@/constants/cache-key";
@@ -340,6 +341,7 @@ export async function getPracticeSession(input: PracticeSessionIdInput) {
           id: true,
           questionAnswer: true,
           explanation: { select: QUESTION_EXPLANATION_SELECT },
+          audioTranscript: { select: QUESTION_AUDIO_TRANSCRIPT_SELECT },
           bunpouLinks: QUESTION_BUNPOU_LINKS_SELECT,
         },
       })
@@ -366,6 +368,7 @@ export async function getPracticeSession(input: PracticeSessionIdInput) {
           ? {
               correctAnswer: feedback.questionAnswer,
               explanation: feedback.explanation,
+              audioTranscript: feedback.audioTranscript,
               bunpouPoints: toBunpouPoints(feedback.bunpouLinks),
             }
           : null,
@@ -414,6 +417,7 @@ export async function submitPracticeAnswerAction(input: SubmitPracticeAnswerInpu
       select: {
         questionAnswer: true,
         explanation: { select: QUESTION_EXPLANATION_SELECT },
+        audioTranscript: { select: QUESTION_AUDIO_TRANSCRIPT_SELECT },
         bunpouLinks: QUESTION_BUNPOU_LINKS_SELECT,
         questionChoices: { select: { codeAnswer: true } },
       },
@@ -435,6 +439,7 @@ export async function submitPracticeAnswerAction(input: SubmitPracticeAnswerInpu
       answeredAt: new Date().toISOString(),
       correctAnswer: question.questionAnswer,
       explanation: question.explanation,
+      audioTranscript: question.audioTranscript,
       bunpouPoints: toBunpouPoints(question.bunpouLinks),
       answeredCount: 1,
       correctCount: isCorrect ? 1 : 0,
@@ -462,6 +467,7 @@ export async function submitPracticeAnswerAction(input: SubmitPracticeAnswerInpu
           select: {
             questionAnswer: true,
             explanation: { select: QUESTION_EXPLANATION_SELECT },
+            audioTranscript: { select: QUESTION_AUDIO_TRANSCRIPT_SELECT },
             bunpouLinks: QUESTION_BUNPOU_LINKS_SELECT,
             questionChoices: { select: { codeAnswer: true } },
           },
@@ -524,6 +530,7 @@ export async function submitPracticeAnswerAction(input: SubmitPracticeAnswerInpu
       answeredAt: persisted.answeredAt?.toISOString() ?? new Date().toISOString(),
       correctAnswer: assignment.question.questionAnswer,
       explanation: assignment.question.explanation,
+      audioTranscript: assignment.question.audioTranscript,
       bunpouPoints: toBunpouPoints(assignment.question.bunpouLinks),
       answeredCount,
       correctCount,
