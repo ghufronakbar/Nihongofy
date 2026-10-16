@@ -1,8 +1,11 @@
 # Kotoba Clash - Verifikasi Fase A
 
 Tanggal: **16 Oktober 2026 (Asia/Jakarta)**. Owner: Engineering Owner.
-Status: **bukti transport PASS; gate A BLOCKED pada pengukuran budget**.
-Keputusan rilis: **belum diaktifkan; fase B belum dimulai**.
+Pembaruan budget: **17 Oktober 2026**, berdasarkan screenshot Usage dari user.
+Status: **bukti transport PASS; bukti budget parsial, gate A masih BLOCKED**.
+Keputusan rilis: **belum diaktifkan**. User meminta melanjutkan pada 17 Oktober 2026;
+fondasi B dikerjakan dengan budget tetap menjadi blocker aktivasi publik. Lihat
+[laporan B](kotoba-clash-phase-b.md).
 
 Rujukan: [rencana](../plan/mini-games-kotoba-clash.md),
 [modul](../module/kotoba-clash.md), dan [UAT](mini-games-kotoba-clash-uat.md).
@@ -167,8 +170,41 @@ Deployment preview yang dipakai: `dpl_DqT9bSNPkSTxAjiXr3pS4BJwZiyP` dan
 Query `vercel.function_invocation.function_cpu_time_ms` melalui Observability API ditolak dengan
 HTTP **402 `payment_required`**, alasan **Observability Plus memerlukan Pro/Enterprise**.
 Tidak ada upgrade/layanan berbayar diaktifkan. Schema metrik dapat dibaca, tetapi itu tidak
-memberi nilai pemakaian. CPU, memory-hours, invocation, transfer provider, dan baseline website
-belum boleh diklaim terukur hanya berdasarkan jumlah frame/ACK pada runner.
+memberi nilai pemakaian melalui API tersebut. Jumlah frame/ACK runner tidak mengukur CPU,
+memory-hours, invocation, atau transfer billing provider.
+
+### Snapshot Usage dari User
+
+Screenshot berjudul **Last 30 days**, diterima dan ditinjau pada 17 Oktober 2026, memberi angka
+agregat berikut. Nama lampiran memuat 16 Oktober 2026 pukul 23.20.27; waktu pengambilan tidak
+diverifikasi secara independen. Cakupan project/team tidak terlihat pada potongan gambar.
+Transkripsi tersimpan pada [bukti Usage](evidence/2026-10-17-kotoba-clash-vercel-usage.json).
+
+| Metrik | Terpakai / kuota pada dashboard | Sisa berdasarkan tampilan |
+|---|---|---|
+| Functions Storage | 4,27 GB / 10 GB | 5,73 GB |
+| Fluid Active CPU | 1 jam 8 menit / 4 jam | 2 jam 52 menit |
+| Deployment Storage | 2,47 GB / 10 GB | 7,53 GB |
+| Image Optimization - Transformations | 1,2K / 5K | Sekitar 3,8K |
+| Image Optimization - Cache Writes | 18K / 100K | Sekitar 82K |
+| Function Invocations | 170K / 1M | Sekitar 830K |
+| CDN Requests | 153K / 1M | Sekitar 847K |
+| Fast Origin Transfer | 1,42 GB / 10 GB | 8,58 GB |
+| Image Optimization - Cache Reads | 33K / 300K | Sekitar 267K |
+| Fast Data Transfer | 3,58 GB / 100 GB | 96,42 GB |
+
+CPU memakai sekitar **28,3%**, invocation **17%**, Fast Origin Transfer **14,2%**, dan Fast Data
+Transfer **3,58%** dari kuota yang ditampilkan. Nilai dashboard dibulatkan; sisa bukan angka
+billing presisi. Kuota yang terlihat masih mempunyai ruang, sehingga pernyataan bahwa semua
+angka pemakaian Vercel belum tersedia tidak lagi berlaku.
+
+Namun, snapshot ini bukan pasangan sebelum/sesudah probe dan tidak memisahkan traffic website,
+probe cloud, atau aktivitas lain. Biaya per room dan proyeksi jumlah room/bulan belum terukur.
+**Provisioned Memory (GB-hours) tidak ditampilkan**, sehingga tidak boleh dianggap nol atau
+disamakan dengan Functions Storage. Pemakaian bulanan Upstash dan Supabase juga tidak terlihat.
+Snapshot ini melengkapi bukti budget, belum meluluskan gate A atau menetapkan kapasitas rilis.
+
+### Redis dan Proyeksi Fixture
 
 Redis `INFO` dapat dibaca, tetapi counter yang diterima tidak monoton: pemeriksaan preview aktif
 memberi `total_commands_processed=12667`, sedangkan pemeriksaan akhir memberi `9029`.
@@ -192,9 +228,14 @@ website selalu masuk free tier.
 - Refresh: deployment preview memuat dependency/env baru; default probe tetap off.
 - Warning existing: AWS SDK memberi peringatan dukungan Node 20 lokal berakhir pada Januari 2027;
   deployment memakai Node 24. Warning tidak menggagalkan build.
-- P1, owner Engineering Owner: metrik CPU/memory-hours/invocation/transfer provider, command Redis
-  bulanan, dan baseline website belum tersedia. Query API 402 dan dashboard browser belum login.
-  **Gate A belum ditutup; fase B menunggu pengukuran budget**, tanpa mengaktifkan layanan berbayar.
+- P1, owner Engineering Owner: snapshot 30 hari CPU/invocation/transfer Vercel sudah tersedia
+  dari user. Provisioned memory-hours, command Redis bulanan, serta delta biaya probe yang
+  dipisahkan dari baseline website belum tersedia; query Observability API tetap 402.
+  Tindak lanjut: lengkapi angka Usage memory/Upstash dan ukur delta workload terisolasi sebelum
+  menetapkan limit room/global/spectator. **Gate budget A belum ditutup; aktivasi publik menunggu
+  pengukuran**, sedangkan pengembangan B dilanjutkan atas instruksi user. Tidak ada layanan
+  berbayar yang diaktifkan. Tidak perlu mengulang uji transport untuk
+  menafsirkan screenshot ini.
 - P1 untuk rilis game, owner Engineering Owner: takeover identitas saat crash harus menghindari
   penantian lease penuh. Pembuktian lokal tidak menyelesaikan desain guest/roster produksi.
 - P2 untuk UX, owner Engineering Owner: tail ACK 11,1 detik dan jaringan mobile belum dievaluasi

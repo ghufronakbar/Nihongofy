@@ -1,4 +1,5 @@
 import "server-only";
+import type { PrismaClient } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
 import { buildAnonymizedUsername } from "@/lib/username";
@@ -15,10 +16,11 @@ export const ANONYMIZED_DISPLAY_NAME = "Pengguna dihapus";
 // Yang dulu ikut terhapus oleh cascade sekarang WAJIB dihapus eksplisit di sini.
 // Melewatkan satu relasi berarti data pribadi tertinggal di akun yang mengira
 // dirinya sudah dihapus.
-export async function anonymizeAccount(userId: number) {
+export async function anonymizeAccount(userId: number, database: PrismaClient = prisma) {
   const anonymizedAt = new Date();
 
-  await prisma.$transaction(async (tx) => {
+  await database.$transaction(async (tx) => {
+    await tx.$queryRaw`SELECT id FROM "User" WHERE id = ${userId} FOR UPDATE`;
     const current = await tx.user.findUniqueOrThrow({
       where: { id: userId },
       select: { username: true },
@@ -71,6 +73,19 @@ export async function anonymizeAccount(userId: number) {
       data: { deletedAt: anonymizedAt, deletedById: userId },
     });
     await tx.postLike.deleteMany({ where: { userId } });
+
+    await tx.kotobaClashRoom.updateMany({
+      where: { hostUserId: userId },
+      data: { hostUserId: null },
+    });
+    await tx.kotobaClashRoomMember.updateMany({
+      where: { userId },
+      data: {
+        userId: null, guestHash: null, guestExpiresAt: null,
+        nickname: ANONYMIZED_DISPLAY_NAME, nicknameKey: null,
+        readyRevision: null, anonymizedAt,
+      },
+    });
 
     // Anak dihapus lebih dulu agar tidak bergantung pada urutan cascade.
     await tx.flashcardRevlog.deleteMany({ where: { userId } });

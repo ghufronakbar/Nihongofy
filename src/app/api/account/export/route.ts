@@ -46,6 +46,20 @@ export async function GET() {
           updatedAt: true,
         },
       },
+      kotobaClashMembers: {
+        select: {
+          nickname: true,
+          joinedAt: true,
+          players: {
+            where: { match: { status: "FINISHED", endsAt: { lte: new Date() }, expiresAt: { gt: new Date() } } },
+            select: {
+              matchId: true, score: true, correctCount: true, wrongCount: true,
+              skippedCount: true, bestStreak: true, correctTimeMs: true,
+              answers: { select: { roundId: true, choice: true, acceptedAt: true } },
+            },
+          },
+        },
+      },
       kanaProgresses: {
         orderBy: { kanaKey: "asc" },
         select: {

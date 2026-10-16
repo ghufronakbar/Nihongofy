@@ -23,6 +23,11 @@ const featureFlag = z.preprocess(
     .transform((value) => value === "true"),
 );
 
+const disabledFeatureFlag = z.preprocess(
+  (value) => (value === "" ? undefined : value),
+  z.enum(["true", "false"]).default("false").transform((value) => value === "true"),
+);
+
 const envSchema = z
   .object({
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
@@ -78,6 +83,8 @@ const envSchema = z
     FEATURES_PUBLIC_PROFILE: featureFlag,
     FEATURES_FOLLOW: featureFlag,
     FEATURES_COMMUNITY: featureFlag,
+    FEATURES_MINI_GAMES: disabledFeatureFlag,
+    FEATURES_KOTOBA_CLASH: disabledFeatureFlag,
     CONVERSATION_PROVIDER: z.enum(["mock", "openai"]).default("mock"),
     CONVERSATION_CHAT_MODEL: optionalEnvString,
     OPENAI_API_KEY: optionalEnvString,
@@ -218,6 +225,8 @@ export const GOOGLE_OAUTH_ENABLED = Boolean(
 // Satu-satunya sumber status modul. Komponen client menerima objek ini lewat
 // props (tipe `FeatureFlags`), bukan mengimpor nilainya langsung.
 export const FEATURES = {
+  miniGames: env.FEATURES_MINI_GAMES,
+  kotobaClash: env.FEATURES_KOTOBA_CLASH && env.FEATURES_MINI_GAMES,
   kana: env.FEATURES_KANA,
   flashcard: env.FEATURES_FLASHCARD,
   // Catatan pribadi dan diskusi publik per kata flashcard. Berdiri sendiri dari
@@ -262,6 +271,8 @@ export const FEATURES = {
 
 export type FeatureFlags = typeof FEATURES;
 export type FeatureName = keyof FeatureFlags;
+
+export const KOTOBA_GUEST_COOKIE_NAME = "__Host-kotoba_guest";
 
 // ============================================================
 // CONVERSATION & SPEAKING

@@ -7,14 +7,15 @@ Rules terkait: `database.md` (schema, markup teks, aturan query).
 
 ## Rencana Mini Games
 
-**Fase A, 16 Oktober 2026; probe operator tersedia, fitur publik belum diimplementasikan.** Halaman publik
+**Fondasi fase B, 17 Oktober 2026; fitur publik belum diimplementasikan.** Halaman publik
 `/mini-games` akan menjadi katalog untuk beberapa game. Game pertama **Kotoba Clash** berada di
 `/mini-games/kotoba-clash`: battle kuis JLPT teks untuk 2-20 pemain, host login, peserta boleh guest,
 invitation link, dan WebSocket sendiri dengan target Vercel/Upstash/Supabase free tier.
-Choukai ditunda. Kelayakan adapter dan budget dibuktikan melalui deployment Hobby sebelum fitur
-lengkap dikerjakan. Rujukan: [hub](module/mini-games.md), [game](module/kotoba-clash.md),
+Choukai ditunda. Transport Hobby sudah terbukti; user meminta pengembangan dilanjutkan dengan
+budget sebagai gate aktivasi publik. Engine, transaksi, identitas, flags dan migration baru
+diverifikasi lokal; migration belum diterapkan pada Supabase. Rujukan: [hub](module/mini-games.md), [game](module/kotoba-clash.md),
 [plan](plan/mini-games-kotoba-clash.md), [UAT](verification/mini-games-kotoba-clash-uat.md), dan
-[laporan fase A](verification/kotoba-clash-phase-a.md).
+[laporan fase A](verification/kotoba-clash-phase-a.md), dan [fondasi B](verification/kotoba-clash-phase-b.md).
 
 ## Konsep Utama
 

@@ -1,8 +1,12 @@
 # UAT Mini Games dan Kotoba Clash
 
-Status: **Fase A transport PASS, budget BLOCKED; UAT game publik NOT RUN**.
+Status: **Fase A transport PASS, budget parsial dengan gate BLOCKED; UAT game publik NOT RUN**.
 Checklist disiapkan dan probe dijalankan pada **16 Oktober 2026 (Asia/Jakarta)**.
+Snapshot Usage dari user ditinjau pada **17 Oktober 2026**; belum merupakan delta biaya probe.
 WebSocket diuji pada preview Hobby; permainan publik belum diimplementasikan.
+Fondasi B diverifikasi lokal pada 17 Oktober atas instruksi user untuk melanjutkan. Budget
+tetap gate aktivasi publik; laporan [fondasi B](kotoba-clash-phase-b.md) memisahkan pemeriksaan
+developer dari UAT browser/user di bawah. Migration B required, belum diterapkan pada Supabase.
 
 Rujukan: [modul hub](../module/mini-games.md), [modul game](../module/kotoba-clash.md),
 [plan](../plan/mini-games-kotoba-clash.md), dan [checklist umum](manual-test-checklist.md).
@@ -34,20 +38,29 @@ disanitasi. Satu skenario lulus pada localhost tidak membuktikan lulus pada Verc
 | A04 | Hentikan instance/drop koneksi dan reconnect bersamaan | Backoff+jitter, auth ulang, subscribe, snapshot, dan revision konsisten | PASS fixture; SIGKILL/restart Node lokal dan cutoff Vercel. Crash lokal dapat menunggu lease lama; bukan SLA produk |
 | A05 | Publish hilang/duplikat atau subscriber terlambat | Sync mengembalikan state authoritative tanpa mengandalkan replay Pub/Sub | PASS injeksi; 1.800 mutasi akhir konsisten. Gangguan jaringan Upstash nyata tidak diinjeksi |
 | A06 | Probe tidak sah dan Origin asing | Ditolak; tidak bisa membaca event atau membuat koneksi tanpa batas | PASS; 8 guard HTTP preview, default-off 404 lokal, expiry/production unit test, limit lease lokal mengembalikan 429 |
-| A07 | Ukur kuota dan latency | CPU/memory-hours/transfer/invocation/Redis terukur; baseline app dipisahkan | BLOCKED; latency/payload terukur, query metrik Vercel HTTP 402, baseline/billing belum terukur |
+| A07 | Ukur kuota dan latency | CPU/memory-hours/transfer/invocation/Redis terukur; baseline app dipisahkan | BLOCKED, bukti parsial; latency/payload serta snapshot Usage Vercel 30 hari tersedia. Memory-hours, Redis bulanan, dan delta probe/baseline belum terukur; query API tetap 402 |
 | A08 | Hapus/nonaktifkan probe dan data uji | Tidak ada endpoint beban terbuka atau key/room uji tertinggal | PASS; 0 key kedua run, dua preview dihapus, bypass dicabut, env project/production tetap |
 
-| Metrik fase A | Sebelum | Sesudah | Delta / asumsi / bukti |
+Snapshot Usage 30 hari pada tabel ini adalah transkripsi screenshot user, bukan pengukuran
+sesudah probe yang berpasangan dengan baseline sebelum probe. Bukti dan batas interpretasi ada
+di [laporan fase A](kotoba-clash-phase-a.md#snapshot-usage-dari-user).
+
+| Metrik fase A | Sebelum probe | Hasil probe / snapshot tersedia | Delta / asumsi / bukti |
 |---|---|---|---|
 | Durasi dan peak koneksi | 0 koneksi probe | 960 detik, peak 20 | 60 reconnect berhasil, 20 identitas tetap |
-| Active CPU | Belum diukur | Belum diukur | BLOCKED: Observability API 402; bukan nol penggunaan |
-| Provisioned memory-hours | Belum diukur | Belum diukur | BLOCKED: perlu angka Usage provider |
-| Invocation dan transfer | Belum diukur | Belum diukur | Payload runner 5.649.416 byte; bukan transfer billing |
+| Active CPU | Belum diukur | Usage 30 hari: 1 jam 8 menit / 4 jam | Sisa 2 jam 52 menit; delta probe belum terukur, API 402 |
+| Provisioned memory-hours | Belum diukur | Tidak ditampilkan pada screenshot | BLOCKED: perlu angka Usage GB-hours; Functions Storage bukan memory-hours |
+| Function Invocations | Belum diukur | Usage 30 hari: 170K / 1M | Sisa sekitar 830K; delta probe belum terukur |
+| Fast Origin / Data Transfer | Belum diukur | Usage 30 hari: 1,42 / 10 GB dan 3,58 / 100 GB | Sisa 8,58 / 96,42 GB; payload runner 5.649.416 byte bukan transfer billing |
 | Command Redis | Counter aktif 12.667 | Counter akhir 9.029 | Counter INFO tidak monoton; tidak dibuat delta/billing estimate |
 | ACK latency dan reconnect | Tidak ada | ACK p50/p95/max 38/57/11.131 ms | Reconnect cloud p50/p95/max 736/1.437/1.537 ms; batas metric retry lokal pada laporan |
 | Batas room/spectator yang direkomendasikan | Belum ditetapkan | Belum ditetapkan | Menunggu fase A |
 
 ## B. Katalog, Identitas, dan Lobby
+
+Uji repository lokal sudah meluluskan Start/retry bersamaan, spectator/expiry, clock setelah
+lock, finalisasi idempotent, FK komposit, RLS dan anonimisasi nyata. Hal itu belum meluluskan
+flow halaman/action/socket, sehingga skenario B-D tetap NOT RUN sampai integrasi publik tersedia.
 
 | ID | Skenario | Expected result | Hasil / bukti |
 |---|---|---|---|
@@ -100,8 +113,8 @@ disanitasi. Satu skenario lulus pada localhost tidak membuktikan lulus pada Verc
 
 ## Gate Akhir
 
-- [x] `npm run verify` lulus; 602 tes / 41 file, lint/typecheck/build lulus.
-- [x] Migration/Prisma tervalidasi bila ada perubahan schema; fase A tidak mengubah database.
+- [x] `npm run verify` lulus; pembaruan fondasi B 633 tes / 46 file, lint/typecheck/build lulus.
+- [x] Migration/Prisma tervalidasi; fondasi B direplay dan diuji lokal, belum diterapkan pada Supabase.
 - [ ] Skenario wajib lulus di environment yang relevan, termasuk bukti Hobby dan 20 koneksi.
 - [ ] Kuota, limit rilis, retensi, dan known issue mempunyai angka/status/owner yang nyata.
 - [ ] UAT user tercatat terpisah dari pemeriksaan developer.

@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "checks": [
+    "Concurrent Start: one match and one frozen roster",
+    "Private ACK; first answer final; concurrent retry creates one answer; other player can answer",
+    "Spectator and expired guest cannot submit; Unicode nickname keys fit normalization",
+    "Database clock is read after lock wait; late acceptance is rejected",
+    "Concurrent/repeated finalization is idempotent; late identical retry preserves original ACK",
+    "SQL rejects a second running match, cross-match answers, and missing identity",
+    "RLS enabled on all six tables; all three Data API roles denied access",
+    "Real account anonymization removes identity and host access while preserving opponent ledger"
+  ]
+}

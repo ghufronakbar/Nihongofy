@@ -5,9 +5,10 @@ Tanggal rancangan: **16 Oktober 2026 (Asia/Jakarta)**.
 ## Status Aktual
 
 **Direncanakan, belum diimplementasikan.** Dokumen ini menetapkan katalog publik untuk beberapa
-mini game. Route, menu, feature flag, dan registry di bawah adalah rencana, bukan fitur yang sudah
-tersedia. Probe operator Kotoba Clash dikerjakan terpisah pada fase A; lihat
-[laporan verifikasi](../verification/kotoba-clash-phase-a.md). Database belum berubah.
+mini game. Route, menu dan registry belum tersedia. Kedua feature flag sudah ditambahkan,
+default mati. Probe operator Kotoba Clash dikerjakan pada fase A; fondasi game/schema diuji lokal
+pada fase B, belum diterapkan pada Supabase. Lihat [laporan A](../verification/kotoba-clash-phase-a.md)
+dan [fondasi B](../verification/kotoba-clash-phase-b.md).
 
 Rujukan:
 
@@ -97,8 +98,8 @@ Ketersediaan efektif Kotoba Clash = kedua flag aktif. Hub tetap dapat hidup saat
 dimatikan, sehingga game berikutnya tidak ikut mati. Jika tidak ada game tersedia, tampilkan
 empty state jujur tanpa CTA bermain yang tidak berfungsi.
 
-Flag belum ditambahkan ke `src/constants/index.ts`. Saat diimplementasikan, ikuti parser flag
-existing; set kedua env secara eksplisit `false` pada deployment sampai release gate selesai.
+Flag sudah ditambahkan ke `src/constants/index.ts`, dengan default khusus **false**, termasuk
+env kosong, selama pengembangan. `.env.example` mencantumkan keduanya sebagai `false`.
 Guard wajib ada pada layout, Server Action, dan handshake/command WebSocket. Mematikan flag juga
 menolak command baru dari koneksi lama dan menutupnya dengan alasan yang bisa ditampilkan UI.
 Env dibaca saat startup, sehingga perubahan env memerlukan redeploy. Socket deployment lama tidak

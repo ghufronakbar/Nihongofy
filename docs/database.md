@@ -368,3 +368,25 @@ Saat import data soal, tangani pelanggaran constraint sebagai sinyal error ekstr
 
 - Time limit ujian TIDAK disimpan di database — timer diatur user secara manual di sisi frontend. Jangan menambahkan kolom time limit ke schema tanpa diminta.
 - Durasi pengerjaan tetap terekam via `Attempt.startedAt`/`finishedAt` dan `AttemptAnswer.timeSpentSec` (opsional) untuk analitik.
+
+## Kotoba Clash
+
+- Enam model `KotobaClash*` menyimpan room, membership akun/guest, match, roster, ronde, dan
+  jawaban. Migration fondasi B required, baru diuji lokal, belum diterapkan pada Supabase.
+- Jadwal battle tersimpan sebagai UTC `timestamptz(3)` sejak Start, terpisah dari timer ujian
+  manual di atas. Snapshot soal/kunci privat memakai JSONB tervalidasi Zod; bukan FK ke bank soal
+  yang dapat berubah saat admin menyunting konten.
+- FK komposit roster menjaga kesamaan room, dan FK jawaban menjaga kesamaan match pada ronde
+  dan pemain. Unique answer `(roundId, playerId)` menjaga jawaban pertama final.
+- Partial unique index `KotobaClashMatch_one_running_per_room_key` dan CHECK identitas, waktu,
+  pilihan serta nilai hanya berada pada SQL migration; jangan menghapusnya karena tidak ada
+  representasi Prisma. Semua FK mempunyai index dengan prefix yang cocok.
+- Tabel memakai RLS dan revoke seluruh grant ke PUBLIC/anon/authenticated/service_role; tidak
+  ada policy atau akses Supabase client. Identitas berasal dari auth server, bukan payload.
+- Lock akun (bila ada), room, match dalam urutan yang sama. Clock DB dibaca setelah lock;
+  transaksi tidak menunggu Redis/broadcast. Rekonstruksi skor hanya mencakup ronde yang reveal.
+- `anonymizeAccount` memutus host/user linkage dan menghapus nicknameKey/hash; roster/ledger
+  numerik anonim bertahan agar hasil lawan tetap utuh. Tidak ada snapshot nickname/avatar lain.
+- Export akun memilih hanya membership/hasil/jawaban diri sendiri yang selesai, belum expired,
+  tanpa private snapshot, kunci, atau data lawan. Cleanup tujuh hari belum dihubungkan ke cron.
+- Rujukan kontrak dan bukti: [modul](module/kotoba-clash.md), [laporan B](verification/kotoba-clash-phase-b.md).

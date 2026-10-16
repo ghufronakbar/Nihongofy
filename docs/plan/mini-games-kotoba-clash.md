@@ -1,7 +1,13 @@
 # Rencana Implementasi Mini Games dan Kotoba Clash
 
 Tanggal: **16 Oktober 2026 (Asia/Jakarta)**.
-Status: **Bukti transport fase A lulus; gate budget belum lulus, game publik belum dimulai.**
+Pembaruan budget: **17 Oktober 2026**.
+Status: **Fase B dikerjakan; transport A lulus, pengukuran budget menjadi blocker aktivasi publik.**
+
+Keputusan 17 Oktober 2026: user meminta "lanjut saja dulu" setelah menerima laporan budget
+parsial. Pengembangan fondasi dan fitur boleh berjalan; pengukuran budget yang tersisa tetap
+wajib sebelum aktivasi publik. Keputusan ini mengganti dependensi gate A untuk memulai B,
+tanpa menyatakan bahwa free tier atau kapasitas rilis sudah terjamin.
 
 ## 1. Sumber Kebenaran dan Ruang Lingkup
 
@@ -17,15 +23,16 @@ free tier, kapasitas 2-20 pemain, serta penundaan choukai. Nama tampilan game pe
 untuk rancangan sebagai **Kotoba Clash**, slug `kotoba-clash`, di bawah `/mini-games`.
 
 Probe fase A menambahkan dependency/endpoint operator yang default mati dan deployment preview
-terisolasi. Game publik, schema PostgreSQL, dan data pemain belum dibuat. Status migration
-**not required**. Checkbox hanya dicentang untuk keluaran yang sudah diverifikasi.
+terisolasi. Fondasi B menambahkan engine, identitas, schema dan migration yang terverifikasi lokal;
+migration **required, belum diterapkan pada Supabase**. Game publik belum dibuat. Checkbox hanya
+dicentang untuk keluaran yang sudah diverifikasi. Bukti: [fondasi B](../verification/kotoba-clash-phase-b.md).
 
 ## 2. Urutan dan Gate
 
 | Fase | Keluaran utama | Dependensi | Status awal |
 |---|---|---|---|
-| A | Bukti WebSocket pada Vercel Hobby dan profil penggunaan | Deployment pengujian yang terisolasi | Transport PASS; BLOCKED pengukuran budget |
-| B | Kontrak beku, domain, persistence, auth, dan migration | Gate A lulus | Belum dimulai |
+| A | Bukti WebSocket pada Vercel Hobby dan profil penggunaan | Deployment pengujian yang terisolasi | Transport PASS; budget parsial, gate BLOCKED |
+| B | Kontrak beku, domain, persistence, auth, dan migration | Transport A lulus; kelanjutan disetujui user | Dikerjakan |
 | C | Katalog Mini Games, landing, room, invite, lobby | Fondasi B | Belum dimulai |
 | D | Pertandingan teks end-to-end | Lobby C dan aturan B | Belum dimulai |
 | E | Recovery, spectator, hasil, rematch, cleanup | Runner D | Belum dimulai |
@@ -53,14 +60,21 @@ Tujuan: membuktikan endpoint sesuai Next.js terpasang dan batas Vercel Hobby pad
   Vercel diuji melalui cutoff alami. Batas admission setelah crash dicatat pada laporan fase A.
 - [ ] Catat CPU, memory-hours, transfer, invocation, command Redis, latency ACK, reconnect,
   serta penggunaan baseline website. Data yang tidak dapat diamati ditulis sebagai belum terukur.
+- [x] Catat snapshot Usage 30 hari dari user: CPU, invocation, dan transfer Vercel tersedia.
+  Snapshot agregat belum memisahkan biaya probe/baseline; memory-hours dan command Redis bulanan
+  belum tersedia. Rincian angka dan sisa kuota dicatat pada laporan A, pembaruan 17 Oktober.
 - [ ] Tetapkan rekomendasi batas room aktif global, total koneksi, spectator, idle timeout,
   dan rate limit berdasarkan hasil. Buat estimasi penggunaan harian/bulanan dengan asumsi jelas.
 - [x] Isi bagian bukti fase A pada UAT. Hapus/nonaktifkan endpoint dan data probe setelah selesai.
 
 Hasil 16 Oktober: 20 peserta selama 960 detik, 60 reconnect, 1.800 mutasi fixture, snapshot akhir
 konsisten, ACK p95 57 ms (maksimum 11.131 ms). Kedua preview dan credential sementara dibersihkan.
-Metrik provider dan baseline belum terukur; rekomendasi kapasitas belum ditetapkan. Tidak
-melanjutkan fase B sampai gate budget diselesaikan. Rincian dan keterbatasan ada pada laporan A.
+Snapshot Usage yang ditinjau 17 Oktober menunjukkan sisa CPU 2 jam 52 menit, sekitar 830 ribu
+invocation, Fast Origin Transfer 8,58 GB, dan Fast Data Transfer 96,42 GB. Ini angka agregat
+30 hari, bukan delta biaya satu room. Memory-hours, command Redis bulanan, dan biaya probe yang
+terpisah dari baseline masih belum terukur; rekomendasi kapasitas belum ditetapkan. Tidak
+menutup gate budget atau mengaktifkan fitur publik sebelum pengukuran diselesaikan. Pengembangan
+fase B dilanjutkan sesuai keputusan user 17 Oktober. Rincian ada pada laporan A.
 
 **Exit criteria:** koneksi dan resync terbukti pada deployment Hobby nyata, event antar-instance
 terbukti, tidak ada state penting yang bergantung pada memori proses, dan tersedia profil budget.
@@ -68,29 +82,37 @@ Jika gagal, catat blocker dan revisi adapter sebelum melanjutkan. Build lokal sa
 
 ## 4. Fase B - Kontrak Domain, Data, dan Identitas
 
-- [ ] Bekukan aturan detail pada dokumen modul: timer per tipe, cutoff, rumus/versi scoring,
+- [x] Bekukan aturan detail pada dokumen modul: timer per tipe, cutoff, rumus/versi scoring,
   tie-break, status ready, roster freeze, rematch, kuota, credential guest, dan retensi.
-- [ ] Pisahkan engine murni, repository, clock, publisher, dan adapter hosting. Engine tidak
+  Kuota satu room/5 spectator hanya batas uji rancangan, belum kapasitas rilis terukur.
+- [x] Pisahkan engine murni, repository, clock, publisher, dan adapter hosting. Engine tidak
   mengimpor Next.js/Vercel atau mengakses env/cookie secara langsung.
 - [ ] Definisikan input/event/snapshot dengan Zod dan TypeScript strict. Semua input wire mulai
   dari `unknown`; jangan memakai `any` atau mempercayai principal dari payload client.
-- [ ] Rancang room/member/match/match-player/round/answer, snapshot soal privat, index FK,
+- [x] Rancang room/member/match/match-player/round/answer, snapshot soal privat, index FK,
   unique answer, kesamaan match pada relasi answer, dan batas satu match aktif per room.
-- [ ] Implementasikan transaksi Start/answer/finalisasi yang pendek dan idempotent. Putuskan
+- [x] Implementasikan transaksi Start/answer/finalisasi yang pendek dan idempotent. Putuskan
   lock ordering serta penerimaan berdasarkan clock database sebelum menulis agregat nilai.
-- [ ] Buat dan review migration melalui workflow repository; tanpa `db push`. Pastikan RLS
+- [x] Buat dan review migration melalui workflow repository; tanpa `db push`. Pastikan RLS
   dan grant Data API mengikuti model Prisma server-only existing.
+  Replay dan constraint diuji pada PostgreSQL 17.11 lokal; kendala shadow legacy dicatat pada laporan B.
 - [ ] Tambahkan credential guest terpisah, pemeriksaan akun/host, resume, multi-tab, expiry,
   revalidasi session/revocation, dan pembatasan handshake.
 - [ ] Rancang pengecualian proxy untuk endpoint guest/socket secara spesifik; route akun/API lain
   tetap memakai proteksi existing.
 - [ ] Definisikan key/TTL Redis dan commit-then-publish beserta recovery jika publish gagal.
   Tentukan invalidation/revision; jangan memakai cache Next lintas user untuk live state.
-- [ ] Tambahkan env/flag melalui `src/constants/index.ts`, key cache melalui konstanta existing,
+- [x] Tambahkan env/flag melalui `src/constants/index.ts`, key cache melalui konstanta existing,
   dan `.env.example` tanpa secret. Flag deployment tetap off sampai gate rilis selesai.
 - [ ] Tetapkan invalidasi/drain socket deployment lama saat flag dimatikan atau protokol berubah;
   proses lama tidak otomatis membaca env baru. Uji prosedurnya pada deployment yang berdampingan.
 - [ ] Integrasikan relasi personal dengan anonimisasi, export, dan retensi sebelum data nyata masuk.
+  Export dan anonimisasi selesai pada fondasi B; cleanup/retensi cron masih menunggu.
+
+Fondasi B sudah mencakup input Zod, private snapshot/proyeksi ronde, credential guest dengan
+registry/expiry, auth per-command, dan commit-then-publish. Item input/snapshot/recovery tetap
+belum dicentang penuh sampai endpoint snapshot, takeover lease, handshake limit, dan drain
+lintas deployment selesai. Fase B belum dinyatakan lulus keseluruhan.
 
 **Exit criteria:** kontrak terukur dan dapat diuji, migration ditinjau/terverifikasi pada environment
 uji, serta retry/concurrency tidak membuat match, jawaban, atau poin ganda. Engine dapat dijalankan

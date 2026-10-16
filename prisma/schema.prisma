@@ -344,6 +344,8 @@ model User {
   posts                    Post[]                      @relation("PostAuthor")
   deletedPosts             Post[]                      @relation("PostDeletedBy")
   postLikes                PostLike[]
+  kotobaClashRooms         KotobaClashRoom[]
+  kotobaClashMembers       KotobaClashRoomMember[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -352,6 +354,132 @@ model User {
   // lebih sering daripada diubah.
   @@index([role])
   @@index([postingSuspendedById])
+}
+
+enum KotobaClashRoomStatus {
+  OPEN
+  CLOSED
+}
+
+enum KotobaClashMatchStatus {
+  RUNNING
+  FINISHED
+}
+
+model KotobaClashRoom {
+  id             String                  @id @default(uuid()) @db.Uuid
+  code           String                  @unique @db.VarChar(8)
+  hostUserId     Int?
+  host           User?                   @relation(fields: [hostUserId], references: [id], onDelete: SetNull)
+  status         KotobaClashRoomStatus   @default(OPEN)
+  config         Json?
+  configRevision Int                     @default(0)
+  revision       Int                     @default(0)
+  expiresAt      DateTime                @db.Timestamptz(3)
+  createdAt      DateTime                @default(now()) @db.Timestamptz(3)
+  updatedAt      DateTime                @updatedAt @db.Timestamptz(3)
+  members        KotobaClashRoomMember[]
+  matches        KotobaClashMatch[]
+
+  @@index([hostUserId])
+  @@index([status, expiresAt])
+}
+
+model KotobaClashRoomMember {
+  id             String                   @id @default(uuid()) @db.Uuid
+  roomId         String                   @db.Uuid
+  room           KotobaClashRoom          @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  userId         Int?
+  user           User?                    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  guestHash      String?                  @db.VarChar(64)
+  guestExpiresAt DateTime?                @db.Timestamptz(3)
+  nickname       String                   @db.VarChar(24)
+  nicknameKey    String?                  @db.VarChar(48)
+  readyRevision  Int?
+  spectating     Boolean                  @default(false)
+  anonymizedAt   DateTime?                @db.Timestamptz(3)
+  joinedAt       DateTime                 @default(now()) @db.Timestamptz(3)
+  lastSeenAt     DateTime                 @default(now()) @db.Timestamptz(3)
+  players        KotobaClashMatchPlayer[]
+
+  @@unique([id, roomId])
+  @@unique([roomId, userId])
+  @@unique([roomId, guestHash])
+  @@unique([roomId, nicknameKey])
+  @@index([userId])
+}
+
+model KotobaClashMatch {
+  id             String                   @id @default(uuid()) @db.Uuid
+  roomId         String                   @db.Uuid
+  room           KotobaClashRoom          @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  startRequestId String                   @db.Uuid
+  status         KotobaClashMatchStatus   @default(RUNNING)
+  rulesVersion   Int                      @default(1)
+  config         Json
+  startsAt       DateTime                 @db.Timestamptz(3)
+  endsAt         DateTime                 @db.Timestamptz(3)
+  expiresAt      DateTime                 @db.Timestamptz(3)
+  createdAt      DateTime                 @default(now()) @db.Timestamptz(3)
+  players        KotobaClashMatchPlayer[]
+  rounds         KotobaClashRound[]
+
+  @@unique([id, roomId])
+  @@unique([roomId, startRequestId])
+  @@index([expiresAt])
+}
+
+model KotobaClashMatchPlayer {
+  id            String                @id @default(uuid()) @db.Uuid
+  matchId       String                @db.Uuid
+  roomId        String                @db.Uuid
+  match         KotobaClashMatch      @relation(fields: [matchId, roomId], references: [id, roomId], onDelete: Cascade)
+  memberId      String                @db.Uuid
+  member        KotobaClashRoomMember @relation(fields: [memberId, roomId], references: [id, roomId], onDelete: Cascade)
+  score         Int                   @default(0)
+  correctCount  Int                   @default(0)
+  wrongCount    Int                   @default(0)
+  skippedCount  Int                   @default(0)
+  bestStreak    Int                   @default(0)
+  correctTimeMs Int                   @default(0)
+  answers       KotobaClashAnswer[]
+
+  @@unique([id, matchId])
+  @@unique([matchId, memberId])
+  @@index([matchId, roomId])
+  @@index([memberId, roomId])
+}
+
+model KotobaClashRound {
+  id           String              @id @default(uuid()) @db.Uuid
+  matchId      String              @db.Uuid
+  match        KotobaClashMatch    @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  position     Int
+  snapshot     Json
+  startsAt     DateTime            @db.Timestamptz(3)
+  endsAt       DateTime            @db.Timestamptz(3)
+  revealEndsAt DateTime            @db.Timestamptz(3)
+  finalizedAt  DateTime?           @db.Timestamptz(3)
+  answers      KotobaClashAnswer[]
+
+  @@unique([id, matchId])
+  @@unique([matchId, position])
+}
+
+model KotobaClashAnswer {
+  id         String                 @id @default(uuid()) @db.Uuid
+  matchId    String                 @db.Uuid
+  roundId    String                 @db.Uuid
+  round      KotobaClashRound       @relation(fields: [roundId, matchId], references: [id, matchId], onDelete: Cascade)
+  playerId   String                 @db.Uuid
+  player     KotobaClashMatchPlayer @relation(fields: [playerId, matchId], references: [id, matchId], onDelete: Cascade)
+  choice     Int
+  acceptedAt DateTime               @db.Timestamptz(3)
+
+  @@unique([roundId, playerId])
+  @@index([matchId])
+  @@index([playerId, matchId])
+  @@index([roundId, matchId])
 }
 
 // Provider subject adalah identitas stabil. Email hanya snapshot untuk status

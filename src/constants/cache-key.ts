@@ -21,6 +21,10 @@ export const CACHE_TAGS = {
 } as const;
 
 export const CACHE_KEYS = {
+  kotobaGuest: (hash: string) => ["kotoba-clash-v1", "guest", hash],
+  kotobaRoomChannel: (roomId: string) => ["kotoba-clash-v1", "room", roomId, "events"],
+  kotobaRoomLease: (roomId: string) => ["kotoba-clash-v1", "room", roomId, "leases"],
+  kotobaRuntimeControl: ["kotoba-clash-v1", "runtime-control"] as string[],
   kotobaProbe: (runId: string, part: "state" | "leases" | "handshakes") => [
     "kotoba-probe-v1", runId, part,
   ],

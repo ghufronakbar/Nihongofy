@@ -4,10 +4,15 @@ Tanggal rancangan: **16 Oktober 2026 (Asia/Jakarta)**.
 
 ## Status Aktual
 
-**Bukti transport fase A lulus; game publik belum diimplementasikan.** Probe default mati telah
+**Fondasi fase B dibuat; game publik belum diimplementasikan.** Probe default mati telah
 diuji pada Vercel Hobby dengan 20 peserta selama 16 menit, lintas instance, dan 60 reconnect.
-Gate A belum ditutup karena budget provider/baseline belum terukur. Bukti dan runbook ada di
-[laporan fase A](../verification/kotoba-clash-phase-a.md). Tidak ada tabel/data PostgreSQL baru.
+Snapshot Usage Vercel 30 hari dari user sudah dicatat pada 17 Oktober 2026. Gate A belum ditutup:
+memory-hours, command Redis bulanan, dan biaya probe yang terpisah dari baseline belum terukur.
+Bukti dan runbook ada di
+[laporan fase A](../verification/kotoba-clash-phase-a.md). Enam tabel game dan migration baru sudah
+diverifikasi lokal, belum diterapkan pada Supabase. Engine, transaksi Start/answer/reconcile,
+credential guest, flags, export dan anonimisasi tersedia sebagai fondasi internal.
+[Laporan B](../verification/kotoba-clash-phase-b.md) mencatat bukti dan pekerjaan yang tersisa.
 
 Dokumen ini adalah sumber aturan produk dan kontrak teknis. Checklist pengerjaan ada di
 [plan](../plan/mini-games-kotoba-clash.md), hasil penerimaan dicatat pada
@@ -41,8 +46,34 @@ kecepatan, serta streak jawaban benar.
 
 Baseline dari rencana yang dilanjutkan: host wajib login dan ikut bermain; guest mengisi
 nickname; room dipakai ulang untuk rematch; jawaban pertama final; seluruh skor dibuka saat
-reveal. Nilai timer, rumus rinci, kuota global, dan retensi di bawah adalah **default rancangan**
-yang harus dibekukan pada fase B, bukan hasil pengukuran atau janji kapasitas gratis.
+reveal. Timer, scoring `v1`, dan retensi di bawah dibekukan pada 17 Oktober 2026 untuk fondasi B.
+Kuota global tetap batas uji sementara, bukan hasil pengukuran kapasitas gratis.
+
+### Kontrak fondasi B (17 Oktober 2026)
+
+- Engine murni berada di `src/features/kotoba-clash/domain`; semua waktu berupa epoch milidetik.
+  Interval soal awal inklusif/akhir eksklusif. Countdown 5 detik dan reveal 8 detik tetap.
+- Guest memakai token acak 32 byte (base64url) di cookie `__Host-kotoba_guest`, HTTPS, httpOnly,
+  SameSite=Lax, Path=/; masa berlaku absolut 7 hari. Database hanya menyimpan SHA-256 token.
+  Cookie berlaku lintas room, tetapi membership dan expiry selalu diverifikasi per room.
+- Nickname 2-24 karakter, normalisasi NFKC, trim dan rapatkan spasi; hanya huruf, angka, spasi,
+  titik, underscore, dan hyphen. Unique room memakai versi lowercase hasil normalisasi.
+- Roster menyimpan referensi membership, tanpa salinan nickname/avatar di hasil. Anonimisasi
+  menghapus userId/hash dan mengganti nickname, mempertahankan ledger numerik lawan.
+- Tidak ada host transfer. Room tanpa host sah tidak dapat configure/Start/rematch; pertandingan
+  yang sudah mulai tetap mengikuti jadwal. Ready terikat `configRevision` dan reset saat berubah.
+- Lock transaksi berurutan: akun (bila ada), room, match; answer/finalisasi mengunci match yang sama.
+  Clock database dibaca setelah lock, sehingga penantian lock tidak mengakali deadline.
+- Aturan scoring/ranking memakai versi `v1`. Hasil dihitung ulang dari ledger ronde yang telah
+  direveal, termasuk reset streak untuk jawaban salah/kosong; finalisasi retry mengganti agregat.
+- Detail room/match/jawaban bertahan sampai 7 hari setelah jadwal akhir, lobby idle 30 menit.
+  Runtime memeriksa expiry walau cron belum berjalan. Guest yang kedaluwarsa tidak mendapat akses.
+- Flags Mini Games/Kotoba Clash default mati selama pengembangan. Batas uji awal satu room aktif,
+  20 pemain dan 5 spectator; ini tidak menetapkan jumlah sesi harian yang aman pada free tier.
+- Transport aktif nantinya memeriksa otorisasi ulang paling lambat setiap 20 detik dan sebelum
+  setiap command; host command selalu memeriksa session terkini. Satu lease per membership,
+  takeover atomik mengganti connectionId; socket lama tidak boleh memperpanjang/menghapus lease.
+  Drain lintas deployment harus dibuktikan sebelum endpoint publik dibuat aktif.
 
 V1 berfokus pada room undangan. Matchmaking, ranked global, chat, hadiah, host transfer,
 pertanyaan buatan user, dan integrasi hasil ke nilai mock JLPT tidak termasuk scope awal.
@@ -243,8 +274,8 @@ terbaik. Poin battle tidak diproyeksikan menjadi skor JLPT 180 atau mengubah ana
 
 ## 8. Persistence dan Konsistensi
 
-Berikut entitas konseptual; nama field/tipe Prisma final ditetapkan pada fase B. Dokumen ini tidak
-menambah schema atau menuliskan migration yang siap dijalankan.
+Entitas berikut sudah tersedia pada `prisma/schema.prisma` dan migration fondasi B. Migration
+baru diuji pada PostgreSQL lokal; database Supabase belum diubah.
 
 | Entitas | Tanggung jawab |
 |---|---|
@@ -374,7 +405,7 @@ menguji dukungan adapter hostingnya.
 
 ## 11. Retensi, Akun, dan Operasional
 
-Default retensi harus dibekukan pada fase B berdasarkan biaya dan kebutuhan hasil. Baseline usulan:
+Retensi fondasi B dibekukan sebagai berikut; integrasi cleanup cron belum dibuat:
 lobby idle ditutup setelah 30 menit; pertandingan aktif tidak di-expire sebelum jadwal selesai;
 hasil/jawaban detail dibersihkan setelah 7 hari. Masa akses guest juga dibatasi expiry credential.
 Copy UI harus menyatakan batas penyimpanan yang benar; v1 tidak menjanjikan riwayat permanen.
@@ -404,5 +435,6 @@ Copy UI harus menyatakan batas penyimpanan yang benar; v1 tidak menjanjikan riwa
 - Gate engineering, migration bila ada, desktop/mobile, dan UAT lulus dengan bukti yang dicatat.
 - Batas kuota, retensi, flag, cleanup, dan langkah migrasi VPS didokumentasikan sesuai kode aktual.
 
-Status migration fase A: **not required**. Migration baru hanya dibuat
-pada fase B sesuai workflow repository, ditinjau, lalu diterapkan sebelum kode pembacanya dirilis.
+Status migration fase A: **not required**. Fondasi B: **required, belum diterapkan pada Supabase**,
+`20261016174702_kotoba_clash_foundation`. Terapkan sebelum kode pembaca tabel baru dirilis;
+langkah dan hasil pemeriksaan ada di [laporan B](../verification/kotoba-clash-phase-b.md).

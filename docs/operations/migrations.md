@@ -33,6 +33,26 @@ contract wajib memiliki migration dan catatan ringkas di dokumen/PR perubahan. J
 
 ## Ledger
 
+### 17 Oktober 2026 - Fondasi domain Kotoba Clash (fase B)
+
+- Status: required; diuji pada PostgreSQL 17.11 lokal, belum diterapkan pada Supabase.
+- Migration: `prisma/migrations/20261016174702_kotoba_clash_foundation/migration.sql`.
+  Timestamp generator UTC; tanggal lokal pekerjaan 17 Oktober WIB.
+- Alasan: persistence room, roster, jadwal tetap, jawaban pertama final, dan rekonstruksi skor.
+- Object terdampak: dua enum dan enam tabel `KotobaClash*`; index semua FK, FK komposit untuk
+  kesamaan room/match, unique answer, partial unique satu RUNNING per room, CHECK bentuk
+  identitas/jadwal/nilai, RLS serta revoke grant PUBLIC/anon/authenticated/service_role.
+- Data existing: tidak ada backfill/seed. Tidak ada tabel/kolom existing yang diubah atau dihapus.
+- Risiko operasi: additive; **migration wajib sebelum deploy kode** karena export akun dan
+  anonimisasi membaca tabel baru meskipun kedua feature flag game mati. Deploy kode dengan
+  `FEATURES_MINI_GAMES=false` dan `FEATURES_KOTOBA_CLASH=false`; aktivasi publik belum disetujui.
+- Validasi: Prisma validate/generate, replay 42 migration lokal, checker transaksi/constraint/RLS
+  dan anonimisasi, serta `npm run verify`. Generator memakai baseline lokal terisolasi karena
+  shadow replay sejarah lama gagal P3006 pada `_prisma_migrations`. Diff global hanya melaporkan
+  default existing `Report.updatedAt`; bukan perubahan Kotoba Clash. Lihat [bukti B](../verification/kotoba-clash-phase-b.md).
+- Refresh setelah deploy: Prisma Client regenerate melalui postinstall; tidak ada cache/seed.
+- Owner: Engineering Owner.
+
 ### 16 Oktober 2026 - Probe infrastruktur Kotoba Clash (fase A)
 
 - Status: not required

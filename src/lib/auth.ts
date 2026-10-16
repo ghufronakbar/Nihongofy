@@ -200,6 +200,20 @@ export const getSession = cache(async (): Promise<SessionPayload | null> => {
   }
 });
 
+// Long-lived transports must bypass React's per-request session cache.
+export async function revalidateSession(raw: unknown): Promise<SessionPayload | null> {
+  const parsed = SessionPayloadSchema.safeParse(raw);
+  if (!parsed.success) return null;
+  try {
+    const metadata = SessionMetadataSchema.safeParse(await redis.get<unknown>(sessionKey(parsed.data.sessionId)));
+    if (!metadata.success || metadata.data.userId !== parsed.data.userId || metadata.data.sessionId !== parsed.data.sessionId ||
+      new Date(metadata.data.expiresAt).getTime() <= Date.now()) return null;
+    return parsed.data;
+  } catch {
+    return null;
+  }
+}
+
 // Role dibaca dari database per request, BUKAN dari payload JWT. JWT berlaku 7
 // hari, jadi role yang ikut ditandatangani di dalamnya akan membuat demote admin
 // baru berlaku setelah token kedaluwarsa. `cache()` membatasi biayanya menjadi

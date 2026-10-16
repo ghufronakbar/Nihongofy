@@ -66,6 +66,8 @@ const HANDLED_USER_RELATIONS: Record<string, Handling> = {
       "postingan dipulihkan. Nama yang tampil ikut anonim karena dibaca dari baris User.",
   },
   postLikes: { kind: "dihapus" },
+  kotobaClashRooms: { kind: "dikosongkan" },
+  kotobaClashMembers: { kind: "dikosongkan" },
   reports: { kind: "dikosongkan" },
   handledReports: {
     kind: "dibiarkan",

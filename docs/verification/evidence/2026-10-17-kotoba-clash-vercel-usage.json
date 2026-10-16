@@ -1,0 +1,29 @@
+{
+  "source": "User-provided Vercel Usage screenshot; visual transcription",
+  "attachment": "Screenshot 2026-10-16 at 23.20.27.png",
+  "reviewedOn": "2026-10-17",
+  "reviewTimezone": "Asia/Jakarta",
+  "displayedPeriod": "Last 30 days",
+  "scope": "Project/team scope not visible in crop",
+  "captureTimeIndependentlyVerified": false,
+  "valuesRoundedByDashboard": true,
+  "metrics": [
+    { "name": "Functions Storage", "used": "4.27 GB", "quota": "10 GB" },
+    { "name": "Fluid Active CPU", "used": "1h 8m", "quota": "4h" },
+    { "name": "Deployment Storage", "used": "2.47 GB", "quota": "10 GB" },
+    { "name": "Image Optimization - Transformations", "used": "1.2K", "quota": "5K" },
+    { "name": "Image Optimization - Cache Writes", "used": "18K", "quota": "100K" },
+    { "name": "Function Invocations", "used": "170K", "quota": "1M" },
+    { "name": "CDN Requests", "used": "153K", "quota": "1M" },
+    { "name": "Fast Origin Transfer", "used": "1.42 GB", "quota": "10 GB" },
+    { "name": "Image Optimization - Cache Reads", "used": "33K", "quota": "300K" },
+    { "name": "Fast Data Transfer", "used": "3.58 GB", "quota": "100 GB" }
+  ],
+  "missingFromScreenshot": [
+    "Provisioned Memory (GB-hours)",
+    "Upstash monthly billed commands",
+    "Supabase usage",
+    "Before/after probe measurements and website baseline"
+  ],
+  "assessment": "Visible Vercel quotas have headroom. Aggregate usage does not establish per-room cost, monthly room capacity, or completion of the Phase A budget gate."
+}
