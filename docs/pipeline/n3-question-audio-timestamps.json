@@ -5,6 +5,7 @@
     "Timestamp menggunakan posisi relatif terhadap audio di sourceUrl.",
     "N3 2021-07 memakai satu audio asli untuk seluruh mondai karena audio context per-mondai diketahui salah crop.",
     "N3 2021-12 memakai satu audio asli untuk seluruh mondai karena audio context per-mondai diketahui salah crop.",
+    "N3 2017-07 memakai satu audio asli untuk seluruh mondai karena audio context per-mondai diketahui salah crop.",
     "Pipeline ini hanya membuat audio per soal; transkrip dan pembahasan belum dijalankan."
   ],
   "packages": [
@@ -235,6 +236,41 @@
           "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n3-2018-07/audio/Nghe%20N3%207-2018.mp3",
           "allowSourceOverride": true,
           "clips": [["32:15", "32:50"], ["32:50", "33:25"], ["33:25", "34:00"], ["34:00", "34:30"], ["34:30", "35:05"], ["35:05", "35:40"], ["35:40", "36:10"], ["36:10", "36:45"], ["36:45", "37:16"]]
+        }
+      ]
+    },
+    {
+      "fixture": "n3-2017-07.json",
+      "mondai": [
+        {
+          "mondaiType": "CHOUKAI_TASK_BASED",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n3-2017-07/audio/Nghe%20N3%207-2017.mp3",
+          "allowSourceOverride": true,
+          "clips": [["01:58", "03:15"], ["03:15", "04:28"], ["04:28", "05:48"], ["05:48", "07:25"], ["07:25", "09:03"], ["09:03", "10:23"]]
+        },
+        {
+          "mondaiType": "CHOUKAI_MAIN_POINT",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n3-2017-07/audio/Nghe%20N3%207-2017.mp3",
+          "allowSourceOverride": true,
+          "clips": [["11:08", "12:55"], ["12:55", "14:55"], ["14:55", "16:45"], ["16:45", "18:35"], ["18:35", "20:45"], ["20:45", "22:28"]]
+        },
+        {
+          "mondaiType": "CHOUKAI_OUTLINE",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n3-2017-07/audio/Nghe%20N3%207-2017.mp3",
+          "allowSourceOverride": true,
+          "clips": [["24:02", "25:33"], ["25:33", "27:08"], ["27:08", "28:46"]]
+        },
+        {
+          "mondaiType": "CHOUKAI_EXPRESSION",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n3-2017-07/audio/Nghe%20N3%207-2017.mp3",
+          "allowSourceOverride": true,
+          "clips": [["29:24", "29:56"], ["29:56", "30:40"], ["30:40", "31:19"], ["31:19", "31:55"]]
+        },
+        {
+          "mondaiType": "CHOUKAI_QUICK_RESPONSE",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n3-2017-07/audio/Nghe%20N3%207-2017.mp3",
+          "allowSourceOverride": true,
+          "clips": [["32:40", "33:06"], ["33:06", "33:46"], ["33:46", "34:23"], ["34:23", "35:02"], ["35:02", "35:40"], ["35:40", "36:16"], ["36:16", "36:50"], ["36:50", "37:25"], ["37:25", "38:00"]]
         }
       ]
     }
