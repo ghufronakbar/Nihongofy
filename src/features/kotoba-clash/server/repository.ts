@@ -5,19 +5,19 @@ import { z } from "zod";
 import { ClashAnswerSchema, ClashConfigSchema, ClashIdSchema, ClashQuestionSnapshotSchema, ClashStartSchema } from "../schemas";
 import { acceptsAnswer, createSchedule, scoreLedger, type LedgerRound } from "../domain/engine";
 import { ClashError, type ClashAssignment, type ClashIdentity } from "../domain/ports";
-import { CLASH_MAX_PLAYERS, CLASH_MIN_PLAYERS, CLASH_RETENTION_MS, CLASH_RULES_VERSION } from "../domain/rules";
+import { CLASH_LOBBY_IDLE_MS, CLASH_MAX_PLAYERS, CLASH_MIN_PLAYERS, CLASH_RETENTION_MS, CLASH_RULES_VERSION } from "../domain/rules";
 
-type Tx = Prisma.TransactionClient;
+export type Tx = Prisma.TransactionClient;
 
 const memberSelect = { id: true, userId: true, guestHash: true, guestExpiresAt: true, anonymizedAt: true, readyRevision: true, spectating: true } as const;
 const roundSelect = { id: true, position: true, snapshot: true, startsAt: true, endsAt: true, revealEndsAt: true, finalizedAt: true } as const;
 
-async function databaseNow(tx: Tx) {
+export async function databaseNow(tx: Tx) {
   const rows: unknown = await tx.$queryRaw`SELECT date_trunc('milliseconds', clock_timestamp()) AS now`;
   return z.array(z.object({ now: z.date() })).length(1).parse(rows)[0]!.now;
 }
 
-async function lockIdentity(tx: Tx, identity: ClashIdentity) {
+export async function lockIdentity(tx: Tx, identity: ClashIdentity) {
   if (identity.kind === "account") {
     const rows = await tx.$queryRaw<{ id: number }[]>`
       SELECT id FROM "User" WHERE id = ${identity.userId} AND "anonymizedAt" IS NULL FOR SHARE`;
@@ -25,11 +25,11 @@ async function lockIdentity(tx: Tx, identity: ClashIdentity) {
   }
 }
 
-async function lockRoom(tx: Tx, roomId: string) {
+export async function lockRoom(tx: Tx, roomId: string) {
   await tx.$queryRaw`SELECT id FROM "KotobaClashRoom" WHERE id = ${roomId}::uuid FOR UPDATE`;
   const room = await tx.kotobaClashRoom.findUnique({
     where: { id: roomId },
-    select: { id: true, hostUserId: true, status: true, expiresAt: true, config: true, configRevision: true, revision: true },
+    select: { id: true, code: true, hostUserId: true, status: true, expiresAt: true, updatedAt: true, config: true, configRevision: true, revision: true },
   });
   if (!room) throw new ClashError("NOT_FOUND");
   return room;
@@ -46,7 +46,7 @@ async function lockMatch(tx: Tx, roomId: string, matchId: string) {
   return match;
 }
 
-async function requireMember(tx: Tx, identity: ClashIdentity, roomId: string, now: Date) {
+export async function requireMember(tx: Tx, identity: ClashIdentity, roomId: string, now: Date) {
   const member = await tx.kotobaClashRoomMember.findFirst({
     where: { roomId, anonymizedAt: null, ...(identity.kind === "account" ? { userId: identity.userId } : { guestHash: identity.hash }) },
     select: memberSelect,
@@ -58,11 +58,11 @@ async function requireMember(tx: Tx, identity: ClashIdentity, roomId: string, no
   return member;
 }
 
-function requireHost(identity: ClashIdentity, hostUserId: number | null) {
+export function requireHost(identity: ClashIdentity, hostUserId: number | null) {
   if (identity.kind !== "account" || hostUserId !== identity.userId) throw new ClashError("HOST_REQUIRED");
 }
 
-function scheduleOf(round: { id: string; position: number; startsAt: Date; endsAt: Date; revealEndsAt: Date }) {
+export function scheduleOf(round: { id: string; position: number; startsAt: Date; endsAt: Date; revealEndsAt: Date }) {
   return { id: round.id, position: round.position, startsAt: round.startsAt.getTime(), endsAt: round.endsAt.getTime(), revealEndsAt: round.revealEndsAt.getTime() };
 }
 
@@ -70,7 +70,7 @@ function scheduleOf(round: { id: string; position: number; startsAt: Date; endsA
 export class PrismaClashRepository {
   constructor(private readonly db: PrismaClient) {}
 
-  async start(identity: ClashIdentity, raw: unknown, assignments: ClashAssignment[]) {
+  async start(identity: ClashIdentity, raw: unknown, assignments: ClashAssignment[], connectedMemberIds?: string[]) {
     const input = ClashStartSchema.parse(raw);
     const questions = assignments.map((assignment) => ({ id: ClashIdSchema.parse(assignment.id), question: ClashQuestionSnapshotSchema.parse(assignment.question) }));
     return this.db.$transaction(async (tx) => {
@@ -89,6 +89,9 @@ export class PrismaClashRepository {
       }
       if (room.status !== "OPEN") throw new ClashError("CLOSED");
       if (room.expiresAt <= now) throw new ClashError("EXPIRED");
+      if (room.updatedAt.getTime() + CLASH_LOBBY_IDLE_MS <= now.getTime() && !await tx.kotobaClashMatch.findFirst({
+        where: { roomId: room.id, endsAt: { gt: new Date(now.getTime() - CLASH_LOBBY_IDLE_MS) } }, select: { id: true },
+      })) throw new ClashError("EXPIRED");
       if (room.configRevision !== input.configRevision) throw new ClashError("STALE_CONFIG");
       const config = ClashConfigSchema.parse(room.config);
       if (questions.length !== config.questionCount || new Set(questions.map((q) => q.id)).size !== questions.length ||
@@ -97,7 +100,9 @@ export class PrismaClashRepository {
       const active = await tx.kotobaClashMatch.findFirst({ where: { roomId: room.id, status: "RUNNING" }, select: { id: true } });
       if (active) throw new ClashError("ACTIVE_MATCH");
       const members = await tx.kotobaClashRoomMember.findMany({
-        where: { roomId: room.id, spectating: false, anonymizedAt: null, OR: [{ userId: { not: null } }, { guestExpiresAt: { gt: now } }] },
+        where: { roomId: room.id, spectating: false, anonymizedAt: null,
+          ...(connectedMemberIds ? { id: { in: connectedMemberIds } } : {}),
+          OR: [{ userId: { not: null } }, { guestExpiresAt: { gt: now } }] },
         select: memberSelect,
       });
       if (members.length < CLASH_MIN_PLAYERS || members.length > CLASH_MAX_PLAYERS ||

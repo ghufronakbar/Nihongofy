@@ -4,15 +4,17 @@ Tanggal rancangan: **16 Oktober 2026 (Asia/Jakarta)**.
 
 ## Status Aktual
 
-**Fondasi fase B dibuat; game publik belum diimplementasikan.** Probe default mati telah
-diuji pada Vercel Hobby dengan 20 peserta selama 16 menit, lintas instance, dan 60 reconnect.
-Snapshot Usage Vercel 30 hari dari user sudah dicatat pada 17 Oktober 2026. Gate A belum ditutup:
-memory-hours, command Redis bulanan, dan biaya probe yang terpisah dari baseline belum terukur.
-Bukti dan runbook ada di
-[laporan fase A](../verification/kotoba-clash-phase-a.md). Enam tabel game dan migration baru sudah
-diverifikasi lokal, belum diterapkan pada Supabase. Engine, transaksi Start/answer/reconcile,
-credential guest, flags, export dan anonimisasi tersedia sebagai fondasi internal.
-[Laporan B](../verification/kotoba-clash-phase-b.md) mencatat bukti dan pekerjaan yang tersisa.
+**Implementasi C-E tersedia; verifikasi lokal lulus, aktivasi publik ditahan (17 Oktober 2026).**
+Katalog, landing, room/invite/guest, konfigurasi bertingkat, ready, runner WebSocket, reveal,
+ranking, spectator, hasil/review, rematch, dan cleanup sudah dibuat. Tidak ada migration baru.
+Migration fondasi dikonfirmasi applied pada Supabase lewat pemeriksaan read-only.
+Bukti kode dan batas pengujian ada di [laporan C-E](../verification/kotoba-clash-phase-c-e.md).
+
+Probe awal telah lulus pada Hobby dengan 20 peserta/16 menit, lintas instance dan 60 reconnect;
+ini belum membuktikan endpoint produk final. Gate budget masih terbuka: memory-hours, command
+Redis bulanan, serta delta beban terhadap website belum terukur. Kedua flag tetap default mati.
+Rujukan historis: [fase A](../verification/kotoba-clash-phase-a.md) dan
+[fondasi B](../verification/kotoba-clash-phase-b.md).
 
 Dokumen ini adalah sumber aturan produk dan kontrak teknis. Checklist pengerjaan ada di
 [plan](../plan/mini-games-kotoba-clash.md), hasil penerimaan dicatat pada
@@ -70,7 +72,7 @@ Kuota global tetap batas uji sementara, bukan hasil pengukuran kapasitas gratis.
   Runtime memeriksa expiry walau cron belum berjalan. Guest yang kedaluwarsa tidak mendapat akses.
 - Flags Mini Games/Kotoba Clash default mati selama pengembangan. Batas uji awal satu room aktif,
   20 pemain dan 5 spectator; ini tidak menetapkan jumlah sesi harian yang aman pada free tier.
-- Transport aktif nantinya memeriksa otorisasi ulang paling lambat setiap 20 detik dan sebelum
+- Transport memeriksa otorisasi ulang paling lambat setiap 20 detik dan sebelum
   setiap command; host command selalu memeriksa session terkini. Satu lease per membership,
   takeover atomik mengganti connectionId; socket lama tidak boleh memperpanjang/menghapus lease.
   Drain lintas deployment harus dibuktikan sebelum endpoint publik dibuat aktif.
@@ -86,26 +88,24 @@ Route publik, navigasi, dan feature flag mengikuti [kontrak Mini Games](mini-gam
 Invite menuju `/mini-games/kotoba-clash/room/[code]`. Hasil memakai
 `/mini-games/kotoba-clash/room/[code]/results/[matchId]`, sehingga rematch tidak menimpa URL hasil.
 
-Struktur yang direncanakan:
+Struktur aktual:
 
 ```text
 src/features/mini-games/              registry dan UI katalog
 src/features/kotoba-clash/
-  schemas.ts                          input dan envelope event Zod
-  actions.ts                          create/join/configure/ready/start melalui Server Action
+  schemas.ts / contracts.ts           input, private snapshot dan public wire Zod
+  actions.ts                          create/join/configure/ready/start/results
   domain/                             lifecycle, jadwal, scoring; tanpa import Next/Vercel
-  server/                             repository Prisma, auth, cache, pub/sub, command service
-  transport/                          adapter WebSocket Vercel dan bootstrap VPS
-  components/                         landing, lobby, runner, spectator, hasil
-  hooks/                              koneksi, snapshot, dan countdown client
+  server/                             Prisma, auth, stock, lease, Pub/Sub, socket, cleanup/export
+  components/                         entry, configuration, room, round, use-clash-room.ts
 src/app/(public)/mini-games/           halaman publik dan guard flag
 src/app/api/mini-games/kotoba-clash/ws/ handshake WebSocket
 ```
 
-Nama file rinci dapat mengikuti hasil spike fase A. Engine menerima principal terverifikasi,
-clock, repository, dan publisher melalui interface; engine tidak membaca cookie atau env sendiri.
-Auth akun tetap melalui helper `src/lib/auth.ts`. UI memakai React Context, renderer Jepang,
-Tailwind, komponen shadcn/base-ui, dan bahasa visual existing.
+Command service menerima principal terverifikasi, repository dan publisher melalui interface.
+Engine tidak membaca cookie/env; auth akun tetap melalui helper `src/lib/auth.ts`. State koneksi
+berada dalam hook pada root room; UI memakai renderer Jepang, Tailwind, shadcn/base-ui dan bahasa
+visual existing. Bootstrap VPS produk belum dibuat; probe Node terpisah tidak dianggap bootstrap produk.
 
 ## 3. Identitas, Akses, dan Kepemilikan
 
@@ -247,16 +247,16 @@ Latensi jaringan tetap berpengaruh; skor benar sengaja menjadi komponen terbesar
 
 Ranking: total poin menurun, lalu jumlah benar menurun, lalu total waktu jawaban benar menaik.
 Jika ketiganya sama, posisi dibagi dan dapat ada pemenang bersama. Urutan tampilan stabil tidak
-menjadi tie-break tersembunyi. Hasil menampilkan total poin, benar/salah/kosong, akurasi, dan streak
-terbaik. Poin battle tidak diproyeksikan menjadi skor JLPT 180 atau mengubah analytics exam.
+menjadi tie-break tersembunyi. Hasil menampilkan total poin dan benar/salah/kosong; tabel room juga menampilkan streak
+terbaik. Akurasi dapat diturunkan dari jumlah jawaban, belum ditampilkan sebagai persentase. Poin battle tidak diproyeksikan menjadi skor JLPT 180 atau mengubah analytics exam.
 
 ## 7. Reveal dan Pencegahan Kebocoran
 
 | Fase | Payload yang boleh dilihat pemain/spectator |
 |---|---|
 | Lobby/countdown | Konfigurasi, peserta, ready, jadwal; belum ada soal mendatang |
-| Question | Soal aktif, konteks, pilihan, deadline, jumlah terjawab, status submit diri sendiri |
-| Reveal | Kunci dan pembahasan soal tersebut, jawaban sendiri, tambahan poin, leaderboard |
+| Question | Soal aktif, konteks, pilihan, deadline, status submit diri sendiri |
+| Reveal | Kunci dan pembahasan soal tersebut, jawaban sendiri, leaderboard kumulatif |
 | Finished | Hasil dan review ronde yang sudah selesai pada pertandingan tersebut |
 
 - Sebelum reveal, jangan mengirim `questionAnswer`, `isCorrect`, explanation, transkrip, alasan
@@ -274,8 +274,9 @@ terbaik. Poin battle tidak diproyeksikan menjadi skor JLPT 180 atau mengubah ana
 
 ## 8. Persistence dan Konsistensi
 
-Entitas berikut sudah tersedia pada `prisma/schema.prisma` dan migration fondasi B. Migration
-baru diuji pada PostgreSQL lokal; database Supabase belum diubah.
+Entitas berikut tersedia pada `prisma/schema.prisma` dan migration fondasi B. Replay/constraint
+diuji pada PostgreSQL lokal. Pada 17 Oktober, status remote dikonfirmasi applied; enam tabel
+RLS/tanpa grant Data API, 22 constraint tervalidasi serta partial unique index diperiksa read-only.
 
 | Entitas | Tanggung jawab |
 |---|---|
@@ -305,8 +306,9 @@ baru diuji pada PostgreSQL lokal; database Supabase belum diubah.
 
 ### Batas PostgreSQL dan Redis
 
-PostgreSQL adalah sumber kebenaran room, schedule, jawaban, dan hasil. Redis menyimpan cache
-snapshot, koordinasi Pub/Sub, rate limit, serta lease koneksi/admission bila diperlukan. Key
+PostgreSQL adalah sumber kebenaran room, schedule, jawaban, dan hasil. Redis menyimpan registry
+guest, koordinasi Pub/Sub, rate limit, runtime control, dan lease koneksi. Live snapshot dibaca
+dari PostgreSQL, tanpa shared cache. Admission room memakai advisory lock PostgreSQL. Key
 bernamespace game melalui `redisKey()`, dengan prefix environment existing dan TTL yang jelas.
 Jangan mencampur key auth dengan key permainan.
 
@@ -327,11 +329,12 @@ down. TTL cache tidak boleh mengakhiri pertandingan sebelum `scheduledEndAt`.
 Envelope tervalidasi Zod membawa `protocolVersion`, `requestId` bila command, `roomId`, `matchId`
 bila relevan, dan revision dari server. ID tersebut hanya referensi, bukan bukti otorisasi.
 
-| Arah | Pesan rencana | Tujuan |
+| Arah | Pesan aktual | Tujuan |
 |---|---|---|
-| Client -> server | `subscribe`, `sync`, `submit_answer` | Join channel terotorisasi, ambil snapshot, kirim pilihan |
-| Server -> client privat | `snapshot`, `answer_ack`, `command_error` | State tersaring sesuai waktu dan ACK milik pengirim |
-| Server -> room | `lobby_changed`, `phase_changed`, `answer_count_changed`, `leaderboard_updated`, `match_finished`, `room_closed` | Perubahan publik yang aman |
+| Handshake | `GET /api/mini-games/kotoba-clash/ws?room=<UUID>` | Cookie, Origin dan membership sebelum subscribe otomatis |
+| Client -> server | `sync`, `submit_answer` | Snapshot atau kirim pilihan; strict Zod, protocolVersion 1 |
+| Server -> client privat | `snapshot`, `answer_ack`, `command_error` | Snapshot sesuai viewer/waktu, presence dan ACK pengirim |
+| Redis -> instance | `room_changed` | Invalidation roomId/revision saja; bukan isi soal atau pilihan |
 
 Create/join/configure/ready/start/rematch menggunakan Server Action existing pattern yang memanggil
 command service yang sama. Adapter WebSocket menangani subscribe/sync/answer; aturan domain tidak
@@ -339,8 +342,10 @@ diduplikasi dalam transport. Event klien tidak pernah langsung di-relay sebagai 
 
 - Setiap instance subscribe Redis Pub/Sub untuk room yang dilayaninya. Broadcast memori hanya
   mencapai socket lokal dan tidak cukup untuk room yang tersebar di beberapa instance.
-- Pub/Sub bukan penyimpanan pesan atau jaminan urutan. Event memiliki revision, duplikat/lebih
-  lama diabaikan, gap memicu sync. Snapshot memuat jadwal fase dan status jawaban sendiri.
+- Pub/Sub bukan penyimpanan pesan atau jaminan urutan. Invalidation dikoaleskan 200 ms sebelum
+  snapshot authoritative. Client menolak snapshot dengan revision/waktu lebih lama. Boundary
+  fase dan heartbeat 20 detik memperbaiki event hilang; snapshot hanya memuat ronde aktif serta
+  status jawaban sendiri. Belum ada event delta atau penghitung jawaban publik.
 - Reconnect memakai backoff dengan jitter, mengulang autentikasi/subscribe, lalu mengambil snapshot.
   Terputus tidak mereset membership, skor, ready yang masih valid, atau jawaban tersimpan.
 - Deployment baru dan lama dapat hidup bersamaan sampai socket lama ditutup. Versi protokol/aturan
@@ -405,10 +410,14 @@ menguji dukungan adapter hostingnya.
 
 ## 11. Retensi, Akun, dan Operasional
 
-Retensi fondasi B dibekukan sebagai berikut; integrasi cleanup cron belum dibuat:
-lobby idle ditutup setelah 30 menit; pertandingan aktif tidak di-expire sebelum jadwal selesai;
-hasil/jawaban detail dibersihkan setelah 7 hari. Masa akses guest juga dibatasi expiry credential.
-Copy UI harus menyatakan batas penyimpanan yang benar; v1 tidak menjanjikan riwayat permanen.
+Cleanup terhubung ke cron existing `/api/cron/auth-cleanup` (harian, `0 3 * * *` UTC).
+Setiap eksekusi mengambil maksimal 100 kandidat per jenis: room expired, match expired,
+guest expired, dan room idle. Lock room diurutkan; idle diperiksa ulang sesudah lock agar tidak
+menutup Start yang berjalan bersamaan. Room ditutup setelah idle 30 menit; pertandingan aktif
+tetap mengikuti schedule. Hasil/jawaban ditolak runtime setelah 7 hari dan dihapus pada batch
+cron berikutnya. Identitas guest expired dianonimkan, ledger anonim tetap tersedia sampai
+retensi match berakhir. Masa akses guest dibatasi expiry absolut 7 hari. V1 tidak menjanjikan
+riwayat permanen; copy cookie/retensi ada pada form join dan kebijakan privasi versi 1.5.
 
 - Redis memakai TTL untuk cache/lease. Penutupan room menolak join/game baru tetapi hasil yang
   masih dalam retensi dapat dibaca oleh membership sah sampai credential/retensi habis.
@@ -435,6 +444,7 @@ Copy UI harus menyatakan batas penyimpanan yang benar; v1 tidak menjanjikan riwa
 - Gate engineering, migration bila ada, desktop/mobile, dan UAT lulus dengan bukti yang dicatat.
 - Batas kuota, retensi, flag, cleanup, dan langkah migrasi VPS didokumentasikan sesuai kode aktual.
 
-Status migration fase A: **not required**. Fondasi B: **required, belum diterapkan pada Supabase**,
-`20261016174702_kotoba_clash_foundation`. Terapkan sebelum kode pembaca tabel baru dirilis;
-langkah dan hasil pemeriksaan ada di [laporan B](../verification/kotoba-clash-phase-b.md).
+Status migration fase A dan integrasi C-E: **not required**. Fondasi B:
+`20261016174702_kotoba_clash_foundation`, **applied pada Supabase, terkonfirmasi read-only 17 Oktober 2026**.
+Tidak dijalankan ulang; tidak ada write data remote saat verifikasi. Runbook saat ini ada
+di [laporan C-E](../verification/kotoba-clash-phase-c-e.md).

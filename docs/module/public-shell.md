@@ -89,14 +89,15 @@ Kebijakan Privasi (`/privacy`) dan Syarat & Ketentuan (`/terms`) ditambahkan 2 O
 - Ditautkan dari footer publik, `/profile/privacy`, form daftar, dan dekat tombol Google di login
   serta register (`LegalConsentNotice`, tautan dibuka di tab baru agar isian form tidak hilang).
 
-## Rencana Mini Games
+## Mini Games
 
-**Belum diimplementasikan (16 Oktober 2026).** Header desktop/mobile direncanakan mempunyai menu
+**Kode tersedia, default-off (17 Oktober 2026).** Header desktop/mobile mempunyai menu
 **Mini Games** menuju `/mini-games`, katalog publik yang dapat menampung beberapa game.
 Game pertama adalah **Kotoba Clash**, battle kuis JLPT teks dengan room undangan untuk 2-20 pemain.
 Landing/katalog publik; host login dan peserta guest diperbolehkan.
 
-Menu, route, metadata, sitemap, dan flag belum ditambahkan. Kontrak katalog/flag berada di
+Menu, route, metadata, sitemap dan robots mengikuti flag hub/game; room/hasil noindex dan
+tidak masuk sitemap. Entry home, sidebar, dan shortcut dashboard juga mengikuti flag. Kontrak katalog/flag berada di
 [Mini Games](mini-games.md), aturan di [Kotoba Clash](kotoba-clash.md), dan urutan pengerjaan di
 [plan](../plan/mini-games-kotoba-clash.md). Katalog tidak menampilkan game lain yang belum dibuat.
 

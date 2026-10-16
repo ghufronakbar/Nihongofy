@@ -16,6 +16,8 @@ export default function robots(): MetadataRoute.Robots {
         ...(FEATURES.article ? ["/article", "/article/"] : []),
         ...(FEATURES.testPackage ? ["/test-package", "/test-package/"] : []),
         ...(FEATURES.practice ? ["/exercises"] : []),
+        ...(FEATURES.miniGames ? ["/mini-games$"] : []),
+        ...(FEATURES.kotobaClash ? ["/mini-games/kotoba-clash$"] : []),
         ...(FEATURES.kana ? ["/kana", "/kana/"] : []),
         ...(FEATURES.flashcard ? ["/flashcard", "/flashcard/try/"] : []),
         ...(FEATURES.bunpou ? ["/bunpou", "/bunpou/"] : []),
@@ -27,6 +29,7 @@ export default function robots(): MetadataRoute.Robots {
       ],
       disallow: [
         "/api/",
+        "/mini-games/kotoba-clash/room/",
         // Turunan modul yang halaman indeksnya tetap dibuka: sesi latihan dan
         // koleksi flashcard pribadi tidak punya nilai pencarian, dan aturan yang
         // lebih spesifik mengalahkan `allow` di atasnya.

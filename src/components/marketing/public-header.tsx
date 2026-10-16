@@ -24,6 +24,7 @@ const NAV_ITEMS: { label: string; href: string; feature?: FeatureName }[] = [
   { label: "Bunpou", href: "/bunpou", feature: "bunpou" },
   { label: "Latihan Cepat", href: "/exercises", feature: "practice" },
   { label: "Mock JLPT", href: "/test-package", feature: "testPackage" },
+  { label: "Mini Games", href: "/mini-games", feature: "miniGames" },
   { label: "Artikel", href: "/article", feature: "article" },
   { label: "Diskusi", href: "/discussion", feature: "questionDiscussion" },
   { label: "Komunitas", href: "/community", feature: "community" },
@@ -181,14 +182,14 @@ export function PublicHeader({
       <PageContainer className="flex h-[76px] items-center justify-between gap-6">
         <BrandMark />
 
-        <nav className="hidden items-center gap-5 lg:flex" aria-label="Navigasi utama">
+        <nav className="hidden min-w-0 flex-1 items-center gap-5 overflow-x-auto whitespace-nowrap lg:flex" aria-label="Navigasi utama">
           {navItems.map((item) => (
             <Link
               key={item.label}
               href={item.href}
               aria-current={isActivePath(pathname, item.href) ? "page" : undefined}
               className={cn(
-                "relative py-2 text-sm font-extrabold text-neo-ink transition-transform hover:-translate-y-0.5",
+                "relative shrink-0 py-2 text-sm font-extrabold text-neo-ink transition-transform hover:-translate-y-0.5",
                 "after:absolute after:inset-x-0 after:bottom-0 after:h-[3px] after:origin-left after:scale-x-0 after:bg-neo-blue after:transition-transform hover:after:scale-x-100",
                 isActivePath(pathname, item.href) && "after:scale-x-100",
               )}

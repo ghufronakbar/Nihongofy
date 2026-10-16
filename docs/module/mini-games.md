@@ -4,11 +4,13 @@ Tanggal rancangan: **16 Oktober 2026 (Asia/Jakarta)**.
 
 ## Status Aktual
 
-**Direncanakan, belum diimplementasikan.** Dokumen ini menetapkan katalog publik untuk beberapa
-mini game. Route, menu dan registry belum tersedia. Kedua feature flag sudah ditambahkan,
-default mati. Probe operator Kotoba Clash dikerjakan pada fase A; fondasi game/schema diuji lokal
-pada fase B, belum diterapkan pada Supabase. Lihat [laporan A](../verification/kotoba-clash-phase-a.md)
-dan [fondasi B](../verification/kotoba-clash-phase-b.md).
+**Kode katalog dan game tersedia; belum diaktifkan publik (17 Oktober 2026).** Registry,
+route, menu, metadata, dan guard sudah dibuat. Kotoba Clash mencakup lobby, runner, hasil,
+spectator, dan rematch; pemeriksaan repository/socket serta visual katalog/landing lulus lokal.
+Kedua flag tetap default mati. Migration fondasi sudah terkonfirmasi diterapkan melalui status migration dan metadata
+Supabase read-only. Aktivasi menunggu budget dan UAT produk pada Hobby.
+Bukti terbaru: [integrasi C-E](../verification/kotoba-clash-phase-c-e.md); bukti transport awal:
+[laporan A](../verification/kotoba-clash-phase-a.md).
 
 Rujukan:
 
@@ -53,7 +55,7 @@ agar perubahan nama tampilan tidak mengharuskan perubahan identitas data.
   kartu nyata; tidak mengarang nama, pemain online, hasil, atau daftar game tambahan.
 - Tidak ada daftar room publik pada v1. Penemuan room melalui kode atau link undangan.
 
-## 3. Route dan Navigasi yang Direncanakan
+## 3. Route dan Navigasi
 
 Semua halaman berada di route group `(public)` dan mengikuti header/footer existing.
 
@@ -71,13 +73,14 @@ dirilis. Canonical katalog dan landing memakai `pageMetadata()` existing; room d
 
 Integrasi navigasi: header desktop/mobile, shortcut dashboard yang relevan, dan entry home bila
 ditambahkan. Semua entry mengikuti flag; katalog yang mati tidak meninggalkan link menuju 404.
-Link undangan memakai `APP_URL` environment aktif agar preview tidak membagikan URL production.
+Link undangan yang disalin memakai `window.location.origin`, sehingga URL mengikuti browser
+pada environment aktif. Canonical landing tetap memakai helper SEO existing berbasis `APP_URL`.
 
 ## 4. Registry dan Batas Tanggung Jawab
 
-Registry awal adalah data statis bertipe di `src/features/mini-games/data/games.ts`, bukan tabel
-database atau CMS baru. Setiap entry membawa stable key, slug, nama, deskripsi, route, jenis
-permainan, rentang pemain, kemampuan guest, dan status rilis yang benar.
+Registry adalah data statis bertipe di `src/features/mini-games/registry.ts`, tanpa tabel
+database/CMS. Entry saat ini membawa slug, nama, deskripsi, route, key feature flag, rentang
+pemain, dan level. Aturan guest/host ditampilkan di landing game.
 
 - Registry hanya untuk penemuan dan presentasi game, bukan penyimpanan sesi permainan.
 - Ketersediaan efektif dihitung dari feature flag server; registry bukan sumber otorisasi.
@@ -87,7 +90,7 @@ permainan, rentang pemain, kemampuan guest, dan status rilis yang benar.
 - Jangan membuat engine universal untuk game yang belum dirancang. Domain Kotoba Clash tidak
   menjadi dependensi wajib bagi game berikutnya.
 
-## 5. Feature Flag yang Direncanakan
+## 5. Feature Flag
 
 | Env | Arti | Perilaku |
 |---|---|---|
@@ -102,9 +105,9 @@ Flag sudah ditambahkan ke `src/constants/index.ts`, dengan default khusus **fals
 env kosong, selama pengembangan. `.env.example` mencantumkan keduanya sebagai `false`.
 Guard wajib ada pada layout, Server Action, dan handshake/command WebSocket. Mematikan flag juga
 menolak command baru dari koneksi lama dan menutupnya dengan alasan yang bisa ditampilkan UI.
-Env dibaca saat startup, sehingga perubahan env memerlukan redeploy. Socket deployment lama tidak
-otomatis membaca env baru: fase B wajib menetapkan dan menguji invalidasi/drain lintas deployment
-untuk memenuhi kontrak penonaktifan tersebut, bukan hanya memeriksa flag pada handshake.
+Env dibaca saat startup, sehingga perubahan env memerlukan redeploy. Socket deployment lama memakai runtime-control Redis bersama, diperiksa sebelum command dan
+pada heartbeat 20 detik. Gunakan `npm run kotoba-clash:runtime -- disable` sebelum mematikan
+flag/redeploy. Prosedur lintas deployment produk masih memerlukan UAT; lihat laporan C-E.
 
 ## 6. Keadaan UI dan Aksesibilitas
 
@@ -121,7 +124,7 @@ untuk memenuhi kontrak penonaktifan tersebut, bukan hanya memeriksa flag pada ha
 ## 7. Kondisi Rilis
 
 Katalog baru dianggap aktif setelah route, navigasi, flag, metadata, dan minimal satu game
-melewati gate rilisnya. Status modul di [index](index.md) harus tetap "Direncanakan" sampai kode
-dan hasil verifikasinya benar-benar tersedia.
+melewati gate rilisnya. Status di [index](index.md) membedakan kode dan verifikasi lokal yang sudah tersedia dari
+aktivasi publik yang masih menunggu gate budget dan UAT.
 
 Perubahan database saat ini: **tidak ada**. Katalog sendiri tidak membutuhkan migration.

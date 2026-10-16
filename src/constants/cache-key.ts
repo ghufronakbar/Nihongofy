@@ -25,6 +25,8 @@ export const CACHE_KEYS = {
   kotobaRoomChannel: (roomId: string) => ["kotoba-clash-v1", "room", roomId, "events"],
   kotobaRoomLease: (roomId: string) => ["kotoba-clash-v1", "room", roomId, "leases"],
   kotobaRuntimeControl: ["kotoba-clash-v1", "runtime-control"] as string[],
+  kotobaCatalog: ["kotoba-clash-v1", "catalog"] as string[],
+  kotobaRateLimit: (scope: string, subject: string) => ["kotoba-clash-v1", "rate", scope, subject],
   kotobaProbe: (runId: string, part: "state" | "leases" | "handshakes") => [
     "kotoba-probe-v1", runId, part,
   ],

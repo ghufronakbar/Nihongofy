@@ -16,10 +16,10 @@ export function projectRound(round: RoundSchedule, question: ClashQuestionSnapsh
     mondaiType: question.mondaiType,
     content: {
       instruction: text(content.instruction),
-      text: text(content.text),
+      text: text(content.text)!,
       image: content.image,
       context: content.context && { text: text(content.context.text), image: content.context.image },
-      choices: content.choices.map((choice) => ({ code: choice.code, text: text(choice.text), image: choice.image })),
+      choices: content.choices.map((choice) => ({ code: choice.code, text: text(choice.text)!, image: choice.image })),
     },
     ...(revealed ? { correctChoice: question.correctChoice, explanation: question.explanation } : {}),
   };

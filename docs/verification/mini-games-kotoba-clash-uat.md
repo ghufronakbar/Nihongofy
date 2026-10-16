@@ -1,18 +1,18 @@
 # UAT Mini Games dan Kotoba Clash
 
-Status: **Fase A transport PASS, budget parsial dengan gate BLOCKED; UAT game publik NOT RUN**.
-Checklist disiapkan dan probe dijalankan pada **16 Oktober 2026 (Asia/Jakarta)**.
-Snapshot Usage dari user ditinjau pada **17 Oktober 2026**; belum merupakan delta biaya probe.
-WebSocket diuji pada preview Hobby; permainan publik belum diimplementasikan.
-Fondasi B diverifikasi lokal pada 17 Oktober atas instruksi user untuk melanjutkan. Budget
-tetap gate aktivasi publik; laporan [fondasi B](kotoba-clash-phase-b.md) memisahkan pemeriksaan
-developer dari UAT browser/user di bawah. Migration B required, belum diterapkan pada Supabase.
+Status: **Implementasi C-E tersedia dan developer checks lokal PASS; UAT game browser/Hobby NOT RUN**.
+Probe awal dijalankan 16 Oktober 2026; integrasi dan pemeriksaan lokal pada **17 Oktober 2026**.
+Migration B terkonfirmasi applied lewat status/metadata Supabase read-only. Integrasi
+C-E tidak menambah migration. Lihat [laporan C-E](kotoba-clash-phase-c-e.md) untuk scope dan bukti.
+Budget masih BLOCKED: snapshot Usage agregat user belum menjadi delta biaya workload produk.
+Seluruh baris B-D adalah penerimaan browser/produk final kecuali diberi batas lokal secara eksplisit;
+PASS repository/unit bukan acceptance flow browser atau user.
 
 Rujukan: [modul hub](../module/mini-games.md), [modul game](../module/kotoba-clash.md),
 [plan](../plan/mini-games-kotoba-clash.md), dan [checklist umum](manual-test-checklist.md).
 Laporan dan artefak bukti fase A: [kotoba-clash-phase-a.md](kotoba-clash-phase-a.md).
 
-## Identitas Eksekusi
+## Identitas Eksekusi Probe A
 
 | Field | Nilai yang harus dicatat saat pengujian |
 |---|---|
@@ -58,14 +58,24 @@ di [laporan fase A](kotoba-clash-phase-a.md#snapshot-usage-dari-user).
 
 ## B. Katalog, Identitas, dan Lobby
 
-Uji repository lokal sudah meluluskan Start/retry bersamaan, spectator/expiry, clock setelah
-lock, finalisasi idempotent, FK komposit, RLS dan anonimisasi nyata. Hal itu belum meluluskan
-flow halaman/action/socket, sehingga skenario B-D tetap NOT RUN sampai integrasi publik tersedia.
+Implementasi C-E kini tersedia. Developer checks repository/PostgreSQL dan Lua Redis nyata lulus,
+termasuk concurrency admission, guest resume, config/ready, proyeksi privat, hasil/rematch,
+export offline dan cleanup. Lima tes socket loopback memakai auth/persistence/Redis yang dimock.
+Catalogue/landing saja diuji visual di browser localhost (desktop 1280x900, mobile 390x844).
+Flow room/runner di browser HTTPS dan endpoint produk Hobby belum dijalankan.
+
+| Eksekusi C-E | Bukti |
+|---|---|
+| Source/environment | Working tree integrasi setelah fondasi B; loopback PostgreSQL 17.11/Redis disposable |
+| Gate engineering | PASS, 638 tes /47 file, lint/typecheck/build |
+| Data | Fixture checker sendiri, bukan akun/soal production; dibersihkan setelah uji |
+| Runtime control | Tidak diubah di production; drain lintas deployment masih NOT RUN |
+| Rincian/evidence | [Laporan C-E](kotoba-clash-phase-c-e.md) dan JSON/screenshot tertaut |
 
 | ID | Skenario | Expected result | Hasil / bukti |
 |---|---|---|---|
-| B01 | Buka Mini Games dan kartu Kotoba Clash sebagai guest | Katalog/landing publik; deskripsi, 2-20 pemain, dan CTA benar | NOT RUN |
-| B02 | Flag hub/game off, termasuk saat socket sudah terbuka | Nav/route/action/socket mengikuti flag; command lama tidak lolos | NOT RUN |
+| B01 | Buka Mini Games dan kartu Kotoba Clash sebagai guest | Katalog/landing publik; deskripsi, 2-20 pemain, dan CTA benar | PASS lokal; visual desktop/mobile, screenshot pada laporan C-E; cloud NOT RUN |
+| B02 | Flag hub/game off, termasuk saat socket sudah terbuka | Nav/route/action/socket mengikuti flag; command lama tidak lolos | NOT RUN penuh; smoke production lokal flag off PASS (4 halaman/socket 404, home/sitemap tanpa link); drain cloud belum |
 | B03 | Katalog tanpa game aktif; mobile dan keyboard | Empty state jujur, navigasi/fokus/form dapat dipakai | NOT RUN |
 | B04 | Host akun membuat room dan membagikan link | Kode unik; URL sesuai environment; guest tidak dapat membuat room | NOT RUN |
 | B05 | Guest join, refresh, tab kedua, dan nickname duplikat | Identitas/slot tidak ganda; nama tervalidasi; credential tidak terungkap | NOT RUN |
@@ -113,12 +123,12 @@ flow halaman/action/socket, sehingga skenario B-D tetap NOT RUN sampai integrasi
 
 ## Gate Akhir
 
-- [x] `npm run verify` lulus; pembaruan fondasi B 633 tes / 46 file, lint/typecheck/build lulus.
-- [x] Migration/Prisma tervalidasi; fondasi B direplay dan diuji lokal, belum diterapkan pada Supabase.
+- [x] `npm run verify` lulus; integrasi C-E 638 tes / 47 file, lint/typecheck/build lulus.
+- [x] Migration/Prisma tervalidasi; fondasi B direplay/diuji lokal; applied pada Supabase dikonfirmasi lewat status/metadata read-only, tanpa write data.
 - [ ] Skenario wajib lulus di environment yang relevan, termasuk bukti Hobby dan 20 koneksi.
 - [ ] Kuota, limit rilis, retensi, dan known issue mempunyai angka/status/owner yang nyata.
 - [ ] UAT user tercatat terpisah dari pemeriksaan developer.
 - [x] Data dan credential uji dibersihkan; status modul diperbarui sesuai hasil.
 
-Keputusan rilis: **belum diaktifkan; gate budget fase A BLOCKED**. Pemilik verifikasi: Engineering Owner untuk bukti teknis,
+Keputusan rilis: **belum diaktifkan; gate budget fase A BLOCKED**. Kode produk belum dideploy oleh pekerjaan integrasi ini. Pemilik verifikasi: Engineering Owner untuk bukti teknis,
 user/Release Owner untuk acceptance dan aktivasi sesuai kebijakan project.

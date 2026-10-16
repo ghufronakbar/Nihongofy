@@ -33,9 +33,30 @@ contract wajib memiliki migration dan catatan ringkas di dokumen/PR perubahan. J
 
 ## Ledger
 
+### 17 Oktober 2026 - Integrasi Mini Games dan Kotoba Clash (C-E)
+
+- Status: not required
+- Migration: tidak ada; menggunakan fondasi `20261016174702_kotoba_clash_foundation` yang
+  terkonfirmasi applied melalui status/metadata Supabase read-only. Tidak ada perubahan schema,
+  index, policy, seed atau backfill.
+- Alasan: menghubungkan katalog/lobby, transport, runner, hasil/rematch, export dan cleanup.
+- Object terdampak: runtime membaca/menulis enam tabel fondasi; cron auth existing menambahkan
+  batch room/match expired, idle close dan anonimisasi guest expired.
+- Data existing: tidak dimutasi selama pengujian; fixture memakai cluster loopback disposable.
+- Risiko operasi: kedua flag default false. Migration fondasi tetap prasyarat export/anonimisasi
+  dan cron, walaupun flag mati. Aktivasi menunggu budget dan UAT Hobby produk final.
+- Validasi: gate `npm run verify` dan checker lokal; bukti serta batasnya di
+  [laporan C-E](../verification/kotoba-clash-phase-c-e.md).
+- Refresh setelah deploy: restart/redeploy untuk flag; drain runtime sebelum menonaktifkan.
+  Tidak ada reseed/invalidation manual; stok aggregate mengikuti tag bank soal.
+- Owner: Engineering Owner; user/Release Owner untuk verifikasi remote dan acceptance.
+
 ### 17 Oktober 2026 - Fondasi domain Kotoba Clash (fase B)
 
-- Status: required; diuji pada PostgreSQL 17.11 lokal, belum diterapkan pada Supabase.
+- Status: deployed, dikonfirmasi 17 Oktober 2026 melalui `prisma migrate status` dan metadata
+  Supabase read-only: 42 migration up to date, keenam tabel RLS/tanpa grant Data API, 22 constraint
+  tervalidasi serta partial unique index aktif/valid. Tidak menjalankan ulang migration atau write.
+  Uji perilaku constraint memakai PostgreSQL 17.11 lokal; bukti remote ada di laporan C-E.
 - Migration: `prisma/migrations/20261016174702_kotoba_clash_foundation/migration.sql`.
   Timestamp generator UTC; tanggal lokal pekerjaan 17 Oktober WIB.
 - Alasan: persistence room, roster, jadwal tetap, jawaban pertama final, dan rekonstruksi skor.

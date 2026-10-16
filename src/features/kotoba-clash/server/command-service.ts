@@ -23,9 +23,9 @@ export class ClashCommandService<TPrincipal> {
     }
   }
 
-  async start(principal: TPrincipal, input: z.infer<typeof ClashStartSchema>, questions: ClashAssignment[]) {
+  async start(principal: TPrincipal, input: z.infer<typeof ClashStartSchema>, questions: ClashAssignment[], connectedMemberIds?: string[]) {
     const identity = await this.authenticate(principal);
-    const result = await this.repository.start(identity, input, questions);
+    const result = await this.repository.start(identity, input, questions, connectedMemberIds);
     if (!result.duplicate) await this.publish(input.roomId, result.revision);
     return result;
   }

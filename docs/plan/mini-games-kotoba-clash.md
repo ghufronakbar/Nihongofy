@@ -2,7 +2,7 @@
 
 Tanggal: **16 Oktober 2026 (Asia/Jakarta)**.
 Pembaruan budget: **17 Oktober 2026**.
-Status: **Fase B dikerjakan; transport A lulus, pengukuran budget menjadi blocker aktivasi publik.**
+Status: **Implementasi C-E tersedia; verifikasi lokal lulus, UAT produk Hobby dan budget masih menjadi gate aktivasi.**
 
 Keputusan 17 Oktober 2026: user meminta "lanjut saja dulu" setelah menerima laporan budget
 parsial. Pengembangan fondasi dan fitur boleh berjalan; pengukuran budget yang tersisa tetap
@@ -22,21 +22,24 @@ Urutan ini melanjutkan persetujuan user atas WebSocket sendiri, target seluruh i
 free tier, kapasitas 2-20 pemain, serta penundaan choukai. Nama tampilan game pertama ditetapkan
 untuk rancangan sebagai **Kotoba Clash**, slug `kotoba-clash`, di bawah `/mini-games`.
 
-Probe fase A menambahkan dependency/endpoint operator yang default mati dan deployment preview
-terisolasi. Fondasi B menambahkan engine, identitas, schema dan migration yang terverifikasi lokal;
-migration **required, belum diterapkan pada Supabase**. Game publik belum dibuat. Checkbox hanya
-dicentang untuk keluaran yang sudah diverifikasi. Bukti: [fondasi B](../verification/kotoba-clash-phase-b.md).
+Probe A menguji adapter Hobby terisolasi. Fondasi B menambahkan schema/engine, dan user melaporkan
+migration sudah diterapkan pada 17 Oktober 2026; status/metadata Supabase telah dikonfirmasi
+read-only tanpa write data. Integrasi C-E tidak menambah migration: katalog,
+lobby, runner, hasil/rematch, transport dan cleanup tersedia dalam kode, flags tetap mati.
+Bukti [C-E](../verification/kotoba-clash-phase-c-e.md) mencatat 638 tes, 10 kelompok integrasi lokal,
+visual desktop/mobile dan smoke flag off. Checkbox implementasi lokal tidak meluluskan UAT produk
+Hobby, acceptance user, atau budget. Exit criteria fase penuh tetap terbuka sampai bukti itu ada.
 
 ## 2. Urutan dan Gate
 
 | Fase | Keluaran utama | Dependensi | Status awal |
 |---|---|---|---|
 | A | Bukti WebSocket pada Vercel Hobby dan profil penggunaan | Deployment pengujian yang terisolasi | Transport PASS; budget parsial, gate BLOCKED |
-| B | Kontrak beku, domain, persistence, auth, dan migration | Transport A lulus; kelanjutan disetujui user | Dikerjakan |
-| C | Katalog Mini Games, landing, room, invite, lobby | Fondasi B | Belum dimulai |
-| D | Pertandingan teks end-to-end | Lobby C dan aturan B | Belum dimulai |
-| E | Recovery, spectator, hasil, rematch, cleanup | Runner D | Belum dimulai |
-| F | Verifikasi lengkap dan aktivasi bertahap | A-E dan UAT | Belum dimulai |
+| B | Kontrak beku, domain, persistence, auth, dan migration | Transport A lulus; kelanjutan disetujui user | Kode/lokal dan metadata migration remote lulus; drain cloud tersisa |
+| C | Katalog Mini Games, landing, room, invite, lobby | Fondasi B | Kode dan pemeriksaan lokal tersedia; UAT browser host/guest tersisa |
+| D | Pertandingan teks end-to-end | Lobby C dan aturan B | Kode dan tes lokal tersedia; game lengkap browser/Hobby belum diuji |
+| E | Recovery, spectator, hasil, rematch, cleanup | Runner D | Kode dan integrasi repository lulus; outage/drain produk cloud tersisa |
+| F | Verifikasi lengkap dan aktivasi bertahap | A-E dan UAT | Gate engineering lulus; UAT/budget belum selesai, flags off |
 
 Fase A mengurangi risiko investasi UI/data pada adapter yang belum terbukti. Belum ada janji
 bahwa 20 pemain atau jumlah room tertentu selalu masuk kuota gratis. Batas room serentak dan
@@ -87,7 +90,7 @@ Jika gagal, catat blocker dan revisi adapter sebelum melanjutkan. Build lokal sa
   Kuota satu room/5 spectator hanya batas uji rancangan, belum kapasitas rilis terukur.
 - [x] Pisahkan engine murni, repository, clock, publisher, dan adapter hosting. Engine tidak
   mengimpor Next.js/Vercel atau mengakses env/cookie secara langsung.
-- [ ] Definisikan input/event/snapshot dengan Zod dan TypeScript strict. Semua input wire mulai
+- [x] Definisikan input/event/snapshot dengan Zod dan TypeScript strict. Semua input wire mulai
   dari `unknown`; jangan memakai `any` atau mempercayai principal dari payload client.
 - [x] Rancang room/member/match/match-player/round/answer, snapshot soal privat, index FK,
   unique answer, kesamaan match pada relasi answer, dan batas satu match aktif per room.
@@ -98,21 +101,21 @@ Jika gagal, catat blocker dan revisi adapter sebelum melanjutkan. Build lokal sa
   Replay dan constraint diuji pada PostgreSQL 17.11 lokal; kendala shadow legacy dicatat pada laporan B.
 - [ ] Tambahkan credential guest terpisah, pemeriksaan akun/host, resume, multi-tab, expiry,
   revalidasi session/revocation, dan pembatasan handshake.
-- [ ] Rancang pengecualian proxy untuk endpoint guest/socket secara spesifik; route akun/API lain
+- [x] Rancang pengecualian proxy untuk endpoint guest/socket secara spesifik; route akun/API lain
   tetap memakai proteksi existing.
-- [ ] Definisikan key/TTL Redis dan commit-then-publish beserta recovery jika publish gagal.
+- [x] Definisikan key/TTL Redis dan commit-then-publish beserta recovery jika publish gagal.
   Tentukan invalidation/revision; jangan memakai cache Next lintas user untuk live state.
 - [x] Tambahkan env/flag melalui `src/constants/index.ts`, key cache melalui konstanta existing,
   dan `.env.example` tanpa secret. Flag deployment tetap off sampai gate rilis selesai.
 - [ ] Tetapkan invalidasi/drain socket deployment lama saat flag dimatikan atau protokol berubah;
   proses lama tidak otomatis membaca env baru. Uji prosedurnya pada deployment yang berdampingan.
-- [ ] Integrasikan relasi personal dengan anonimisasi, export, dan retensi sebelum data nyata masuk.
-  Export dan anonimisasi selesai pada fondasi B; cleanup/retensi cron masih menunggu.
+- [x] Integrasikan relasi personal dengan anonimisasi, export, dan retensi sebelum data nyata masuk.
+  Export/anonimisasi/retensi cron terintegrasi, termasuk hasil offline dan guest expired; lokal lulus.
 
-Fondasi B sudah mencakup input Zod, private snapshot/proyeksi ronde, credential guest dengan
-registry/expiry, auth per-command, dan commit-then-publish. Item input/snapshot/recovery tetap
-belum dicentang penuh sampai endpoint snapshot, takeover lease, handshake limit, dan drain
-lintas deployment selesai. Fase B belum dinyatakan lulus keseluruhan.
+Endpoint snapshot, takeover lease nyata, handshake/rate guard dan runtime drain sekarang tersedia.
+Tes socket memakai loopback dengan adapter auth/persistence/Redis dimock; Lua takeover dan repository
+memakai Redis/PostgreSQL lokal nyata. Flow cookie HTTPS/handshake serta drain lintas deployment
+produk belum diuji di Hobby, sehingga item identitas/drain dan exit fase B belum diluluskan penuh.
 
 **Exit criteria:** kontrak terukur dan dapat diuji, migration ditinjau/terverifikasi pada environment
 uji, serta retry/concurrency tidak membuat match, jawaban, atau poin ganda. Engine dapat dijalankan
@@ -120,18 +123,18 @@ tanpa bootstrap Vercel. Catatan migration mencakup urutan deploy sebelum kode pe
 
 ## 5. Fase C - Mini Games, Room, dan Lobby
 
-- [ ] Bangun registry statis dan katalog `/mini-games` yang bisa menampung game berikutnya.
+- [x] Bangun registry statis dan katalog `/mini-games` yang bisa menampung game berikutnya.
   Awalnya hanya satu kartu game nyata; jangan membuat game atau angka pemain palsu.
-- [ ] Bangun landing `/mini-games/kotoba-clash`: cara bermain, Buat Room, dan Masukkan Kode.
-- [ ] Implementasikan menu Mini Games pada header desktop/mobile dan entry dashboard/home
+- [x] Bangun landing `/mini-games/kotoba-clash`: cara bermain, Buat Room, dan Masukkan Kode.
+- [x] Implementasikan menu Mini Games pada header desktop/mobile dan entry dashboard/home
   yang relevan, mengikuti flag dan bahasa visual existing.
-- [ ] Tambahkan guard katalog/game/action/socket, metadata canonical landing, sitemap publik,
+- [x] Tambahkan guard katalog/game/action/socket, metadata canonical landing, sitemap publik,
   dan `noindex` untuk room/hasil. Tampilkan empty state jika semua game mati.
-- [ ] Implementasikan create room oleh akun, kode unik, invitation link environment aktif,
+- [x] Implementasikan create room oleh akun, kode unik, invitation link environment aktif,
   lookup/join dengan akun/guest, validasi nickname, dan batas kapasitas atomik.
-- [ ] Bangun konfigurasi level/kategori/subkategori dan jumlah soal dari stok eligible nyata.
+- [x] Bangun konfigurasi level/kategori/subkategori dan jumlah soal dari stok eligible nyata.
   Parent checkbox mendukung seluruh/sebagian; jumlah tidak cukup ditolak ulang oleh server.
-- [ ] Implementasikan daftar peserta, presence, ready per `configRevision`, dan reset ready
+- [x] Implementasikan daftar peserta, presence, ready per `configRevision`, dan reset ready
   saat host mengubah konfigurasi. Freeze roster dan assignment secara atomik saat Start.
 - [ ] Uji guest refresh, kode tidak valid/penuh/expired, Start bersamaan, dan race join/Start.
 
@@ -141,14 +144,14 @@ flag off tidak meninggalkan link/CTA rusak.
 
 ## 6. Fase D - Runner, Reveal, dan Scoring
 
-- [ ] Sampling soal teks unik, sebaran subkategori, konteks lengkap, urutan bersama, dan snapshot
+- [x] Sampling soal teks unik, sebaran subkategori, konteks lengkap, urutan bersama, dan snapshot
   kunci privat. Soal yang bergantung pada audio tidak eligible.
-- [ ] Persist schedule lengkap: countdown, awal/deadline tiap soal, reveal, dan akhir match.
-- [ ] Runner satu soal, countdown dari waktu server, pending/ACK jawaban, dan jawaban pertama final.
-- [ ] Validasi roster/ronde/pilihan/deadline; jangan mengirim hasil benar/salah pada ACK.
-- [ ] Implementasikan scoring v1, reset streak pada salah/kosong, dan agregasi yang dapat
+- [x] Persist schedule lengkap: countdown, awal/deadline tiap soal, reveal, dan akhir match.
+- [x] Runner satu soal, countdown dari waktu server, pending/ACK jawaban, dan jawaban pertama final.
+- [x] Validasi roster/ronde/pilihan/deadline; jangan mengirim hasil benar/salah pada ACK.
+- [x] Implementasikan scoring v1, reset streak pada salah/kosong, dan agregasi yang dapat
   direkonstruksi serta tidak bertambah dua kali saat finalisasi retry.
-- [ ] Tampilkan reveal 8 detik, pembahasan singkat/fallback jujur, dan leaderboard ronde selesai.
+- [x] Tampilkan reveal 8 detik, pembahasan singkat/fallback jujur, dan leaderboard ronde selesai.
   Tetap tunggu deadline meski semua pemain sudah menjawab.
 - [ ] Audit props RSC, event, snapshot, error, cache, dan export: kunci/pembahasan/furigana/skor
   ronde aktif tidak bocor sebelum reveal. Jangan melonggarkan guard answer-key existing.
@@ -159,17 +162,18 @@ independen sampai cutoff, dan hasil sesuai ledger jawaban dengan informasi priva
 
 ## 7. Fase E - Recovery, Hasil, Rematch, dan Cleanup
 
-- [ ] Reconnect/resubscribe/snapshot dengan revision, backoff+jitter, dan pending answer retry.
-- [ ] Pulihkan fase dari schedule jika instance mati, event hilang, host keluar, atau semua offline.
+- [x] Reconnect/resubscribe/snapshot dengan revision, backoff+jitter, dan pending answer retry.
+- [x] Pulihkan fase dari schedule jika instance mati, event hilang, host keluar, atau semua offline.
   State logis tidak bergantung pada ketepatan callback timer.
-- [ ] Bedakan pemain roster yang kembali dan identitas baru yang menjadi spectator; spectator
+- [x] Bedakan pemain roster yang kembali dan identitas baru yang menjadi spectator; spectator
   mempunyai kuota sendiri dan tidak pernah dapat submit jawaban.
-- [ ] Bangun podium, tie bersama, statistik, review lengkap, serta URL hasil per match yang sah.
-- [ ] Rematch mempertahankan kode/link room dan membuat match/roster/ready baru. Spectator dapat
+- [x] Bangun hasil/ranking dengan tie bersama, statistik, review lengkap, dan URL hasil per match.
+  UI memakai tabel peringkat; belum ada podium grafis atau persentase akurasi.
+- [x] Rematch mempertahankan kode/link room dan membuat match/roster/ready baru. Spectator dapat
   memilih ikut pada lobby berikutnya; skor pertandingan lama tidak berubah.
-- [ ] Terapkan batas global room/koneksi, rate limit create/join/answer, TTL cache/lease, idle
+- [x] Terapkan batas global room/koneksi, rate limit create/join/answer, TTL cache/lease, idle
   close, retensi detail, dan cleanup PostgreSQL batch melalui cron existing bila diperlukan.
-- [ ] Lengkapi anonimisasi akun, export privat, cookie disclosure, dan copy retensi yang benar.
+- [x] Lengkapi anonimisasi akun, export privat, cookie disclosure, dan copy retensi yang benar.
 - [ ] Lengkapi error state: Redis/DB tidak tersedia, socket gagal, room penuh/closed, dan data expired.
   Pakai logger existing tanpa token, nickname, kode room, pilihan, kunci, atau PII.
 
@@ -178,13 +182,13 @@ dipakai rematch dan data sementara/personal mempunyai lifecycle yang terverifika
 
 ## 8. Fase F - Verifikasi dan Rilis
 
-- [ ] Jalankan `npm run verify` (lint, typecheck, test existing, build) dan validasi Prisma bila ada
+- [x] Jalankan `npm run verify` (lint, typecheck, test existing, build) dan validasi Prisma bila ada
   perubahan schema. Jangan menambah test framework baru untuk fase ini.
 - [ ] Jalankan seluruh UAT yang relevan: desktop, mobile, guest/akun, concurrency, cutoff,
   disconnect, leak audit, flag, cleanup, dan resource budget.
 - [ ] Verifikasi ulang pada deployment yang memakai adapter dan env final, termasuk reconnect
   melewati 5 menit. Uji proses VPS secara terpisah bila klaim bootstrap VPS sudah siap dibuat.
-- [ ] Perbarui modul, indeks, overview, ledger migration, dan catatan verifikasi sesuai kode aktual.
+- [x] Perbarui modul, indeks, overview, ledger migration, dan catatan verifikasi sesuai kode aktual.
   Catat setiap known issue dengan severity/owner dan keputusan rilis sesuai aturan project.
 - [ ] Aktifkan flag bertahap dengan limit hasil pengukuran dan verifikasi ulang menu/sitemap/robots.
 - [ ] Serahkan ringkasan perubahan, migration/seed/cache yang diperlukan, hasil gate, dan UAT user.
@@ -192,7 +196,19 @@ dipakai rematch dan data sementara/personal mempunyai lifecycle yang terverifika
 **Exit criteria:** semua gate wajib lulus dengan bukti; tidak ada blocker correctness/leakage atau
 kompatibilitas Hobby yang terbuka; kapasitas rilis sesuai profil penggunaan yang diukur.
 
-## 9. Aturan Pemeliharaan Rencana
+## 9. Handoff 17 Oktober 2026
+
+- Migration fondasi terkonfirmasi applied pada Supabase melalui status/metadata read-only. Tidak
+  menjalankan write remote; tidak ada migration, seed, backfill, atau cache reset baru.
+- Gate engineering lulus 638 tes /47 file. Foundation checker 8 kelompok dan room checker 10
+  kelompok lulus pada cluster disposable. Catalogue/landing desktop dan mobile lulus visual lokal.
+- Room/result/socket flag-off 404 dan home/sitemap tanpa link sudah diuji dengan production build.
+- Selesaikan UAT produk browser/Hobby, 20 pemain, cutoff, drain, 5/10/15/20 soal serta leak audit;
+  ukur memory-hours dan Redis terhadap baseline sebelum aktivasi. Jangan memakai probe A sebagai
+  pengganti bukti game final atau jaminan free tier.
+- Runbook runtime drain, limit sementara, known issues/owner, dan cara pengujian ada di laporan C-E.
+
+## 10. Aturan Pemeliharaan Rencana
 
 Centang hanya setelah implementasi dan verifikasi relevan selesai. UAT user tetap dibedakan dari
 check otomatis developer. Perubahan default ditulis pada modul sebelum kode diubah; status layanan

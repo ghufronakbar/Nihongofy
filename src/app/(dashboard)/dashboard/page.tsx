@@ -8,6 +8,7 @@ import {
   Languages,
   Sparkles,
   Trophy,
+  Gamepad2,
   type LucideIcon,
 } from "lucide-react";
 import { FEATURES, type FeatureName } from "@/constants";
@@ -39,6 +40,10 @@ export default async function DashboardPage() {
     color: string;
     badge: string;
   }[] = [
+    {
+      title: "Mini Games", subtitle: "Tantangan bersama teman", desc: "Buat room dan undang teman untuk bermain kuis bahasa Jepang.",
+      href: "/mini-games", feature: "miniGames", icon: Gamepad2, color: "bg-neo-yellow", badge: "BERMAIN",
+    },
     {
       title: "Kana Lab",
       subtitle: "Hiragana & Katakana",

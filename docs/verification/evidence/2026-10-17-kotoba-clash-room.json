@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "checks": [
+    "Concurrent create is idempotent; global one-room admission is atomic",
+    "Guest resume preserves one membership; normalized nickname collision and unrelated reads are rejected",
+    "Server sampling is unique and balanced, excludes audio, and rejects insufficient stock",
+    "Config resets all ready states; stale ready and a disconnected roster cannot Start; countdown hides content",
+    "Late arrivals spectate; concurrent spectator admission respects five slots; unfinished results remain private",
+    "Active projection hides keys, explanations, furigana, opponent choices and active-round points",
+    "Account export includes completed offline schedules, rebuilds own score and excludes active matches, keys and other players",
+    "Read recovers finalization; completed review is scoped; spectator can opt in; rematch preserves code and old result URL",
+    "Cleanup preserves active matches and unexpired results; expired guest identity is anonymized without deleting score ledgers",
+    "Real Redis Lua: authenticated takeover is immediate; old owner cannot renew or release replacement"
+  ],
+  "date": "2026-10-17",
+  "environment": "Disposable loopback PostgreSQL 17.11 and Redis; no production writes"
+}

@@ -208,6 +208,15 @@ export default async function HomePage() {
         </PageContainer>
       </section>
 
+      {FEATURES.miniGames && (
+        <section className="border-b-[3px] border-neo-ink bg-neo-yellow py-8">
+          <PageContainer className="flex flex-wrap items-center justify-between gap-5">
+            <div><h2 className="text-2xl font-black">BELAJAR BARENG, MAIN BARENG.</h2><p className="mt-2">Temukan tantangan bahasa Jepang untuk dimainkan bersama teman.</p></div>
+            <Link href="/mini-games" className="neo-button bg-white">Buka Mini Games<ArrowRight aria-hidden="true" /></Link>
+          </PageContainer>
+        </section>
+      )}
+
       {FEATURES.testPackage && (
         <section id="cara-belajar" className="border-b-[3px] border-neo-ink bg-white py-18 md:py-24">
           <PageContainer className="grid items-start gap-12 lg:grid-cols-[0.85fr_1.15fr]">

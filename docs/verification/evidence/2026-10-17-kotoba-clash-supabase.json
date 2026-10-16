@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-17",
+  "status": "PASS",
+  "environment": "Configured Supabase database",
+  "migrationStatus": "42 migrations found; database schema is up to date",
+  "foundationMigration": "20261016174702_kotoba_clash_foundation",
+  "foundationApplied": true,
+  "verification": "Read-only metadata queries; no remote inserts or constraint fault injection",
+  "tables": [
+    "KotobaClashAnswer",
+    "KotobaClashMatch",
+    "KotobaClashMatchPlayer",
+    "KotobaClashRoom",
+    "KotobaClashRoomMember",
+    "KotobaClashRound"
+  ],
+  "allSixTablesRlsEnabled": true,
+  "allSixTablesDenyDataApiDmlFor": ["anon", "authenticated", "service_role"],
+  "validatedConstraintCount": 22,
+  "activeMatchIndex": {
+    "name": "KotobaClashMatch_one_running_per_room_key",
+    "unique": true,
+    "valid": true,
+    "predicate": "status = RUNNING"
+  },
+  "remoteDataWrites": 0
+}

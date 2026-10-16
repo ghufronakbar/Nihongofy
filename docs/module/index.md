@@ -7,8 +7,8 @@ Folder ini mendokumentasikan kondisi aplikasi berdasarkan kode, fixture, dan dat
 | Modul | Status aktual | Catatan singkat |
 |---|---|---|
 | [Public shell dan home](public-shell.md) | Selesai | Landing page, header/footer, dan CTA aktif; menu, kartu, dan section mengikuti feature flag modul. |
-| [Mini Games](mini-games.md) | Direncanakan; flags default mati | Katalog publik `/mini-games` sebagai wadah game yang dapat ditambah kemudian. Route, registry dan menu belum diimplementasikan. |
-| [Kotoba Clash](kotoba-clash.md) | Fondasi fase B | Engine, transaksi, identitas, schema/migration lokal, export dan anonimisasi tersedia. Game publik belum tersedia; budget tetap gate aktivasi. [Plan](../plan/mini-games-kotoba-clash.md), [UAT](../verification/mini-games-kotoba-clash-uat.md), dan [bukti B](../verification/kotoba-clash-phase-b.md). |
+| [Mini Games](mini-games.md) | Kode tersedia; default-off | Katalog `/mini-games`, registry, landing, menu, metadata dan flag terintegrasi; visual desktop/mobile lulus lokal. Aktivasi menunggu gate game. |
+| [Kotoba Clash](kotoba-clash.md) | Implementasi C-E; belum aktif | Room/invite/guest, konfigurasi, ready, runner WebSocket, reveal, ranking, spectator, hasil/rematch dan cleanup tersedia. Lokal lulus; budget dan UAT produk Hobby masih terbuka. [Plan](../plan/mini-games-kotoba-clash.md), [UAT](../verification/mini-games-kotoba-clash-uat.md), [bukti C-E](../verification/kotoba-clash-phase-c-e.md). |
 | [Authentication](auth.md) | Selesai | Login, register, verifikasi email, reset password, Redis session registry, revoke perangkat, rate limit, dan Turnstile aktif. |
 | [Dashboard](dashboard.md) | Selesai sederhana | Menampilkan attempt selesai dan attempt terakhir; kartu modul lain masih berupa shortcut statis. |
 | [Kana](kana.md) | Selesai dengan scope terbatas | Fixture kana terkurasi dan progress akun aktif; audio memakai Web Speech API, bukan rekaman. |
@@ -35,12 +35,14 @@ Folder ini mendokumentasikan kondisi aplikasi berdasarkan kode, fixture, dan dat
 ## Feature Flag
 
 Setiap modul dapat dimatikan lewat env `FEATURES_<NAMA>` bernilai `"true"`/`"false"`. Kosong atau
-tidak diisi berarti `true`. Nilai dibaca sekali saat server start melalui objek `FEATURES` di
+tidak diisi berarti `true`, kecuali Mini Games/Kotoba Clash yang default `false`. Nilai dibaca sekali saat server start melalui objek `FEATURES` di
 `src/constants/index.ts`; ubah env lalu restart atau redeploy. `robots.txt` dan `sitemap.xml`
 di-prerender saat build, jadi keduanya baru berubah setelah redeploy.
 
 | Key | Modul | Route yang menjadi 404 |
 |---|---|---|
+| `FEATURES_MINI_GAMES` | [Mini Games](mini-games.md) | `/mini-games/*`; default false, menu/CTA/sitemap hilang |
+| `FEATURES_KOTOBA_CLASH` | [Kotoba Clash](kotoba-clash.md) | `/mini-games/kotoba-clash/*` dan endpoint socket; action ditolak, ikut mati bila hub mati |
 | `FEATURES_KANA` | [Kana](kana.md#feature-flag) | `/kana/*` |
 | `FEATURES_FLASHCARD` | [Flashcard](flashcard.md#feature-flag) | `/flashcard/*`; laporan kartu baru ditolak, laporan lama tetap di `/admin/report` |
 | `FEATURES_BUNPOU` | [Bunpou](bunpou.md#feature-flag) | `/bunpou/*` |
@@ -74,7 +76,7 @@ Aturan umum:
   sendiri, dan mematikannya tidak ikut mematikan antrean admin-nya — lihat
   [Report](report.md#feature-flag).
 - Data milik modul yang mati tidak dihapus.
-- Hanya conversation, question comment, dan report yang memeriksa flag di sisi server action/API;
+- Conversation, question comment, report, dan Kotoba Clash memeriksa flag di sisi server action/API;
   action laporan juga memeriksa `FEATURES_FLASHCARD` untuk laporan kartu. Server Action modul lain
   belum dijaga, sehingga tab lama yang masih terbuka tetap dapat memanggilnya.
 - Auth, dashboard, profile, dan shared utilities tidak punya flag. Admin juga tidak: aksesnya

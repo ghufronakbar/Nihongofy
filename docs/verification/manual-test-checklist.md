@@ -18,6 +18,10 @@ hanya karena halaman berhasil dirender.
 
 Status per skenario: `PASS`, `FAIL`, `BLOCKED`, atau `NOT RUN`.
 
+Mini Games/Kotoba Clash memakai [checklist khusus](mini-games-kotoba-clash-uat.md) untuk lobby,
+privasi ronde, deadline/skor, reconnect, spectator, rematch dan budget. Hasil developer lokal
+dipisahkan dari UAT produk Hobby dan acceptance user pada [laporan C-E](kotoba-clash-phase-c-e.md).
+
 ## Pemeriksaan Umum
 
 - [ ] Loading, empty, error, retry, guest, dan authenticated state yang relevan memiliki hasil jelas.

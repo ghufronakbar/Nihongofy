@@ -48,6 +48,8 @@ export async function proxy(request: NextRequest) {
     pathname === "/api/ping" ||
     // Probe operator memiliki guard secret/Origin/expiry sendiri, bukan session user.
     pathname === "/api/internal/kotoba-clash-probe" ||
+    // Guest game auth, Origin, membership and capacity are verified by this exact handler.
+    pathname === "/api/mini-games/kotoba-clash/ws" ||
     pathname.startsWith("/api/cron/") ||
     pathname.startsWith("/api/auth/google/")
   ) {

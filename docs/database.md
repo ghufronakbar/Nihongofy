@@ -372,7 +372,8 @@ Saat import data soal, tangani pelanggaran constraint sebagai sinyal error ekstr
 ## Kotoba Clash
 
 - Enam model `KotobaClash*` menyimpan room, membership akun/guest, match, roster, ronde, dan
-  jawaban. Migration fondasi B required, baru diuji lokal, belum diterapkan pada Supabase.
+  jawaban. Migration fondasi B diuji lokal dan terkonfirmasi applied pada Supabase melalui
+  status/metadata read-only 17 Oktober 2026. Integrasi C-E tidak mengubah schema.
 - Jadwal battle tersimpan sebagai UTC `timestamptz(3)` sejak Start, terpisah dari timer ujian
   manual di atas. Snapshot soal/kunci privat memakai JSONB tervalidasi Zod; bukan FK ke bank soal
   yang dapat berubah saat admin menyunting konten.
@@ -388,5 +389,8 @@ Saat import data soal, tangani pelanggaran constraint sebagai sinyal error ekstr
 - `anonymizeAccount` memutus host/user linkage dan menghapus nicknameKey/hash; roster/ledger
   numerik anonim bertahan agar hasil lawan tetap utuh. Tidak ada snapshot nickname/avatar lain.
 - Export akun memilih hanya membership/hasil/jawaban diri sendiri yang selesai, belum expired,
-  tanpa private snapshot, kunci, atau data lawan. Cleanup tujuh hari belum dihubungkan ke cron.
-- Rujukan kontrak dan bukti: [modul](module/kotoba-clash.md), [laporan B](verification/kotoba-clash-phase-b.md).
+  tanpa private snapshot, kunci, atau data lawan pada payload. Skor dihitung dari ledger sendiri
+  untuk schedule yang telah selesai, termasuk saat status belum difinalisasi karena semua offline.
+  Cron auth harian membersihkan match/room expired dan menganonimkan guest expired secara batch;
+  runtime tetap menolak akses expired sebelum cron berjalan.
+- Rujukan kontrak dan bukti: [modul](module/kotoba-clash.md), [laporan C-E](verification/kotoba-clash-phase-c-e.md).

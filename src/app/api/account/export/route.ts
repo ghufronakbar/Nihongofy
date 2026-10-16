@@ -1,6 +1,7 @@
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { withoutUnsubmittedGrades } from "@/features/profile/lib/account-export";
+import { getClashAccountExport } from "@/features/kotoba-clash/server/account-export";
 
 export const runtime = "nodejs";
 
@@ -44,20 +45,6 @@ export async function GET() {
           providerEmail: true,
           createdAt: true,
           updatedAt: true,
-        },
-      },
-      kotobaClashMembers: {
-        select: {
-          nickname: true,
-          joinedAt: true,
-          players: {
-            where: { match: { status: "FINISHED", endsAt: { lte: new Date() }, expiresAt: { gt: new Date() } } },
-            select: {
-              matchId: true, score: true, correctCount: true, wrongCount: true,
-              skippedCount: true, bestStreak: true, correctTimeMs: true,
-              answers: { select: { roundId: true, choice: true, acceptedAt: true } },
-            },
-          },
         },
       },
       kanaProgresses: {
@@ -309,7 +296,11 @@ export async function GET() {
       schemaVersion: 1,
       exportedAt: exportedAt.toISOString(),
       // Nilai per soal attempt yang belum selesai adalah turunan kunci jawaban.
-      account: { ...account, attempts: withoutUnsubmittedGrades(account.attempts) },
+      account: {
+        ...account,
+        kotobaClashMembers: await getClashAccountExport(prisma, session.userId, exportedAt),
+        attempts: withoutUnsubmittedGrades(account.attempts),
+      },
     },
     null,
     2,

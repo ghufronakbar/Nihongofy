@@ -20,6 +20,8 @@ const STATIC_ENTRIES: StaticEntry[] = [
   { path: "/gentsuki", changeFrequency: "monthly", priority: 0.75 },
   { path: "/test-package", changeFrequency: "weekly", priority: 0.9, feature: "testPackage" },
   { path: "/exercises", changeFrequency: "weekly", priority: 0.85, feature: "practice" },
+  { path: "/mini-games", changeFrequency: "weekly", priority: 0.7, feature: "miniGames" },
+  { path: "/mini-games/kotoba-clash", changeFrequency: "weekly", priority: 0.7, feature: "kotobaClash" },
   { path: "/kana/hiragana", changeFrequency: "monthly", priority: 0.8, feature: "kana" },
   { path: "/kana/katakana", changeFrequency: "monthly", priority: 0.8, feature: "kana" },
   { path: "/flashcard", changeFrequency: "weekly", priority: 0.8, feature: "flashcard" },

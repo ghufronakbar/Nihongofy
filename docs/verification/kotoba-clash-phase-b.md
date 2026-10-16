@@ -9,6 +9,10 @@ pengukuran budget menjadi blocker aktivasi publik, bukan blocker penulisan fonda
 Rujukan: [plan](../plan/mini-games-kotoba-clash.md), [modul](../module/kotoba-clash.md),
 [UAT](mini-games-kotoba-clash-uat.md), dan [fase A](kotoba-clash-phase-a.md).
 
+Pembaruan setelah laporan ini: user menyatakan migration sudah diterapkan. Lobby, endpoint produk,
+runner dan lifecycle kini tersedia; lihat [integrasi C-E](kotoba-clash-phase-c-e.md). Pernyataan
+"belum" di bagian berikut adalah status saat pengujian fondasi B, dipertahankan sebagai histori.
+
 ## Yang Sudah Dibuat
 
 - Engine murni untuk schedule, fase, deadline, scoring `v1`, rekonstruksi ledger, dan shared rank.

@@ -12,9 +12,10 @@ setelah implementasi selesai dan perilakunya sudah diverifikasi user.
 - [Mini Games dan Kotoba Clash](mini-games-kotoba-clash.md), dirancang 16 Oktober 2026:
   katalog publik untuk beberapa game, dengan battle kuis JLPT teks sebagai game pertama.
   Transport WebSocket sudah diuji pada Hobby. Atas instruksi user 17 Oktober, fondasi B dilanjutkan
-  dengan pengukuran budget tetap sebagai gate aktivasi. Engine, transaksi, credential guest dan
-  migration diuji lokal; belum diterapkan pada Supabase. Game publik belum tersedia. Bukti ada di
-  [laporan A](../verification/kotoba-clash-phase-a.md) dan [fondasi B](../verification/kotoba-clash-phase-b.md).
+  dengan pengukuran budget tetap sebagai gate aktivasi. Implementasi C-E mencakup katalog, lobby,
+  runner, hasil/rematch, recovery dan cleanup; verifikasi lokal lulus, UAT produk Hobby belum.
+  Migration fondasi terkonfirmasi applied lewat pemeriksaan Supabase read-only 17 Oktober. Bukti ada di
+  [integrasi C-E](../verification/kotoba-clash-phase-c-e.md) dan [laporan A](../verification/kotoba-clash-phase-a.md).
 
 ## Rekomendasi Utama
 

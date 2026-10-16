@@ -15,8 +15,8 @@ import type { LegalDocument } from "../types";
 // Setiap klaim di dokumen ini harus dapat ditunjuk dasar kodenya. Saat alur data
 // berubah (cookie baru, pemroses baru, retensi baru), perbarui bagian yang
 // relevan, naikkan VERSION, dan ganti LAST_UPDATED. Riwayatnya cukup lewat git.
-export const VERSION = "1.4";
-export const LAST_UPDATED = "2026-10-10";
+export const VERSION = "1.5";
+export const LAST_UPDATED = "2026-10-17";
 export const EFFECTIVE_DATE = "2026-10-10";
 
 const operator = <LegalValue value={LEGAL_FACTS.operatorName} />;
@@ -579,8 +579,21 @@ export const PRIVACY_POLICY: LegalDocument = {
                 "Level, seksi, jenis soal, dan daftar soal latihan cepat tamu.",
                 "Sampai browser ditutup",
               ],
+              [
+                <Code key="n">__Host-kotoba_guest</Code>,
+                "Token acak untuk mengenali guest Mini Games dan memulihkan membership room. Token asli hanya ada di cookie; server menyimpan hash.",
+                "7 hari sejak dibuat; tidak diperpanjang saat digunakan",
+              ],
             ]}
           />
+          <LegalP>
+            Jika Mini Games Kotoba Clash aktif, nickname terlihat oleh peserta dalam room yang sama.
+            Server menyimpan membership, waktu penerimaan jawaban, pilihan, dan hasil untuk menjalankan
+            pertandingan dan memulihkan koneksi. Detail pertandingan kedaluwarsa 7 hari setelah jadwal
+            pertandingan selesai dan dihapus bertahap oleh cleanup harian. Lobby tanpa pertandingan
+            kedaluwarsa setelah 30 menit tanpa aktivitas. Menghapus akun menganonimkan identitas pada
+            hasil bersama sambil mempertahankan angka permainan peserta lain.
+          </LegalP>
           <LegalP>
             Selain cookie, lembar jawaban ujian yang sedang dikerjakan disimpan di{" "}
             <Code>sessionStorage</Code> tab browser supaya tidak hilang saat halaman dimuat ulang.

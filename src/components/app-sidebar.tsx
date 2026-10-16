@@ -15,6 +15,7 @@ import {
   TrendingUp,
   UserRound,
   Users,
+  Gamepad2,
   type LucideIcon,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -45,6 +46,7 @@ const NAV_ITEMS: {
   { title: "Progress", href: "/progress", icon: TrendingUp, feature: "progress" },
   { title: "Analytics", href: "/analytics", icon: ChartNoAxesCombined, feature: "analytics" },
   { title: "Flashcard", href: "/flashcard", icon: Brain, feature: "flashcard" },
+  { title: "Mini Games", href: "/mini-games", icon: Gamepad2, feature: "miniGames" },
   { title: "Komunitas", href: "/community", icon: Users, feature: "community" },
   { title: "Percakapan", href: "/conversation", icon: MessageSquareText, feature: "conversation" },
   { title: "Bicara", href: "/speaking", icon: Mic2, feature: "speaking" },

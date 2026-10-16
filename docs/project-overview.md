@@ -5,15 +5,17 @@ Stack: Next.js (App Router) + Prisma + PostgreSQL (Supabase).
 
 Rules terkait: `database.md` (schema, markup teks, aturan query).
 
-## Rencana Mini Games
+## Mini Games
 
-**Fondasi fase B, 17 Oktober 2026; fitur publik belum diimplementasikan.** Halaman publik
-`/mini-games` akan menjadi katalog untuk beberapa game. Game pertama **Kotoba Clash** berada di
+**Kode tersedia, belum aktif publik (17 Oktober 2026).** Halaman publik
+`/mini-games` menjadi katalog untuk beberapa game. Game pertama **Kotoba Clash** berada di
 `/mini-games/kotoba-clash`: battle kuis JLPT teks untuk 2-20 pemain, host login, peserta boleh guest,
 invitation link, dan WebSocket sendiri dengan target Vercel/Upstash/Supabase free tier.
 Choukai ditunda. Transport Hobby sudah terbukti; user meminta pengembangan dilanjutkan dengan
-budget sebagai gate aktivasi publik. Engine, transaksi, identitas, flags dan migration baru
-diverifikasi lokal; migration belum diterapkan pada Supabase. Rujukan: [hub](module/mini-games.md), [game](module/kotoba-clash.md),
+budget sebagai gate aktivasi publik. Lobby, runner, spectator, hasil, rematch dan cleanup sudah
+dibuat; pemeriksaan repository/socket dan visual landing lulus lokal. Kedua flag default mati.
+Migration fondasi terkonfirmasi applied melalui pemeriksaan Supabase read-only; UAT produk
+Hobby belum dijalankan. Bukti terbaru: [integrasi C-E](verification/kotoba-clash-phase-c-e.md). Rujukan: [hub](module/mini-games.md), [game](module/kotoba-clash.md),
 [plan](plan/mini-games-kotoba-clash.md), [UAT](verification/mini-games-kotoba-clash-uat.md), dan
 [laporan fase A](verification/kotoba-clash-phase-a.md), dan [fondasi B](verification/kotoba-clash-phase-b.md).
 
@@ -38,6 +40,10 @@ diverifikasi lokal; migration belum diterapkan pada Supabase. Rujukan: [hub](mod
 | `/u/[username]/followers`, `/u/[username]/following` | Daftar follower dan akun yang diikuti, mengikuti aturan akses isi profil; tidak diindeks. |
 | `/u/[username]/posts` | Semua postingan satu akun, mengikuti aturan akses isi profil; tidak diindeks. |
 | `/community` | Feed global postingan dari akun public; dapat dibaca guest dan diindeks. |
+| `/mini-games` | Katalog game publik; mengikuti flag hub. |
+| `/mini-games/kotoba-clash` | Aturan, Buat Room untuk akun, dan form kode untuk akun/guest. |
+| `/mini-games/kotoba-clash/room/[code]` | Join, lobby, runner, spectator dan rematch; membership terverifikasi, noindex. |
+| `/mini-games/kotoba-clash/room/[code]/results/[matchId]` | Hasil/review match selesai dalam retensi; membership terverifikasi, noindex. |
 | `/community/following` | Postingan sendiri dan akun yang diikuti, termasuk akun private yang menyetujui; tidak diindeks. |
 | `/post/[id]` | Permalink postingan beserta like dan thread komentar. Postingan akun private hanya untuk pemilik dan follower yang disetujui. |
 
