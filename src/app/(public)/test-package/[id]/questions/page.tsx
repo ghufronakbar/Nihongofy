@@ -259,9 +259,6 @@ export default async function TestPackageQuestionsPage({
                               className="max-w-full rounded-md border-2 border-neo-ink shadow-neo-sm"
                             />
                           )}
-                          {question.questionAudio && (
-                            <audio controls src={question.questionAudio} className="w-full" />
-                          )}
                         </div>
                       </div>
                       <div className="flex shrink-0 items-center gap-1">
@@ -287,6 +284,16 @@ export default async function TestPackageQuestionsPage({
                         )}
                       </div>
                     </div>
+
+                    {question.questionAudio && (
+                      <audio
+                        controls
+                        preload="none"
+                        src={question.questionAudio}
+                        aria-label={`Audio soal ${question.order}`}
+                        className="w-full"
+                      />
+                    )}
 
                     {question.audioTranscript && (
                       <QuestionAudioTranscript text={question.audioTranscript.text} />

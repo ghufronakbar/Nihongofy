@@ -24,6 +24,8 @@ Tidak punya flag sendiri; ikut `FEATURES_TEST_PACKAGE` (lihat [Paket tes](test-p
 
 - Menampilkan jawaban user, kunci, explanation, stimulus, media, flag, serta transkrip CHOUKAI
   yang dapat ditampilkan/disembunyikan per soal.
+- Audio per soal tampil selebar area soal di atas tombol transkrip, termasuk pada soal CHOUKAI
+  tanpa teks atau gambar. Audio context tetap tersedia jika audio per soal belum ada.
 - Furigana dapat ditampilkan/disembunyikan.
 - Navigasi per mondai tersedia pada desktop dan mobile.
 - User dapat copy soal ke clipboard serta mengelola catatan pribadi.

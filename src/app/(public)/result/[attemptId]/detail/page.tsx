@@ -315,9 +315,6 @@ export default async function ResultDetailPage({
                                 className="max-w-full rounded-md border-2 border-neo-ink shadow-neo-sm"
                               />
                             )}
-                            {question.questionAudio && (
-                              <audio controls src={question.questionAudio} className="w-full" />
-                            )}
                           </div>
                         </div>
 
@@ -368,6 +365,16 @@ export default async function ResultDetailPage({
                           )}
                         </div>
                       </div>
+
+                      {question.questionAudio && (
+                        <audio
+                          controls
+                          preload="none"
+                          src={question.questionAudio}
+                          aria-label={`Audio soal ${question.order}`}
+                          className="w-full"
+                        />
+                      )}
 
                       {question.audioTranscript && (
                         <QuestionAudioTranscript text={question.audioTranscript.text} />
