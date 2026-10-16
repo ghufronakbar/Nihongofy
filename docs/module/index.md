@@ -8,7 +8,7 @@ Folder ini mendokumentasikan kondisi aplikasi berdasarkan kode, fixture, dan dat
 |---|---|---|
 | [Public shell dan home](public-shell.md) | Selesai | Landing page, header/footer, dan CTA aktif; menu, kartu, dan section mengikuti feature flag modul. |
 | [Mini Games](mini-games.md) | Direncanakan, dokumentasi saja | Katalog publik `/mini-games` sebagai wadah game yang dapat ditambah kemudian. Route, registry, menu, dan flag belum diimplementasikan. |
-| [Kotoba Clash](kotoba-clash.md) | Direncanakan, dokumentasi saja | Battle kuis JLPT teks 2-20 pemain dengan host akun, peserta guest, WebSocket sendiri, dan target free tier. Choukai ditunda; validasi Vercel Hobby menjadi gate pertama. [Plan](../plan/mini-games-kotoba-clash.md) dan [UAT](../verification/mini-games-kotoba-clash-uat.md) tersedia. |
+| [Kotoba Clash](kotoba-clash.md) | Fase A: probe infrastruktur | Game publik belum tersedia. Probe operator default mati; validasi Vercel Hobby dan budget menjadi gate pertama. [Plan](../plan/mini-games-kotoba-clash.md), [UAT](../verification/mini-games-kotoba-clash-uat.md), dan [bukti](../verification/kotoba-clash-phase-a.md). |
 | [Authentication](auth.md) | Selesai | Login, register, verifikasi email, reset password, Redis session registry, revoke perangkat, rate limit, dan Turnstile aktif. |
 | [Dashboard](dashboard.md) | Selesai sederhana | Menampilkan attempt selesai dan attempt terakhir; kartu modul lain masih berupa shortcut statis. |
 | [Kana](kana.md) | Selesai dengan scope terbatas | Fixture kana terkurasi dan progress akun aktif; audio memakai Web Speech API, bukan rekaman. |

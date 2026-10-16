@@ -1,0 +1,12 @@
+# Offline authoring assets are not needed by the application build/runtime.
+/data
+*.apkg
+/reference_ui_web
+/.agents
+/.claude
+/.codex
+/.vercel
+/.next
+/node_modules
+.env*
+*.tsbuildinfo

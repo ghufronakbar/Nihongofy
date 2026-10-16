@@ -4,9 +4,10 @@ Tanggal rancangan: **16 Oktober 2026 (Asia/Jakarta)**.
 
 ## Status Aktual
 
-**Rancangan disetujui untuk didokumentasikan; implementasi belum dimulai.** WebSocket belum
-diuji pada deployment project ini. Tidak ada route, feature flag, tabel, dependency, atau
-layanan baru yang dipasang melalui perubahan dokumentasi ini.
+**Bukti transport fase A lulus; game publik belum diimplementasikan.** Probe default mati telah
+diuji pada Vercel Hobby dengan 20 peserta selama 16 menit, lintas instance, dan 60 reconnect.
+Gate A belum ditutup karena budget provider/baseline belum terukur. Bukti dan runbook ada di
+[laporan fase A](../verification/kotoba-clash-phase-a.md). Tidak ada tabel/data PostgreSQL baru.
 
 Dokumen ini adalah sumber aturan produk dan kontrak teknis. Checklist pengerjaan ada di
 [plan](../plan/mini-games-kotoba-clash.md), hasil penerimaan dicatat pada
@@ -403,5 +404,5 @@ Copy UI harus menyatakan batas penyimpanan yang benar; v1 tidak menjanjikan riwa
 - Gate engineering, migration bila ada, desktop/mobile, dan UAT lulus dengan bukti yang dicatat.
 - Batas kuota, retensi, flag, cleanup, dan langkah migrasi VPS didokumentasikan sesuai kode aktual.
 
-Status migration untuk perubahan dokumentasi ini: **not required**. Migration baru hanya dibuat
+Status migration fase A: **not required**. Migration baru hanya dibuat
 pada fase B sesuai workflow repository, ditinjau, lalu diterapkan sebelum kode pembacanya dirilis.

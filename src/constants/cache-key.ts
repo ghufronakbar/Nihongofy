@@ -21,6 +21,10 @@ export const CACHE_TAGS = {
 } as const;
 
 export const CACHE_KEYS = {
+  kotobaProbe: (runId: string, part: "state" | "leases" | "handshakes") => [
+    "kotoba-probe-v1", runId, part,
+  ],
+  kotobaProbeChannel: (runId: string) => ["kotoba-probe-v1", runId, "events"],
   testPackageList: ["test-package-list"] as string[],
   testPackageDetail: (testPackageId: number) => ["test-package-detail", String(testPackageId)],
   testPackageQuestions: (testPackageId: number) => [

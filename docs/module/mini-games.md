@@ -6,7 +6,8 @@ Tanggal rancangan: **16 Oktober 2026 (Asia/Jakarta)**.
 
 **Direncanakan, belum diimplementasikan.** Dokumen ini menetapkan katalog publik untuk beberapa
 mini game. Route, menu, feature flag, dan registry di bawah adalah rencana, bukan fitur yang sudah
-tersedia. Perubahan saat dokumentasi ini dibuat tidak mengubah kode, database, atau deployment.
+tersedia. Probe operator Kotoba Clash dikerjakan terpisah pada fase A; lihat
+[laporan verifikasi](../verification/kotoba-clash-phase-a.md). Database belum berubah.
 
 Rujukan:
 

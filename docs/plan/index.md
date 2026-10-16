@@ -12,7 +12,8 @@ setelah implementasi selesai dan perilakunya sudah diverifikasi user.
 - [Mini Games dan Kotoba Clash](mini-games-kotoba-clash.md), dirancang 16 Oktober 2026:
   katalog publik untuk beberapa game, dengan battle kuis JLPT teks sebagai game pertama.
   WebSocket sendiri pada Vercel Hobby harus melewati spike deployment dan pengukuran free tier
-  sebelum implementasi lengkap. Status saat ini dokumentasi saja; belum ada kode atau migration.
+  sebelum implementasi lengkap. Probe operator fase A sudah dibuat; game publik dan migration
+  belum dimulai. Bukti ada di [laporan fase A](../verification/kotoba-clash-phase-a.md).
 
 ## Rekomendasi Utama
 

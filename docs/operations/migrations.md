@@ -33,6 +33,21 @@ contract wajib memiliki migration dan catatan ringkas di dokumen/PR perubahan. J
 
 ## Ledger
 
+### 16 Oktober 2026 - Probe infrastruktur Kotoba Clash (fase A)
+
+- Status: not required
+- Migration: tidak ada
+- Alasan: probe operator WebSocket terisolasi, belum membuat domain/persistence game.
+- Object terdampak: tidak ada object PostgreSQL/Supabase; fixture Redis pada namespace probe saja.
+- Data existing: tidak ada backfill/seed; state, lease, dan rate bucket uji dibersihkan secara
+  terarah, dengan TTL sebagai cadangan. Session/auth tidak dimutasi.
+- Risiko operasi: traffic preview berbagi kuota provider; endpoint default off dan ditolak pada
+  production. Tidak ada urutan migration/deploy database.
+- Validasi: `npm run verify` dan pengujian terpisah pada Vercel Hobby; rincian hasil dan blocker di
+  [laporan fase A](../verification/kotoba-clash-phase-a.md).
+- Refresh setelah deploy: preview memakai dependency/env baru; tidak ada invalidasi cache aplikasi.
+- Owner: Engineering Owner.
+
 ### 3 Oktober 2026 - Postingan komunitas
 
 - Status: deployed (3 Oktober 2026, `migrate deploy`; diverifikasi di transaksi yang di-rollback:

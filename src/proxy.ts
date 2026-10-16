@@ -46,6 +46,8 @@ export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   if (
     pathname === "/api/ping" ||
+    // Probe operator memiliki guard secret/Origin/expiry sendiri, bukan session user.
+    pathname === "/api/internal/kotoba-clash-probe" ||
     pathname.startsWith("/api/cron/") ||
     pathname.startsWith("/api/auth/google/")
   ) {

@@ -1,13 +1,14 @@
 # Rencana Implementasi Mini Games dan Kotoba Clash
 
 Tanggal: **16 Oktober 2026 (Asia/Jakarta)**.
-Status: **Dokumentasi rancangan; implementasi belum dimulai.**
+Status: **Bukti transport fase A lulus; gate budget belum lulus, game publik belum dimulai.**
 
 ## 1. Sumber Kebenaran dan Ruang Lingkup
 
 - [Modul Mini Games](../module/mini-games.md): katalog publik, navigasi, registry, dan flag.
 - [Modul Kotoba Clash](../module/kotoba-clash.md): aturan game, persistence, waktu, dan protokol.
 - [Checklist UAT](../verification/mini-games-kotoba-clash-uat.md): expected result dan bukti.
+- [Laporan fase A](../verification/kotoba-clash-phase-a.md): versi, runbook, bukti, dan batas pengukuran.
 - [Engineering baseline](../operations/engineering-baseline.md),
   [migration](../operations/migrations.md), dan [release](../operations/release-and-incidents.md).
 
@@ -15,15 +16,15 @@ Urutan ini melanjutkan persetujuan user atas WebSocket sendiri, target seluruh i
 free tier, kapasitas 2-20 pemain, serta penundaan choukai. Nama tampilan game pertama ditetapkan
 untuk rancangan sebagai **Kotoba Clash**, slug `kotoba-clash`, di bawah `/mini-games`.
 
-Perubahan saat ini hanya Markdown. Tidak ada implementasi, dependency, schema/data, flag aktif,
-atau deployment baru. Status migration saat ini **not required**. Seluruh checkbox implementasi
-di bawah tetap kosong sampai pekerjaan dan verifikasinya selesai.
+Probe fase A menambahkan dependency/endpoint operator yang default mati dan deployment preview
+terisolasi. Game publik, schema PostgreSQL, dan data pemain belum dibuat. Status migration
+**not required**. Checkbox hanya dicentang untuk keluaran yang sudah diverifikasi.
 
 ## 2. Urutan dan Gate
 
 | Fase | Keluaran utama | Dependensi | Status awal |
 |---|---|---|---|
-| A | Bukti WebSocket pada Vercel Hobby dan profil penggunaan | Deployment pengujian yang terisolasi | Belum dimulai |
+| A | Bukti WebSocket pada Vercel Hobby dan profil penggunaan | Deployment pengujian yang terisolasi | Transport PASS; BLOCKED pengukuran budget |
 | B | Kontrak beku, domain, persistence, auth, dan migration | Gate A lulus | Belum dimulai |
 | C | Katalog Mini Games, landing, room, invite, lobby | Fondasi B | Belum dimulai |
 | D | Pertandingan teks end-to-end | Lobby C dan aturan B | Belum dimulai |
@@ -38,21 +39,28 @@ spectator produksi ditetapkan setelah pengukuran, bukan disimpulkan dari kapasit
 
 Tujuan: membuktikan endpoint sesuai Next.js terpasang dan batas Vercel Hobby pada project ini.
 
-- [ ] Baca ulang panduan Route Handler di `node_modules/next/dist/docs/` serta API upgrade Vercel
+- [x] Baca ulang panduan Route Handler di `node_modules/next/dist/docs/` serta API upgrade Vercel
   yang berlaku. Catat versi Node/Next/SDK dan aktifnya Fluid Compute.
-- [ ] Implementasikan probe minimal terisolasi: autentikasi/Origin, subscribe room uji,
+- [x] Implementasikan probe minimal terisolasi: autentikasi/Origin, subscribe room uji,
   snapshot sederhana, ACK, reconnect, dan Redis Pub/Sub. Jangan membuka probe tanpa guard.
-- [ ] Isolasi namespace data dan traffic probe dari session/auth dan room production.
-- [ ] Uji 20 koneksi selama 15-20 menit pada Vercel Hobby. Lewati cutoff 300 detik berulang kali
+- [x] Isolasi namespace data dan traffic probe dari session/auth dan room production.
+- [x] Uji 20 koneksi selama 15-20 menit pada Vercel Hobby. Lewati cutoff 300 detik berulang kali
   dan pastikan membership/state uji dipulihkan tanpa membuat pemain baru.
-- [ ] Buktikan event menyeberang dua instance/proses berbeda. Satu instance dengan 20 tab tidak
+- [x] Buktikan event menyeberang dua instance/proses berbeda. Satu instance dengan 20 tab tidak
   cukup membuktikan Pub/Sub antar-instance. Catat metode dan identitas instance nonpersonal.
-- [ ] Uji publish gagal, pesan duplikat/hilang, penghentian instance, dan reconnect bersamaan.
+- [x] Uji publish gagal, pesan duplikat/hilang, penghentian instance, dan reconnect bersamaan.
+  Fault publish/event adalah injeksi; process loss nyata memakai SIGKILL bootstrap Node lokal.
+  Vercel diuji melalui cutoff alami. Batas admission setelah crash dicatat pada laporan fase A.
 - [ ] Catat CPU, memory-hours, transfer, invocation, command Redis, latency ACK, reconnect,
   serta penggunaan baseline website. Data yang tidak dapat diamati ditulis sebagai belum terukur.
 - [ ] Tetapkan rekomendasi batas room aktif global, total koneksi, spectator, idle timeout,
   dan rate limit berdasarkan hasil. Buat estimasi penggunaan harian/bulanan dengan asumsi jelas.
-- [ ] Isi bagian bukti fase A pada UAT. Hapus/nonaktifkan endpoint dan data probe setelah selesai.
+- [x] Isi bagian bukti fase A pada UAT. Hapus/nonaktifkan endpoint dan data probe setelah selesai.
+
+Hasil 16 Oktober: 20 peserta selama 960 detik, 60 reconnect, 1.800 mutasi fixture, snapshot akhir
+konsisten, ACK p95 57 ms (maksimum 11.131 ms). Kedua preview dan credential sementara dibersihkan.
+Metrik provider dan baseline belum terukur; rekomendasi kapasitas belum ditetapkan. Tidak
+melanjutkan fase B sampai gate budget diselesaikan. Rincian dan keterbatasan ada pada laporan A.
 
 **Exit criteria:** koneksi dan resync terbukti pada deployment Hobby nyata, event antar-instance
 terbukti, tidak ada state penting yang bergantung pada memori proses, dan tersedia profil budget.

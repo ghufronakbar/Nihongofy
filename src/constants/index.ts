@@ -83,6 +83,12 @@ const envSchema = z
     OPENAI_API_KEY: optionalEnvString,
     OPENAI_BASE_URL: optionalEnvString,
     VERCEL_ENV: optionalEnvString,
+    // Probe infrastruktur hanya untuk operator, mati secara default.
+    KOTOBA_PROBE_ENABLED: z.enum(["true", "false"]).default("false").transform((v) => v === "true"),
+    KOTOBA_PROBE_SECRET: optionalEnvString,
+    KOTOBA_PROBE_ORIGIN: optionalEnvString,
+    KOTOBA_PROBE_RUN_ID: optionalEnvString,
+    KOTOBA_PROBE_EXPIRES_AT: optionalEnvString,
   })
   .superRefine((value, context) => {
     // O-6: provider mock tidak boleh melayani deployment produksi. Dicek lewat

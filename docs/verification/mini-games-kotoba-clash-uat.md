@@ -1,23 +1,25 @@
 # UAT Mini Games dan Kotoba Clash
 
-Status awal: **NOT RUN**. Checklist disiapkan pada **16 Oktober 2026 (Asia/Jakarta)**.
-Dokumen ini tidak menyatakan bahwa WebSocket atau permainan sudah bekerja pada deployment.
+Status: **Fase A transport PASS, budget BLOCKED; UAT game publik NOT RUN**.
+Checklist disiapkan dan probe dijalankan pada **16 Oktober 2026 (Asia/Jakarta)**.
+WebSocket diuji pada preview Hobby; permainan publik belum diimplementasikan.
 
 Rujukan: [modul hub](../module/mini-games.md), [modul game](../module/kotoba-clash.md),
 [plan](../plan/mini-games-kotoba-clash.md), dan [checklist umum](manual-test-checklist.md).
+Laporan dan artefak bukti fase A: [kotoba-clash-phase-a.md](kotoba-clash-phase-a.md).
 
 ## Identitas Eksekusi
 
 | Field | Nilai yang harus dicatat saat pengujian |
 |---|---|
-| Commit dan fase | Belum dijalankan |
-| Environment / URL / plan provider | Belum dijalankan |
-| Tanggal dan tester | Belum dijalankan |
-| Browser dan viewport | Belum dijalankan |
-| Versi Node / Next / adapter WebSocket | Belum dijalankan |
-| Flag dan batas room/pemain/spectator | Belum dijalankan |
-| Data, akun, dan guest uji | Belum dijalankan; jangan mencatat credential |
-| Migration/seed dan pembersihan | Tidak ada pada perubahan dokumentasi |
+| Commit dan fase | Fase A; working tree berbasis `36bf225`, hash source pada laporan |
+| Environment / URL / plan provider | Dua preview Vercel Hobby sin1, Fluid aktif; preview dihapus setelah uji |
+| Tanggal dan tester | 16 Oktober 2026, engineering melalui runner otomatis; bukan acceptance user |
+| Browser dan viewport | Runner Node/ws; pengujian browser/mobile game NOT RUN |
+| Versi Node / Next / adapter WebSocket | Client 20.19.6, server 24.x, Next 16.3.5, @vercel/functions 3.10.1, ws 8.22.0 |
+| Flag dan batas room/pemain/spectator | Probe off secara default, preview override berexpiry; 20 identitas, 24 lease/run |
+| Data, akun, dan guest uji | Hanya `p00`-`p19`; tidak ada akun, guest produk, soal, atau nickname nyata |
+| Migration/seed dan pembersihan | Not required; 0 key kedua run, preview dihapus, bypass/secret sementara dibersihkan |
 
 Gunakan `PASS`, `FAIL`, `BLOCKED`, atau `NOT RUN` pada kolom hasil; lampirkan bukti yang sudah
 disanitasi. Satu skenario lulus pada localhost tidak membuktikan lulus pada Vercel Hobby.
@@ -26,23 +28,23 @@ disanitasi. Satu skenario lulus pada localhost tidak membuktikan lulus pada Verc
 
 | ID | Skenario | Expected result | Hasil / bukti |
 |---|---|---|---|
-| A01 | Handshake pada Vercel Hobby, Fluid Compute aktif | Koneksi nyata terbentuk dengan adapter/versi yang tercatat | NOT RUN |
-| A02 | 20 koneksi selama 15-20 menit | Cutoff 300 detik dipulihkan, identitas/state tidak menjadi baru | NOT RUN |
-| A03 | Pengirim dan penerima berada pada instance berbeda | Redis Pub/Sub meneruskan event lintas instance; metode pembuktiannya dicatat | NOT RUN |
-| A04 | Hentikan instance/drop koneksi dan reconnect bersamaan | Backoff+jitter, auth ulang, subscribe, snapshot, dan revision konsisten | NOT RUN |
-| A05 | Publish hilang/duplikat atau subscriber terlambat | Sync mengembalikan state authoritative tanpa mengandalkan replay Pub/Sub | NOT RUN |
-| A06 | Probe tidak sah dan Origin asing | Ditolak; tidak bisa membaca event atau membuat koneksi tanpa batas | NOT RUN |
-| A07 | Ukur kuota dan latency | CPU/memory-hours/transfer/invocation/Redis terukur; baseline app dipisahkan | NOT RUN |
-| A08 | Hapus/nonaktifkan probe dan data uji | Tidak ada endpoint beban terbuka atau key/room uji tertinggal | NOT RUN |
+| A01 | Handshake pada Vercel Hobby, Fluid Compute aktif | Koneksi nyata terbentuk dengan adapter/versi yang tercatat | PASS; dua preview, versi/config pada laporan A |
+| A02 | 20 koneksi selama 15-20 menit | Cutoff 300 detik dipulihkan, identitas/state tidak menjadi baru | PASS; 960 detik, 40 cutoff alami + 20 disconnect simulasi, snapshot 20 identitas konsisten |
+| A03 | Pengirim dan penerima berada pada instance berbeda | Redis Pub/Sub meneruskan event lintas instance; metode pembuktiannya dicatat | PASS; 25.177 delivery dengan UUID source/receiver berbeda, dua deployment |
+| A04 | Hentikan instance/drop koneksi dan reconnect bersamaan | Backoff+jitter, auth ulang, subscribe, snapshot, dan revision konsisten | PASS fixture; SIGKILL/restart Node lokal dan cutoff Vercel. Crash lokal dapat menunggu lease lama; bukan SLA produk |
+| A05 | Publish hilang/duplikat atau subscriber terlambat | Sync mengembalikan state authoritative tanpa mengandalkan replay Pub/Sub | PASS injeksi; 1.800 mutasi akhir konsisten. Gangguan jaringan Upstash nyata tidak diinjeksi |
+| A06 | Probe tidak sah dan Origin asing | Ditolak; tidak bisa membaca event atau membuat koneksi tanpa batas | PASS; 8 guard HTTP preview, default-off 404 lokal, expiry/production unit test, limit lease lokal mengembalikan 429 |
+| A07 | Ukur kuota dan latency | CPU/memory-hours/transfer/invocation/Redis terukur; baseline app dipisahkan | BLOCKED; latency/payload terukur, query metrik Vercel HTTP 402, baseline/billing belum terukur |
+| A08 | Hapus/nonaktifkan probe dan data uji | Tidak ada endpoint beban terbuka atau key/room uji tertinggal | PASS; 0 key kedua run, dua preview dihapus, bypass dicabut, env project/production tetap |
 
 | Metrik fase A | Sebelum | Sesudah | Delta / asumsi / bukti |
 |---|---|---|---|
-| Durasi dan peak koneksi | Belum diukur | Belum diukur | NOT RUN |
-| Active CPU | Belum diukur | Belum diukur | NOT RUN |
-| Provisioned memory-hours | Belum diukur | Belum diukur | NOT RUN |
-| Invocation dan transfer | Belum diukur | Belum diukur | NOT RUN |
-| Command Redis | Belum diukur | Belum diukur | NOT RUN |
-| ACK latency dan reconnect | Belum diukur | Belum diukur | NOT RUN |
+| Durasi dan peak koneksi | 0 koneksi probe | 960 detik, peak 20 | 60 reconnect berhasil, 20 identitas tetap |
+| Active CPU | Belum diukur | Belum diukur | BLOCKED: Observability API 402; bukan nol penggunaan |
+| Provisioned memory-hours | Belum diukur | Belum diukur | BLOCKED: perlu angka Usage provider |
+| Invocation dan transfer | Belum diukur | Belum diukur | Payload runner 5.649.416 byte; bukan transfer billing |
+| Command Redis | Counter aktif 12.667 | Counter akhir 9.029 | Counter INFO tidak monoton; tidak dibuat delta/billing estimate |
+| ACK latency dan reconnect | Tidak ada | ACK p50/p95/max 38/57/11.131 ms | Reconnect cloud p50/p95/max 736/1.437/1.537 ms; batas metric retry lokal pada laporan |
 | Batas room/spectator yang direkomendasikan | Belum ditetapkan | Belum ditetapkan | Menunggu fase A |
 
 ## B. Katalog, Identitas, dan Lobby
@@ -98,12 +100,12 @@ disanitasi. Satu skenario lulus pada localhost tidak membuktikan lulus pada Verc
 
 ## Gate Akhir
 
-- [ ] `npm run verify` lulus; output dicatat tanpa secret.
-- [ ] Migration/Prisma tervalidasi bila ada perubahan schema; urutan deploy dicatat.
+- [x] `npm run verify` lulus; 602 tes / 41 file, lint/typecheck/build lulus.
+- [x] Migration/Prisma tervalidasi bila ada perubahan schema; fase A tidak mengubah database.
 - [ ] Skenario wajib lulus di environment yang relevan, termasuk bukti Hobby dan 20 koneksi.
 - [ ] Kuota, limit rilis, retensi, dan known issue mempunyai angka/status/owner yang nyata.
 - [ ] UAT user tercatat terpisah dari pemeriksaan developer.
-- [ ] Data dan credential uji dibersihkan; status modul diperbarui sesuai hasil.
+- [x] Data dan credential uji dibersihkan; status modul diperbarui sesuai hasil.
 
-Keputusan rilis awal: **belum dinilai**. Pemilik verifikasi: Engineering Owner untuk bukti teknis,
+Keputusan rilis: **belum diaktifkan; gate budget fase A BLOCKED**. Pemilik verifikasi: Engineering Owner untuk bukti teknis,
 user/Release Owner untuk acceptance dan aktivasi sesuai kebijakan project.
