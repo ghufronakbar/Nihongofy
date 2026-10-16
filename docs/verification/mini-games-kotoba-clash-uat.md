@@ -1,16 +1,52 @@
 # UAT Mini Games dan Kotoba Clash
 
-Status: **Implementasi C-E tersedia dan developer checks lokal PASS; UAT game browser/Hobby NOT RUN**.
+Status: **Aktif di production atas persetujuan user; UAT awal 2 pemain + 1 spectator, N5/5 soal PASS**.
 Probe awal dijalankan 16 Oktober 2026; integrasi dan pemeriksaan lokal pada **17 Oktober 2026**.
 Migration B terkonfirmasi applied lewat status/metadata Supabase read-only. Integrasi
 C-E tidak menambah migration. Lihat [laporan C-E](kotoba-clash-phase-c-e.md) untuk scope dan bukti.
-Budget masih BLOCKED: snapshot Usage agregat user belum menjadi delta biaya workload produk.
+Budget masih BLOCKED pada pengukuran: snapshot Usage agregat user belum menjadi delta biaya workload produk.
+User menyetujui aktivasi sebelum seluruh UAT/budget selesai; persetujuan ini tidak meluluskan
+pengujian tersisa atau menjamin kuota free tier. Default flag di kode tetap false.
 Seluruh baris B-D adalah penerimaan browser/produk final kecuali diberi batas lokal secara eksplisit;
 PASS repository/unit bukan acceptance flow browser atau user.
 
 Rujukan: [modul hub](../module/mini-games.md), [modul game](../module/kotoba-clash.md),
 [plan](../plan/mini-games-kotoba-clash.md), dan [checklist umum](manual-test-checklist.md).
 Laporan dan artefak bukti fase A: [kotoba-clash-phase-a.md](kotoba-clash-phase-a.md).
+
+## UAT Production User - 17 Oktober 2026
+
+User menguji `https://nihongofy.lans.my.id` dan memberikan tiga screenshot hasil dari host,
+guest pemain, serta spectator. Pemeriksaan developer pada 03:30 WIB membaca room yang sama
+melalui Prisma, dalam transaksi repeatable-read dengan `SET TRANSACTION READ ONLY`.
+Tidak ada perubahan schema/data, migration, seed, atau cache reset. Commit lokal saat audit
+`217e456`; commit deployment tidak diverifikasi lewat metadata provider.
+
+| Pemeriksaan | Hasil dan batas bukti |
+|---|---|
+| Pertandingan | Satu match FINISHED, N5, 5 soal Moji-Goi unik; 03:23:13-03:26:28 WIB, durasi 195 detik |
+| Roster | Dua pemain; guest ketiga bergabung saat match berjalan sebagai spectator, tanpa match-player |
+| Host | 5.152 poin; 4 benar, 1 salah, 0 kosong; best streak 4; rank 1 |
+| Guest pemain | 3.773 poin; 3 benar, 2 salah, 0 kosong; best streak 2; rank 2 |
+| Ledger | 10 jawaban, seluruhnya dalam interval ronde dan pilihan valid; tidak ada pasangan pemain/ronde ganda |
+| Finalisasi dan skor | Kelima ronde finalized; enam agregat per pemain cocok dengan rekonstruksi engine v1 |
+| Schedule | Countdown 5 detik, soal 30 detik, reveal 8 detik, antar-ronde berurutan; retensi match 7 hari sesudah selesai |
+| Tampilan hasil | Kedua skor, jumlah benar, dan best streak cocok dengan ketiga screenshot user |
+| Cakupan tersisa | 10/15/20 soal, rotasi socket 270 detik/cutoff 300 detik, reconnect, rematch, mobile, payload aktif dan beban 20 pemain belum dibuktikan |
+
+Seluruh 19 pemeriksaan integritas pada match ini lulus. Pemeriksaan ledger tidak membuktikan
+perilaku penolakan request berbahaya atau privasi payload sebelum reveal. Bukti tersanitasi:
+[production UAT](evidence/2026-10-17-kotoba-clash-production-uat.json). Artefak tidak menyimpan
+kode room, nickname, ID personal, credential, konten soal, pilihan jawaban, atau kunci.
+
+Pengujian berikutnya:
+
+1. Main lagi pada room yang sama dengan **10 soal Moji-Goi** (6 menit 25 detik). Spectator memilih
+   ikut dan seluruh peserta ready ulang. Pastikan hasil lama tetap tersedia dan match baru terpisah.
+2. Pada match tersebut, refresh setelah jawaban terkonfirmasi dan putuskan koneksi guest sekitar
+   10 detik. Lewati menit kelima; membership, jawaban tersimpan, soal dan skor akhir harus pulih.
+3. Lanjutkan Bunpou/Dokkai dan mobile, lalu kapasitas 5/10/20 pemain dengan snapshot Usage
+   Vercel/Upstash sebelum-sesudah. Pengujian ini belum dijalankan otomatis pada production.
 
 ## Identitas Eksekusi Probe A
 
@@ -62,7 +98,8 @@ Implementasi C-E kini tersedia. Developer checks repository/PostgreSQL dan Lua R
 termasuk concurrency admission, guest resume, config/ready, proyeksi privat, hasil/rematch,
 export offline dan cleanup. Lima tes socket loopback memakai auth/persistence/Redis yang dimock.
 Catalogue/landing saja diuji visual di browser localhost (desktop 1280x900, mobile 390x844).
-Flow room/runner di browser HTTPS dan endpoint produk Hobby belum dijalankan.
+Flow production HTTPS awal telah diuji user untuk 2 pemain/5 soal sebagaimana catatan di atas;
+skenario yang lebih luas tetap belum dijalankan.
 
 | Eksekusi C-E | Bukti |
 |---|---|
@@ -77,8 +114,8 @@ Flow room/runner di browser HTTPS dan endpoint produk Hobby belum dijalankan.
 | B01 | Buka Mini Games dan kartu Kotoba Clash sebagai guest | Katalog/landing publik; deskripsi, 2-20 pemain, dan CTA benar | PASS lokal; visual desktop/mobile, screenshot pada laporan C-E; cloud NOT RUN |
 | B02 | Flag hub/game off, termasuk saat socket sudah terbuka | Nav/route/action/socket mengikuti flag; command lama tidak lolos | NOT RUN penuh; smoke production lokal flag off PASS (4 halaman/socket 404, home/sitemap tanpa link); drain cloud belum |
 | B03 | Katalog tanpa game aktif; mobile dan keyboard | Empty state jujur, navigasi/fokus/form dapat dipakai | NOT RUN |
-| B04 | Host akun membuat room dan membagikan link | Kode unik; URL sesuai environment; guest tidak dapat membuat room | NOT RUN |
-| B05 | Guest join, refresh, tab kedua, dan nickname duplikat | Identitas/slot tidak ganda; nama tervalidasi; credential tidak terungkap | NOT RUN |
+| B04 | Host akun membuat room dan membagikan link | Kode unik; URL sesuai environment; guest tidak dapat membuat room | PASS parsial production; room host + guest tersimpan. Penolakan create guest dan proses berbagi link NOT RUN |
+| B05 | Guest join, refresh, tab kedua, dan nickname duplikat | Identitas/slot tidak ganda; nama tervalidasi; credential tidak terungkap | PASS parsial production untuk join guest; refresh/tab kedua/duplikat/inspeksi credential NOT RUN |
 | B06 | Kode invalid/closed/expired, kapasitas penuh, join bersamaan | Pesan jelas; batas atomik tidak terlewati; tidak ada room enumeration bebas | NOT RUN |
 | B07 | Parent/child checkbox pada level dengan stok berbeda | Select-all/indeterminate benar; anak kosong tidak ikut terpilih | NOT RUN |
 | B08 | Pilih 5/10/15/20 dan ubah stok sebelum Start | Soal unik cukup; server menolak konfigurasi stale tanpa partial match | NOT RUN |
@@ -99,17 +136,17 @@ Flow room/runner di browser HTTPS dan endpoint produk Hobby belum dijalankan.
 | C06 | Semua menjawab lebih awal | Reveal tetap menunggu deadline; tidak membuka kunci lebih cepat | NOT RUN |
 | C07 | ACK hilang, retry identik, retry berbeda, dan submit multi-tab | Satu answer/poin; ACK konsisten; jawaban pertama tidak tertimpa | NOT RUN |
 | C08 | Kirim ronde/pilihan asing atau submit sebagai spectator | Ditolak tanpa kunci atau mutasi hasil | NOT RUN |
-| C09 | Benar cepat/lambat, streak 1/2/3/6+, salah dan kosong | Rumus v1, cap streak, pembulatan, dan reset sesuai modul | NOT RUN |
+| C09 | Benar cepat/lambat, streak 1/2/3/6+, salah dan kosong | Rumus v1, cap streak, pembulatan, dan reset sesuai modul | PASS parsial production; agregat skor/benar/salah/streak 4 dan 2 cocok dengan engine v1. Kosong/cap streak/skenario terkontrol NOT RUN |
 | C10 | Finalisasi bersamaan/berulang dan score tie | Tidak ada nilai ganda; tie-break dan posisi bersama konsisten | NOT RUN |
 | C11 | Reveal dan explanation kosong | Kunci hanya setelah cutoff; fallback jujur; otomatis lanjut | NOT RUN |
-| C12 | Pertandingan 5, 10, 15, dan 20 soal | Seluruh ronde selesai, podium/statistik sesuai ledger dan URL match | NOT RUN |
+| C12 | Pertandingan 5, 10, 15, dan 20 soal | Seluruh ronde selesai, podium/statistik sesuai ledger dan URL match | PASS production untuk 5 soal/2 pemain; seluruh ronde finalized dan hasil cocok. 10/15/20 soal NOT RUN |
 
 ## D. Recovery, Privasi, dan Operasional
 
 | ID | Skenario | Expected result | Hasil / bukti |
 |---|---|---|---|
 | D01 | Inspeksi RSC, event, snapshot, ACK, error, cache, dan export sebelum reveal | Tidak ada kunci, explanation, isCorrect, furigana pengerjaan, atau skor aktif | NOT RUN |
-| D02 | Identitas baru masuk saat bermain; pemain lama reconnect | Baru menjadi spectator; roster lama dipulihkan, tidak menambah slot | NOT RUN |
+| D02 | Identitas baru masuk saat bermain; pemain lama reconnect | Baru menjadi spectator; roster lama dipulihkan, tidak menambah slot | PASS production untuk late spectator tanpa match-player; reconnect pemain lama NOT RUN |
 | D03 | Host keluar; semua offline lalu kembali setelah beberapa fase/akhir | Schedule dipulihkan; jawaban/skor tidak direset; tanpa host transfer otomatis | NOT RUN |
 | D04 | Socket cutoff 5 menit, event hilang/berurutan salah, dan deploy ulang | Revision/snapshot memulihkan fase tanpa soal atau poin ganda | NOT RUN |
 | D05 | Rematch dengan pemain/spectator dari match sebelumnya | Kode tetap; match ID/ready/roster baru; hasil lama tetap benar | NOT RUN |
@@ -127,8 +164,10 @@ Flow room/runner di browser HTTPS dan endpoint produk Hobby belum dijalankan.
 - [x] Migration/Prisma tervalidasi; fondasi B direplay/diuji lokal; applied pada Supabase dikonfirmasi lewat status/metadata read-only, tanpa write data.
 - [ ] Skenario wajib lulus di environment yang relevan, termasuk bukti Hobby dan 20 koneksi.
 - [ ] Kuota, limit rilis, retensi, dan known issue mempunyai angka/status/owner yang nyata.
-- [ ] UAT user tercatat terpisah dari pemeriksaan developer.
-- [x] Data dan credential uji dibersihkan; status modul diperbarui sesuai hasil.
+- [x] UAT awal user tercatat terpisah dari pemeriksaan developer; cakupan lanjutan tetap terbuka.
+- [x] Fixture/credential probe dan checker dibersihkan. Hasil UAT production user mengikuti retensi normal; audit tidak menghapus data tersebut.
 
-Keputusan rilis: **belum diaktifkan; gate budget fase A BLOCKED**. Kode produk belum dideploy oleh pekerjaan integrasi ini. Pemilik verifikasi: Engineering Owner untuk bukti teknis,
-user/Release Owner untuk acceptance dan aktivasi sesuai kebijakan project.
+Keputusan rilis: **user telah mengaktifkan production dengan persetujuan eksplisit sebelum seluruh
+UAT/budget selesai**. UAT awal lulus sesuai cakupan di atas; pengukuran budget dan acceptance lengkap
+tetap terbuka. Pemilik verifikasi: Engineering Owner untuk bukti teknis, user/Release Owner
+untuk acceptance. Tidak ada perubahan flag atau deployment yang dilakukan oleh audit ini.

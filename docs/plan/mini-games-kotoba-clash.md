@@ -2,12 +2,18 @@
 
 Tanggal: **16 Oktober 2026 (Asia/Jakarta)**.
 Pembaruan budget: **17 Oktober 2026**.
-Status: **Implementasi C-E tersedia; verifikasi lokal lulus, UAT produk Hobby dan budget masih menjadi gate aktivasi.**
+Status: **Production aktif atas persetujuan user; UAT awal 2 pemain/5 soal dan late spectator lulus. UAT lengkap/budget masih terbuka.**
 
-Keputusan 17 Oktober 2026: user meminta "lanjut saja dulu" setelah menerima laporan budget
+Keputusan awal 17 Oktober 2026: user meminta "lanjut saja dulu" setelah menerima laporan budget
 parsial. Pengembangan fondasi dan fitur boleh berjalan; pengukuran budget yang tersisa tetap
 wajib sebelum aktivasi publik. Keputusan ini mengganti dependensi gate A untuk memulai B,
 tanpa menyatakan bahwa free tier atau kapasitas rilis sudah terjamin.
+
+Keputusan berikutnya pada tanggal yang sama: user menyetujui aktivasi production sebelum seluruh
+UAT/budget selesai ("saya aktifkan dulu fiturnya tidak apa apa"), lalu melakukan deployment dan
+pengujian. Keputusan ini mengganti penahanan aktivasi sebelumnya. Pemeriksaan read-only room
+membuktikan satu match N5/5 soal selesai, skor sesuai ledger dan tiga tampilan user, serta late
+spectator tanpa roster pemain. Rincian dan pengujian tersisa ada di [UAT](../verification/mini-games-kotoba-clash-uat.md).
 
 ## 1. Sumber Kebenaran dan Ruang Lingkup
 
@@ -25,7 +31,8 @@ untuk rancangan sebagai **Kotoba Clash**, slug `kotoba-clash`, di bawah `/mini-g
 Probe A menguji adapter Hobby terisolasi. Fondasi B menambahkan schema/engine, dan user melaporkan
 migration sudah diterapkan pada 17 Oktober 2026; status/metadata Supabase telah dikonfirmasi
 read-only tanpa write data. Integrasi C-E tidak menambah migration: katalog,
-lobby, runner, hasil/rematch, transport dan cleanup tersedia dalam kode, flags tetap mati.
+lobby, runner, hasil/rematch, transport dan cleanup tersedia dalam kode. Default flag tetap false;
+user telah mengaktifkan fitur pada deployment production. Probe infrastruktur tetap terpisah.
 Bukti [C-E](../verification/kotoba-clash-phase-c-e.md) mencatat 638 tes, 10 kelompok integrasi lokal,
 visual desktop/mobile dan smoke flag off. Checkbox implementasi lokal tidak meluluskan UAT produk
 Hobby, acceptance user, atau budget. Exit criteria fase penuh tetap terbuka sampai bukti itu ada.
@@ -36,10 +43,10 @@ Hobby, acceptance user, atau budget. Exit criteria fase penuh tetap terbuka samp
 |---|---|---|---|
 | A | Bukti WebSocket pada Vercel Hobby dan profil penggunaan | Deployment pengujian yang terisolasi | Transport PASS; budget parsial, gate BLOCKED |
 | B | Kontrak beku, domain, persistence, auth, dan migration | Transport A lulus; kelanjutan disetujui user | Kode/lokal dan metadata migration remote lulus; drain cloud tersisa |
-| C | Katalog Mini Games, landing, room, invite, lobby | Fondasi B | Kode dan pemeriksaan lokal tersedia; UAT browser host/guest tersisa |
-| D | Pertandingan teks end-to-end | Lobby C dan aturan B | Kode dan tes lokal tersedia; game lengkap browser/Hobby belum diuji |
-| E | Recovery, spectator, hasil, rematch, cleanup | Runner D | Kode dan integrasi repository lulus; outage/drain produk cloud tersisa |
-| F | Verifikasi lengkap dan aktivasi bertahap | A-E dan UAT | Gate engineering lulus; UAT/budget belum selesai, flags off |
+| C | Katalog Mini Games, landing, room, invite, lobby | Fondasi B | Kode/lokal lulus; room host + guest production terbukti, cakupan lobby lengkap tersisa |
+| D | Pertandingan teks end-to-end | Lobby C dan aturan B | N5/5 soal, 2 pemain production lulus; 10/15/20 soal tersisa |
+| E | Recovery, spectator, hasil, rematch, cleanup | Runner D | Late spectator/hasil production lulus; rematch/recovery/outage/drain cloud tersisa |
+| F | Verifikasi lengkap dan aktivasi bertahap | A-E dan UAT | Aktif atas persetujuan user; gate engineering lulus, UAT lengkap/budget belum selesai |
 
 Fase A mengurangi risiko investasi UI/data pada adapter yang belum terbukti. Belum ada janji
 bahwa 20 pemain atau jumlah room tertentu selalu masuk kuota gratis. Batas room serentak dan
@@ -76,8 +83,9 @@ Snapshot Usage yang ditinjau 17 Oktober menunjukkan sisa CPU 2 jam 52 menit, sek
 invocation, Fast Origin Transfer 8,58 GB, dan Fast Data Transfer 96,42 GB. Ini angka agregat
 30 hari, bukan delta biaya satu room. Memory-hours, command Redis bulanan, dan biaya probe yang
 terpisah dari baseline masih belum terukur; rekomendasi kapasitas belum ditetapkan. Tidak
-menutup gate budget atau mengaktifkan fitur publik sebelum pengukuran diselesaikan. Pengembangan
-fase B dilanjutkan sesuai keputusan user 17 Oktober. Rincian ada pada laporan A.
+menutup gate budget. Pengembangan fase B, lalu aktivasi production sebelum pengukuran selesai,
+dilanjutkan sesuai keputusan user 17 Oktober yang dicatat di awal dokumen. Rincian pengukuran
+ada pada laporan A.
 
 **Exit criteria:** koneksi dan resync terbukti pada deployment Hobby nyata, event antar-instance
 terbukti, tidak ada state penting yang bergantung pada memori proses, dan tersedia profil budget.
@@ -106,7 +114,7 @@ Jika gagal, catat blocker dan revisi adapter sebelum melanjutkan. Build lokal sa
 - [x] Definisikan key/TTL Redis dan commit-then-publish beserta recovery jika publish gagal.
   Tentukan invalidation/revision; jangan memakai cache Next lintas user untuk live state.
 - [x] Tambahkan env/flag melalui `src/constants/index.ts`, key cache melalui konstanta existing,
-  dan `.env.example` tanpa secret. Flag deployment tetap off sampai gate rilis selesai.
+  dan `.env.example` tanpa secret. Default flag tetap off; aktivasi deployment kemudian disetujui user.
 - [ ] Tetapkan invalidasi/drain socket deployment lama saat flag dimatikan atau protokol berubah;
   proses lama tidak otomatis membaca env baru. Uji prosedurnya pada deployment yang berdampingan.
 - [x] Integrasikan relasi personal dengan anonimisasi, export, dan retensi sebelum data nyata masuk.
@@ -114,8 +122,9 @@ Jika gagal, catat blocker dan revisi adapter sebelum melanjutkan. Build lokal sa
 
 Endpoint snapshot, takeover lease nyata, handshake/rate guard dan runtime drain sekarang tersedia.
 Tes socket memakai loopback dengan adapter auth/persistence/Redis dimock; Lua takeover dan repository
-memakai Redis/PostgreSQL lokal nyata. Flow cookie HTTPS/handshake serta drain lintas deployment
-produk belum diuji di Hobby, sehingga item identitas/drain dan exit fase B belum diluluskan penuh.
+memakai Redis/PostgreSQL lokal nyata. Flow cookie HTTPS/handshake telah diuji awal melalui
+host/guest production, tetapi refresh/revocation serta drain lintas deployment belum diuji,
+sehingga item identitas/drain dan exit fase B belum diluluskan penuh.
 
 **Exit criteria:** kontrak terukur dan dapat diuji, migration ditinjau/terverifikasi pada environment
 uji, serta retry/concurrency tidak membuat match, jawaban, atau poin ganda. Engine dapat dijalankan
@@ -190,7 +199,8 @@ dipakai rematch dan data sementara/personal mempunyai lifecycle yang terverifika
   melewati 5 menit. Uji proses VPS secara terpisah bila klaim bootstrap VPS sudah siap dibuat.
 - [x] Perbarui modul, indeks, overview, ledger migration, dan catatan verifikasi sesuai kode aktual.
   Catat setiap known issue dengan severity/owner dan keputusan rilis sesuai aturan project.
-- [ ] Aktifkan flag bertahap dengan limit hasil pengukuran dan verifikasi ulang menu/sitemap/robots.
+- [ ] Validasi limit hasil pengukuran dan menu/sitemap/robots pada deployment aktif. Aktivasi awal
+  telah dilakukan user sebelum pengukuran selesai; item ini tetap terbuka sampai bukti lengkap.
 - [ ] Serahkan ringkasan perubahan, migration/seed/cache yang diperlukan, hasil gate, dan UAT user.
 
 **Exit criteria:** semua gate wajib lulus dengan bukti; tidak ada blocker correctness/leakage atau
@@ -203,9 +213,11 @@ kompatibilitas Hobby yang terbuka; kapasitas rilis sesuai profil penggunaan yang
 - Gate engineering lulus 638 tes /47 file. Foundation checker 8 kelompok dan room checker 10
   kelompok lulus pada cluster disposable. Catalogue/landing desktop dan mobile lulus visual lokal.
 - Room/result/socket flag-off 404 dan home/sitemap tanpa link sudah diuji dengan production build.
-- Selesaikan UAT produk browser/Hobby, 20 pemain, cutoff, drain, 5/10/15/20 soal serta leak audit;
-  ukur memory-hours dan Redis terhadap baseline sebelum aktivasi. Jangan memakai probe A sebagai
-  pengganti bukti game final atau jaminan free tier.
+- UAT awal user: 2 pemain, 1 late spectator, N5/5 soal, FINISHED, 10 jawaban dan 19 pemeriksaan
+  integritas lulus read-only; hasil cocok dengan screenshot. Tidak ada perubahan data/schema.
+- Berikutnya: rematch 10 soal Moji-Goi (6 menit 25 detik), refresh/disconnect dan rotasi socket,
+  lalu mobile/Bunpou/Dokkai, 15/20 soal, drain, leak audit dan beban 20 pemain. Ukur memory-hours
+  serta Redis terhadap baseline; kapasitas free tier belum terjamin walau production sudah aktif.
 - Runbook runtime drain, limit sementara, known issues/owner, dan cara pengujian ada di laporan C-E.
 
 ## 10. Aturan Pemeliharaan Rencana

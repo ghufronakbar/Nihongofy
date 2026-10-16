@@ -1,0 +1,130 @@
+{
+  "verifiedAt": "2026-10-16T20:30:31.385Z",
+  "method": "Prisma repeatable-read transaction, SET TRANSACTION READ ONLY; exact room from screenshots",
+  "readOnly": true,
+  "found": true,
+  "environment": {
+    "origin": "https://nihongofy.lans.my.id",
+    "provider": "Vercel",
+    "database": "Supabase PostgreSQL",
+    "localSourceCommit": "217e456236e111d13f3b0323d967252b4d843c58",
+    "deployedCommit": "NOT VERIFIED"
+  },
+  "room": {
+    "status": "OPEN",
+    "configRevision": 2,
+    "revision": 23,
+    "createdAt": "2026-10-16T20:20:52.779Z",
+    "expiresAt": "2026-10-23T20:26:28.581Z",
+    "memberCount": 3,
+    "matchCount": 1,
+    "currentConfig": {
+      "jlptLevel": "N5",
+      "mondaiTypes": [
+        "MOJI_GOI_READ_KANJI",
+        "MOJI_GOI_WRITE_KANJI",
+        "MOJI_GOI_CONTEXT",
+        "MOJI_GOI_SYNONYM"
+      ],
+      "questionCount": 5
+    }
+  },
+  "members": [
+    {
+      "role": "host",
+      "spectating": false,
+      "matchPlayerCount": 1,
+      "joinedDuringMatch": false
+    },
+    {
+      "role": "guest-player",
+      "spectating": false,
+      "matchPlayerCount": 1,
+      "joinedDuringMatch": false
+    },
+    {
+      "role": "spectator",
+      "spectating": true,
+      "matchPlayerCount": 0,
+      "joinedDuringMatch": true
+    }
+  ],
+  "matches": [
+    {
+      "ordinal": 1,
+      "status": "FINISHED",
+      "config": {
+        "jlptLevel": "N5",
+        "mondaiTypes": [
+          "MOJI_GOI_READ_KANJI",
+          "MOJI_GOI_WRITE_KANJI",
+          "MOJI_GOI_CONTEXT",
+          "MOJI_GOI_SYNONYM"
+        ],
+        "questionCount": 5
+      },
+      "startsAt": "2026-10-16T20:23:13.581Z",
+      "endsAt": "2026-10-16T20:26:28.581Z",
+      "durationSeconds": 195,
+      "roundCount": 5,
+      "finalizedRoundCount": 5,
+      "answerCount": 10,
+      "playerCount": 2,
+      "results": [
+        {
+          "role": "host",
+          "score": 5152,
+          "correctCount": 4,
+          "wrongCount": 1,
+          "skippedCount": 0,
+          "bestStreak": 4,
+          "correctTimeMs": 55919,
+          "rank": 1,
+          "answerCount": 5
+        },
+        {
+          "role": "guest-player",
+          "score": 3773,
+          "correctCount": 3,
+          "wrongCount": 2,
+          "skippedCount": 0,
+          "bestStreak": 2,
+          "correctTimeMs": 35704,
+          "rank": 2,
+          "answerCount": 5
+        }
+      ],
+      "checks": {
+        "statusFinished": true,
+        "rulesVersionOne": true,
+        "roundCountMatchesConfig": true,
+        "uniqueSourceQuestions": true,
+        "selectedQuestionTypesOnly": true,
+        "contiguousRoundPositions": true,
+        "countdownFiveSeconds": true,
+        "questionDurationsMatchRules": true,
+        "revealDurationsEightSeconds": true,
+        "contiguousSchedules": true,
+        "matchEndMatchesSchedule": true,
+        "allRoundsFinalizedAfterDeadline": true,
+        "allAnswersWithinWindows": true,
+        "allSubmittedChoicesValid": true,
+        "noDuplicatePlayerRoundAnswers": true,
+        "persistedAggregatesMatchLedger": true,
+        "playerQuestionTotalsMatchConfig": true,
+        "retentionSevenDaysAfterEnd": true,
+        "screenshotScoresMatch": true
+      }
+    }
+  ],
+  "limitations": [
+    "Screenshots demonstrate the finished views only; active-phase payload privacy was not inspected.",
+    "A 195-second match does not exercise 270-second socket rotation or 300-second platform cutoff.",
+    "Production usage and monthly free-tier budget have not been measured."
+  ],
+  "evidenceSources": [
+    "Three result screenshots supplied by user on 17 October 2026",
+    "Read-only PostgreSQL transaction for the exact room shown in screenshots"
+  ],
+  "verificationScope": "First production UAT sample; does not imply all checklist scenarios passed"
+}

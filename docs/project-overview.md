@@ -7,15 +7,17 @@ Rules terkait: `database.md` (schema, markup teks, aturan query).
 
 ## Mini Games
 
-**Kode tersedia, belum aktif publik (17 Oktober 2026).** Halaman publik
+**Production aktif atas persetujuan user; UAT awal lulus (17 Oktober 2026).** Halaman publik
 `/mini-games` menjadi katalog untuk beberapa game. Game pertama **Kotoba Clash** berada di
 `/mini-games/kotoba-clash`: battle kuis JLPT teks untuk 2-20 pemain, host login, peserta boleh guest,
 invitation link, dan WebSocket sendiri dengan target Vercel/Upstash/Supabase free tier.
-Choukai ditunda. Transport Hobby sudah terbukti; user meminta pengembangan dilanjutkan dengan
-budget sebagai gate aktivasi publik. Lobby, runner, spectator, hasil, rematch dan cleanup sudah
-dibuat; pemeriksaan repository/socket dan visual landing lulus lokal. Kedua flag default mati.
-Migration fondasi terkonfirmasi applied melalui pemeriksaan Supabase read-only; UAT produk
-Hobby belum dijalankan. Bukti terbaru: [integrasi C-E](verification/kotoba-clash-phase-c-e.md). Rujukan: [hub](module/mini-games.md), [game](module/kotoba-clash.md),
+Choukai ditunda. Lobby, runner, spectator, hasil, rematch dan cleanup sudah dibuat; pemeriksaan
+repository/socket serta visual landing lulus lokal. Kedua flag default mati di kode; user
+menyetujui aktivasi production sebelum UAT/budget lengkap. Migration fondasi terkonfirmasi applied
+melalui pemeriksaan Supabase read-only. UAT awal user membuktikan satu match N5/5 soal, 2 pemain
+dan late spectator, dengan hasil sesuai ledger. Reconnect >5 menit, rematch, 10/15/20 soal,
+mobile/20 pemain dan budget masih tersisa. Bukti terbaru: [UAT production](verification/mini-games-kotoba-clash-uat.md).
+Rujukan: [hub](module/mini-games.md), [game](module/kotoba-clash.md),
 [plan](plan/mini-games-kotoba-clash.md), [UAT](verification/mini-games-kotoba-clash-uat.md), dan
 [laporan fase A](verification/kotoba-clash-phase-a.md), dan [fondasi B](verification/kotoba-clash-phase-b.md).
 

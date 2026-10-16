@@ -1,8 +1,9 @@
 # Kotoba Clash - Integrasi Katalog, Lobby dan Pertandingan
 
 Tanggal: **17 Oktober 2026 (Asia/Jakarta)**. Owner: Engineering Owner.
-Status: **kode C-E tersedia dan pemeriksaan lokal lulus; UAT produk Hobby belum dijalankan**.
-Release decision: **belum aktif**, `FEATURES_MINI_GAMES` dan `FEATURES_KOTOBA_CLASH` default false.
+Status: **kode C-E/lokal lulus; production diaktifkan user dan UAT awal 2 pemain/5 soal lulus**.
+Release decision terbaru: **aktif atas persetujuan user sebelum UAT/budget lengkap**.
+`FEATURES_MINI_GAMES` dan `FEATURES_KOTOBA_CLASH` tetap default false di kode.
 
 User melaporkan migration fondasi telah diterapkan dan meminta pengembangan dilanjutkan.
 Tidak ada migration/schema/seed/backfill baru pada integrasi ini. `prisma migrate status`
@@ -13,6 +14,20 @@ partial unique index RUNNING yang valid. Tidak melakukan write atau menguji inse
 Rujukan: [plan](../plan/mini-games-kotoba-clash.md), [hub](../module/mini-games.md),
 [game](../module/kotoba-clash.md), [UAT](mini-games-kotoba-clash-uat.md),
 [fondasi B](kotoba-clash-phase-b.md), dan [transport A](kotoba-clash-phase-a.md).
+
+## Pembaruan UAT Production
+
+Setelah integrasi ini, user menyetujui aktivasi dan melakukan deployment/pengujian. Pada
+17 Oktober 2026, audit READ ONLY room dari tiga screenshot menemukan satu match FINISHED:
+N5, 5 soal Moji-Goi, 2 pemain dan 1 late spectator. Sepuluh jawaban tersimpan dalam interval
+ronde; seluruh ronde finalized. Skor host 5.152 (4 benar/1 salah/streak 4) dan guest 3.773
+(3 benar/2 salah/streak 2) cocok dengan rekonstruksi engine dan screenshot. Spectator tidak
+memiliki match-player. Seluruh 19 pemeriksaan integritas lulus, tanpa perubahan data/schema.
+
+Durasi match 195 detik belum menguji rotasi 270 detik/cutoff 300 detik. Rematch, reconnect,
+10/15/20 soal, mobile, privasi payload aktif, beban 20 pemain serta budget masih terbuka.
+Rincian dan bukti tersanitasi ada pada [UAT](mini-games-kotoba-clash-uat.md#uat-production-user---17-oktober-2026).
+Bagian bukti lokal berikut tetap mencatat cakupan pemeriksaan saat integrasi awal.
 
 ## Perilaku yang Tersedia
 
@@ -82,7 +97,7 @@ tidak berarti batas ketat 25 socket fisik saat takeover berlangsung.
 | Catalogue/landing desktop | PASS visual lokal, 1280 x 900 |
 | Landing mobile | PASS visual lokal, 390 x 844; scrollWidth = innerWidth =390 |
 | Production build flag off | PASS; 4 route halaman + socket 404, home/sitemap tanpa link Mini Games |
-| Product multi-user browser game | NOT RUN; belum membuktikan flow host/guest/ronde lengkap lewat browser |
+| Product multi-user browser game | PASS awal user; 2 pemain + late spectator, N5/5 soal production, ledger cocok; cakupan lengkap tersisa |
 | Product Hobby cutoff, Pub/Sub lintas instance, drain | NOT RUN; bukti probe A tidak menggantikan UAT adapter final |
 | Remote migration | PASS read-only; 42 migration up to date, fondasi applied, RLS/grant/22 constraint dan partial index valid |
 | Budget bulanan | BLOCKED; masih memerlukan memory-hours, Redis bulanan dan delta terhadap baseline |
@@ -133,8 +148,8 @@ atau heartbeat 20 detik, lalu ditutup. Kontrol disimpan persisten; key hilang be
 oleh runtime control, tetap memerlukan kedua flag. Jangan menghapus key sebagai cara drain.
 
 Untuk menonaktifkan: disable kontrol, pastikan socket lama menutup, lalu matikan kedua flag dan
-redeploy. Untuk uji terbatas: gunakan namespace/environment terisolasi, flag true dan kontrol
-enable; pertahankan kontrol disabled sampai gate rilis dipenuhi untuk aktivasi publik.
+redeploy. Untuk uji terisolasi: gunakan namespace/environment terpisah, flag true dan kontrol
+enable. Aktivasi production berikutnya telah disetujui dan dilakukan user sebelum gate lengkap.
 Perintah enable adalah `npm run kotoba-clash:runtime -- enable`; tidak dijalankan pada production
 selama pekerjaan ini. Drain lintas deployment produk masih harus dibuktikan pada UAT.
 
@@ -142,14 +157,14 @@ selama pekerjaan ini. Drain lintas deployment produk masih harus dibuktikan pada
 
 | Severity | Hal terbuka | Owner | Keputusan |
 |---|---|---|---|
-| P1 | Budget final belum terukur, termasuk snapshot/query per koneksi | Engineering + Release Owner | Block aktivasi publik; pertahankan kedua flag false |
-| P1 | UAT produk Hobby dan browser host/guest belum lengkap | Engineering Owner | Uji endpoint final, 20 pemain, cutoff >5 menit, drain dan 5/10/15/20 soal sebelum aktivasi |
+| P1 | Budget final belum terukur, termasuk snapshot/query per koneksi | Engineering + Release Owner | Aktivasi awal disetujui user; ukur delta Usage sebelum menaikkan limit sementara |
+| P1 | UAT produk Hobby belum lengkap; 2 pemain/5 soal sudah lulus | Engineering Owner | Berikutnya rematch 10 soal/cutoff >5 menit, lalu 15/20 soal, 20 pemain, privasi dan drain |
 | P2 | Portabilitas VPS belum mencakup bootstrap produk/TLS/proxy | Engineering Owner | Tidak mengklaim deploy VPS siap atau nol perubahan |
 
 Tidak ada host transfer, kick/leave UI, leaderboard global, chat atau choukai pada v1.
 Pemain offline tetap memiliki membership untuk reconnect; roster Start hanya memakai lease aktif.
-Langkah UAT tersisa ada pada checklist B-D. Tidak ada commit, deploy produk, atau aktivasi flag
-yang dilakukan sebagai bagian dari integrasi ini.
+Langkah UAT tersisa ada pada checklist B-D. Deployment/aktivasi dilakukan user sesudah integrasi;
+audit lanjutan hanya membaca data dan memperbarui dokumentasi.
 
 ## Catatan AGENTS.md
 

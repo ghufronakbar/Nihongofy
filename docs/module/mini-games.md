@@ -4,11 +4,14 @@ Tanggal rancangan: **16 Oktober 2026 (Asia/Jakarta)**.
 
 ## Status Aktual
 
-**Kode katalog dan game tersedia; belum diaktifkan publik (17 Oktober 2026).** Registry,
+**Production aktif atas persetujuan user; UAT awal Kotoba Clash lulus (17 Oktober 2026).** Registry,
 route, menu, metadata, dan guard sudah dibuat. Kotoba Clash mencakup lobby, runner, hasil,
 spectator, dan rematch; pemeriksaan repository/socket serta visual katalog/landing lulus lokal.
-Kedua flag tetap default mati. Migration fondasi sudah terkonfirmasi diterapkan melalui status migration dan metadata
-Supabase read-only. Aktivasi menunggu budget dan UAT produk pada Hobby.
+Kedua flag tetap default mati di kode. Migration fondasi sudah terkonfirmasi diterapkan melalui
+status migration dan metadata Supabase read-only. User menyetujui aktivasi sebelum UAT/budget
+lengkap, kemudian menguji N5/5 soal dengan 2 pemain dan 1 late spectator. Ledger production
+cocok dengan screenshot hasil. Rematch/reconnect >5 menit, cakupan lengkap dan budget tersisa;
+lihat [UAT](../verification/mini-games-kotoba-clash-uat.md).
 Bukti terbaru: [integrasi C-E](../verification/kotoba-clash-phase-c-e.md); bukti transport awal:
 [laporan A](../verification/kotoba-clash-phase-a.md).
 
@@ -123,8 +126,8 @@ flag/redeploy. Prosedur lintas deployment produk masih memerlukan UAT; lihat lap
 
 ## 7. Kondisi Rilis
 
-Katalog baru dianggap aktif setelah route, navigasi, flag, metadata, dan minimal satu game
-melewati gate rilisnya. Status di [index](index.md) membedakan kode dan verifikasi lokal yang sudah tersedia dari
-aktivasi publik yang masih menunggu gate budget dan UAT.
+Production telah diaktifkan user sebelum seluruh gate selesai. Penerimaan rilis lengkap tetap
+memerlukan verifikasi route, navigasi, flag, metadata dan game, termasuk pengukuran budget serta
+UAT lanjutan. Status di [index](index.md) membedakan aktivasi aktual dari cakupan verifikasi.
 
 Perubahan database saat ini: **tidak ada**. Katalog sendiri tidak membutuhkan migration.

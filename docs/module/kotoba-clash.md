@@ -4,15 +4,20 @@ Tanggal rancangan: **16 Oktober 2026 (Asia/Jakarta)**.
 
 ## Status Aktual
 
-**Implementasi C-E tersedia; verifikasi lokal lulus, aktivasi publik ditahan (17 Oktober 2026).**
+**Production aktif atas persetujuan user; UAT awal 2 pemain/5 soal lulus (17 Oktober 2026).**
 Katalog, landing, room/invite/guest, konfigurasi bertingkat, ready, runner WebSocket, reveal,
 ranking, spectator, hasil/review, rematch, dan cleanup sudah dibuat. Tidak ada migration baru.
 Migration fondasi dikonfirmasi applied pada Supabase lewat pemeriksaan read-only.
 Bukti kode dan batas pengujian ada di [laporan C-E](../verification/kotoba-clash-phase-c-e.md).
+User menguji satu match N5/5 soal dengan host, guest pemain dan late spectator. Audit ledger
+read-only cocok dengan hasil ketiga tampilan; seluruh ronde finalized, spectator tidak masuk
+roster. Bukti tersanitasi dan langkah berikutnya ada di [UAT](../verification/mini-games-kotoba-clash-uat.md).
 
 Probe awal telah lulus pada Hobby dengan 20 peserta/16 menit, lintas instance dan 60 reconnect;
-ini belum membuktikan endpoint produk final. Gate budget masih terbuka: memory-hours, command
-Redis bulanan, serta delta beban terhadap website belum terukur. Kedua flag tetap default mati.
+ini tidak menggantikan UAT produk final. UAT produk awal berlangsung 195 detik; reconnect lebih
+dari 5 menit, rematch, 10/15/20 soal, mobile dan 20 pemain masih tersisa. Gate budget terbuka:
+memory-hours, command Redis bulanan, serta delta beban terhadap website belum terukur. User
+menyetujui aktivasi sebelum seluruh UAT/budget selesai. Kedua flag tetap default mati di kode.
 Rujukan historis: [fase A](../verification/kotoba-clash-phase-a.md) dan
 [fondasi B](../verification/kotoba-clash-phase-b.md).
 
