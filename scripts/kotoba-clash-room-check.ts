@@ -11,7 +11,7 @@ import { sampleClashQuestions } from "../src/features/kotoba-clash/server/catalo
 import { cleanupClash } from "../src/features/kotoba-clash/server/cleanup";
 import { getClashAccountExport } from "../src/features/kotoba-clash/server/account-export";
 import { CLASH_LEASE_SCRIPT } from "../src/features/kotoba-clash/server/presence";
-import { createGuestCredential } from "../src/features/kotoba-clash/server/guest-credential";
+import { createGuestCredential, createRoomCode } from "../src/features/kotoba-clash/server/guest-credential";
 
 const url = z.url().parse(process.argv[2]);
 const parsed = new URL(url);
@@ -37,12 +37,59 @@ async function main() {
     }
     const host = { kind: "account" as const, userId: userIds[0]! };
     const otherHost = { kind: "account" as const, userId: userIds[1]! };
-    const created = await Promise.all([lobby.create(host, { nickname: "Host" }), lobby.create(host, { nickname: "Host" })]);
-    const room = created[0]!;
-    roomIds.push(room.id);
-    assert.equal(created[1]!.id, room.id);
-    await assert.rejects(lobby.create(otherHost, { nickname: "Other host" }), codeIs("CAPACITY"));
-    checks.push("Concurrent create is idempotent; global one-room admission is atomic");
+    const createInput = { nickname: "Host", requestId: randomUUID() };
+    const created = await Promise.all([lobby.create(host, createInput), lobby.create(host, createInput)]);
+    const original = created[0]!;
+    roomIds.push(original.id);
+    assert.equal(created[1]!.id, original.id);
+    assert.equal(created.filter((result) => result.duplicate).length, 1);
+    const other = await lobby.create(otherHost, { nickname: "Other host", requestId: randomUUID() });
+    roomIds.push(other.id);
+    assert.equal(await db.kotobaClashRoom.count({ where: { status: "OPEN" } }), 2);
+    checks.push("Different hosts can open rooms together; concurrent retries of one create request return one room");
+
+    const replacements = await Promise.all(Array.from({ length: 2 }, () => lobby.create(host, { nickname: "Host", requestId: randomUUID() })));
+    roomIds.push(...replacements.map((result) => result.id));
+    const room = await db.kotobaClashRoom.findFirstOrThrow({ where: { hostUserId: host.userId, status: "OPEN" }, select: { id: true, code: true, revision: true } });
+    assert.equal(await db.kotobaClashRoom.count({ where: { hostUserId: host.userId, status: "OPEN" } }), 1);
+    assert.equal((await db.kotobaClashRoom.findUniqueOrThrow({ where: { id: original.id } })).status, "CLOSED");
+    assert.equal((await db.kotobaClashRoom.findUniqueOrThrow({ where: { id: other.id } })).status, "OPEN");
+    await assert.rejects(lobby.create(host, createInput), codeIs("CLOSED"));
+    await assert.rejects(lobby.create(otherHost, { nickname: "Hijack", requestId: room.id }), codeIs("HOST_REQUIRED"));
+    assert.equal((await db.kotobaClashRoom.findUniqueOrThrow({ where: { id: room.id } })).status, "OPEN");
+    checks.push("Concurrent distinct creates leave one open room per host; stale retries and another account cannot replace it");
+
+    // A conflicting uncommitted ID fails the insert after closure; rollback must preserve the old room.
+    const conflictId = randomUUID();
+    roomIds.push(conflictId);
+    let release!: () => void;
+    let inserted!: () => void;
+    const released = new Promise<void>((resolve) => { release = resolve; });
+    const acquired = new Promise<void>((resolve) => { inserted = resolve; });
+    const blocker = db.$transaction(async (tx) => {
+      await tx.kotobaClashRoom.create({ data: { id: conflictId, code: createRoomCode(), hostUserId: otherHost.userId, status: "CLOSED", expiresAt: new Date(Date.now() + 60_000) } });
+      inserted();
+      await released;
+    });
+    try {
+      await Promise.race([acquired, blocker]);
+      const rejected = assert.rejects(lobby.create(host, { nickname: "Rollback", requestId: conflictId }), codeIs("HOST_REQUIRED"));
+      let waiting = false;
+      for (let attempt = 0; attempt < 100 && !waiting; attempt++) {
+        const rows = await db.$queryRaw<{ waiting: boolean }[]>`SELECT EXISTS (
+          SELECT 1 FROM pg_stat_activity WHERE datname = current_database() AND wait_event_type = 'Lock'
+          AND query LIKE 'INSERT INTO%KotobaClashRoom%'
+        ) AS waiting`;
+        waiting = rows[0]!.waiting;
+        if (!waiting) await delay(10);
+      }
+      assert(waiting, "Replacement insert must reach the conflicting ID before rollback is tested");
+      release();
+      await blocker;
+      await rejected;
+    } finally { release(); await blocker; }
+    assert.equal((await db.kotobaClashRoom.findUniqueOrThrow({ where: { id: room.id } })).status, "OPEN");
+    checks.push("Failed replacement insert rolls back old-room closure in the real database");
 
     const g = guest();
     const joined = await Promise.all([lobby.join(g, { code: room.code, nickname: "Guest" }), lobby.join(g, { code: room.code, nickname: "Guest" })]);
@@ -126,14 +173,14 @@ async function main() {
     }
     await db.kotobaClashMatch.update({ where: { id: start.matchId }, data: { endsAt: new Date(lastAnswer + 20) } });
     const exported = await getClashAccountExport(db, host.userId, new Date());
-    const exportedPlayer = exported[0]!.players[0]!;
+    const exportedPlayer = exported.flatMap((member) => member.players).find((player) => player.matchId === start.matchId)!;
     assert.equal(exportedPlayer.matchId, start.matchId);
     assert(exportedPlayer.score > 0);
     assert.equal(exportedPlayer.answers.length, 1);
     assert.equal(exportedPlayer.answers[0]!.choice, 1);
     assert(!JSON.stringify(exported).includes("private-explanation"));
     assert(!JSON.stringify(exported).includes("correctChoice"));
-    assert.equal((await getClashAccountExport(db, otherHost.userId, new Date())).length, 0);
+    assert((await getClashAccountExport(db, otherHost.userId, new Date())).every((member) => member.players.length === 0));
     assert.equal((await db.kotobaClashMatch.findUniqueOrThrow({ where: { id: start.matchId }, select: { status: true } })).status, "RUNNING");
     checks.push("Account export includes completed offline schedules, rebuilds own score and excludes active matches, keys and other players");
     const finished = await state.read(host, room.id);
@@ -163,6 +210,19 @@ async function main() {
     assert.notEqual(expiredGuest.nickname, "Guest");
     assert.equal(await db.kotobaClashMatchPlayer.count({ where: { matchId: start.matchId } }), 2);
     checks.push("Cleanup preserves active matches and unexpired results; expired guest identity is anonymized without deleting score ledgers");
+
+    const replacement = await lobby.create(host, { nickname: "New arena", requestId: randomUUID() });
+    roomIds.push(replacement.id);
+    const closed = await state.read(host, room.id);
+    assert.equal(closed.closed, true);
+    assert(replacement.closedRooms.some((old) => old.id === room.id && old.revision === closed.revision));
+    await assert.rejects(lobby.join(guest(), { code: room.code, nickname: "Too late" }), codeIs("CLOSED"));
+    const oldRound = (await db.kotobaClashRound.findFirstOrThrow({ where: { matchId: rematch.matchId }, orderBy: { position: "asc" } })).id;
+    await assert.rejects(repository.submitAnswer(host, { roomId: room.id, matchId: rematch.matchId, roundId: oldRound, requestId: randomUUID(), choice: 1 }), codeIs("CLOSED"));
+    assert.equal((await state.results(host, room.code, start.matchId)).review.length, 5);
+    assert.equal(await db.kotobaClashAnswer.count({ where: { matchId: start.matchId } }), 2);
+    assert.equal((await state.read(otherHost, other.id)).closed, false);
+    checks.push("Replacing an active room closes old clients, rejects new joins/answers, preserves completed history and leaves the other host untouched");
 
     const key = `kotoba-local-check:${randomUUID()}`;
     const run = (operation: string, owner: string) => execFileSync("redis-cli", ["-h", "127.0.0.1", "-p", String(redisPort), "--raw", "EVAL", CLASH_LEASE_SCRIPT, "1", key, String(Date.now()), roster[0]!, owner, operation, "60000"], { encoding: "utf8" }).trim();

@@ -15,7 +15,6 @@ export interface ClashPublisher {
   publish(event: ClashInvalidation): Promise<void>;
 }
 
-export type ClashLimits = { activeRooms: number; spectatorsPerRoom: number };
 export type ClashAssignment = { id: string; question: ClashQuestionSnapshot };
 
 export class ClashError extends Error {

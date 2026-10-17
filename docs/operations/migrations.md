@@ -33,6 +33,28 @@ contract wajib memiliki migration dan catatan ringkas di dokumen/PR perubahan. J
 
 ## Ledger
 
+### 17 Oktober 2026 - Kotoba Clash room multiuser dan penggantian room host
+
+- Status: not required
+- Migration: tidak ada
+- Alasan: hapus batas satu room global, buat room host masing-masing, tutup room lama ketika host
+  membuat room baru, dan longgarkan create menjadi 20 percobaan/menit per akun terverifikasi.
+- Object terdampak: transaksi existing `KotobaClashRoom`/membership; advisory lock hanya per host,
+  room dikunci terurut. Request UUID opsional dipakai sebagai PK room existing untuk retry.
+  Tidak ada perubahan tabel/kolom/index/CHECK/policy/default atau seed.
+- Data existing: tidak ada backfill atau bulk close. Room OPEN lama hanya ditutup saat pemiliknya
+  membuat room baru; room pengguna lain tidak disentuh. Ledger dan hasil tetap mengikuti retensi.
+- Risiko operasi: penutupan dan insert baru atomik, rollback mempertahankan room lama. Pembuatan
+  room baru menutup room lama termasuk match aktif; client diberi keterangan sebelum klik.
+  Tidak ada lock admission global lagi. Bucket Redis baru `create-account` mengabaikan bucket
+  create IP lama, yang akan expired sendiri; tidak perlu menghapus key Upstash.
+- Validasi: concurrency/retry/rollback real PostgreSQL, room aktif, history, rate/auth dan terminal
+  socket diuji; hasil lengkap ada pada [laporan room multiuser](../verification/kotoba-clash-multi-room.md).
+- Refresh setelah deploy: redeploy dan refresh tab host. Tidak ada env/reseed/cache reset baru.
+  Selama deployment lama masih berjalan, server lama tetap memakai aturan create lama;
+  gunakan tab baru setelah deploy. Migration early-reveal sebelumnya tetap prasyarat v2.
+- Owner: Engineering Owner untuk kode/verifikasi; user/Release Owner untuk redeploy dan acceptance.
+
 ### 17 Oktober 2026 - Kotoba Clash reveal saat seluruh roster menjawab
 
 - Status: required (replay lokal PASS; belum diterapkan ke production pada sesi ini)

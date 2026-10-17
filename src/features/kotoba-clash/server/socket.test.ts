@@ -89,6 +89,14 @@ describe("product WebSocket command boundary", () => {
     expect((await closed)[0]).toBe(4009);
     expect(fixture.submit).not.toHaveBeenCalled();
   });
+  it("sends the closed-room snapshot and ends the old connection after replacement", async () => {
+    fixture.read.mockResolvedValue({ ...initial, closed: true, revision: 1 });
+    const closed = once(client, "close");
+    client.send(JSON.stringify({ protocolVersion: 1, type: "sync", requestId: randomUUID(), roomId, revision: 0 }));
+    expect((await closed)[0]).toBe(4004);
+    expect(messages).toContainEqual(expect.objectContaining({ type: "snapshot", state: expect.objectContaining({ closed: true, revision: 1 }) }));
+    expect(fixture.submit).not.toHaveBeenCalled();
+  });
   it("rejects protocol extras and binary frames", async () => {
     client.send(JSON.stringify(answer({ correctChoice: 2 })));
     await until(() => JSON.stringify(messages).includes("INVALID_INPUT"));

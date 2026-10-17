@@ -12,7 +12,7 @@ const messages: Record<ClashError["code"], string> = {
   HOST_REQUIRED: "Hanya host yang dapat melakukan ini. Masuk untuk membuat room.",
   STALE_CONFIG: "Konfigurasi berubah. Periksa pengaturan terbaru lalu ready kembali.",
   NOT_READY: "Butuh 2-20 pemain terhubung, termasuk host, dan semuanya harus ready.",
-  CAPACITY: "Kapasitas pengujian saat ini penuh. Coba lagi setelah room selesai atau ditutup.",
+  CAPACITY: "Room ini sudah penuh. Coba bergabung ke room lain.",
   ACTIVE_MATCH: "Pertandingan sedang berjalan. Tunggu sampai selesai.",
   INVALID_QUESTIONS: "Stok soal untuk konfigurasi ini tidak cukup. Pilih tipe lain atau kurangi jumlah soal.",
   INVALID_CHOICE: "Pilihan tidak tersedia untuk soal ini.",

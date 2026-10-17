@@ -2,7 +2,7 @@
 
 import { createHmac } from "node:crypto";
 import { headers } from "next/headers";
-import { env } from "@/constants";
+import { env, KOTOBA_ROOM_CREATE_RATE_LIMIT } from "@/constants";
 import { ClashError } from "./domain/ports";
 import { ClashConfigureSchema, ClashCreateSchema, ClashJoinSchema, ClashReadySchema, ClashRoomCodeSchema, ClashRoomInputSchema, ClashStartSchema, ClashIdSchema } from "./schemas";
 import { createClashGuest, readClashPrincipal, verifyClashPrincipal, requireClashEnabled } from "./server/auth";
@@ -16,7 +16,7 @@ async function actor(scope: string, allowGuest = false) {
   await requireClashRuntime();
   const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
   const hash = createHmac("sha256", env.SESSION_SECRET).update(`kotoba:${ip}`).digest("hex");
-  await limitClash(scope, hash, scope === "create" ? 5 : 40);
+  if (scope !== "create") await limitClash(scope, hash, 40);
   let principal = await readClashPrincipal();
   if (!principal && allowGuest) {
     const guest = await createClashGuest();
@@ -29,6 +29,11 @@ async function actor(scope: string, allowGuest = false) {
     principal = { kind: "guest", hash: guest.hash };
     return guest;
   });
+  if (scope === "create") {
+    if (identity.kind !== "account") throw new ClashError("HOST_REQUIRED");
+    const subject = createHmac("sha256", env.SESSION_SECRET).update(`kotoba:account:${identity.userId}`).digest("hex");
+    await limitClash("create-account", subject, KOTOBA_ROOM_CREATE_RATE_LIMIT.maximum, KOTOBA_ROOM_CREATE_RATE_LIMIT.seconds);
+  }
   return { principal, identity };
 }
 
@@ -36,7 +41,9 @@ export async function createClashRoomAction(raw: unknown) {
   return clashBoundary(async () => {
     const input = ClashCreateSchema.parse(raw);
     const { identity } = await actor("create");
-    return clashLobby.create(identity, input);
+    const result = await clashLobby.create(identity, input);
+    await Promise.all(result.closedRooms.map((room) => publishClashChange(room.id, room.revision)));
+    return { id: result.id, code: result.code, revision: result.revision };
   });
 }
 

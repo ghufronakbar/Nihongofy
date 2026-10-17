@@ -1,0 +1,97 @@
+{
+  "date": "2026-10-17",
+  "timezone": "Asia/Jakarta",
+  "baseCommit": "e8d70662b5ee318dbc3b5c28bcae4adc1ae7f6a3",
+  "scope": "Local disposable PostgreSQL/Redis integration and unit/socket checks; production acceptance not run",
+  "behavior": {
+    "globalRoomCap": null,
+    "openRoomsPerHost": 1,
+    "newRequestClosesOldRooms": true,
+    "activeOldRoomAlsoClosed": true,
+    "sameRequestRetriesAreIdempotent": true,
+    "createRate": {
+      "scope": "verified account",
+      "maximum": 20,
+      "seconds": 60,
+      "bucket": "create-account"
+    },
+    "maxPlayersPerRoom": 20,
+    "maxSpectatorsPerRoom": 5
+  },
+  "gates": {
+    "verify": "PASS",
+    "lintWarnings": 0,
+    "typecheck": "PASS",
+    "testFiles": 49,
+    "tests": 651,
+    "productionBuild": "PASS",
+    "prismaValidate": "PASS",
+    "diffCheck": "PASS"
+  },
+  "migration": {
+    "required": false,
+    "localExistingMigrationsReplayed": 43,
+    "schemaChanged": false,
+    "backfill": false,
+    "newEnvironmentVariables": false
+  },
+  "room": {
+    "status": "PASS",
+    "checks": [
+      "Different hosts can open rooms together; concurrent retries of one create request return one room",
+      "Concurrent distinct creates leave one open room per host; stale retries and another account cannot replace it",
+      "Failed replacement insert rolls back old-room closure in the real database",
+      "Guest resume preserves one membership; normalized nickname collision and unrelated reads are rejected",
+      "Server sampling is unique and balanced, excludes audio, and rejects insufficient stock",
+      "Config resets all ready states; stale ready and a disconnected roster cannot Start; countdown hides content",
+      "Late arrivals spectate; concurrent spectator admission respects five slots; unfinished results remain private",
+      "Active projection hides keys, explanations, furigana, opponent choices and active-round points",
+      "The last roster answer opens reveal without waiting for the maximum deadline",
+      "Account export includes completed offline schedules, rebuilds own score and excludes active matches, keys and other players",
+      "Read recovers finalization; completed review is scoped; spectator can opt in; rematch preserves code and old result URL",
+      "Cleanup preserves active matches and unexpired results; expired guest identity is anonymized without deleting score ledgers",
+      "Replacing an active room closes old clients, rejects new joins/answers, preserves completed history and leaves the other host untouched",
+      "Real Redis Lua: authenticated takeover is immediate; old owner cannot renew or release replacement"
+    ]
+  },
+  "foundation": {
+    "status": "PASS",
+    "checks": [
+      "Concurrent Start: one match and one frozen roster",
+      "Private ACK; first answer final; concurrent retry creates one answer; other player can answer",
+      "Spectator and expired guest cannot submit; Unicode nickname keys fit normalization",
+      "Database clock is read after lock wait; late acceptance is rejected",
+      "Concurrent/repeated finalization is idempotent; late identical retry preserves original ACK",
+      "SQL rejects a second running match, cross-match answers, and missing identity",
+      "RLS enabled on all six tables; all three Data API roles denied access",
+      "Real account anonymization removes identity and host access while preserving opponent ledger"
+    ]
+  },
+  "unit": {
+    "createActionTests": 5,
+    "socketTests": 6,
+    "targetedResult": "PASS",
+    "covers": [
+      "independent create buckets for accounts sharing an IP",
+      "guest/revoked/excessive create rejection",
+      "post-commit invalidation with minimal response",
+      "rejected/stale requests do not publish closures",
+      "closed room snapshot terminates its socket"
+    ]
+  },
+  "cleanup": {
+    "fixtureUsers": 0,
+    "fixtureRooms": 0,
+    "fixtureMatches": 0,
+    "fixturePackages": 0,
+    "ownedPostgresqlStopped": true,
+    "ownedRedisStopped": true
+  },
+  "productionWrites": false,
+  "deployed": false,
+  "limitations": [
+    "Production browser and cross-deployment multiroom acceptance not run",
+    "Provider free tier budget/capacity is not established by removing the application cap",
+    "Existing AWS SDK Node 20 support notice during build"
+  ]
+}

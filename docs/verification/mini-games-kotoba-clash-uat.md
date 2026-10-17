@@ -77,6 +77,19 @@ quorum roster, spectator, pemain yang belum menjawab, retry/concurrency, lima ro
 Match v1 tetap menunggu deadline. Bukti lokal dan runbook migration sebelum redeploy ada pada
 [laporan](kotoba-clash-early-reveal.md); penerimaan browser/WebSocket production v2 **NOT RUN**.
 
+## Room Multiuser dan Penggantian Otomatis - 17 Oktober 2026
+
+Pemeriksaan read-only saat user melaporkan pesan kapasitas menemukan satu room OPEN dengan match
+FINISHED, belum idle 30 menit. Penyebabnya batas satu room global pada PostgreSQL, bukan counter
+Redis. Atas permintaan user, batas global dihapus; host berbeda dapat membuat room sendiri dan
+request baru host yang sama menutup room lamanya secara atomik, termasuk match aktif.
+
+Create kini memakai 20 percobaan/60 detik per akun terverifikasi, dengan bucket baru; satu Wi-Fi
+tidak berbagi kuota create. UUID request menjaga retry agar tidak menggantikan room dua kali.
+History tetap disimpan dan old-room invalidation dikirim setelah commit. Tidak ada migration/env
+baru untuk perubahan ini. Bukti lokal dan langkah redeploy ada di
+[laporan room multiuser](kotoba-clash-multi-room.md); browser production baru **NOT RUN**.
+
 ## Identitas Eksekusi Probe A
 
 | Field | Nilai yang harus dicatat saat pengujian |
@@ -152,6 +165,7 @@ skenario yang lebih luas tetap belum dijalankan.
 | B10 | Start ganda, join bersamaan Start, kurang dari 2 pemain | Tepat satu match; roster konsisten; minimum pemain dijaga | NOT RUN |
 | B11 | Ganti member/room ID, cookie, atau host command | Tidak ada impersonation, cross-room subscribe, atau perubahan oleh non-host | NOT RUN |
 | B12 | Logout/revoke akun dengan socket aktif | Revalidasi sesuai kontrak; host command setelah revocation ditolak | NOT RUN |
+| B13 | Dua host membuat room; host membuat lagi saat room lama terbuka/aktif | Kedua host punya room; request baru menutup room lama host itu; retry sama tidak mengganti dua kali; room/history pengguna lain tetap utuh | PASS lokal repository/state/real PostgreSQL, rollback/concurrency dan unit auth/rate/publish/socket; browser production NOT RUN |
 
 ## C. Soal, Deadline, dan Skor
 
@@ -180,7 +194,7 @@ skenario yang lebih luas tetap belum dijalankan.
 | D04 | Socket cutoff 5 menit, event hilang/berurutan salah, dan deploy ulang | Revision/snapshot memulihkan fase tanpa soal atau poin ganda | NOT RUN |
 | D05 | Rematch dengan pemain/spectator dari match sebelumnya | Kode tetap; match ID/ready/roster baru; hasil lama tetap benar | NOT RUN |
 | D06 | Redis/DB unavailable atau publish gagal setelah commit | Error dapat ditindaklanjuti; fail-closed auth; ledger tidak rusak dan dapat disync | NOT RUN |
-| D07 | Limit global, spam join/answer, idle, TTL, dan pertandingan dokkai panjang | Admission dibatasi; TTL tidak memotong match; tidak ada write heartbeat per detik | NOT RUN |
+| D07 | Create per akun, spam join/answer, idle, TTL, dan pertandingan dokkai panjang | Tanpa batas satu room global; create 20/menit per akun, slot/koneksi per room dijaga; TTL tidak memotong match; tidak ada write heartbeat per detik | PASS lokal parsial create multiuser/slot/spectator dan unit bucket per akun; browser/beban/dokkai panjang NOT RUN |
 | D08 | Cleanup/expiry lalu akses room/hasil | Retensi dan masa credential ditegakkan walau cron belum berjalan | NOT RUN |
 | D09 | Export dan anonimisasi akun yang pernah bermain | Linkage/nickname/avatar personal tertangani; hasil lawan tidak rusak atau bocor | NOT RUN |
 | D10 | Room/hasil dan preview undangan di crawler | `noindex`, tidak masuk sitemap, preview tidak membawa identitas/soal privat | NOT RUN |
@@ -189,7 +203,7 @@ skenario yang lebih luas tetap belum dijalankan.
 
 ## Gate Akhir
 
-- [x] `npm run verify` lulus; integrasi C-E 638 tes /47 file; UI 643 tes /48 file; early-reveal terbaru 645 tes /48 file, lint/typecheck/build lulus.
+- [x] `npm run verify` lulus; integrasi C-E 638 tes /47 file; UI 643 tes /48 file; early-reveal 645 tes /48 file; room multiuser terbaru 651 tes /49 file, lint/typecheck/build lulus.
 - [x] Migration/Prisma tervalidasi; 43 migration termasuk early-reveal direplay lokal. Hanya fondasi B yang sudah dikonfirmasi applied pada Supabase lewat metadata read-only; migration early-reveal production belum dijalankan.
 - [ ] Skenario wajib lulus di environment yang relevan, termasuk bukti Hobby dan 20 koneksi.
 - [ ] Kuota, limit rilis, retensi, dan known issue mempunyai angka/status/owner yang nyata.

@@ -260,7 +260,27 @@ Bukti lokal: [laporan early-reveal](../verification/kotoba-clash-early-reveal.md
 645 tes /48 file; tiga checker database/Redis dan replay 43 migration PASS. Migration/redeploy
 production v2 dan acceptance browser belum dilakukan; tidak ada environment baru.
 
-## 12. Aturan Pemeliharaan Rencana
+## 12. Pembuatan Room Multiuser - 17 Oktober 2026
+
+Keputusan user: hapus batas satu room global. Setiap akun dapat membuat room; membuat room baru
+menutup seluruh room lama milik host tersebut, termasuk bila pertandingan lama masih berjalan.
+Room pengguna lain tidak disentuh. Pembuatan room baru dan penutupan lama harus atomik.
+
+- [x] Hapus admission global; serialisasi pembuatan hanya per host dan kunci room secara terurut.
+- [x] Tutup room lama, naikkan revision dan kirim invalidation setelah commit agar peserta melihat
+  terminal closed. Pertahankan ledger/history lama dan tolak jawaban/join baru ke room closed.
+- [x] Gunakan request UUID agar retry klik yang sama tidak mengganti room dua kali atau membuka
+  kembali room yang sudah digantikan; jangan menambah tabel/kolom untuk idempotency.
+- [x] Longgarkan create menjadi 20 percobaan/60 detik per akun terverifikasi; pisahkan dari bucket
+  IP lama agar pengguna satu jaringan tidak saling memblokir. Limit join/pemain tetap berlaku.
+- [x] Uji host berbeda, replacement/concurrency/retry, rollback, room aktif, publisher dan
+  rate limit; perbarui modul/UAT/ledger serta jalankan gate engineering.
+
+Bukti lokal: [laporan room multiuser](../verification/kotoba-clash-multi-room.md). Gate lulus
+651 tes /49 file; room checker 14 kelompok dan foundation checker 8 kelompok PASS. Tidak ada
+migration/env baru; redeploy dan acceptance browser production masih perlu dijalankan user.
+
+## 13. Aturan Pemeliharaan Rencana
 
 Centang hanya setelah implementasi dan verifikasi relevan selesai. UAT user tetap dibedakan dari
 check otomatis developer. Perubahan default ditulis pada modul sebelum kode diubah; status layanan

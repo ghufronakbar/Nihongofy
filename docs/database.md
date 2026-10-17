@@ -386,6 +386,10 @@ Saat import data soal, tangani pelanggaran constraint sebagai sinyal error ekstr
   wajib diterapkan sebelum redeploy, lihat [laporan](verification/kotoba-clash-early-reveal.md).
 - FK komposit roster menjaga kesamaan room, dan FK jawaban menjaga kesamaan match pada ronde
   dan pemain. Unique answer `(roundId, playerId)` menjaga jawaban pertama final.
+- Pembuatan room tidak mempunyai batas satu room global. Transaksi per-host mengunci akun,
+  advisory lock namespace/ID host, lalu room lama terurut; menutup seluruh room OPEN milik host
+  dan membuat room baru secara atomik. Request UUID opsional memakai PK room existing untuk
+  retry; tidak ada kolom, index, constraint atau migration baru. Penutupan tidak menghapus ledger.
 - Partial unique index `KotobaClashMatch_one_running_per_room_key` dan CHECK identitas, waktu,
   pilihan serta nilai hanya berada pada SQL migration; jangan menghapusnya karena tidak ada
   representasi Prisma. Semua FK mempunyai index dengan prefix yang cocok.

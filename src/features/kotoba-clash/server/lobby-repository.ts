@@ -1,5 +1,6 @@
 import "server-only";
 
+import { randomUUID } from "node:crypto";
 import { Prisma, type PrismaClient } from "@prisma/client";
 import { ClashConfigureSchema, ClashCreateSchema, ClashJoinSchema, ClashReadySchema, ClashRoomInputSchema, nicknameKey } from "../schemas";
 import { ClashError, type ClashIdentity } from "../domain/ports";
@@ -7,7 +8,7 @@ import { CLASH_LOBBY_IDLE_MS, CLASH_MAX_PLAYERS } from "../domain/rules";
 import { createRoomCode } from "./guest-credential";
 import { databaseNow, lockIdentity, lockRoom, requireHost, requireMember, type Tx } from "./repository";
 
-export const CLASH_INITIAL_LIMITS = { activeRooms: 1, spectatorsPerRoom: 5 } as const;
+const CLASH_ROOM_LIMITS = { spectatorsPerRoom: 5 } as const;
 
 async function requireLobby(tx: Tx, roomId: string) {
   if (await tx.kotobaClashMatch.findFirst({ where: { roomId, status: "RUNNING" }, select: { id: true } })) throw new ClashError("ACTIVE_MATCH");
@@ -39,27 +40,32 @@ export class PrismaClashLobbyRepository {
   async create(identity: ClashIdentity, raw: unknown) {
     const input = ClashCreateSchema.parse(raw);
     if (identity.kind !== "account") throw new ClashError("HOST_REQUIRED");
+    const roomId = input.requestId ?? randomUUID();
     for (let attempt = 0; attempt < 3; attempt++) {
       try {
         return await this.db.$transaction(async (tx) => {
-          // Serializes global admission across deployments, without holding a Redis call in a DB lock.
-          await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext('kotoba-clash-v1-admission'))`;
           await lockIdentity(tx, identity);
+          // Only this host's replacements serialize; other hosts create independently.
+          await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext('kotoba-clash-host-room'), ${identity.userId}::integer)`;
+          if (await tx.kotobaClashRoom.findUnique({ where: { id: roomId }, select: { id: true } })) {
+            const previous = await lockRoom(tx, roomId);
+            requireHost(identity, previous.hostUserId);
+            await requireOpenRoom(tx, previous, await databaseNow(tx));
+            return { id: previous.id, code: previous.code, revision: previous.revision, closedRooms: [], duplicate: true };
+          }
+          const previous = await tx.$queryRaw<{ id: string; revision: number }[]>`
+            SELECT id, revision FROM "KotobaClashRoom"
+            WHERE "hostUserId" = ${identity.userId} AND status = 'OPEN'
+            ORDER BY id FOR UPDATE`;
           const now = await databaseNow(tx);
-          await tx.kotobaClashRoom.updateMany({ where: {
-            status: "OPEN", OR: [{ expiresAt: { lte: now } }, {
-              updatedAt: { lte: new Date(now.getTime() - CLASH_LOBBY_IDLE_MS) },
-              matches: { none: { endsAt: { gt: new Date(now.getTime() - CLASH_LOBBY_IDLE_MS) } } },
-            }],
-          }, data: { status: "CLOSED" } });
-          const previous = await tx.kotobaClashRoom.findFirst({ where: { hostUserId: identity.userId, status: "OPEN" }, select: { id: true, code: true, revision: true } });
-          if (previous) return previous;
-          if (await tx.kotobaClashRoom.count({ where: { status: "OPEN" } }) >= CLASH_INITIAL_LIMITS.activeRooms) throw new ClashError("CAPACITY");
-          return tx.kotobaClashRoom.create({ data: {
-            code: createRoomCode(), hostUserId: identity.userId, expiresAt: new Date(now.getTime() + CLASH_LOBBY_IDLE_MS),
+          await tx.kotobaClashRoom.updateMany({ where: { id: { in: previous.map((room) => room.id) } },
+            data: { status: "CLOSED", revision: { increment: 1 }, updatedAt: now } });
+          const room = await tx.kotobaClashRoom.create({ data: {
+            id: roomId, code: createRoomCode(), hostUserId: identity.userId, expiresAt: new Date(now.getTime() + CLASH_LOBBY_IDLE_MS),
             members: { create: { userId: identity.userId, nickname: input.nickname, nicknameKey: nicknameKey(input.nickname) } },
           }, select: { id: true, code: true, revision: true } });
-        });
+          return { ...room, closedRooms: previous.map((old) => ({ id: old.id, revision: old.revision + 1 })), duplicate: false };
+        }, { maxWait: 5_000, timeout: 10_000 });
       } catch (error) {
         if (!(error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") || attempt === 2) throw error;
       }
@@ -84,7 +90,7 @@ export class PrismaClashLobbyRepository {
       const spectating = Boolean(active);
       const count = await tx.kotobaClashRoomMember.count({ where: { roomId: room.id, spectating, anonymizedAt: null,
         OR: [{ userId: { not: null } }, { guestExpiresAt: { gt: now } }] } });
-      if (count >= (spectating ? CLASH_INITIAL_LIMITS.spectatorsPerRoom : CLASH_MAX_PLAYERS)) throw new ClashError("CAPACITY");
+      if (count >= (spectating ? CLASH_ROOM_LIMITS.spectatorsPerRoom : CLASH_MAX_PLAYERS)) throw new ClashError("CAPACITY");
       const member = await tx.kotobaClashRoomMember.create({ data: {
         roomId: room.id, ...identityWhere(identity),
         ...(identity.kind === "guest" ? { guestExpiresAt: new Date(identity.expiresAt) } : {}),

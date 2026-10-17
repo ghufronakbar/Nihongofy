@@ -45,7 +45,7 @@ export const ClashQuestionSnapshotSchema = z.strictObject({
 export type ClashQuestionSnapshot = z.infer<typeof ClashQuestionSnapshotSchema>;
 
 export const ClashRoomInputSchema = z.strictObject({ roomId: ClashIdSchema });
-export const ClashCreateSchema = z.strictObject({ nickname: ClashNicknameSchema });
+export const ClashCreateSchema = z.strictObject({ nickname: ClashNicknameSchema, requestId: ClashIdSchema.optional() });
 export const ClashJoinSchema = z.strictObject({ code: ClashRoomCodeSchema, nickname: ClashNicknameSchema });
 export const ClashConfigureSchema = ClashRoomInputSchema.extend({
   configRevision: z.number().int().nonnegative(),

@@ -62,7 +62,9 @@ nickname; room dipakai ulang untuk rematch; jawaban pertama final; seluruh skor 
 reveal. Timer, scoring `v1`, dan retensi dibekukan pada 17 Oktober 2026 untuk fondasi B.
 Aturan `v2` untuk match baru menambahkan reveal lebih awal ketika seluruh roster menjawab,
 tanpa mengubah rumus poin. Match v1 dan hasil historis tetap memakai aturan v1.
-Kuota global tetap batas uji sementara, bukan hasil pengukuran kapasitas gratis.
+Batas satu room global awal dihapus atas permintaan user: setiap akun dapat mempunyai room
+sendiri. Membuat room baru menutup room lama milik host secara atomik, termasuk pertandingan
+yang sedang berjalan. Room akun lain tidak terkena. Hasil lama mengikuti retensi existing.
 
 ### Kontrak fondasi B (17 Oktober 2026)
 
@@ -83,8 +85,9 @@ Kuota global tetap batas uji sementara, bukan hasil pengukuran kapasitas gratis.
   direveal, termasuk reset streak untuk jawaban salah/kosong; finalisasi retry mengganti agregat.
 - Detail room/match/jawaban bertahan sampai 7 hari setelah jadwal akhir, lobby idle 30 menit.
   Runtime memeriksa expiry walau cron belum berjalan. Guest yang kedaluwarsa tidak mendapat akses.
-- Flags Mini Games/Kotoba Clash default mati selama pengembangan. Batas uji awal satu room aktif,
-  20 pemain dan 5 spectator; ini tidak menetapkan jumlah sesi harian yang aman pada free tier.
+- Flags Mini Games/Kotoba Clash default mati selama pengembangan. Batas satu room global pada
+  fondasi B kini dihapus; 20 pemain dan 5 spectator tetap per room. Jumlah room tidak dibatasi
+  secara global oleh aplikasi; ini tidak menetapkan kapasitas terukur provider free tier.
 - Transport memeriksa otorisasi ulang paling lambat setiap 20 detik dan sebelum
   setiap command; host command selalu memeriksa session terkini. Satu lease per membership,
   takeover atomik mengganti connectionId; socket lama tidak boleh memperpanjang/menghapus lease.
@@ -179,6 +182,24 @@ Bukti lokal, batas verifikasi, dan checklist redeploy ada di
 
 Host membuat room lalu dapat membagikan link sebelum konfigurasi selesai. Landing menyediakan
 CTA Buat Room dan form kode. Guest yang memilih Buat Room mendapat CTA login dengan `next` aman.
+
+### Pembuatan dan penggantian room
+
+- Setiap host dapat membuat room tanpa menunggu room host lain ditutup. Membuat room dengan
+  request baru menghasilkan kode baru dan menutup seluruh room OPEN milik host itu dalam satu
+  transaksi; kegagalan insert membatalkan penutupan. Tidak ada batas satu room global.
+- Penutupan juga berlaku ketika match lama berjalan: peserta mendapat terminal closed dan
+  tidak dapat mengirim jawaban baru. Ledger/jadwal tidak dihapus atau dibuat seolah selesai
+  lebih awal; hasil yang selesai tetap dapat dibuka sesuai retensi. Match yang terputus memakai
+  jadwal tersimpan untuk finalisasi pada akses berikutnya seperti recovery existing.
+- Client mengirim request UUID stabil untuk retry klik yang sama, dipakai sebagai ID room baru.
+  Retry room yang masih terbuka mengembalikan room itu; request lama yang room-nya sudah ditutup
+  ditolak dan tidak menutup penggantinya. Input UUID opsional untuk kompatibilitas client lama.
+- Lock create hanya per host, lalu room lama terurut. Host berbeda tidak berbagi lock admission.
+  Invalidation penutupan dikirim setelah commit; snapshot/heartbeat memperbaiki event hilang.
+- Create dibatasi 20 percobaan per 60 detik per akun terverifikasi, bukan per IP. Bucket create
+  lama per IP tidak dipakai lagi. Join/action lain tetap memakai limit existing; room penuh
+  berarti slot pemain/spectator room tersebut, bukan kapasitas global.
 
 ### Seleksi soal
 
@@ -364,7 +385,7 @@ RLS/tanpa grant Data API, 22 constraint tervalidasi serta partial unique index d
 
 PostgreSQL adalah sumber kebenaran room, schedule, jawaban, dan hasil. Redis menyimpan registry
 guest, koordinasi Pub/Sub, rate limit, runtime control, dan lease koneksi. Live snapshot dibaca
-dari PostgreSQL, tanpa shared cache. Admission room memakai advisory lock PostgreSQL. Key
+dari PostgreSQL, tanpa shared cache. Penggantian room memakai advisory lock PostgreSQL per host. Key
 bernamespace game melalui `redisKey()`, dengan prefix environment existing dan TTL yang jelas.
 Jangan mencampur key auth dengan key permainan.
 
@@ -447,11 +468,11 @@ Fase A menguji 20 koneksi selama 15-20 menit, pemulihan melewati cutoff 5 menit,
 instance. Catat Active CPU, memory-hours, transfer, invocation, command Redis, latency/ACK, dan
 jumlah koneksi. Jangan menghitung 20 pemain sebagai pasti 20 instance atau pasti satu instance.
 
-Batas room aktif global, total koneksi, spectator per room, create/join rate, dan idle timeout
-menjadi konfigurasi server yang **ditetapkan dari hasil fase A**. Mulai pengujian dengan satu room;
-uji tambahan diperlukan sebelum menaikkan kapasitas serentak. Limit harus atomik dan mengembalikan
-pesan penuh/coba lagi, bukan membuka layanan berbayar otomatis atau membuat antrean tanpa batas.
-Mode pengujian beban tidak menjadi endpoint publik tanpa guard.
+User kemudian menyetujui pembuatan room multiuser tanpa batas satu room global. Setiap host
+mempunyai satu room terbuka dan pembuatan baru menutup yang lama; create 20/menit per akun,
+20 pemain dan 5 spectator per room, serta kontrol koneksi/idle tetap berlaku. Budget dan kapasitas
+serentak provider tetap perlu diukur. Tidak mengaktifkan layanan berbayar otomatis; pengujian beban
+tetap memakai guard terpisah. Rincian rilis ada pada [laporan room multiuser](../verification/kotoba-clash-multi-room.md).
 
 ### Migrasi ke VPS
 

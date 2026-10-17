@@ -273,6 +273,7 @@ export type FeatureFlags = typeof FEATURES;
 export type FeatureName = keyof FeatureFlags;
 
 export const KOTOBA_GUEST_COOKIE_NAME = "__Host-kotoba_guest";
+export const KOTOBA_ROOM_CREATE_RATE_LIMIT = { maximum: 20, seconds: 60 } as const;
 
 // ============================================================
 // CONVERSATION & SPEAKING

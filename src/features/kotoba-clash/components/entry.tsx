@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -17,22 +17,28 @@ const CodeSchema = z.object({ code: ClashRoomCodeSchema });
 export function ClashEntry({ authenticated }: { authenticated: boolean }) {
   const router = useRouter();
   const [message, setMessage] = useState("");
+  const createRequest = useRef<{ nickname: string; id: string } | null>(null);
   const create = useForm({ resolver: zodResolver(ClashCreateSchema), defaultValues: { nickname: "" } });
   const join = useForm({ resolver: zodResolver(CodeSchema), defaultValues: { code: "" } });
+  async function submitCreate(values: z.output<typeof ClashCreateSchema>) {
+    setMessage("");
+    try {
+      if (createRequest.current?.nickname !== values.nickname) createRequest.current = { nickname: values.nickname, id: crypto.randomUUID() };
+      const result = await createClashRoomAction({ ...values, requestId: createRequest.current.id });
+      if (result.ok) router.push(`/mini-games/kotoba-clash/room/${result.data.code}`);
+      else {
+        if (result.code === "CLOSED" || result.code === "EXPIRED") createRequest.current = null;
+        setMessage(result.message);
+      }
+    } catch { setMessage("Koneksi gagal. Coba lagi."); }
+  }
   return (
     <div className="space-y-6">
       <section className="clash-panel overflow-hidden" aria-labelledby="create-title">
         <div className="clash-section-heading bg-neo-yellow"><span className="clash-section-icon bg-white"><Plus className="size-6" /></span><div><p className="clash-label">Jadi host</p><h2 id="create-title" className="mt-1 text-2xl font-black">Buka arenamu.</h2></div></div>
         <div className="p-5 sm:p-6">
         {authenticated ? (
-          <form className="space-y-4" onSubmit={create.handleSubmit(async (values) => {
-            setMessage("");
-            try {
-              const result = await createClashRoomAction(values);
-              if (result.ok) router.push(`/mini-games/kotoba-clash/room/${result.data.code}`);
-              else setMessage(result.message);
-            } catch { setMessage("Koneksi gagal. Coba lagi."); }
-          })}>
+          <form className="space-y-4" onSubmit={(event) => void create.handleSubmit(submitCreate)(event)}>
             <label htmlFor="host-nickname" className="block text-sm font-bold">Nickname dalam room</label>
             <Input id="host-nickname" className="clash-input" placeholder="Nama andalanmu" autoComplete="nickname" maxLength={24} {...create.register("nickname")} aria-invalid={Boolean(create.formState.errors.nickname)} />
             {create.formState.errors.nickname && <p role="alert" className="text-sm">Gunakan 2-24 huruf, angka, spasi, titik, garis, atau underscore.</p>}
@@ -41,6 +47,7 @@ export function ClashEntry({ authenticated }: { authenticated: boolean }) {
         ) : <><p className="text-sm leading-6">Tentukan tantangannya, bagikan undangan, lalu ajak temanmu beradu cepat.</p><Link href="/login?next=%2Fmini-games%2Fkotoba-clash" className="clash-button mt-5 w-full" data-tone="yellow"><DoorOpen className="size-5" />Masuk dan buat room</Link></>}
         {message && <p role="alert" className="mt-4 text-sm font-semibold">{message}</p>}
         <p className="mt-4 text-xs leading-5 text-neo-ink/60">Host memakai akun. Temanmu boleh main sebagai guest.</p>
+        {authenticated && <p className="mt-2 text-xs leading-5 text-neo-ink/60">Membuat room baru akan menutup room lamamu, termasuk pertandingan yang masih berjalan.</p>}
         </div>
       </section>
       <section className="clash-panel overflow-hidden" aria-labelledby="join-code-title">
