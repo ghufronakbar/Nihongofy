@@ -22,7 +22,7 @@ export class ClashError extends Error {
     | "UNAUTHORIZED" | "NOT_FOUND" | "EXPIRED" | "CLOSED" | "HOST_REQUIRED"
     | "STALE_CONFIG" | "NOT_READY" | "CAPACITY" | "ACTIVE_MATCH" | "INVALID_QUESTIONS"
     | "INVALID_CHOICE" | "NOT_PLAYING" | "OUTSIDE_WINDOW" | "ALREADY_ANSWERED"
-    | "NICKNAME_TAKEN" | "RATE_LIMITED" | "UNAVAILABLE") {
+    | "NICKNAME_TAKEN" | "KICKED" | "INVALID_TARGET" | "RATE_LIMITED" | "UNAVAILABLE") {
     super(code);
     this.name = "ClashError";
   }

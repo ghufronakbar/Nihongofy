@@ -166,6 +166,9 @@ skenario yang lebih luas tetap belum dijalankan.
 | B11 | Ganti member/room ID, cookie, atau host command | Tidak ada impersonation, cross-room subscribe, atau perubahan oleh non-host | NOT RUN |
 | B12 | Logout/revoke akun dengan socket aktif | Revalidasi sesuai kontrak; host command setelah revocation ditolak | NOT RUN |
 | B13 | Dua host membuat room; host membuat lagi saat room lama terbuka/aktif | Kedua host punya room; request baru menutup room lama host itu; retry sama tidak mengganti dua kali; room/history pengguna lain tetap utuh | PASS lokal repository/state/real PostgreSQL, rollback/concurrency dan unit auth/rate/publish/socket; browser production NOT RUN |
+| B14 | Host mengubah level/tipe/jumlah tanpa save | Peringatan terlihat; Ready/Start host ditahan; save di kanan (mobile mengambang); save gagal mempertahankan draft; save sukses reset seluruh ready | PASS lokal komponen/browser fixture untuk draft/save; repository untuk configRevision/reset ready; cloud NOT RUN |
+| B15 | Host kick guest/akun/spectator; coba self/cross-room/non-host/Start bersamaan | Konfirmasi; target mendapat terminal kick termasuk setelah reload/reconnect; kapasitas/roster bebas; ledger lama utuh | PASS lokal PostgreSQL dan socket, dialog fixture; perjalanan browser dua akun/offline production NOT RUN |
+| B16 | Ubah nickname di lobby dan setelah selesai; nama sama bersamaan; buat/join dengan akun | Rename sendiri saja, duplikat ditolak; profil menjadi default create/join; perubahan tidak mengubah profil akun | PASS lokal repository/SSR/helper dan browser fixture input; cloud NOT RUN |
 
 ## C. Soal, Deadline, dan Skor
 

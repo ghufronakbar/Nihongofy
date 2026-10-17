@@ -80,7 +80,7 @@ export function attachClashSocket(ws: WebSocket, principal: ClashPrincipal, conn
     } catch (error) {
       const failure = clashFailure(error);
       send(ws, { type: "command_error", requestId: null, code: failure.code, message: failure.message });
-      ws.close(error instanceof ClashError && error.code === "UNAUTHORIZED" ? 4003 : 1013, "Reconnect required");
+      ws.close(failure.code === "KICKED" ? 4005 : failure.code === "UNAUTHORIZED" ? 4003 : 1013, "Reconnect required");
     } finally { refreshing = false; }
   }
 

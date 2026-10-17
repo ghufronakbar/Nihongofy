@@ -223,7 +223,12 @@ CTA Buat Room dan form kode. Guest yang memilih Buat Room mendapat CTA login den
 
 ### Ready dan Start
 
-- Perubahan level, anak terpilih, atau jumlah soal menaikkan `configRevision` dan mereset ready.
+- Draft level, tipe, atau jumlah soal menampilkan peringatan di form dan panel pemain. Ready/Start
+  host ditahan selama draft berbeda dari config tersimpan; perubahan urutan checkbox saja tidak
+  dihitung sebagai perubahan. Draft lokal tidak disiarkan ke peserta lain.
+- Tombol Simpan pengaturan ada di panel kanan sticky. Pada mobile tombol yang sama mengambang
+  di bawah selama ada draft, sehingga tidak perlu kembali ke ujung form. Validasi stok tetap aktif.
+- Menyimpan pengaturan menaikkan `configRevision` dan mereset ready seluruh peserta.
   Ready berlaku hanya untuk revision yang disetujui pemain.
 - Start memerlukan host sah, 2-20 pemain aktif termasuk host, seluruh roster siap pada revision
   terbaru, stok soal cukup, dan kuota room/koneksi tersedia.
@@ -231,6 +236,30 @@ CTA Buat Room dan form kode. Guest yang memilih Buat Room mendapat CTA login den
   membership yang tidak masuk roster menjadi spectator untuk pertandingan itu.
 - Retry Start tidak membuat pertandingan kedua. Satu room hanya mempunyai satu pertandingan
   aktif. Konfigurasi tidak dapat diganti setelah countdown dimulai.
+
+### Nickname dan kick
+
+- Form create/join akun memakai `User.displayName` sebagai isi awal. Karakter di luar aturan
+  nickname dibersihkan dan nama dipotong aman sampai 24 unit UTF-16; nama yang terlalu pendek
+  tetap perlu diisi. Guest memulai dengan input kosong. Default ini tetap dapat diedit.
+- Semua anggota, termasuk host dan spectator, dapat mengubah nickname sendiri saat lobby atau
+  sesudah match selesai. Server menentukan membership dari identitas, menolak nama duplikat
+  setelah normalisasi, dan tidak mengubah profil. Nickname baru juga terlihat di hasil lama
+  karena hasil merujuk membership, tanpa snapshot nama terpisah.
+- Host dapat mengeluarkan pemain/spectator melalui tombol pada line-up dan dialog konfirmasi.
+  Hanya anggota room itu yang bisa dipilih; host tidak bisa mengeluarkan dirinya sendiri.
+  Kick/rename memakai lock room yang sama dengan Start dan ditolak ketika match aktif.
+- Kick menyimpan `kickedAt`, mengosongkan ready, menghilangkan anggota dari lobby/kapasitas/
+  roster berikutnya, dan mempertahankan identitas serta ledger. Nickname tetap dicadangkan
+  sampai retensi room selesai. Join/read/command dengan identitas tersebut ditolak `KICKED`;
+  ini bukan ban lintas room atau ban perangkat permanen untuk guest yang mengganti credential.
+- Invalidation dikirim setelah commit. Socket mengirim pesan privat `KICKED` sebelum ditutup
+  (4005); client menampilkan terminal khusus tanpa join/reconnect. Reload mengenali alasan yang
+  sama. HTTP upgrade gagal saat reconnect memicu pembacaan state untuk mendeteksi kick offline.
+  Heartbeat memulihkan notifikasi yang kehilangan event. Hasil lama tetap tersedia bagi anggota
+  lain yang sah; peserta kicked tidak lagi mempunyai akses room tersebut.
+- Export akun mencakup timestamp kick milik sendiri; anonimisasi akun/guest mengosongkannya.
+  Migration wajib sebelum deploy; lihat [verifikasi refinement lobby](../verification/kotoba-clash-lobby-refinements.md).
 
 ## 5. Lifecycle dan Waktu
 

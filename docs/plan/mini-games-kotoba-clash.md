@@ -280,7 +280,22 @@ Bukti lokal: [laporan room multiuser](../verification/kotoba-clash-multi-room.md
 651 tes /49 file; room checker 14 kelompok dan foundation checker 8 kelompok PASS. Tidak ada
 migration/env baru; redeploy dan acceptance browser production masih perlu dijalankan user.
 
-## 13. Aturan Pemeliharaan Rencana
+## 13. Refinement Lobby - 17 Oktober 2026
+
+- [x] Tampilkan peringatan draft konfigurasi di form dan panel kanan; tahan ready/start host
+  sampai draft disimpan. Pindahkan tombol simpan ke panel kanan yang tetap mudah dijangkau.
+- [x] Tambahkan kick oleh host hanya saat lobby/selesai, notifikasi terminal untuk peserta,
+  penolakan join ulang dengan identitas yang sama, dan pertahankan ledger pertandingan.
+- [x] Izinkan perubahan nickname sendiri di lobby/selesai dengan validasi duplikat server.
+  Isi awal form create/join dari display name profil, tanpa mengubah profil saat rename.
+- [x] Uji otorisasi/race start, socket/terminal reload kick, rename dan UI lokal; catat migration
+  serta gate. UAT browser production (termasuk kick offline/reconnect) tetap terbuka pada laporan.
+
+Bukti: [laporan refinement lobby](../verification/kotoba-clash-lobby-refinements.md). Gate lulus
+659 tes /50 file, room checker 19 kelompok dan foundation checker 8 kelompok. Migration baru
+`20261017164300_kotoba_clash_lobby_refinements` wajib sebelum redeploy; belum diterapkan production.
+
+## 14. Aturan Pemeliharaan Rencana
 
 Centang hanya setelah implementasi dan verifikasi relevan selesai. UAT user tetap dibedakan dari
 check otomatis developer. Perubahan default ditulis pada modul sebelum kode diubah; status layanan

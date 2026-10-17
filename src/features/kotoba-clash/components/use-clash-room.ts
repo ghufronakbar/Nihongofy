@@ -3,17 +3,19 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ClashServerMessageSchema, type ClashRoomSnapshot } from "../contracts";
 import type { ClashClientMessage } from "../schemas";
+import { getClashRoomAction } from "../actions";
 
 type AnswerMessage = Extract<ClashClientMessage, { type: "submit_answer" }>;
 export type ClashConnectionStatus = "connecting" | "online" | "reconnecting" | "replaced" | "closed";
 
-export function useClashRoom(initial: ClashRoomSnapshot | null) {
+export function useClashRoom(initial: ClashRoomSnapshot | null, initiallyKicked = false) {
   const [state, setState] = useState(initial);
   const [status, setStatus] = useState<ClashConnectionStatus>(initial?.closed ? "closed" : "connecting");
   const [error, setError] = useState<string | null>(null);
   const [now, setNow] = useState(initial?.serverNow ?? 0);
   const [pendingRound, setPendingRound] = useState<string | null>(null);
   const [generation, setGeneration] = useState(0);
+  const [kicked, setKicked] = useState(initiallyKicked);
   const anchor = useRef({ serverNow: initial?.serverNow ?? 0, receivedAt: 0 });
   const socket = useRef<WebSocket | null>(null);
   const pending = useRef<AnswerMessage | null>(null);
@@ -37,7 +39,7 @@ export function useClashRoom(initial: ClashRoomSnapshot | null) {
 
   const [online, setOnline] = useState<string[]>([]);
   useEffect(() => {
-    if (!roomId || roomClosed) return;
+    if (!roomId || roomClosed || kicked) return;
     let stopped = false;
     let attempts = 0;
     let reconnect: ReturnType<typeof setTimeout> | undefined;
@@ -85,6 +87,15 @@ export function useClashRoom(initial: ClashRoomSnapshot | null) {
               setPendingRound(null);
             }
           } else {
+            if (message.code === "KICKED") {
+              setKicked(true);
+              setStatus("closed");
+              stopped = true;
+              pending.current = null;
+              setPendingRound(null);
+              ws.close(1000, "Removed from room");
+              return;
+            }
             if (["CLOSED", "EXPIRED", "NOT_FOUND"].includes(message.code)) {
               setState((current) => current ? { ...current, closed: true } : current);
               setStatus("closed");
@@ -103,14 +114,32 @@ export function useClashRoom(initial: ClashRoomSnapshot | null) {
           ws.close(1002, "Invalid protocol");
         }
       };
-      ws.onclose = (event) => {
+      ws.onclose = async (event) => {
         if (stopped || socket.current !== ws) return;
         socket.current = null;
         setOnline([]);
         if (latest.current?.closed) { setStatus("closed"); return; }
         if (event.code === 4009) { setStatus("replaced"); return; }
+        if (event.code === 4005) { setKicked(true); setStatus("closed"); return; }
         if (event.code === 4003 || event.code === 4004 || event.code === 1002) { setStatus("closed"); return; }
         setStatus("reconnecting");
+        // A rejected HTTP upgrade has no WebSocket error payload (for example, a kick while offline).
+        if (event.code === 1006 && latest.current) {
+          try {
+            const result = await getClashRoomAction(latest.current.code);
+            if (stopped) return;
+            if (result.ok) {
+              accept(result.data);
+              if (result.data.closed) { setStatus("closed"); return; }
+            } else if (result.code === "KICKED") {
+              setKicked(true); setStatus("closed"); return;
+            } else if (["CLOSED", "EXPIRED", "NOT_FOUND"].includes(result.code)) {
+              setState((current) => current ? { ...current, closed: true } : current);
+              setStatus("closed"); return;
+            }
+          } catch { /* Keep the reconnect backoff when the network is still unavailable. */ }
+        }
+        if (stopped) return;
         attempts++;
         reconnect = setTimeout(connect, Math.min(30_000, 750 * 2 ** Math.min(attempts, 6)) * (0.8 + Math.random() * 0.4));
       };
@@ -118,7 +147,7 @@ export function useClashRoom(initial: ClashRoomSnapshot | null) {
     }
     connect();
     return () => { stopped = true; clearTimeout(reconnect); socket.current?.close(1000, "Leaving room"); socket.current = null; };
-  }, [roomId, roomClosed, generation, accept]);
+  }, [roomId, roomClosed, kicked, generation, accept]);
 
   function answer(choice: number) {
     const match = state?.match;
@@ -133,5 +162,5 @@ export function useClashRoom(initial: ClashRoomSnapshot | null) {
     ws.send(JSON.stringify(message));
   }
 
-  return { state, status, online, now, error, setError, accept, answer, pendingRound, reconnect: () => setGeneration((value) => value + 1) };
+  return { state, status, online, now, error, setError, kicked, setKicked, accept, answer, pendingRound, reconnect: () => setGeneration((value) => value + 1) };
 }

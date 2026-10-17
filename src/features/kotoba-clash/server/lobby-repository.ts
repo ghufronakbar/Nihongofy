@@ -2,7 +2,7 @@ import "server-only";
 
 import { randomUUID } from "node:crypto";
 import { Prisma, type PrismaClient } from "@prisma/client";
-import { ClashConfigureSchema, ClashCreateSchema, ClashJoinSchema, ClashReadySchema, ClashRoomInputSchema, nicknameKey } from "../schemas";
+import { ClashConfigureSchema, ClashCreateSchema, ClashJoinSchema, ClashKickSchema, ClashRenameSchema, ClashReadySchema, ClashRoomInputSchema, nicknameKey } from "../schemas";
 import { ClashError, type ClashIdentity } from "../domain/ports";
 import { CLASH_LOBBY_IDLE_MS, CLASH_MAX_PLAYERS } from "../domain/rules";
 import { createRoomCode } from "./guest-credential";
@@ -83,12 +83,13 @@ export class PrismaClashLobbyRepository {
       const now = await databaseNow(tx);
       await requireOpenRoom(tx, room, now);
       if (identity.kind === "guest" && identity.expiresAt <= now.getTime()) throw new ClashError("EXPIRED");
-      const previous = await tx.kotobaClashRoomMember.findFirst({ where: { roomId: room.id, ...identityWhere(identity), anonymizedAt: null }, select: { id: true } });
+      const previous = await tx.kotobaClashRoomMember.findFirst({ where: { roomId: room.id, ...identityWhere(identity), anonymizedAt: null }, select: { id: true, kickedAt: true } });
+      if (previous?.kickedAt) throw new ClashError("KICKED");
       if (previous) return { roomId: room.id, code: room.code, memberId: previous.id, revision: room.revision };
       if (await tx.kotobaClashRoomMember.findUnique({ where: { roomId_nicknameKey: { roomId: room.id, nicknameKey: nicknameKey(input.nickname) } }, select: { id: true } })) throw new ClashError("NICKNAME_TAKEN");
       const active = await tx.kotobaClashMatch.findFirst({ where: { roomId: room.id, status: "RUNNING" }, select: { id: true } });
       const spectating = Boolean(active);
-      const count = await tx.kotobaClashRoomMember.count({ where: { roomId: room.id, spectating, anonymizedAt: null,
+      const count = await tx.kotobaClashRoomMember.count({ where: { roomId: room.id, spectating, anonymizedAt: null, kickedAt: null,
         OR: [{ userId: { not: null } }, { guestExpiresAt: { gt: now } }] } });
       if (count >= (spectating ? CLASH_ROOM_LIMITS.spectatorsPerRoom : CLASH_MAX_PLAYERS)) throw new ClashError("CAPACITY");
       const member = await tx.kotobaClashRoomMember.create({ data: {
@@ -136,6 +137,41 @@ export class PrismaClashLobbyRepository {
     });
   }
 
+  async rename(identity: ClashIdentity, raw: unknown) {
+    const input = ClashRenameSchema.parse(raw);
+    return this.db.$transaction(async (tx) => {
+      await lockIdentity(tx, identity);
+      const room = await lockRoom(tx, input.roomId);
+      const now = await databaseNow(tx);
+      await requireOpenRoom(tx, room, now);
+      const member = await requireMember(tx, identity, room.id, now);
+      await requireLobby(tx, room.id);
+      const key = nicknameKey(input.nickname);
+      if (await tx.kotobaClashRoomMember.findFirst({ where: { roomId: room.id, nicknameKey: key, id: { not: member.id } }, select: { id: true } })) throw new ClashError("NICKNAME_TAKEN");
+      await tx.kotobaClashRoomMember.update({ where: { id: member.id }, data: { nickname: input.nickname, nicknameKey: key } });
+      return touch(tx, room, now);
+    });
+  }
+
+  async kick(identity: ClashIdentity, raw: unknown) {
+    const input = ClashKickSchema.parse(raw);
+    return this.db.$transaction(async (tx) => {
+      await lockIdentity(tx, identity);
+      const room = await lockRoom(tx, input.roomId);
+      requireHost(identity, room.hostUserId);
+      const now = await databaseNow(tx);
+      await requireOpenRoom(tx, room, now);
+      const host = await requireMember(tx, identity, room.id, now);
+      await requireLobby(tx, room.id);
+      const member = await tx.kotobaClashRoomMember.findFirst({ where: { id: input.memberId, roomId: room.id, anonymizedAt: null }, select: { id: true, kickedAt: true } });
+      if (!member || member.id === host.id) throw new ClashError("INVALID_TARGET");
+      if (member.kickedAt) return { revision: room.revision };
+      // Keep identity and match ledgers so reconnects cannot silently undo the kick.
+      await tx.kotobaClashRoomMember.update({ where: { id: member.id }, data: { kickedAt: now, readyRevision: null } });
+      return touch(tx, room, now);
+    });
+  }
+
   async close(identity: ClashIdentity, raw: unknown) {
     const input = ClashRoomInputSchema.parse(raw);
     return this.db.$transaction(async (tx) => {
@@ -157,7 +193,7 @@ export class PrismaClashLobbyRepository {
       const member = await requireMember(tx, identity, room.id, now);
       await requireLobby(tx, room.id);
       if (member.spectating) {
-        const count = await tx.kotobaClashRoomMember.count({ where: { roomId: room.id, spectating: false, anonymizedAt: null,
+        const count = await tx.kotobaClashRoomMember.count({ where: { roomId: room.id, spectating: false, anonymizedAt: null, kickedAt: null,
           OR: [{ userId: { not: null } }, { guestExpiresAt: { gt: now } }] } });
         if (count >= CLASH_MAX_PLAYERS) throw new ClashError("CAPACITY");
         await tx.kotobaClashRoomMember.update({ where: { id: member.id }, data: { spectating: false, readyRevision: null } });

@@ -1,6 +1,6 @@
 "use client";
 
-import { Crown, Flame, Swords, Trophy, Users, Zap } from "lucide-react";
+import { Crown, Flame, Swords, Trophy, UserMinus, Users, Zap } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -95,17 +95,21 @@ export function ClashFinish({ match, members }: { match: NonNullable<ClashRoomSn
   </section>;
 }
 
-export function ClashMemberList({ state, online, active = false }: { state: ClashRoomSnapshot; online: string[]; active?: boolean }) {
+export function ClashMemberList({ state, online, active = false, kick, disabled }: {
+  state: ClashRoomSnapshot; online: string[]; active?: boolean; disabled?: boolean;
+  kick?: (member: ClashRoomSnapshot["members"][number]) => void;
+}) {
   const players = state.members.filter((member) => !member.spectating);
   return <div>
     <div className="flex flex-wrap items-center justify-between gap-3"><h2 className="flex items-center gap-2 text-lg font-black"><Users className="size-5" />{active ? "Di arena" : "Line-up pemain"}</h2><span className="clash-tag">{players.length}/20</span></div>
-    <ul className={cn("mt-5 space-y-4", active && "grid gap-5 sm:grid-cols-2 sm:space-y-0 lg:grid-cols-3")}>
+    <ul className={cn("mt-5 space-y-4", active ? "grid gap-5 sm:grid-cols-2 sm:space-y-0 lg:grid-cols-3" : "max-h-64 overflow-y-auto pr-1")}>
       {state.members.map((member) => <li key={member.id} className="flex items-center gap-3">
         <ClashAvatar nickname={member.nickname} avatarUrl={member.avatarUrl} />
         <div className="min-w-0 flex-1"><div className="flex items-center gap-1.5"><p className="truncate text-sm font-extrabold" title={member.nickname}>{member.nickname}{member.id === state.viewer.memberId ? " (Anda)" : ""}</p>{member.isHost && <span className="text-[10px] font-black">HOST</span>}</div>
           <p className="mt-1 flex items-center gap-1.5 text-xs text-neo-ink/65"><span className="clash-status-dot" data-online={online.includes(member.id)} aria-hidden="true" />{online.includes(member.id) ? "Terhubung" : "Offline"}{member.spectating ? " / Penonton" : !active ? member.ready ? " / Ready" : " / Belum ready" : ""}</p>
         </div>
         {!active && !member.spectating && member.ready && <span className="border-2 border-neo-ink bg-neo-green px-1.5 py-1 text-[10px] font-black">READY</span>}
+        {!active && state.viewer.isHost && !member.isHost && kick && <ClashButton tone="coral" className="shrink-0 px-2" disabled={disabled} aria-label={`Keluarkan ${member.nickname}`} title={`Keluarkan ${member.nickname}`} onClick={() => kick(member)}><UserMinus className="size-4" /></ClashButton>}
       </li>)}
     </ul>
   </div>;

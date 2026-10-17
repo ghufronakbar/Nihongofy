@@ -9,7 +9,7 @@ import { CLASH_DURATIONS_MS, CLASH_LOBBY_IDLE_MS, CLASH_MAX_PLAYERS, CLASH_MIN_P
 
 export type Tx = Prisma.TransactionClient;
 
-const memberSelect = { id: true, userId: true, guestHash: true, guestExpiresAt: true, anonymizedAt: true, readyRevision: true, spectating: true } as const;
+const memberSelect = { id: true, userId: true, guestHash: true, guestExpiresAt: true, anonymizedAt: true, kickedAt: true, readyRevision: true, spectating: true } as const;
 const roundSelect = { id: true, position: true, snapshot: true, startsAt: true, endsAt: true, revealEndsAt: true, finalizedAt: true } as const;
 
 export async function databaseNow(tx: Tx) {
@@ -52,6 +52,7 @@ export async function requireMember(tx: Tx, identity: ClashIdentity, roomId: str
     select: memberSelect,
   });
   if (!member) throw new ClashError("UNAUTHORIZED");
+  if (member.kickedAt) throw new ClashError("KICKED");
   if (identity.kind === "guest" && (identity.expiresAt <= now.getTime() || !member.guestExpiresAt || member.guestExpiresAt <= now)) {
     throw new ClashError("EXPIRED");
   }
@@ -108,7 +109,7 @@ export class PrismaClashRepository {
       const active = await tx.kotobaClashMatch.findFirst({ where: { roomId: room.id, status: "RUNNING" }, select: { id: true } });
       if (active) throw new ClashError("ACTIVE_MATCH");
       const members = await tx.kotobaClashRoomMember.findMany({
-        where: { roomId: room.id, spectating: false, anonymizedAt: null,
+        where: { roomId: room.id, spectating: false, anonymizedAt: null, kickedAt: null,
           ...(connectedMemberIds ? { id: { in: connectedMemberIds } } : {}),
           OR: [{ userId: { not: null } }, { guestExpiresAt: { gt: now } }] },
         select: memberSelect,

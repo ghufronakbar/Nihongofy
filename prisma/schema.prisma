@@ -397,6 +397,7 @@ model KotobaClashRoomMember {
   nicknameKey    String?                  @db.VarChar(48)
   readyRevision  Int?
   spectating     Boolean                  @default(false)
+  kickedAt       DateTime?                @db.Timestamptz(3)
   anonymizedAt   DateTime?                @db.Timestamptz(3)
   joinedAt       DateTime                 @default(now()) @db.Timestamptz(3)
   lastSeenAt     DateTime                 @default(now()) @db.Timestamptz(3)

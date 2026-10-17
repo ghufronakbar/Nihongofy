@@ -3,13 +3,13 @@ import { PageContainer } from "@/components/marketing/page-container";
 import { ClashEntry } from "@/features/kotoba-clash/components/entry";
 import { ClashShowcase } from "@/features/kotoba-clash/components/arena-ui";
 import { ArrowLeft, Swords } from "lucide-react";
-import { getSession } from "@/lib/auth";
+import { getSessionUser } from "@/lib/auth";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({ title: "Kotoba Clash", description: "Battle kuis JLPT N5-N1 untuk 2-20 pemain. Undang teman melalui kode atau link, termasuk guest.", path: "/mini-games/kotoba-clash" });
 
 export default async function KotobaClashPage() {
-  const session = await getSession();
+  const session = await getSessionUser();
   return (
     <PageContainer className="py-8 md:py-12">
       <Link href="/mini-games" className="inline-flex items-center gap-2 text-sm font-bold underline underline-offset-4"><ArrowLeft className="size-4" />Semua Mini Games</Link>
@@ -25,7 +25,7 @@ export default async function KotobaClashPage() {
           </dl>
           <ClashShowcase />
         </div>
-        <ClashEntry authenticated={Boolean(session)} />
+        <ClashEntry authenticated={Boolean(session)} displayName={session?.user.displayName} />
       </div>
       <ol className="mt-10 grid gap-5 border-t-[3px] border-neo-ink pt-6 sm:grid-cols-3">
         {[{ title: "Kumpulkan rivalmu", text: "Bagikan kode atau link. Guest juga bisa ikut." }, { title: "Sepakati tantangan", text: "Pilih level dan tipe soal, lalu semua ready." }, { title: "Kejar takhtanya", text: "Jawab tepat, adu cepat, dan sambung streak." }].map((step, index) => <li key={step.title} className="flex gap-3"><span className="font-mono text-3xl font-black text-neo-blue">0{index + 1}</span><div><h2 className="font-black">{step.title}</h2><p className="mt-1 text-sm leading-6 text-neo-ink/70">{step.text}</p></div></li>)}

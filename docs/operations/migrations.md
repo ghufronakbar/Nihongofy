@@ -33,6 +33,25 @@ contract wajib memiliki migration dan catatan ringkas di dokumen/PR perubahan. J
 
 ## Ledger
 
+### 17 Oktober 2026 - Kotoba Clash refinement lobby
+
+- Status: required (applied dan diuji lokal; belum dijalankan pada production di sesi ini)
+- Migration: `prisma/migrations/20261017164300_kotoba_clash_lobby_refinements/migration.sql`
+- Alasan: host dapat mengeluarkan peserta di lobby tanpa menghapus ledger atau mengizinkan
+  reconnect memulihkan membership yang sudah dicabut.
+- Object terdampak: satu kolom nullable `KotobaClashRoomMember.kickedAt` `TIMESTAMPTZ(3)`.
+  Tidak ada perubahan index/FK/CHECK/RLS/grant. Semua row existing tetap NULL; tidak ada backfill.
+- Risiko operasi: ADD COLUMN nullable tanpa default tidak menulis ulang tabel, tetapi membutuhkan
+  ACCESS EXCLUSIVE lock singkat. Terapkan sebelum redeploy. Selesaikan match dan refresh semua
+  tab setelah redeploy agar instance/socket lama tidak mengabaikan status kick yang baru.
+- Validasi: Prisma create-only memakai baseline generator lokal disposable karena shadow replay
+  sejarah gagal pada `_prisma_migrations`; SQL ditinjau dan diterapkan pada DB lokal yang berisi
+  seluruh migration existing. Prisma validate, checker transaksi/RLS/anonimisasi, dan gate penuh
+  dicatat di [laporan refinement lobby](../verification/kotoba-clash-lobby-refinements.md).
+- Refresh setelah deploy: `npx prisma migrate deploy` melalui DIRECT_URL, redeploy dan refresh tab.
+  Tidak ada env/seed/flush Redis atau cache baru.
+- Owner: Engineering Owner untuk bukti lokal; user/Release Owner untuk migration/deploy production.
+
 ### 17 Oktober 2026 - Kotoba Clash room multiuser dan penggantian room host
 
 - Status: not required

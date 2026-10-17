@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ClashError } from "./domain/ports";
 
 const fixture = vi.hoisted(() => ({
-  principal: vi.fn(), verify: vi.fn(), create: vi.fn(), publish: vi.fn(), limit: vi.fn(),
+  principal: vi.fn(), verify: vi.fn(), create: vi.fn(), publish: vi.fn(), limit: vi.fn(), read: vi.fn(), kick: vi.fn(), rename: vi.fn(),
 }));
 vi.mock("server-only", () => ({}));
 vi.mock("next/headers", () => ({ headers: async () => new Headers({ "x-forwarded-for": "192.0.2.10" }) }));
@@ -16,15 +16,38 @@ vi.mock("./server/auth", () => ({
 vi.mock("./server/presence", () => ({ limitClash: fixture.limit, requireClashRuntime: vi.fn(), clashPresence: {} }));
 vi.mock("./server/catalog", () => ({ getClashCatalog: vi.fn(), sampleClashQuestions: vi.fn() }));
 vi.mock("./server/runtime", () => ({
-  clashLobby: { create: fixture.create }, publishClashChange: fixture.publish, clashState: {}, clashCommands: {},
+  clashLobby: { create: fixture.create, kick: fixture.kick, rename: fixture.rename }, publishClashChange: fixture.publish, clashState: { read: fixture.read }, clashCommands: {},
 }));
-import { createClashRoomAction } from "./actions";
+import { createClashRoomAction, kickClashMemberAction, renameClashMemberAction } from "./actions";
 
 beforeEach(() => {
   vi.resetAllMocks();
   fixture.principal.mockResolvedValue({ kind: "account" });
   fixture.verify.mockResolvedValue({ kind: "account", userId: 1 });
   fixture.create.mockResolvedValue({ id: randomUUID(), code: "ABCD2345", revision: 0, duplicate: false, closedRooms: [] });
+});
+
+describe("Kotoba Clash lobby edits", () => {
+  it("validates member edits before reading or writing room data", async () => {
+    expect(await kickClashMemberAction({ roomId: randomUUID(), memberId: "invalid" })).toMatchObject({ ok: false, code: "INVALID_INPUT" });
+    expect(await renameClashMemberAction({ roomId: randomUUID(), nickname: "Valid", userId: 2 })).toMatchObject({ ok: false, code: "INVALID_INPUT" });
+    expect(fixture.read).not.toHaveBeenCalled();
+    expect(fixture.kick).not.toHaveBeenCalled();
+    expect(fixture.rename).not.toHaveBeenCalled();
+  });
+  it("broadcasts only committed lobby edits and returns an actor-scoped snapshot", async () => {
+    const roomId = randomUUID();
+    const memberId = randomUUID();
+    fixture.kick.mockResolvedValue({ revision: 2 });
+    fixture.rename.mockRejectedValueOnce(new ClashError("NICKNAME_TAKEN"));
+    fixture.read.mockResolvedValue({ id: roomId });
+    expect(await renameClashMemberAction({ roomId, nickname: "Taken" })).toMatchObject({ ok: false, code: "NICKNAME_TAKEN" });
+    expect(fixture.publish).not.toHaveBeenCalled();
+    expect(await kickClashMemberAction({ roomId, memberId })).toEqual({ ok: true, data: { id: roomId } });
+    expect(fixture.kick).toHaveBeenCalledWith({ kind: "account", userId: 1 }, { roomId, memberId });
+    expect(fixture.publish).toHaveBeenCalledExactlyOnceWith(roomId, 2);
+    expect(fixture.read).toHaveBeenLastCalledWith({ kind: "account", userId: 1 }, roomId);
+  });
 });
 
 describe("Kotoba Clash room creation", () => {

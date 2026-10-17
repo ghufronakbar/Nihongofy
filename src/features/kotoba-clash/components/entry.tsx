@@ -11,14 +11,15 @@ import { Input } from "@/components/ui/input";
 import { ClashButton } from "./arena-ui";
 import { createClashRoomAction } from "../actions";
 import { ClashCreateSchema, ClashRoomCodeSchema } from "../schemas";
+import { clashProfileNickname } from "../profile-nickname";
 
 const CodeSchema = z.object({ code: ClashRoomCodeSchema });
 
-export function ClashEntry({ authenticated }: { authenticated: boolean }) {
+export function ClashEntry({ authenticated, displayName }: { authenticated: boolean; displayName?: string }) {
   const router = useRouter();
   const [message, setMessage] = useState("");
   const createRequest = useRef<{ nickname: string; id: string } | null>(null);
-  const create = useForm({ resolver: zodResolver(ClashCreateSchema), defaultValues: { nickname: "" } });
+  const create = useForm({ resolver: zodResolver(ClashCreateSchema), defaultValues: { nickname: clashProfileNickname(displayName) } });
   const join = useForm({ resolver: zodResolver(CodeSchema), defaultValues: { code: "" } });
   async function submitCreate(values: z.output<typeof ClashCreateSchema>) {
     setMessage("");
@@ -40,7 +41,7 @@ export function ClashEntry({ authenticated }: { authenticated: boolean }) {
         {authenticated ? (
           <form className="space-y-4" onSubmit={(event) => void create.handleSubmit(submitCreate)(event)}>
             <label htmlFor="host-nickname" className="block text-sm font-bold">Nickname dalam room</label>
-            <Input id="host-nickname" className="clash-input" placeholder="Nama andalanmu" autoComplete="nickname" maxLength={24} {...create.register("nickname")} aria-invalid={Boolean(create.formState.errors.nickname)} />
+            <Input id="host-nickname" className="clash-input" placeholder="Nama andalanmu" autoComplete="nickname" defaultValue={clashProfileNickname(displayName)} maxLength={24} {...create.register("nickname")} aria-invalid={Boolean(create.formState.errors.nickname)} />
             {create.formState.errors.nickname && <p role="alert" className="text-sm">Gunakan 2-24 huruf, angka, spasi, titik, garis, atau underscore.</p>}
             <ClashButton type="submit" tone="yellow" className="w-full" disabled={create.formState.isSubmitting}>{create.formState.isSubmitting ? "Membuat room..." : "Buat Room"}<ArrowRight className="size-5" /></ClashButton>
           </form>

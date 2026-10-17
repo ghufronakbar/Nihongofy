@@ -4,7 +4,7 @@ import { createHmac } from "node:crypto";
 import { headers } from "next/headers";
 import { env, KOTOBA_ROOM_CREATE_RATE_LIMIT } from "@/constants";
 import { ClashError } from "./domain/ports";
-import { ClashConfigureSchema, ClashCreateSchema, ClashJoinSchema, ClashReadySchema, ClashRoomCodeSchema, ClashRoomInputSchema, ClashStartSchema, ClashIdSchema } from "./schemas";
+import { ClashConfigureSchema, ClashCreateSchema, ClashJoinSchema, ClashKickSchema, ClashRenameSchema, ClashReadySchema, ClashRoomCodeSchema, ClashRoomInputSchema, ClashStartSchema, ClashIdSchema } from "./schemas";
 import { createClashGuest, readClashPrincipal, verifyClashPrincipal, requireClashEnabled } from "./server/auth";
 import { clashBoundary } from "./server/errors";
 import { getClashCatalog, sampleClashQuestions } from "./server/catalog";
@@ -86,6 +86,28 @@ export async function readyClashRoomAction(raw: unknown) {
     const { identity } = await actor("ready");
     await clashState.read(identity, input.roomId);
     const result = await clashLobby.ready(identity, input);
+    await publishClashChange(input.roomId, result.revision);
+    return clashState.read(identity, input.roomId);
+  });
+}
+
+export async function renameClashMemberAction(raw: unknown) {
+  return clashBoundary(async () => {
+    const input = ClashRenameSchema.parse(raw);
+    const { identity } = await actor("rename");
+    await clashState.read(identity, input.roomId);
+    const result = await clashLobby.rename(identity, input);
+    await publishClashChange(input.roomId, result.revision);
+    return clashState.read(identity, input.roomId);
+  });
+}
+
+export async function kickClashMemberAction(raw: unknown) {
+  return clashBoundary(async () => {
+    const input = ClashKickSchema.parse(raw);
+    const { identity } = await actor("kick");
+    await clashState.read(identity, input.roomId);
+    const result = await clashLobby.kick(identity, input);
     await publishClashChange(input.roomId, result.revision);
     return clashState.read(identity, input.roomId);
   });

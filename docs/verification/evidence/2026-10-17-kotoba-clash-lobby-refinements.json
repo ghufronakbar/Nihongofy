@@ -1,0 +1,112 @@
+{
+  "date": "2026-10-17",
+  "feature": "Kotoba Clash lobby refinements",
+  "baseCommit": "cc58ec0fcaef05e703e5298ced25d8622b517c0c",
+  "productionWrites": false,
+  "deploymentPerformed": false,
+  "migration": {
+    "name": "20261017164300_kotoba_clash_lobby_refinements",
+    "localApplied": true,
+    "totalAppliedLocally": 44,
+    "productionAppliedByThisTask": false,
+    "column": {
+      "name": "kickedAt",
+      "type": "timestamp with time zone",
+      "nullable": true,
+      "precision": 3
+    }
+  },
+  "verification": {
+    "npmRunVerify": {
+      "status": "PASS",
+      "tests": 659,
+      "files": 50,
+      "lintWarnings": 0,
+      "typecheck": "PASS",
+      "productionBuild": "PASS"
+    },
+    "prismaValidate": "PASS",
+    "localMigrationStatus": "up to date",
+    "diffCheck": "PASS",
+    "roomChecker": {
+      "status": "PASS",
+      "checks": [
+        "Different hosts can open rooms together; concurrent retries of one create request return one room",
+        "Concurrent distinct creates leave one open room per host; stale retries and another account cannot replace it",
+        "Failed replacement insert rolls back old-room closure in the real database",
+        "Guest resume preserves one membership; normalized nickname collision and unrelated reads are rejected",
+        "Own nickname changes normalize and publish on the next snapshot; collisions serialize and profile names stay unchanged",
+        "Only the host can kick another room member; guest/account bans survive rejoin, retries are idempotent and other rooms stay accessible",
+        "Server sampling is unique and balanced, excludes audio, and rejects insufficient stock",
+        "Config resets all ready states; stale ready and a disconnected roster cannot Start; countdown hides content",
+        "Late arrivals spectate; concurrent spectator admission respects five slots; unfinished results remain private",
+        "Active projection hides keys, explanations, furigana, opponent choices and active-round points",
+        "The last roster answer opens reveal without waiting for the maximum deadline",
+        "Account export includes completed offline schedules, rebuilds own score and excludes active matches, keys and other players",
+        "Rename/kick reject active play, work after finish, preserve prior answers/results and exclude kicked members from rematch even with a stale presence list",
+        "Read recovers finalization; completed review is scoped; spectator can opt in; rematch preserves code and old result URL",
+        "Cleanup preserves active matches and unexpired results; expired guest identity is anonymized without deleting score ledgers",
+        "Replacing an active room closes old clients, rejects new joins/answers, preserves completed history and leaves the other host untouched",
+        "Concurrent Start and kick serialize: either the roster freezes intact or the kick commits before Start rechecks readiness",
+        "Account export includes its own kick timestamp; real account anonymization clears it and personal linkage without losing prior match ledgers",
+        "Real Redis Lua: authenticated takeover is immediate; old owner cannot renew or release replacement"
+      ]
+    },
+    "foundationChecker": {
+      "status": "PASS",
+      "checks": [
+        "Concurrent Start: one match and one frozen roster",
+        "Private ACK; first answer final; concurrent retry creates one answer; other player can answer",
+        "Spectator and expired guest cannot submit; Unicode nickname keys fit normalization",
+        "Database clock is read after lock wait; late acceptance is rejected",
+        "Concurrent/repeated finalization is idempotent; late identical retry preserves original ACK",
+        "SQL rejects a second running match, cross-match answers, and missing identity",
+        "RLS enabled on all six tables; all three Data API roles denied access",
+        "Real account anonymization removes identity and host access while preserving opponent ledger"
+      ]
+    }
+  },
+  "browser": {
+    "screenshots": [
+      {
+        "path": "docs/verification/evidence/2026-10-17-kotoba-clash-lobby-desktop.png",
+        "width": 65536,
+        "height": 4292542531,
+        "scope": "local UI fixture; save simulated; no production room"
+      },
+      {
+        "path": "docs/verification/evidence/2026-10-17-kotoba-clash-lobby-mobile.png",
+        "width": 65536,
+        "height": 4292542531,
+        "scope": "local UI fixture; save simulated; no production room"
+      }
+    ],
+    "checks": [
+      "draft warning and disabled Start",
+      "external form submit saves and resets ready",
+      "kick dialog with initial cancel focus",
+      "profile/current nickname prefilled",
+      "mobile floating save while scrolled",
+      "no horizontal mobile overflow",
+      "no browser console errors"
+    ],
+    "limitations": [
+      "No production multi-browser acceptance",
+      "Browser save mocked; mutations verified separately against real local PostgreSQL/Redis",
+      "Kick offline HTTP-upgrade fallback still needs production browser acceptance"
+    ]
+  },
+  "cleanup": {
+    "users": 0,
+    "rooms": 0,
+    "matches": 0,
+    "packages": 0,
+    "postgresStopped": true,
+    "redisStopped": true,
+    "temporaryPreviewRouteRemoved": true
+  },
+  "remaining": [
+    "Apply migration before deployment",
+    "Drain old instances/sockets, redeploy, refresh tabs and run production acceptance"
+  ]
+}

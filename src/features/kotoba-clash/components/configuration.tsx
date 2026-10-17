@@ -1,23 +1,28 @@
 "use client";
 
-import { useForm, useWatch } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, Save, Layers3 } from "lucide-react";
+import { useWatch, type UseFormReturn } from "react-hook-form";
+import { Check, Layers3 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { JLPT_SECTION_LABELS, MONDAI_TYPE_TRANSLATIONS } from "@/constants/jlpt";
-import { ClashConfigSchema, type ClashConfig } from "../schemas";
+import type { ClashConfig } from "../schemas";
 import { CLASH_CATEGORIES, CLASH_LEVELS, CLASH_QUESTION_COUNTS, type ClashMondaiType } from "../domain/rules";
 import type { ClashCatalogEntry } from "../server/catalog";
-import { ClashButton } from "./arena-ui";
 
-export function ClashConfiguration({ config, catalog, disabled, save }: {
-  config: ClashConfig | null; catalog: ClashCatalogEntry[]; disabled: boolean; save: (config: ClashConfig) => Promise<void>;
-}) {
+export function defaultClashConfig(config: ClashConfig | null, catalog: ClashCatalogEntry[]): ClashConfig {
   const level = CLASH_LEVELS.find((candidate) => catalog.filter((row) => row.jlptLevel === candidate).reduce((n, row) => n + row.count, 0) >= 5) ?? "N5";
-  const defaults: ClashConfig = config ?? {
+  return config ?? {
     jlptLevel: level, mondaiTypes: catalog.filter((row) => row.jlptLevel === level && row.count > 0).map((row) => row.mondaiType), questionCount: 5,
   };
-  const form = useForm<ClashConfig>({ resolver: zodResolver(ClashConfigSchema), defaultValues: defaults });
+}
+
+export function hasClashConfigChanges(saved: ClashConfig | null, draft: ClashConfig) {
+  return !saved || saved.jlptLevel !== draft.jlptLevel || saved.questionCount !== draft.questionCount ||
+    saved.mondaiTypes.length !== draft.mondaiTypes.length || saved.mondaiTypes.some((type) => !draft.mondaiTypes.includes(type));
+}
+
+export function ClashConfiguration({ form, formId, catalog, disabled, save }: {
+  form: UseFormReturn<ClashConfig>; formId: string; catalog: ClashCatalogEntry[]; disabled: boolean; save: (config: ClashConfig) => Promise<void>;
+}) {
   const selectedLevel = useWatch({ control: form.control, name: "jlptLevel" });
   const selectedTypes = useWatch({ control: form.control, name: "mondaiTypes" });
   const questionCount = useWatch({ control: form.control, name: "questionCount" });
@@ -25,7 +30,7 @@ export function ClashConfiguration({ config, catalog, disabled, save }: {
   const total = selectedTypes.reduce((count, type) => count + stock(type), 0);
   const toggle = (types: ClashMondaiType[], checked: boolean) => form.setValue("mondaiTypes", checked ? [...new Set([...selectedTypes, ...types])] : selectedTypes.filter((type) => !types.includes(type)), { shouldDirty: true, shouldValidate: true });
   return (
-    <form className="space-y-6" onSubmit={form.handleSubmit(save)}>
+    <form id={formId} className="space-y-6" onSubmit={form.handleSubmit(save)}>
       <fieldset disabled={disabled || form.formState.isSubmitting} className="space-y-6 disabled:opacity-70">
         <div className="grid grid-cols-2 gap-4">
           <label className="space-y-2 text-sm font-extrabold">Level JLPT
@@ -62,7 +67,7 @@ export function ClashConfiguration({ config, catalog, disabled, save }: {
         </div>
         <div className="flex items-start gap-3 border-2 border-neo-ink bg-neo-paper p-4"><Check className="mt-0.5 size-5 shrink-0" /><div><p className="text-sm font-extrabold">{total} soal tersedia untuk tantangan ini</p><p className="mt-1 text-xs leading-5 text-neo-ink/65">Soal teks saja. Choukai menyusul. Jika tipe melebihi jumlah soal, sebagian tipe mungkin tidak muncul.</p></div></div>
         {Object.keys(form.formState.errors).length > 0 && <p role="alert" className="text-sm font-bold">Pilih level, minimal satu tipe soal, dan jumlah soal yang tersedia.</p>}
-        <div className="flex flex-wrap items-center gap-4"><ClashButton type="submit" tone="yellow" disabled={total < questionCount}><Save className="size-4" />{form.formState.isSubmitting ? "Menyimpan..." : "Simpan pengaturan"}</ClashButton><p className="text-xs font-semibold text-neo-ink/65">{form.formState.isDirty ? "Ada perubahan yang belum disimpan." : config ? "Pengaturan tersimpan. Saatnya ready." : "Simpan dulu, lalu semua bisa ready."}</p></div>
+        {total < questionCount && <p role="alert" className="text-sm font-bold">Stok soal kurang. Tambahkan tipe soal atau kurangi jumlah soal.</p>}
       </fieldset>
     </form>
   );

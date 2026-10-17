@@ -83,7 +83,7 @@ export async function anonymizeAccount(userId: number, database: PrismaClient = 
       data: {
         userId: null, guestHash: null, guestExpiresAt: null,
         nickname: ANONYMIZED_DISPLAY_NAME, nicknameKey: null,
-        readyRevision: null, anonymizedAt,
+        readyRevision: null, kickedAt: null, anonymizedAt,
       },
     });
 

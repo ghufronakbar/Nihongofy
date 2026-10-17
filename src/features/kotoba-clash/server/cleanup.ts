@@ -21,7 +21,7 @@ export async function cleanupClash(db: PrismaClient, now: Date) {
     const closed = await tx.kotobaClashRoom.updateMany({ where: { ...idleWhere, id: { in: idle.map((room) => room.id) } }, data: { status: "CLOSED", revision: { increment: 1 } } });
     const anonymized = await tx.kotobaClashRoomMember.updateMany({
       where: { id: { in: guests.map((guest) => guest.id) }, guestExpiresAt: { lte: now }, anonymizedAt: null },
-      data: { guestHash: null, guestExpiresAt: null, nickname: "Guest kedaluwarsa", nicknameKey: null, readyRevision: null, anonymizedAt: now },
+      data: { guestHash: null, guestExpiresAt: null, nickname: "Guest kedaluwarsa", nicknameKey: null, readyRevision: null, kickedAt: null, anonymizedAt: now },
     });
     const guestRoomIds = [...new Set(guests.map((guest) => guest.roomId))];
     if (anonymized.count && guestRoomIds.length) {

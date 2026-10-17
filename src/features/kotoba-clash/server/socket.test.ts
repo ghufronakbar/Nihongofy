@@ -105,4 +105,12 @@ describe("product WebSocket command boundary", () => {
     client.send(Buffer.from("binary"));
     expect((await closed)[0]).toBe(1008);
   });
+  it("notifies a kicked member before closing the connection without sending another snapshot", async () => {
+    fixture.read.mockRejectedValue(new ClashError("KICKED"));
+    const closed = once(client, "close");
+    client.send(JSON.stringify({ protocolVersion: 1, type: "sync", requestId: randomUUID(), roomId, revision: 0 }));
+    expect((await closed)[0]).toBe(4005);
+    expect(messages).toContainEqual(expect.objectContaining({ type: "command_error", code: "KICKED", message: "Kamu telah dikeluarkan dari room oleh host." }));
+    expect(messages.filter((value) => typeof value === "object" && value !== null && "type" in value && value.type === "snapshot")).toHaveLength(1);
+  });
 });

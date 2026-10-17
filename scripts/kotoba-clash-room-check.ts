@@ -12,6 +12,7 @@ import { cleanupClash } from "../src/features/kotoba-clash/server/cleanup";
 import { getClashAccountExport } from "../src/features/kotoba-clash/server/account-export";
 import { CLASH_LEASE_SCRIPT } from "../src/features/kotoba-clash/server/presence";
 import { createGuestCredential, createRoomCode } from "../src/features/kotoba-clash/server/guest-credential";
+import { anonymizeAccount } from "../src/features/auth/lib/anonymize-account";
 
 const url = z.url().parse(process.argv[2]);
 const parsed = new URL(url);
@@ -99,6 +100,36 @@ async function main() {
     await assert.rejects(lobby.configure(g, { roomId: room.id, configRevision: 0, config }), codeIs("HOST_REQUIRED"));
     checks.push("Guest resume preserves one membership; normalized nickname collision and unrelated reads are rejected");
 
+    await lobby.rename(g, { roomId: room.id, nickname: "  New   Guest  " });
+    assert.equal((await state.read(g, room.id)).members.find((member) => member.id === joined[0]!.memberId)!.nickname, "New Guest");
+    await assert.rejects(lobby.rename(g, { roomId: room.id, nickname: "HOST" }), codeIs("NICKNAME_TAKEN"));
+    await assert.rejects(lobby.rename(guest(), { roomId: room.id, nickname: "Outsider" }), codeIs("UNAUTHORIZED"));
+    const competingNames = await Promise.allSettled([lobby.rename(host, { roomId: room.id, nickname: "Shared name" }), lobby.rename(g, { roomId: room.id, nickname: "Shared name" })]);
+    assert.equal(competingNames.filter((result) => result.status === "fulfilled").length, 1);
+    assert(competingNames.some((result) => result.status === "rejected" && codeIs("NICKNAME_TAKEN")(result.reason)));
+    await lobby.rename(host, { roomId: room.id, nickname: "Host" });
+    await lobby.rename(g, { roomId: room.id, nickname: "Guest" });
+    assert.equal((await db.user.findUniqueOrThrow({ where: { id: host.userId } })).displayName, "Room checker 0");
+    checks.push("Own nickname changes normalize and publish on the next snapshot; collisions serialize and profile names stay unchanged");
+
+    const removedGuest = guest();
+    const removed = await lobby.join(removedGuest, { code: room.code, nickname: "Removed guest" });
+    const hostMemberId = (await state.read(host, room.id)).viewer.memberId;
+    await assert.rejects(lobby.kick(g, { roomId: room.id, memberId: hostMemberId }), codeIs("HOST_REQUIRED"));
+    await assert.rejects(lobby.kick(host, { roomId: room.id, memberId: hostMemberId }), codeIs("INVALID_TARGET"));
+    await assert.rejects(lobby.kick(host, { roomId: room.id, memberId: (await state.read(otherHost, other.id)).viewer.memberId }), codeIs("INVALID_TARGET"));
+    const kicked = await lobby.kick(host, { roomId: room.id, memberId: removed.memberId });
+    assert.equal((await lobby.kick(host, { roomId: room.id, memberId: removed.memberId })).revision, kicked.revision);
+    assert(!(await state.read(host, room.id)).members.some((member) => member.id === removed.memberId));
+    await assert.rejects(state.read(removedGuest, room.id), codeIs("KICKED"));
+    await assert.rejects(lobby.join(removedGuest, { code: room.code, nickname: "Try again" }), codeIs("KICKED"));
+    await assert.rejects(lobby.rename(removedGuest, { roomId: room.id, nickname: "Try again" }), codeIs("KICKED"));
+    const removedAccount = await lobby.join(otherHost, { code: room.code, nickname: "Removed account" });
+    await lobby.kick(host, { roomId: room.id, memberId: removedAccount.memberId });
+    await assert.rejects(lobby.join(otherHost, { code: room.code, nickname: "Try again" }), codeIs("KICKED"));
+    assert.equal((await state.read(otherHost, other.id)).closed, false);
+    checks.push("Only the host can kick another room member; guest/account bans survive rejoin, retries are idempotent and other rooms stay accessible");
+
     const fixture = await db.testPackage.create({ data: { name: `Kotoba check ${randomUUID()}`, jlptLevel: "N5" }, select: { id: true } });
     packageId = fixture.id;
     for (const [index, type] of config.mondaiTypes.entries()) {
@@ -130,6 +161,8 @@ async function main() {
     const roster = before.members.map((member) => member.id);
     await assert.rejects(repository.start(host, { roomId: room.id, configRevision: 2, requestId: randomUUID() }, assignments, [roster[0]!]), codeIs("NOT_READY"));
     const start = await repository.start(host, { roomId: room.id, configRevision: 2, requestId: randomUUID() }, assignments, roster);
+    await assert.rejects(lobby.rename(g, { roomId: room.id, nickname: "During match" }), codeIs("ACTIVE_MATCH"));
+    await assert.rejects(lobby.kick(host, { roomId: room.id, memberId: joined[0]!.memberId }), codeIs("ACTIVE_MATCH"));
     assert.equal((await state.read(host, room.id)).match!.round, null);
     checks.push("Config resets all ready states; stale ready and a disconnected roster cannot Start; countdown hides content");
 
@@ -190,10 +223,21 @@ async function main() {
     assert.equal(review.review.length, 5);
     assert(review.review.every((row) => row.round.correctChoice === 1));
     assert.equal(review.review[0]!.ownChoice, 1);
+    await lobby.rename(g, { roomId: room.id, nickname: "After match" });
+    assert((await state.read(host, room.id)).match!.leaderboard.some((player) => player.nickname === "After match"));
+    await lobby.rename(g, { roomId: room.id, nickname: "Guest" });
+    await lobby.kick(host, { roomId: room.id, memberId: joined[0]!.memberId });
+    assert.equal((await state.results(host, room.code, start.matchId)).review.length, 5);
+    assert.equal(await db.kotobaClashAnswer.count({ where: { matchId: start.matchId } }), 2);
+    await assert.rejects(lobby.ready(g, { roomId: room.id, configRevision: 2, ready: true }), codeIs("KICKED"));
+    await assert.rejects(lobby.participate(g, { roomId: room.id }), codeIs("KICKED"));
     await lobby.participate(late, { roomId: room.id });
     await lobby.ready(host, { roomId: room.id, configRevision: 2, ready: true });
-    await lobby.ready(g, { roomId: room.id, configRevision: 2, ready: true });
-    const rematch = await repository.start(host, { roomId: room.id, configRevision: 2, requestId: randomUUID() }, await sampleClashQuestions(config, db), roster);
+    await lobby.ready(late, { roomId: room.id, configRevision: 2, ready: true });
+    const rematchRoster = [...roster, (await state.read(late, room.id)).viewer.memberId];
+    const rematch = await repository.start(host, { roomId: room.id, configRevision: 2, requestId: randomUUID() }, await sampleClashQuestions(config, db), rematchRoster);
+    assert(!(await db.kotobaClashMatchPlayer.findMany({ where: { matchId: rematch.matchId } })).some((player) => player.memberId === joined[0]!.memberId));
+    checks.push("Rename/kick reject active play, work after finish, preserve prior answers/results and exclude kicked members from rematch even with a stale presence list");
     assert.notEqual(rematch.matchId, start.matchId);
     assert.equal((await state.results(host, room.code, start.matchId)).state.match!.id, start.matchId);
     assert.equal((await state.read(host, room.id)).code, room.code);
@@ -207,6 +251,7 @@ async function main() {
     const expiredGuest = await db.kotobaClashRoomMember.findUniqueOrThrow({ where: { id: joined[0]!.memberId } });
     assert.equal(expiredGuest.guestHash, null);
     assert.equal(expiredGuest.nicknameKey, null);
+    assert.equal(expiredGuest.kickedAt, null);
     assert.notEqual(expiredGuest.nickname, "Guest");
     assert.equal(await db.kotobaClashMatchPlayer.count({ where: { matchId: start.matchId } }), 2);
     checks.push("Cleanup preserves active matches and unexpired results; expired guest identity is anonymized without deleting score ledgers");
@@ -223,6 +268,37 @@ async function main() {
     assert.equal(await db.kotobaClashAnswer.count({ where: { matchId: start.matchId } }), 2);
     assert.equal((await state.read(otherHost, other.id)).closed, false);
     checks.push("Replacing an active room closes old clients, rejects new joins/answers, preserves completed history and leaves the other host untouched");
+
+    const raceGuest = guest();
+    const raceMember = await lobby.join(raceGuest, { code: other.code, nickname: "Race guest" });
+    await lobby.configure(otherHost, { roomId: other.id, configRevision: 0, config });
+    await lobby.ready(otherHost, { roomId: other.id, configRevision: 1, ready: true });
+    await lobby.ready(raceGuest, { roomId: other.id, configRevision: 1, ready: true });
+    const raceRoster = (await state.read(otherHost, other.id)).members.map((member) => member.id);
+    const raceAssignments = await sampleClashQuestions(config, db);
+    const [raceStart, raceKick] = await Promise.allSettled([
+      repository.start(otherHost, { roomId: other.id, configRevision: 1, requestId: randomUUID() }, raceAssignments, raceRoster),
+      lobby.kick(otherHost, { roomId: other.id, memberId: raceMember.memberId }),
+    ]);
+    if (raceStart.status === "fulfilled") {
+      assert(raceKick.status === "rejected" && codeIs("ACTIVE_MATCH")(raceKick.reason));
+      assert.equal(await db.kotobaClashMatchPlayer.count({ where: { matchId: raceStart.value.matchId } }), 2);
+      assert.equal((await db.kotobaClashRoomMember.findUniqueOrThrow({ where: { id: raceMember.memberId } })).kickedAt, null);
+    } else {
+      assert(codeIs("NOT_READY")(raceStart.reason));
+      assert.equal(raceKick.status, "fulfilled");
+      assert.equal(await db.kotobaClashMatch.count({ where: { roomId: other.id } }), 0);
+    }
+    checks.push("Concurrent Start and kick serialize: either the roster freezes intact or the kick commits before Start rechecks readiness");
+
+    assert((await getClashAccountExport(db, otherHost.userId, new Date())).some((member) => member.kickedAt instanceof Date));
+    await anonymizeAccount(otherHost.userId, db);
+    const anonymizedKick = await db.kotobaClashRoomMember.findUniqueOrThrow({ where: { id: removedAccount.memberId } });
+    assert.equal(anonymizedKick.kickedAt, null);
+    assert.equal(anonymizedKick.userId, null);
+    assert.equal(anonymizedKick.nicknameKey, null);
+    assert.equal(await db.kotobaClashAnswer.count({ where: { matchId: start.matchId } }), 2);
+    checks.push("Account export includes its own kick timestamp; real account anonymization clears it and personal linkage without losing prior match ledgers");
 
     const key = `kotoba-local-check:${randomUUID()}`;
     const run = (operation: string, owner: string) => execFileSync("redis-cli", ["-h", "127.0.0.1", "-p", String(redisPort), "--raw", "EVAL", CLASH_LEASE_SCRIPT, "1", key, String(Date.now()), roster[0]!, owner, operation, "60000"], { encoding: "utf8" }).trim();

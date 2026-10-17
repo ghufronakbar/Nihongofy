@@ -405,3 +405,10 @@ Saat import data soal, tangani pelanggaran constraint sebagai sinyal error ekstr
   Cron auth harian membersihkan match/room expired dan menganonimkan guest expired secara batch;
   runtime tetap menolak akses expired sebelum cron berjalan.
 - Rujukan kontrak dan bukti: [modul](module/kotoba-clash.md), [laporan C-E](verification/kotoba-clash-phase-c-e.md).
+- Refinement lobby menambah `KotobaClashRoomMember.kickedAt` nullable `timestamptz(3)` melalui
+  `20261017164300_kotoba_clash_lobby_refinements`. Kick mempertahankan identity/nicknameKey/ledger,
+  tetapi membership tidak boleh join/read/ready/rename/menjadi roster lagi. Anggota kicked tidak
+  dihitung pada kapasitas dan snapshot lobby. Lock room menserialisasi kick/rename dengan Start;
+  rename hanya milik sendiri, unique normalized nickname tetap menjadi guard terakhir. Export
+  membawa timestamp sendiri; anonimisasi akun/guest mengosongkannya. Tidak ada index/FK/policy
+  baru; index prefix roomId existing tetap dipakai. Terapkan migration sebelum redeploy.

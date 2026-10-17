@@ -33,7 +33,7 @@ export class PrismaClashState {
       if (match && !supportsClashRulesVersion(match.rulesVersion)) throw new ClashError("CLOSED");
       const closed = room.status !== "OPEN" || Math.max(room.updatedAt.getTime(), match?.endsAt.getTime() ?? 0) + CLASH_LOBBY_IDLE_MS <= now.getTime();
       const members = await tx.kotobaClashRoomMember.findMany({
-        where: { roomId: room.id, anonymizedAt: null, OR: [{ userId: { not: null } }, { guestExpiresAt: { gt: now } }] },
+        where: { roomId: room.id, anonymizedAt: null, kickedAt: null, OR: [{ userId: { not: null } }, { guestExpiresAt: { gt: now } }] },
         orderBy: { joinedAt: "asc" },
         select: { id: true, nickname: true, readyRevision: true, spectating: true, userId: true, user: { select: { avatarUrl: true } } },
       });

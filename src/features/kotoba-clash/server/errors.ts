@@ -20,6 +20,8 @@ const messages: Record<ClashError["code"], string> = {
   OUTSIDE_WINDOW: "Waktu menjawab soal ini sudah berakhir atau belum dimulai.",
   ALREADY_ANSWERED: "Jawaban pertama sudah tersimpan dan tidak dapat diubah.",
   NICKNAME_TAKEN: "Nickname sudah dipakai di room ini. Pilih nama lain.",
+  KICKED: "Kamu telah dikeluarkan dari room oleh host.",
+  INVALID_TARGET: "Peserta tidak ditemukan atau tidak dapat dikeluarkan.",
   RATE_LIMITED: "Terlalu banyak permintaan. Tunggu sebentar lalu coba lagi.",
   UNAVAILABLE: "Permainan sementara tidak tersedia. Coba sambungkan kembali nanti.",
 };

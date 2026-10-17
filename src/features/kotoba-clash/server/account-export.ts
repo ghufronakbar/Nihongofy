@@ -10,7 +10,7 @@ export async function getClashAccountExport(db: PrismaClient, userId: number, no
     where: { userId },
     orderBy: { joinedAt: "asc" },
     select: {
-      nickname: true, joinedAt: true,
+      nickname: true, joinedAt: true, kickedAt: true,
       players: {
         where: { match: { endsAt: { lte: now }, expiresAt: { gt: now }, rulesVersion: { in: [...CLASH_SUPPORTED_RULES_VERSIONS] } } },
         select: {
@@ -26,7 +26,7 @@ export async function getClashAccountExport(db: PrismaClient, userId: number, no
   // A completed schedule can still be persisted as RUNNING when everyone went offline.
   // Rebuild only this account's completed results without exporting private snapshots.
   return members.map((member) => ({
-    nickname: member.nickname, joinedAt: member.joinedAt,
+    nickname: member.nickname, joinedAt: member.joinedAt, kickedAt: member.kickedAt,
     players: member.players.map((player) => {
       const score = scoreLedger([player.id], player.match.rounds.map((round) => ledgerRoundOf(round, player.match.rulesVersion)),
         player.answers.map((answer) => ({ ...answer, playerId: player.id, acceptedAt: answer.acceptedAt.getTime() })), now.getTime())[0]!;

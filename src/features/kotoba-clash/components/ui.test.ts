@@ -3,11 +3,15 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import { ClashRoomSnapshotSchema, type ClashRoomSnapshot } from "../contracts";
 import { ClashRound } from "./round";
+import { ClashLobby } from "./lobby";
+import { hasClashConfigChanges } from "./configuration";
+import type { ClashConfig } from "../schemas";
 
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn(), refresh: vi.fn() }) }));
 vi.mock("../actions", () => ({
   closeClashRoomAction: vi.fn(), configureClashRoomAction: vi.fn(), joinClashRoomAction: vi.fn(),
   readyClashRoomAction: vi.fn(), startClashMatchAction: vi.fn(), participateClashRoomAction: vi.fn(),
+  renameClashMemberAction: vi.fn(), kickClashMemberAction: vi.fn(),
 }));
 import { ClashRoom } from "./room";
 
@@ -48,6 +52,35 @@ describe("Kotoba Clash terminal and round UI", () => {
     expect(html).toContain("Jawaban terkunci");
     expect(html).not.toMatch(/PRIVATE_EXPLANATION|Jawaban benar|Tepat sasaran|data-correct="true"/);
     expect(html.match(/disabled=""/g)).toHaveLength(2);
+  });
+  it("shows a specific removal notice after reload without join or reconnect controls", () => {
+    const html = renderToStaticMarkup(createElement(ClashRoom, { code: "ABCD2345", initial: null, kicked: true, initialError: "KICKED", catalog: [] }));
+    expect(html).toContain("Kamu dikeluarkan");
+    expect(html).toContain("Host telah mengeluarkanmu");
+    expect(html).not.toMatch(/guest-nickname|Gabung Room|Link undangan|Sambungkan kembali/);
+  });
+  it("prefills the invitation nickname from the signed-in profile", () => {
+    const html = renderToStaticMarkup(createElement(ClashRoom, { code: "ABCD2345", initial: null, initialError: null, displayName: "Profile name", catalog: [] }));
+    expect(html).toContain('value="Profile name"');
+  });
+  it("distinguishes actual draft changes from checkbox reordering", () => {
+    const saved: ClashConfig = { jlptLevel: "N5", questionCount: 5, mondaiTypes: ["MOJI_GOI_CONTEXT", "MOJI_GOI_SYNONYM"] };
+    expect(hasClashConfigChanges(saved, { ...saved, mondaiTypes: [...saved.mondaiTypes].reverse() })).toBe(false);
+    expect(hasClashConfigChanges(saved, { ...saved, questionCount: 10 })).toBe(true);
+    expect(hasClashConfigChanges(saved, { ...saved, mondaiTypes: ["MOJI_GOI_CONTEXT"] })).toBe(true);
+    expect(hasClashConfigChanges(null, saved)).toBe(true);
+  });
+  it("places save outside the configuration form and marks unsaved defaults before ready", () => {
+    const state = snapshot();
+    state.match = null;
+    state.viewer.isHost = true;
+    state.members = [{ id: state.viewer.memberId, nickname: "Host", isHost: true, spectating: false, ready: false }];
+    const html = renderToStaticMarkup(createElement(ClashLobby, { state, catalog: [{ jlptLevel: "N5", mondaiType: "MOJI_GOI_CONTEXT", count: 20 }], online: [state.viewer.memberId], connected: true, busy: false, run: async () => true, close: async () => undefined }));
+    expect(html).toContain("Pengaturan belum disimpan");
+    expect(html).toContain("Simpan perubahan sebelum ready atau mulai");
+    expect(html.indexOf("Simpan pengaturan</button>")).toBeGreaterThan(html.indexOf("</form>"));
+    expect(html).not.toContain("Keluarkan Host");
+    expect(html).toContain("Nickname kamu");
   });
   it("closes answer controls at the deadline while waiting for an authoritative reveal", () => {
     const html = renderToStaticMarkup(createElement(ClashRound, { match: snapshot().match!, now: 31000, connected: true, pending: false }));
