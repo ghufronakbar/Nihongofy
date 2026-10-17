@@ -12,6 +12,8 @@ Bukti kode dan batas pengujian ada di [laporan C-E](../verification/kotoba-clash
 User menguji satu match N5/5 soal dengan host, guest pemain dan late spectator. Audit ledger
 read-only cocok dengan hasil ketiga tampilan; seluruh ronde finalized, spectator tidak masuk
 roster. Bukti tersanitasi dan langkah berikutnya ada di [UAT](../verification/mini-games-kotoba-clash-uat.md).
+Redesign UI kompetisi sudah diperiksa lokal desktop/mobile; gate 643 tes /48 file lulus.
+Tampilan baru masih perlu acceptance sesudah redeploy, lihat [laporan UI/UX](../verification/kotoba-clash-ui-ux.md).
 
 Probe awal telah lulus pada Hobby dengan 20 peserta/16 menit, lintas instance dan 60 reconnect;
 ini tidak menggantikan UAT produk final. UAT produk awal berlangsung 195 detik; reconnect lebih
@@ -111,6 +113,32 @@ Command service menerima principal terverifikasi, repository dan publisher melal
 Engine tidak membaca cookie/env; auth akun tetap melalui helper `src/lib/auth.ts`. State koneksi
 berada dalam hook pada root room; UI memakai renderer Jepang, Tailwind, shadcn/base-ui dan bahasa
 visual existing. Bootstrap VPS produk belum dibuat; probe Node terpisah tidak dianggap bootstrap produk.
+
+### UI kompetisi - 17 Oktober 2026
+
+Landing memakai pratinjau versus dan form undangan; lobby menampilkan line-up serta kesiapan
+pemain. Kontrol khusus game memakai font Geist, border tebal, shadow keras, feedback tekan dan
+focus keyboard. CSS dibatasi oleh `.clash-ui` pada layout Kotoba Clash.
+
+- Avatar akun dibaca langsung dari relasi `User.avatarUrl` existing, tanpa menyalin foto ke tabel
+  game. Guest, akun tanpa foto, dan gambar gagal memakai karakter pertama nickname dengan warna
+  deterministik. Snapshot menambah `members[].avatarUrl` opsional agar client/server lama tetap
+  kompatibel selama pergantian deployment; tidak menambah field identitas akun lain.
+- Arena menampilkan rank/poin pribadi, leaderboard di samping soal pada desktop, serta crown
+  untuk rank 1 setelah poin diperoleh. Tie memakai rank bersama dari engine existing. Hasil akhir
+  mempunyai visual juara, confetti singkat, statistik, dan review soal.
+- Api menunjukkan **rekor streak (`bestStreak`) dari ronde yang sudah terbuka**: mulai 3 orange,
+  5 biru, 8 merah muda, dan 10 emas. Ini rekor pertandingan, bukan streak aktif yang akan turun
+  saat salah. Tier visual tidak menambah atau mengubah bonus poin engine v1.
+- Timer angka dan progress bar menyusut dari clock server; lima detik terakhir berwarna coral.
+  Countdown, pergantian soal, reveal dan poin mempunyai animasi. Mobile mengembalikan soal ke
+  area terlihat ketika fase/ronde berubah; `prefers-reduced-motion` menonaktifkan animasi dan
+  scroll halus. Pilihan terkunci saat pending/ACK/deadline; pembahasan menunggu fase server.
+- Snapshot closed atau error terminal CLOSED/EXPIRED menampilkan arena ditutup, tanpa tombol
+  kode/undangan/join/reconnect. Socket tidak dibuka ulang untuk room tersebut.
+
+Bukti lokal, batas verifikasi, dan checklist redeploy ada di
+[laporan UI/UX](../verification/kotoba-clash-ui-ux.md). Tampilan baru belum menjadi UAT production.
 
 ## 3. Identitas, Akses, dan Kepemilikan
 
@@ -252,7 +280,7 @@ Latensi jaringan tetap berpengaruh; skor benar sengaja menjadi komponen terbesar
 
 Ranking: total poin menurun, lalu jumlah benar menurun, lalu total waktu jawaban benar menaik.
 Jika ketiganya sama, posisi dibagi dan dapat ada pemenang bersama. Urutan tampilan stabil tidak
-menjadi tie-break tersembunyi. Hasil menampilkan total poin dan benar/salah/kosong; tabel room juga menampilkan streak
+menjadi tie-break tersembunyi. Hasil menampilkan total poin dan benar/salah/kosong; papan peringkat room juga menampilkan streak
 terbaik. Akurasi dapat diturunkan dari jumlah jawaban, belum ditampilkan sebagai persentase. Poin battle tidak diproyeksikan menjadi skor JLPT 180 atau mengubah analytics exam.
 
 ## 7. Reveal dan Pencegahan Kebocoran

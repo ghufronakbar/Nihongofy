@@ -14,5 +14,5 @@ export default async function ClashRoomPage({ params }: { params: Promise<{ code
   const parsed = ClashRoomCodeSchema.safeParse((await params).code);
   if (!parsed.success) notFound();
   const [result, catalog] = await Promise.all([getClashRoomAction(parsed.data), getClashCatalog()]);
-  return <PageContainer className="py-8 md:py-12"><ClashRoom code={parsed.data} initial={result.ok ? result.data : null} initialError={!result.ok && !["UNAUTHORIZED", "NOT_FOUND"].includes(result.code) ? result.message : null} catalog={catalog} /></PageContainer>;
+  return <PageContainer className="py-8 md:py-12"><ClashRoom code={parsed.data} initial={result.ok ? result.data : null} unavailable={!result.ok && ["CLOSED", "EXPIRED"].includes(result.code)} initialError={!result.ok && !["UNAUTHORIZED", "NOT_FOUND"].includes(result.code) ? result.message : null} catalog={catalog} /></PageContainer>;
 }

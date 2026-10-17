@@ -9,7 +9,7 @@ export type ClashConnectionStatus = "connecting" | "online" | "reconnecting" | "
 
 export function useClashRoom(initial: ClashRoomSnapshot | null) {
   const [state, setState] = useState(initial);
-  const [status, setStatus] = useState<ClashConnectionStatus>("connecting");
+  const [status, setStatus] = useState<ClashConnectionStatus>(initial?.closed ? "closed" : "connecting");
   const [error, setError] = useState<string | null>(null);
   const [now, setNow] = useState(initial?.serverNow ?? 0);
   const [pendingRound, setPendingRound] = useState<string | null>(null);
@@ -18,6 +18,7 @@ export function useClashRoom(initial: ClashRoomSnapshot | null) {
   const socket = useRef<WebSocket | null>(null);
   const pending = useRef<AnswerMessage | null>(null);
   const roomId = state?.id;
+  const roomClosed = state?.closed ?? false;
   const latest = useRef(initial);
 
   const accept = useCallback((incoming: ClashRoomSnapshot) => {
@@ -36,7 +37,7 @@ export function useClashRoom(initial: ClashRoomSnapshot | null) {
 
   const [online, setOnline] = useState<string[]>([]);
   useEffect(() => {
-    if (!roomId) return;
+    if (!roomId || roomClosed) return;
     let stopped = false;
     let attempts = 0;
     let reconnect: ReturnType<typeof setTimeout> | undefined;
@@ -56,10 +57,16 @@ export function useClashRoom(initial: ClashRoomSnapshot | null) {
           const message = ClashServerMessageSchema.parse(raw);
           if (message.type === "snapshot") {
             attempts = 0;
-            setStatus("online");
+            setStatus(message.state.closed ? "closed" : "online");
             setError(null);
             accept(message.state);
             setOnline(message.online);
+            if (message.state.closed) {
+              pending.current = null;
+              setPendingRound(null);
+              ws.close(1000, "Room closed");
+              return;
+            }
             const waiting = pending.current;
             if (waiting && message.state.match?.round?.id === waiting.roundId && message.state.match.ownAnswer) {
               pending.current = null;
@@ -78,6 +85,16 @@ export function useClashRoom(initial: ClashRoomSnapshot | null) {
               setPendingRound(null);
             }
           } else {
+            if (["CLOSED", "EXPIRED", "NOT_FOUND"].includes(message.code)) {
+              setState((current) => current ? { ...current, closed: true } : current);
+              setStatus("closed");
+              setError(null);
+              stopped = true;
+              pending.current = null;
+              setPendingRound(null);
+              ws.close(1000, "Room unavailable");
+              return;
+            }
             setError(message.message);
             if (pending.current?.requestId === message.requestId) { pending.current = null; setPendingRound(null); }
           }
@@ -90,22 +107,23 @@ export function useClashRoom(initial: ClashRoomSnapshot | null) {
         if (stopped || socket.current !== ws) return;
         socket.current = null;
         setOnline([]);
+        if (latest.current?.closed) { setStatus("closed"); return; }
         if (event.code === 4009) { setStatus("replaced"); return; }
         if (event.code === 4003 || event.code === 4004 || event.code === 1002) { setStatus("closed"); return; }
         setStatus("reconnecting");
         attempts++;
         reconnect = setTimeout(connect, Math.min(30_000, 750 * 2 ** Math.min(attempts, 6)) * (0.8 + Math.random() * 0.4));
       };
-      ws.onerror = () => { setError("Koneksi realtime belum tersedia. Mencoba menyambungkan kembali..."); };
+      ws.onerror = () => { if (!stopped && !latest.current?.closed) setError("Koneksi realtime belum tersedia. Mencoba menyambungkan kembali..."); };
     }
     connect();
     return () => { stopped = true; clearTimeout(reconnect); socket.current?.close(1000, "Leaving room"); socket.current = null; };
-  }, [roomId, generation, accept]);
+  }, [roomId, roomClosed, generation, accept]);
 
   function answer(choice: number) {
     const match = state?.match;
     const ws = socket.current;
-    if (!state || !match?.round || match.phase.type !== "QUESTION" || !match.playing || match.ownAnswer || pending.current || status !== "online" || !ws || ws.readyState !== WebSocket.OPEN) return;
+    if (!state || state.closed || !match?.round || match.phase.type !== "QUESTION" || !match.playing || match.ownAnswer || pending.current || status !== "online" || !ws || ws.readyState !== WebSocket.OPEN) return;
     const message: AnswerMessage = {
       protocolVersion: 1, type: "submit_answer", requestId: crypto.randomUUID(), roomId: state.id,
       matchId: match.id, roundId: match.round.id, choice,

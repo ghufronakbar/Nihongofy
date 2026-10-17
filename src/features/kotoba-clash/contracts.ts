@@ -12,7 +12,7 @@ export const ClashRoomSnapshotSchema = z.object({
   id: ClashIdSchema, code: z.string(), revision: z.number().int().nonnegative(), serverNow: z.number(),
   closed: z.boolean(), configRevision: z.number().int().nonnegative(), config: ClashConfigSchema.nullable(),
   viewer: z.object({ memberId: ClashIdSchema, isHost: z.boolean(), spectating: z.boolean() }),
-  members: z.array(z.object({ id: ClashIdSchema, nickname: z.string(), ready: z.boolean(), spectating: z.boolean(), isHost: z.boolean() })).max(25),
+  members: z.array(z.object({ id: ClashIdSchema, nickname: z.string(), avatarUrl: z.url().nullable().optional(), ready: z.boolean(), spectating: z.boolean(), isHost: z.boolean() })).max(25),
   match: z.object({
     id: ClashIdSchema, questionCount: z.number(), phase, playing: z.boolean(),
     ownAnswer: z.object({ choice: z.number(), acceptedAt: z.number() }).nullable(),

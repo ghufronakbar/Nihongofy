@@ -177,7 +177,7 @@ independen sampai cutoff, dan hasil sesuai ledger jawaban dengan informasi priva
 - [x] Bedakan pemain roster yang kembali dan identitas baru yang menjadi spectator; spectator
   mempunyai kuota sendiri dan tidak pernah dapat submit jawaban.
 - [x] Bangun hasil/ranking dengan tie bersama, statistik, review lengkap, dan URL hasil per match.
-  UI memakai tabel peringkat; belum ada podium grafis atau persentase akurasi.
+  Penyempurnaan UI menambahkan visual juara/crown; persentase akurasi belum ditampilkan.
 - [x] Rematch mempertahankan kode/link room dan membuat match/roster/ready baru. Spectator dapat
   memilih ikut pada lobby berikutnya; skor pertandingan lama tidak berubah.
 - [x] Terapkan batas global room/koneksi, rate limit create/join/answer, TTL cache/lease, idle
@@ -220,7 +220,26 @@ kompatibilitas Hobby yang terbuka; kapasitas rilis sesuai profil penggunaan yang
   serta Redis terhadap baseline; kapasitas free tier belum terjamin walau production sudah aktif.
 - Runbook runtime drain, limit sementara, known issues/owner, dan cara pengujian ada di laporan C-E.
 
-## 10. Aturan Pemeliharaan Rencana
+## 10. Penyempurnaan UI/UX Kompetisi - 17 Oktober 2026
+
+Permintaan user setelah UAT awal: pertahankan neobrutalism Nihongofy dan buat landing, join,
+lobby serta arena terasa seperti kompetisi. Rencana perubahan:
+
+- [x] Perbaiki terminal room: sembunyikan undangan dan hentikan reconnect pada room tutup/expired.
+- [x] Selaraskan button, input, select dan checkbox dengan border tebal, shadow tegas dan font brand.
+- [x] Tambahkan visual arena pada landing/join, avatar akun dan initial nickname untuk guest.
+- [x] Tampilkan leaderboard dekat soal, crown untuk pemimpin dan api berwarna untuk rekor streak
+  yang sudah terbuka: 3 orange, 5 biru, 8 merah muda, 10 emas. Tie tetap mengikuti aturan v1.
+- [x] Tambahkan timer progress, transisi countdown/soal/reveal dan feedback jawaban tersimpan;
+  dukung mobile, keyboard dan reduced motion tanpa mengubah scoring/deadline.
+- [x] Verifikasi regresi terminal/privacy, visual desktop/mobile dan `npm run verify`; catat bukti
+  serta batas UAT cloud. Tidak ada perubahan schema/migration atau write production.
+
+Rincian implementasi dan evidence: [laporan UI/UX](../verification/kotoba-clash-ui-ux.md).
+Gate akhir PASS: 643 tes /48 file, lint/typecheck/build. UI cloud dan perjalanan keyboard/reduced
+motion penuh tetap terbuka pada laporan; tidak ada migration atau environment baru.
+
+## 11. Aturan Pemeliharaan Rencana
 
 Centang hanya setelah implementasi dan verifikasi relevan selesai. UAT user tetap dibedakan dari
 check otomatis developer. Perubahan default ditulis pada modul sebelum kode diubah; status layanan

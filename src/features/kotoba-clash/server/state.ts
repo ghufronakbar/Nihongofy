@@ -35,7 +35,7 @@ export class PrismaClashState {
       const members = await tx.kotobaClashRoomMember.findMany({
         where: { roomId: room.id, anonymizedAt: null, OR: [{ userId: { not: null } }, { guestExpiresAt: { gt: now } }] },
         orderBy: { joinedAt: "asc" },
-        select: { id: true, nickname: true, readyRevision: true, spectating: true, userId: true },
+        select: { id: true, nickname: true, readyRevision: true, spectating: true, userId: true, user: { select: { avatarUrl: true } } },
       });
       const schedule = match?.rounds.map(scheduleOf);
       const phase = schedule && phaseAt(schedule, now.getTime());
@@ -52,7 +52,7 @@ export class PrismaClashState {
         id: room.id, code: room.code, revision: room.revision, serverNow: now.getTime(), closed,
         configRevision: room.configRevision, config: room.config ? ClashConfigSchema.parse(room.config) : null,
         viewer: { memberId: member.id, isHost: identity.kind === "account" && room.hostUserId === identity.userId, spectating: member.spectating },
-        members: members.map((row) => ({ id: row.id, nickname: row.nickname, ready: room.config !== null && row.readyRevision === room.configRevision,
+        members: members.map((row) => ({ id: row.id, nickname: row.nickname, avatarUrl: row.user?.avatarUrl ?? null, ready: room.config !== null && row.readyRevision === room.configRevision,
           spectating: row.spectating, isHost: row.userId !== null && row.userId === room.hostUserId })),
         match: match && {
           id: match.id, questionCount: match.rounds.length, phase, playing: Boolean(ownPlayer),

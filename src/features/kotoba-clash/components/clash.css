@@ -1,0 +1,173 @@
+.clash-ui {
+  --clash-ink: var(--neo-ink);
+  --clash-orange: #ff8a3d;
+  --clash-ice: #d9e9ff;
+  color: var(--clash-ink);
+  font-family: var(--font-geist-sans), sans-serif;
+}
+
+/* Keep the arena's physical controls above the shared shadcn utility layer. */
+.clash-ui .clash-button {
+  display: inline-flex;
+  min-height: 3rem;
+  height: auto;
+  justify-content: center;
+  align-items: center;
+  gap: 0.625rem;
+  border: 3px solid var(--clash-ink);
+  border-radius: 0.375rem;
+  padding: 0.75rem 1.125rem;
+  background: var(--clash-button-color, white);
+  color: var(--clash-ink);
+  box-shadow: 4px 4px 0 var(--clash-ink);
+  font: 800 0.875rem/1.3 var(--font-geist-sans), sans-serif;
+  white-space: normal;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 140ms, box-shadow 140ms, background-color 140ms;
+}
+
+.clash-ui .clash-button[data-tone="yellow"] { --clash-button-color: var(--neo-yellow); }
+.clash-ui .clash-button[data-tone="blue"] { --clash-button-color: var(--neo-blue); }
+.clash-ui .clash-button[data-tone="green"] { --clash-button-color: var(--neo-green); }
+.clash-ui .clash-button[data-tone="coral"] { --clash-button-color: #ffd5d6; }
+.clash-ui .clash-button:hover:not(:disabled):not([aria-disabled="true"]) {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--clash-ink);
+}
+.clash-ui .clash-button:active:not(:disabled) {
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0 var(--clash-ink);
+}
+.clash-ui .clash-button:disabled, .clash-ui .clash-button[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.5;
+  box-shadow: 2px 2px 0 var(--clash-ink);
+}
+.clash-ui .clash-button:focus-visible, .clash-ui .clash-choice:focus-visible {
+  outline: 3px solid var(--neo-blue);
+  outline-offset: 5px;
+}
+.clash-ui .clash-input, .clash-ui .clash-select {
+  width: 100%;
+  min-height: 3.25rem;
+  height: auto;
+  border: 3px solid var(--clash-ink);
+  border-radius: 0.375rem;
+  background: white;
+  color: var(--clash-ink);
+  padding: 0.75rem 1rem;
+  box-shadow: 3px 3px 0 var(--clash-ink);
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+}
+.clash-ui .clash-input:focus-visible, .clash-ui .clash-select:focus-visible {
+  outline: 3px solid var(--neo-blue);
+  outline-offset: 3px;
+}
+.clash-ui .clash-input[aria-invalid="true"] { border-color: #a51b20; }
+.clash-ui .clash-input::placeholder { color: #647084; font-weight: 500; }
+.clash-ui .clash-code-input { font-family: var(--font-geist-mono), monospace; letter-spacing: 0.18em; }
+.clash-ui .clash-check {
+  width: 1.375rem;
+  height: 1.375rem;
+  border: 2px solid var(--clash-ink);
+  border-radius: 0.125rem;
+  background: white;
+  color: var(--clash-ink);
+  box-shadow: 2px 2px 0 var(--clash-ink);
+}
+.clash-ui .clash-check[data-checked], .clash-ui .clash-check[data-indeterminate] { background: var(--neo-yellow); }
+.clash-ui .clash-check[data-indeterminate] svg { display: none; }
+.clash-ui .clash-check[data-indeterminate]::before { content: ""; width: 0.625rem; height: 3px; background: currentColor; }
+.clash-ui .clash-check::after { display: none; }
+.clash-ui .clash-panel { border: 3px solid var(--clash-ink); border-radius: 0.5rem; background: white; box-shadow: 6px 6px 0 var(--clash-ink); }
+.clash-ui .clash-label { font: 800 0.6875rem/1.4 var(--font-geist-mono), monospace; letter-spacing: 0.12em; text-transform: uppercase; }
+.clash-ui .clash-tag { display: inline-flex; align-items: center; gap: 0.375rem; border: 2px solid var(--clash-ink); background: white; padding: 0.25rem 0.5rem; font-size: 0.6875rem; font-weight: 800; }
+.clash-ui .clash-avatar { width: 2.75rem; height: 2.75rem; border: 2px solid var(--clash-ink); border-radius: 0.375rem; box-shadow: 3px 3px 0 var(--clash-ink); overflow: hidden; }
+.clash-ui .clash-avatar::after { display: none; }
+.clash-ui .clash-avatar > * { border-radius: 0; }
+.clash-ui .clash-avatar [data-slot="avatar-fallback"] { color: var(--clash-ink); background: transparent; font-size: 1.25rem; font-weight: 900; }
+.clash-ui .clash-avatar-large { width: 4.25rem; height: 4.25rem; }
+.clash-ui .clash-avatar-large [data-slot="avatar-fallback"] { font-size: 2rem; }
+.clash-ui .clash-avatar[data-color="0"] { background: #ffd56b; }
+.clash-ui .clash-avatar[data-color="1"] { background: #a8caff; }
+.clash-ui .clash-avatar[data-color="2"] { background: #a4efbe; }
+.clash-ui .clash-avatar[data-color="3"] { background: #ffa8ae; }
+.clash-ui .clash-avatar[data-color="4"] { background: #ffd9b5; }
+
+.clash-ui .clash-showcase { position: relative; isolation: isolate; padding: 1.25rem; background: var(--clash-ice); }
+.clash-ui .clash-showcase::before { content: ""; position: absolute; inset: 0; z-index: -1; opacity: 0.3; background-image: radial-gradient(var(--clash-ink) 1px, transparent 1px); background-size: 9px 9px; }
+.clash-ui .clash-versus { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 1rem; padding: 1.5rem 0; }
+.clash-ui .clash-vs { display: grid; place-items: center; width: 3.75rem; height: 3.75rem; background: var(--neo-yellow); border: 3px solid var(--clash-ink); box-shadow: 4px 4px 0 var(--clash-ink); transform: rotate(-8deg); font-size: 1.5rem; font-weight: 950; font-style: italic; }
+.clash-ui .clash-sticker { display: inline-flex; align-items: center; gap: 0.5rem; border: 2px solid var(--clash-ink); padding: 0.5rem 0.75rem; background: var(--neo-yellow); box-shadow: 3px 3px 0 var(--clash-ink); font-weight: 900; transform: rotate(-3deg); }
+.clash-ui .clash-section-heading { display: flex; align-items: center; gap: 0.875rem; border-bottom: 3px solid var(--clash-ink); padding: 1.25rem; }
+.clash-ui .clash-section-icon { display: grid; width: 2.75rem; height: 2.75rem; flex-shrink: 0; place-items: center; border: 2px solid var(--clash-ink); background: var(--neo-yellow); box-shadow: 3px 3px 0 var(--clash-ink); }
+.clash-ui .clash-category { border: 2px solid var(--clash-ink); border-radius: 0.25rem; padding: 1rem; }
+.clash-ui .clash-category legend { max-width: 100%; padding: 0 0.5rem; }
+.clash-ui .clash-type { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem; border: 2px solid transparent; border-radius: 0.25rem; cursor: pointer; }
+.clash-ui .clash-type:has([data-checked]) { background: #eef5ff; border-color: #c0d7ff; }
+.clash-ui .clash-type:has([disabled]) { opacity: 0.45; cursor: default; }
+.clash-ui .clash-status-dot { display: inline-block; width: 0.5rem; height: 0.5rem; border: 1px solid var(--clash-ink); border-radius: 50%; background: #b8bfca; }
+.clash-ui .clash-status-dot[data-online="true"] { background: var(--neo-green); }
+
+.clash-ui .clash-countdown { position: relative; display: grid; min-height: 25rem; place-content: center; overflow: hidden; padding: 2rem 1rem; text-align: center; background: var(--neo-yellow); }
+.clash-ui .clash-countdown::before, .clash-ui .clash-countdown::after { content: ""; position: absolute; width: 140%; height: 3.5rem; left: -20%; background: repeating-linear-gradient(90deg, var(--clash-ink) 0 2rem, transparent 2rem 4rem); opacity: 0.08; transform: rotate(-18deg); }
+.clash-ui .clash-countdown::before { top: 1rem; }
+.clash-ui .clash-countdown::after { bottom: 1rem; }
+.clash-ui .clash-countdown-number { font: 950 clamp(5rem, 16vw, 9rem)/1 var(--font-geist-mono), monospace; letter-spacing: -0.08em; animation: clash-count-in 400ms cubic-bezier(0.2, 1.5, 0.5, 1) both; }
+.clash-ui .clash-round-enter { animation: clash-round-in 330ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+.clash-ui .clash-reveal-enter { animation: clash-reveal-in 300ms ease-out both; }
+.clash-ui .clash-timer-track { height: 0.875rem; overflow: hidden; border-block: 3px solid var(--clash-ink); background: white; }
+.clash-ui .clash-timer-fill { height: 100%; transform-origin: left; background: var(--neo-blue); transition: transform 250ms linear; }
+.clash-ui .clash-timer-fill[data-urgent="true"] { background: var(--neo-coral); }
+.clash-ui .clash-timer-fill[data-reveal="true"] { background: var(--neo-green); }
+.clash-ui .clash-timer-number { min-width: 4.25rem; border: 2px solid var(--clash-ink); background: white; padding: 0.5rem 0.625rem; text-align: center; font: 900 1.625rem/1 var(--font-geist-mono), monospace; box-shadow: 3px 3px 0 var(--clash-ink); }
+.clash-ui .clash-timer-number[data-urgent="true"] { background: #ffd5d6; }
+.clash-ui .clash-choice { display: flex; min-height: 5.5rem; align-items: center; gap: 1rem; border: 3px solid var(--clash-ink); border-radius: 0.375rem; padding: 1rem; background: white; box-shadow: 4px 4px 0 var(--clash-ink); text-align: left; font-weight: 800; transition: transform 150ms, box-shadow 150ms, background-color 150ms; }
+.clash-ui .clash-choice:nth-child(1) { --choice-color: #d9e9ff; }
+.clash-ui .clash-choice:nth-child(2) { --choice-color: #ffe5b5; }
+.clash-ui .clash-choice:nth-child(3) { --choice-color: #d3f7e2; }
+.clash-ui .clash-choice:nth-child(4) { --choice-color: #ffdadd; }
+.clash-ui .clash-choice-code { display: grid; width: 2.25rem; height: 2.25rem; flex-shrink: 0; place-items: center; border: 2px solid var(--clash-ink); border-radius: 0.25rem; background: var(--choice-color); font-family: var(--font-geist-mono), monospace; font-size: 1.125rem; }
+.clash-ui .clash-choice:hover:enabled { background: var(--choice-color); transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--clash-ink); }
+.clash-ui .clash-choice:active:enabled { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--clash-ink); }
+.clash-ui .clash-choice[aria-pressed="true"] { background: var(--neo-yellow); transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--clash-ink); }
+.clash-ui .clash-choice[data-correct="true"] { background: #b5f3cf; }
+.clash-ui .clash-choice[data-wrong="true"] { background: #ffd5d6; }
+.clash-ui .clash-choice:disabled { cursor: default; }
+.clash-ui .clash-standings-row { display: grid; grid-template-columns: 1.75rem 2.75rem minmax(0, 1fr) auto; align-items: center; gap: 0.625rem; border-bottom: 2px solid var(--clash-ink); padding: 1rem 0.875rem; }
+.clash-ui .clash-standings-row:last-child { border-bottom: 0; }
+.clash-ui .clash-standings-row[data-self="true"] { background: #eef5ff; }
+.clash-ui .clash-standings-row[data-leader="true"] { background: #fff6c7; }
+.clash-ui .clash-score { font-family: var(--font-geist-mono), monospace; font-variant-numeric: tabular-nums; font-size: 1rem; font-weight: 900; animation: clash-score-in 350ms ease-out both; }
+.clash-ui .clash-streak { display: inline-flex; align-items: center; gap: 0.2rem; color: #6b7280; font: 800 0.6875rem/1.5 var(--font-geist-mono), monospace; }
+.clash-ui .clash-streak[data-tier="orange"] { color: #ac3b00; }
+.clash-ui .clash-streak[data-tier="blue"] { color: #1655c0; }
+.clash-ui .clash-streak[data-tier="pink"] { color: #b01960; }
+.clash-ui .clash-streak[data-tier="gold"] { color: #956000; }
+.clash-ui .clash-streak[data-tier]:not([data-tier="none"]) svg { fill: currentColor; animation: clash-flame 1.6s ease-in-out infinite alternate; }
+.clash-ui .clash-streak[data-tier="gold"] svg { filter: drop-shadow(0 0 3px #facc00); }
+.clash-ui .clash-finish { position: relative; overflow: hidden; background: var(--neo-yellow); padding: 2rem 1.25rem; text-align: center; }
+.clash-ui .clash-confetti { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.clash-ui .clash-confetti i { position: absolute; top: -1rem; width: 0.5rem; height: 1rem; border: 1px solid var(--clash-ink); background: var(--neo-blue); animation: clash-confetti 1.8s ease-out both; }
+.clash-ui .clash-confetti i:nth-child(3n) { background: var(--neo-coral); }
+.clash-ui .clash-confetti i:nth-child(3n + 1) { background: var(--neo-green); }
+
+@keyframes clash-count-in { from { opacity: 0; transform: scale(0.65) rotate(-8deg); } to { opacity: 1; transform: scale(1) rotate(-3deg); } }
+@keyframes clash-round-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes clash-reveal-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes clash-score-in { from { transform: translateY(-4px); } to { transform: translateY(0); } }
+@keyframes clash-flame { from { transform: scale(0.92) rotate(-6deg); } to { transform: scale(1.08) rotate(5deg); } }
+@keyframes clash-confetti { to { transform: translateY(18rem) rotate(330deg); opacity: 0; } }
+
+@media (max-width: 639px) {
+  .clash-ui .clash-countdown { min-height: 20rem; }
+  .clash-ui .clash-choice { min-height: 4.75rem; padding: 0.875rem; }
+  .clash-ui .clash-section-heading { padding: 1rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .clash-ui *, .clash-ui *::before, .clash-ui *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .clash-ui .clash-confetti { display: none; }
+}

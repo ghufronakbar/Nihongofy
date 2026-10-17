@@ -33,6 +33,22 @@ contract wajib memiliki migration dan catatan ringkas di dokumen/PR perubahan. J
 
 ## Ledger
 
+### 17 Oktober 2026 - UI/UX kompetisi Kotoba Clash
+
+- Status: not required
+- Migration: tidak ada
+- Alasan: redesign landing/join/lobby/arena/hasil, avatar peserta, serta terminal room closed/expired.
+- Object terdampak: query snapshot menambah select relasi `User.avatarUrl` existing. Tidak ada
+  perubahan tabel, kolom, index, constraint, policy, seed, atau format data tersimpan.
+- Data existing: tidak perlu backfill/cleanup. Avatar dibaca dari akun saat snapshot, bukan disalin.
+- Risiko operasi: field wire avatar opsional; payload lama/baru kompatibel. Socket deployment
+  lama dapat menampilkan fallback initial sampai reconnect. Aturan skor/deadline tidak berubah.
+- Validasi: query avatar dibuktikan read-only; gate dan evidence UI pada
+  [laporan UI/UX](../verification/kotoba-clash-ui-ux.md).
+- Refresh setelah deploy: redeploy aplikasi lalu refresh tab. Tidak ada reseed/invalidation manual
+  atau perubahan environment baru.
+- Owner: Engineering Owner; user/Release Owner untuk acceptance UI di production.
+
 ### 17 Oktober 2026 - Integrasi Mini Games dan Kotoba Clash (C-E)
 
 - Status: not required

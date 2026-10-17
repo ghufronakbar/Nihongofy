@@ -1,0 +1,69 @@
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { describe, expect, it, vi } from "vitest";
+import { ClashRoomSnapshotSchema, type ClashRoomSnapshot } from "../contracts";
+import { ClashRound } from "./round";
+
+vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn(), refresh: vi.fn() }) }));
+vi.mock("../actions", () => ({
+  closeClashRoomAction: vi.fn(), configureClashRoomAction: vi.fn(), joinClashRoomAction: vi.fn(),
+  readyClashRoomAction: vi.fn(), startClashMatchAction: vi.fn(), participateClashRoomAction: vi.fn(),
+}));
+import { ClashRoom } from "./room";
+
+const id = (n: number) => `00000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
+function snapshot(): ClashRoomSnapshot {
+  return ClashRoomSnapshotSchema.parse({
+    id: id(1), code: "ABCD2345", revision: 1, serverNow: 1000, closed: false, configRevision: 0, config: null,
+    viewer: { memberId: id(2), isHost: false, spectating: false }, members: [],
+    match: {
+      id: id(3), questionCount: 5, phase: { type: "QUESTION", roundId: id(4), position: 1, endsAt: 31000 },
+      playing: true, ownAnswer: null, leaderboard: [],
+      round: {
+        id: id(4), position: 1, startsAt: 1000, endsAt: 31000, revealEndsAt: 39000,
+        mondaiType: "MOJI_GOI_CONTEXT", correctChoice: 2, explanation: "PRIVATE_EXPLANATION",
+        content: { instruction: null, text: "Fixture question", image: null, context: null, choices: [
+          { code: 1, text: "First choice", image: null }, { code: 2, text: "Second choice", image: null },
+        ] },
+      },
+    },
+  });
+}
+
+describe("Kotoba Clash terminal and round UI", () => {
+  it("does not offer invites, join or reconnect for an initially closed room", () => {
+    const html = renderToStaticMarkup(createElement(ClashRoom, { code: "ABCD2345", initial: { ...snapshot(), closed: true }, initialError: "Old connection error", catalog: [] }));
+    expect(html).toContain("Room sudah ditutup atau kedaluwarsa");
+    expect(html).not.toMatch(/Link undangan|Sambungkan kembali|Gabung Room|Old connection error|ABCD2345/);
+  });
+  it("shows the terminal screen for an expired server lookup without a snapshot", () => {
+    const html = renderToStaticMarkup(createElement(ClashRoom, { code: "ABCD2345", initial: null, unavailable: true, initialError: "Expired", catalog: [] }));
+    expect(html).toContain("Kembali ke Kotoba Clash");
+    expect(html).not.toMatch(/guest-nickname|Gabung Room|Link undangan/);
+  });
+  it("keeps choice feedback and explanations private before the server reveal", () => {
+    const match = snapshot().match!;
+    match.ownAnswer = { choice: 2, acceptedAt: 2000 };
+    const html = renderToStaticMarkup(createElement(ClashRound, { match, now: 5000, connected: true, pending: false }));
+    expect(html).toContain("Jawaban terkunci");
+    expect(html).not.toMatch(/PRIVATE_EXPLANATION|Jawaban benar|Tepat sasaran|data-correct="true"/);
+    expect(html.match(/disabled=""/g)).toHaveLength(2);
+  });
+  it("closes answer controls at the deadline while waiting for an authoritative reveal", () => {
+    const html = renderToStaticMarkup(createElement(ClashRound, { match: snapshot().match!, now: 31000, connected: true, pending: false }));
+    expect(html.match(/disabled=""/g)).toHaveLength(2);
+    expect(html).toContain('aria-valuenow="0"');
+    expect(html).not.toContain("PRIVATE_EXPLANATION");
+  });
+  it("reveals feedback only in the reveal phase and omits live timers in review", () => {
+    const match = snapshot().match!;
+    match.phase = { type: "REVEAL", roundId: id(4), position: 1, endsAt: 39000 };
+    match.ownAnswer = { choice: 2, acceptedAt: 2000 };
+    const reveal = renderToStaticMarkup(createElement(ClashRound, { match, now: 32000, connected: true, pending: false }));
+    expect(reveal).toContain("Tepat sasaran");
+    expect(reveal).toContain("PRIVATE_EXPLANATION");
+    const review = renderToStaticMarkup(createElement(ClashRound, { match, now: 50000, connected: false, pending: false, review: true }));
+    expect(review).toContain("PRIVATE_EXPLANATION");
+    expect(review).not.toMatch(/progressbar|SELANJUTNYA|Ronde berikutnya|Koneksi terputus/);
+  });
+});

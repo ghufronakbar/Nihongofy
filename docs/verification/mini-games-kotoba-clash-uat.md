@@ -48,6 +48,20 @@ Pengujian berikutnya:
 3. Lanjutkan Bunpou/Dokkai dan mobile, lalu kapasitas 5/10/20 pemain dengan snapshot Usage
    Vercel/Upstash sebelum-sesudah. Pengujian ini belum dijalankan otomatis pada production.
 
+## Penyempurnaan UI Kompetisi - 17 Oktober 2026
+
+Setelah UAT awal, user memprioritaskan UI/UX. Terminal room, kontrol neobrutalism, avatar,
+line-up, leaderboard/crown, rekor streak berwarna, timer progress dan transisi sudah dibuat.
+Pemeriksaan lokal komponen aktual dengan fixture transport meliputi closed/expired, form,
+checkbox bertingkat, countdown/question/locked/reveal/spectator/finished serta perpindahan ronde
+mobile. Gate terbaru PASS: **643 tes /48 file**, lint/typecheck/build. Tidak ada migration,
+environment baru atau write production. Bukti dan checklist setelah redeploy:
+[laporan UI/UX](kotoba-clash-ui-ux.md).
+
+Hasil lokal ini terpisah dari match production user sebelumnya. Acceptance tampilan baru pada
+Vercel, keyboard/assistive technology dan reduced motion pada perangkat, serta sisa pengujian
+recovery/beban/budget tetap terbuka.
+
 ## Identitas Eksekusi Probe A
 
 | Field | Nilai yang harus dicatat saat pengujian |
@@ -116,8 +130,8 @@ skenario yang lebih luas tetap belum dijalankan.
 | B03 | Katalog tanpa game aktif; mobile dan keyboard | Empty state jujur, navigasi/fokus/form dapat dipakai | NOT RUN |
 | B04 | Host akun membuat room dan membagikan link | Kode unik; URL sesuai environment; guest tidak dapat membuat room | PASS parsial production; room host + guest tersimpan. Penolakan create guest dan proses berbagi link NOT RUN |
 | B05 | Guest join, refresh, tab kedua, dan nickname duplikat | Identitas/slot tidak ganda; nama tervalidasi; credential tidak terungkap | PASS parsial production untuk join guest; refresh/tab kedua/duplikat/inspeksi credential NOT RUN |
-| B06 | Kode invalid/closed/expired, kapasitas penuh, join bersamaan | Pesan jelas; batas atomik tidak terlewati; tidak ada room enumeration bebas | NOT RUN |
-| B07 | Parent/child checkbox pada level dengan stok berbeda | Select-all/indeterminate benar; anak kosong tidak ikut terpilih | NOT RUN |
+| B06 | Kode invalid/closed/expired, kapasitas penuh, join bersamaan | Pesan jelas; batas atomik tidak terlewati; tidak ada room enumeration bebas | PASS lokal parsial untuk terminal closed/expired dan penghentian retry; kapasitas/race/enumeration dan cloud NOT RUN |
+| B07 | Parent/child checkbox pada level dengan stok berbeda | Select-all/indeterminate benar; anak kosong tidak ikut terpilih | PASS lokal fixture untuk select-all/indeterminate dan anak tanpa stok; acceptance cloud NOT RUN |
 | B08 | Pilih 5/10/15/20 dan ubah stok sebelum Start | Soal unik cukup; server menolak konfigurasi stale tanpa partial match | NOT RUN |
 | B09 | Ready lalu host mengubah konfigurasi | Seluruh ready reset pada revision baru; stale Ready/Start ditolak | NOT RUN |
 | B10 | Start ganda, join bersamaan Start, kurang dari 2 pemain | Tepat satu match; roster konsisten; minimum pemain dijaga | NOT RUN |
@@ -138,7 +152,7 @@ skenario yang lebih luas tetap belum dijalankan.
 | C08 | Kirim ronde/pilihan asing atau submit sebagai spectator | Ditolak tanpa kunci atau mutasi hasil | NOT RUN |
 | C09 | Benar cepat/lambat, streak 1/2/3/6+, salah dan kosong | Rumus v1, cap streak, pembulatan, dan reset sesuai modul | PASS parsial production; agregat skor/benar/salah/streak 4 dan 2 cocok dengan engine v1. Kosong/cap streak/skenario terkontrol NOT RUN |
 | C10 | Finalisasi bersamaan/berulang dan score tie | Tidak ada nilai ganda; tie-break dan posisi bersama konsisten | NOT RUN |
-| C11 | Reveal dan explanation kosong | Kunci hanya setelah cutoff; fallback jujur; otomatis lanjut | NOT RUN |
+| C11 | Reveal dan explanation kosong | Kunci hanya setelah cutoff; fallback jujur; otomatis lanjut | PASS lokal parsial renderer: feedback/pembahasan tersembunyi sampai fase REVEAL; perpindahan soal mobile PASS fixture. Explanation kosong dan cloud UI baru NOT RUN |
 | C12 | Pertandingan 5, 10, 15, dan 20 soal | Seluruh ronde selesai, podium/statistik sesuai ledger dan URL match | PASS production untuk 5 soal/2 pemain; seluruh ronde finalized dan hasil cocok. 10/15/20 soal NOT RUN |
 
 ## D. Recovery, Privasi, dan Operasional
@@ -156,11 +170,11 @@ skenario yang lebih luas tetap belum dijalankan.
 | D09 | Export dan anonimisasi akun yang pernah bermain | Linkage/nickname/avatar personal tertangani; hasil lawan tidak rusak atau bocor | NOT RUN |
 | D10 | Room/hasil dan preview undangan di crawler | `noindex`, tidak masuk sitemap, preview tidak membawa identitas/soal privat | NOT RUN |
 | D11 | Periksa log/error pada seluruh flow | Tidak ada credential, kode room, nickname, pilihan, kunci, atau PII | NOT RUN |
-| D12 | Main di desktop dan mobile, reduced motion, reconnect UI | Soal terbaca, status bukan warna saja, pilihan/timer dapat diakses | NOT RUN |
+| D12 | Main di desktop dan mobile, reduced motion, reconnect UI | Soal terbaca, status bukan warna saja, pilihan/timer dapat diakses | PASS lokal parsial visual desktop/mobile (1280x900, 390x844), locked/spectator/reveal dan terminal; reduced motion OS/keyboard penuh/reconnect production UI baru NOT RUN |
 
 ## Gate Akhir
 
-- [x] `npm run verify` lulus; integrasi C-E 638 tes / 47 file, lint/typecheck/build lulus.
+- [x] `npm run verify` lulus; integrasi C-E 638 tes /47 file; redesign UI terbaru 643 tes /48 file, lint/typecheck/build lulus.
 - [x] Migration/Prisma tervalidasi; fondasi B direplay/diuji lokal; applied pada Supabase dikonfirmasi lewat status/metadata read-only, tanpa write data.
 - [ ] Skenario wajib lulus di environment yang relevan, termasuk bukti Hobby dan 20 koneksi.
 - [ ] Kuota, limit rilis, retensi, dan known issue mempunyai angka/status/owner yang nyata.
