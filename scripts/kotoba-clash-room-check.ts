@@ -98,7 +98,6 @@ async function main() {
     await db.kotobaClashRound.update({ where: { id: rounds[0]!.id }, data: { startsAt: new Date(Date.now() - 1000), endsAt: new Date(Date.now() + 5000), revealEndsAt: new Date(Date.now() + 13000) } });
     const answer = { roomId: room.id, matchId: start.matchId, roundId: rounds[0]!.id, requestId: randomUUID(), choice: 1 };
     await repository.submitAnswer(host, answer);
-    await repository.submitAnswer(g, { ...answer, choice: 2 });
     await assert.rejects(repository.submitAnswer(late, answer), codeIs("NOT_PLAYING"));
     const running = await state.read(host, room.id);
     assert.equal(running.match!.ownAnswer!.choice, 1);
@@ -109,6 +108,13 @@ async function main() {
     assert(!JSON.stringify(running).includes("private-explanation"));
     assert((await getClashAccountExport(db, host.userId, new Date())).every((member) => member.players.length === 0));
     checks.push("Active projection hides keys, explanations, furigana, opponent choices and active-round points");
+
+    await repository.submitAnswer(g, { ...answer, choice: 2 });
+    const revealed = await state.read(host, room.id);
+    assert.equal(revealed.match!.phase.type, "REVEAL");
+    assert.equal(revealed.match!.round!.correctChoice, 1);
+    assert(revealed.match!.leaderboard.some((player) => player.score > 0));
+    checks.push("The last roster answer opens reveal without waiting for the maximum deadline");
 
     await delay(30);
     const accepted = await db.kotobaClashAnswer.findMany({ where: { matchId: start.matchId }, select: { acceptedAt: true } });

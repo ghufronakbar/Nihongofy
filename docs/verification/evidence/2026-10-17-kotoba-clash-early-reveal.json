@@ -1,0 +1,92 @@
+{
+  "date": "2026-10-17",
+  "timezone": "Asia/Jakarta",
+  "baseCommit": "3a5d69edab6d55b43c02b9cb6847cf54c3ced9a7",
+  "scope": "Local disposable PostgreSQL/Redis repository-state integration; production v2 not run",
+  "rulesVersions": {
+    "newMatches": 2,
+    "supported": [
+      1,
+      2
+    ],
+    "databaseDefault": 1
+  },
+  "gates": {
+    "verify": "PASS",
+    "lintWarnings": 0,
+    "typecheck": "PASS",
+    "testFiles": 48,
+    "tests": 645,
+    "productionBuild": "PASS",
+    "prismaValidate": "PASS",
+    "diffCheck": "PASS"
+  },
+  "migration": {
+    "file": "prisma/migrations/20261017141402_kotoba_clash_early_reveal/migration.sql",
+    "localReplay": "PASS",
+    "localAppliedCount": 43,
+    "localStatus": "up to date",
+    "scheduleCheckValidated": true,
+    "unsupportedVersionRejected": true,
+    "remoteAppliedThisSession": false,
+    "backfill": "none",
+    "security": {
+      "rlsTables": 6,
+      "policies": 0,
+      "dataApiGrants": 0
+    }
+  },
+  "earlyReveal": {
+    "status": "PASS",
+    "checks": [
+      "Roster quorum includes the missing/offline player and excludes spectator; partial answers keep keys/points private",
+      "Concurrent last-answer/retry shifts schedule exactly once; exclusive cutoff, 8-second reveal, future continuity and retention persist",
+      "Fresh state/reconnect and spectator see the persisted reveal; speed bonus still uses the original 30-second maximum",
+      "Five accelerated rounds finish with real 8-second reveals; final leaderboard, persisted totals, review and private account export agree",
+      "Missing v2 player still waits for the normal deadline; legacy v1 never accelerates even when all answer; late/changed answers are rejected"
+    ]
+  },
+  "foundation": {
+    "status": "PASS",
+    "checks": [
+      "Concurrent Start: one match and one frozen roster",
+      "Private ACK; first answer final; concurrent retry creates one answer; other player can answer",
+      "Spectator and expired guest cannot submit; Unicode nickname keys fit normalization",
+      "Database clock is read after lock wait; late acceptance is rejected",
+      "Concurrent/repeated finalization is idempotent; late identical retry preserves original ACK",
+      "SQL rejects a second running match, cross-match answers, and missing identity",
+      "RLS enabled on all six tables; all three Data API roles denied access",
+      "Real account anonymization removes identity and host access while preserving opponent ledger"
+    ]
+  },
+  "room": {
+    "status": "PASS",
+    "checks": [
+      "Concurrent create is idempotent; global one-room admission is atomic",
+      "Guest resume preserves one membership; normalized nickname collision and unrelated reads are rejected",
+      "Server sampling is unique and balanced, excludes audio, and rejects insufficient stock",
+      "Config resets all ready states; stale ready and a disconnected roster cannot Start; countdown hides content",
+      "Late arrivals spectate; concurrent spectator admission respects five slots; unfinished results remain private",
+      "Active projection hides keys, explanations, furigana, opponent choices and active-round points",
+      "The last roster answer opens reveal without waiting for the maximum deadline",
+      "Account export includes completed offline schedules, rebuilds own score and excludes active matches, keys and other players",
+      "Read recovers finalization; completed review is scoped; spectator can opt in; rematch preserves code and old result URL",
+      "Cleanup preserves active matches and unexpired results; expired guest identity is anonymized without deleting score ledgers",
+      "Real Redis Lua: authenticated takeover is immediate; old owner cannot renew or release replacement"
+    ]
+  },
+  "cleanup": {
+    "fixtureUsers": 0,
+    "fixtureRooms": 0,
+    "fixtureMatches": 0,
+    "fixturePackages": 0,
+    "ownedPostgresqlStopped": true,
+    "ownedRedisStopped": true
+  },
+  "limitations": [
+    "No production migration or deployment executed",
+    "No browser/WebSocket production v2 acceptance",
+    "Free tier budget and wider product UAT remain open",
+    "Build includes existing AWS SDK Node 20 support notice for versions after January 2027"
+  ]
+}

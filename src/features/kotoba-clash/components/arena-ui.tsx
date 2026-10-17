@@ -57,7 +57,7 @@ export function ClashLeaderboard({ match, members, viewerId, compact = false }: 
     <div className="border-b-[3px] border-neo-ink bg-neo-green p-4">
       <div className="flex items-center justify-between gap-3"><span className="clash-label">{finished ? "Final standings" : "Live standings"}</span><Trophy className="size-5" aria-hidden="true" /></div>
       <h2 className="mt-2 text-xl font-black">{finished ? "Papan juara" : "Perebutan podium"}</h2>
-      <p className="mt-1 text-xs leading-5">{finished ? "Poin akhir seluruh ronde." : "Poin diperbarui setelah waktu soal habis."}</p>
+      <p className="mt-1 text-xs leading-5">{finished ? "Poin akhir seluruh ronde." : "Poin diperbarui saat pembahasan ronde."}</p>
     </div>
     <ol className={cn(compact && "max-h-[30rem] overflow-y-auto")}>
       {match.leaderboard.map((player) => {

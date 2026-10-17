@@ -6,8 +6,12 @@ Tanggal rancangan: **16 Oktober 2026 (Asia/Jakarta)**.
 
 **Production aktif atas persetujuan user; UAT awal 2 pemain/5 soal lulus (17 Oktober 2026).**
 Katalog, landing, room/invite/guest, konfigurasi bertingkat, ready, runner WebSocket, reveal,
-ranking, spectator, hasil/review, rematch, dan cleanup sudah dibuat. Tidak ada migration baru.
-Migration fondasi dikonfirmasi applied pada Supabase lewat pemeriksaan read-only.
+ranking, spectator, hasil/review, rematch, dan cleanup sudah dibuat.
+Migration fondasi dikonfirmasi applied pada Supabase lewat pemeriksaan read-only. Penyempurnaan
+berikutnya memakai aturan v2: semua pemain menjawab langsung memulai reveal, tanpa pilihan host.
+Migration `20261017141402_kotoba_clash_early_reveal` wajib diterapkan sebelum redeploy kode v2;
+baru diuji lokal dan belum diterapkan ke production pada sesi ini. Lihat
+[laporan percepatan ronde](../verification/kotoba-clash-early-reveal.md).
 Bukti kode dan batas pengujian ada di [laporan C-E](../verification/kotoba-clash-phase-c-e.md).
 User menguji satu match N5/5 soal dengan host, guest pemain dan late spectator. Audit ledger
 read-only cocok dengan hasil ketiga tampilan; seluruh ronde finalized, spectator tidak masuk
@@ -46,7 +50,7 @@ kecepatan, serta streak jawaban benar.
 | Level | Satu level N5, N4, N3, N2, atau N1 per pertandingan |
 | Pemilihan tipe | Checkbox bertingkat kategori dan subkategori |
 | Jumlah soal | Tepat 5, 10, 15, atau 20 |
-| Alur | Ready, host Start, soal serentak, deadline, reveal, otomatis lanjut, pemenang |
+| Alur | Ready, host Start, soal serentak, semua menjawab/deadline, reveal, otomatis lanjut, pemenang |
 | Jawaban | Privat; peserta lain tetap bisa menjawab sampai deadline |
 | Pendatang setelah Start | Spectator, menunggu pertandingan berikutnya |
 | Infrastruktur | Vercel Hobby, Upstash Redis Free, PostgreSQL Supabase Free |
@@ -55,7 +59,9 @@ kecepatan, serta streak jawaban benar.
 
 Baseline dari rencana yang dilanjutkan: host wajib login dan ikut bermain; guest mengisi
 nickname; room dipakai ulang untuk rematch; jawaban pertama final; seluruh skor dibuka saat
-reveal. Timer, scoring `v1`, dan retensi di bawah dibekukan pada 17 Oktober 2026 untuk fondasi B.
+reveal. Timer, scoring `v1`, dan retensi dibekukan pada 17 Oktober 2026 untuk fondasi B.
+Aturan `v2` untuk match baru menambahkan reveal lebih awal ketika seluruh roster menjawab,
+tanpa mengubah rumus poin. Match v1 dan hasil historis tetap memakai aturan v1.
 Kuota global tetap batas uji sementara, bukan hasil pengukuran kapasitas gratis.
 
 ### Kontrak fondasi B (17 Oktober 2026)
@@ -73,7 +79,7 @@ Kuota global tetap batas uji sementara, bukan hasil pengukuran kapasitas gratis.
   yang sudah mulai tetap mengikuti jadwal. Ready terikat `configRevision` dan reset saat berubah.
 - Lock transaksi berurutan: akun (bila ada), room, match; answer/finalisasi mengunci match yang sama.
   Clock database dibaca setelah lock, sehingga penantian lock tidak mengakali deadline.
-- Aturan scoring/ranking memakai versi `v1`. Hasil dihitung ulang dari ledger ronde yang telah
+- Aturan scoring/ranking fondasi memakai versi `v1` (match baru kini `v2`). Hasil dihitung ulang dari ledger ronde yang telah
   direveal, termasuk reset streak untuk jawaban salah/kosong; finalisasi retry mengganti agregat.
 - Detail room/match/jawaban bertahan sampai 7 hari setelah jadwal akhir, lobby idle 30 menit.
   Runtime memeriksa expiry walau cron belum berjalan. Guest yang kedaluwarsa tidak mendapat akses.
@@ -227,7 +233,7 @@ waktu tampil soal, deadline jawaban, dan akhir reveal. Schedule mengikuti versi 
 | Dokkai: terpadu / gagasan utama / cari informasi | 240 / 180 / 120 detik |
 | Reveal | 8 detik per soal |
 
-Durasi dipilih otomatis berdasarkan tipe, bukan diatur host pada v1. Pertandingan dokkai bisa
+Durasi maksimal dipilih otomatis berdasarkan tipe, bukan diatur host. Pertandingan dokkai bisa
 jauh lebih panjang daripada 20 menit; TTL, reconnect, dan retensi harus mengikuti `scheduledEndAt`.
 Uji 15-20 menit pada fase A adalah uji koneksi, bukan batas durasi permainan.
 
@@ -240,8 +246,15 @@ Uji 15-20 menit pada fase A adalah uji koneksi, bukan batas durasi permainan.
   clock browser atau timestamp yang dikirim pemain.
 - Penerimaan dinilai dari `acceptedAt` tersebut; ACK baru dikirim setelah commit. Pengiriman client
   sebelum deadline tidak menjamin diterima jika operasi penerimaan baru berjalan setelah deadline.
-- Semua peserta tetap mendapat kesempatan sampai deadline, walaupun pemain lain sudah menjawab
-  atau seluruh pemain sudah selesai. V1 tidak memajukan reveal lebih awal.
+- Selama ada pemain dalam roster yang belum menjawab, peserta tetap mendapat kesempatan sampai
+  deadline. Pada v2, jawaban terakhir yang diterima server langsung memulai reveal 8 detik;
+  tidak ada pengaturan host. Spectator tidak dihitung, pemain offline tetap bagian roster.
+- Insert jawaban terakhir, pemendekan ronde, pergeseran seluruh ronde berikutnya dan akhir match
+  berada dalam transaksi yang sama di bawah lock room/match. Retry tidak menggeser ulang.
+  Cutoff eksklusif disimpan sebagai `min(deadlineLama, acceptedAtTerakhir + 1ms)` agar jawaban
+  terakhir tetap berada dalam interval valid. Reveal tetap 8 detik penuh, lalu soal berikutnya.
+- Pada match v1, semua pemain selesai tetap menunggu deadline. Jadwal dan hasil v1 tidak
+  dikonversi. Reconnect v2 membaca jadwal terbaru yang tersimpan, bukan jadwal awal di memori.
 - Countdown lokal memakai estimasi waktu server dari snapshot/round-trip. Tampilan bisa dikoreksi
   saat sync; keputusan menerima jawaban tetap milik server.
 - Timer pada instance adalah pemicu best effort. Jadwal tersimpan menentukan fase yang benar.
@@ -258,8 +271,8 @@ Jawaban pertama yang diterima server final. Pilihan invalid, ronde asing, specta
 roster, atau jawaban di luar interval ditolak tanpa membuka kunci. Retry pilihan sama mengembalikan
 ACK yang konsisten; retry pilihan berbeda ditolak. Pilihan pemain lain tidak disiarkan.
 
-Rumus default versi `v1`, dengan `D` durasi soal, `t` waktu sejak soal dimulai, dan `s` streak benar
-termasuk soal saat ini:
+Rumus versi `v1` dan `v2`, dengan `D` durasi maksimal soal, `t` waktu sejak soal dimulai, dan `s`
+streak benar termasuk soal saat ini:
 
 ```text
 salah atau kosong: poin = 0; streak berikutnya = 0
@@ -277,6 +290,12 @@ bonus untuk orang yang kebetulan submit pertama di antara pemain lain.
 
 Contoh: soal 30 detik, benar pada detik 6, streak ketiga -> 1000 + 320 + 100 = **1420**.
 Latensi jaringan tetap berpengaruh; skor benar sengaja menjadi komponen terbesar.
+
+Pada v2, `D` berasal dari durasi maksimal subkategori dalam aturan v2, bukan selisih akhir-awal
+setelah ronde dipercepat. Contohnya jawaban benar detik 6 pada soal 30 detik tetap mendapat speed
+320 walau semua selesai detik 7. Snapshot live, finalisasi, review dan export memakai aturan
+versi yang sama. V1 tetap memakai interval tersimpan; perubahan durasi di masa depan memerlukan
+versi aturan baru agar perhitungan historis stabil.
 
 Ranking: total poin menurun, lalu jumlah benar menurun, lalu total waktu jawaban benar menaik.
 Jika ketiganya sama, posisi dibagi dan dapat ada pemenang bersama. Urutan tampilan stabil tidak
@@ -330,6 +349,10 @@ RLS/tanpa grant Data API, 22 constraint tervalidasi serta partial unique index d
   konsisten. Pemeriksaan deadline dan insert jawaban atomik terhadap finalisasi ronde.
 - Snapshot assignment dan roster tersimpan sebelum pertandingan dianggap mulai. Set soal tidak
   digenerate ulang pada setiap koneksi atau request.
+- CHECK match menerima `rulesVersion` 1/2, dengan pemeriksaan waktu/config existing tetap aktif.
+  Default database tetap 1 untuk deployment lama; aplikasi baru menulis 2 secara eksplisit.
+  Retensi match v2 mengikuti akhir aktual +7 hari; expiry room tetap batas atas sebelumnya
+  agar akses hasil match lain dalam room tidak terpotong.
 - Skor diturunkan dari ledger jawaban dan assignment. Finalisasi retry tidak memakai penambahan
   agregat tanpa guard; hasil harus dapat direkonstruksi tanpa Redis.
 - Index FK dan query room/match/expiry/ownership ditinjau, termasuk unique aktif yang tepat.
@@ -383,6 +406,8 @@ diduplikasi dalam transport. Event klien tidak pernah langsung di-relay sebagai 
   Terputus tidak mereset membership, skor, ready yang masih valid, atau jawaban tersimpan.
 - Deployment baru dan lama dapat hidup bersamaan sampai socket lama ditutup. Versi protokol/aturan
   pertandingan tidak berubah diam-diam; deployment tidak kompatibel memerlukan drain terencana.
+  Untuk rollout v2, terapkan migration dahulu, selesaikan match aktif lalu refresh seluruh tab
+  setelah redeploy sebelum membuat match baru. Server baru mendukung v1/v2, server lama hanya v1.
   Penonaktifan flag memerlukan invalidasi runtime/drain yang dibuktikan, bukan asumsi bahwa proses
   lama membaca env baru setelah redeploy.
 - Jawaban yang belum mendapat ACK disimpan sebagai pending sementara pada tab. Setelah reconnect,

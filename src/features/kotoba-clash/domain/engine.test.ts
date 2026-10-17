@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { randomUUID } from "node:crypto";
 import { ClashConfigSchema, ClashNicknameSchema, ClashQuestionSnapshotSchema, ClashClientMessageSchema, nicknameKey } from "../schemas";
-import { acceptsAnswer, correctAnswerPoints, createSchedule, phaseAt, rankPlayers, scoreLedger } from "./engine";
+import { acceptsAnswer, correctAnswerPoints, createSchedule, earlyRevealSchedule, phaseAt, rankPlayers, scoreLedger } from "./engine";
 import { projectRound } from "./projection";
 import { CLASH_DURATIONS_MS, CLASH_MONDAI_TYPES } from "./rules";
 
@@ -33,6 +33,26 @@ describe("Kotoba Clash schedule and scoring", () => {
     expect(acceptsAnswer(schedule[0]!, 6_000)).toBe(true);
     expect(acceptsAnswer(schedule[0]!, 35_999)).toBe(true);
     expect(acceptsAnswer(schedule[0]!, 36_000)).toBe(false);
+  });
+  it("reveals after the last accepted millisecond and preserves the full reveal interval", () => {
+    const round = schedule[0]!;
+    const accelerated = earlyRevealSchedule(round, round.startsAt + 6_000);
+    expect(accelerated.endsAt).toBe(12_001);
+    expect(accelerated.revealEndsAt).toBe(20_001);
+    expect(acceptsAnswer(accelerated, 12_000)).toBe(true);
+    expect(acceptsAnswer(accelerated, 12_001)).toBe(false);
+    expect(phaseAt([accelerated], 12_001).type).toBe("REVEAL");
+    expect(earlyRevealSchedule(round, round.endsAt - 1)).toEqual(round);
+    expect(() => earlyRevealSchedule(round, round.endsAt)).toThrow("outside");
+  });
+  it("keeps speed points independent of early completion, including same-millisecond answers", () => {
+    const round = schedule[0]!;
+    const answers = ["a", "b"].map((playerId) => ({ playerId, roundId: round.id, choice: 1, acceptedAt: round.startsAt + 6_000 }));
+    const accelerated = { ...earlyRevealSchedule(round, answers[0]!.acceptedAt), correctChoice: 1, scoringDurationMs: 30_000 };
+    const result = scoreLedger(["a", "b"], [accelerated], answers, accelerated.endsAt);
+    expect(result.map((player) => player.score)).toEqual([1_320, 1_320]);
+    expect(scoreLedger(["a", "b"], [accelerated], answers, accelerated.endsAt - 1).map((player) => player.score)).toEqual([0, 0]);
+    expect(result).toEqual(scoreLedger(["a", "b"], [{ ...round, correctChoice: 1 }], answers, round.endsAt));
   });
   it("implements the documented speed/streak formula and cap", () => {
     expect(correctAnswerPoints(30_000, 6_000, 3)).toBe(1_420);

@@ -6,8 +6,8 @@ import { ClashRoomSnapshotSchema, type ClashRoomSnapshot } from "../contracts";
 import { ClashError, type ClashIdentity } from "../domain/ports";
 import { phaseAt, rankPlayers, scoreLedger } from "../domain/engine";
 import { projectRound } from "../domain/projection";
-import { databaseNow, lockIdentity, lockRoom, requireMember, scheduleOf, PrismaClashRepository } from "./repository";
-import { CLASH_LOBBY_IDLE_MS } from "../domain/rules";
+import { databaseNow, ledgerRoundOf, lockIdentity, lockRoom, requireMember, scheduleOf, PrismaClashRepository } from "./repository";
+import { CLASH_LOBBY_IDLE_MS, supportsClashRulesVersion } from "../domain/rules";
 
 export class PrismaClashState {
   constructor(private readonly db: PrismaClient, private readonly repository: PrismaClashRepository) {}
@@ -30,7 +30,7 @@ export class PrismaClashState {
         players: { select: { id: true, memberId: true, member: { select: { nickname: true } }, answers: { select: { roundId: true, choice: true, acceptedAt: true } } } },
       } });
       if (resultMatchId && !match) throw new ClashError("NOT_FOUND");
-      if (match && match.rulesVersion !== 1) throw new ClashError("CLOSED");
+      if (match && !supportsClashRulesVersion(match.rulesVersion)) throw new ClashError("CLOSED");
       const closed = room.status !== "OPEN" || Math.max(room.updatedAt.getTime(), match?.endsAt.getTime() ?? 0) + CLASH_LOBBY_IDLE_MS <= now.getTime();
       const members = await tx.kotobaClashRoomMember.findMany({
         where: { roomId: room.id, anonymizedAt: null, OR: [{ userId: { not: null } }, { guestExpiresAt: { gt: now } }] },
@@ -44,7 +44,7 @@ export class PrismaClashState {
       const ownAnswer = ownPlayer?.answers.find((answer) => answer.roundId === activeRound?.id);
       const scores = match ? rankPlayers(scoreLedger(
         match.players.map((player) => player.id),
-        match.rounds.map((round) => ({ ...scheduleOf(round), correctChoice: ClashQuestionSnapshotSchema.parse(round.snapshot).correctChoice })),
+        match.rounds.map((round) => ledgerRoundOf(round, match.rulesVersion)),
         match.players.flatMap((player) => player.answers.map((answer) => ({ ...answer, playerId: player.id, acceptedAt: answer.acceptedAt.getTime() }))),
         now.getTime(),
       )) : [];

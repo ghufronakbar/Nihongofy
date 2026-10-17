@@ -1,4 +1,6 @@
-export const CLASH_RULES_VERSION = 1;
+export const CLASH_RULES_VERSION = 2;
+export const CLASH_SUPPORTED_RULES_VERSIONS = [1, 2] as const;
+export const supportsClashRulesVersion = (version: number) => CLASH_SUPPORTED_RULES_VERSIONS.some((supported) => supported === version);
 export const CLASH_LEVELS = ["N5", "N4", "N3", "N2", "N1"] as const;
 export const CLASH_QUESTION_COUNTS = [5, 10, 15, 20] as const;
 export const CLASH_COUNTDOWN_MS = 5_000;

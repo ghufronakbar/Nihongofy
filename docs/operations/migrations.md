@@ -33,6 +33,32 @@ contract wajib memiliki migration dan catatan ringkas di dokumen/PR perubahan. J
 
 ## Ledger
 
+### 17 Oktober 2026 - Kotoba Clash reveal saat seluruh roster menjawab
+
+- Status: required (replay lokal PASS; belum diterapkan ke production pada sesi ini)
+- Migration: `prisma/migrations/20261017141402_kotoba_clash_early_reveal/migration.sql`
+- Alasan: pertandingan baru memakai aturan v2 untuk langsung reveal ketika semua pemain menjawab;
+  pertandingan v1/historis tetap memakai deadline penuh dan skor semula.
+- Object terdampak: hanya CHECK `KotobaClashMatch_schedule_check`, menerima versi 1/2 sambil
+  mempertahankan syarat `startsAt < endsAt < expiresAt` dan config JSON object. Default versi
+  database tetap 1; aplikasi baru menulis 2 secara eksplisit. Tidak ada tabel/kolom/index baru.
+- Data existing: tidak ada backfill, konversi versi, penghapusan atau reseed. Migration hanya
+  melonggarkan versi yang diizinkan; jadwal dan ledger match lama tetap utuh.
+- Risiko operasi: DROP/ADD constraint dalam satu statement memerlukan ACCESS EXCLUSIVE lock
+  singkat; `NOT VALID` menegakkan row baru, lalu VALIDATE memeriksa row existing dengan lock
+  SHARE UPDATE EXCLUSIVE. Jalankan saat trafik rendah. Terapkan migration lebih dahulu; default
+  1 menjaga aplikasi lama tetap dapat membuat match v1 selama pergantian deployment. Server lama
+  tidak mendukung match v2: selesaikan match aktif, redeploy, lalu refresh semua tab sebelum Start.
+- Validasi: migration dibuat melalui Prisma create-only pada baseline generator disposable,
+  disesuaikan untuk CHECK yang tidak dimodelkan Prisma; seluruh 43 migration direplay lokal.
+  CHECK tervalidasi, default 1, versi 3 ditolak, RLS/grant tetap tertutup. Checker foundation,
+  room, dan early-reveal serta gate lengkap dicatat pada
+  [laporan](../verification/kotoba-clash-early-reveal.md). Belum ada verifikasi/write remote baru.
+- Refresh setelah deploy: `npx prisma migrate deploy` memakai `DIRECT_URL` target, redeploy,
+  refresh seluruh tab host/pemain/spectator, lalu buat match baru. Tidak ada env atau seed baru.
+- Owner: Engineering Owner untuk implementasi/bukti lokal; user/Release Owner untuk migration,
+  deployment, dan acceptance production.
+
 ### 17 Oktober 2026 - UI/UX kompetisi Kotoba Clash
 
 - Status: not required

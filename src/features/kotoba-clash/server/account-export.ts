@@ -2,8 +2,8 @@ import "server-only";
 
 import type { PrismaClient } from "@prisma/client";
 import { scoreLedger } from "../domain/engine";
-import { ClashQuestionSnapshotSchema } from "../schemas";
-import { scheduleOf } from "./repository";
+import { CLASH_SUPPORTED_RULES_VERSIONS } from "../domain/rules";
+import { ledgerRoundOf } from "./repository";
 
 export async function getClashAccountExport(db: PrismaClient, userId: number, now: Date) {
   const members = await db.kotobaClashRoomMember.findMany({
@@ -12,11 +12,11 @@ export async function getClashAccountExport(db: PrismaClient, userId: number, no
     select: {
       nickname: true, joinedAt: true,
       players: {
-        where: { match: { endsAt: { lte: now }, expiresAt: { gt: now }, rulesVersion: 1 } },
+        where: { match: { endsAt: { lte: now }, expiresAt: { gt: now }, rulesVersion: { in: [...CLASH_SUPPORTED_RULES_VERSIONS] } } },
         select: {
           id: true, matchId: true,
           answers: { select: { roundId: true, choice: true, acceptedAt: true } },
-          match: { select: { rounds: { orderBy: { position: "asc" }, select: {
+          match: { select: { rulesVersion: true, rounds: { orderBy: { position: "asc" }, select: {
             id: true, position: true, startsAt: true, endsAt: true, revealEndsAt: true, snapshot: true,
           } } } },
         },
@@ -28,9 +28,8 @@ export async function getClashAccountExport(db: PrismaClient, userId: number, no
   return members.map((member) => ({
     nickname: member.nickname, joinedAt: member.joinedAt,
     players: member.players.map((player) => {
-      const score = scoreLedger([player.id], player.match.rounds.map((round) => ({
-        ...scheduleOf(round), correctChoice: ClashQuestionSnapshotSchema.parse(round.snapshot).correctChoice,
-      })), player.answers.map((answer) => ({ ...answer, playerId: player.id, acceptedAt: answer.acceptedAt.getTime() })), now.getTime())[0]!;
+      const score = scoreLedger([player.id], player.match.rounds.map((round) => ledgerRoundOf(round, player.match.rulesVersion)),
+        player.answers.map((answer) => ({ ...answer, playerId: player.id, acceptedAt: answer.acceptedAt.getTime() })), now.getTime())[0]!;
       return {
         matchId: player.matchId, score: score.score, correctCount: score.correctCount,
         wrongCount: score.wrongCount, skippedCount: score.skippedCount,

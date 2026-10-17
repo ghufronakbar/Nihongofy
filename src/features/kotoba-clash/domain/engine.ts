@@ -38,6 +38,13 @@ export function acceptsAnswer(round: RoundSchedule, acceptedAt: number) {
   return acceptedAt >= round.startsAt && acceptedAt < round.endsAt;
 }
 
+export function earlyRevealSchedule(round: RoundSchedule, lastAcceptedAt: number): RoundSchedule {
+  if (!acceptsAnswer(round, lastAcceptedAt)) throw new Error("Cannot reveal outside the answer window.");
+  // Keep the last accepted answer inside the exclusive cutoff at millisecond precision.
+  const endsAt = Math.min(round.endsAt, lastAcceptedAt + 1);
+  return { ...round, endsAt, revealEndsAt: endsAt + round.revealEndsAt - round.endsAt };
+}
+
 export function correctAnswerPoints(durationMs: number, elapsedMs: number, streak: number) {
   if (!Number.isFinite(durationMs) || durationMs <= 0 || !Number.isFinite(elapsedMs) || !Number.isInteger(streak) || streak < 1) {
     throw new Error("Invalid scoring input.");
@@ -46,7 +53,7 @@ export function correctAnswerPoints(durationMs: number, elapsedMs: number, strea
   return 1_000 + speed + Math.min(50 * (streak - 1), 250);
 }
 
-export type LedgerRound = RoundSchedule & { correctChoice: number };
+export type LedgerRound = RoundSchedule & { correctChoice: number; scoringDurationMs?: number };
 export type LedgerAnswer = { roundId: string; playerId: string; choice: number; acceptedAt: number };
 export type PlayerResult = {
   playerId: string;
@@ -86,7 +93,7 @@ export function scoreLedger(playerIds: string[], rounds: LedgerRound[], answers:
         result.correctCount += 1;
         result.correctTimeMs += elapsed;
         result.bestStreak = Math.max(result.bestStreak, streak);
-        result.score += correctAnswerPoints(round.endsAt - round.startsAt, elapsed, streak);
+        result.score += correctAnswerPoints(round.scoringDurationMs ?? round.endsAt - round.startsAt, elapsed, streak);
       }
     }
     return result;

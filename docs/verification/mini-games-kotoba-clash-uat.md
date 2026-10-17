@@ -4,6 +4,8 @@ Status: **Aktif di production atas persetujuan user; UAT awal 2 pemain + 1 spect
 Probe awal dijalankan 16 Oktober 2026; integrasi dan pemeriksaan lokal pada **17 Oktober 2026**.
 Migration B terkonfirmasi applied lewat status/metadata Supabase read-only. Integrasi
 C-E tidak menambah migration. Lihat [laporan C-E](kotoba-clash-phase-c-e.md) untuk scope dan bukti.
+Perubahan sesudahnya menambahkan aturan v2 dan satu migration early-reveal; baru diuji lokal,
+belum dideploy pada sesi ini. Match/UAT production terdahulu tetap bukti aturan v1.
 Budget masih BLOCKED pada pengukuran: snapshot Usage agregat user belum menjadi delta biaya workload produk.
 User menyetujui aktivasi sebelum seluruh UAT/budget selesai; persetujuan ini tidak meluluskan
 pengujian tersisa atau menjamin kuota free tier. Default flag di kode tetap false.
@@ -41,10 +43,11 @@ kode room, nickname, ID personal, credential, konten soal, pilihan jawaban, atau
 
 Pengujian berikutnya:
 
-1. Main lagi pada room yang sama dengan **10 soal Moji-Goi** (6 menit 25 detik). Spectator memilih
+1. Main lagi pada room yang sama dengan **10 soal Moji-Goi** (maksimal 6 menit 25 detik pada v2). Spectator memilih
    ikut dan seluruh peserta ready ulang. Pastikan hasil lama tetap tersedia dan match baru terpisah.
 2. Pada match tersebut, refresh setelah jawaban terkonfirmasi dan putuskan koneksi guest sekitar
    10 detik. Lewati menit kelima; membership, jawaban tersimpan, soal dan skor akhir harus pulih.
+   Untuk menguji durasi tersebut pada v2, biarkan satu pemain menunggu mendekati deadline tiap soal.
 3. Lanjutkan Bunpou/Dokkai dan mobile, lalu kapasitas 5/10/20 pemain dengan snapshot Usage
    Vercel/Upstash sebelum-sesudah. Pengujian ini belum dijalankan otomatis pada production.
 
@@ -61,6 +64,18 @@ environment baru atau write production. Bukti dan checklist setelah redeploy:
 Hasil lokal ini terpisah dari match production user sebelumnya. Acceptance tampilan baru pada
 Vercel, keyboard/assistive technology dan reduced motion pada perangkat, serta sisa pengujian
 recovery/beban/budget tetap terbuka.
+
+## Percepatan Ronde Otomatis - 17 Oktober 2026
+
+User melaporkan pertandingan lama sudah dicoba bersama teman untuk waktu panjang dan berjalan
+aman; durasi/jumlah soal/ledger pengujian tersebut tidak diaudit ulang pada sesi ini. User kemudian
+menyetujui langsung reveal saat seluruh pemain menjawab, tanpa pilihan host.
+
+Aturan v2 untuk match baru sudah diuji lewat repository/state dengan PostgreSQL disposable:
+quorum roster, spectator, pemain yang belum menjawab, retry/concurrency, lima ronde dengan reveal
+8 detik nyata, reconnect melalui instance state baru, skor/export/finalisasi dan fallback deadline.
+Match v1 tetap menunggu deadline. Bukti lokal dan runbook migration sebelum redeploy ada pada
+[laporan](kotoba-clash-early-reveal.md); penerimaan browser/WebSocket production v2 **NOT RUN**.
 
 ## Identitas Eksekusi Probe A
 
@@ -147,10 +162,10 @@ skenario yang lebih luas tetap belum dijalankan.
 | C03 | Jawaban sebelum mulai, sebelum deadline, tepat deadline, sesudahnya | Hanya interval awal inklusif/akhir eksklusif diterima menurut clock DB | NOT RUN |
 | C04 | Ubah jam browser dan kirim timestamp palsu | Countdown dapat dikoreksi; penerimaan/poin tidak mengikuti jam client | NOT RUN |
 | C05 | Pemain pertama menjawab, pemain lain masih mengerjakan | Pemain lain tetap dapat submit sampai deadline; pilihan lawan privat | NOT RUN |
-| C06 | Semua menjawab lebih awal | Reveal tetap menunggu deadline; tidak membuka kunci lebih cepat | NOT RUN |
+| C06 | Semua menjawab lebih awal | Match v2 langsung reveal 8 detik tanpa toggle host; spectator tidak dihitung, roster offline tetap dihitung; v1 tetap menunggu deadline | PASS lokal repository/state termasuk concurrency/retry dan lima ronde; browser/WebSocket production v2 NOT RUN, lihat laporan early-reveal |
 | C07 | ACK hilang, retry identik, retry berbeda, dan submit multi-tab | Satu answer/poin; ACK konsisten; jawaban pertama tidak tertimpa | NOT RUN |
 | C08 | Kirim ronde/pilihan asing atau submit sebagai spectator | Ditolak tanpa kunci atau mutasi hasil | NOT RUN |
-| C09 | Benar cepat/lambat, streak 1/2/3/6+, salah dan kosong | Rumus v1, cap streak, pembulatan, dan reset sesuai modul | PASS parsial production; agregat skor/benar/salah/streak 4 dan 2 cocok dengan engine v1. Kosong/cap streak/skenario terkontrol NOT RUN |
+| C09 | Benar cepat/lambat, streak 1/2/3/6+, salah dan kosong | Rumus v1/v2, cap streak, pembulatan, reset; v2 memakai durasi maksimal sebelum percepatan | PASS parsial production v1; agregat skor/benar/salah/streak 4 dan 2 cocok. Lokal v2 speed bonus/finalisasi/export cocok; browser production v2 dan cap streak terkontrol NOT RUN |
 | C10 | Finalisasi bersamaan/berulang dan score tie | Tidak ada nilai ganda; tie-break dan posisi bersama konsisten | NOT RUN |
 | C11 | Reveal dan explanation kosong | Kunci hanya setelah cutoff; fallback jujur; otomatis lanjut | PASS lokal parsial renderer: feedback/pembahasan tersembunyi sampai fase REVEAL; perpindahan soal mobile PASS fixture. Explanation kosong dan cloud UI baru NOT RUN |
 | C12 | Pertandingan 5, 10, 15, dan 20 soal | Seluruh ronde selesai, podium/statistik sesuai ledger dan URL match | PASS production untuk 5 soal/2 pemain; seluruh ronde finalized dan hasil cocok. 10/15/20 soal NOT RUN |
@@ -174,8 +189,8 @@ skenario yang lebih luas tetap belum dijalankan.
 
 ## Gate Akhir
 
-- [x] `npm run verify` lulus; integrasi C-E 638 tes /47 file; redesign UI terbaru 643 tes /48 file, lint/typecheck/build lulus.
-- [x] Migration/Prisma tervalidasi; fondasi B direplay/diuji lokal; applied pada Supabase dikonfirmasi lewat status/metadata read-only, tanpa write data.
+- [x] `npm run verify` lulus; integrasi C-E 638 tes /47 file; UI 643 tes /48 file; early-reveal terbaru 645 tes /48 file, lint/typecheck/build lulus.
+- [x] Migration/Prisma tervalidasi; 43 migration termasuk early-reveal direplay lokal. Hanya fondasi B yang sudah dikonfirmasi applied pada Supabase lewat metadata read-only; migration early-reveal production belum dijalankan.
 - [ ] Skenario wajib lulus di environment yang relevan, termasuk bukti Hobby dan 20 koneksi.
 - [ ] Kuota, limit rilis, retensi, dan known issue mempunyai angka/status/owner yang nyata.
 - [x] UAT awal user tercatat terpisah dari pemeriksaan developer; cakupan lanjutan tetap terbuka.

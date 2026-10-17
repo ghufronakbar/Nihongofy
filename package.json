@@ -57,7 +57,8 @@
     "postinstall": "prisma generate",
     "check:kotoba-clash:foundation": "node --conditions=react-server --env-file-if-exists=.env --env-file-if-exists=.env.local --import tsx scripts/kotoba-clash-foundation-check.ts",
     "check:kotoba-clash:room": "node --conditions=react-server --env-file-if-exists=.env --env-file-if-exists=.env.local --import tsx scripts/kotoba-clash-room-check.ts",
-    "kotoba-clash:runtime": "node --conditions=react-server --env-file-if-exists=.env --env-file-if-exists=.env.local --import tsx scripts/kotoba-clash-runtime.ts"
+    "kotoba-clash:runtime": "node --conditions=react-server --env-file-if-exists=.env --env-file-if-exists=.env.local --import tsx scripts/kotoba-clash-runtime.ts",
+    "check:kotoba-clash:early-reveal": "node --conditions=react-server --env-file-if-exists=.env --env-file-if-exists=.env.local --import tsx scripts/kotoba-clash-early-reveal-check.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1140.0",

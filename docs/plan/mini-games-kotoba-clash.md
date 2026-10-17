@@ -161,7 +161,7 @@ flag off tidak meninggalkan link/CTA rusak.
 - [x] Implementasikan scoring v1, reset streak pada salah/kosong, dan agregasi yang dapat
   direkonstruksi serta tidak bertambah dua kali saat finalisasi retry.
 - [x] Tampilkan reveal 8 detik, pembahasan singkat/fallback jujur, dan leaderboard ronde selesai.
-  Tetap tunggu deadline meski semua pemain sudah menjawab.
+  Fondasi v1 menunggu deadline meski semua menjawab; aturan baru v2 ada pada bagian 11.
 - [ ] Audit props RSC, event, snapshot, error, cache, dan export: kunci/pembahasan/furigana/skor
   ronde aktif tidak bocor sebelum reveal. Jangan melonggarkan guard answer-key existing.
 - [ ] Selesaikan 5/10/15/20 soal dengan kombinasi benar/salah/kosong dan verifikasi hasil manual.
@@ -239,7 +239,28 @@ Rincian implementasi dan evidence: [laporan UI/UX](../verification/kotoba-clash-
 Gate akhir PASS: 643 tes /48 file, lint/typecheck/build. UI cloud dan perjalanan keyboard/reduced
 motion penuh tetap terbuka pada laporan; tidak ada migration atau environment baru.
 
-## 11. Aturan Pemeliharaan Rencana
+## 11. Ronde Selesai Saat Semua Menjawab - 17 Oktober 2026
+
+Keputusan user: tanpa pilihan tempo di host. Pertandingan baru langsung masuk reveal ketika
+seluruh roster sudah mengirim jawaban yang diterima server; jika ada yang belum menjawab,
+deadline maksimal tetap berlaku. Spectator tidak dihitung, pemain offline tetap bagian roster.
+
+- [x] Versikan perilaku sebagai rules v2; pertahankan dukungan v1 untuk pertandingan/history lama.
+  Migration hanya melonggarkan CHECK versi menjadi 1/2; aplikasi baru menulis versi 2 eksplisit.
+  Default DB tetap 1 agar deployment lama tetap dapat membuat match selama pergantian versi.
+- [x] Jawaban terakhir memendekkan ronde dan menggeser seluruh jadwal berikutnya secara atomik
+  di bawah lock room/match existing. Reveal tetap 8 detik; retry tidak menggeser ulang.
+- [x] Pertahankan bonus kecepatan berdasarkan durasi maksimal subkategori, bukan waktu reveal
+  yang dipercepat; samakan rekonstruksi leaderboard, agregat tersimpan dan export akun.
+- [x] Uji quorum roster, spectator/offline, submit terakhir bersamaan, retry, deadline normal,
+  reveal privat, reconnect/read, finalisasi, export, v1 dan replay migration pada DB disposable.
+- [x] Jalankan gate engineering, perbarui modul/UAT/ledger dan serahkan urutan migration/deploy.
+
+Bukti lokal: [laporan early-reveal](../verification/kotoba-clash-early-reveal.md). Gate lulus
+645 tes /48 file; tiga checker database/Redis dan replay 43 migration PASS. Migration/redeploy
+production v2 dan acceptance browser belum dilakukan; tidak ada environment baru.
+
+## 12. Aturan Pemeliharaan Rencana
 
 Centang hanya setelah implementasi dan verifikasi relevan selesai. UAT user tetap dibedakan dari
 check otomatis developer. Perubahan default ditulis pada modul sebelum kode diubah; status layanan

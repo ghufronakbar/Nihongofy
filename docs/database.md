@@ -377,6 +377,13 @@ Saat import data soal, tangani pelanggaran constraint sebagai sinyal error ekstr
 - Jadwal battle tersimpan sebagai UTC `timestamptz(3)` sejak Start, terpisah dari timer ujian
   manual di atas. Snapshot soal/kunci privat memakai JSONB tervalidasi Zod; bukan FK ke bank soal
   yang dapat berubah saat admin menyunting konten.
+- Match baru memakai `rulesVersion=2`: setelah seluruh roster menjawab, transaksi jawaban terakhir
+  memendekkan ronde dan menggeser jadwal berikutnya/akhir match; reveal tetap 8 detik. Skor memakai
+  durasi maksimal subkategori, bukan interval yang dipendekkan. Versi 1 tetap didukung tanpa
+  perubahan jadwal/skor historis. CHECK match menerima versi 1/2 setelah migration
+  `20261017141402_kotoba_clash_early_reveal`; default DB tetap 1 untuk aplikasi lama, kode baru
+  menulis 2 eksplisit. Tidak ada tabel/kolom atau backfill baru. Migration ini baru diuji lokal;
+  wajib diterapkan sebelum redeploy, lihat [laporan](verification/kotoba-clash-early-reveal.md).
 - FK komposit roster menjaga kesamaan room, dan FK jawaban menjaga kesamaan match pada ronde
   dan pemain. Unique answer `(roundId, playerId)` menjaga jawaban pertama final.
 - Partial unique index `KotobaClashMatch_one_running_per_room_key` dan CHECK identitas, waktu,

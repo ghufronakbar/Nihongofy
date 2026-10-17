@@ -3,9 +3,9 @@ import "server-only";
 import { Prisma, type PrismaClient } from "@prisma/client";
 import { z } from "zod";
 import { ClashAnswerSchema, ClashConfigSchema, ClashIdSchema, ClashQuestionSnapshotSchema, ClashStartSchema } from "../schemas";
-import { acceptsAnswer, createSchedule, scoreLedger, type LedgerRound } from "../domain/engine";
+import { acceptsAnswer, createSchedule, earlyRevealSchedule, scoreLedger, type LedgerRound } from "../domain/engine";
 import { ClashError, type ClashAssignment, type ClashIdentity } from "../domain/ports";
-import { CLASH_LOBBY_IDLE_MS, CLASH_MAX_PLAYERS, CLASH_MIN_PLAYERS, CLASH_RETENTION_MS, CLASH_RULES_VERSION } from "../domain/rules";
+import { CLASH_DURATIONS_MS, CLASH_LOBBY_IDLE_MS, CLASH_MAX_PLAYERS, CLASH_MIN_PLAYERS, CLASH_RETENTION_MS, CLASH_RULES_VERSION, supportsClashRulesVersion } from "../domain/rules";
 
 export type Tx = Prisma.TransactionClient;
 
@@ -42,7 +42,7 @@ async function lockMatch(tx: Tx, roomId: string, matchId: string) {
     select: { id: true, status: true, expiresAt: true, endsAt: true, rulesVersion: true },
   });
   if (!match) throw new ClashError("NOT_FOUND");
-  if (match.rulesVersion !== CLASH_RULES_VERSION) throw new ClashError("CLOSED");
+  if (!supportsClashRulesVersion(match.rulesVersion)) throw new ClashError("CLOSED");
   return match;
 }
 
@@ -64,6 +64,14 @@ export function requireHost(identity: ClashIdentity, hostUserId: number | null) 
 
 export function scheduleOf(round: { id: string; position: number; startsAt: Date; endsAt: Date; revealEndsAt: Date }) {
   return { id: round.id, position: round.position, startsAt: round.startsAt.getTime(), endsAt: round.endsAt.getTime(), revealEndsAt: round.revealEndsAt.getTime() };
+}
+
+export function ledgerRoundOf(round: Parameters<typeof scheduleOf>[0] & { snapshot: unknown }, rulesVersion: number): LedgerRound {
+  if (!supportsClashRulesVersion(rulesVersion)) throw new ClashError("CLOSED");
+  const schedule = scheduleOf(round);
+  const question = ClashQuestionSnapshotSchema.parse(round.snapshot);
+  return { ...schedule, correctChoice: question.correctChoice,
+    scoringDurationMs: rulesVersion === 1 ? schedule.endsAt - schedule.startsAt : CLASH_DURATIONS_MS[question.mondaiType] };
 }
 
 // Internal server repository. Adapters must authenticate each command before supplying identity.
@@ -112,7 +120,7 @@ export class PrismaClashRepository {
       const endsAt = new Date(schedule.at(-1)!.revealEndsAt);
       const expiresAt = new Date(endsAt.getTime() + CLASH_RETENTION_MS);
       const match = await tx.kotobaClashMatch.create({
-        data: { roomId: room.id, startRequestId: input.requestId, config, startsAt: now, endsAt, expiresAt },
+        data: { roomId: room.id, startRequestId: input.requestId, rulesVersion: CLASH_RULES_VERSION, config, startsAt: now, endsAt, expiresAt },
         select: { id: true },
       });
       await tx.kotobaClashMatchPlayer.createMany({ data: members.map((member) => ({ matchId: match.id, roomId: room.id, memberId: member.id })) });
@@ -153,6 +161,30 @@ export class PrismaClashRepository {
       const question = ClashQuestionSnapshotSchema.parse(round.snapshot);
       if (!question.content.choices.some((choice) => choice.code === input.choice)) throw new ClashError("INVALID_CHOICE");
       await tx.kotobaClashAnswer.create({ data: { matchId: match.id, roundId: round.id, playerId: player.id, choice: input.choice, acceptedAt }, select: { id: true } });
+      if (match.rulesVersion === 2) {
+        const playerCount = await tx.kotobaClashMatchPlayer.count({ where: { matchId: match.id } });
+        const answerCount = await tx.kotobaClashAnswer.count({ where: { matchId: match.id, roundId: round.id } });
+        if (playerCount >= CLASH_MIN_PLAYERS && answerCount === playerCount) {
+          const accelerated = earlyRevealSchedule(scheduleOf(round), acceptedAt.getTime());
+          const savedMs = round.endsAt.getTime() - accelerated.endsAt;
+          if (savedMs > 0) {
+            await tx.kotobaClashRound.update({ where: { id: round.id }, data: {
+              endsAt: new Date(accelerated.endsAt), revealEndsAt: new Date(accelerated.revealEndsAt),
+            }, select: { id: true } });
+            // The room/match locks serialize the quorum check and all schedule changes.
+            await tx.$executeRaw`
+              UPDATE "KotobaClashRound"
+              SET "startsAt" = "startsAt" - ${savedMs}::bigint * INTERVAL '1 millisecond',
+                  "endsAt" = "endsAt" - ${savedMs}::bigint * INTERVAL '1 millisecond',
+                  "revealEndsAt" = "revealEndsAt" - ${savedMs}::bigint * INTERVAL '1 millisecond'
+              WHERE "matchId" = ${match.id}::uuid AND "position" > ${round.position}`;
+            const endsAt = new Date(match.endsAt.getTime() - savedMs);
+            await tx.kotobaClashMatch.update({ where: { id: match.id }, data: {
+              endsAt, expiresAt: new Date(endsAt.getTime() + CLASH_RETENTION_MS),
+            }, select: { id: true } });
+          }
+        }
+      }
       const updated = await tx.kotobaClashRoom.update({ where: { id: room.id }, data: { revision: { increment: 1 } }, select: { revision: true } });
       return { roundId: round.id, acceptedAt: acceptedAt.getTime(), duplicate: false, revision: updated.revision };
     }, { maxWait: 5_000, timeout: 10_000 });
@@ -174,7 +206,7 @@ export class PrismaClashRepository {
       if (due.length === 0 && (match.status === "FINISHED" || !finished)) return { revision: room.revision, changed: false };
       const players = await tx.kotobaClashMatchPlayer.findMany({ where: { matchId }, select: { id: true } });
       const answers = await tx.kotobaClashAnswer.findMany({ where: { matchId }, select: { roundId: true, playerId: true, choice: true, acceptedAt: true } });
-      const ledger: LedgerRound[] = rounds.map((round) => ({ ...scheduleOf(round), correctChoice: ClashQuestionSnapshotSchema.parse(round.snapshot).correctChoice }));
+      const ledger = rounds.map((round) => ledgerRoundOf(round, match.rulesVersion));
       const results = scoreLedger(players.map((player) => player.id), ledger, answers.map((answer) => ({ ...answer, acceptedAt: answer.acceptedAt.getTime() })), now.getTime());
       for (const { playerId, ...data } of results) {
         await tx.kotobaClashMatchPlayer.update({ where: { id: playerId }, data, select: { id: true } });
