@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ClashConfigSchema, ClashQuestionContentSchema, ClashIdSchema, ClashModeSchema } from "./schemas";
+import { ClashConfigSchema, ClashQuestionContentSchema, ClashExplanationSchema, ClashIdSchema, ClashModeSchema } from "./schemas";
 import { CLASH_MONDAI_TYPES } from "./domain/rules";
 
 const phase = z.discriminatedUnion("type", [
@@ -21,6 +21,7 @@ export const ClashRoomSnapshotSchema = z.object({
       id: ClashIdSchema, position: z.number(), startsAt: z.number(), endsAt: z.number(), revealEndsAt: z.number(),
       mondaiType: z.enum(CLASH_MONDAI_TYPES), content: ClashQuestionContentSchema,
       correctChoice: z.number().optional(), explanation: z.string().nullable().optional(),
+      explanationDetails: ClashExplanationSchema.nullable().optional(),
     }).nullable(),
     leaderboard: z.array(z.object({
       playerId: ClashIdSchema, memberId: ClashIdSchema, nickname: z.string(), rank: z.number(), score: z.number(),

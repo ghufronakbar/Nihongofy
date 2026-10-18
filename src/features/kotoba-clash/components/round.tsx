@@ -3,6 +3,7 @@
 import { Check, CheckCheck, Eye, Flag, LockKeyhole, Swords, Timer, X, Zap } from "lucide-react";
 import { JapaneseText } from "@/components/japanese-text";
 import { JapanesePassage } from "@/components/japanese-passage";
+import { QuestionExplanationBody } from "@/components/question-explanation";
 import { MONDAI_TYPE_TRANSLATIONS } from "@/constants/jlpt";
 import { cn } from "@/lib/utils";
 import { DictionaryScope } from "@/features/dictionary/components/dictionary-scope";
@@ -73,7 +74,15 @@ export function ClashRound({ match, now, connected, pending, answer, review = fa
         {revealed ? <CheckCheck className="mt-0.5 size-5 shrink-0" /> : match.ownAnswer ? <LockKeyhole className="mt-0.5 size-5 shrink-0" /> : <Timer className="mt-0.5 size-5 shrink-0" />}
         <p className="font-semibold">{revealed ? `Jawaban benar: ${round.correctChoice}.` : pending ? "Mengunci pilihanmu..." : match.ownAnswer ? "Jawaban terkunci. Menunggu pemain lain menyelesaikan ronde." : !match.playing ? "Semua pemain mendapat soal dan waktu yang sama." : seconds === 0 ? "Waktu habis. Hasil ronde sedang disiapkan..." : !connected ? "Koneksi terputus. Menyambungkan kembali sebelum kamu bisa menjawab." : "Cepat saja belum cukup. Pilih tepat, jawaban pertama tidak bisa diubah."}</p>
       </div>}
-      {revealed && <div className="clash-reveal-enter rounded border-2 border-neo-ink bg-neo-paper p-4 sm:p-5"><h3 className="flex items-center gap-2 font-black"><Zap className="size-4" />Bedah ronde</h3><p className="mt-3 whitespace-pre-wrap text-sm leading-8"><JapaneseText text={round.explanation?.trim() || "Pembahasan untuk soal ini belum tersedia."} /></p>{!review && <p className="mt-4 border-t border-neo-ink/20 pt-3 text-xs font-semibold">{round.position === match.questionCount ? "Garis finis di depan. Podium akhir muncul setelah pembahasan." : "Ambil napas. Ronde berikutnya dimulai otomatis."}</p>}</div>}
+      {revealed && <div className="clash-reveal-enter rounded border-2 border-neo-ink bg-neo-paper p-4 sm:p-5">
+        <h3 className="flex items-center gap-2 font-black"><Zap className="size-4" />Bedah ronde</h3>
+        <div className="mt-3 text-sm leading-8">
+          {round.explanationDetails
+            ? <QuestionExplanationBody explanation={round.explanationDetails} />
+            : <JapanesePassage text={round.explanation?.trim() || "Pembahasan untuk soal ini belum tersedia."} />}
+        </div>
+        {!review && <p className="mt-4 border-t border-neo-ink/20 pt-3 text-xs font-semibold">{round.position === match.questionCount ? "Garis finis di depan. Podium akhir muncul setelah pembahasan." : "Ambil napas. Ronde berikutnya dimulai otomatis."}</p>}
+      </div>}
     </div>
   </section>
   </DictionaryScope>;

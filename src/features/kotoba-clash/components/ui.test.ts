@@ -27,6 +27,14 @@ function snapshot(): ClashRoomSnapshot {
       round: {
         id: id(4), position: 1, startsAt: 1000, endsAt: 31000, revealEndsAt: 39000,
         mondaiType: "MOJI_GOI_CONTEXT", correctChoice: 2, explanation: "PRIVATE_EXPLANATION",
+        explanationDetails: {
+          summary: "PRIVATE_EXPLANATION", detail: "PRIVATE_DETAIL", translation: "PRIVATE_TRANSLATION",
+          keyPoints: ["PRIVATE_KEY_POINT"], answerKeyDoubt: true,
+          choices: [
+            { codeAnswer: 1, isCorrect: false, reason: "PRIVATE_WRONG_REASON" },
+            { codeAnswer: 2, isCorrect: true, reason: "PRIVATE_CORRECT_REASON" },
+          ],
+        },
         content: { instruction: null, text: "Fixture question", image: null, context: null, choices: [
           { code: 1, text: "First choice", image: null }, { code: 2, text: "Second choice", image: null },
         ] },
@@ -51,7 +59,7 @@ describe("Kotoba Clash terminal and round UI", () => {
     match.ownAnswer = { choice: 2, acceptedAt: 2000 };
     const html = renderToStaticMarkup(createElement(ClashRound, { match, now: 5000, connected: true, pending: false }));
     expect(html).toContain("Jawaban terkunci");
-    expect(html).not.toMatch(/PRIVATE_EXPLANATION|Jawaban benar|Tepat sasaran|data-correct="true"/);
+    expect(html).not.toMatch(/PRIVATE_|Jawaban benar|Tepat sasaran|data-correct="true"|kemungkinan kekeliruan/);
     expect(html.match(/disabled=""/g)).toHaveLength(2);
   });
   it("shows a specific removal notice after reload without join or reconnect controls", () => {
@@ -146,5 +154,23 @@ describe("Kotoba Clash terminal and round UI", () => {
     const review = renderToStaticMarkup(createElement(ClashRound, { match, now: 50000, connected: false, pending: false, review: true }));
     expect(review).toContain("PRIVATE_EXPLANATION");
     expect(review).not.toMatch(/progressbar|SELANJUTNYA|Ronde berikutnya|Koneksi terputus/);
+  });
+  it.each([false, true])("opens every explanation section during reveal and results (review=%s)", (review) => {
+    const match = snapshot().match!;
+    match.phase = { type: "REVEAL", roundId: id(4), position: 1, endsAt: 39000 };
+    const html = renderToStaticMarkup(createElement(ClashRound, { match, now: 32000, connected: !review, pending: false, review }));
+    for (const text of ["PRIVATE_EXPLANATION", "PRIVATE_DETAIL", "PRIVATE_TRANSLATION", "PRIVATE_KEY_POINT", "PRIVATE_WRONG_REASON", "PRIVATE_CORRECT_REASON", "kemungkinan kekeliruan"]) {
+      expect(html).toContain(text);
+    }
+    expect(html).not.toContain("<details");
+  });
+  it("preserves the legacy summary and the missing-explanation fallback", () => {
+    const match = snapshot().match!;
+    match.phase = { type: "REVEAL", roundId: id(4), position: 1, endsAt: 39000 };
+    delete match.round!.explanationDetails;
+    const props = { match, now: 32000, connected: true, pending: false };
+    expect(renderToStaticMarkup(createElement(ClashRound, props))).toContain("PRIVATE_EXPLANATION");
+    match.round!.explanation = null;
+    expect(renderToStaticMarkup(createElement(ClashRound, props))).toContain("Pembahasan untuk soal ini belum tersedia.");
   });
 });

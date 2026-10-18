@@ -4,6 +4,7 @@ import { randomInt, randomUUID } from "node:crypto";
 import { unstable_cache } from "next/cache";
 import type { PrismaClient } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { QUESTION_EXPLANATION_SELECT } from "@/lib/question-explanation";
 import { CACHE_KEYS, CACHE_TAGS } from "@/constants/cache-key";
 import { FEATURES } from "@/constants";
 import { ClashQuestionSnapshotSchema, type ClashConfig } from "../schemas";
@@ -24,7 +25,6 @@ async function eligibleQuestions(db: PrismaClient, level?: ClashConfig["jlptLeve
       testPackageItem: { select: { instruction: true, mondaiType: true, testPackage: { select: { jlptLevel: true } } } },
       questionContext: { select: { storyText: true, storyImage: true } },
       questionChoices: { orderBy: { codeAnswer: "asc" }, select: { codeAnswer: true, answerText: true, answerImage: true } },
-      explanation: { select: { summary: true } },
     },
   });
   return rows.flatMap((row) => {
@@ -34,7 +34,7 @@ async function eligibleQuestions(db: PrismaClient, level?: ClashConfig["jlptLeve
     if (!row.questionText.trim() && !row.questionImage) return [];
     const parsed = ClashQuestionSnapshotSchema.safeParse({
       sourceQuestionId: row.id, mondaiType: type, correctChoice: row.questionAnswer,
-      explanation: row.explanation?.summary ?? null,
+      explanation: null,
       content: {
         instruction: row.testPackageItem.instruction, text: row.questionText, image: row.questionImage,
         context: context && { text: context.storyText, image: context.storyImage },
@@ -84,5 +84,22 @@ export async function sampleClashQuestions(config: ClashConfig, db: PrismaClient
       if (selected.length === config.questionCount) break;
     }
   }
-  return shuffleClash(selected);
+  // Load full explanations in one batch for the selected questions only.
+  // Catalog counts and discarded candidates never load this private content.
+  const explanations = await db.questionExplanation.findMany({
+    where: { questionId: { in: selected.map(({ question }) => question.sourceQuestionId) } },
+    select: { questionId: true, ...QUESTION_EXPLANATION_SELECT },
+  });
+  const explanationsByQuestion = new Map(explanations.map(({ questionId, ...explanation }) => [questionId, explanation]));
+  return shuffleClash(selected).map((assignment) => {
+    const explanation = explanationsByQuestion.get(assignment.question.sourceQuestionId) ?? null;
+    return {
+      ...assignment,
+      question: ClashQuestionSnapshotSchema.parse({
+        ...assignment.question,
+        explanation: explanation?.summary ?? null,
+        explanationDetails: explanation,
+      }),
+    };
+  });
 }

@@ -806,6 +806,7 @@ describe("QUESTION_EXPLANATION_SELECT", () => {
       .map(([path]) => path)
       .sort();
     expect(users).toEqual([
+      "src/features/kotoba-clash/server/catalog.ts", // snapshot privat; projection hanya membuka saat reveal (dijaga test runtime)
       "src/features/practice/actions.ts", // hanya soal yang dijawab (dijaga test runtime)
       "src/features/question-comment/queries.ts", // halaman diskusi publik
       "src/features/result/actions.ts", // review setelah submit

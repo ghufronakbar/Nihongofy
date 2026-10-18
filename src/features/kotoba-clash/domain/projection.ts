@@ -21,6 +21,10 @@ export function projectRound(round: RoundSchedule, question: ClashQuestionSnapsh
       context: content.context && { text: text(content.context.text), image: content.context.image },
       choices: content.choices.map((choice) => ({ code: choice.code, text: text(choice.text)!, image: choice.image })),
     },
-    ...(revealed ? { correctChoice: question.correctChoice, explanation: question.explanation } : {}),
+    ...(revealed ? {
+      correctChoice: question.correctChoice,
+      explanation: question.explanation,
+      explanationDetails: question.explanationDetails ?? null,
+    } : {}),
   };
 }

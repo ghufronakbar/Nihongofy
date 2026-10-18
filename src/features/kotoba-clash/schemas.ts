@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { QuestionExplanationView } from "@/lib/question-explanation";
 import { CLASH_LEVELS, CLASH_MONDAI_TYPES } from "./domain/rules";
 
 export const ClashIdSchema = z.uuid();
@@ -43,6 +44,19 @@ export const ClashQuestionContentSchema = z.strictObject({
     .refine((choices) => new Set(choices.map((choice) => choice.code)).size === choices.length),
 });
 
+export const ClashExplanationSchema = z.strictObject({
+  summary: z.string(),
+  detail: z.string().nullable(),
+  translation: z.string().nullable(),
+  keyPoints: z.array(z.string()),
+  answerKeyDoubt: z.boolean(),
+  choices: z.array(z.strictObject({
+    codeAnswer: z.number().int().min(1).max(4),
+    isCorrect: z.boolean(),
+    reason: z.string(),
+  })),
+}) satisfies z.ZodType<QuestionExplanationView>;
+
 // Private persistence contract. Never serialize this object directly to a client.
 export const ClashQuestionSnapshotSchema = z.strictObject({
   sourceQuestionId: z.number().int().positive(),
@@ -50,6 +64,8 @@ export const ClashQuestionSnapshotSchema = z.strictObject({
   content: ClashQuestionContentSchema,
   correctChoice: z.number().int().min(1).max(4),
   explanation: z.string().nullable(),
+  // Matches created before full explanations only contain the summary above.
+  explanationDetails: ClashExplanationSchema.nullable().optional(),
 }).refine((question) => question.content.choices.some((choice) => choice.code === question.correctChoice));
 export type ClashQuestionSnapshot = z.infer<typeof ClashQuestionSnapshotSchema>;
 

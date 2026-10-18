@@ -388,8 +388,13 @@ terbaik. Akurasi dapat diturunkan dari jumlah jawaban, belum ditampilkan sebagai
   cara baca kanji pada underline. Review boleh memakai markup lengkap sesuai aturan existing.
 - Jangan mengirim daftar soal/ID soal mendatang ke browser. Gunakan ID ronde untuk submit, bukan
   endpoint grading bank soal yang menerima sembarang `questionId`.
-- Pembahasan singkat tampil selama reveal; versi lengkap tersedia setelah selesai. Bila explanation
-  belum tersedia, tampilkan kunci dan fallback jujur tanpa membuat pembahasan palsu.
+- Pembahasan lengkap langsung tampil selama reveal dan pada review hasil: ringkasan, detail,
+  terjemahan, poin penting, alasan setiap pilihan, dan catatan keraguan kunci jika tersedia.
+  Konten lengkap diambil dalam satu batch hanya untuk soal terpilih dan disimpan dalam snapshot
+  privat; seluruh pembahasan tetap tidak dikirim sebelum reveal. Durasi reveal tetap 8 detik.
+  Snapshot pertandingan lama yang hanya menyimpan ringkasan tetap dapat dibuka dengan ringkasan
+  tersebut. Bila explanation belum tersedia, tampilkan kunci dan fallback jujur tanpa membuat
+  pembahasan palsu.
 
 ## 8. Persistence dan Konsistensi
 

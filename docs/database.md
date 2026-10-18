@@ -377,6 +377,10 @@ Saat import data soal, tangani pelanggaran constraint sebagai sinyal error ekstr
 - Jadwal battle tersimpan sebagai UTC `timestamptz(3)` sejak Start, terpisah dari timer ujian
   manual di atas. Snapshot soal/kunci privat memakai JSONB tervalidasi Zod; bukan FK ke bank soal
   yang dapat berubah saat admin menyunting konten.
+- Snapshot pertandingan baru menyimpan `explanationDetails` berisi pembahasan lengkap selain
+  `explanation` (ringkasan kompatibel). Field opsional ini memakai JSONB existing tanpa migration;
+  snapshot lama tetap valid. Projection hanya mengirim keduanya sejak reveal. Detail, terjemahan,
+  poin penting, alasan pilihan, dan catatan keraguan ditampilkan jika tersedia.
 - Match baru memakai `rulesVersion=2`: setelah seluruh roster menjawab, transaksi jawaban terakhir
   memendekkan ronde dan menggeser jadwal berikutnya/akhir match; reveal tetap 8 detik. Skor memakai
   durasi maksimal subkategori, bukan interval yang dipendekkan. Versi 1 tetap didukung tanpa

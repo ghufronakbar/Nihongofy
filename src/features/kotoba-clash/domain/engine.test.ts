@@ -7,6 +7,11 @@ import { CLASH_DURATIONS_MS, CLASH_MONDAI_TYPES } from "./rules";
 
 const question = ClashQuestionSnapshotSchema.parse({
   sourceQuestionId: 1, mondaiType: "MOJI_GOI_READ_KANJI", correctChoice: 1, explanation: "Review only",
+  explanationDetails: {
+    summary: "Review only", detail: "PRIVATE_DETAIL", translation: "PRIVATE_TRANSLATION",
+    keyPoints: ["PRIVATE_KEY_POINT"], answerKeyDoubt: true,
+    choices: [{ codeAnswer: 1, isCorrect: true, reason: "PRIVATE_CHOICE_REASON" }],
+  },
   content: {
     instruction: "__{TEST|reading-instruction}__", text: "{TEST|reading-stem}", image: null,
     context: { text: "{TEST|reading-context}", image: null },
@@ -93,14 +98,25 @@ describe("Kotoba Clash private/public boundary", () => {
   it("removes every reading and answer-derived field while answering", () => {
     const result = projectRound(schedule[0]!, question, 6_000);
     const serialized = JSON.stringify(result);
-    expect(serialized).not.toMatch(/reading-|correctChoice|explanation|sourceQuestionId/);
+    expect(serialized).not.toMatch(/reading-|correctChoice|explanation|sourceQuestionId|PRIVATE_/);
     expect(result?.content.instruction).toBe("__TEST__");
     expect(result?.content.context?.text).toBe("TEST");
     expect(result?.content.choices[0]!.text).toBe("TEST");
   });
   it("reveals the answer and full markup exactly at the deadline", () => {
-    expect(projectRound(schedule[0]!, question, 36_000)).toMatchObject({ correctChoice: 1, explanation: "Review only" });
+    expect(projectRound(schedule[0]!, question, 35_999)).not.toHaveProperty("explanationDetails");
+    expect(projectRound(schedule[0]!, question, 36_000)).toMatchObject({
+      correctChoice: 1, explanation: "Review only", explanationDetails: question.explanationDetails,
+    });
     expect(JSON.stringify(projectRound(schedule[0]!, question, 36_000))).toContain("reading-stem");
+  });
+  it("keeps summary-only persisted matches readable without fetching mutable source content", () => {
+    const legacy = { ...question };
+    delete legacy.explanationDetails;
+    const restored = ClashQuestionSnapshotSchema.parse(legacy);
+    expect(projectRound(schedule[0]!, restored, 36_000)).toMatchObject({
+      explanation: "Review only", explanationDetails: null,
+    });
   });
 });
 
