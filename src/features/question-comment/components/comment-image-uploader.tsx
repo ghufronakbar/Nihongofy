@@ -102,15 +102,15 @@ export function CommentImageUploader({
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-3">
         {value.map((url) => (
-          <div key={url} className="group relative size-16 overflow-hidden rounded-md border">
+          <div key={url} className="relative size-16 overflow-hidden rounded-md border-2 border-neo-ink shadow-neo-sm">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={url} alt="" className="size-full object-cover" />
             <button
               type="button"
               onClick={() => removeImage(url)}
-              className="absolute top-0.5 right-0.5 rounded-full bg-background/80 p-0.5 opacity-0 transition-opacity group-hover:opacity-100"
+              className="absolute top-0.5 right-0.5 rounded border-2 border-neo-ink bg-white p-0.5 text-black transition-colors hover:bg-neo-coral"
               aria-label="Hapus gambar"
             >
               <X className="size-3" />
@@ -122,7 +122,7 @@ export function CommentImageUploader({
             type="button"
             onClick={() => inputRef.current?.click()}
             disabled={isUploading}
-            className="flex size-16 items-center justify-center rounded-md border border-dashed text-muted-foreground hover:bg-muted disabled:opacity-50"
+            className="neo-button size-16 border-dashed bg-neo-paper p-0 text-foreground"
             aria-label="Tambah gambar"
           >
             {isUploading ? (

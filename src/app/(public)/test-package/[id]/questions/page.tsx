@@ -244,8 +244,8 @@ export default async function TestPackageQuestionsPage({
                       </div>
                     )}
 
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex gap-3 text-base">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                      <div className="flex min-w-0 flex-1 gap-3 text-base">
                         <span className="grid size-7 place-items-center rounded border-2 border-neo-ink bg-neo-yellow font-mono text-xs font-black shrink-0 shadow-neo-sm">
                           {question.order}
                         </span>
@@ -263,7 +263,7 @@ export default async function TestPackageQuestionsPage({
                           )}
                         </div>
                       </div>
-                      <div className="flex shrink-0 items-center gap-1">
+                      <div className="flex flex-wrap items-center gap-2 sm:justify-end">
                         {FEATURES.questionDiscussion && (
                           <DiscussionSheet
                             target={{ type: "question", questionId: question.id }}
@@ -282,6 +282,8 @@ export default async function TestPackageQuestionsPage({
                           <ReportButton
                             target={{ targetType: "QUESTION", questionId: question.id }}
                             label="Laporkan soal"
+                            variant="neo-icon"
+                            className="size-10 min-h-10 p-0"
                           />
                         )}
                       </div>
@@ -380,7 +382,7 @@ export default async function TestPackageQuestionsPage({
           </FuriganaScope>
           </DictionaryBoundary>
 
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             {prevItem ? (
               <Link
                 href={`/test-package/${testPackage.id}/questions?mondai=${prevItem.id}`}

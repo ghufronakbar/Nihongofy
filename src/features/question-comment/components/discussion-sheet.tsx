@@ -187,7 +187,7 @@ export function DiscussionSheet({
           triggerClassName ? (
             <button type="button" className={triggerClassName} />
           ) : (
-            <Button size="sm" variant="outline" className="h-8 gap-1.5 text-xs" />
+            <button type="button" className="neo-button min-h-10 gap-1.5 bg-neo-blue px-3 py-2 text-xs text-black" />
           )
         }
       >

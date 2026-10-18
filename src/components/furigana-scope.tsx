@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useDismissDictionary } from "@/features/dictionary/components/dictionary-scope";
 
@@ -19,10 +18,9 @@ export function FuriganaScope({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex justify-end">
-        <Button
+        <button
           type="button"
-          variant="outline"
-          size="sm"
+          className="neo-button min-h-10 bg-white px-3 py-2 text-xs text-black"
           onClick={() => { dismissDictionary?.(); setVisible((v) => !v); }}
         >
           {visible ? (
@@ -31,7 +29,7 @@ export function FuriganaScope({ children }: { children: React.ReactNode }) {
             <EyeIcon className="size-4" />
           )}
           {visible ? "Sembunyikan Furigana" : "Tampilkan Furigana"}
-        </Button>
+        </button>
       </div>
       <div className={cn(!visible && "[&_rt]:hidden")}>{children}</div>
     </div>

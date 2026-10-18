@@ -6,7 +6,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
 import { QuestionNavList, type NavMondaiItem } from "./question-nav";
 
 export function QuestionNavMobile({
@@ -23,7 +22,7 @@ export function QuestionNavMobile({
   return (
     <div className="lg:hidden">
       <Sheet>
-        <SheetTrigger render={<Button variant="outline" size="sm" />}>
+        <SheetTrigger render={<button type="button" className="neo-button min-h-10 bg-white px-3 py-2 text-xs text-black" />}>
           <Menu className="size-4" />
           Pilih Mondai & Lembar Jawaban
         </SheetTrigger>

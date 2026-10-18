@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Check, Copy } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { markupToPlainText, documentToPlainText } from "@/lib/japanese-plain-text";
 
 export function CopyQuestionButton({
@@ -40,14 +39,14 @@ export function CopyQuestionButton({
   }
 
   return (
-    <Button
+    <button
       type="button"
-      variant="ghost"
-      size="icon-sm"
+      className="neo-button size-10 min-h-10 bg-white p-0 text-black"
       onClick={handleCopy}
       aria-label="Salin soal untuk ditanyakan ke AI"
+      title="Salin soal untuk ditanyakan ke AI"
     >
       {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
-    </Button>
+    </button>
   );
 }
