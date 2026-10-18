@@ -24,6 +24,8 @@ const messages: Record<ClashError["code"], string> = {
   INVALID_TARGET: "Peserta tidak ditemukan atau tidak dapat dikeluarkan.",
   RATE_LIMITED: "Terlalu banyak permintaan. Tunggu sebentar lalu coba lagi.",
   UNAVAILABLE: "Permainan sementara tidak tersedia. Coba sambungkan kembali nanti.",
+  SOLO_PRIVATE: "Sesi solo hanya dapat diakses pemiliknya.",
+  MODE_MISMATCH: "Mode sesi tidak dapat diubah. Buat sesi baru untuk mengganti mode.",
 };
 
 export function clashFailure(error: unknown) {

@@ -2,7 +2,7 @@ import "server-only";
 
 import { randomUUID } from "node:crypto";
 import { Prisma, type PrismaClient } from "@prisma/client";
-import { ClashConfigureSchema, ClashCreateSchema, ClashJoinSchema, ClashKickSchema, ClashRenameSchema, ClashReadySchema, ClashRoomInputSchema, nicknameKey } from "../schemas";
+import { ClashConfigureSchema, ClashCreateSchema, ClashJoinSchema, ClashKickSchema, ClashRenameSchema, ClashReadySchema, ClashRoomInputSchema, clashRoomMode, nicknameKey } from "../schemas";
 import { ClashError, type ClashIdentity } from "../domain/ports";
 import { CLASH_LOBBY_IDLE_MS, CLASH_MAX_PLAYERS } from "../domain/rules";
 import { createRoomCode } from "./guest-credential";
@@ -51,6 +51,7 @@ export class PrismaClashLobbyRepository {
             const previous = await lockRoom(tx, roomId);
             requireHost(identity, previous.hostUserId);
             await requireOpenRoom(tx, previous, await databaseNow(tx));
+            if (clashRoomMode(previous.config) !== input.mode) throw new ClashError("MODE_MISMATCH");
             return { id: previous.id, code: previous.code, revision: previous.revision, closedRooms: [], duplicate: true };
           }
           const previous = await tx.$queryRaw<{ id: string; revision: number }[]>`
@@ -62,6 +63,7 @@ export class PrismaClashLobbyRepository {
             data: { status: "CLOSED", revision: { increment: 1 }, updatedAt: now } });
           const room = await tx.kotobaClashRoom.create({ data: {
             id: roomId, code: createRoomCode(), hostUserId: identity.userId, expiresAt: new Date(now.getTime() + CLASH_LOBBY_IDLE_MS),
+            config: { mode: input.mode },
             members: { create: { userId: identity.userId, nickname: input.nickname, nicknameKey: nicknameKey(input.nickname) } },
           }, select: { id: true, code: true, revision: true } });
           return { ...room, closedRooms: previous.map((old) => ({ id: old.id, revision: old.revision + 1 })), duplicate: false };
@@ -82,6 +84,7 @@ export class PrismaClashLobbyRepository {
       const room = await lockRoom(tx, found.id);
       const now = await databaseNow(tx);
       await requireOpenRoom(tx, room, now);
+      if (clashRoomMode(room.config) === "solo" && (identity.kind !== "account" || identity.userId !== room.hostUserId)) throw new ClashError("SOLO_PRIVATE");
       if (identity.kind === "guest" && identity.expiresAt <= now.getTime()) throw new ClashError("EXPIRED");
       const previous = await tx.kotobaClashRoomMember.findFirst({ where: { roomId: room.id, ...identityWhere(identity), anonymizedAt: null }, select: { id: true, kickedAt: true } });
       if (previous?.kickedAt) throw new ClashError("KICKED");
@@ -113,6 +116,7 @@ export class PrismaClashLobbyRepository {
       await requireMember(tx, identity, room.id, now);
       await requireLobby(tx, room.id);
       if (room.configRevision !== input.configRevision) throw new ClashError("STALE_CONFIG");
+      if (clashRoomMode(room.config) !== clashRoomMode(input.config)) throw new ClashError("MODE_MISMATCH");
       await tx.kotobaClashRoomMember.updateMany({ where: { roomId: room.id }, data: { readyRevision: null } });
       return tx.kotobaClashRoom.update({ where: { id: room.id }, data: {
         config: input.config, configRevision: { increment: 1 }, revision: { increment: 1 },
@@ -130,7 +134,7 @@ export class PrismaClashLobbyRepository {
       await requireOpenRoom(tx, room, now);
       const member = await requireMember(tx, identity, room.id, now);
       await requireLobby(tx, room.id);
-      if (!room.config || room.configRevision !== input.configRevision) throw new ClashError("STALE_CONFIG");
+      if (!room.config || room.configRevision === 0 || room.configRevision !== input.configRevision) throw new ClashError("STALE_CONFIG");
       if (member.spectating) throw new ClashError("NOT_PLAYING");
       await tx.kotobaClashRoomMember.update({ where: { id: member.id }, data: { readyRevision: input.ready ? room.configRevision : null } });
       return touch(tx, room, now);

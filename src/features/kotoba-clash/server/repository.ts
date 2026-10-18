@@ -101,8 +101,9 @@ export class PrismaClashRepository {
       if (room.updatedAt.getTime() + CLASH_LOBBY_IDLE_MS <= now.getTime() && !await tx.kotobaClashMatch.findFirst({
         where: { roomId: room.id, endsAt: { gt: new Date(now.getTime() - CLASH_LOBBY_IDLE_MS) } }, select: { id: true },
       })) throw new ClashError("EXPIRED");
-      if (room.configRevision !== input.configRevision) throw new ClashError("STALE_CONFIG");
+      if (room.configRevision === 0 || room.configRevision !== input.configRevision) throw new ClashError("STALE_CONFIG");
       const config = ClashConfigSchema.parse(room.config);
+      const solo = config.mode === "solo";
       if (questions.length !== config.questionCount || new Set(questions.map((q) => q.id)).size !== questions.length ||
         new Set(questions.map((q) => q.question.sourceQuestionId)).size !== questions.length ||
         questions.some((q) => !config.mondaiTypes.includes(q.question.mondaiType))) throw new ClashError("INVALID_QUESTIONS");
@@ -110,11 +111,14 @@ export class PrismaClashRepository {
       if (active) throw new ClashError("ACTIVE_MATCH");
       const members = await tx.kotobaClashRoomMember.findMany({
         where: { roomId: room.id, spectating: false, anonymizedAt: null, kickedAt: null,
-          ...(connectedMemberIds ? { id: { in: connectedMemberIds } } : {}),
+          ...(!solo && connectedMemberIds ? { id: { in: connectedMemberIds } } : {}),
           OR: [{ userId: { not: null } }, { guestExpiresAt: { gt: now } }] },
         select: memberSelect,
       });
-      if (members.length < CLASH_MIN_PLAYERS || members.length > CLASH_MAX_PLAYERS ||
+      if (solo) {
+        if (members.length !== 1 || members[0]!.userId !== room.hostUserId ||
+          (connectedMemberIds && !connectedMemberIds.includes(members[0]!.id))) throw new ClashError("NOT_READY");
+      } else if (members.length < CLASH_MIN_PLAYERS || members.length > CLASH_MAX_PLAYERS ||
         !members.some((member) => member.userId === room.hostUserId) ||
         members.some((member) => member.readyRevision !== room.configRevision)) throw new ClashError("NOT_READY");
       const schedule = createSchedule(now.getTime(), questions.map((q) => ({ id: q.id, mondaiType: q.question.mondaiType })));
@@ -165,7 +169,7 @@ export class PrismaClashRepository {
       if (match.rulesVersion === 2) {
         const playerCount = await tx.kotobaClashMatchPlayer.count({ where: { matchId: match.id } });
         const answerCount = await tx.kotobaClashAnswer.count({ where: { matchId: match.id, roundId: round.id } });
-        if (playerCount >= CLASH_MIN_PLAYERS && answerCount === playerCount) {
+        if (playerCount >= 1 && answerCount === playerCount) {
           const accelerated = earlyRevealSchedule(scheduleOf(round), acceptedAt.getTime());
           const savedMs = round.endsAt.getTime() - accelerated.endsAt;
           if (savedMs > 0) {

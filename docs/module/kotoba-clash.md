@@ -7,6 +7,9 @@ Tanggal rancangan: **16 Oktober 2026 (Asia/Jakarta)**.
 **Production aktif atas persetujuan user; UAT awal 2 pemain/5 soal lulus (17 Oktober 2026).**
 Katalog, landing, room/invite/guest, konfigurasi bertingkat, ready, runner WebSocket, reveal,
 ranking, spectator, hasil/review, rematch, dan cleanup sudah dibuat.
+Mode **solo** ditambahkan di kode pada 18 Oktober 2026, mengikuti Kana Word Race:
+sesi akun privat, Start tanpa ready, skor pribadi, review dan latihan ulang.
+Lihat [verifikasi solo](../verification/kotoba-clash-solo.md) untuk cakupan lokal dan batas UAT.
 Migration fondasi dikonfirmasi applied pada Supabase lewat pemeriksaan read-only. Penyempurnaan
 berikutnya memakai aturan v2: semua pemain menjawab langsung memulai reveal, tanpa pilihan host.
 Migration `20261017141402_kotoba_clash_early_reveal` wajib diterapkan sebelum redeploy kode v2;
@@ -45,7 +48,7 @@ kecepatan, serta streak jawaban benar.
 | Topik | Keputusan |
 |---|---|
 | Wadah publik | Katalog Mini Games, agar game lain bisa ditambahkan |
-| Pemain | 2-20 per room |
+| Pemain | Solo: satu akun pemilik. Multiplayer: 2-20 per room |
 | Bergabung | Kode/link undangan; peserta guest diperbolehkan |
 | Level | Satu level N5, N4, N3, N2, atau N1 per pertandingan |
 | Pemilihan tipe | Checkbox bertingkat kategori dan subkategori |
@@ -222,6 +225,20 @@ CTA Buat Room dan form kode. Guest yang memilih Buat Room mendapat CTA login den
   sekali saat Start; perubahan konten admin tidak mengubah jawaban pertandingan yang berjalan.
 
 ### Ready dan Start
+
+- Landing menyediakan "Bersama teman" dan "Main sendiri". Solo memakai route room/hasil
+  yang sama, tetapi tidak menampilkan kode atau kontrol undangan. Akun lain dan guest ditolak
+  server; pemilik bisa membuka ulang sesinya.
+- Mode disimpan pada JSON `KotobaClashRoom.config`. Sebelum configure pertama, JSON hanya
+  memuat `mode` dan snapshot mengirim `config: null`; setelahnya menyimpan konfigurasi lengkap.
+  JSON/null legacy tanpa mode dibaca sebagai multiplayer. Tidak memerlukan migration baru.
+- Mode dibekukan saat create. Retry UUID dengan mode berbeda serta configure yang mengganti
+  mode ditolak. Membuat sesi baru tetap menutup sesi Kotoba Clash lama milik akun tersebut.
+- Solo tetap perlu menyimpan level, tipe dan jumlah soal. Start memerlukan tepat satu pemain
+  akun pemilik yang terhubung, tanpa ready. Roster tunggal langsung memenuhi quorum reveal
+  setelah menjawab; deadline, countdown, reveal 8 detik dan rumus skor tetap berlaku.
+- Solo menampilkan skor, benar/salah/kosong dan rekor streak, lalu review dan "Latihan lagi".
+  Ketentuan ready dan roster 2-20 berikut berlaku untuk multiplayer.
 
 - Draft level, tipe, atau jumlah soal menampilkan peringatan di form dan panel pemain. Ready/Start
   host ditahan selama draft berbeda dari config tersimpan; perubahan urutan checkbox saja tidak

@@ -59,6 +59,7 @@
     "check:kotoba-clash:room": "node --conditions=react-server --env-file-if-exists=.env --env-file-if-exists=.env.local --import tsx scripts/kotoba-clash-room-check.ts",
     "kotoba-clash:runtime": "node --conditions=react-server --env-file-if-exists=.env --env-file-if-exists=.env.local --import tsx scripts/kotoba-clash-runtime.ts",
     "check:kotoba-clash:early-reveal": "node --conditions=react-server --env-file-if-exists=.env --env-file-if-exists=.env.local --import tsx scripts/kotoba-clash-early-reveal-check.ts",
+    "check:kotoba-clash:solo": "node --conditions=react-server --env-file-if-exists=.env --env-file-if-exists=.env.local --import tsx scripts/kotoba-clash-solo-check.ts",
     "kana-race:dictionary": "tsx scripts/kana-race-dictionary.ts --write",
     "kana-race:dictionary:check": "tsx scripts/kana-race-dictionary.ts --check",
     "seed:kana-race": "node --env-file-if-exists=.env --env-file-if-exists=.env.local --import tsx scripts/seed-kana-race.ts",

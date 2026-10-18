@@ -1,6 +1,6 @@
 "use client";
 
-import { Crown, Flame, Swords, Trophy, UserMinus, Users, Zap } from "lucide-react";
+import { Crown, Flame, Swords, Trophy, UserMinus, UserRound, Users, Zap } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -47,12 +47,16 @@ export function ClashShowcase() {
   </div>;
 }
 
-export function ClashLeaderboard({ match, members, viewerId, compact = false }: {
-  match: NonNullable<ClashRoomSnapshot["match"]>; members: ClashRoomSnapshot["members"]; viewerId: string; compact?: boolean;
+export function ClashLeaderboard({ match, members, viewerId, compact = false, solo = false }: {
+  match: NonNullable<ClashRoomSnapshot["match"]>; members: ClashRoomSnapshot["members"]; viewerId: string; compact?: boolean; solo?: boolean;
 }) {
   const finished = match.phase.type === "FINISHED";
   const self = match.leaderboard.find((player) => player.memberId === viewerId);
   const leader = match.leaderboard[0];
+  if (solo) return <section className="clash-panel overflow-hidden" aria-label="Progres latihan solo">
+    <div className="border-b-[3px] border-neo-ink bg-neo-green p-4"><p className="clash-label">Latihan solo</p><h2 className="mt-2 text-xl font-black">{finished ? "Hasil latihanmu" : "Progresmu"}</h2><p className="mt-1 text-xs leading-5">Poin diperbarui saat pembahasan ronde.</p></div>
+    {self && <div className="space-y-5 p-5"><div><p className="clash-label">Total poin</p><p className="mt-2 font-mono text-4xl font-black">{self.score.toLocaleString("id-ID")}</p></div><dl className="grid grid-cols-3 gap-3 border-y-2 border-neo-ink py-4 text-center">{[{ label: "Benar", value: self.correctCount }, { label: "Salah", value: self.wrongCount }, { label: "Kosong", value: self.skippedCount }].map((item) => <div key={item.label}><dt className="text-xs font-semibold">{item.label}</dt><dd className="mt-1 font-mono text-xl font-black">{item.value}</dd></div>)}</dl><ClashStreak value={self.bestStreak} /></div>}
+  </section>;
   return <section className="clash-panel overflow-hidden" aria-label={finished ? "Hasil pertandingan" : "Peringkat sementara"}>
     <div className="border-b-[3px] border-neo-ink bg-neo-green p-4">
       <div className="flex items-center justify-between gap-3"><span className="clash-label">{finished ? "Final standings" : "Live standings"}</span><Trophy className="size-5" aria-hidden="true" /></div>
@@ -81,17 +85,17 @@ export function ClashLeaderboard({ match, members, viewerId, compact = false }: 
   </section>;
 }
 
-export function ClashFinish({ match, members }: { match: NonNullable<ClashRoomSnapshot["match"]>; members: ClashRoomSnapshot["members"] }) {
+export function ClashFinish({ match, members, solo = false }: { match: NonNullable<ClashRoomSnapshot["match"]>; members: ClashRoomSnapshot["members"]; solo?: boolean }) {
   const winners = match.leaderboard.filter((player) => player.rank === 1);
-  return <section className="clash-panel clash-finish clash-round-enter" aria-label="Pemenang pertandingan">
+  return <section className="clash-panel clash-finish clash-round-enter" aria-label={solo ? "Latihan selesai" : "Pemenang pertandingan"}>
     <div className="clash-confetti" aria-hidden="true">{Array.from({ length: 18 }, (_, index) => <i key={index} style={{ left: `${(index * 37) % 100}%`, animationDelay: `${(index % 5) * 0.12}s` }} />)}</div>
-    <span className="clash-tag relative"><Trophy className="size-4" />Pertandingan selesai</span>
-    <h2 className="relative mt-4 text-3xl font-black tracking-tight sm:text-4xl">{winners.length > 1 ? "Berbagi takhta." : "Arena punya juara."}</h2>
+    <span className="clash-tag relative"><Trophy className="size-4" />{solo ? "Latihan selesai" : "Pertandingan selesai"}</span>
+    <h2 className="relative mt-4 text-3xl font-black tracking-tight sm:text-4xl">{solo ? "Tantangan dituntaskan." : winners.length > 1 ? "Berbagi takhta." : "Arena punya juara."}</h2>
     <div className="relative mt-6 flex flex-wrap justify-center gap-6">{winners.map((winner) => <div key={winner.playerId} className="flex flex-col items-center">
-      <Crown className="mb-2 size-8 fill-white" aria-label="Juara" /><ClashAvatar nickname={winner.nickname} avatarUrl={members.find((member) => member.id === winner.memberId)?.avatarUrl} large />
+      {!solo && <Crown className="mb-2 size-8 fill-white" aria-label="Juara" />}<ClashAvatar nickname={winner.nickname} avatarUrl={members.find((member) => member.id === winner.memberId)?.avatarUrl} large />
       <p className="mt-3 max-w-64 text-xl font-black break-words">{winner.nickname}</p><p className="mt-1 font-mono text-sm font-bold">{winner.score.toLocaleString("id-ID")} poin</p>
     </div>)}</div>
-    <p className="relative mt-6 text-sm font-medium">{match.questionCount} ronde tuntas. Siap untuk tanding ulang?</p>
+    <p className="relative mt-6 text-sm font-medium">{match.questionCount} ronde tuntas. {solo ? "Pelajari pembahasan atau mulai latihan lagi." : "Siap untuk tanding ulang?"}</p>
   </section>;
 }
 
@@ -100,15 +104,16 @@ export function ClashMemberList({ state, online, active = false, kick, disabled 
   kick?: (member: ClashRoomSnapshot["members"][number]) => void;
 }) {
   const players = state.members.filter((member) => !member.spectating);
+  const solo = state.mode === "solo";
   return <div>
-    <div className="flex flex-wrap items-center justify-between gap-3"><h2 className="flex items-center gap-2 text-lg font-black"><Users className="size-5" />{active ? "Di arena" : "Line-up pemain"}</h2><span className="clash-tag">{players.length}/20</span></div>
+    <div className="flex flex-wrap items-center justify-between gap-3"><h2 className="flex items-center gap-2 text-lg font-black">{solo ? <UserRound className="size-5" /> : <Users className="size-5" />}{solo ? "Pemain solo" : active ? "Di arena" : "Line-up pemain"}</h2><span className="clash-tag">{solo ? "Solo" : `${players.length}/20`}</span></div>
     <ul className={cn("mt-5 space-y-4", active ? "grid gap-5 sm:grid-cols-2 sm:space-y-0 lg:grid-cols-3" : "max-h-64 overflow-y-auto pr-1")}>
       {state.members.map((member) => <li key={member.id} className="flex items-center gap-3">
         <ClashAvatar nickname={member.nickname} avatarUrl={member.avatarUrl} />
-        <div className="min-w-0 flex-1"><div className="flex items-center gap-1.5"><p className="truncate text-sm font-extrabold" title={member.nickname}>{member.nickname}{member.id === state.viewer.memberId ? " (Anda)" : ""}</p>{member.isHost && <span className="text-[10px] font-black">HOST</span>}</div>
-          <p className="mt-1 flex items-center gap-1.5 text-xs text-neo-ink/65"><span className="clash-status-dot" data-online={online.includes(member.id)} aria-hidden="true" />{online.includes(member.id) ? "Terhubung" : "Offline"}{member.spectating ? " / Penonton" : !active ? member.ready ? " / Ready" : " / Belum ready" : ""}</p>
+        <div className="min-w-0 flex-1"><div className="flex items-center gap-1.5"><p className="truncate text-sm font-extrabold" title={member.nickname}>{member.nickname}{member.id === state.viewer.memberId ? " (Anda)" : ""}</p>{member.isHost && !solo && <span className="text-[10px] font-black">HOST</span>}</div>
+          <p className="mt-1 flex items-center gap-1.5 text-xs text-neo-ink/65"><span className="clash-status-dot" data-online={online.includes(member.id)} aria-hidden="true" />{online.includes(member.id) ? "Terhubung" : "Offline"}{member.spectating ? " / Penonton" : !active && !solo ? member.ready ? " / Ready" : " / Belum ready" : ""}</p>
         </div>
-        {!active && !member.spectating && member.ready && <span className="border-2 border-neo-ink bg-neo-green px-1.5 py-1 text-[10px] font-black">READY</span>}
+        {!solo && !active && !member.spectating && member.ready && <span className="border-2 border-neo-ink bg-neo-green px-1.5 py-1 text-[10px] font-black">READY</span>}
         {!active && state.viewer.isHost && !member.isHost && kick && <ClashButton tone="coral" className="shrink-0 px-2" disabled={disabled} aria-label={`Keluarkan ${member.nickname}`} title={`Keluarkan ${member.nickname}`} onClick={() => kick(member)}><UserMinus className="size-4" /></ClashButton>}
       </li>)}
     </ul>

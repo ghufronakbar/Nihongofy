@@ -11,7 +11,16 @@ export function nicknameKey(nickname: string) {
   return ClashNicknameSchema.parse(nickname).toLowerCase();
 }
 
+export const ClashModeSchema = z.enum(["multiplayer", "solo"]);
+export type ClashMode = z.infer<typeof ClashModeSchema>;
+
+// Before the first configure, room JSON holds only mode; legacy null/configs are multiplayer.
+export function clashRoomMode(config: unknown): ClashMode {
+  return z.object({ mode: ClashModeSchema.default("multiplayer") }).parse(config ?? {}).mode;
+}
+
 export const ClashConfigSchema = z.strictObject({
+  mode: ClashModeSchema.optional(),
   jlptLevel: z.enum(CLASH_LEVELS),
   mondaiTypes: z.array(z.enum(CLASH_MONDAI_TYPES)).min(1).max(CLASH_MONDAI_TYPES.length)
     .refine((types) => new Set(types).size === types.length, "Tipe soal tidak boleh duplikat."),
@@ -45,7 +54,7 @@ export const ClashQuestionSnapshotSchema = z.strictObject({
 export type ClashQuestionSnapshot = z.infer<typeof ClashQuestionSnapshotSchema>;
 
 export const ClashRoomInputSchema = z.strictObject({ roomId: ClashIdSchema });
-export const ClashCreateSchema = z.strictObject({ nickname: ClashNicknameSchema, requestId: ClashIdSchema.optional() });
+export const ClashCreateSchema = z.strictObject({ nickname: ClashNicknameSchema, requestId: ClashIdSchema.optional(), mode: ClashModeSchema.default("multiplayer") });
 export const ClashJoinSchema = z.strictObject({ code: ClashRoomCodeSchema, nickname: ClashNicknameSchema });
 export const ClashRenameSchema = ClashRoomInputSchema.extend({ nickname: ClashNicknameSchema });
 export const ClashKickSchema = ClashRoomInputSchema.extend({ memberId: ClashIdSchema });

@@ -5,6 +5,7 @@ import { ClashRoomSnapshotSchema, type ClashRoomSnapshot } from "../contracts";
 import { ClashRound } from "./round";
 import { ClashLobby } from "./lobby";
 import { hasClashConfigChanges } from "./configuration";
+import { ClashFinish, ClashLeaderboard } from "./arena-ui";
 import type { ClashConfig } from "../schemas";
 
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn(), refresh: vi.fn() }) }));
@@ -87,6 +88,53 @@ describe("Kotoba Clash terminal and round UI", () => {
     expect(html.match(/disabled=""/g)).toHaveLength(2);
     expect(html).toContain('aria-valuenow="0"');
     expect(html).not.toContain("PRIVATE_EXPLANATION");
+  });
+  it("starts a saved solo challenge with one connected owner without ready or invite controls", () => {
+    const state = snapshot();
+    state.mode = "solo";
+    state.match = null;
+    state.viewer.isHost = true;
+    state.configRevision = 1;
+    state.config = { mode: "solo", jlptLevel: "N5", questionCount: 5, mondaiTypes: ["MOJI_GOI_CONTEXT"] };
+    state.members = [{ id: state.viewer.memberId, nickname: "Solo player", isHost: true, spectating: false, ready: false }];
+    const props = { state, catalog: [{ jlptLevel: "N5" as const, mondaiType: "MOJI_GOI_CONTEXT" as const, count: 20 }], online: [state.viewer.memberId], connected: true, busy: false, run: async () => true, close: async () => undefined };
+    const html = renderToStaticMarkup(createElement(ClashLobby, props));
+    const start = html.match(/<button[^>]*>(?:(?!<\/button>)[\s\S])*Mulai latihan solo<\/button>/)?.[0];
+    expect(start).toBeDefined();
+    expect(start).not.toContain('disabled=""');
+    expect(html).not.toMatch(/Saya Ready|Belum ready|Kesiapan pemain|rival lagi/);
+    state.config = null;
+    state.configRevision = 0;
+    const unsaved = renderToStaticMarkup(createElement(ClashLobby, props));
+    expect(unsaved).toContain("Pengaturan belum disimpan");
+    expect(unsaved).toMatch(/<button[^>]*disabled=""[^>]*>(?:(?!<\/button>)[\s\S])*Mulai latihan solo<\/button>/);
+    const room = renderToStaticMarkup(createElement(ClashRoom, { code: state.code, initial: state, initialError: null, catalog: [] }));
+    expect(room).toContain("Sesi pribadi");
+    expect(room).not.toMatch(/Link undangan|>ABCD2345<|>Kode<|Saya Ready/);
+  });
+  it("shows personal solo results and a practice-again action without declaring a winner", () => {
+    const state = snapshot();
+    const match = state.match!;
+    match.phase = { type: "FINISHED" };
+    match.leaderboard = [{ playerId: id(5), memberId: state.viewer.memberId, nickname: "Solo player", rank: 1, score: 4000, correctCount: 3, wrongCount: 1, skippedCount: 1, bestStreak: 2, correctTimeMs: 1000 }];
+    const results = renderToStaticMarkup(createElement(ClashLeaderboard, { match, members: [], viewerId: state.viewer.memberId, solo: true }));
+    expect(results).toContain("Hasil latihanmu");
+    expect(results).toContain("4.000");
+    expect(results).toMatch(/Benar[\s\S]*Salah[\s\S]*Kosong/);
+    expect(results).not.toMatch(/Papan juara|Peringkat|puncak|podium/);
+    const finish = renderToStaticMarkup(createElement(ClashFinish, { match, members: [], solo: true }));
+    expect(finish).toContain("Latihan selesai");
+    expect(finish).not.toMatch(/Arena punya juara|aria-label="Juara"/);
+    state.mode = "solo";
+    state.viewer.isHost = true;
+    const lobby = renderToStaticMarkup(createElement(ClashLobby, { state, catalog: [], online: [state.viewer.memberId], connected: true, busy: false, run: async () => true, close: async () => undefined }));
+    expect(lobby).toContain("Latihan lagi");
+    expect(lobby).not.toMatch(/Saya Ready|ready kembali/);
+  });
+  it("shows an access notice without invitations or a join form to a non-owner of a solo session", () => {
+    const html = renderToStaticMarkup(createElement(ClashRoom, { code: "ABCD2345", initial: null, initialError: null, privateSession: true, catalog: [] }));
+    expect(html).toContain("Sesi latihan pribadi");
+    expect(html).not.toMatch(/guest-nickname|Gabung Room|Link undangan|ABCD2345/);
   });
   it("reveals feedback only in the reveal phase and omits live timers in review", () => {
     const match = snapshot().match!;

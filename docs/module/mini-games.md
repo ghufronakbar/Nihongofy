@@ -59,7 +59,8 @@ agar perubahan nama tampilan tidak mengharuskan perubahan identitas data.
 - Menu utama publik bernama **Mini Games**, menuju katalog; setiap game muncul sebagai kartu.
 - Tidak perlu menambahkan satu menu header baru untuk setiap game.
 - User bisa memahami tujuan, jumlah pemain, dan kebutuhan login sebelum menekan CTA.
-- Kotoba Clash mendukung 2-20 pemain. Host login; peserta boleh memakai akun atau guest.
+- Kotoba Clash mendukung solo untuk akun atau multiplayer 2-20 pemain. Host login;
+  peserta multiplayer boleh memakai akun atau guest. Solo bersifat privat dan tanpa ready.
 - Link undangan tetap langsung menuju room. Penerima tidak dipaksa melewati katalog.
 - Game yang belum ada tidak dipresentasikan sebagai fitur aktif. Peluncuran pertama cukup satu
   kartu nyata; tidak mengarang nama, pemain online, hasil, atau daftar game tambahan.

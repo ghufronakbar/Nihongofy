@@ -23,6 +23,7 @@ const memberId = randomUUID();
 const matchId = randomUUID();
 const roundId = randomUUID();
 const initial: ClashRoomSnapshot = {
+  mode: "multiplayer",
   id: roomId, code: "ABCD2345", revision: 0, serverNow: Date.now(), closed: false, configRevision: 0, config: null,
   viewer: { memberId, isHost: false, spectating: false }, members: [], match: null,
 };

@@ -1,7 +1,7 @@
 import "server-only";
 
 import type { PrismaClient } from "@prisma/client";
-import { ClashConfigSchema, ClashIdSchema, ClashQuestionSnapshotSchema, ClashRoomCodeSchema } from "../schemas";
+import { ClashConfigSchema, ClashIdSchema, ClashQuestionSnapshotSchema, ClashRoomCodeSchema, clashRoomMode } from "../schemas";
 import { ClashRoomSnapshotSchema, type ClashRoomSnapshot } from "../contracts";
 import { ClashError, type ClashIdentity } from "../domain/ports";
 import { phaseAt, rankPlayers, scoreLedger } from "../domain/engine";
@@ -19,6 +19,8 @@ export class PrismaClashState {
     const result = await this.db.$transaction(async (tx) => {
       await lockIdentity(tx, identity);
       const room = await lockRoom(tx, found.id);
+      const mode = clashRoomMode(room.config);
+      if (mode === "solo" && (identity.kind !== "account" || room.hostUserId !== identity.userId)) throw new ClashError("SOLO_PRIVATE");
       const now = await databaseNow(tx);
       const member = await requireMember(tx, identity, room.id, now);
       if (room.expiresAt <= now) throw new ClashError("EXPIRED");
@@ -50,7 +52,7 @@ export class PrismaClashState {
       )) : [];
       const state = ClashRoomSnapshotSchema.parse({
         id: room.id, code: room.code, revision: room.revision, serverNow: now.getTime(), closed,
-        configRevision: room.configRevision, config: room.config ? ClashConfigSchema.parse(room.config) : null,
+        mode, configRevision: room.configRevision, config: room.config && room.configRevision > 0 ? ClashConfigSchema.parse(room.config) : null,
         viewer: { memberId: member.id, isHost: identity.kind === "account" && room.hostUserId === identity.userId, spectating: member.spectating },
         members: members.map((row) => ({ id: row.id, nickname: row.nickname, avatarUrl: row.user?.avatarUrl ?? null, ready: room.config !== null && row.readyRevision === room.configRevision,
           spectating: row.spectating, isHost: row.userId !== null && row.userId === room.hostUserId })),

@@ -37,8 +37,10 @@ export function ClashLobby({ state, catalog, online, connected, busy, run, close
   state: ClashRoomSnapshot; catalog: ClashCatalogEntry[]; online: string[]; connected: boolean; busy: boolean; run: Run; close: () => Promise<void>;
 }) {
   const formId = useId();
-  const form = useForm<ClashConfig>({ resolver: zodResolver(ClashConfigSchema), defaultValues: defaultClashConfig(state.config, catalog) });
+  const solo = state.mode === "solo";
+  const form = useForm<ClashConfig>({ resolver: zodResolver(ClashConfigSchema), defaultValues: defaultClashConfig(state.config, catalog, state.mode) });
   const draft: ClashConfig = {
+    mode: state.mode,
     jlptLevel: useWatch({ control: form.control, name: "jlptLevel" }),
     mondaiTypes: useWatch({ control: form.control, name: "mondaiTypes" }),
     questionCount: useWatch({ control: form.control, name: "questionCount" }),
@@ -49,36 +51,36 @@ export function ClashLobby({ state, catalog, online, connected, busy, run, close
   const self = state.members.find((member) => member.id === state.viewer.memberId);
   const players = state.members.filter((member) => !member.spectating && online.includes(member.id));
   const readyCount = players.filter((member) => member.ready).length;
-  const canStart = Boolean(state.config && players.length >= 2 && players.every((member) => member.ready));
+  const canStart = Boolean(state.config && (solo ? players.length === 1 && players[0]!.id === state.viewer.memberId : players.length >= 2 && players.every((member) => member.ready)));
   const [kickTarget, setKickTarget] = useState<ClashRoomSnapshot["members"][number] | null>(null);
   return <div className={cn("grid items-start gap-7 lg:grid-cols-[minmax(0,1fr)_21rem]", unsaved && "pb-24 lg:pb-0")}>
     <section className="clash-panel order-2 min-w-0 overflow-hidden lg:order-1">
-      <div className="clash-section-heading bg-neo-yellow"><span className="clash-section-icon"><Settings2 className="size-6" /></span><div><p className="clash-label">{state.match ? "Tanding ulang" : "Atur tantangan"}</p><h2 className="mt-1 text-xl font-black">{state.match ? "Main lagi" : "Pengaturan pertandingan"}</h2></div></div>
+      <div className="clash-section-heading bg-neo-yellow"><span className="clash-section-icon"><Settings2 className="size-6" /></span><div><p className="clash-label">{solo ? "Latihan solo" : state.match ? "Tanding ulang" : "Atur tantangan"}</p><h2 className="mt-1 text-xl font-black">{state.match ? "Main lagi" : solo ? "Pengaturan latihan" : "Pengaturan pertandingan"}</h2></div></div>
       <div className="p-4 sm:p-6">
-        {unsaved && <div role="alert" className="mb-6 flex gap-3 border-[3px] border-neo-ink bg-neo-yellow/40 p-4 shadow-neo-sm"><AlertTriangle className="size-5 shrink-0" /><div><p className="text-sm font-black">{state.config ? "Perubahan belum disimpan" : "Pengaturan belum disimpan"}</p><p className="mt-1 text-xs leading-6">{state.config ? "Room masih memakai pengaturan sebelumnya." : "Simpan tantanganmu agar pemain bisa ready."} Gunakan tombol Simpan pengaturan di panel pemain.</p></div></div>}
-        {state.match && <p className="mb-6 text-sm leading-6">Room dan kode tetap sama. Sepakati pengaturan lalu ready kembali.</p>}
+        {unsaved && <div role="alert" className="mb-6 flex gap-3 border-[3px] border-neo-ink bg-neo-yellow/40 p-4 shadow-neo-sm"><AlertTriangle className="size-5 shrink-0" /><div><p className="text-sm font-black">{state.config ? "Perubahan belum disimpan" : "Pengaturan belum disimpan"}</p><p className="mt-1 text-xs leading-6">{solo ? "Simpan tantanganmu sebelum mulai latihan." : state.config ? "Room masih memakai pengaturan sebelumnya." : "Simpan tantanganmu agar pemain bisa ready."} Gunakan tombol Simpan pengaturan di panel pemain.</p></div></div>}
+        {state.match && <p className="mb-6 text-sm leading-6">{solo ? "Pakai pengaturan yang sama atau simpan tantangan baru, lalu mulai latihan lagi." : "Room dan kode tetap sama. Sepakati pengaturan lalu ready kembali."}</p>}
         <ClashConfiguration form={form} formId={formId} catalog={catalog} disabled={!state.viewer.isHost || busy || !connected} save={async (config) => {
-          await run(() => configureClashRoomAction({ roomId: state.id, configRevision: state.configRevision, config }), "Pengaturan terbaru sudah dipakai. Semua pemain perlu ready kembali.");
+          await run(() => configureClashRoomAction({ roomId: state.id, configRevision: state.configRevision, config }), solo ? "Pengaturan tersimpan. Latihan siap dimulai." : "Pengaturan terbaru sudah dipakai. Semua pemain perlu ready kembali.");
         }} />
         {!state.viewer.isHost && <p className="mt-5 border-l-4 border-neo-blue pl-3 text-xs font-bold leading-6">Host mengatur pertandingan. Ready berarti menyetujui pengaturan tersimpan terbaru.</p>}
       </div>
     </section>
     <section className="clash-panel order-1 p-5 lg:sticky lg:top-28 lg:order-2 lg:max-h-[calc(100dvh-8rem)] lg:overflow-y-auto" aria-label="Lobby pemain">
       {state.viewer.isHost && <div className="mb-5 border-b-2 border-neo-ink pb-5">
-        <div role="status" className="mb-3 flex items-start gap-2 text-xs leading-5 font-bold">{unsaved ? <AlertTriangle className="mt-0.5 size-4 shrink-0" /> : <Check className="mt-0.5 size-4 shrink-0" />}<span>{unsaved ? "Belum disimpan. Simpan perubahan sebelum ready atau mulai." : "Pengaturan terbaru sudah dipakai."}</span></div>
+        <div role="status" className="mb-3 flex items-start gap-2 text-xs leading-5 font-bold">{unsaved ? <AlertTriangle className="mt-0.5 size-4 shrink-0" /> : <Check className="mt-0.5 size-4 shrink-0" />}<span>{unsaved ? solo ? "Simpan perubahan sebelum mulai latihan." : "Belum disimpan. Simpan perubahan sebelum ready atau mulai." : "Pengaturan terbaru sudah dipakai."}</span></div>
         <ClashButton form={formId} type="submit" tone="yellow" className={cn("w-full", unsaved && "max-lg:fixed max-lg:right-5 max-lg:bottom-5 max-lg:left-5 max-lg:z-30 max-lg:w-auto")} disabled={busy || !connected || !dirty || total < draft.questionCount || !draft.mondaiTypes.length}><Save className="size-4" />{form.formState.isSubmitting ? "Menyimpan..." : "Simpan pengaturan"}</ClashButton>
       </div>}
       <ClashMemberList state={state} online={online} kick={state.viewer.isHost ? setKickTarget : undefined} disabled={busy || !connected} />
       {self && <ClashNicknameEditor key={self.nickname} roomId={state.id} nickname={self.nickname} busy={busy} online={connected} run={run} />}
       <div className="mt-5 border-t-2 border-neo-ink pt-5">
-        <div className="mb-4 flex items-center justify-between text-xs font-bold"><span>Kesiapan pemain online</span><span className="font-mono">{readyCount}/{players.length}</span></div>
+        {!solo && <div className="mb-4 flex items-center justify-between text-xs font-bold"><span>Kesiapan pemain online</span><span className="font-mono">{readyCount}/{players.length}</span></div>}
         <div className="space-y-3">
           {state.viewer.spectating && <ClashButton tone="yellow" className="w-full" disabled={busy || !connected} onClick={() => run(() => participateClashRoomAction({ roomId: state.id }))}><Swords className="size-4" />Ikut pertandingan berikutnya</ClashButton>}
-          <ClashButton tone={self?.ready ? "white" : "green"} className="w-full" disabled={busy || !state.config || !connected || state.viewer.spectating || unsaved} onClick={() => run(() => readyClashRoomAction({ roomId: state.id, configRevision: state.configRevision, ready: !self?.ready }))}>{self?.ready ? <X className="size-4" /> : <Check className="size-5" />}{self?.ready ? "Batalkan ready" : "Saya Ready"}</ClashButton>
-          {state.viewer.isHost && <ClashButton tone="blue" className="w-full" disabled={busy || !connected || !canStart || unsaved} onClick={() => run(() => startClashMatchAction({ roomId: state.id, configRevision: state.configRevision, requestId: crypto.randomUUID() }))}><Play className="size-4 fill-current" />Mulai pertandingan</ClashButton>}
+          {!solo && <ClashButton tone={self?.ready ? "white" : "green"} className="w-full" disabled={busy || !state.config || !connected || state.viewer.spectating || unsaved} onClick={() => run(() => readyClashRoomAction({ roomId: state.id, configRevision: state.configRevision, ready: !self?.ready }))}>{self?.ready ? <X className="size-4" /> : <Check className="size-5" />}{self?.ready ? "Batalkan ready" : "Saya Ready"}</ClashButton>}
+          {state.viewer.isHost && <ClashButton tone="blue" className="w-full" disabled={busy || !connected || !canStart || unsaved} onClick={() => run(() => startClashMatchAction({ roomId: state.id, configRevision: state.configRevision, requestId: crypto.randomUUID() }))}><Play className="size-4 fill-current" />{solo ? state.match ? "Latihan lagi" : "Mulai latihan solo" : "Mulai pertandingan"}</ClashButton>}
         </div>
-        <p className="mt-4 text-xs leading-6 text-neo-ink/65">{unsaved ? "Simpan perubahan dahulu, lalu ready dengan pengaturan terbaru." : !state.config ? "Tunggu host menyimpan pengaturan untuk membuka tombol ready." : players.length < 2 ? "Ajak minimal satu rival lagi agar pertandingan bisa dimulai." : !canStart ? "Tunggu semua pemain online ready, termasuk host." : "Semua siap. Host bisa memulai pertandingan."} Mengubah pengaturan mereset ready. Pemain offline tidak masuk roster saat Start.</p>
-        {state.viewer.isHost && <div className="mt-5 border-t-2 border-neo-ink/15 pt-4"><ClashButton tone="coral" disabled={busy} className="w-full" onClick={close}><DoorClosed className="size-4" />Tutup Room</ClashButton></div>}
+        <p className="mt-4 text-xs leading-6 text-neo-ink/65">{solo ? "Sesi pribadi untuk satu pemain. Simpan pengaturan, lalu mulai. Pembahasan terbuka setelah kamu menjawab atau waktu habis." : <>{unsaved ? "Simpan perubahan dahulu, lalu ready dengan pengaturan terbaru." : !state.config ? "Tunggu host menyimpan pengaturan untuk membuka tombol ready." : players.length < 2 ? "Ajak minimal satu rival lagi agar pertandingan bisa dimulai." : !canStart ? "Tunggu semua pemain online ready, termasuk host." : "Semua siap. Host bisa memulai pertandingan."} Mengubah pengaturan mereset ready. Pemain offline tidak masuk roster saat Start.</>}</p>
+        {state.viewer.isHost && <div className="mt-5 border-t-2 border-neo-ink/15 pt-4"><ClashButton tone="coral" disabled={busy} className="w-full" onClick={close}><DoorClosed className="size-4" />{solo ? "Tutup sesi" : "Tutup Room"}</ClashButton></div>}
       </div>
     </section>
     <AlertDialog open={Boolean(kickTarget)} onOpenChange={(open) => { if (!open && !busy) setKickTarget(null); }}>

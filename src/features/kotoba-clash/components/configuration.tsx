@@ -4,13 +4,14 @@ import { useWatch, type UseFormReturn } from "react-hook-form";
 import { Check, Layers3 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { JLPT_SECTION_LABELS, MONDAI_TYPE_TRANSLATIONS } from "@/constants/jlpt";
-import type { ClashConfig } from "../schemas";
+import type { ClashConfig, ClashMode } from "../schemas";
 import { CLASH_CATEGORIES, CLASH_LEVELS, CLASH_QUESTION_COUNTS, type ClashMondaiType } from "../domain/rules";
 import type { ClashCatalogEntry } from "../server/catalog";
 
-export function defaultClashConfig(config: ClashConfig | null, catalog: ClashCatalogEntry[]): ClashConfig {
+export function defaultClashConfig(config: ClashConfig | null, catalog: ClashCatalogEntry[], mode: ClashMode = "multiplayer"): ClashConfig {
   const level = CLASH_LEVELS.find((candidate) => catalog.filter((row) => row.jlptLevel === candidate).reduce((n, row) => n + row.count, 0) >= 5) ?? "N5";
   return config ?? {
+    mode,
     jlptLevel: level, mondaiTypes: catalog.filter((row) => row.jlptLevel === level && row.count > 0).map((row) => row.mondaiType), questionCount: 5,
   };
 }

@@ -86,7 +86,7 @@ describe("Kotoba Clash room creation", () => {
     fixture.publish.mockImplementation(async () => { order.push("publish"); });
     const request = { nickname: "Host", requestId: roomId };
     expect(await createClashRoomAction(request)).toEqual({ ok: true, data: { id: roomId, code: "ABCD2345", revision: 0 } });
-    expect(fixture.create).toHaveBeenCalledWith({ kind: "account", userId: 1 }, request);
+    expect(fixture.create).toHaveBeenCalledWith({ kind: "account", userId: 1 }, { ...request, mode: "multiplayer" });
     expect(order).toEqual(["commit", "publish", "publish"]);
     for (const room of closedRooms) expect(fixture.publish).toHaveBeenCalledWith(room.id, room.revision);
   });
@@ -96,5 +96,12 @@ describe("Kotoba Clash room creation", () => {
     fixture.create.mockResolvedValueOnce({ id: randomUUID(), code: "ABCD2345", revision: 2, duplicate: true, closedRooms: [] });
     expect((await createClashRoomAction({ nickname: "Host", requestId: randomUUID() })).ok).toBe(true);
     expect(fixture.publish).not.toHaveBeenCalled();
+  });
+  it("validates the mode and forwards solo creation with the authenticated owner", async () => {
+    expect(await createClashRoomAction({ nickname: "Host", mode: "invalid" })).toMatchObject({ ok: false, code: "INVALID_INPUT" });
+    expect(fixture.create).not.toHaveBeenCalled();
+    const request = { nickname: "Host", mode: "solo", requestId: randomUUID() };
+    expect((await createClashRoomAction(request)).ok).toBe(true);
+    expect(fixture.create).toHaveBeenCalledExactlyOnceWith({ kind: "account", userId: 1 }, request);
   });
 });

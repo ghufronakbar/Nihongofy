@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ClashConfigSchema, ClashQuestionContentSchema, ClashIdSchema } from "./schemas";
+import { ClashConfigSchema, ClashQuestionContentSchema, ClashIdSchema, ClashModeSchema } from "./schemas";
 import { CLASH_MONDAI_TYPES } from "./domain/rules";
 
 const phase = z.discriminatedUnion("type", [
@@ -11,6 +11,7 @@ const phase = z.discriminatedUnion("type", [
 export const ClashRoomSnapshotSchema = z.object({
   id: ClashIdSchema, code: z.string(), revision: z.number().int().nonnegative(), serverNow: z.number(),
   closed: z.boolean(), configRevision: z.number().int().nonnegative(), config: ClashConfigSchema.nullable(),
+  mode: ClashModeSchema.default("multiplayer"),
   viewer: z.object({ memberId: ClashIdSchema, isHost: z.boolean(), spectating: z.boolean() }),
   members: z.array(z.object({ id: ClashIdSchema, nickname: z.string(), avatarUrl: z.url().nullable().optional(), ready: z.boolean(), spectating: z.boolean(), isHost: z.boolean() })).max(25),
   match: z.object({
