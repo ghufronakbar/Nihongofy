@@ -36,6 +36,10 @@ Supabase/Upstash production, deployment, atau aktivasi publik.
   Uji Lua Redis dari bukti v1 tetap terpisah; tidak diulang pada perubahan UI/solo ini.
 - Landing, create/join, pengaturan, lobby, papan/keyboard dan hasil memakai font/border/shadow
   neo brutalism yang konsisten dengan Kotoba Clash. Kode/link undangan menjadi kontrol terpisah.
+  Aksen utama diperbarui menjadi hijau neo pada header, sticker, mode terpilih, tombol utama
+  dan checkbox agar identitas game berbeda dari Kotoba Clash; feedback posisi tetap semantik.
+  Perubahan aksen lulus lint komponen, TypeScript dan build produksi; landing/pemilih mode
+  diperiksa pada browser lokal desktop dan lebar 320px, tanpa screenshot tersimpan di repository.
 - Browser komponen asli melalui fixture sementara: landing akun, lobby multiplayer/solo,
   papan tujuh kana dan hasil pada 320x800; dokumen tidak melebar. Landing/hasil juga diperiksa
   desktop 1280px. Pemilih mode, select, simpan pengaturan, romaji dan submit feedback bekerja.

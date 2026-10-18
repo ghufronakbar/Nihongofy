@@ -19,7 +19,7 @@ Sumber kebenaran: [modul](../module/kana-word-race.md),
 - Target dan papan lawan tidak disiarkan. First solver menunggu lawan/deadline untuk reveal.
   Dalam solo, solved/exhausted langsung reveal; Start tidak memerlukan ready/pemain kedua.
 - UI mengikuti neo brutalism Kotoba Clash: font Geist tebal, border 3px, bayangan keras,
-  panel putih/header kuning, kontrol dan status konsisten pada landing/lobby/papan/hasil.
+  panel putih/aksen hijau neo, kontrol dan status konsisten pada landing/lobby/papan/hasil.
 - Feature default-off; tidak menerapkan migration/seed atau mengaktifkan production otomatis.
 
 ## 2. Fase dan Hasil

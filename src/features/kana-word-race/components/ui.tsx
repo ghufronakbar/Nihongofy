@@ -1,11 +1,11 @@
 import type { LucideIcon } from "lucide-react";
 
-export function RaceSectionHeading({ icon: Icon, label, title, id, tone = "yellow", as: Heading = "h2" }: {
+export function RaceSectionHeading({ icon: Icon, label, title, id, tone = "accent", as: Heading = "h2" }: {
   icon: LucideIcon;
   label: string;
   title: string;
   id?: string;
-  tone?: "yellow" | "paper" | "green";
+  tone?: "accent" | "paper" | "green";
   as?: "h1" | "h2";
 }) {
   return <div className="race-section-heading" data-tone={tone}>

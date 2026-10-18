@@ -7,7 +7,8 @@ Diperbarui: **18 Oktober 2026 (Asia/Jakarta)**.
 Implementasi v1 tersedia di kode dan default **mati**. Migration, seed kamus, engine,
 room/lobby, WebSocket, papan privat, hasil/rematch, export, anonimisasi dan cleanup tersedia.
 UI memakai border/bayangan tebal, font Geist dan panel neo brutalism yang konsisten dengan
-Kotoba Clash. Mode solo tersedia untuk akun, dengan pengaturan dan hasil pribadi.
+Kotoba Clash, dengan aksen utama hijau neo (`--neo-green`) pada header, tombol, pilihan mode,
+sticker dan checkbox. Mode solo tersedia untuk akun, dengan pengaturan dan hasil pribadi.
 Pengujian engineering PostgreSQL/WebSocket serta pemeriksaan browser lokal dicatat di
 [verifikasi](../verification/kana-word-race-uat.md). Database/deployment production tidak
 berubah dalam pekerjaan ini. UAT lintas perangkat pada hosting target, review konten manusia,

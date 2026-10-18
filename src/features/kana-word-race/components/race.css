@@ -1,7 +1,7 @@
 .race-ui {
   --race-paper: #fff;
   --race-ink: var(--neo-ink);
-  --race-accent: var(--neo-yellow);
+  --race-accent: var(--neo-green);
   --race-correct: #216e45;
   --race-present: #8a5b08;
   --race-absent: #545960;
@@ -66,7 +66,7 @@
 .race-ui .race-modes svg { flex-shrink: 0; }
 .race-ui .race-eyebrow { font: 800 .6875rem/1.4 var(--font-geist-mono), monospace; letter-spacing: .12em; text-transform: uppercase; }
 .race-ui .race-section-heading { display: flex; align-items: center; gap: .875rem; border-bottom: 3px solid var(--race-ink); padding: 1.25rem; background: #eef5ff; }
-.race-ui .race-section-heading[data-tone="yellow"] { background: var(--race-accent); }
+.race-ui .race-section-heading[data-tone="accent"] { background: var(--race-accent); }
 .race-ui .race-section-heading[data-tone="green"] { background: #b5f3cf; }
 .race-ui .race-section-icon { display: grid; width: 2.75rem; height: 2.75rem; flex-shrink: 0; place-items: center; border: 2px solid var(--race-ink); background: var(--race-paper); box-shadow: 3px 3px 0 var(--race-ink); }
 .race-ui .race-sticker { display: inline-flex; align-items: center; gap: .5rem; border: 2px solid var(--race-ink); padding: .5rem .75rem; background: var(--race-accent); color: var(--race-ink); box-shadow: 3px 3px 0 var(--race-ink); font-weight: 900; transform: rotate(-3deg); }

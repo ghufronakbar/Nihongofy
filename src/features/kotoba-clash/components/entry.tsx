@@ -41,8 +41,8 @@ export function ClashEntry({ authenticated, displayName }: { authenticated: bool
         <div className="p-5 sm:p-6">
           <form className="space-y-4" onSubmit={(event) => void create.handleSubmit(submitCreate)(event)}>
             <fieldset disabled={create.formState.isSubmitting}><legend className="mb-3 text-sm font-extrabold">Pilih cara main</legend><div className="grid gap-3 sm:grid-cols-2">
-              <label className="flex cursor-pointer items-center gap-2 border-2 border-neo-ink bg-neo-paper p-3 text-sm font-bold has-checked:bg-neo-yellow"><input type="radio" value="multiplayer" {...create.register("mode")} /><Users className="size-5 shrink-0" /><span>Bersama teman</span></label>
-              <label className="flex cursor-pointer items-center gap-2 border-2 border-neo-ink bg-neo-paper p-3 text-sm font-bold has-checked:bg-neo-yellow"><input type="radio" value="solo" {...create.register("mode")} /><UserRound className="size-5 shrink-0" /><span>Main sendiri</span></label>
+              <label className="clash-mode"><input type="radio" value="multiplayer" {...create.register("mode")} /><Users className="size-5 shrink-0" /><span>Bersama teman</span></label>
+              <label className="clash-mode"><input type="radio" value="solo" {...create.register("mode")} /><UserRound className="size-5 shrink-0" /><span>Main sendiri</span></label>
             </div></fieldset>
             <p className="text-sm leading-6">{solo ? "Latihan kuis JLPT melawan waktu. Pilih level dan tipe soal, lalu mulai tanpa menunggu pemain lain." : "Tentukan tantangannya, bagikan undangan, lalu ajak temanmu beradu cepat."}</p>
             {authenticated ? <><label htmlFor="host-nickname" className="block text-sm font-bold">{solo ? "Nickname" : "Nickname dalam room"}</label>
