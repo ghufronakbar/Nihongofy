@@ -6,6 +6,8 @@ Diperbarui: **18 Oktober 2026 (Asia/Jakarta)**.
 
 Implementasi v1 tersedia di kode dan default **mati**. Migration, seed kamus, engine,
 room/lobby, WebSocket, papan privat, hasil/rematch, export, anonimisasi dan cleanup tersedia.
+UI memakai border/bayangan tebal, font Geist dan panel neo brutalism yang konsisten dengan
+Kotoba Clash. Mode solo tersedia untuk akun, dengan pengaturan dan hasil pribadi.
 Pengujian engineering PostgreSQL/WebSocket serta pemeriksaan browser lokal dicatat di
 [verifikasi](../verification/kana-word-race-uat.md). Database/deployment production tidak
 berubah dalam pekerjaan ini. UAT lintas perangkat pada hosting target, review konten manusia,
@@ -20,12 +22,13 @@ Rujukan: [plan](../plan/mini-games-kana-word-race.md), [UAT](../verification/kan
 
 ## 1. Aturan Produk v1
 
-Pemain dalam satu room berlomba menebak bacaan rahasia yang sama. Setiap pemain mempunyai
-papan privat; hanya progres dan hasil angka yang terlihat bersama.
+Pemain dapat latihan sendiri atau berlomba dalam room menebak bacaan rahasia yang sama.
+Setiap pemain mempunyai papan privat; dalam multiplayer, hanya progres dan hasil angka
+yang terlihat bersama.
 
 | Aturan | Nilai |
 |---|---|
-| Peserta | 2-20; host akun terverifikasi, peserta akun atau guest |
+| Peserta | Solo: 1 akun terverifikasi. Multiplayer: 2-20; host akun terverifikasi, peserta akun atau guest |
 | Panjang | Tetap 3/4/5/6/7 kana atau acak; default 5 |
 | Ronde | 3/5/10; default 3 |
 | Kesempatan | 6 tebakan valid per pemain per ronde |
@@ -45,6 +48,8 @@ Status pemain `PLAYING`, `SOLVED`, `EXHAUSTED`, atau `TIMED_OUT`. Pemain pertama
 menutup input pribadinya, sementara lawan tetap berhak memakai sisa kesempatan/waktu.
 Reveal terjadi saat seluruh roster terminal atau deadline. Pemain offline tetap menunggu
 deadline; disconnect tidak memberi kesempatan baru.
+Dalam solo, satu pemain adalah seluruh roster sehingga solved/exhausted langsung memicu
+reveal tanpa menunggu pemain lain; timeout tetap mengikuti deadline server.
 
 V1 tidak mencakup spectator, matchmaking, chat, ranked global, custom target, AI saat bermain,
 atau perubahan kartu/jadwal FSRS. Kapasitas 20 adalah batas admission yang diuji lokal,
@@ -72,8 +77,16 @@ WebSocket game yang tepat.
   mendapat pesan untuk menunggu host kembali ke lobby; tidak otomatis masuk spectator.
 - Ready terikat revision. Join/perubahan pengaturan membuat ready lama tidak berlaku.
   Start memeriksa host, revision, 2-20 peserta, kesiapan semua member aktif, dan stok target.
+- Pilihan "Main sendiri" membuat sesi solo pada route room yang sama, tanpa kode/undangan
+  di UI dan tanpa langkah ready. Server mewajibkan tepat satu member pemilik saat Start;
+  akun lain maupun guest tidak boleh join. Pemilik dapat membuka ulang sesi miliknya.
+- `config.mode` dibekukan saat create dan tidak dapat diganti lewat configure. Default
+  untuk JSON lama tanpa mode adalah `multiplayer`. Retry create terikat mode/request UUID.
+  Membuat solo atau room baru menutup sesi Kana Word Race milik akun yang sebelumnya.
 - Rematch mengembalikan lobby dan reset ready, dengan kode tetap serta match UUID baru.
   Retry rematch ketika sudah lobby tidak mengubah revision lagi.
+  Pada solo, "Latihan lagi" membuka pengaturan dan dapat langsung Start tanpa ready.
+  Hasil menampilkan skor pribadi/jumlah kata tertebak serta review, tanpa podium lawan.
 - Host menutup room melalui konfirmasi UI. Host disconnect tidak menghentikan match;
   sesi/guest yang kedaluwarsa tidak boleh mengirim command. Penghapusan akun host menutup room.
 - Tidak ada transfer host/kick/leave khusus pada v1. Room tertutup dapat membuka hasil yang
@@ -179,6 +192,8 @@ accepted dengan payload sama tidak menambah slot walau ronde lewat; payload berb
 Constraint database menjaga bentuk dasar JSON, identitas, panjang, kode, ready dan satu match
 belum selesai per room. FK composite memastikan current match berasal dari room yang sama.
 Detail Zod/engine menjaga alfabet tepat, roster, slot dan aturan antar-ronde.
+Migration `20261018051003_kana_word_race_solo` memperbarui CHECK match: mode solo tepat satu
+roster; mode multiplayer/JSON lama tetap 2-20. Tidak ada tabel/kolom atau reseed baru.
 
 Semua enam tabel RLS aktif, tanpa client policy/grant ke PUBLIC/anon/authenticated/service_role.
 Akses hanya Prisma server. Release immutable boleh di-cache global berdasarkan checksum;
@@ -234,6 +249,8 @@ Urutan Release Owner:
    `npx prisma migrate deploy`. **Migration wajib sebelum deploy walau flag off**, karena
    export akun, anonimisasi dan cron memakai tabel baru.
 2. Validasi dan seed kamus game; verifikasi checksum/count, RLS/grant dan trigger immutable.
+   Untuk upgrade instalasi existing ke solo, terapkan juga migration
+   `20261018051003_kana_word_race_solo`; kamus existing dapat langsung dipakai tanpa reseed.
 3. Deploy flag-off; verifikasi route guard, account export/deletion dan cron.
 4. Jalankan UAT hosting target (dua perangkat, guest/akun, IME, reconnect >270s, rematch,
    lintas instance), review konten, dan ukur PostgreSQL/Redis/Vercel sebelum aktivasi publik.
@@ -242,6 +259,8 @@ Urutan Release Owner:
 Drain: `npm run kana-race:runtime -- disable`, tunggu minimal 20s, lalu redeploy flag-off dan
 refresh tab. `status`/`enable` memakai key game ini saja. Rollback aplikasi mempertahankan
 migration additive dan data sesuai retensi; jangan drop tabel untuk rollback biasa.
+Untuk upgrade solo, drain dan selesaikan match aktif sebelum redeploy, lalu refresh semua tab.
+Kode lama memakai config strict tanpa mode dan tidak dapat membaca config yang ditulis kode baru.
 
 ## 8. Pemeliharaan
 

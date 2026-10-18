@@ -1,16 +1,19 @@
 import { z } from "zod";
 
+export const ModeSchema = z.enum(["multiplayer", "solo"]);
+export type RaceMode = z.infer<typeof ModeSchema>;
 export const ConfigSchema = z.strictObject({
+  mode: ModeSchema.default("multiplayer"),
   length: z.union([z.literal(0), z.literal(3), z.literal(4), z.literal(5), z.literal(6), z.literal(7)]),
   rounds: z.union([z.literal(3), z.literal(5), z.literal(10)]),
   pace: z.enum(["normal", "relaxed"]), category: z.boolean(),
 });
 export type RaceConfig = z.infer<typeof ConfigSchema>;
-export const DEFAULT_CONFIG: RaceConfig = { length: 5, rounds: 3, pace: "normal", category: false };
+export const DEFAULT_CONFIG: RaceConfig = { mode: "multiplayer", length: 5, rounds: 3, pace: "normal", category: false };
 export const NicknameSchema = z.string().transform((value) => value.normalize("NFKC").trim().replace(/\s+/g, " ")).pipe(z.string().min(2).max(24).regex(/^[\p{L}\p{N} ._-]+$/u));
 export const CodeSchema = z.string().trim().toUpperCase().regex(/^[23456789ABCDEFGHJKMNPQRSTUVWXYZ]{8}$/);
 export const EntrySchema = z.object({ nickname: NicknameSchema });
-export const CreateSchema = EntrySchema.extend({ requestId: z.uuid() });
+export const CreateSchema = EntrySchema.extend({ requestId: z.uuid(), mode: ModeSchema.default("multiplayer") });
 export const JoinSchema = EntrySchema.extend({ code: CodeSchema });
 export const CommandSchema = z.discriminatedUnion("type", [
   z.strictObject({ type: z.literal("sync"), roomId: z.uuid(), requestId: z.uuid() }),

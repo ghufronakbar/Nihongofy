@@ -29,6 +29,29 @@ Supabase/Upstash production, deployment, atau aktivasi publik.
   `inta-netto` -> `いんたーねっと`, pending `n`, `nn`, Backspace dan dakuten dicoba.
   Ini bukti komponen lokal; bukan bukti permainan dua perangkat/adapter production.
 
+### Perapian UI dan mode solo (18 Oktober 2026)
+
+- `npm run verify`: PASS (lint, TypeScript, 54 file/690 tes, build produksi).
+  Prisma validate dan checker PostgreSQL terbaru: PASS, 11 kelompok tanpa opsi Redis.
+  Uji Lua Redis dari bukti v1 tetap terpisah; tidak diulang pada perubahan UI/solo ini.
+- Landing, create/join, pengaturan, lobby, papan/keyboard dan hasil memakai font/border/shadow
+  neo brutalism yang konsisten dengan Kotoba Clash. Kode/link undangan menjadi kontrol terpisah.
+- Browser komponen asli melalui fixture sementara: landing akun, lobby multiplayer/solo,
+  papan tujuh kana dan hasil pada 320x800; dokumen tidak melebar. Landing/hasil juga diperiksa
+  desktop 1280px. Pemilih mode, select, simpan pengaturan, romaji dan submit feedback bekerja.
+  Fixture dan screenshot tidak disimpan dalam repository; ukuran browser dikembalikan.
+- Mode solo: akun menyiapkan sesi, mengatur panjang/ronde/waktu/kategori lalu Start tanpa ready.
+  UI menampilkan skor pribadi/review dan latihan lagi; kode/undangan tidak ditampilkan.
+- Migration `20261018051003_kana_word_race_solo` dibuat via Prisma create-only dan diterapkan
+  setelah replay 45 migration existing pada PostgreSQL 17 lokal baru. Tidak ada write remote.
+  CHECK tervalidasi: legacy/multiplayer 2-20, solo tepat satu. Tidak ada reseed untuk upgrade.
+- Unit mencakup config/create/match legacy serta solo solved/exhausted/timeout, skor dan
+  pergantian ronde. Checker PostgreSQL mencakup solo create/Start concurrent tanpa ready,
+  mode immutable, penolakan akun lain/guest, resume owner, projection sebelum reveal,
+  reveal langsung, pemulihan/retry tebakan, tiga ronde, hasil historis dan rematch.
+- Cakupan browser ini memakai state fixture; perjalanan solo dengan auth/WebSocket pada
+  hosting target tetap merupakan UAT tersendiri.
+
 Saat UAT deployment, lengkapi:
 
 - Tanggal, penguji, commit/build, environment/adapter hosting.
@@ -74,6 +97,10 @@ privat orang lain dalam bukti publik. Bukti engineering tidak menggantikan accep
 
 ## 4. Room dan Pertandingan
 
+- [ ] Mode solo: akun Start tanpa pemain kedua/ready, mengisi enam tebakan dengan timer;
+  solved/exhausted/timeout membuka jawaban, skor/review benar, lalu bisa latihan lagi.
+- [ ] Solo tetap satu pemain: URL/kode yang diketahui tidak memberi akses ke akun lain/guest;
+  mode tidak dapat diganti dengan command configure. Reload memulihkan accepted guesses.
 - [ ] Host login membuat room; akun/guest bergabung dari kode/link dengan nickname tervalidasi.
   Room salah/penuh/closed/expired dan retry create/join mempunyai hasil yang benar.
 - [ ] Perubahan konfigurasi mereset ready; Start serentak hanya membuat satu match. Host

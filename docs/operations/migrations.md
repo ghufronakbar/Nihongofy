@@ -33,6 +33,29 @@ contract wajib memiliki migration dan catatan ringkas di dokumen/PR perubahan. J
 
 ## Ledger
 
+### 18 Oktober 2026 - Kana Word Race solo
+
+- Status: required; diterapkan dan diuji pada PostgreSQL lokal disposable, belum production.
+- Migration: `prisma/migrations/20261018051003_kana_word_race_solo/migration.sql`.
+- Alasan: sesi solo membutuhkan roster satu pemain, sedangkan CHECK v1 mewajibkan 2-20.
+- Object: hanya `KanaRaceMatch_shape_check`; mode solo tepat satu roster, mode multiplayer
+  atau config legacy tanpa mode tetap 2-20. Semua syarat bentuk/versi/ronde/expiry dipertahankan.
+  Tidak ada perubahan Prisma model, tabel, kolom, index, FK, RLS, grant atau release kamus.
+- Data existing: tidak ada backfill/cleanup/reseed. JSON tanpa `config.mode` dibaca multiplayer.
+  Mode baru tersimpan dalam config JSONB dan tidak dapat diubah melalui configure.
+- Risiko operasi: DROP/ADD dalam satu statement memerlukan ACCESS EXCLUSIVE singkat;
+  `NOT VALID` menjaga row baru, lalu VALIDATE memeriksa row existing dengan lock
+  SHARE UPDATE EXCLUSIVE. Terapkan sebelum kode solo. Drain dan selesaikan pertandingan,
+  redeploy, lalu refresh tab: kode lama memakai config strict tanpa mode sehingga tidak
+  dapat membaca config yang ditulis kode baru, termasuk multiplayer baru.
+- Validasi: file kosong dibuat lewat Prisma `migrate dev --create-only` pada generator
+  disposable, SQL CHECK ditinjau manual dan diterapkan setelah seluruh 45 migration existing.
+  Checker lokal memeriksa legacy, roster solo/multiplayer, akses owner, concurrency/retry,
+  hasil, rematch dan privasi. Bukti proyek ada di [UAT](../verification/kana-word-race-uat.md).
+- Refresh: `npx prisma migrate deploy` melalui DIRECT_URL target, redeploy dan refresh tab.
+  Tidak perlu reseed, env baru atau flush cache Redis.
+- Owner: Engineering Owner untuk kode/bukti lokal; Release Owner untuk migration/deploy/UAT target.
+
 ### 18 Oktober 2026 - Kana Word Race v1
 
 - Status: required; diterapkan dan diuji pada PostgreSQL lokal disposable, belum production.

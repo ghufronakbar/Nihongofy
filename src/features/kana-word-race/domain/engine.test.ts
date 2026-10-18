@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { describe, expect, it } from "vitest";
 import release from "@/kana-race-data/dictionary.v1.json";
-import { DEFAULT_CONFIG, DictionarySchema } from "../contracts";
+import { ConfigSchema, CreateSchema, DEFAULT_CONFIG, DictionarySchema, MatchSchema } from "../contracts";
 import { advance, buildMatch, duration, evaluate, leaderboard, phase, playerStatus, submitGuess } from "./engine";
 import { composeRomaji, isGameKana, modifyKana, normalizeKana } from "./kana";
 
@@ -22,6 +22,27 @@ describe("kana input", () => {
 });
 
 describe("race rules", () => {
+  it("reads existing config and matches as multiplayer and defaults old create requests", () => {
+    const legacy = { length: 3, rounds: 3, pace: "normal", category: false };
+    expect(ConfigSchema.parse(legacy).mode).toBe("multiplayer");
+    expect(MatchSchema.parse({ ...make(), config: legacy }).config.mode).toBe("multiplayer");
+    expect(CreateSchema.parse({ nickname: "Player", requestId: randomUUID() }).mode).toBe("multiplayer");
+    expect(ConfigSchema.safeParse({ ...legacy, mode: "unknown" }).success).toBe(false);
+  });
+  it.each(["solved", "exhausted", "timeout"])("reveals a solo round when %s without waiting for another player", (ending) => {
+    const member = players[0]!;
+    const match = buildMatch({ ...DEFAULT_CONFIG, mode: "solo", length: 3 }, [member], dictionary, 1000000, () => 0);
+    const round = match.rounds[0]!;
+    expect(phase(match, round.startsAt).kind).toBe("PLAYING");
+    if (ending === "solved") submitGuess(match, known, member, { round: 0, requestId: randomUUID(), kana: round.target }, round.startsAt + 1000);
+    if (ending === "exhausted") dictionary.guesses.filter((word) => word.length === 3 && word !== round.target).slice(0, 6).forEach((kana) => submitGuess(match, known, member, { round: 0, requestId: randomUUID(), kana }, round.startsAt + 1000));
+    const now = ending === "timeout" ? round.deadline : round.startsAt + 1000;
+    advance(match, now);
+    expect(phase(match, now).kind).toBe("REVEAL");
+    expect(playerStatus(round, member, now)).toBe(ending === "solved" ? "SOLVED" : ending === "exhausted" ? "EXHAUSTED" : "TIMED_OUT");
+    expect(leaderboard(match, now)[0]!.score).toBe(ending === "solved" ? 1988 : 0);
+    expect(phase(match, now + 8000).kind).toBe("PLAYING");
+  });
   it("allocates repeated kana exact matches before displaced occurrences", () => {
     expect(evaluate("かたかな", "かかかか")).toEqual(["correct", "absent", "correct", "absent"]);
     expect(evaluate("あいうあ", "あああい")).toEqual(["correct", "present", "absent", "present"]);

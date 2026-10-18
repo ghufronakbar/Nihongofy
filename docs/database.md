@@ -433,3 +433,9 @@ Account export, anonimisasi dan cron terintegrasi walau flag game mati, sehingga
 harus diterapkan sebelum deploy aplikasi. Tidak ada perubahan jadwal/kartu flashcard atau
 backfill data existing. Bukti lokal dan gate production ada di
 [UAT](verification/kana-word-race-uat.md) dan [ledger](operations/migrations.md).
+
+Mode solo memakai config JSONB/membership/match yang sama. `config.mode` default multiplayer
+untuk JSON lama, immutable per sesi, dan dibekukan dalam match. Migration
+`20261018051003_kana_word_race_solo` mengganti CHECK roster menjadi tepat satu untuk solo,
+2-20 untuk multiplayer/legacy. Tidak ada tabel/kolom, backfill atau reseed baru. Akses tetap
+berdasarkan membership akun pemilik; admission solo menolak akun lain maupun guest.

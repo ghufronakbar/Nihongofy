@@ -9,7 +9,7 @@ Sumber kebenaran: [modul](../module/kana-word-race.md),
 
 ## 1. Keputusan Implementasi
 
-- Nama/slug: Kana Word Race / `kana-word-race`; room undangan 2-20 pemain.
+- Nama/slug: Kana Word Race / `kana-word-race`; latihan solo 1 akun atau room undangan 2-20 pemain.
 - Enam tebakan, panjang 3-7 tetap/acak, 3/5/10 ronde, timer 90-150s atau santai +60s.
 - Keyboard kana dan komposer romaji WanaKana 5.3.1, satu kotak per karakter normalisasi.
 - Kamus turunan bacaan `content.word`, whitelist target terpisah, release immutable SHA-256.
@@ -17,6 +17,9 @@ Sumber kebenaran: [modul](../module/kana-word-race.md),
   Model terpisah round/player/guess tidak diperlukan pada v1; batas state dan risiko biaya
   harus tetap diukur pada deployment target.
 - Target dan papan lawan tidak disiarkan. First solver menunggu lawan/deadline untuk reveal.
+  Dalam solo, solved/exhausted langsung reveal; Start tidak memerlukan ready/pemain kedua.
+- UI mengikuti neo brutalism Kotoba Clash: font Geist tebal, border 3px, bayangan keras,
+  panel putih/header kuning, kontrol dan status konsisten pada landing/lobby/papan/hasil.
 - Feature default-off; tidak menerapkan migration/seed atau mengaktifkan production otomatis.
 
 ## 2. Fase dan Hasil
@@ -51,6 +54,11 @@ Sumber kebenaran: [modul](../module/kana-word-race.md),
 - [x] Unit test input/domain/kamus, socket loopback/admission dan checker PostgreSQL nyata.
 - [x] Browser lokal landing 1280px dan papan 320px; pending, romaji, Backspace dan dakuten.
 - [x] Dokumen modul/plan/UAT, hub/index/overview, database, ledger dan runbook diperbarui.
+- [x] Perapian UI neo brutalism, lobby/pengaturan terpisah dan pemeriksaan mobile 320px.
+- [x] Pemilih solo/multiplayer, admission sesi solo hanya pemilik, mode immutable, Start tanpa
+  ready, skor/review pribadi, replay dan hasil historis memakai persistence existing.
+- [x] Migration CHECK menerima roster solo satu pemain, kompatibel JSON multiplayer lama;
+  regression unit/domain dan transaksi PostgreSQL lokal.
 
 ## 4. Gate Sebelum Aktivasi Production
 
@@ -59,6 +67,8 @@ Sumber kebenaran: [modul](../module/kana-word-race.md),
   constraint/trigger, cron, export dan penghapusan akun pada deployment flag-off.
 - [ ] UAT host/guest dengan dua perangkat dan browser; 3/5/10 ronde, semua panjang, konfigurasi,
   solved/exhausted/timeout, rematch dan hasil historis.
+- [ ] UAT solo pada hosting target: Start langsung, reload/reconnect, timer, hasil dan latihan lagi;
+  akun lain/guest ditolak meskipun mengetahui URL sesi.
 - [ ] IME native iOS/Android/Jepang, paste, zoom, screen reader, tema dan reduced motion.
 - [ ] Adapter hosting nyata, reconnect melewati rotasi 270s, lintas instance, lost publish,
   proses mati, outage Redis/DB, revoke/logout, guest expiry dan drain deployment lama.

@@ -22,7 +22,7 @@ export async function createRaceRoomAction(raw: unknown) {
     if (!principal || principal.kind !== "account") throw new RaceError("Masuk untuk membuat room.");
     const identity = await verifyRacePrincipal(principal);
     if (identity.kind !== "account") throw new RaceError("Masuk untuk membuat room.");
-    const data = await raceRepository.create(identity.userId, input.nickname, input.requestId);
+    const data = await raceRepository.create(identity.userId, input.nickname, input.requestId, input.mode);
     return { ok: true as const, data };
   } catch (error: unknown) { return { ok: false as const, ...raceFailure(error) }; }
 }

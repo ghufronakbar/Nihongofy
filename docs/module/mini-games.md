@@ -16,8 +16,8 @@ Bukti terbaru: [integrasi C-E](../verification/kotoba-clash-phase-c-e.md); bukti
 [laporan A](../verification/kotoba-clash-phase-a.md).
 
 **Game kedua (18 Oktober 2026):** [Kana Word Race](kana-word-race.md) tersedia di kode:
-room 2-20 pemain, tebak 3-7 kana, enam tebakan, deadline bersama, papan privat dan kamus
-terkurasi. Migration/seed dan engineering/visual lokal tersedia; default-off, belum deployment
+latihan solo atau room 2-20 pemain, tebak 3-7 kana, enam tebakan, timer, papan privat dan kamus
+terkurasi. UI neo brutalism mengikuti Kotoba Clash. Migration/seed dan engineering/visual lokal tersedia; default-off, belum deployment
 atau aktivasi production. Gate hosting, konten manusia, UAT perangkat dan budget ada di
 [plan](../plan/mini-games-kana-word-race.md) dan [UAT](../verification/kana-word-race-uat.md).
 

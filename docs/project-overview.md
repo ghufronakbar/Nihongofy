@@ -21,8 +21,8 @@ Rujukan: [hub](module/mini-games.md), [game](module/kotoba-clash.md),
 [plan](plan/mini-games-kotoba-clash.md), [UAT](verification/mini-games-kotoba-clash-uat.md), dan
 [laporan fase A](verification/kotoba-clash-phase-a.md), dan [fondasi B](verification/kotoba-clash-phase-b.md).
 
-**Implementasi 18 Oktober 2026:** [Kana Word Race](module/kana-word-race.md), game room
-tebak kana 3-7 karakter dengan enam tebakan, deadline bersama, keyboard virtual/romaji dan
+**Implementasi 18 Oktober 2026:** [Kana Word Race](module/kana-word-race.md), latihan solo
+atau game room 2-20 pemain, tebak kana 3-7 karakter dengan enam tebakan, timer, keyboard virtual/romaji dan
 papan privat. Kamus turunan flashcard memuat 5.623 tebakan/94 target dalam release immutable.
 Migration/seed, lifecycle akun, dan pengujian PostgreSQL/WebSocket/browser lokal tersedia.
 Default-off; belum ada migration/deployment/aktivasi production untuk game ini.

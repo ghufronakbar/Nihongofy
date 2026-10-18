@@ -3,7 +3,7 @@ import { randomInt } from "node:crypto";
 import { Prisma, type PrismaClient, type KanaRaceMember } from "@prisma/client";
 import { unstable_cache } from "next/cache";
 import { CACHE_KEYS } from "@/constants/cache-key";
-import { ConfigSchema, DEFAULT_CONFIG, DictionarySchema, MatchSchema, SnapshotSchema, type RaceCommand, type RaceConfig, type RaceMatch, type RaceSnapshot } from "../contracts";
+import { ConfigSchema, DEFAULT_CONFIG, DictionarySchema, MatchSchema, SnapshotSchema, type RaceCommand, type RaceConfig, type RaceMatch, type RaceMode, type RaceSnapshot } from "../contracts";
 import { advance, buildMatch, leaderboard, phase, playerStatus, RaceError, RETENTION_MS, stock, submitGuess } from "../domain/engine";
 
 export type RaceIdentity = { kind: "account"; userId: number } | { kind: "guest"; hash: string; expiresAt: number };
@@ -35,15 +35,16 @@ export class RaceRepository {
       return DictionarySchema.parse(row.payload);
     }, [...CACHE_KEYS.kanaRaceDictionary, id], { revalidate: false })();
   }
-  async create(userId: number, nickname: string, requestId: string) {
+  async create(userId: number, nickname: string, requestId: string, mode: RaceMode = "multiplayer") {
     return this.db.$transaction(async (tx) => {
       await tx.$queryRaw`SELECT id FROM "User" WHERE id = ${userId} FOR UPDATE`;
       const user = await tx.user.findUnique({ where: { id: userId }, select: { anonymizedAt: true } });
       if (!user || user.anonymizedAt) throw new RaceError("Masuk untuk membuat room.", true);
-      const existing = await tx.kanaRaceRoom.findUnique({ where: { id: requestId }, select: { code: true, hostId: true, closedAt: true, expiresAt: true } });
+      const existing = await tx.kanaRaceRoom.findUnique({ where: { id: requestId }, select: { code: true, hostId: true, closedAt: true, expiresAt: true, config: true } });
       const now = await databaseNow(tx);
       if (existing) {
         if (existing.hostId !== userId || existing.closedAt || existing.expiresAt.getTime() <= now) throw new RaceError("Room permintaan ini sudah ditutup. Buat room baru.");
+        if (ConfigSchema.parse(existing.config).mode !== mode) throw new RaceError("Mode permintaan berbeda. Mulai sesi baru.");
         return { code: existing.code };
       }
       const dictionary = await tx.kanaRaceDictionary.findFirst({ select: { id: true } });
@@ -52,7 +53,7 @@ export class RaceRepository {
       for (const row of old) await tx.$queryRaw`SELECT id FROM "KanaRaceRoom" WHERE id = ${row.id}::uuid FOR UPDATE`;
       await tx.kanaRaceRoom.updateMany({ where: { hostId: userId, closedAt: null }, data: { closedAt: new Date(now) } });
       const room = await tx.kanaRaceRoom.create({ data: {
-        id: requestId, code: roomCode(), hostId: userId, config: DEFAULT_CONFIG,
+        id: requestId, code: roomCode(), hostId: userId, config: { ...DEFAULT_CONFIG, mode },
         expiresAt: new Date(now + RETENTION_MS), idleExpiresAt: new Date(now + IDLE_MS),
         members: { create: { userId, nickname, nicknameKey: nickname.toLowerCase() } },
       }, select: { code: true } });
@@ -74,6 +75,7 @@ export class RaceRepository {
       }
       const existing = room.members.find((member) => identity.kind === "account" ? member.userId === identity.userId : member.guestHash === identity.hash);
       if (existing) { authorize(existing, identity, now); return { roomId: room.id, code }; }
+      if (ConfigSchema.parse(room.config).mode === "solo") throw new RaceError("Sesi solo hanya dapat diakses pemiliknya.", true);
       if (identity.kind === "guest" && identity.expiresAt <= now) throw new RaceError("Akses guest kedaluwarsa.", true);
       if (room.currentMatchId) throw new RaceError("Pertandingan sudah dimulai. Gabung saat host kembali ke lobby.");
       if (room.members.filter((member) => !member.anonymizedAt && (!member.guestExpiresAt || member.guestExpiresAt.getTime() > now)).length >= 20) throw new RaceError("Room sudah penuh.");
@@ -118,6 +120,7 @@ export class RaceRepository {
         if (room.currentMatchId) throw new RaceError("Kembali ke lobby terlebih dahulu.");
         if (command.revision !== room.revision) throw new RaceError("Pengaturan berubah. Periksa lobby kembali.");
         if (command.type === "configure") {
+          if (command.config.mode !== config.mode) throw new RaceError("Mode sesi tidak dapat diubah. Mulai sesi baru untuk mengganti mode.");
           config = command.config;
           await tx.kanaRaceMember.updateMany({ where: { roomId: room.id }, data: { readyRevision: null } });
           await tx.kanaRaceRoom.update({ where: { id: room.id }, data: { config, revision: { increment: 1 }, idleExpiresAt: new Date(now + IDLE_MS) } });
@@ -134,7 +137,9 @@ export class RaceRepository {
         if (!room.currentMatchId) {
           if (command.revision !== room.revision) throw new RaceError("Pengaturan berubah.");
           const roster = room.members.filter((member) => !member.anonymizedAt && (!member.guestExpiresAt || member.guestExpiresAt.getTime() > now));
-          if (roster.length < 2 || roster.length > 20 || roster.some((member) => member.readyRevision !== room.revision)) throw new RaceError("Butuh 2-20 pemain dan semua harus siap.");
+          if (config.mode === "solo") {
+            if (roster.length !== 1 || roster[0]!.id !== viewer.id) throw new RaceError("Sesi solo membutuhkan satu pemain pemilik sesi.");
+          } else if (roster.length < 2 || roster.length > 20 || roster.some((member) => member.readyRevision !== room.revision)) throw new RaceError("Butuh 2-20 pemain dan semua harus siap.");
           match = buildMatch(config, roster.map((member) => member.id), dictionary, now, randomInt);
           saved = await tx.kanaRaceMatch.create({ data: { id: command.requestId, roomId: room.id, dictionaryId, state: json(match), expiresAt: new Date(now + RETENTION_MS) } });
           await tx.kanaRaceRoom.update({ where: { id: room.id }, data: { currentMatchId: saved.id, expiresAt: new Date(now + RETENTION_MS), idleExpiresAt: new Date(now + RETENTION_MS) } });
