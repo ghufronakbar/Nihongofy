@@ -1,3 +1,4 @@
+import { DictionaryBoundary } from "@/features/dictionary/components/dictionary-boundary";
 import Link from "next/link";
 import { PageContainer } from "@/components/marketing/page-container";
 import { ClashRound } from "@/features/kotoba-clash/components/round";
@@ -20,6 +21,8 @@ export default async function ClashResultsPage({ params }: { params: Promise<{ c
     <div className="grid items-start gap-7 lg:grid-cols-[minmax(0,1fr)_23rem]"><ClashFinish match={match} members={state.members} solo={solo} /><ClashLeaderboard match={match} members={state.members} viewerId={state.viewer.memberId} solo={solo} /></div>
     <section className="clash-panel p-5"><h2 className="font-black">Catatan pertandingan</h2><ul className="mt-3 grid gap-3 sm:grid-cols-2">{match.leaderboard.map((player) => <li key={player.playerId} className="text-sm leading-6"><strong>{player.nickname}</strong><p>{player.correctCount} benar / {player.wrongCount} salah / {player.skippedCount} kosong</p></li>)}</ul></section>
     <h2 className="text-2xl font-black">Review soal</h2>
+    <DictionaryBoundary contextKey={`clash-results:${matchId}`} scope={false}>
     {review.map(({ round, ownChoice }) => <ClashRound key={round.id} match={{ ...match, round, phase: { type: "REVEAL", roundId: round.id, position: round.position, endsAt: round.revealEndsAt }, ownAnswer: ownChoice === null ? null : { choice: ownChoice, acceptedAt: 0 } }} now={state.serverNow} connected={false} pending={false} review />)}
+    </DictionaryBoundary>
   </PageContainer>;
 }

@@ -1,6 +1,6 @@
 # Riset popup kamus dari seleksi teks
 
-Tanggal riset: 18 Oktober 2026. Status: sumber JMdict English disetujui pengguna; fitur belum diimplementasikan. Cakupan halaman dan perilaku rilis mengikuti [rencana implementasi](../plan/dictionary-popup.md).
+Tanggal riset: 18 Oktober 2026. Status terbaru: sumber JMdict English penuh telah diimplementasikan dengan indeks internal, default-off. Cakupan mengikuti [rencana](../plan/dictionary-popup.md); kondisi kode ada pada [modul](../module/dictionary.md), [UAT/evidence](../verification/dictionary-popup-uat.md), dan [runbook](../operations/dictionary.md). Temuan endpoint di bawah adalah catatan riset, bukan dependensi runtime fitur.
 
 Tujuan: pengguna memilih kata Jepang pada pembahasan, mode baca, atau materi yang jawabannya sudah dibuka, lalu melihat kamus tanpa meninggalkan halaman.
 

@@ -14,6 +14,7 @@ import { ReportButton } from "@/features/report/components/report-button";
 import { JsonLd } from "@/components/seo/json-ld";
 import { articleJsonLd, breadcrumbJsonLd } from "@/lib/json-ld";
 import { pageMetadata, privateMetadata } from "@/lib/seo";
+import { DictionaryBoundary } from "@/features/dictionary/components/dictionary-boundary";
 
 export async function generateMetadata({
   params,
@@ -163,7 +164,9 @@ export default async function ArticleDetailPage({
           <PageContainer className="grid gap-10 lg:grid-cols-[minmax(0,46rem)_17rem] lg:justify-center">
             <div className="neo-surface bg-white p-6 sm:p-9 md:p-12">
               {article.body ? (
-                <ArticleBody blocks={article.body} />
+                <DictionaryBoundary contextKey={`article:${article.slug}`}>
+                  <ArticleBody blocks={article.body} />
+                </DictionaryBoundary>
               ) : (
                 <div className="border-[3px] border-neo-ink bg-neo-yellow p-6">
                   <h2 className="text-2xl">Isi artikel sedang diperbaiki</h2>

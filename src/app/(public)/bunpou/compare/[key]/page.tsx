@@ -8,6 +8,7 @@ import { getBunpouComparisonDetail } from "@/features/bunpou/queries";
 import { BunpouKeySchema } from "@/features/bunpou/schemas";
 import { breadcrumbJsonLd, learningResourceJsonLd } from "@/lib/json-ld";
 import { pageMetadata, privateMetadata } from "@/lib/seo";
+import { DictionaryBoundary } from "@/features/dictionary/components/dictionary-boundary";
 
 type Props = { params: Promise<{ key: string }> };
 
@@ -60,7 +61,9 @@ export default async function BunpouComparisonPage({ params }: Props) {
           ]),
         ]}
       />
-      <BunpouComparisonView detail={detail} reportEnabled={FEATURES.report} />
+      <DictionaryBoundary contextKey={`bunpou-compare:${detail.key}`}>
+        <BunpouComparisonView detail={detail} reportEnabled={FEATURES.report} />
+      </DictionaryBoundary>
     </div>
   );
 }

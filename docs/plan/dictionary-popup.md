@@ -1,7 +1,8 @@
 # Rencana Integrasi Kamus JMdict
 
 Diperbarui: **18 Oktober 2026 (Asia/Jakarta)**.
-Status: **sumber JMdict disetujui pengguna; rencana fitur ditulis, implementasi belum dimulai**.
+Status: **implementasi tahap 1–3 tersedia di kode; default-off, UAT perangkat nyata dan budget hosting belum selesai**.
+Kondisi aktual: [modul](../module/dictionary.md), [UAT/evidence](../verification/dictionary-popup-uat.md), dan [runbook update](../operations/dictionary.md).
 Rujukan: [hasil riset dan uji sumber](../research/dictionary-popup.md),
 [aturan proyek](../project-rules.md), dan [renderer Jepang](../module/japanese-content-rendering.md).
 
@@ -151,12 +152,12 @@ Satu koordinator client pada subtree belajar mengatur popup aktif, termasuk saat
 
 ## 7. Arsitektur dan Pengelolaan Data
 
-Modul baru direncanakan di `src/features/dictionary/`: kontrak hasil, schema zod, normalisasi/deinflection, reader indeks server-only, Server Action lookup, pembungkus seleksi, popup/drawer, serta preference browser. Nama file final mengikuti kebutuhan implementasi; daftar ini belum merupakan file kode yang sudah dibuat.
+Modul `src/features/dictionary/` kini memuat kontrak hasil, schema zod, normalisasi/deinflection, reader indeks server-only, Server Action lookup, region seleksi, provider popup/drawer, serta preference browser. Implementasi dan batas final tercatat pada dokumen modul.
 
 - **`DictionaryScope`:** pembungkus client yang menerima konten sebagai children, identitas konteks, dan `enabled`. Pola ini mempertahankan komposisi Server Component seperti `FuriganaScope`; tidak perlu memindahkan seluruh halaman ke client.
 - **Pemanggilan server:** lookup berupa Server Action sesuai aturan proyek. Input hanya teks pencarian tervalidasi, bukan ID soal untuk membaca kunci, isi halaman penuh, atau catatan pribadi lengkap. Hasil berupa data kamus umum yang terbatas ukurannya.
 - **Data awal:** unduh rilis tertentu, validasi schema/lisensi, catat tanggal sumber, versi konversi, jumlah entri, dan SHA-256. Impor diproses di luar request pengguna dan menghasilkan artefak indeks read-only.
-- **Penyimpanan awal:** evaluasi indeks statis yang dibagi per bucket kata dan dipaketkan pada server. Bila ukuran bundle/file tracing/RAM tidak memenuhi hosting target, gunakan shard versi sama pada object storage existing. Tetapkan hasil evaluasi sebelum integrasi halaman, tanpa menambah layanan API kamus. MVP tidak memerlukan tabel personal atau migration database aplikasi.
+- **Penyimpanan awal:** 512 shard gzip dipaketkan pada server (17.209.096 byte) dengan manifest versi tetap; pembacaan lazy dan hash tervalidasi. Pengukuran lokal tersedia; paket function/cold start/RAM target tetap gate aktivasi. Bila budget target gagal, evaluasi shard versi sama pada object storage existing. Tidak ada tabel personal atau migration database aplikasi.
 - **Pembacaan runtime:** muat hanya bagian indeks yang dibutuhkan; deduplikasi pembacaan bersamaan dan batasi cache memori. Jangan mem-parse seluruh arsip pada setiap request atau memasukkan seluruh kamus ke bundle/RSC halaman.
 - **Cache:** client menyimpan hasil terbaru dengan batas jumlah/ukuran. Server memakai cache proyek dengan key/tag terpusat di `src/constants/cache-key.ts`; identitas cache menyertakan versi indeks, bahasa, dan kueri normalisasi. Hasil kosong boleh dicache; kegagalan infrastruktur tidak diperlakukan sebagai hasil kosong permanen.
 - **Proteksi kapasitas:** batas panjang, jumlah kandidat deinflection, jumlah entri, response size, dan request bersamaan. Batas kerja harus berlaku di server meskipun client mengirim input langsung. Hindari satu operasi Redis per huruf/gerakan seleksi; ukur dampak limiter yang dipilih pada kuota hosting existing.
@@ -164,7 +165,7 @@ Modul baru direncanakan di `src/features/dictionary/`: kontrak hasil, schema zod
 - **Privasi:** tidak menyimpan histori lookup per akun secara default. Catat metrik agregat latency, cache hit, kegagalan, dan versi data tanpa teks seleksi atau isi catatan pengguna. Lookup runtime memakai indeks sendiri.
 - **UI existing:** gunakan Popover/Drawer Base UI yang sudah ada. Audit virtual anchor/range positioning, portal di dalam sheet, dan focus handling sebelum memilih adapter tambahan. Ikuti token tema, border, tipografi, dan gaya komponen aplikasi.
 
-Jika deinflection membutuhkan pustaka baru, audit lisensi, ukuran, dukungan bentuk kata, serta kompatibilitas runtime terlebih dahulu. `kamiya-codec` yang ditemukan dalam riset memerlukan lemma yang sudah diketahui, sehingga tidak langsung dipilih sebagai mesin penemuan lemma. Hasil evaluasi mesin dicatat pada fase A.
+Deinflection memakai aturan reverse-conjugation asli aplikasi dengan batas kandidat/kedalaman dan validasi POS JMdict. Tidak ada dependency baru. `kamiya-codec` tidak dipilih karena memerlukan lemma yang sudah diketahui. Contoh konjugasi, ambiguitas, dan sense restriction diuji terhadap indeks English penuh; mesin ini bukan parser kalimat.
 
 ## 8. Lisensi, Pembaruan, dan Biaya
 
@@ -190,12 +191,12 @@ Tahap 1 dapat dirilis lebih dahulu setelah fase A–C dan pemeriksaan rilisnya l
 
 ## 10. Acceptance Checklist
 
-Semua item implementasi masih terbuka. Pemeriksaan memakai tooling proyek existing dan UAT; rencana ini tidak menambahkan framework pengujian baru.
+Checkbox hanya menandai kriteria yang seluruh cakupannya sudah diperiksa. Item luas yang baru lulus sebagian tetap terbuka; hasil per skenario dan release gate ada pada dokumen UAT. Pemeriksaan memakai Vitest existing dan UAT, tanpa framework baru.
 
-- [ ] Lookup `勉強`, kana-only seperti `ありがとう`, kata dengan lebih dari satu bacaan seperti `生`, dan input yang tidak ada di kamus.
-- [ ] `食べました → 食べる`, `行かなかった → 行く`, `していました → する`, `来なかった → 来る`, serta kata sifat seperti `高くなかった → 高い`.
-- [ ] Bentuk pasif/potensial/kausatif yang didukung diuji dengan lebih dari satu kandidat valid; kandidat dan label tidak menyesatkan.
-- [ ] Sense yang dibatasi ke ejaan/bacaan tertentu tidak muncul pada pasangan yang salah; label penggunaan dipertahankan.
+- [x] Lookup `勉強`, kana-only seperti `ありがとう`, kata dengan lebih dari satu bacaan seperti `生`, dan input yang tidak ada di kamus.
+- [x] `食べました → 食べる`, `行かなかった → 行く`, `していました → する`, `来なかった → 来る`, serta kata sifat seperti `高くなかった → 高い`.
+- [x] Bentuk pasif/potensial/kausatif yang didukung diuji dengan lebih dari satu kandidat valid; kandidat dan label tidak menyesatkan.
+- [x] Sense yang dibatasi ke ejaan/bacaan tertentu tidak muncul pada pasangan yang salah; label penggunaan dipertahankan.
 - [ ] Ruby terlihat/hidden/invisible, underline, sorotan, kanji-kana lintas node, dan line wrap menghasilkan kueri teks dasar yang benar.
 - [ ] Seleksi lintas sel/paragraf/soal ditolak; input, composer, popup sendiri, seleksi kosong/Latin/panjang tidak memicu request yang tidak perlu.
 - [ ] Desktop drag/double-click, seleksi keyboard, Escape, klik luar, Copy, retry, dan preferensi aktif/nonaktif bekerja.
@@ -208,10 +209,10 @@ Semua item implementasi masih terbuka. Pemeriksaan memakai tooling proyek existi
 - [ ] Sheet diskusi dan popup kamus memiliki layering serta urutan Escape/fokus yang benar; textarea edit tidak memicu lookup.
 - [ ] Guest dan login mengikuti akses halaman existing; kamus tidak mengambil kunci/feedback atau mengubah payload exam/practice yang belum diizinkan.
 - [ ] Hasil kosong, indeks hilang/rusak, timeout, pembatasan kapasitas, retry, dan clipboard ditolak mendapat UI yang sesuai.
-- [ ] Flag false mematikan permukaan dan action; mematikan modul induk tetap menyembunyikan/melindungi halamannya seperti sebelumnya.
-- [ ] Import/update menghasilkan versi konsisten, atribusi tersedia, cache berubah mengikuti versi, dan versi valid lama tetap dipakai jika pembaruan gagal.
+- [ ] Flag false mematikan permukaan dan action; mematikan modul induk tetap menyembunyikan/melindungi halamannya seperti sebelumnya. Flag kamus lulus unit/smoke produksi lokal; matriks seluruh modul induk masih UAT.
+- [x] Import/update menghasilkan versi konsisten, atribusi tersedia, cache berubah mengikuti versi, dan versi valid lama tetap dipakai jika pembaruan gagal.
 - [ ] Ukuran artefak, RAM/cold start, p50/p95, serta biaya request/cache di hosting target dicatat tanpa data lookup personal.
-- [ ] `npm run lint`, `npm run typecheck`, dan `npm run build` lulus untuk perubahan implementasi; pemeriksaan existing yang relevan termasuk guard kunci jawaban tetap lulus.
-- [ ] Dokumen modul/riset dan checklist UAT diperbarui dengan kondisi nyata; UAT manual yang belum dilakukan tidak ditandai lulus.
+- [x] `npm run lint`, `npm run typecheck`, dan `npm run build` lulus untuk perubahan implementasi; pemeriksaan existing yang relevan termasuk guard kunci jawaban tetap lulus.
+- [x] Dokumen modul/riset dan checklist UAT diperbarui dengan kondisi nyata; UAT manual yang belum dilakukan tidak ditandai lulus.
 
-Perubahan pada permintaan ini hanya dokumen rencana dan tautan roadmap. Belum ada dependency, import dataset produksi, Server Action, komponen, migration, deployment, atau aktivasi fitur yang dilakukan.
+Implementasi kode dan artefak JMdict penuh sudah tersedia beserta importer/checker offline. Fase A–E telah diintegrasikan, tetapi kriteria budget target dan UAT menyeluruh belum otomatis lulus. Fase F tetap terbuka untuk perangkat nyata, hosting target, dan aktivasi. Tidak ada migration, perubahan data aplikasi, dependency baru, deployment, atau aktivasi production yang dilakukan.

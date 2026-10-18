@@ -28,6 +28,7 @@ import { discussionPageHref, type CommentTarget } from "../target";
 import { CommentImageUploader } from "./comment-image-uploader";
 import { DiscussionThread } from "./discussion-thread";
 import { PostingSuspendedNotice } from "./posting-suspended-notice";
+import { DictionaryScope, useDismissDictionary } from "@/features/dictionary/components/dictionary-scope";
 
 const COPY: Record<
   CommentTarget["type"],
@@ -150,6 +151,7 @@ export function DiscussionSheet({
 }) {
   const copy = COPY[target.type];
   const [open, setOpen] = useState(false);
+  const dismissDictionary = useDismissDictionary();
   const [thread, setThread] = useState<DiscussionThreadData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -165,6 +167,7 @@ export function DiscussionSheet({
   }, [target]);
 
   function handleOpenChange(next: boolean) {
+    dismissDictionary?.();
     setOpen(next);
     onOpenChange?.(next);
     if (next && thread === null) void load();
@@ -206,6 +209,7 @@ export function DiscussionSheet({
         </SheetHeader>
 
         <div className="flex-1 overflow-y-auto px-4 pb-4">
+          <DictionaryScope enabled={open && target.type !== "post"} contextKey={discussionPageHref(target)} showControl={false}>
           {isLoading && thread === null ? (
             <div className="flex justify-center py-8">
               <Spinner />
@@ -220,6 +224,7 @@ export function DiscussionSheet({
               emptyText={copy.empty}
             />
           )}
+          </DictionaryScope>
         </div>
 
         <div className="border-t px-4 py-3">

@@ -16,6 +16,7 @@ import { FEATURES } from "@/constants";
 import { mondaiTypeFullLabel } from "@/constants/jlpt";
 import type { Metadata } from "next";
 import { privateMetadata } from "@/lib/seo";
+import { DictionaryBoundary } from "@/features/dictionary/components/dictionary-boundary";
 
 type Props = { params: Promise<{ questionId: string }> };
 
@@ -83,6 +84,7 @@ export default async function QuestionDiscussionPage({ params }: Props) {
         </div>
       </div>
 
+      <DictionaryBoundary contextKey={`question-discussion:${question.id}`} className="space-y-6">
       <DiscussionQuestionCard question={question} />
 
       <div className="neo-surface bg-white p-6 border-[3px] border-neo-ink shadow-neo flex flex-col gap-4">
@@ -96,6 +98,7 @@ export default async function QuestionDiscussionPage({ params }: Props) {
           reportEnabled={FEATURES.report}
         />
       </div>
+      </DictionaryBoundary>
     </div>
   );
 }

@@ -19,6 +19,7 @@ import { DeckWordActions } from "@/features/flashcard/components/deck-word-actio
 import { FlashcardDeckSlugSchema } from "@/features/flashcard/schemas";
 import type { DeckWordStatus } from "@/features/flashcard/types";
 import { privateMetadata } from "@/lib/seo";
+import { DictionaryBoundary } from "@/features/dictionary/components/dictionary-boundary";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -203,6 +204,7 @@ export default async function DeckPage({ params, searchParams }: Props) {
             Tidak ada kata yang cocok.
           </p>
         ) : (
+          <DictionaryBoundary contextKey={`deck-words:${slug}:${query}:${status}:${page}`}>
           <ul className="mt-5 divide-y-2 divide-neo-ink/15 rounded-lg border-[3px] border-neo-ink bg-card">
             {list.words.map((word) => {
               const badge = STATUS_BADGES[word.status];
@@ -258,6 +260,7 @@ export default async function DeckPage({ params, searchParams }: Props) {
               );
             })}
           </ul>
+          </DictionaryBoundary>
         )}
 
         {list.pageCount > 1 ? (

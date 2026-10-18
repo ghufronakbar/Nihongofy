@@ -4,6 +4,7 @@ import { useState } from "react";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useDismissDictionary } from "@/features/dictionary/components/dictionary-scope";
 
 // Wraps furigana-bearing content (JapaneseText/JapanesePassage render <ruby><rt>)
 // and toggles the <rt> readings via a CSS descendant selector — no need to thread
@@ -13,6 +14,7 @@ import { cn } from "@/lib/utils";
 // server (withoutFurigana), so this toggle only matters in review/read mode.
 export function FuriganaScope({ children }: { children: React.ReactNode }) {
   const [visible, setVisible] = useState(true);
+  const dismissDictionary = useDismissDictionary();
 
   return (
     <div className="flex flex-col gap-3">
@@ -21,7 +23,7 @@ export function FuriganaScope({ children }: { children: React.ReactNode }) {
           type="button"
           variant="outline"
           size="sm"
-          onClick={() => setVisible((v) => !v)}
+          onClick={() => { dismissDictionary?.(); setVisible((v) => !v); }}
         >
           {visible ? (
             <EyeOffIcon className="size-4" />

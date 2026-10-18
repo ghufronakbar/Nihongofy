@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { JapanesePassage } from "@/components/japanese-passage";
 import { JapaneseText } from "@/components/japanese-text";
+import { DictionaryScope } from "@/features/dictionary/components/dictionary-scope";
 import { ImageWithLightbox } from "@/components/image-with-lightbox";
 import { JLPT_SECTION_LABELS, mondaiTypeFullLabel } from "@/constants/jlpt";
 import { QuestionBunpouPoints } from "@/components/question-bunpou-points";
@@ -281,6 +282,7 @@ export function PracticeRunner({ practiceSession, reportEnabled }: PracticeRunne
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_15rem]">
         <section className="space-y-5">
+          <DictionaryScope enabled={isAnswered} contextKey={`question:${currentQuestion.id}:${currentIndex}`} className="space-y-5">
           {currentQuestion.testPackageItem.instruction && (
             <div className="border-[3px] border-neo-ink bg-neo-yellow p-4 text-sm font-bold text-black shadow-neo-sm">
               <JapaneseText text={currentQuestion.testPackageItem.instruction} />
@@ -363,17 +365,17 @@ export function PracticeRunner({ practiceSession, reportEnabled }: PracticeRunne
 
           <div className="grid gap-3">
             {currentQuestion.questionChoices.map((choice) => {
+              const Choice = isAnswered ? "div" : "button";
               const isSelected = activeSelection === choice.codeAnswer;
               const isCorrectChoice = isAnswered && currentQuestion.feedback?.correctAnswer === choice.codeAnswer;
               const isWrongSelection = isAnswered && isSelected && !isCorrectChoice;
 
               return (
-                <button
+                <Choice
                   key={choice.id}
-                  type="button"
-                  disabled={isAnswered || isPending}
-                  aria-pressed={isSelected}
+                  {...(!isAnswered ? { type: "button" as const, disabled: isPending, "aria-pressed": isSelected } : {})}
                   onClick={() => {
+                    if (isAnswered) return;
                     setSelectedAnswer(choice.codeAnswer);
                     setError(null);
                   }}
@@ -384,6 +386,7 @@ export function PracticeRunner({ practiceSession, reportEnabled }: PracticeRunne
                     isCorrectChoice && "bg-neo-green text-black shadow-none",
                     isWrongSelection && "bg-neo-coral text-black shadow-none",
                     isAnswered && !isCorrectChoice && !isWrongSelection && "opacity-55",
+                    isAnswered && "select-text",
                   )}
                 >
                   <span className="flex size-8 shrink-0 items-center justify-center border-[3px] border-neo-ink bg-white text-sm font-black text-black">
@@ -404,7 +407,7 @@ export function PracticeRunner({ practiceSession, reportEnabled }: PracticeRunne
                   </span>
                   {isCorrectChoice && <Check className="mt-1 size-6 shrink-0" />}
                   {isWrongSelection && <X className="mt-1 size-6 shrink-0" />}
-                </button>
+                </Choice>
               );
             })}
           </div>
@@ -465,6 +468,7 @@ export function PracticeRunner({ practiceSession, reportEnabled }: PracticeRunne
             </div>
           )}
 
+          </DictionaryScope>
           <nav className="flex items-center justify-between gap-3" aria-label="Navigasi soal latihan">
             <button
               type="button"

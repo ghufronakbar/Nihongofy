@@ -23,6 +23,7 @@ import { DiscussionPageThreads } from "@/features/question-comment/components/di
 import { QuestionCommentForm } from "@/features/question-comment/components/question-comment-form";
 import { ReportButton } from "@/features/report/components/report-button";
 import { privateMetadata } from "@/lib/seo";
+import { DictionaryBoundary } from "@/features/dictionary/components/dictionary-boundary";
 
 type Props = { params: Promise<{ vocabId: string }> };
 
@@ -81,6 +82,7 @@ export default async function VocabDiscussionPage({ params }: Props) {
         ← Semua diskusi kosakata
       </Link>
 
+      <DictionaryBoundary contextKey={`vocab-discussion:${vocabId}`} className="space-y-6">
       <VocabCardView
         content={vocab.content}
         revealed
@@ -162,6 +164,7 @@ export default async function VocabDiscussionPage({ params }: Props) {
           ) : null}
         </div>
       </section>
+      </DictionaryBoundary>
     </main>
   );
 }

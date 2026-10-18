@@ -10,6 +10,7 @@ import {
   getTrySession,
 } from "@/features/flashcard/data";
 import { FlashcardReviewer } from "@/features/flashcard/components/flashcard-reviewer";
+import { DictionaryBoundary } from "@/features/dictionary/components/dictionary-boundary";
 import { createNewCardState } from "@/features/flashcard/lib/scheduler";
 import { EMPTY_STUDY_COUNTS } from "@/features/flashcard/lib/session-summary";
 import { FLASHCARD_DEFAULT_ROLLOVER_HOUR } from "@/features/flashcard/lib/scheduler/day";
@@ -92,6 +93,7 @@ export default async function TryDeckPage({ params }: Props) {
           supaya progresnya tersimpan dan dijadwalkan FSRS.
         </p>
       ) : null}
+      <DictionaryBoundary contextKey={`flashcard-try:${deck.slug}`} scope={false}>
       <FlashcardReviewer
         deckSlug={deck.slug}
         deckName={deck.name}
@@ -112,6 +114,7 @@ export default async function TryDeckPage({ params }: Props) {
         discussion={discussion}
         currentUserId={session?.userId ?? null}
       />
+      </DictionaryBoundary>
     </main>
   );
 }

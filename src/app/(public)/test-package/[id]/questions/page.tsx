@@ -20,6 +20,7 @@ import { QuestionExplanationBody } from "@/components/question-explanation";
 import { QuestionAudioTranscript } from "@/components/question-audio-transcript";
 import { JapanesePassage } from "@/components/japanese-passage";
 import { FuriganaScope } from "@/components/furigana-scope";
+import { DictionaryBoundary } from "@/features/dictionary/components/dictionary-boundary";
 import { mondaiTypeFullLabel } from "@/constants/jlpt";
 import { cn } from "@/lib/utils";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -181,6 +182,7 @@ export default async function TestPackageQuestionsPage({
         />
 
         <div className="min-w-0 flex-1 space-y-6">
+          <DictionaryBoundary contextKey={`read:${testPackage.id}:${selectedItem.id}`}>
           <FuriganaScope>
             <div className="neo-surface bg-white p-6 sm:p-8 border-[3px] border-neo-ink shadow-neo space-y-6">
               <div className="border-b-[3px] border-neo-ink pb-4">
@@ -376,6 +378,7 @@ export default async function TestPackageQuestionsPage({
               </div>
             </div>
           </FuriganaScope>
+          </DictionaryBoundary>
 
           <div className="flex items-center justify-between gap-3">
             {prevItem ? (

@@ -2,6 +2,7 @@
 // Never hardcode cache key/tag strings inside server actions — import from here.
 
 export const CACHE_TAGS = {
+  dictionary: "jmdict-dictionary",
   testPackageList: "test-package-list",
   testPackageDetail: (testPackageId: number) => `test-package-${testPackageId}`,
   testPackageQuestions: (testPackageId: number) => `test-package-questions-${testPackageId}`,
@@ -21,6 +22,8 @@ export const CACHE_TAGS = {
 } as const;
 
 export const CACHE_KEYS = {
+  dictionaryLookup: (version: string, query: string) => ["dictionary-lookup-v1", version, "eng", query],
+  dictionaryRateLimit: "dictionary-lookup-v1",
   kanaRaceDictionary: ["kana-word-race-v1", "dictionary"],
   kanaRaceGuest: (hash: string) => ["kana-word-race-v1", "guest", hash],
   kanaRaceRoomChannel: (roomId: string) => ["kana-word-race-v1", "room", roomId, "events"],

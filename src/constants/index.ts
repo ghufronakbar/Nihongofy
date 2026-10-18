@@ -86,6 +86,7 @@ const envSchema = z
     FEATURES_MINI_GAMES: disabledFeatureFlag,
     FEATURES_KOTOBA_CLASH: disabledFeatureFlag,
     FEATURES_KANA_WORD_RACE: disabledFeatureFlag,
+    FEATURES_DICTIONARY: disabledFeatureFlag,
     CONVERSATION_PROVIDER: z.enum(["mock", "openai"]).default("mock"),
     CONVERSATION_CHAT_MODEL: optionalEnvString,
     OPENAI_API_KEY: optionalEnvString,
@@ -226,6 +227,7 @@ export const GOOGLE_OAUTH_ENABLED = Boolean(
 // Satu-satunya sumber status modul. Komponen client menerima objek ini lewat
 // props (tipe `FeatureFlags`), bukan mengimpor nilainya langsung.
 export const FEATURES = {
+  dictionary: env.FEATURES_DICTIONARY,
   miniGames: env.FEATURES_MINI_GAMES,
   kotobaClash: env.FEATURES_KOTOBA_CLASH && env.FEATURES_MINI_GAMES,
   kanaWordRace: env.FEATURES_KANA_WORD_RACE && env.FEATURES_MINI_GAMES,

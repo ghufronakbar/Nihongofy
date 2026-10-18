@@ -1,0 +1,154 @@
+{
+  "checkedAt": "2026-10-18T10:04:54.906Z",
+  "runtime": "v20.19.6",
+  "platform": "darwin/arm64",
+  "version": "eng-3.6.2+20261012-f1-9a04fc1d0fac",
+  "sourceSha256": "9a04fc1d0facf87645f8ec7cdaa370647d4a8f59131f6e2a614bcd680f855b85",
+  "entryCount": 218898,
+  "termCount": 465832,
+  "shards": 512,
+  "compressedBytes": 17209096,
+  "uncompressedBytes": 100384580,
+  "manifestBytes": 81374,
+  "benchmark": {
+    "note": "Local Node filesystem+decompression+projection; excludes network, Redis and Next Data Cache. Cold series shares the bounded shard LRU; not a deployment cold start.",
+    "lookups": 13,
+    "durationMs": 1002,
+    "coldSeries": {
+      "p50Ms": 23.79,
+      "p95Ms": 241.75
+    },
+    "warmSeries": {
+      "p50Ms": 15.54,
+      "p95Ms": 178.05
+    },
+    "beforeMemory": {
+      "rss": 143114240,
+      "heapTotal": 99549184,
+      "heapUsed": 75863544,
+      "external": 3772050,
+      "arrayBuffers": 1025796
+    },
+    "afterMemory": {
+      "rss": 298352640,
+      "heapTotal": 227655680,
+      "heapUsed": 202367432,
+      "external": 9116834,
+      "arrayBuffers": 6370540
+    },
+    "reader": {
+      "diskReads": 141,
+      "cacheHits": 3,
+      "cacheBytes": 16758885,
+      "cachedShards": 23,
+      "pendingReads": 0
+    }
+  },
+  "cases": [
+    {
+      "query": "勉強",
+      "words": [
+        "勉強/べんきょう"
+      ],
+      "responseBytes": 1004
+    },
+    {
+      "query": "ありがとう",
+      "words": [
+        "ありがとう/ありがとう"
+      ],
+      "responseBytes": 482
+    },
+    {
+      "query": "生",
+      "words": [
+        "生/なま",
+        "生/き",
+        "生/うぶ",
+        "生/せい",
+        "生/しょう",
+        "生/いく",
+        "生/ふ",
+        "生/なまり"
+      ],
+      "responseBytes": 4887
+    },
+    {
+      "query": "明日",
+      "words": [
+        "明日/あした",
+        "明日/あす",
+        "明日/みょうにち"
+      ],
+      "responseBytes": 1236
+    },
+    {
+      "query": "食べました",
+      "words": [
+        "食べる/たべる"
+      ],
+      "responseBytes": 581
+    },
+    {
+      "query": "行かなかった",
+      "words": [
+        "行く/いく",
+        "行く/ゆく",
+        "行く/イク"
+      ],
+      "responseBytes": 7701
+    },
+    {
+      "query": "していました",
+      "words": [
+        "する/する"
+      ],
+      "responseBytes": 3584
+    },
+    {
+      "query": "来なかった",
+      "words": [
+        "来る/くる",
+        "来る/クる"
+      ],
+      "responseBytes": 2442
+    },
+    {
+      "query": "高くなかった",
+      "words": [
+        "高い/たかい",
+        "高い/たかーい",
+        "高い/たっけー",
+        "高い/たっかーい"
+      ],
+      "responseBytes": 3095
+    },
+    {
+      "query": "食べられた",
+      "words": [
+        "食べられる/たべられる",
+        "食べる/たべる"
+      ],
+      "responseBytes": 915
+    },
+    {
+      "query": "書けました",
+      "words": [
+        "書く/かく"
+      ],
+      "responseBytes": 597
+    },
+    {
+      "query": "話させられました",
+      "words": [
+        "話す/はなす"
+      ],
+      "responseBytes": 825
+    },
+    {
+      "query": "謎謎謎ほげほげ不存在",
+      "words": [],
+      "responseBytes": 160
+    }
+  ]
+}

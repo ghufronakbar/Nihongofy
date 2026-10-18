@@ -24,6 +24,10 @@ dipisahkan dari UAT produk Hobby dan acceptance user pada [laporan C-E](kotoba-c
 Redesign kompetisi 17 Oktober mempunyai [bukti lokal dan checklist UI](kotoba-clash-ui-ux.md);
 pengujian visual fixture tidak menggantikan flow pertandingan production.
 
+Kamus seleksi JMdict memakai [checklist khusus](dictionary-popup-uat.md) untuk seleksi/ruby,
+reveal, popup/drawer, keyboard, sheet, provenance/update dan budget hosting. Bukti Chromium
+lokal tidak menggantikan native selection Safari iOS/Chrome Android pada perangkat nyata.
+
 ## Pemeriksaan Umum
 
 - [ ] Loading, empty, error, retry, guest, dan authenticated state yang relevan memiliki hasil jelas.

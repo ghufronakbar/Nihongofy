@@ -16,6 +16,7 @@ import { getSession } from "@/lib/auth";
 import { BunpouKeySchema } from "@/features/bunpou/schemas";
 import { breadcrumbJsonLd, learningResourceJsonLd } from "@/lib/json-ld";
 import { pageMetadata, privateMetadata } from "@/lib/seo";
+import { DictionaryBoundary } from "@/features/dictionary/components/dictionary-boundary";
 
 type Props = { params: Promise<{ key: string }> };
 
@@ -93,7 +94,9 @@ export default async function BunpouPointPage({ params }: Props) {
           ]),
         ]}
       />
-      <BunpouPointView detail={detail} reportEnabled={FEATURES.report} community={community} />
+      <DictionaryBoundary contextKey={`bunpou:${point.key}`}>
+        <BunpouPointView detail={detail} reportEnabled={FEATURES.report} community={community} />
+      </DictionaryBoundary>
     </div>
   );
 }

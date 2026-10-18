@@ -33,6 +33,18 @@ contract wajib memiliki migration dan catatan ringkas di dokumen/PR perubahan. J
 
 ## Ledger
 
+### 18 Oktober 2026 - Kamus seleksi JMdict
+
+- Status: not required.
+- Migration: tidak ada.
+- Alasan: lookup memakai indeks gzip read-only, bukan tabel aplikasi.
+- Object terdampak: artefak baru `assets/dictionary`, tidak ada perubahan schema/constraint/index/policy.
+- Data existing: tidak ada seed, backfill, cleanup atau perubahan data aplikasi.
+- Risiko operasi: manifest dan seluruh shard harus satu versi/deployment; jangan hot-swap pada server hidup.
+- Validasi: checker integritas/restriction, rebuild reproducible dan failed-update preservation lulus; hasil quality gate dan UAT di [catatan verifikasi](../verification/dictionary-popup-uat.md).
+- Refresh: restart/redeploy dan refresh tab untuk perubahan flag/indeks; tidak perlu flush Redis global.
+- Owner: Engineering Owner untuk indeks/kode; Release Owner untuk budget, UAT dan aktivasi.
+
 ### 18 Oktober 2026 - Kana Word Race solo
 
 - Status: required; diterapkan dan diuji pada PostgreSQL lokal disposable, belum production.

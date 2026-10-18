@@ -25,6 +25,7 @@ Folder ini mendokumentasikan kondisi aplikasi berdasarkan kode, fixture, dan dat
 | [Profile](profile.md) | Selesai dengan gap account lifecycle | Edit akun, avatar, password, overview, dan SRS settings aktif. |
 | [Article](article.md) | Selesai, kini punya CMS admin | Listing, search, detail, SEO, save/favorite, dan view aktif; CRUD serta workflow draft/published/archived ada di `/admin/article`. Belum ada halaman koleksi tersimpan. |
 | [Question comments](question-comment.md) | Selesai, kini termasuk diskusi publik | Catatan pribadi, berbagi ke diskusi, balasan satu tingkat, permalink `/discussion/[commentId]`, dan moderasi admin aktif; laporan dari user kini ada lewat [modul report](report.md), sedangkan notifikasi dan rate limit posting belum ada. |
+| [Kamus seleksi JMdict](dictionary.md) | Implementasi tahap 1–3; default-off | Indeks English penuh, popup/drawer, deinflection dan gate reveal tersedia. [UAT](../verification/dictionary-popup-uat.md) perangkat nyata serta budget hosting belum selesai. |
 | [Japanese content rendering](japanese-content-rendering.md) | Fungsional dengan gap format | Furigana, underline, slot, tabel, dan multi-passage aktif; newline dan Markdown fixture belum selalu dirender dengan benar. |
 | [Shared study utilities](study.md) | Selesai sederhana | Saat ini hanya menyediakan TTS browser bersama untuk kana dan flashcard. |
 | [Conversation dan speaking](conversation-speaking.md) | Versi awal fungsional | Teks dan suara berjalan end-to-end dengan session tersimpan dan provider mock/OpenAI; quota belum ditegakkan, moderation dan retention belum ada. Rancangan: [conversation-speaking-design.md](conversation-speaking-design.md); aset karakter: [conversation-persona-assets.md](conversation-persona-assets.md). |
@@ -36,7 +37,7 @@ Folder ini mendokumentasikan kondisi aplikasi berdasarkan kode, fixture, dan dat
 ## Feature Flag
 
 Setiap modul dapat dimatikan lewat env `FEATURES_<NAMA>` bernilai `"true"`/`"false"`. Kosong atau
-tidak diisi berarti `true`, kecuali Mini Games/Kotoba Clash/Kana Word Race yang default `false`. Nilai dibaca sekali saat server start melalui objek `FEATURES` di
+tidak diisi berarti `true`, kecuali Mini Games/Kotoba Clash/Kana Word Race dan Kamus seleksi yang default `false`. Nilai dibaca sekali saat server start melalui objek `FEATURES` di
 `src/constants/index.ts`; ubah env lalu restart atau redeploy. `robots.txt` dan `sitemap.xml`
 di-prerender saat build, jadi keduanya baru berubah setelah redeploy.
 
@@ -44,6 +45,7 @@ di-prerender saat build, jadi keduanya baru berubah setelah redeploy.
 |---|---|---|
 | `FEATURES_MINI_GAMES` | [Mini Games](mini-games.md) | `/mini-games/*`; default false, menu/CTA/sitemap hilang |
 | `FEATURES_KOTOBA_CLASH` | [Kotoba Clash](kotoba-clash.md) | `/mini-games/kotoba-clash/*` dan endpoint socket; action ditolak, ikut mati bila hub mati |
+| `FEATURES_DICTIONARY` | [Kamus seleksi](dictionary.md) | Tidak ada route yang dimatikan; UI kamus hilang dan Server Action menolak lookup. Default false; modul belajar tetap mengikuti flag existing |
 | `FEATURES_KANA` | [Kana](kana.md#feature-flag) | `/kana/*` |
 | `FEATURES_FLASHCARD` | [Flashcard](flashcard.md#feature-flag) | `/flashcard/*`; laporan kartu baru ditolak, laporan lama tetap di `/admin/report` |
 | `FEATURES_BUNPOU` | [Bunpou](bunpou.md#feature-flag) | `/bunpou/*` |

@@ -5,6 +5,7 @@ import { JapaneseText } from "@/components/japanese-text";
 import { JapanesePassage } from "@/components/japanese-passage";
 import { MONDAI_TYPE_TRANSLATIONS } from "@/constants/jlpt";
 import { cn } from "@/lib/utils";
+import { DictionaryScope } from "@/features/dictionary/components/dictionary-scope";
 import type { ClashRoomSnapshot } from "../contracts";
 
 function QuestionImage({ src, alt }: { src: string | null; alt: string }) {
@@ -34,7 +35,8 @@ export function ClashRound({ match, now, connected, pending, answer, review = fa
   const urgent = !revealed && seconds <= 5;
   const disabled = review || !connected || !match.playing || pending || match.ownAnswer !== null || revealed || now >= round.endsAt;
   const correct = revealed && match.ownAnswer?.choice === round.correctChoice;
-  return <section key={round.id} className="clash-panel clash-round-enter overflow-hidden" aria-labelledby={`round-title-${round.id}`}>
+  return <DictionaryScope enabled={revealed && (connected || review)} contextKey={`round:${round.id}:${phase.type}:${connected}`}>
+  <section key={round.id} className="clash-panel clash-round-enter overflow-hidden" aria-labelledby={`round-title-${round.id}`}>
     <div className={cn("flex items-center justify-between gap-3 p-4 sm:p-5", revealed ? "bg-neo-green" : "bg-neo-yellow")}>
       <div className="min-w-0"><p className="clash-label">{review ? "Review" : revealed ? "Ronde terbuka" : "Arena live"} / Soal {round.position} dari {match.questionCount}</p><h2 id={`round-title-${round.id}`} className="mt-1.5 text-lg font-black sm:text-xl">{MONDAI_TYPE_TRANSLATIONS[round.mondaiType]}</h2></div>
       {!review && <div className="shrink-0 text-center"><p className="clash-timer-number" data-urgent={urgent} aria-live="off">{seconds}<span className="ml-0.5 text-sm">s</span></p><p className="mt-1.5 text-[10px] font-extrabold">{revealed ? "SELANJUTNYA" : "TERSISA"}</p></div>}
@@ -57,13 +59,14 @@ export function ClashRound({ match, now, connected, pending, answer, review = fa
       <QuestionImage src={round.content.image} alt="Gambar pendukung soal" />
       <div className="grid gap-4 pb-1 sm:grid-cols-2">
         {round.content.choices.map((choice) => {
+          const Choice = revealed ? "div" : "button";
           const chosen = match.ownAnswer?.choice === choice.code;
           const right = revealed && choice.code === round.correctChoice;
           const wrong = revealed && chosen && !right;
-          return <button key={choice.code} type="button" disabled={disabled} onClick={() => answer?.(choice.code)} aria-pressed={chosen} data-correct={right} data-wrong={wrong} className="clash-choice">
+          return <Choice key={choice.code} {...(!revealed ? { type: "button" as const, disabled, "aria-pressed": chosen, onClick: () => answer?.(choice.code) } : {})} data-correct={right} data-wrong={wrong} className={cn("clash-choice", revealed && "select-text")}>
             <span className="clash-choice-code">{choice.code}</span><span className="min-w-0 flex-1 font-japanese whitespace-pre-wrap leading-8"><JapaneseText text={choice.text} /><QuestionImage src={choice.image} alt={`Gambar pilihan ${choice.code}`} />{right && <span className="block text-xs font-extrabold">Jawaban benar</span>}{chosen && !revealed && <span className="block text-xs">Pilihanmu</span>}</span>
             {right ? <Check className="size-5 shrink-0" aria-hidden="true" /> : wrong ? <X className="size-5 shrink-0" aria-hidden="true" /> : chosen ? <LockKeyhole className="size-4 shrink-0" aria-hidden="true" /> : null}
-          </button>;
+          </Choice>;
         })}
       </div>
       {!review && <div className={cn("flex items-start gap-3 border-t-2 border-neo-ink pt-4 text-xs leading-6", match.ownAnswer && !revealed && "text-neo-ink")} role="status">
@@ -72,5 +75,6 @@ export function ClashRound({ match, now, connected, pending, answer, review = fa
       </div>}
       {revealed && <div className="clash-reveal-enter rounded border-2 border-neo-ink bg-neo-paper p-4 sm:p-5"><h3 className="flex items-center gap-2 font-black"><Zap className="size-4" />Bedah ronde</h3><p className="mt-3 whitespace-pre-wrap text-sm leading-8"><JapaneseText text={round.explanation?.trim() || "Pembahasan untuk soal ini belum tersedia."} /></p>{!review && <p className="mt-4 border-t border-neo-ink/20 pt-3 text-xs font-semibold">{round.position === match.questionCount ? "Garis finis di depan. Podium akhir muncul setelah pembahasan." : "Ambil napas. Ronde berikutnya dimulai otomatis."}</p>}</div>}
     </div>
-  </section>;
+  </section>
+  </DictionaryScope>;
 }

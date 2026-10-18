@@ -36,6 +36,8 @@ import { CardNotes } from "./card-notes";
 import { RATING_OPTIONS } from "./rating-options";
 import { SessionSummaryPanel } from "./session-summary-panel";
 import { VocabCardView } from "./vocab-card-view";
+import { DictionaryScope } from "@/features/dictionary/components/dictionary-scope";
+import { isDictionaryInteractionActive } from "@/features/dictionary/selection";
 
 type Props = {
   /** Deck pemilik kartu; setiap aksi kartu menyebutnya. */
@@ -425,13 +427,23 @@ export function FlashcardReviewer({
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.metaKey || event.ctrlKey || event.altKey) return;
+      const target = event.target as HTMLElement | null;
+      if (isDictionaryInteractionActive()) {
+        // Mouse selection leaves focus on the source or its last rating button.
+        // Block both reviewer shortcuts and native button activation/scroll,
+        // while controls in the dictionary and text editors keep their keys.
+        const allowsNativeKey = target instanceof Element && target.closest(
+          '[data-dictionary-popup], input, textarea, select, [contenteditable]:not([contenteditable="false"])',
+        );
+        if (!allowsNativeKey && [" ", "enter", "1", "2", "3", "4", "f"].includes(event.key.toLowerCase())) event.preventDefault();
+        return;
+      }
       // Tanpa dua penjaga ini, Space/Enter pada tombol atau checkbox di dalam
       // dialog laporan ikut menilai kartu di belakangnya (dan preventDefault-nya
       // membatalkan klik tombol itu). Status dialog dicek lebih dulu karena fokus
       // tidak selalu berada di dalam dialog, mis. saat tombol kirim di-disable
       // selama laporan dikirim.
       if (reportOpen.current || discussionOpen.current) return;
-      const target = event.target as HTMLElement | null;
       if (target && ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName)) return;
       if (target instanceof Element && target.closest('[role="dialog"], [role="alertdialog"]')) return;
       // Tombol di dalam catatan (Simpan, Edit, Bagikan) tidak boleh ikut
@@ -615,6 +627,7 @@ export function FlashcardReviewer({
         </p>
       ) : null}
 
+      <DictionaryScope enabled={revealed} contextKey={`vocab:${current.vocabId}:${state.turn}:${furiganaVisible}`} className="space-y-5">
       <VocabCardView
         content={current.content}
         revealed={revealed}
@@ -734,6 +747,7 @@ export function FlashcardReviewer({
           {pending ? <Loader2 className="size-4 animate-spin" aria-label="Menyimpan" /> : null}
         </div>
       ) : null}
+      </DictionaryScope>
     </div>
   );
 }

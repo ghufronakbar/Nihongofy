@@ -7,6 +7,7 @@ import { isPostingSuspended } from "@/features/question-comment/queries";
 import { FlashcardReviewer } from "@/features/flashcard/components/flashcard-reviewer";
 import { FlashcardDeckSlugSchema } from "@/features/flashcard/schemas";
 import { privateMetadata } from "@/lib/seo";
+import { DictionaryBoundary } from "@/features/dictionary/components/dictionary-boundary";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -35,6 +36,7 @@ export default async function StudyPage({ params }: Props) {
 
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-10">
+      <DictionaryBoundary contextKey={`flashcard-study:${slug}`} scope={false}>
       <FlashcardReviewer
         // Kunci baru setiap kali server membangun antrean ("Lanjutkan" memanggil
         // router.refresh), supaya state sesi dimulai ulang dari antrean baru.
@@ -55,6 +57,7 @@ export default async function StudyPage({ params }: Props) {
         currentUserId={session.userId}
         postingSuspended={postingSuspended}
       />
+      </DictionaryBoundary>
     </main>
   );
 }

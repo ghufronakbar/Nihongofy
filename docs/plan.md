@@ -15,6 +15,11 @@ keyboard/romaji, kamus immutable dan lifecycle akun sudah tersedia. Migration da
 tersedia; production belum berubah. [Modul](module/kana-word-race.md) menyimpan aturan final,
 [UAT](verification/kana-word-race-uat.md) memisahkan bukti lokal dan gate production.
 
+Kamus seleksi **18 Oktober 2026**: [rencana](plan/dictionary-popup.md) telah diimplementasikan
+dengan JMdict English penuh, popup/drawer dan gate reveal di tahap 1–3, default-off.
+[Modul](module/dictionary.md), [UAT/evidence](verification/dictionary-popup-uat.md), dan
+[runbook update](operations/dictionary.md) memisahkan hasil lokal dari gate aktivasi publik.
+
 > Catatan 26 Agustus 2026: bagian auth awal di bawah adalah catatan implementasi historis. Model one-time setup telah dihentikan. Status dan rencana aktif ada di `plan/redesign-and-feature.md` serta `plan/phase-1-foundation.md`.
 
 ## Fase 0 — Setup & Konfigurasi Dasar

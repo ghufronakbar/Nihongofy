@@ -1,3 +1,4 @@
+import { DictionaryBoundary } from "@/features/dictionary/components/dictionary-boundary";
 import { notFound } from "next/navigation";
 import { PageContainer } from "@/components/marketing/page-container";
 import { ClashRoom } from "@/features/kotoba-clash/components/room";
@@ -15,5 +16,5 @@ export default async function ClashRoomPage({ params }: { params: Promise<{ code
   const parsed = ClashRoomCodeSchema.safeParse((await params).code);
   if (!parsed.success) notFound();
   const [result, catalog, session] = await Promise.all([getClashRoomAction(parsed.data), getClashCatalog(), getSessionUser()]);
-  return <PageContainer className="py-8 md:py-12"><ClashRoom code={parsed.data} initial={result.ok ? result.data : null} unavailable={!result.ok && ["CLOSED", "EXPIRED"].includes(result.code)} kicked={!result.ok && result.code === "KICKED"} privateSession={!result.ok && result.code === "SOLO_PRIVATE"} displayName={session?.user.displayName} initialError={!result.ok && !["UNAUTHORIZED", "NOT_FOUND"].includes(result.code) ? result.message : null} catalog={catalog} /></PageContainer>;
+  return <PageContainer className="py-8 md:py-12"><DictionaryBoundary contextKey={`clash-room:${parsed.data}`} scope={false}><ClashRoom code={parsed.data} initial={result.ok ? result.data : null} unavailable={!result.ok && ["CLOSED", "EXPIRED"].includes(result.code)} kicked={!result.ok && result.code === "KICKED"} privateSession={!result.ok && result.code === "SOLO_PRIVATE"} displayName={session?.user.displayName} initialError={!result.ok && !["UNAUTHORIZED", "NOT_FOUND"].includes(result.code) ? result.message : null} catalog={catalog} /></DictionaryBoundary></PageContainer>;
 }
