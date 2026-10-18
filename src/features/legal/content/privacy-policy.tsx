@@ -15,8 +15,8 @@ import type { LegalDocument } from "../types";
 // Setiap klaim di dokumen ini harus dapat ditunjuk dasar kodenya. Saat alur data
 // berubah (cookie baru, pemroses baru, retensi baru), perbarui bagian yang
 // relevan, naikkan VERSION, dan ganti LAST_UPDATED. Riwayatnya cukup lewat git.
-export const VERSION = "1.5";
-export const LAST_UPDATED = "2026-10-17";
+export const VERSION = "1.6";
+export const LAST_UPDATED = "2026-10-18";
 export const EFFECTIVE_DATE = "2026-10-10";
 
 const operator = <LegalValue value={LEGAL_FACTS.operatorName} />;
@@ -584,6 +584,11 @@ export const PRIVACY_POLICY: LegalDocument = {
                 "Token acak untuk mengenali guest Mini Games dan memulihkan membership room. Token asli hanya ada di cookie; server menyimpan hash.",
                 "7 hari sejak dibuat; tidak diperpanjang saat digunakan",
               ],
+              [
+                <Code key="n">__Host-kana_race_guest</Code>,
+                "Token acak guest Kana Word Race. Cookie menyimpan token; registry server dan membership memakai hash untuk memulihkan akses room.",
+                "7 hari sejak dibuat; tidak diperpanjang saat digunakan",
+              ],
             ]}
           />
           <LegalP>
@@ -593,6 +598,15 @@ export const PRIVACY_POLICY: LegalDocument = {
             pertandingan selesai dan dihapus bertahap oleh cleanup harian. Lobby tanpa pertandingan
             kedaluwarsa setelah 30 menit tanpa aktivitas. Menghapus akun menganonimkan identitas pada
             hasil bersama sambil mempertahankan angka permainan peserta lain.
+          </LegalP>
+          <LegalP>
+            Jika Kana Word Race aktif, nickname dan progres terlihat oleh peserta satu room.
+            Tebakan kata dan petunjuk posisinya hanya dikirim kepada pemain yang bersangkutan;
+            kata jawaban dibuka bersama ketika ronde selesai. Membership, tebakan, waktu penerimaan,
+            dan hasil disimpan selama 7 hari sejak room dibuat atau pertandingan terakhir dimulai,
+            lalu dihapus bertahap oleh cleanup harian. Lobby dan room yang selesai ditutup setelah
+            30 menit tanpa aktivitas. Penghapusan akun mengosongkan identitas dan kata tebakan pemain,
+            sambil mempertahankan angka hasil bersama selama retensi tersebut.
           </LegalP>
           <LegalP>
             Selain cookie, lembar jawaban ujian yang sedang dikerjakan disimpan di{" "}

@@ -3,6 +3,7 @@ import type { PrismaClient } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
 import { buildAnonymizedUsername } from "@/lib/username";
+import { redactRaceGuesses } from "@/features/kana-word-race/server/lifecycle";
 
 export const ANONYMIZED_DISPLAY_NAME = "Pengguna dihapus";
 
@@ -85,6 +86,15 @@ export async function anonymizeAccount(userId: number, database: PrismaClient = 
         nickname: ANONYMIZED_DISPLAY_NAME, nicknameKey: null,
         readyRevision: null, kickedAt: null, anonymizedAt,
       },
+    });
+
+    const raceMembers = await tx.kanaRaceMember.findMany({ where: { userId }, select: { id: true, roomId: true } });
+    const raceHosted = await tx.kanaRaceRoom.findMany({ where: { hostId: userId }, select: { id: true } });
+    await redactRaceGuesses(tx, raceMembers.map((member) => member.id), [...raceMembers.map((member) => member.roomId), ...raceHosted.map((room) => room.id)]);
+    await tx.kanaRaceRoom.updateMany({ where: { hostId: userId }, data: { hostId: null, closedAt: anonymizedAt } });
+    await tx.kanaRaceMember.updateMany({
+      where: { userId },
+      data: { userId: null, guestHash: null, guestExpiresAt: null, nickname: ANONYMIZED_DISPLAY_NAME, nicknameKey: null, readyRevision: null, anonymizedAt },
     });
 
     // Anak dihapus lebih dulu agar tidak bergantung pada urutan cascade.

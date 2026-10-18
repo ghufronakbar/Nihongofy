@@ -22,6 +22,7 @@ const STATIC_ENTRIES: StaticEntry[] = [
   { path: "/exercises", changeFrequency: "weekly", priority: 0.85, feature: "practice" },
   { path: "/mini-games", changeFrequency: "weekly", priority: 0.7, feature: "miniGames" },
   { path: "/mini-games/kotoba-clash", changeFrequency: "weekly", priority: 0.7, feature: "kotobaClash" },
+  { path: "/mini-games/kana-word-race", changeFrequency: "weekly", priority: 0.7, feature: "kanaWordRace" },
   { path: "/kana/hiragana", changeFrequency: "monthly", priority: 0.8, feature: "kana" },
   { path: "/kana/katakana", changeFrequency: "monthly", priority: 0.8, feature: "kana" },
   { path: "/flashcard", changeFrequency: "weekly", priority: 0.8, feature: "flashcard" },

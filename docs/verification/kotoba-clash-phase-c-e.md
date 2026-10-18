@@ -102,10 +102,9 @@ tidak berarti batas ketat 25 socket fisik saat takeover berlangsung.
 | Remote migration | PASS read-only; 42 migration up to date, fondasi applied, RLS/grant/22 constraint dan partial index valid |
 | Budget bulanan | BLOCKED; masih memerlukan memory-hours, Redis bulanan dan delta terhadap baseline |
 
-Artefak: [room checker](evidence/2026-10-17-kotoba-clash-room.json),
-[desktop](evidence/2026-10-17-kotoba-clash-desktop.png),
-[mobile](evidence/2026-10-17-kotoba-clash-mobile.png), dan
+Artefak: [room checker](evidence/2026-10-17-kotoba-clash-room.json) dan
 [metadata Supabase read-only](evidence/2026-10-17-kotoba-clash-supabase.json).
+Screenshot pemeriksaan lokal tidak disimpan dalam repository.
 Fixture memakai cluster PostgreSQL/Redis loopback disposable; tidak menulis Supabase production.
 Hasil ini adalah pemeriksaan developer, bukan acceptance user. Build mengeluarkan peringatan
 dukungan Node 20 mendatang dari AWS SDK existing; seluruh gate selesai dengan exit code 0.

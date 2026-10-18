@@ -15,18 +15,18 @@ lihat [UAT](../verification/mini-games-kotoba-clash-uat.md).
 Bukti terbaru: [integrasi C-E](../verification/kotoba-clash-phase-c-e.md); bukti transport awal:
 [laporan A](../verification/kotoba-clash-phase-a.md).
 
-**Rencana game berikutnya (18 Oktober 2026):** [Kana Word Race](kana-word-race.md), nama kerja
-untuk balapan tebak kana 3-7 karakter dalam room, enam tebakan per pemain dan feedback posisi.
-Baru tersedia [plan](../plan/mini-games-kana-word-race.md) dan
-[checklist UAT](../verification/kana-word-race-uat.md); belum ada kode, flag, tabel atau kartu
-katalog untuk game ini. Status rencana tidak mengubah daftar game yang tersedia sekarang.
+**Game kedua (18 Oktober 2026):** [Kana Word Race](kana-word-race.md) tersedia di kode:
+room 2-20 pemain, tebak 3-7 kana, enam tebakan, deadline bersama, papan privat dan kamus
+terkurasi. Migration/seed dan engineering/visual lokal tersedia; default-off, belum deployment
+atau aktivasi production. Gate hosting, konten manusia, UAT perangkat dan budget ada di
+[plan](../plan/mini-games-kana-word-race.md) dan [UAT](../verification/kana-word-race-uat.md).
 
 Rujukan:
 
 - [Kotoba Clash](kotoba-clash.md): aturan dan rancangan game pertama.
 - [Rencana pengerjaan](../plan/mini-games-kotoba-clash.md): tahap, dependensi, dan exit criteria.
 - [Checklist UAT](../verification/mini-games-kotoba-clash-uat.md): skenario dan bukti penerimaan.
-- [Kana Word Race](kana-word-race.md): rancangan game berikutnya; nama/slug masih nama kerja.
+- [Kana Word Race](kana-word-race.md): aturan v1, kamus immutable, papan privat dan runbook game kedua.
 - [Public shell](public-shell.md), [aturan project](../project-rules.md), dan
   [project overview](../project-overview.md): integrasi dengan aplikasi existing.
 
@@ -100,11 +100,11 @@ pemain, dan level. Aturan guest/host ditampilkan di landing game.
 - Jangan membuat engine universal untuk game yang belum dirancang. Domain Kotoba Clash tidak
   menjadi dependensi wajib bagi game berikutnya.
 
-Untuk rencana Kana Word Race, pengalaman room mengikuti pola yang sudah dikenal, sedangkan
-target kana, enam tebakan, kamus release dan papan pribadi mempunyai domain sendiri. Audit
-pemakaian ulang transport/identitas sebelum implementasi; namespace, runtime control dan
-penggantian room host harus jelas agar satu game tidak menutup atau menerima command game lain.
-Usulan flag `FEATURES_KANA_WORD_RACE` default false belum ditambahkan ke kode.
+Kana Word Race mempunyai domain target kana, enam tebakan dan release kamus sendiri.
+Cookie/namespace Redis/lease/channel/runtime-control dipisahkan dari Kotoba Clash. Create host
+hanya mengganti room pada game yang sama. `FEATURES_KANA_WORD_RACE` sudah tersedia, default
+false dan mewajibkan `FEATURES_MINI_GAMES`. Migration tetap wajib sebelum deploy flag-off
+karena account export/anonimisasi/cron terintegrasi.
 
 ## 5. Feature Flag
 
@@ -112,6 +112,7 @@ Usulan flag `FEATURES_KANA_WORD_RACE` default false belum ditambahkan ke kode.
 |---|---|---|
 | `FEATURES_MINI_GAMES` | Wadah Mini Games | Mati: katalog dan seluruh turunannya 404; menu/CTA hilang |
 | `FEATURES_KOTOBA_CLASH` | Game Kotoba Clash | Mati: game, room, hasil, action, dan socket tidak tersedia |
+| `FEATURES_KANA_WORD_RACE` | Game Kana Word Race | Default false; mewajibkan Mini Games; guard route/action/socket dan katalog |
 
 Ketersediaan efektif Kotoba Clash = kedua flag aktif. Hub tetap dapat hidup saat satu game
 dimatikan, sehingga game berikutnya tidak ikut mati. Jika tidak ada game tersedia, tampilkan

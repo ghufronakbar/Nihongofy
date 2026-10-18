@@ -16,11 +16,11 @@ setelah implementasi selesai dan perilakunya sudah diverifikasi user.
   spectator; ledger cocok. UAT lengkap dan pengukuran budget masih terbuka. Bukti ada di
   [UAT production](../verification/mini-games-kotoba-clash-uat.md),
   [integrasi C-E](../verification/kotoba-clash-phase-c-e.md) dan [laporan A](../verification/kotoba-clash-phase-a.md).
-- [Kana Word Race (nama kerja)](mini-games-kana-word-race.md), dirancang 18 Oktober 2026:
-  game room tebak kana 3-7 karakter, enam tebakan dan deadline bersama. Input virtual/romaji,
-  papan privat, serta kamus turunan flashcard yang dikurasi. Baru dokumentasi; tidak ada kode,
-  schema/seed atau aktivasi. [Aturan modul](../module/kana-word-race.md) dan
-  [UAT belum dijalankan](../verification/kana-word-race-uat.md) dipelihara bersama plan ini.
+- [Kana Word Race](mini-games-kana-word-race.md), implementasi 18 Oktober 2026:
+  room tebak 3-7 kana, enam tebakan, input virtual/romaji, papan privat dan kamus terkurasi.
+  Migration/seed dan engineering lokal tersedia; default-off, belum production. Gate hosting,
+  perangkat, review manusia dan budget ada di [modul](../module/kana-word-race.md) dan
+  [verifikasi/UAT](../verification/kana-word-race-uat.md).
 
 ## Rekomendasi Utama
 

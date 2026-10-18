@@ -16,6 +16,7 @@ import { reportServerError } from "@/lib/server-logger";
 import { prisma } from "@/lib/prisma";
 import { anonymizeAccount } from "@/features/auth/lib/anonymize-account";
 import { cleanupClash } from "@/features/kotoba-clash/server/cleanup";
+import { cleanupRace } from "@/features/kana-word-race/server/lifecycle";
 
 export const runtime = "nodejs";
 
@@ -29,6 +30,7 @@ export async function GET(request: Request) {
 
   const now = new Date();
   const kotobaClash = await cleanupClash(prisma, now);
+  const kanaWordRace = await cleanupRace(prisma, now);
   const staleRateLimitCutoff = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
   const [expiredTokens, staleRateLimits] = await prisma.$transaction([
     prisma.authToken.deleteMany({ where: { expiresAt: { lte: now } } }),
@@ -117,6 +119,7 @@ export async function GET(request: Request) {
 
   return NextResponse.json({
     kotobaClash,
+    kanaWordRace,
     expiredTokensDeleted: expiredTokens.count,
     staleRateLimitsDeleted: staleRateLimits.count,
     reportReplyEmailsCleared,

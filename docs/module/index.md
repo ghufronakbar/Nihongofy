@@ -9,7 +9,7 @@ Folder ini mendokumentasikan kondisi aplikasi berdasarkan kode, fixture, dan dat
 | [Public shell dan home](public-shell.md) | Selesai | Landing page, header/footer, dan CTA aktif; menu, kartu, dan section mengikuti feature flag modul. |
 | [Mini Games](mini-games.md) | Production aktif; UAT lanjutan | Katalog `/mini-games`, registry, landing, menu, metadata dan flag terintegrasi; visual desktop/mobile lulus lokal. User mengaktifkan production sebelum gate lengkap. |
 | [Kotoba Clash](kotoba-clash.md) | Production aktif; UAT awal lulus | N5/5 soal, 2 pemain dan late spectator lulus UAT awal user; ledger cocok. Rematch/reconnect >5 menit, 10/15/20 soal, 20 pemain dan budget tersisa. [Plan](../plan/mini-games-kotoba-clash.md), [UAT](../verification/mini-games-kotoba-clash-uat.md), [bukti C-E](../verification/kotoba-clash-phase-c-e.md). |
-| [Kana Word Race (nama kerja)](kana-word-race.md) | Rancangan; belum diimplementasikan | Room tebak kana 3-7 karakter, enam tebakan, timer, input virtual/romaji, dan kamus terkurasi dari bacaan flashcard. [Plan](../plan/mini-games-kana-word-race.md) dan [UAT belum dijalankan](../verification/kana-word-race-uat.md), 18 Oktober 2026. |
+| [Kana Word Race](kana-word-race.md) | Implementasi v1; default-off | Room 2-20 pemain, 3-7 kana, enam tebakan, papan privat, keyboard/romaji, kamus immutable dan lifecycle akun. Migration dan [verifikasi lokal](../verification/kana-word-race-uat.md) tersedia; UAT/deployment production terbuka. [Plan](../plan/mini-games-kana-word-race.md), 18 Oktober 2026. |
 | [Authentication](auth.md) | Selesai | Login, register, verifikasi email, reset password, Redis session registry, revoke perangkat, rate limit, dan Turnstile aktif. |
 | [Dashboard](dashboard.md) | Selesai sederhana | Menampilkan attempt selesai dan attempt terakhir; kartu modul lain masih berupa shortcut statis. |
 | [Kana](kana.md) | Selesai dengan scope terbatas | Fixture kana terkurasi dan progress akun aktif; audio memakai Web Speech API, bukan rekaman. |
@@ -36,7 +36,7 @@ Folder ini mendokumentasikan kondisi aplikasi berdasarkan kode, fixture, dan dat
 ## Feature Flag
 
 Setiap modul dapat dimatikan lewat env `FEATURES_<NAMA>` bernilai `"true"`/`"false"`. Kosong atau
-tidak diisi berarti `true`, kecuali Mini Games/Kotoba Clash yang default `false`. Nilai dibaca sekali saat server start melalui objek `FEATURES` di
+tidak diisi berarti `true`, kecuali Mini Games/Kotoba Clash/Kana Word Race yang default `false`. Nilai dibaca sekali saat server start melalui objek `FEATURES` di
 `src/constants/index.ts`; ubah env lalu restart atau redeploy. `robots.txt` dan `sitemap.xml`
 di-prerender saat build, jadi keduanya baru berubah setelah redeploy.
 
@@ -62,9 +62,7 @@ di-prerender saat build, jadi keduanya baru berubah setelah redeploy.
 | `FEATURES_PUBLIC_PROFILE` | [Komunitas](community.md#feature-flag) | `/u/*`; section "Profil publik" di `/profile/privacy`, field bio/target level, banner dashboard, dan tautan nama di diskusi tidak dirender |
 | `FEATURES_COMMUNITY` | [Komunitas](community.md#feature-flag) | `/community/*`, `/post/*`, `/u/*/posts`; menu Komunitas, bagian Postingan di profil, dan action postingan/like/komentar postingan tidak dirender atau ditolak. Ikut mati bila `FEATURES_PUBLIC_PROFILE` mati |
 | `FEATURES_FOLLOW` | [Komunitas](community.md#feature-flag) | `/u/*/followers`, `/u/*/following`, `/profile/follow-requests`; tombol follow dan badge permintaan tidak dirender. Ikut mati bila `FEATURES_PUBLIC_PROFILE` mati |
-
-Flag `FEATURES_KANA_WORD_RACE` masih usulan default-off dalam
-[rancangan game](kana-word-race.md); belum tersedia di konstanta/env atau tabel flag aktual ini.
+| `FEATURES_KANA_WORD_RACE` | [Kana Word Race](kana-word-race.md) | `/mini-games/kana-word-race/*`; default false, mewajibkan `FEATURES_MINI_GAMES`; action/socket ikut dijaga |
 
 Aturan umum:
 

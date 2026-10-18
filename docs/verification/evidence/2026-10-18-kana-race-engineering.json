@@ -1,0 +1,153 @@
+{
+  "date": "2026-10-18",
+  "status": "Local engineering PASS; production activation pending",
+  "workingTree": true,
+  "environment": {
+    "database": "disposable PostgreSQL 17, loopback only",
+    "redis": "disposable local Redis; actual Lua executed",
+    "browser": "Codex in-app browser, local Next dev",
+    "productionWrites": false,
+    "databaseVersion": "17.11",
+    "redisVersion": "8.0.3"
+  },
+  "projectGate": {
+    "command": "npm run verify",
+    "lint": "PASS",
+    "typecheck": "PASS",
+    "testFiles": 54,
+    "tests": 686,
+    "build": "PASS"
+  },
+  "prisma": {
+    "validate": "PASS",
+    "migration": "20261018035428_kana_word_race",
+    "generator": "Prisma migrate dev --create-only, disposable baseline",
+    "fullReplayMigrations": 45,
+    "replay": "PASS",
+    "rlsAndDataApiGrants": "PASS",
+    "sameRoomForeignKey": "PASS",
+    "immutableReleaseTrigger": "PASS",
+    "migrateDiff": "Only existing Report.updatedAt DEFAULT now() vs schema no-default drift; no Kana Race schema drift. Left unchanged."
+  },
+  "dictionary": {
+    "check": "PASS",
+    "seedAndReseed": "PASS on local PostgreSQL only",
+    "release": "dfe413f2ad5aa0e3b06b7391237dc5e773bf433bc59e7806c4278536e067f61e",
+    "guesses": 5623,
+    "answers": 94,
+    "counts": {
+      "3": [
+        1630,
+        20
+      ],
+      "4": [
+        2294,
+        20
+      ],
+      "5": [
+        1041,
+        20
+      ],
+      "6": [
+        464,
+        20
+      ],
+      "7": [
+        194,
+        14
+      ]
+    }
+  },
+  "integration": {
+    "environment": "loopback PostgreSQL",
+    "checks": [
+      "Concurrent create/Start are idempotent; frozen roster rejects late admission",
+      "Personal projection/export hides targets and opponents' guesses; first solver keeps opponents playing",
+      "Seven concurrent submissions consume exactly six slots; shared reveal and conflicting replay are correct",
+      "Database time after lock wait rejects a submission crossing the deadline",
+      "Rematch keeps the code, resets readiness, preserves historic review and is harmless to retry in lobby",
+      "Concurrent finalization persists finishedAt; deletion redacts identity/words while preserving numeric scores",
+      "All six tables have RLS and no Data API grants; composite FK rejects a foreign-room match",
+      "Retention cleanup cascades match/member data and preserves the latest immutable dictionary",
+      "Concurrent admission caps membership at twenty; host replacement closes only prior game rooms",
+      "Real Redis Lua enforces takeover, owner-only renew/release, twenty leases and expired lease recovery"
+    ],
+    "passed": 10
+  },
+  "socket": "Loopback WebSocket PASS with controlled auth/repository/pubsub dependencies: personal refresh, ACK, takeover, binary abuse, revocation; HTTP admission tested separately",
+  "browser": {
+    "desktop": {
+      "viewport": [
+        1280,
+        900
+      ],
+      "scrollWidth": 1280,
+      "page": "real landing"
+    },
+    "mobile": {
+      "viewport": [
+        320,
+        800
+      ],
+      "scrollWidth": 320,
+      "tileWidthApprox": 36.85,
+      "fixture": "temporary route using actual board and room components, removed after test"
+    },
+    "interactions": [
+      "pending n leaves boxes empty",
+      "nn to ん, Backspace removes one kana",
+      "は -> ば via dakuten button",
+      "inta-netto -> いんたーねっと; seven green tiles; one accepted row; input disabled on solve"
+    ]
+  },
+  "flagOffSmoke": {
+    "environment": "local production build, feature disabled",
+    "results": [
+      {
+        "path": "/mini-games/kana-word-race",
+        "status": 404,
+        "containsPublicGameLink": false
+      },
+      {
+        "path": "/mini-games/kana-word-race/room/ABCD2345",
+        "status": 404,
+        "containsPublicGameLink": false
+      },
+      {
+        "path": "/api/mini-games/kana-word-race/ws",
+        "status": 404,
+        "containsPublicGameLink": false
+      },
+      {
+        "path": "/mini-games",
+        "status": 200,
+        "containsPublicGameLink": false
+      },
+      {
+        "path": "/sitemap.xml",
+        "status": 200,
+        "containsPublicGameLink": false
+      },
+      {
+        "path": "/robots.txt",
+        "status": 200,
+        "containsPublicGameLink": false
+      }
+    ]
+  },
+  "privacyAudit": {
+    "publicClientReleaseChecksumPresent": false,
+    "productionComponentsImportDictionaryArtifact": false,
+    "personalProjectionAndExport": "PASS in PostgreSQL checker",
+    "anonymizationRetainsNumericScore": "PASS"
+  },
+  "pending": [
+    "Production migration/seed/deployment/activation",
+    "Human review of 94 targets/categories/meanings",
+    "Two-device authenticated and guest UAT on target hosting",
+    "Native Japanese IME on iOS/Android, screen reader/theme/reduced motion manual acceptance",
+    "Vercel adapter/Upstash live multi-instance and reconnect beyond 270s",
+    "Measured operating capacity and provider budget"
+  ],
+  "baseCommit": "9a0a9d5"
+}

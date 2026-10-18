@@ -68,6 +68,8 @@ const HANDLED_USER_RELATIONS: Record<string, Handling> = {
   postLikes: { kind: "dihapus" },
   kotobaClashRooms: { kind: "dikosongkan" },
   kotobaClashMembers: { kind: "dikosongkan" },
+  kanaRaceRooms: { kind: "dikosongkan" },
+  kanaRaceMembers: { kind: "dikosongkan" },
   reports: { kind: "dikosongkan" },
   handledReports: {
     kind: "dibiarkan",

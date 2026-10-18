@@ -9,10 +9,11 @@ Dokumen [hub](module/mini-games.md), [aturan game](module/kotoba-clash.md), dan
 [UAT](verification/mini-games-kotoba-clash-uat.md) tersedia. Pembaruan 17 Oktober: production
 diaktifkan user dan UAT awal lulus; cakupan UAT lengkap/budget masih terbuka pada dokumen tersebut.
 
-Rencana game berikutnya **18 Oktober 2026**: [Kana Word Race (nama kerja)](plan/mini-games-kana-word-race.md),
-balapan tebak kana 3-7 karakter dalam room dengan enam tebakan. Status masih rancangan, tanpa
-perubahan kode/database. [Modul](module/kana-word-race.md) menjadi sumber aturan dan
-[checklist UAT](verification/kana-word-race-uat.md) menampung verifikasi setelah implementasi.
+Game kedua **18 Oktober 2026**: [Kana Word Race](plan/mini-games-kana-word-race.md) telah
+diimplementasikan, default-off. Room 2-20 pemain, 3-7 kana, enam tebakan, papan privat,
+keyboard/romaji, kamus immutable dan lifecycle akun sudah tersedia. Migration dan tes lokal
+tersedia; production belum berubah. [Modul](module/kana-word-race.md) menyimpan aturan final,
+[UAT](verification/kana-word-race-uat.md) memisahkan bukti lokal dan gate production.
 
 > Catatan 26 Agustus 2026: bagian auth awal di bawah adalah catatan implementasi historis. Model one-time setup telah dihentikan. Status dan rencana aktif ada di `plan/redesign-and-feature.md` serta `plan/phase-1-foundation.md`.
 

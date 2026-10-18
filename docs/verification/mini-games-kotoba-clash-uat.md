@@ -149,11 +149,11 @@ skenario yang lebih luas tetap belum dijalankan.
 | Gate engineering | PASS, 638 tes /47 file, lint/typecheck/build |
 | Data | Fixture checker sendiri, bukan akun/soal production; dibersihkan setelah uji |
 | Runtime control | Tidak diubah di production; drain lintas deployment masih NOT RUN |
-| Rincian/evidence | [Laporan C-E](kotoba-clash-phase-c-e.md) dan JSON/screenshot tertaut |
+| Rincian/evidence | [Laporan C-E](kotoba-clash-phase-c-e.md) dan JSON tertaut |
 
 | ID | Skenario | Expected result | Hasil / bukti |
 |---|---|---|---|
-| B01 | Buka Mini Games dan kartu Kotoba Clash sebagai guest | Katalog/landing publik; deskripsi, 2-20 pemain, dan CTA benar | PASS lokal; visual desktop/mobile, screenshot pada laporan C-E; cloud NOT RUN |
+| B01 | Buka Mini Games dan kartu Kotoba Clash sebagai guest | Katalog/landing publik; deskripsi, 2-20 pemain, dan CTA benar | PASS lokal; hasil visual desktop/mobile pada laporan C-E; cloud NOT RUN |
 | B02 | Flag hub/game off, termasuk saat socket sudah terbuka | Nav/route/action/socket mengikuti flag; command lama tidak lolos | NOT RUN penuh; smoke production lokal flag off PASS (4 halaman/socket 404, home/sitemap tanpa link); drain cloud belum |
 | B03 | Katalog tanpa game aktif; mobile dan keyboard | Empty state jujur, navigasi/fokus/form dapat dipakai | NOT RUN |
 | B04 | Host akun membuat room dan membagikan link | Kode unik; URL sesuai environment; guest tidak dapat membuat room | PASS parsial production; room host + guest tersimpan. Penolakan create guest dan proses berbagi link NOT RUN |

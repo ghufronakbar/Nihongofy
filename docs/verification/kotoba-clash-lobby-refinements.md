@@ -66,8 +66,7 @@ Urutan production:
 - Evidence terstruktur: [JSON](evidence/2026-10-17-kotoba-clash-lobby-refinements.json).
   Seluruh fixture user/room/match/package kembali 0; PostgreSQL/Redis disposable dihentikan.
 
-![Draft desktop](evidence/2026-10-17-kotoba-clash-lobby-desktop.png)
-![Save mobile](evidence/2026-10-17-kotoba-clash-lobby-mobile.png)
+Screenshot pemeriksaan lokal tidak disimpan dalam repository.
 
 ## Acceptance Production Yang Masih Perlu Dijalankan
 

@@ -21,6 +21,12 @@ export const CACHE_TAGS = {
 } as const;
 
 export const CACHE_KEYS = {
+  kanaRaceDictionary: ["kana-word-race-v1", "dictionary"],
+  kanaRaceGuest: (hash: string) => ["kana-word-race-v1", "guest", hash],
+  kanaRaceRoomChannel: (roomId: string) => ["kana-word-race-v1", "room", roomId, "events"],
+  kanaRaceRoomLease: (roomId: string) => ["kana-word-race-v1", "room", roomId, "leases"],
+  kanaRaceRuntimeControl: ["kana-word-race-v1", "runtime-control"],
+  kanaRaceRateLimit: (scope: string, subject: string) => ["kana-word-race-v1", "rate", scope, subject],
   kotobaGuest: (hash: string) => ["kotoba-clash-v1", "guest", hash],
   kotobaRoomChannel: (roomId: string) => ["kotoba-clash-v1", "room", roomId, "events"],
   kotobaRoomLease: (roomId: string) => ["kotoba-clash-v1", "room", roomId, "leases"],

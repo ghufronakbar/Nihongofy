@@ -45,11 +45,8 @@ mengikuti aturan v1. Rank 1 mendapat crown setelah mencetak poin, termasuk rank 
 | Responsiveness | PASS lokal; landing, join, lobby, dan arena mobile tidak overflow horizontal (scrollWidth = innerWidth = 390) |
 | Keyboard/reduced motion | Focus-visible, label form, aria timer/status dan reduced-motion tersedia di kode; perjalanan keyboard penuh, screen reader dan emulasi OS reduced motion NOT RUN |
 
-Bukti gambar menggunakan data ilustrasi lokal, **bukan hasil pertandingan production**:
-
-- [Arena desktop](evidence/2026-10-17-kotoba-clash-arena-desktop.png)
-- [Arena mobile](evidence/2026-10-17-kotoba-clash-arena-mobile.png)
-- [Lobby desktop](evidence/2026-10-17-kotoba-clash-lobby-desktop.png)
+Pemeriksaan visual menggunakan data ilustrasi lokal, **bukan hasil pertandingan production**.
+Screenshot pemeriksaan lokal tidak disimpan dalam repository.
 
 ## Gate engineering
 

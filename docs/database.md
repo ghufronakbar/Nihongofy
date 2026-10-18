@@ -412,3 +412,24 @@ Saat import data soal, tangani pelanggaran constraint sebagai sinyal error ekstr
   rename hanya milik sendiri, unique normalized nickname tetap menjadi guard terakhir. Export
   membawa timestamp sendiri; anonimisasi akun/guest mengosongkannya. Tidak ada index/FK/policy
   baru; index prefix roomId existing tetap dipakai. Terapkan migration sebelum redeploy.
+
+
+## Kana Word Race (18 Oktober 2026)
+
+Migration additive `20261018035428_kana_word_race` menambah `KanaWord`, `KanaWordSource`,
+`KanaRaceDictionary`, `KanaRaceRoom`, `KanaRaceMember`, dan `KanaRaceMatch`.
+Schema, constraint, provenance bacaan, aturan snapshot personal serta retensi dijelaskan di
+[modul](module/kana-word-race.md#5-persistence-transaksi-dan-privasi).
+Semua tabel RLS tanpa client policy, tanpa grant PUBLIC/anon/authenticated/service_role.
+Dictionary release immutable dilindungi trigger UPDATE dan FK RESTRICT selama dirujuk match.
+Current match memakai FK composite (match ID, room ID); satu unfinished match per room
+menggunakan partial unique index. Identitas akun/guest/tombstone diperiksa CHECK.
+
+Match v1 memakai JSONB privat dengan roster, config, target/sumber dan accepted guesses.
+Room lock menserialisasi mutasi, waktu database dibaca setelah lock, idempotency UUID dan
+maksimal enam tebakan ditegakkan engine. Snapshot tidak memakai spread state privat dan
+hanya memuat papan viewer. Source vocab FK SET NULL; stable key tetap menyimpan provenance.
+Account export, anonimisasi dan cron terintegrasi walau flag game mati, sehingga migration
+harus diterapkan sebelum deploy aplikasi. Tidak ada perubahan jadwal/kartu flashcard atau
+backfill data existing. Bukti lokal dan gate production ada di
+[UAT](verification/kana-word-race-uat.md) dan [ledger](operations/migrations.md).

@@ -33,6 +33,33 @@ contract wajib memiliki migration dan catatan ringkas di dokumen/PR perubahan. J
 
 ## Ledger
 
+### 18 Oktober 2026 - Kana Word Race v1
+
+- Status: required; diterapkan dan diuji pada PostgreSQL lokal disposable, belum production.
+- Migration: `prisma/migrations/20261018035428_kana_word_race/migration.sql`.
+- Alasan: kamus game immutable dan ledger room/pertandingan tebak kana privat, terpisah dari
+  Flashcard dan Kotoba Clash.
+- Object: enam tabel baru, FK/index, CHECK identitas/bentuk/panjang, partial unique unfinished
+  match per room, composite current-match FK, RLS dan revoke tabel/sequence/fungsi; trigger
+  dictionary immutable memakai fungsi invoker (bukan SECURITY DEFINER).
+- Data existing: tidak diubah; tidak ada backfill. Seed game turunan fixture harus dijalankan
+  setelah migration; provenance vocabId boleh NULL jika flashcard belum diseed.
+- Risiko operasi: additive, tetapi FK pada User/FlashcardVocab memerlukan lock singkat.
+  Migration wajib mendahului deploy **termasuk flag-off** karena cron/account lifecycle
+  memanggil tabel baru. State JSONB/row-lock dan biaya provider perlu pengukuran hosting.
+- Validasi: Prisma `migrate dev --create-only` pada generator baseline disposable; SQL dibaca
+  manual, 45 migration direplay ke DB lokal dengan role Supabase lokal. Seed/reseed/check,
+  FK/RLS/grant/trigger serta checker concurrency/privacy/anonimisasi/retensi lulus lokal.
+  Diff hanya menunjukkan drift existing `Report.updatedAt` DEFAULT now() vs schema tanpa
+  default; tidak ada drift objek Kana Race dan tidak ada perubahan Report pada migration ini.
+  Hasil engineering proyek dan UAT tercatat di [verifikasi](../verification/kana-word-race-uat.md).
+- Refresh: `npx prisma migrate deploy`, validasi/seed Kana Race, deploy default-off, UAT target,
+  kemudian flag/runtime enable. Drain Redis game ini sebelum rollback/redeploy; jangan drop
+  schema untuk rollback aplikasi biasa.
+- Owner: Engineering Owner untuk kode/bukti lokal; Release Owner untuk target migration,
+  seed, deployment, review konten dan acceptance/aktivasi.
+
+
 ### 17 Oktober 2026 - Kotoba Clash refinement lobby
 
 - Status: required (applied dan diuji lokal; belum dijalankan pada production di sesi ini)

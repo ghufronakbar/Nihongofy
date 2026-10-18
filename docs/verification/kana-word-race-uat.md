@@ -1,14 +1,35 @@
 # Checklist UAT Kana Word Race
 
 Tanggal awal: **18 Oktober 2026 (Asia/Jakarta)**.
-Status: **Belum dijalankan; fitur masih rancangan.** Nama game adalah nama kerja.
+Status: **Engineering dan visual lokal telah diuji; UAT production/acceptance user belum dijalankan.**
 
 Rujukan: [modul](../module/kana-word-race.md), [plan](../plan/mini-games-kana-word-race.md),
 dan [checklist umum](manual-test-checklist.md).
 
 ## 1. Bukti dan Environment
 
-Isi saat pengujian benar-benar berlangsung:
+Bukti lokal 18 Oktober 2026: PostgreSQL 17 disposable pada loopback, Next 16.3.5/React 19,
+Prisma 6.19.3, WanaKana 5.3.1; flag hanya dinyalakan pada dev lokal. Tidak ada write ke
+Supabase/Upstash production, deployment, atau aktivasi publik.
+
+- `npm run verify`: PASS (lint, TypeScript, 54 file/686 tes, build produksi).
+- Prisma validate, dictionary check, seed validation dan seed/reseed lokal: PASS.
+- Prisma migrate diff tidak menemukan drift objek Kana Race. Satu drift existing pada
+  `Report.updatedAt` (migration DEFAULT now(), schema tanpa default) dibiarkan di luar scope.
+- Checker integrasi: 10 kelompok PASS; termasuk Lua Redis nyata pada server loopback.
+- Smoke build produksi lokal dengan flag off: landing/room/socket 404, katalog tanpa link game.
+  Checksum/artefak kamus tidak masuk bundle client produksi.
+- Release: `dfe413f2ad5aa0e3b06b7391237dc5e773bf433bc59e7806c4278536e067f61e`.
+- Migration `20261018035428_kana_word_race` dibuat lewat Prisma create-only pada generator
+  baseline disposable, ditinjau dan direplay bersama 44 migration sebelumnya. Role lokal
+  Supabase disediakan untuk replay; tidak menggunakan `db push`.
+- [Laporan engineering](evidence/2026-10-18-kana-race-engineering.json).
+- Browser: landing 1280x900, papan komponen asli 320x800 melalui fixture sementara yang sudah
+  dihapus. Lebar dokumen sama dengan viewport; tujuh tile satu baris (tile sekitar 36,85px).
+  `inta-netto` -> `いんたーねっと`, pending `n`, `nn`, Backspace dan dakuten dicoba.
+  Ini bukti komponen lokal; bukan bukti permainan dua perangkat/adapter production.
+
+Saat UAT deployment, lengkapi:
 
 - Tanggal, penguji, commit/build, environment/adapter hosting.
 - Versi aturan/input/alfabet, scoring dan release/checksum kamus.
@@ -99,6 +120,19 @@ privat orang lain dalam bukti publik. Bukti engineering tidak menggantikan accep
 
 ## 7. Hasil dan Pekerjaan Tersisa
 
-Belum ada eksekusi UAT, hasil PASS/FAIL, migration atau bukti deployment untuk game ini.
-Saat diuji, catat hasil per skenario, blocker/owner, perbaikan yang dilakukan dan verifikasi
-ulang. Status modul/plan/indeks baru berubah setelah bukti yang sesuai tersedia.
+Engineering lokal mencakup unit input/domain/kamus, WebSocket loopback dengan dependency
+Redis/auth terkontrol, admission HTTP, serta transaksi PostgreSQL nyata. Checker PostgreSQL
+menguji concurrent create/Start, tujuh submit untuk enam slot, private projection/export,
+clock setelah lock, shared reveal, finalisasi, redaksi kata/identitas dengan skor tetap,
+FK same-room, RLS/grant, immutable release, retensi dan admission 20 pemain.
+
+Checkbox skenario di atas tetap merupakan acceptance manual menyeluruh. Belum ada bukti
+adapter Vercel/Upstash nyata untuk game ini, dua perangkat, native IME mobile, koneksi >270s,
+load/budget, outage lintas instance atau review manusia seluruh konten. Tidak menyatakan
+20 pemain sebagai kapasitas produksi. Release Owner menjalankan gate tersebut sebelum
+aktivasi dan mencatat hasil/commit/environment tanpa credential atau data pribadi.
+
+Retensi v1 adalah 7 hari sejak create/start terakhir untuk room dan 7 hari sejak Start
+untuk match, bukan 7 hari setelah seluruh ronde selesai. Lobby idle 30 menit; completed room
+idle 30 menit sejak reveal terakhir berakhir. Migration wajib sebelum deploy flag-off karena
+export akun, anonimisasi dan cron sudah memakai tabel baru.

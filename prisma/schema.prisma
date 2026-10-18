@@ -2,6 +2,98 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model KanaWord {
+  id          Int              @id @default(autoincrement())
+  kana        String           @unique @db.VarChar(7)
+  length      Int              @db.SmallInt
+  allowGuess  Boolean          @default(true)
+  allowAnswer Boolean          @default(false)
+  category    String?          @db.VarChar(80)
+  retiredAt   DateTime?        @db.Timestamptz(3)
+  sources     KanaWordSource[]
+
+  @@index([allowAnswer, length])
+}
+
+model KanaWordSource {
+  wordId    Int
+  sourceKey String          @db.VarChar(160)
+  vocabId   Int?
+  word      KanaWord        @relation(fields: [wordId], references: [id], onDelete: Cascade)
+  vocab     FlashcardVocab? @relation(fields: [vocabId], references: [id], onDelete: SetNull)
+
+  @@id([wordId, sourceKey])
+  @@index([vocabId])
+}
+
+model KanaRaceDictionary {
+  id        String          @id @db.VarChar(64)
+  payload   Json            @db.JsonB
+  createdAt DateTime        @default(now()) @db.Timestamptz(3)
+  matches   KanaRaceMatch[]
+}
+
+model KanaRaceRoom {
+  id             String           @id @default(uuid()) @db.Uuid
+  code           String           @unique @db.VarChar(8)
+  hostId         Int?
+  host           User?            @relation(fields: [hostId], references: [id], onDelete: SetNull)
+  config         Json             @db.JsonB
+  revision       Int              @default(1)
+  currentMatchId String?          @db.Uuid
+  currentMatch   KanaRaceMatch?   @relation("CurrentKanaMatch", fields: [currentMatchId, id], references: [id, roomId], onDelete: NoAction, onUpdate: NoAction)
+  idleExpiresAt  DateTime         @db.Timestamptz(3)
+  closedAt       DateTime?        @db.Timestamptz(3)
+  expiresAt      DateTime         @db.Timestamptz(3)
+  createdAt      DateTime         @default(now()) @db.Timestamptz(3)
+  members        KanaRaceMember[]
+  matches        KanaRaceMatch[]
+
+  @@index([hostId, closedAt])
+  @@index([expiresAt])
+  @@index([currentMatchId])
+  @@index([idleExpiresAt])
+}
+
+model KanaRaceMember {
+  id             String       @id @default(uuid()) @db.Uuid
+  roomId         String       @db.Uuid
+  room           KanaRaceRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  userId         Int?
+  user           User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  guestHash      String?      @db.VarChar(64)
+  guestExpiresAt DateTime?    @db.Timestamptz(3)
+  nickname       String       @db.VarChar(24)
+  nicknameKey    String?      @db.VarChar(96)
+  readyRevision  Int?
+  anonymizedAt   DateTime?    @db.Timestamptz(3)
+  joinedAt       DateTime     @default(now()) @db.Timestamptz(3)
+
+  @@unique([roomId, userId])
+  @@unique([roomId, guestHash])
+  @@unique([roomId, nicknameKey])
+  @@index([userId])
+  @@index([guestExpiresAt])
+}
+
+model KanaRaceMatch {
+  id           String             @id @db.Uuid
+  roomId       String             @db.Uuid
+  room         KanaRaceRoom       @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  dictionaryId String             @db.VarChar(64)
+  dictionary   KanaRaceDictionary @relation(fields: [dictionaryId], references: [id], onDelete: Restrict)
+  currentFor   KanaRaceRoom[]     @relation("CurrentKanaMatch")
+  state        Json               @db.JsonB
+  createdAt    DateTime           @default(now()) @db.Timestamptz(3)
+  finishedAt   DateTime?          @db.Timestamptz(3)
+  expiresAt    DateTime           @db.Timestamptz(3)
+
+  @@unique([id, roomId])
+  @@index([roomId, createdAt])
+  @@index([dictionaryId])
+  @@index([expiresAt])
+}
+
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
@@ -346,6 +438,8 @@ model User {
   postLikes                PostLike[]
   kotobaClashRooms         KotobaClashRoom[]
   kotobaClashMembers       KotobaClashRoomMember[]
+  kanaRaceRooms            KanaRaceRoom[]
+  kanaRaceMembers          KanaRaceMember[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -591,9 +685,10 @@ model FlashcardVocab {
 
   retiredAt DateTime?
 
-  cards    FlashcardCard[]
-  reports  Report[]
-  comments QuestionComment[]
+  cards           FlashcardCard[]
+  reports         Report[]
+  comments        QuestionComment[]
+  kanaRaceSources KanaWordSource[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

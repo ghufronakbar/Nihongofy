@@ -50,6 +50,7 @@ export async function proxy(request: NextRequest) {
     pathname === "/api/internal/kotoba-clash-probe" ||
     // Guest game auth, Origin, membership and capacity are verified by this exact handler.
     pathname === "/api/mini-games/kotoba-clash/ws" ||
+    pathname === "/api/mini-games/kana-word-race/ws" ||
     pathname.startsWith("/api/cron/") ||
     pathname.startsWith("/api/auth/google/")
   ) {

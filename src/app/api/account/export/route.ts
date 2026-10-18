@@ -2,6 +2,7 @@ import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { withoutUnsubmittedGrades } from "@/features/profile/lib/account-export";
 import { getClashAccountExport } from "@/features/kotoba-clash/server/account-export";
+import { getRaceAccountExport } from "@/features/kana-word-race/server/lifecycle";
 
 export const runtime = "nodejs";
 
@@ -299,6 +300,7 @@ export async function GET() {
       account: {
         ...account,
         kotobaClashMembers: await getClashAccountExport(prisma, session.userId, exportedAt),
+        kanaRaceMembers: await getRaceAccountExport(prisma, session.userId, exportedAt),
         attempts: withoutUnsubmittedGrades(account.attempts),
       },
     },

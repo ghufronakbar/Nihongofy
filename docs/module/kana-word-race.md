@@ -1,293 +1,250 @@
-# Modul Kana Word Race (Nama Kerja)
+# Modul Kana Word Race
 
-Tanggal rancangan: **18 Oktober 2026 (Asia/Jakarta)**.
+Diperbarui: **18 Oktober 2026 (Asia/Jakarta)**.
 
 ## Status Aktual
 
-**Rancangan saja; implementasi belum dimulai.** User meminta dokumentasi modul dan rencana
-setelah diskusi konsep. Belum ada route, entry registry, feature flag, dependency konversi,
-tabel, migration, seed kamus game, atau deployment untuk game ini. Kotoba Clash tetap menjadi
-satu-satunya game yang tersedia dalam kode katalog saat dokumen ini dibuat.
+Implementasi v1 tersedia di kode dan default **mati**. Migration, seed kamus, engine,
+room/lobby, WebSocket, papan privat, hasil/rematch, export, anonimisasi dan cleanup tersedia.
+Pengujian engineering PostgreSQL/WebSocket serta pemeriksaan browser lokal dicatat di
+[verifikasi](../verification/kana-word-race-uat.md). Database/deployment production tidak
+berubah dalam pekerjaan ini. UAT lintas perangkat pada hosting target, review konten manusia,
+dan pengukuran budget tetap menjadi gate aktivasi.
 
-**Kana Word Race** adalah nama kerja untuk dokumentasi, bukan nama final pilihan user.
-Slug `kana-word-race`, nama model, route, dan flag di bawah merupakan usulan implementasi.
-Bekukan identitas sebelum membuat migration atau membuka URL publik.
+Nama implementasi **Kana Word Race**, slug `kana-word-race`. Nama kerja dari diskusi dipakai
+untuk v1; perubahan branding kelak tidak perlu mengubah identitas data.
 
-Rujukan:
+Rujukan: [plan](../plan/mini-games-kana-word-race.md), [UAT](../verification/kana-word-race-uat.md),
+[Mini Games](mini-games.md), [Kotoba Clash](kotoba-clash.md),
+[database](../database.md), dan [migration](../operations/migrations.md).
 
-- [Rencana implementasi](../plan/mini-games-kana-word-race.md): urutan, dependensi, dan gate.
-- [Checklist UAT](../verification/kana-word-race-uat.md): expected result dan bukti penerimaan.
-- [Mini Games](mini-games.md): katalog, navigasi, dan pemisahan antar-game.
-- [Kotoba Clash](kotoba-clash.md): rujukan pengalaman room dan transport existing.
-- [Flashcard](flashcard.md) dan [kontrak fixture](../seed-flashcard.md): sumber kosakata.
-- [Aturan project](../project-rules.md), [database](../database.md), dan
-  [migration](../operations/migrations.md): batas implementasi.
+## 1. Aturan Produk v1
 
-## 1. Tujuan dan Keputusan Produk
+Pemain dalam satu room berlomba menebak bacaan rahasia yang sama. Setiap pemain mempunyai
+papan privat; hanya progres dan hasil angka yang terlihat bersama.
 
-Permainan tebak kata berbasis kana dengan feedback posisi seperti Wordle. Pemain dalam satu
-room berlomba menemukan bacaan rahasia yang sama, dengan papan dan kesempatan masing-masing.
-Kanji, arti, dan contoh belajar ditampilkan setelah ronde dibuka untuk semua pemain.
-
-| Topik | Keputusan hasil diskusi |
+| Aturan | Nilai |
 |---|---|
-| Akses pertandingan | Room undangan seperti Kotoba Clash; kode atau link |
-| Host dan peserta | Host login; peserta akun atau guest dengan nickname |
-| Target | Bacaan hiragana sepanjang 3, 4, 5, 6, atau 7 karakter |
-| Kesempatan | Enam tebakan valid per pemain per ronde |
-| Waktu | Ada deadline bersama dari server |
-| Input | Keyboard virtual kana; dukungan romaji yang diubah menjadi hiragana |
-| Feedback | Tepat posisi, ada di posisi lain, atau tidak ada dalam target |
-| Petunjuk tambahan | Kategori opsional, sama untuk seluruh pemain |
-| Privasi | Isi tebakan dan feedback pemain tidak dibagikan kepada lawan |
-| Akhir ronde | Menunggu seluruh roster selesai atau deadline, termasuk setelah ada yang benar |
-| Hasil | Peringkat pertandingan, jawaban/arti, dan rematch dengan room yang sama |
-| Sumber konten | Bacaan flashcard yang dinormalisasi dan dikurasi menjadi kamus game |
+| Peserta | 2-20; host akun terverifikasi, peserta akun atau guest |
+| Panjang | Tetap 3/4/5/6/7 kana atau acak; default 5 |
+| Ronde | 3/5/10; default 3 |
+| Kesempatan | 6 tebakan valid per pemain per ronde |
+| Normal | 3-4 kana: 90s; 5: 120s; 6-7: 150s |
+| Santai | Normal ditambah 60s |
+| Awal pertandingan | Countdown 5s |
+| Reveal | 8s lalu ronde berikutnya; setelah reveal terakhir masuk hasil |
+| Kategori | Opsional, default off; sama bagi seluruh pemain |
+| Pengulangan | Target unik dalam satu match; rematch boleh mengulang |
+| Acak panjang | Kantong 3-7 diacak, diulang seimbang lalu urutan ronde diacak |
+| Skor benar | `1000 + floor(1000 * sisaWaktu / durasiRonde)` |
+| Skor gagal | 0; tidak ada bonus jumlah tebakan |
+| Tie | Total poin sama mendapat peringkat sama (1, 1, 3) |
 
-Rekomendasi rancangan: default lima kotak, host dapat memilih panjang tetap atau acak 3-7.
-Panjang kotak berlaku sama untuk seluruh pemain dalam ronde yang sama. Banyaknya kotak bukan
-label kesulitan JLPT: kata dasar seperti `しょうがっこう` membutuhkan tujuh kotak.
+Skor dihitung memakai waktu penerimaan database dan baru dipublikasikan setelah reveal.
+Status pemain `PLAYING`, `SOLVED`, `EXHAUSTED`, atau `TIMED_OUT`. Pemain pertama yang benar
+menutup input pribadinya, sementara lawan tetap berhak memakai sisa kesempatan/waktu.
+Reveal terjadi saat seluruh roster terminal atau deadline. Pemain offline tetap menunggu
+deadline; disconnect tidak memberi kesempatan baru.
 
-Hal berikut **belum dibekukan** dan wajib ditulis final di dokumen ini sebelum fase fondasi:
+V1 tidak mencakup spectator, matchmaking, chat, ranked global, custom target, AI saat bermain,
+atau perubahan kartu/jadwal FSRS. Kapasitas 20 adalah batas admission yang diuji lokal,
+belum merupakan kapasitas deployment yang terukur.
 
-- Nama/slug final; rentang pemain (target awal 2-20 mengikuti pengalaman Kotoba Clash,
-  bukan kapasitas game baru yang sudah terukur).
-- Pilihan/default jumlah ronde, durasi tiap panjang, countdown, reveal, dan jeda antar-ronde.
-- Distribusi panjang pada mode acak dan aturan pengulangan target dalam/rematch pertandingan.
-- Rumus poin, versi scoring, tie, serta hubungan jumlah tebakan dengan kecepatan.
-- Kategori yang tersedia, kriteria publikasi kata, dan fallback bila stok tidak cukup.
-- Kuota room/koneksi, spectator, retensi, credential guest, dan scope penggantian room host
-  lintas game. Membuat room game ini tidak boleh menutup room Kotoba Clash tanpa keputusan baru.
+## 2. Room dan Hak Akses
 
-V1 berfokus pada room undangan. Matchmaking publik, ranked global, chat, custom word dari host,
-penilaian AI saat bermain, dan perubahan nilai/progres SRS tidak termasuk rancangan awal.
-
-## 2. Room dan Lifecycle Pertandingan
-
-Alur: landing -> buat/gabung room -> konfigurasi -> ready -> countdown -> ronde -> reveal ->
-ronde berikutnya -> hasil -> lobby/rematch. Route usulan:
-
-| Route | Isi dan akses |
+| Route | Akses |
 |---|---|
-| `/mini-games/kana-word-race` | Aturan, Buat Room, dan form kode; landing publik |
-| `/mini-games/kana-word-race/room/[code]` | Join/lobby/runner; membership wajib diverifikasi |
-| `/mini-games/kana-word-race/room/[code]/results/[matchId]` | Hasil per match dalam retensi; membership wajib |
+| `/mini-games/kana-word-race` | Landing publik, kode undangan, create untuk akun |
+| `/mini-games/kana-word-race/room/[code]` | Join nickname, lalu snapshot personal untuk member |
+| `/mini-games/kana-word-race/room/[code]/results/[matchId]` | Member yang masuk roster match tersebut; match harus selesai |
+| `/api/mini-games/kana-word-race/ws?room=<uuid>` | Same-Origin, membership, session/guest dan lease wajib |
 
-- Perubahan konfigurasi menaikkan revision dan mereset ready. Start memverifikasi ulang host,
-  kehadiran/kesiapan roster, konfigurasi, serta stok kata secara atomik di server.
-- Roster dibekukan saat Start. Pendatang baru tidak mendapat enam kesempatan baru di tengah
-  pertandingan; rancangan awal menawarkan menunggu pertandingan berikutnya. Spectator hanya
-  ditambahkan setelah batas akses dan kapasitasnya diputuskan.
-- Setiap ronde memiliki target privat, panjang, kategori bila aktif, waktu mulai, dan deadline.
-  Semua pemain memakai target dan deadline yang sama; refresh tidak memulai ulang timer.
-- Status per pemain: `PLAYING`, `SOLVED`, `EXHAUSTED`, atau `TIMED_OUT`. Satu tebakan benar
-  langsung menutup input pemain itu; enam tebakan valid yang salah menghabiskan kesempatan.
-- Pemain yang sudah selesai tetap tidak menerima target, kanji, arti, atau contoh lengkap
-  sebelum reveal bersama. Feedback hijau dari tebakan benarnya sendiri tetap boleh tampil.
-- Ronde berakhir ketika seluruh roster terminal atau deadline tercapai. Pemain offline yang
-  masih `PLAYING` menunggu deadline; disconnect bukan penyelesaian otomatis.
-- Reveal membuka target dan materi belajar untuk semua anggota yang berhak. Rematch membuat
-  match, roster, serta ledger baru tanpa menimpa hasil lama.
+Room/hasil `noindex`; sitemap hanya memuat landing ketika flag aktif. Guest boleh bergabung
+melalui action, tanpa pengecualian auth umum untuk API lain. Pengecualian proxy hanya endpoint
+WebSocket game yang tepat.
 
-Kecepatan dihitung dari waktu mulai ronde sampai tebakan benar **diterima server**. Client
-tidak mengirim waktu yang dipercaya untuk ranking. Rancangan awal menempatkan pemain yang
-lebih cepat menjawab benar pada peringkat ronde lebih tinggi; angka poin/tie wajib dibekukan
-sebelum diimplementasikan. Skor agregat harus dapat direkonstruksi dari ledger dan tidak
-bertambah dua kali saat finalisasi diulang.
+- Kode acak delapan karakter tanpa karakter ambigu, nickname 2-24 karakter ternormalisasi dan
+  unik per room. Guest token acak 32 byte disimpan dalam cookie `__Host-kana_race_guest`,
+  `httpOnly`, `secure`, `sameSite=lax`, 7 hari tetap. Redis/database hanya memakai hash SHA-256.
+- Create idempotent memakai request UUID. Satu host membuat room baru akan menutup room
+  **Kana Word Race** miliknya yang lama; room Kotoba Clash dan host lain tidak disentuh.
+- Join baru hanya di lobby. Roster/config/release dibekukan saat Start. Peserta terlambat
+  mendapat pesan untuk menunggu host kembali ke lobby; tidak otomatis masuk spectator.
+- Ready terikat revision. Join/perubahan pengaturan membuat ready lama tidak berlaku.
+  Start memeriksa host, revision, 2-20 peserta, kesiapan semua member aktif, dan stok target.
+- Rematch mengembalikan lobby dan reset ready, dengan kode tetap serta match UUID baru.
+  Retry rematch ketika sudah lobby tidak mengubah revision lagi.
+- Host menutup room melalui konfirmasi UI. Host disconnect tidak menghentikan match;
+  sesi/guest yang kedaluwarsa tidak boleh mengirim command. Penghapusan akun host menutup room.
+- Tidak ada transfer host/kick/leave khusus pada v1. Room tertutup dapat membuka hasil yang
+  sudah selesai sampai retensi habis; hasil match aktif tidak dibuka lewat URL historis.
 
-## 3. Kotak Kana dan Input
+## 3. Kana, Editor, dan Evaluator
 
-### 3.1 Satuan karakter
+Satu kotak = satu code point kana setelah NFKC, katakana ke hiragana, dan NFC. Ini bukan
+hitungan mora: `きゃ` dua kotak; `が` satu; `っ`, `ゃ`, `ゅ`, `ょ` dan `ー` masing-masing satu.
+`アルバイト` menjadi `あるばいと` (5), `女の人` menjadi `おんなのひと` (6), dan
+`小学校` menjadi `しょうがっこう` (7).
 
-Satu kotak memuat satu karakter kana setelah normalisasi, bukan satu romaji, kanji, atau mora.
-Gunakan aturan yang identik pada importer, input, validasi server, dan evaluator.
+WanaKana **5.3.1** dipin untuk konversi. `convertLongVowelMark:false` mempertahankan `ー`
+(`ギター` -> `ぎたー`, bukan `ぎたあ`). Server hanya menormalisasi kana; input Latin
+harus sudah dikomposisikan client dan tidak bisa menembus validasi server.
 
-| Bacaan | Isi kotak | Jumlah |
-|---|---|---:|
-| `がっこう` | `が・っ・こ・う` | 4 |
-| `きょう` | `き・ょ・う` | 3 |
-| `しょうがっこう` | `し・ょ・う・が・っ・こ・う` | 7 |
-| `えーっと` | `え・ー・っ・と` | 4 |
+Editor memakai satu input, dengan enam baris visual 3-7 kotak. Default keyboard kana virtual
+(input sistem disembunyikan); tombol romaji membuka input teks. `k` dan `n` pending tidak
+mengisi kotak; `ka` -> `か`, `kyo` -> `きょ`, `nn`/`n'` -> `ん`, `gakkou` -> `がっこう`.
+Konversi parsial disimpan sebagai kana plus pending agar Backspace menghapus satu pending
+atau satu kana, bukan satu suku romaji asli. Tombol kecil/voicing mengubah kana terakhir;
+`は` -> `ば` -> `ぱ` -> `は`. Virtual kana mengganti pending Latin yang belum lengkap.
 
-Normalisasi: Unicode NFKC -> katakana ke hiragana -> NFC -> validasi karakter -> hitung
-karakter hasil normalisasi. `が` yang semula berupa huruf dan combining dakuten menjadi satu
-karakter. Batasi alfabet game pada kana yang benar-benar disediakan keyboard. Karakter kecil,
-gabungan katakana yang tidak terwakili, dan karakter lama wajib diaudit pada kurasi.
+Komposisi IME dipisahkan dari Enter submit; native `isComposing`/229 diperiksa. Paste/editor
+yang melebihi kotak dibatasi pada tampilan; **tidak mengirim otomatis** dan server tetap
+menolak panjang/alfabet yang salah. Tujuh kotak penuh tidak otomatis mengirim tebakan.
+Draft disimpan lokal per ronde/accepted count, tidak ikut berubah karena progres lawan.
 
-`っ`, `ゃ`, `ゅ`, `ょ`, dan `ー` memiliki kotak sendiri. Dakuten/handakuten menyunting kana pada
-kotak yang sama. Jangan menghapus tanda panjang atau menyamakan `おう`, `おお`, dan `ー`;
-ejaan bacaan merupakan bagian jawaban. Aturan ini berlaku sama untuk tebakan dan target.
+Evaluator dua tahap: tandai tepat posisi, hitung sisa kemunculan target, lalu tandai kana
+pindah posisi sebanyak stok sisanya. Target `かたかな`, tebakan `かかかか` menghasilkan
+tepat/absen/tepat/absen. `か/が` dan `つ/っ` berbeda. Keyboard mempertahankan informasi
+terkuat (tepat > hadir > absen); tile dan legend mempunyai label aksesibel.
 
-### 3.2 Editor satu input
+Kata asing bagi kamus, duplikat, ilegal, belum lengkap, atau terlambat tidak memakai slot.
+Pesan menggunakan "Kata belum tersedia di kamus game", bukan menyimpulkan bahasa Jepang salah.
 
-Papan enam baris ditampilkan seperti Wordle. Baris aktif memakai satu editor/input dengan
-representasi kotak; jangan membuat tujuh input terpisah yang memecah komposisi romaji/IME.
+## 4. Kamus Game
 
-- Keyboard virtual memasukkan kana; sediakan huruf kecil, dakuten/handakuten, `ー`, hapus,
-  dan kirim. Pemetaan tombol lengkap dibekukan setelah audit alfabet kamus.
-- Romaji dikonversi bertahap. `k` masih pending, `ka` menghasilkan `か`, `kyo` menghasilkan
-  `きょ`, dan `gakkou` menghasilkan `がっこう`. Pending romaji terlihat tanpa mengisi kotak
-  sebagai huruf Latin. Pastikan panjang tidak melewati jumlah kotak.
-- Tetapkan dan jelaskan perilaku `n`, `nn`, `n'`, konsonan ganda, huruf kecil, serta tanda
-  panjang. WanaKana adalah kandidat dependency; belum terpasang dan perlu evaluasi/pinning.
-- Backspace menghapus pending romaji dahulu, lalu kana terakhir. Reset komposer ketika ronde
-  berganti, refresh, atau aksi virtual mengganti metode input; tidak boleh ada huruf tertahan
-  yang muncul kembali tanpa tindakan user.
-- Keyboard Jepang native menghormati composition events/`isComposing`. Enter yang mengakhiri
-  komposisi tidak sekaligus mengirim tebakan; jangan mengonversi input IME dua kali.
-- Paste divalidasi/dinormalisasi utuh. Kirim hanya jika tepat panjang, alfabet valid, dan tidak
-  ada komposisi tertunda. Jangan auto-submit hanya karena kotak sudah penuh.
-- Di HP, keyboard virtual game menjadi pilihan awal. Keyboard sistem muncul saat user memilih
-  input teks/romaji supaya dua keyboard tidak mengambil ruang secara bersamaan.
+Sumber tetap fixture flashcard `src/flashcard-data/vocab/n5.json` sampai `n1.json`.
+Bacaan diambil dari **`content.word` melalui `readingFromMarkup` yang dipakai pipeline
+flashcard**, bukan split `FlashcardVocab.key` dan bukan menyalin tabel kartu.
+`key` menjadi provenance stabil; FK `vocabId` opsional menghubungkan vocab yang sudah diseed.
 
-### 3.3 Feedback dan penggunaan kesempatan
+Pipeline read-only menyaring content kosong, `readingUncertain`, AI doubt, alfabet di luar
+keyboard dan panjang selain 3-7; menormalisasi, deduplikasi bacaan, dan menggabungkan sumber
+homofon. Arti pertama dan bentuk tulis tanpa markup menjadi materi reveal. Tidak menimpa
+fixture asli, kartu, subscription, flag modul Flashcard, atau progres belajar.
 
-Evaluator memproses posisi tepat terlebih dahulu, lalu membagikan status posisi lain menurut
-sisa jumlah kemunculan kana dalam target. Kana berulang tidak boleh mendapat kuning melebihi
-jumlah yang tersedia. `か`, `が`, `っ`, dan `つ` adalah karakter berbeda.
+`src/kana-race-data/curation.json` adalah whitelist target dan kategori terpisah. Filler seperti
+`えーっと` tidak dijadikan target. Whitelist awal disusun untuk kata yang umum; review manusia
+seluruh 94 target/kategori masih diperlukan sebelum aktivasi publik.
 
-Tebakan yang tidak lengkap, ilegal, belum dikenal kamus, sudah pernah ditebak pada ronde itu,
-atau ditolak sebelum deadline tidak menghabiskan kesempatan. Keputusan penerimaan akhir ada
-di server; UI tidak menaikkan nomor tebakan sebelum ACK sukses. Kata yang belum dikenal diberi
-pesan "Kata belum tersedia di kamus game", bukan dianggap bahasa Jepang yang salah.
+| Kana | Tebakan | Target |
+|---|---:|---:|
+| 3 | 1.630 | 20 |
+| 4 | 2.294 | 20 |
+| 5 | 1.041 | 20 |
+| 6 | 464 | 20 |
+| 7 | 194 | 14 |
+| Total | 5.623 | 94 |
 
-## 4. Kamus Game dan Kurasi
+894 entri sumber dikeluarkan saat kompilasi. Pengamatan 5.714 kandidat mentah pada diskusi awal
+mendahului filter kelayakan; bukan jumlah release final. Setiap panjang mempunyai minimal 10
+target untuk seluruh pilihan jumlah ronde.
 
-### 4.1 Sumber dan pengamatan awal
+Release v1: `dfe413f2ad5aa0e3b06b7391237dc5e773bf433bc59e7806c4278536e067f61e`.
+Checksum SHA-256 dihitung dari payload deterministik. `dictionary.v1.json` adalah artefak
+review, tidak diimpor komponen produksi/client. Runtime memakai release database yang terbaru
+berdasarkan tanggal penerbitan; match menyimpan release ID serta snapshot target/sumber.
+Release existing tidak dapat dimutasi oleh UPDATE (trigger database); reseed idempotent,
+dan perubahan konten membuat checksum/release baru. Release lama yang masih dirujuk bertahan.
 
-`FlashcardVocab.reading` adalah sumber bacaan; `key` tetap identitas stabil sumber. Pada fixture,
-gunakan bacaan turunan `readingFromMarkup(content.word)` sebagaimana `toVocabRow()` pada seed
-flashcard, agar sesuai bacaan kartu yang sudah diperbaiki. Jangan sekadar split `key` atau
-mengandalkan `note.reading` lama. Data pensiun/tanpa content tidak masuk sumber aktif.
+```sh
+npm run kana-race:dictionary:check
+npm run kana-race:dictionary   # regenerasi setelah mengubah curation/sumber, lalu review diff
+npm run seed:kana-race:check   # validasi tanpa query/write database
+npm run seed:kana-race        # hanya setelah target database dan migration diverifikasi
+```
 
-Pemeriksaan **file lokal** pada 18 Oktober 2026 menemukan 6.722 entri. Setelah normalisasi dan
-filter dasar hiragana/`ー` sepanjang 3-7, ada kandidat berikut:
+Seed memakai advisory lock, memperbarui kelayakan/provenance tabel game dan menerbitkan
+release immutable dalam satu transaksi. Vocab yang hilang tidak merusak provenance `sourceKey`.
 
-| Panjang | Bacaan unik sebelum kurasi |
-|---|---:|
-| 3 | 1.660 |
-| 4 | 2.324 |
-| 5 | 1.055 |
-| 6 | 472 |
-| 7 | 203 |
-| Total | 5.714 |
+## 5. Persistence, Transaksi, dan Privasi
 
-Ini bukan jumlah jawaban siap rilis atau pemeriksaan database production. Perhitungan masih
-mencakup entri dengan keraguan bacaan/AI, kata langka, dan alfabet yang perlu ditinjau.
-Laporan kandidat harus dapat dihasilkan ulang saat fixture berubah.
-
-| Sumber | Normalisasi | Hasil kurasi awal yang disarankan |
-|---|---|---|
-| `えーっと` | `えーっと` (4) | Kata pengisi; keluarkan dari target awal |
-| `アルバイト` | `あるばいと` (5) | Kandidat target umum |
-| `女の人` | `おんなのひと` (6) | Kandidat target; tidak perlu dipotong |
-| `小学校` | `しょうがっこう` (7) | Kandidat target umum |
-
-### 4.2 Pipeline dan pemisahan kelayakan
-
-Alur: fixture flashcard -> normalisasi/laporan kandidat -> kurasi game dalam fixture terpisah
--> validation -> seed tabel kamus game. Pertahankan pola fixture/version control/seed repository;
-tidak membuat CMS kata atau memutasi data/progres flashcard untuk memenuhi aturan game.
-
-- Kamus **tebakan** berisi bacaan valid yang diterima. Kamus **target** adalah subset yang
-  sudah ditinjau untuk kelaziman, ketepatan bacaan, dan kategori bila dipakai.
-- Kurasi menyimpan alasan penolakan/override. Afiks, potongan pola, frasa bermasalah, kata
-  pengisi, nama diri, bacaan ragu, dan karakter tidak didukung tidak otomatis menjadi target.
-- Deduplikasi berdasarkan bacaan kana yang dinormalisasi. Homofon seperti `公園` dan `講演`
-  menjadi satu entri `こうえん` dengan beberapa sumber; tulisan kanji tidak membedakan jawaban.
-- Kategori petunjuk dipilih dari makna yang dirujuk dan dikurasi. Tidak menyalin semua tag
-  flashcard sebagai petunjuk. Jika aktif, hanya pilih target yang punya kategori terverifikasi;
-  seluruh pemain melihat kategori yang sama sejak awal ronde.
-- Panjang disaring berdasarkan karakter; kata terlalu panjang ditolak utuh, tidak dipotong.
-  Normalisasi juga tidak boleh menghapus simbol agar afiks berubah menjadi kata valid palsu.
-- Start memverifikasi stok target unik sesuai jumlah ronde dan distribusi panjang; berikan
-  pesan stok tidak cukup, bukan diam-diam mengubah pengaturan atau mengulang kata.
-
-### 4.3 Bentuk penyimpanan yang diusulkan
-
-Nama model berikut konseptual, belum schema final:
-
-| Model | Tanggung jawab |
+| Model | Fungsi |
 |---|---|
-| `KanaWord` | Kana unik, panjang, kelayakan tebakan/target, kategori terkurasi, status pensiun |
-| `KanaWordSource` | Relasi banyak sumber `FlashcardVocab` per bacaan untuk provenance/review |
-| Dictionary release | Versi normalisasi, versi alfabet, checksum, dan keanggotaan kamus immutable |
-| Room/member/match | Identitas, konfigurasi, roster, revision, lifecycle dan retensi game sendiri |
-| Round/player/guess | Target privat, deadline, snapshot belajar, enam slot tebakan dan waktu server |
+| `KanaWord` | Bacaan unik, panjang, eligibility guess/answer, kategori, retiredAt |
+| `KanaWordSource` | PK wordId/sourceKey, optional FK FlashcardVocab SET NULL |
+| `KanaRaceDictionary` | Checksum PK, payload release immutable, createdAt |
+| `KanaRaceRoom` | Host, kode, config/revision, current match, expiry/idle/closed |
+| `KanaRaceMember` | Identitas akun/guest, nickname, ready dan anonimisasi |
+| `KanaRaceMatch` | Dictionary FK, state v1 privat, finishedAt dan expiry |
 
-Game menyimpan data turunan/kurasi, bukan clone seluruh `FlashcardVocab`. Pastikan target selalu
-boleh ditebak, panjang 3-7 sesuai kana, sumber tidak ganda, dan FK/query memiliki index yang
-sesuai. Angka waktu memakai timestamp dengan timezone; pilihan tipe/constraint final ditulis
-saat fase fondasi bersama aturan grant/RLS Prisma server-only existing.
+V1 menyimpan roster, ronde, target, accepted guesses, feedback dan waktu dalam **JSONB privat
+per match**, bukan tabel round/player/guess terpisah. Match kecil dibatasi 10 ronde x 20 pemain
+x 6 tebakan. Satu room row lock menserialisasi mutasi, termasuk seluruh penulisan state.
+Keputusan ini memudahkan snapshot/recovery; biaya pembacaan/penulisan JSON dan lock contention
+wajib diukur sebelum kapasitas operasional ditingkatkan.
 
-Saat Start, bekukan konfigurasi, roster, versi aturan, target, kategori, materi reveal, dan
-**keanggotaan kamus tebakan**. Referensi angka versi saja tidak cukup: release lama harus tetap
-tersedia atau snapshot kamusnya disimpan selama match dapat diakses. Reseed/pensiun/perbaikan
-flashcard berikutnya tidak mengubah match berjalan atau hasil historisnya.
+Lock order: account bila ada -> room UUID terurut -> member/match. Waktu `clock_timestamp()`
+diambil setelah room lock. Start/retry dan submit/retry atomik. Request tebakan yang sudah
+accepted dengan payload sama tidak menambah slot walau ronde lewat; payload berbeda ditolak.
+Constraint database menjaga bentuk dasar JSON, identitas, panjang, kode, ready dan satu match
+belum selesai per room. FK composite memastikan current match berasal dari room yang sama.
+Detail Zod/engine menjaga alfabet tepat, roster, slot dan aturan antar-ronde.
 
-Game hanya bergantung pada ketersediaan data sumber saat penyiapan kamus, bukan pada aktifnya
-UI/flag Flashcard. Mematikan Flashcard tidak ikut mematikan game dengan kamus yang sudah terbit.
+Semua enam tabel RLS aktif, tanpa client policy/grant ke PUBLIC/anon/authenticated/service_role.
+Akses hanya Prisma server. Release immutable boleh di-cache global berdasarkan checksum;
+**snapshot personal tidak di-cache bersama**. Cache immutable tidak melakukan revalidation
+background dan cache miss memakai transaksi yang sama untuk mendukung pool satu koneksi.
 
-## 5. Server, Privasi, dan Recovery
+Projection eksplisit mengirim config publik, anggota, progres/status/jumlah tebakan, skor dari
+ronde yang sudah reveal, dan papan **viewer sendiri**. Target/sumber/review hanya dikirim
+sesuai fase. Akun host tidak menerima target lebih awal. Export menyaring berdasarkan akun,
+hanya tebakan sendiri serta materi ronde yang sudah reveal.
 
-- Gunakan pola room/guest/lease/revision/transport yang terbukti di Kotoba Clash setelah audit
-  pemisahan game. Jangan membuat engine universal atau memaksa engine jawaban tunggal menjadi
-  engine enam tebakan. Namespace room, cache, rate limit, credential, dan runtime control harus
-  jelas agar command satu game tidak diterima game lain.
-- Principal akun melalui helper auth existing; nickname/kode room bukan bukti identitas.
-  Credential guest perlu expiry, scope, takeover multi-tab, dan revocation yang dibekukan.
-- Zod memvalidasi input `unknown`. Server memverifikasi membership/roster, status pemain,
-  round/revision, bentuk kata, kamus release, jumlah kesempatan, dan deadline pada setiap submit.
-- Serialisasikan submit untuk pemain/ronde yang sama, idempotency token retry, serta finalisasi
-  ronde. Retry mengembalikan ACK yang sama; command bersamaan tidak memakai slot atau poin ganda.
-  Finalisasi dan penerimaan tebakan harus mempunyai urutan lock dan clock database yang konsisten.
-- Batasi submit saat ACK pending. Rate limit juga melindungi percobaan kata invalid, yang tidak
-  menghabiskan enam kesempatan tetapi tetap memakai sumber daya.
-- Snapshot personal hanya membawa tebakan/feedback milik penerima. Broadcast room hanya presence,
-  status, jumlah percobaan, revision, dan informasi publik yang ditetapkan; jangan publish papan
-  personal ke channel bersama. Hal ini berlaku juga untuk host, spectator, replay, dan error.
-- Target, kandidat jawaban, materi reveal, serta checksum/hash target yang mudah ditebak tidak
-  boleh masuk props RSC/client, HTML, log, cache publik, atau snapshot sebelum reveal bersama.
-  Pengecualian yang disengaja hanya feedback posisi milik pemain itu sendiri.
-- Commit ke database sebelum publish. Event hilang/duplikat atau publish gagal dipulihkan lewat
-  snapshot otoritatif. State penting tidak bergantung pada memori/timer satu proses.
-- Reconnect memulihkan tebakan ter-ACK, kesempatan, deadline dan status. Draft/pending romaji
-  boleh hilang; tebakan accepted tidak hilang. Client retry dengan token lama sebelum membuat
-  submit baru jika koneksi terputus sebelum menerima ACK.
-- Rencana hosting mengikuti fondasi Vercel/Upstash/PostgreSQL existing; biaya tambahan per tebakan
-  dan room serentak tetap harus diukur. Tidak mengasumsikan probe Kotoba Clash meluluskan game ini.
+Anonimisasi akun/guest menghapus tautan identitas, nickname dan kata/feedback tebakan, sambil
+menyimpan jumlah, waktu dan boolean keberhasilan agar angka lawan tidak berubah. Match tidak
+menyalin nama/email/user ID. Runtime tidak mencatat kata, token, atau error Prisma mentah.
 
-## 6. Integrasi, UI, dan Operasi
+## 6. Realtime, Recovery, dan Retensi
 
-Feature usulan berada di `src/features/kana-word-race`, dengan domain murni, kontrak, server,
-dan komponen terpisah. Entry katalog baru ditambahkan setelah game tersedia untuk diuji,
-mengikuti bahasa visual neo-brutalist existing dan dukungan light/dark/reduced motion.
+WebSocket memakai adapter `@vercel/functions`, Node, maxDuration 300s; koneksi dirotasi 270s.
+Satu subscription Upstash per room/proses hanya membawa invalidasi `{roomId, version:1}`;
+setiap socket membaca projection sendiri. State di-commit sebelum publish. Publish hilang
+pulih lewat heartbeat/sync 20s dan boundary timer; setelah proses mati, clock database
+menghitung fase dari jadwal yang tersimpan, termasuk beberapa deadline yang terlewat.
 
-- Usulan flag `FEATURES_KANA_WORD_RACE` default **false** dan mewajibkan `FEATURES_MINI_GAMES`.
-  Tambahkan lewat konstanta existing, bukan akses env langsung. Flag ini belum ada sekarang.
-- Landing mengikuti metadata publik; room/hasil `noindex` dan membership terverifikasi.
-  Guard wajib ada pada route, action, handshake dan command, termasuk koneksi deployment lama.
-- Rancang runtime drain per game agar mematikan game ini tidak menutup Kotoba Clash. Audit
-  kapasitas shared infrastructure dan jangan menyalin kontrol global tanpa memeriksa scope.
-- Papan enam baris, tujuh kotak, timer, kategori dan keyboard harus nyaman pada HP sempit tanpa
-  memecah satu tebakan menjadi dua baris. Fokus editor tidak hilang ketika event lawan masuk.
-- Feedback tidak bergantung warna saja; beri label aksesibel posisi, nomor percobaan, status
-  keyboard dan error. Detail kana kecil/dakuten tetap terbaca, termasuk reduced motion.
-- Freeze aturan indikator warna keyboard; prioritas informasi tepat posisi tidak diturunkan oleh
-  hasil abu-abu dari kemunculan duplikat pada tebakan lain.
-- Tetapkan lobby idle timeout, retensi room/match/guess/release, cleanup batch dan expiry runtime.
-  Referensi release tidak boleh dibersihkan sebelum semua match yang membutuhkannya kedaluwarsa.
-- Relasi personal wajib masuk export, `anonymizeAccount`, serta disclosure guest/retensi. Export
-  tidak membuka target sebelum reveal atau tebakan lawan. Log tidak menyimpan kata, token,
-  nickname, kode room, atau input romaji mentah.
+Lease Redis 60s diperbarui setiap 20s. Tab baru menggantikan owner lama; command lama ditolak.
+Auth/revocation, runtime control dan ownership diperiksa setiap command/heartbeat. Origin
+ketat, payload 2KB, maksimal 4 message/detik/koneksi, 120 command/menit/member, 60 handshake/
+menit/IP HMAC, 30 entry/menit/IP HMAC. Rate limit termasuk command yang ditolak engine.
 
-## 7. Pemeliharaan Dokumen
+Client reconnect dengan backoff/jitter; watchdog 45s menutup koneksi yang tidak memberi data.
+Pending request direplay dengan UUID lama setelah snapshot, accepted guesses dipulihkan dari
+server. Draft yang belum accepted dapat hilang ketika refresh. UI tidak menerima poin lokal.
+Outage Redis/auth fail-closed. HTTP upgrade yang gagal mengarahkan UI ke reconnect/muat ulang;
+keberhasilan adapter Vercel tetap memerlukan UAT deployment.
 
-Dokumen ini menjadi sumber aturan produk/data/protokol setelah keputusan dibekukan. Checklist
-pekerjaan ada di [plan](../plan/mini-games-kana-word-race.md); bukti dan acceptance ada di
-[UAT](../verification/kana-word-race-uat.md). Checkbox implementasi tidak membuktikan UAT.
+Lobby idle ditutup setelah 30 menit. Room selesai ditutup 30 menit setelah akhir pertandingan,
+dengan deadline deterministik walau baru dipulihkan kemudian. Ready/join/config/rematch di lobby
+memperbarui aktivitas. Room/membership mempunyai retensi 7 hari dari create/start terakhir;
+masing-masing match 7 hari sejak Start. Akses expired ditolak sebelum cron.
+Cron `/api/cron/auth-cleanup` memproses batch 100, menghapus expired match/room, menganonimkan
+guest expired, memulihkan akhir jadwal, dan membersihkan release tak dirujuk yang lebih tua 7
+hari; release terbaru dipertahankan. Cleanup harian dapat menghapus fisik setelah deadline
+akses berlalu. Field/hook account lifecycle harus tetap tersedia walau game flag mati.
 
-Setiap fase memperbarui ketiganya beserta [indeks modul](index.md),
-[indeks plan](../plan/index.md), dan [hub Mini Games](mini-games.md) bila status berubah.
-Route/flag/dependency/migration hanya dinyatakan tersedia setelah benar-benar ditambahkan;
-status deployed atau diterima user harus mempunyai bukti environment dan tanggal.
+## 7. Deploy dan Operasi
+
+`FEATURES_MINI_GAMES=true` dan `FEATURES_KANA_WORD_RACE=true` diperlukan bersama. Keduanya
+default false termasuk env kosong. Flashcard tidak harus aktif agar game dapat membaca release.
+Namespace cookie/cache/lease/channel/runtime control terpisah dari Kotoba Clash.
+
+Urutan Release Owner:
+
+1. Review migration `20261018035428_kana_word_race`, backup dan target DIRECT_URL; jalankan
+   `npx prisma migrate deploy`. **Migration wajib sebelum deploy walau flag off**, karena
+   export akun, anonimisasi dan cron memakai tabel baru.
+2. Validasi dan seed kamus game; verifikasi checksum/count, RLS/grant dan trigger immutable.
+3. Deploy flag-off; verifikasi route guard, account export/deletion dan cron.
+4. Jalankan UAT hosting target (dua perangkat, guest/akun, IME, reconnect >270s, rematch,
+   lintas instance), review konten, dan ukur PostgreSQL/Redis/Vercel sebelum aktivasi publik.
+5. Aktifkan kedua flag dan runtime control setelah gate diterima.
+
+Drain: `npm run kana-race:runtime -- disable`, tunggu minimal 20s, lalu redeploy flag-off dan
+refresh tab. `status`/`enable` memakai key game ini saja. Rollback aplikasi mempertahankan
+migration additive dan data sesuai retensi; jangan drop tabel untuk rollback biasa.
+
+## 8. Pemeliharaan
+
+Perubahan aturan/input/curation harus memperbarui modul ini, plan dan bukti UAT bersama.
+Bedakan kode tersedia, pengujian lokal, migration applied, deployment dan acceptance user.
+Jangan meluluskan kapasitas/provider/IME mobile hanya berdasarkan unit test atau screenshot.
