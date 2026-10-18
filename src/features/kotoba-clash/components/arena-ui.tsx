@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { ClashRoomSnapshot } from "../contracts";
+import { ClashAnswerStatus } from "./answer-status";
 
 export function ClashButton({ className, tone = "white", ...props }: React.ComponentProps<typeof Button> & {
   tone?: "white" | "yellow" | "blue" | "green" | "coral";
@@ -74,6 +75,7 @@ export function ClashLeaderboard({ match, members, viewerId, compact = false, so
           <ClashAvatar nickname={player.nickname} avatarUrl={member?.avatarUrl} />
           <div className="min-w-0"><p className="truncate text-sm font-extrabold" title={player.nickname}>{player.nickname}{player.memberId === viewerId && <span className="ml-1 text-xs font-medium">(Anda)</span>}</p>
             <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1"><span className="text-xs text-neo-ink/65">{player.correctCount} benar</span><ClashStreak value={player.bestStreak} /></div>
+            <ClashAnswerStatus match={match} memberId={player.memberId} />
           </div>
           <div className="text-right"><p key={player.score} className="clash-score">{player.score.toLocaleString("id-ID")}</p><p className="text-[10px] font-bold text-neo-ink/60">POIN</p></div>
         </li>;
@@ -112,6 +114,7 @@ export function ClashMemberList({ state, online, active = false, kick, disabled 
         <ClashAvatar nickname={member.nickname} avatarUrl={member.avatarUrl} />
         <div className="min-w-0 flex-1"><div className="flex items-center gap-1.5"><p className="truncate text-sm font-extrabold" title={member.nickname}>{member.nickname}{member.id === state.viewer.memberId ? " (Anda)" : ""}</p>{member.isHost && !solo && <span className="text-[10px] font-black">HOST</span>}</div>
           <p className="mt-1 flex items-center gap-1.5 text-xs text-neo-ink/65"><span className="clash-status-dot" data-online={online.includes(member.id)} aria-hidden="true" />{online.includes(member.id) ? "Terhubung" : "Offline"}{member.spectating ? " / Penonton" : !active && !solo ? member.ready ? " / Ready" : " / Belum ready" : ""}</p>
+          {active && !solo && <ClashAnswerStatus match={state.match} memberId={member.id} />}
         </div>
         {!solo && !active && !member.spectating && member.ready && <span className="border-2 border-neo-ink bg-neo-green px-1.5 py-1 text-[10px] font-black">READY</span>}
         {!active && state.viewer.isHost && !member.isHost && kick && <ClashButton tone="coral" className="shrink-0 px-2" disabled={disabled} aria-label={`Keluarkan ${member.nickname}`} title={`Keluarkan ${member.nickname}`} onClick={() => kick(member)}><UserMinus className="size-4" /></ClashButton>}

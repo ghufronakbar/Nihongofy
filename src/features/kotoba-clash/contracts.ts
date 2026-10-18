@@ -25,6 +25,8 @@ export const ClashRoomSnapshotSchema = z.object({
     }).nullable(),
     leaderboard: z.array(z.object({
       playerId: ClashIdSchema, memberId: ClashIdSchema, nickname: z.string(), rank: z.number(), score: z.number(),
+      // Null means no accepted answer for the active round; absent supports older servers.
+      answerOrder: z.number().int().min(1).max(20).nullable().optional(),
       correctCount: z.number(), wrongCount: z.number(), skippedCount: z.number(), bestStreak: z.number(), correctTimeMs: z.number(),
     })).max(20),
   }).nullable(),

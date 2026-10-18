@@ -374,7 +374,7 @@ terbaik. Akurasi dapat diturunkan dari jumlah jawaban, belum ditampilkan sebagai
 | Fase | Payload yang boleh dilihat pemain/spectator |
 |---|---|
 | Lobby/countdown | Konfigurasi, peserta, ready, jadwal; belum ada soal mendatang |
-| Question | Soal aktif, konteks, pilihan, deadline, status submit diri sendiri |
+| Question | Soal aktif, konteks, pilihan, deadline, status submit diri sendiri, status/urutan menjawab seluruh roster |
 | Reveal | Kunci dan pembahasan soal tersebut, jawaban sendiri, leaderboard kumulatif |
 | Finished | Hasil dan review ronde yang sudah selesai pada pertandingan tersebut |
 
@@ -382,6 +382,12 @@ terbaik. Akurasi dapat diturunkan dari jumlah jawaban, belum ditampilkan sebagai
   per pilihan, perubahan skor/streak ronde aktif, atau metadata yang menyiratkan kunci.
 - ACK jawaban hanya menyatakan diterima/ditolak dan identitas ronde; benar/salah tetap menunggu
   reveal. Leaderboard yang terlihat saat soal berjalan hanya memuat ronde yang sudah direveal.
+- `leaderboard[].answerOrder` hanya menyatakan urutan jawaban yang sudah diterima untuk ronde
+  aktif (`null` = belum menjawab). Pemain dan spectator melihat indikator yang sama tanpa pilihan,
+  waktu jawab mentah, atau benar/salah lawan. Urutan mengikuti `acceptedAt` server; waktu sama
+  mendapat nomor seri dengan competition ranking (#1, #1, #3). Ronde baru mereset indikator,
+  countdown/selesai menyembunyikannya. Field opsional menjaga kompatibilitas snapshot lama.
+  Badge tampil pada papan peringkat dan daftar pemain tanpa mengubah urutan daftar.
 - Props RSC, cache, snapshot reconnect, retry ACK, event Pub/Sub, log, export akun, dan error ikut
   mematuhi batas reveal. Spectator tidak mendapat payload yang lebih lengkap daripada pemain.
 - Furigana dibuang di server untuk instruksi, stem, bacaan, dan pilihan selama pengerjaan, termasuk
@@ -473,7 +479,9 @@ diduplikasi dalam transport. Event klien tidak pernah langsung di-relay sebagai 
 - Pub/Sub bukan penyimpanan pesan atau jaminan urutan. Invalidation dikoaleskan 200 ms sebelum
   snapshot authoritative. Client menolak snapshot dengan revision/waktu lebih lama. Boundary
   fase dan heartbeat 20 detik memperbaiki event hilang; snapshot hanya memuat ronde aktif serta
-  status jawaban sendiri. Belum ada event delta atau penghitung jawaban publik.
+  status jawaban sendiri serta urutan menjawab roster pada ronde tersebut. Indikator memakai
+  snapshot dan data ledger existing: tidak menambah query DB, polling, publish Redis, atau tabel.
+  Belum ada event delta atau penghitung jawaban publik terpisah.
 - Reconnect memakai backoff dengan jitter, mengulang autentikasi/subscribe, lalu mengambil snapshot.
   Terputus tidak mereset membership, skor, ready yang masih valid, atau jawaban tersimpan.
 - Deployment baru dan lama dapat hidup bersamaan sampai socket lama ditutup. Versi protokol/aturan

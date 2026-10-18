@@ -6,6 +6,7 @@ import { ClashRoomSnapshotSchema, type ClashRoomSnapshot } from "../contracts";
 import { ClashError, type ClashIdentity } from "../domain/ports";
 import { phaseAt, rankPlayers, scoreLedger } from "../domain/engine";
 import { projectRound } from "../domain/projection";
+import { roundAnswerOrders } from "../domain/answer-order";
 import { databaseNow, ledgerRoundOf, lockIdentity, lockRoom, requireMember, scheduleOf, PrismaClashRepository } from "./repository";
 import { CLASH_LOBBY_IDLE_MS, supportsClashRulesVersion } from "../domain/rules";
 
@@ -44,10 +45,14 @@ export class PrismaClashState {
       const activeRound = match?.rounds.find((round) => phase && "roundId" in phase && round.id === phase.roundId);
       const ownPlayer = match?.players.find((player) => player.memberId === member.id);
       const ownAnswer = ownPlayer?.answers.find((answer) => answer.roundId === activeRound?.id);
+      const answers = match?.players.flatMap((player) => player.answers.map((answer) => ({
+        ...answer, playerId: player.id, acceptedAt: answer.acceptedAt.getTime(),
+      }))) ?? [];
+      const answerOrders = roundAnswerOrders(activeRound ? scheduleOf(activeRound) : null, answers, now.getTime());
       const scores = match ? rankPlayers(scoreLedger(
         match.players.map((player) => player.id),
         match.rounds.map((round) => ledgerRoundOf(round, match.rulesVersion)),
-        match.players.flatMap((player) => player.answers.map((answer) => ({ ...answer, playerId: player.id, acceptedAt: answer.acceptedAt.getTime() }))),
+        answers,
         now.getTime(),
       )) : [];
       const state = ClashRoomSnapshotSchema.parse({
@@ -62,7 +67,7 @@ export class PrismaClashState {
           round: activeRound ? projectRound(scheduleOf(activeRound), ClashQuestionSnapshotSchema.parse(activeRound.snapshot), now.getTime()) : null,
           leaderboard: scores.map((score) => {
             const player = match.players.find((row) => row.id === score.playerId)!;
-            return { ...score, memberId: player.memberId, nickname: player.member.nickname };
+            return { ...score, memberId: player.memberId, nickname: player.member.nickname, answerOrder: answerOrders.get(player.id) ?? null };
           }),
         },
       });

@@ -4,14 +4,17 @@ import { setTimeout as delay } from "node:timers/promises";
 import { WebSocket, WebSocketServer } from "ws";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ClashError } from "../domain/ports";
-import type { ClashRoomSnapshot } from "../contracts";
+import { ClashServerMessageSchema, type ClashRoomSnapshot } from "../contracts";
 
-const fixture = vi.hoisted(() => ({ verify: vi.fn(), read: vi.fn(), submit: vi.fn(), owns: vi.fn(), runtime: vi.fn(), online: vi.fn(), change: vi.fn(), publish: vi.fn() }));
+const fixture = vi.hoisted(() => ({ verify: vi.fn(), read: vi.fn(), submit: vi.fn(), owns: vi.fn(), runtime: vi.fn(), online: vi.fn(), change: vi.fn(), publish: vi.fn(), notify: undefined as (() => void) | undefined }));
 vi.mock("server-only", () => ({}));
 vi.mock("./auth", () => ({ verifyClashPrincipal: fixture.verify }));
 vi.mock("./runtime", () => ({ clashCommands: { submitAnswer: fixture.submit }, clashState: { read: fixture.read }, publishClashChange: fixture.publish }));
 vi.mock("./presence", () => ({ clashPresence: { owns: fixture.owns, online: fixture.online, change: fixture.change }, requireClashRuntime: fixture.runtime }));
-vi.mock("./subscription", () => ({ subscribeClashRoom: () => ({ ready: Promise.resolve(), done: new Promise<void>(() => undefined), close: vi.fn() }) }));
+vi.mock("./subscription", () => ({ subscribeClashRoom: (_roomId: string, onChange: () => void) => {
+  fixture.notify = onChange;
+  return { ready: Promise.resolve(), done: new Promise<void>(() => undefined), close: vi.fn() };
+} }));
 vi.mock("@/lib/server-logger", () => ({ reportServerError: vi.fn() }));
 import { attachClashSocket } from "./socket";
 
@@ -71,6 +74,32 @@ describe("product WebSocket command boundary", () => {
     expect(ack).toEqual({ protocolVersion: 1, type: "answer_ack", requestId: command.requestId, roundId, acceptedAt: 12345 });
     expect(fixture.verify.mock.calls.length).toBeGreaterThanOrEqual(2);
     expect(fixture.submit).toHaveBeenCalledOnce();
+  });
+  it("delivers answer status through the existing coalesced room snapshot without answer content", async () => {
+    const serverNow = Date.now();
+    fixture.read.mockResolvedValue({ ...initial, serverNow, revision: 1, match: {
+      id: matchId, questionCount: 5, playing: false, ownAnswer: null,
+      phase: { type: "QUESTION", roundId, position: 1, endsAt: serverNow + 30000 },
+      round: { id: roundId, position: 1, startsAt: serverNow - 1000, endsAt: serverNow + 30000,
+        revealEndsAt: serverNow + 38000, mondaiType: "MOJI_GOI_CONTEXT",
+        content: { instruction: null, text: "Question", image: null, context: null, choices: [
+          { code: 1, text: "First", image: null }, { code: 2, text: "Second", image: null },
+        ] } },
+      leaderboard: [{ playerId: randomUUID(), memberId, nickname: "Player", rank: 1, score: 0,
+        correctCount: 0, wrongCount: 0, skippedCount: 0, bestStreak: 0, correctTimeMs: 0, answerOrder: 1 }],
+    } });
+    if (!fixture.notify) throw new Error("Missing room subscription");
+    fixture.notify();
+    fixture.notify();
+    fixture.notify();
+    await until(() => messages.length === 2);
+    const message = ClashServerMessageSchema.parse(messages[1]);
+    expect(message.type).toBe("snapshot");
+    if (message.type !== "snapshot") throw new Error("Expected a room snapshot");
+    expect(message.state.match!.leaderboard[0]!.answerOrder).toBe(1);
+    expect(JSON.stringify(message)).not.toMatch(/"choice":|"acceptedAt":|"isCorrect":|"correctChoice":/);
+    expect(fixture.read).toHaveBeenCalledTimes(2);
+    expect(fixture.submit).not.toHaveBeenCalled();
   });
   it("does not let a socket switch to an unrelated room", async () => {
     client.send(JSON.stringify(answer({ roomId: randomUUID() })));
