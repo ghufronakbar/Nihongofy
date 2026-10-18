@@ -9,6 +9,11 @@ setelah implementasi selesai dan perilakunya sudah diverifikasi user.
 
 ## Rencana Fitur Tambahan
 
+- [Kamus popup JMdict](dictionary-popup.md), dirancang 18 Oktober 2026:
+  kamus Jepang–Inggris dari seleksi teks, memakai JMdict English penuh yang diindeks sendiri.
+  Tahap 1 mencakup mode baca/pembahasan, review hasil, latihan setelah dijawab, dan flashcard
+  setelah reveal; tahap berikutnya mencakup bunpou, artikel, tulisan diskusi, serta review
+  Kotoba Clash. Sumber disetujui pengguna; implementasi dan UAT belum dimulai.
 - [Mini Games dan Kotoba Clash](mini-games-kotoba-clash.md), dirancang 16 Oktober 2026:
   katalog publik untuk beberapa game, dengan battle kuis JLPT teks sebagai game pertama.
   Implementasi katalog, lobby, runner, hasil/rematch, recovery dan cleanup tersedia. Pada
