@@ -11,11 +11,16 @@ setelah implementasi selesai dan perilakunya sudah diverifikasi user.
 
 - [Mini Games dan Kotoba Clash](mini-games-kotoba-clash.md), dirancang 16 Oktober 2026:
   katalog publik untuk beberapa game, dengan battle kuis JLPT teks sebagai game pertama.
-  Transport WebSocket sudah diuji pada Hobby. Atas instruksi user 17 Oktober, fondasi B dilanjutkan
-  dengan pengukuran budget tetap sebagai gate aktivasi. Implementasi C-E mencakup katalog, lobby,
-  runner, hasil/rematch, recovery dan cleanup; verifikasi lokal lulus, UAT produk Hobby belum.
-  Migration fondasi terkonfirmasi applied lewat pemeriksaan Supabase read-only 17 Oktober. Bukti ada di
+  Implementasi katalog, lobby, runner, hasil/rematch, recovery dan cleanup tersedia. Pada
+  17 Oktober user mengaktifkan production dan menjalankan UAT awal 2 pemain/5 soal dengan late
+  spectator; ledger cocok. UAT lengkap dan pengukuran budget masih terbuka. Bukti ada di
+  [UAT production](../verification/mini-games-kotoba-clash-uat.md),
   [integrasi C-E](../verification/kotoba-clash-phase-c-e.md) dan [laporan A](../verification/kotoba-clash-phase-a.md).
+- [Kana Word Race (nama kerja)](mini-games-kana-word-race.md), dirancang 18 Oktober 2026:
+  game room tebak kana 3-7 karakter, enam tebakan dan deadline bersama. Input virtual/romaji,
+  papan privat, serta kamus turunan flashcard yang dikurasi. Baru dokumentasi; tidak ada kode,
+  schema/seed atau aktivasi. [Aturan modul](../module/kana-word-race.md) dan
+  [UAT belum dijalankan](../verification/kana-word-race-uat.md) dipelihara bersama plan ini.
 
 ## Rekomendasi Utama
 

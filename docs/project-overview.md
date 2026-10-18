@@ -21,6 +21,12 @@ Rujukan: [hub](module/mini-games.md), [game](module/kotoba-clash.md),
 [plan](plan/mini-games-kotoba-clash.md), [UAT](verification/mini-games-kotoba-clash-uat.md), dan
 [laporan fase A](verification/kotoba-clash-phase-a.md), dan [fondasi B](verification/kotoba-clash-phase-b.md).
 
+**Rencana 18 Oktober 2026:** [Kana Word Race](module/kana-word-race.md) (nama kerja), game
+room tebak kana 3-7 karakter dengan enam tebakan, timer, keyboard virtual/romaji dan feedback
+posisi. Kamus game direncanakan sebagai data turunan terkurasi dari bacaan flashcard.
+[Plan](plan/mini-games-kana-word-race.md) dan [UAT](verification/kana-word-race-uat.md) tersedia;
+belum ada implementasi, route, flag atau migration untuk game ini.
+
 ## Konsep Utama
 
 - **Mock test**: mengerjakan satu paket penuh, dibagi per sesi (1/2/3) mengikuti sesi ujian JLPT asli.

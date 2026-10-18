@@ -6,8 +6,13 @@ Checklist ini dikerjakan berurutan per fase (fase belakang bergantung pada fase 
 
 Rencana fitur tambahan **16 Oktober 2026**: [Mini Games dan Kotoba Clash](plan/mini-games-kotoba-clash.md).
 Dokumen [hub](module/mini-games.md), [aturan game](module/kotoba-clash.md), dan
-[UAT](verification/mini-games-kotoba-clash-uat.md) tersedia. Status masih dokumentasi; validasi
-WebSocket pada Vercel Hobby/free tier didahulukan sebelum perubahan schema dan fitur lengkap.
+[UAT](verification/mini-games-kotoba-clash-uat.md) tersedia. Pembaruan 17 Oktober: production
+diaktifkan user dan UAT awal lulus; cakupan UAT lengkap/budget masih terbuka pada dokumen tersebut.
+
+Rencana game berikutnya **18 Oktober 2026**: [Kana Word Race (nama kerja)](plan/mini-games-kana-word-race.md),
+balapan tebak kana 3-7 karakter dalam room dengan enam tebakan. Status masih rancangan, tanpa
+perubahan kode/database. [Modul](module/kana-word-race.md) menjadi sumber aturan dan
+[checklist UAT](verification/kana-word-race-uat.md) menampung verifikasi setelah implementasi.
 
 > Catatan 26 Agustus 2026: bagian auth awal di bawah adalah catatan implementasi historis. Model one-time setup telah dihentikan. Status dan rencana aktif ada di `plan/redesign-and-feature.md` serta `plan/phase-1-foundation.md`.
 

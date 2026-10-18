@@ -9,6 +9,7 @@ Folder ini mendokumentasikan kondisi aplikasi berdasarkan kode, fixture, dan dat
 | [Public shell dan home](public-shell.md) | Selesai | Landing page, header/footer, dan CTA aktif; menu, kartu, dan section mengikuti feature flag modul. |
 | [Mini Games](mini-games.md) | Production aktif; UAT lanjutan | Katalog `/mini-games`, registry, landing, menu, metadata dan flag terintegrasi; visual desktop/mobile lulus lokal. User mengaktifkan production sebelum gate lengkap. |
 | [Kotoba Clash](kotoba-clash.md) | Production aktif; UAT awal lulus | N5/5 soal, 2 pemain dan late spectator lulus UAT awal user; ledger cocok. Rematch/reconnect >5 menit, 10/15/20 soal, 20 pemain dan budget tersisa. [Plan](../plan/mini-games-kotoba-clash.md), [UAT](../verification/mini-games-kotoba-clash-uat.md), [bukti C-E](../verification/kotoba-clash-phase-c-e.md). |
+| [Kana Word Race (nama kerja)](kana-word-race.md) | Rancangan; belum diimplementasikan | Room tebak kana 3-7 karakter, enam tebakan, timer, input virtual/romaji, dan kamus terkurasi dari bacaan flashcard. [Plan](../plan/mini-games-kana-word-race.md) dan [UAT belum dijalankan](../verification/kana-word-race-uat.md), 18 Oktober 2026. |
 | [Authentication](auth.md) | Selesai | Login, register, verifikasi email, reset password, Redis session registry, revoke perangkat, rate limit, dan Turnstile aktif. |
 | [Dashboard](dashboard.md) | Selesai sederhana | Menampilkan attempt selesai dan attempt terakhir; kartu modul lain masih berupa shortcut statis. |
 | [Kana](kana.md) | Selesai dengan scope terbatas | Fixture kana terkurasi dan progress akun aktif; audio memakai Web Speech API, bukan rekaman. |
@@ -62,6 +63,9 @@ di-prerender saat build, jadi keduanya baru berubah setelah redeploy.
 | `FEATURES_COMMUNITY` | [Komunitas](community.md#feature-flag) | `/community/*`, `/post/*`, `/u/*/posts`; menu Komunitas, bagian Postingan di profil, dan action postingan/like/komentar postingan tidak dirender atau ditolak. Ikut mati bila `FEATURES_PUBLIC_PROFILE` mati |
 | `FEATURES_FOLLOW` | [Komunitas](community.md#feature-flag) | `/u/*/followers`, `/u/*/following`, `/profile/follow-requests`; tombol follow dan badge permintaan tidak dirender. Ikut mati bila `FEATURES_PUBLIC_PROFILE` mati |
 
+Flag `FEATURES_KANA_WORD_RACE` masih usulan default-off dalam
+[rancangan game](kana-word-race.md); belum tersedia di konstanta/env atau tabel flag aktual ini.
+
 Aturan umum:
 
 - Route dijaga oleh `layout.tsx` di segmen modul yang memanggil `notFound()`; conversation dan
@@ -102,6 +106,7 @@ Snapshot ini bersifat lokal dan dapat berubah setelah seed/import berikutnya.
 - **Fungsional dengan gap**: alur utama bisa dipakai, tetapi masih ada keterbatasan produk, data, atau hardening yang perlu ditutup.
 - **Preview saja**: hanya representasi UI/marketing; belum ada implementasi fitur end-to-end.
 - **Fixture**: data statis yang disengaja sebagai content source, bukan state palsu untuk mensimulasikan hasil user.
+- **Rancangan**: aturan dan tahapan terdokumentasi; belum berarti route, flag, schema atau fitur tersedia.
 
 ## Catatan Verifikasi
 
