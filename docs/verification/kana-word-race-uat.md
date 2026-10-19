@@ -56,6 +56,32 @@ Supabase/Upstash production, deployment, atau aktivasi publik.
 - Cakupan browser ini memakai state fixture; perjalanan solo dengan auth/WebSocket pada
   hosting target tetap merupakan UAT tersendiri.
 
+### Perbaikan fokus dan tata letak permainan (19 Oktober 2026)
+
+- `npm run verify`: PASS (lint, TypeScript, 60 file/750 tes, build produksi).
+- Reproduksi lokal memakai komponen `RaceBoard` asli melalui fixture sementara dengan
+  header publik dan susunan panel room. Pada 1280x720 sebelum perbaikan, klik papan/mengetik
+  memindahkan scroll dari 0 ke 299,5px karena caret tersembunyi berada di bawah papan.
+- Sesudah perbaikan, ketikan fisik `shokudou` -> `しょくどう` dan Enter/ACK mempertahankan
+  scroll 0 serta fokus `race-editor`; draft kosong kembali setelah accepted guess.
+  Enam baris papan, legend, keyboard dan tombol Tebak terlihat pada viewport 1280x720.
+- Pada 320x800, tujuh tile tetap satu baris dan lebar dokumen tetap 320px. Mode romaji
+  menyembunyikan keyboard kana; `inta-netto` -> `いんたーねっと`, Backspace, Enter dan ACK
+  mempertahankan scroll 0 dan fokus. Panjang tiga kana juga diperiksa dengan tile terbatas.
+- Klik koordinat langsung pada hapus, kana, dan Tebak ketika bilah composer menempel
+  mempertahankan scroll 592,5px. Error kamus simulasi berada di composer, draft tetap ada.
+  Pengujian klik memakai koordinat untuk menghindari auto-scroll locator pengujian.
+- Pada 390x844, bilah berada di y=88px saat keyboard digulir. Ketikan `gakkou` -> `がっこう`
+  mempertahankan scroll 422px; draft dan tombol Tebak tetap terlihat, tanpa overflow horizontal.
+- Background tombol keyboard dengan feedback kini mengikuti warna semantik, sehingga teks
+  putih tidak tertimpa background putih tombol. Computed style dan gambar diperiksa untuk
+  tepat posisi (`#216e45`), posisi lain (`#8a5b08`) dan tidak ada (`#545960`).
+- Bukti: [desktop](evidence/2026-10-19-kana-race-ux-desktop.jpg) dan
+  [mobile](evidence/2026-10-19-kana-race-ux-mobile.jpg). Isi papan/feedback pada gambar adalah
+  state fixture sintetis, bukan hasil evaluator/server. Fixture dihapus dan viewport dipulihkan.
+  Ini pemeriksaan browser desktop dengan ukuran HP; keyboard/IME perangkat fisik dan alur
+  auth/WebSocket deployment tetap memerlukan UAT tersendiri.
+
 Saat UAT deployment, lengkapi:
 
 - Tanggal, penguji, commit/build, environment/adapter hosting.

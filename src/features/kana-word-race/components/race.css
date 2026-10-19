@@ -86,24 +86,53 @@
 .race-ui .race-member[data-self="true"] { background: #eef5ff; }
 .race-ui .race-timer { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-width: 5.25rem; padding: .5rem .625rem; border: 2px solid var(--race-ink); background: var(--race-paper); color: var(--race-ink); box-shadow: 3px 3px 0 var(--race-ink); font: 900 1.5rem/1 var(--font-geist-mono), monospace; font-variant-numeric: tabular-nums; }
 .race-ui .race-timer[data-urgent="true"] { background: #ffd5d6; }
-.race-ui .race-board { width: min(100%, 29rem); margin-inline: auto; display: grid; gap: 5px; cursor: text; }
+.race-ui .race-game-panel { container-type: inline-size; }
+.race-ui .race-board-wrap { position: relative; display: grid; gap: 1.25rem; }
+.race-ui .race-board-pane { min-width: 0; display: contents; }
+.race-ui .race-board { --race-tile-size: 2.5rem; width: min(100%, calc(var(--race-columns) * var(--race-tile-size) + (var(--race-columns) - 1) * 5px)); margin-inline: auto; display: grid; gap: 5px; cursor: text; }
 .race-ui .race-board-row { display: grid; grid-template-columns: repeat(var(--race-columns), minmax(0, 1fr)); gap: 5px; }
 .race-ui .race-tile { display: flex; align-items: center; justify-content: center; aspect-ratio: 1; min-width: 0; border: 2px solid #b8bfca; border-radius: .25rem; background: #f4f7fb; font-size: clamp(1.1rem, 4.5vw, 2rem); line-height: 1; font-weight: 900; }
+.race-ui .race-board .race-tile { font-size: clamp(1.1rem, 4.5vw, 1.5rem); }
 .race-ui .race-tile[data-filled="true"] { border-color: var(--race-ink); box-shadow: 2px 2px 0 var(--race-ink); }
 .race-ui .race-tile[data-active="true"] { outline: 2px solid var(--race-ink); outline-offset: -5px; }
 .race-ui [data-mark="correct"] { background: var(--race-correct); color: #fff; border-color: var(--race-correct); }
 .race-ui [data-mark="present"] { background: var(--race-present); color: #fff; border-color: var(--race-present); }
 .race-ui [data-mark="absent"] { background: var(--race-absent); color: #fff; border-color: var(--race-absent); }
 .race-ui .race-legend { border: 2px solid var(--race-ink); border-radius: .125rem; padding: .25rem .4rem; }
-.race-ui .race-hidden-editor { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); opacity: 0; padding: 0; border: 0; }
-.race-ui .race-composer:focus-within { outline: 2px dashed var(--race-ink); outline-offset: 3px; }
-.race-ui .race-keyboard { display: grid; gap: 6px; max-width: 36rem; margin-inline: auto; }
+.race-ui .race-board-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: .375rem; font-size: .625rem; line-height: 1.4; font-weight: 700; }
+/* Anchor the hidden caret beside the board, so typing never targets the keyboard below. */
+.race-ui .race-hidden-editor { position: absolute; top: 0; left: 0; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); opacity: 0; padding: 0; border: 0; }
+.race-ui .race-board-pane:has(#race-editor:focus-visible) .race-board { outline: 2px dashed var(--race-ink); outline-offset: 5px; }
+.race-ui .race-composer { position: sticky; top: 5.5rem; z-index: 10; align-self: start; display: grid; gap: .5rem; background: var(--race-paper); border-bottom: 2px solid var(--race-ink); padding-bottom: .625rem; }
+.race-ui .race-composer-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .25rem .5rem; }
+.race-ui .race-input-toggle { display: inline-flex; align-items: center; justify-content: center; gap: .375rem; min-height: 2.75rem; font-size: .75rem; font-weight: 800; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+.race-ui .race-submit-row { display: flex; align-items: center; gap: .5rem; min-width: 0; }
+.race-ui .race-submit-row .race-input { flex: 1; min-width: 0; width: 0; padding-inline: .625rem; }
+.race-ui .race-submit-row .race-erase { flex: 0 0 2.75rem; min-height: 3rem; }
+.race-ui .race-submit { flex-shrink: 0; }
+.race-ui .race-draft-preview { min-width: 0; flex: 1; overflow-wrap: anywhere; font-size: clamp(.875rem, 4cqw, 1.25rem); line-height: 1.3; font-weight: 900; }
+.race-ui .race-editor-status { min-height: 1rem; font-size: .6875rem; line-height: 1.5; }
+.race-ui .race-editor-error { border-left: 3px solid #a51b20; background: #fff0f0; padding: .5rem .625rem; color: #86191d; font-size: .75rem; line-height: 1.5; font-weight: 700; }
+.race-ui .race-keyboard { display: grid; align-content: start; gap: 6px; width: 100%; max-width: 36rem; margin-inline: auto; }
 .race-ui .race-key-row { display: flex; justify-content: center; gap: 4px; }
 .race-ui .race-key { display: inline-flex; justify-content: center; align-items: center; flex: 1 1 0; min-width: 0; max-width: 3.1rem; min-height: 44px; padding: .25rem 0; border: 2px solid var(--race-ink); border-radius: .25rem; background: var(--race-paper); box-shadow: 2px 2px 0 var(--race-ink); font-size: clamp(.8rem, 3.3vw, 1.05rem); font-weight: 800; touch-action: manipulation; cursor: pointer; transition: transform 140ms, box-shadow 140ms; }
+.race-ui .race-key[data-mark="correct"] { background: var(--race-correct); }
+.race-ui .race-key[data-mark="present"] { background: var(--race-present); }
+.race-ui .race-key[data-mark="absent"] { background: var(--race-absent); }
 .race-ui .race-key:active:enabled { transform: translate(2px, 2px); box-shadow: none; }
 .race-ui .race-key:disabled { opacity: .5; cursor: default; }
 .race-ui .race-key-actions { display: flex; justify-content: center; gap: 6px; margin-top: 6px; }
-.race-ui .race-key-actions .race-key { flex: 1; max-width: 4rem; }
+.race-ui .race-key-actions .race-key { flex: 1; max-width: none; }
+@container (min-width: 44rem) {
+  .race-ui .race-board-wrap[data-keyboard="true"] { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 1.5rem; }
+  .race-ui .race-board-pane { display: grid; align-content: start; gap: .875rem; width: 100%; max-width: 36rem; margin-inline: auto; }
+  .race-ui .race-composer { position: relative; top: auto; z-index: auto; border-bottom: 0; padding-bottom: 0; }
+  .race-ui .race-board { --race-tile-size: 2.25rem; }
+  .race-ui .race-input-toggle { min-height: 2rem; }
+}
+@container (max-width: 43.999rem) {
+  .race-ui .race-submit svg { display: none; }
+}
 .race-ui .race-review-char { display: inline-flex; justify-content: center; align-items: center; width: 1.8rem; height: 1.8rem; border: 2px solid var(--race-ink); border-radius: .125rem; font-weight: 800; }
 .race-ui button:focus-visible, .race-ui a:focus-visible, .race-ui .race-input:focus-visible, .race-ui .race-field select:focus-visible { outline: 3px solid var(--neo-blue); outline-offset: 4px; }
 .race-ui .race-demo { position: relative; isolation: isolate; overflow: hidden; background: #d9e9ff; padding: 1.25rem; animation: race-enter .4s ease-out both; }

@@ -11,5 +11,5 @@ export default async function KanaRaceRoomPage({ params }: { params: Promise<{ c
   const code = CodeSchema.safeParse((await params).code);
   if (!code.success) notFound();
   const [result, session] = await Promise.all([getRaceRoomAction({ code: code.data }), getSessionUser()]);
-  return <PageContainer className="py-8 md:py-12"><RaceRoom code={code.data} initial={result.ok ? result.data : null} initialError={result.ok ? null : result.message} displayName={session?.user.displayName} /></PageContainer>;
+  return <PageContainer className="py-5 md:py-6"><RaceRoom code={code.data} initial={result.ok ? result.data : null} initialError={result.ok ? null : result.message} displayName={session?.user.displayName} /></PageContainer>;
 }

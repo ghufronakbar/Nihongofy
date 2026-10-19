@@ -1,6 +1,6 @@
 # Modul Kana Word Race
 
-Diperbarui: **18 Oktober 2026 (Asia/Jakarta)**.
+Diperbarui: **19 Oktober 2026 (Asia/Jakarta)**.
 
 ## Status Aktual
 
@@ -105,7 +105,15 @@ WanaKana **5.3.1** dipin untuk konversi. `convertLongVowelMark:false` mempertaha
 harus sudah dikomposisikan client dan tidak bisa menembus validasi server.
 
 Editor memakai satu input, dengan enam baris visual 3-7 kotak. Default keyboard kana virtual
-(input sistem disembunyikan); tombol romaji membuka input teks. `k` dan `n` pending tidak
+(input sistem disembunyikan); tombol romaji membuka input teks dan menyembunyikan keyboard
+kana. Input tersembunyi berjangkar pada composer di atas papan; pemindahan fokus memakai
+`preventScroll`. Tombol Tebak/hapus, draft, dan pesan validasi berada bersama di composer,
+yang menempel di bawah navigasi saat keyboard kana digulir pada layar sempit. Panel lebar
+menempatkan papan dan keyboard berdampingan; ukuran tile dibatasi agar kata pendek tidak
+membuat papan terlalu tinggi. Input menjadi read-only selama menunggu ACK, sehingga fokus
+tetap tersedia untuk tebakan berikutnya setelah diterima.
+
+`k` dan `n` pending tidak
 mengisi kotak; `ka` -> `か`, `kyo` -> `きょ`, `nn`/`n'` -> `ん`, `gakkou` -> `がっこう`.
 Konversi parsial disimpan sebagai kana plus pending agar Backspace menghapus satu pending
 atau satu kana, bukan satu suku romaji asli. Tombol kecil/voicing mengubah kana terakhir;
