@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, ScanLine } from "lucide-react";
 import { getKanaProgress } from "../actions";
 import { getKanaByScript, type KanaScript } from "../data/kana";
 import { KanaStudyGrid } from "./kana-study-grid";
@@ -26,10 +26,15 @@ export async function KanaPage({ script }: { script: KanaScript }) {
               Buka kartu dengan klik, Enter, atau Space. Cari berdasarkan bunyi, dengarkan pelafalan, lalu nilai ingatanmu dalam mode review.
             </p>
           </div>
-          <Link href={isHiragana ? "/kana/katakana" : "/kana/hiragana"} className="neo-button bg-neo-yellow">
-            {isHiragana ? "Lanjut Katakana" : "Kembali Hiragana"}
-            <ArrowRight className="size-5" aria-hidden="true" />
-          </Link>
+          <div className="flex flex-wrap gap-3 lg:flex-col">
+            <Link href={`/kana/quiz?script=${script}`} className="neo-button bg-neo-yellow">
+              <ScanLine className="size-5" aria-hidden="true" />Quiz 46 Kana
+            </Link>
+            <Link href={isHiragana ? "/kana/katakana" : "/kana/hiragana"} className="neo-button bg-white">
+              {isHiragana ? "Lanjut Katakana" : "Kembali Hiragana"}
+              <ArrowRight className="size-5" aria-hidden="true" />
+            </Link>
+          </div>
         </div>
       </div>
 
