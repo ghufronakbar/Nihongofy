@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState, type Ref } from "react";
+import { useEffect, useRef, useState, type ReactNode, type Ref } from "react";
 import Link from "next/link";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, ArrowRight, Check, Clock3, RotateCcw, SkipForward, Volume2, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Clock3, RotateCcw, SkipForward, Timer, TimerOff, Volume2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
@@ -12,18 +12,27 @@ import { speakJapanese } from "@/features/study/lib/tts";
 import { cn } from "@/lib/utils";
 import { formatQuizDuration } from "../quiz/engine";
 import { getKotoba, getKotobaByBabs, KOTOBA_BABS, KOTOBA_ENTRIES, type KotobaEntry } from "./data";
-import { formatBabs, kotobaFront, KotobaQuizSetupSchema, type KotobaFront, type KotobaQuizSession, type KotobaQuizSetup } from "./engine";
+import { formatBabs, KOTOBA_TIME_LIMIT, kotobaFront, KotobaQuizSetupSchema, type KotobaFront, type KotobaQuizSession, type KotobaQuizSetup } from "./engine";
 import { KotobaResults } from "./kotoba-results";
 import { useKotobaQuiz } from "./use-kotoba-quiz";
 
 const LENGTH_LABELS = { "10": "10 kata", "20": "20 kata", all: "Semua" } as const;
 
-type Outcome = "correct" | "wrong" | "skipped";
+type Outcome = "correct" | "wrong" | "skipped" | "timeout";
 
 const OUTCOME_STYLES: Record<Outcome, { back: string; label: string }> = {
   correct: { back: "bg-emerald-100", label: "Benar" },
   wrong: { back: "bg-red-100", label: "Belum tepat" },
   skipped: { back: "bg-amber-100", label: "Dilewati" },
+  timeout: { back: "bg-orange-100", label: "Waktu habis" },
+};
+
+const OUTCOME_STATUS: Record<Outcome, string> = { correct: "Benar!", wrong: "Belum tepat.", skipped: "Dilewati.", timeout: "Waktu habis." };
+const OUTCOME_ICONS: Record<Outcome, ReactNode> = {
+  correct: <Check className="size-3.5" />,
+  wrong: <X className="size-3.5 text-red-700" />,
+  skipped: <SkipForward className="size-3.5" />,
+  timeout: <TimerOff className="size-3.5" />,
 };
 
 function frontSize(text: string): string {
@@ -47,6 +56,32 @@ function speakableKana(entry: KotobaEntry): string {
   return entry.kana.replace(/[〜（）「」？]/g, " ").trim();
 }
 
+const TIMER_OPTION = "relative flex min-h-16 cursor-pointer items-center gap-2 rounded-lg border-2 border-neo-ink bg-white px-3 py-2 text-sm font-extrabold has-checked:bg-neo-yellow has-checked:shadow-neo-sm focus-within:outline-3 focus-within:outline-offset-3";
+
+function TimerField({ value, onChange, onBlur, error }: { value: number | null; onChange: (value: number | null) => void; onBlur: () => void; error?: string }) {
+  const [text, setText] = useState(String(value ?? KOTOBA_TIME_LIMIT.default));
+  // Teks kosong menjadi NaN supaya schema menampilkan pesan, bukan diam-diam kembali ke nol.
+  const seconds = (raw: string) => (raw.trim() === "" ? Number.NaN : Number(raw));
+
+  return <fieldset aria-describedby={error ? "kotoba-timer-error" : "kotoba-timer-help"}>
+    <legend className="mb-3 text-sm font-extrabold">Timer per kata</legend>
+    <div className="grid grid-cols-2 gap-3">
+      <label className={TIMER_OPTION}>
+        <input type="radio" name="kotoba-timer" className="size-4 shrink-0 accent-black" checked={value === null} onChange={() => onChange(null)} onBlur={onBlur} />Tanpa batas
+      </label>
+      <label className={TIMER_OPTION}>
+        <input type="radio" name="kotoba-timer" className="size-4 shrink-0 accent-black" checked={value !== null} onChange={() => onChange(seconds(text))} onBlur={onBlur} />
+        <Input type="number" inputMode="numeric" min={KOTOBA_TIME_LIMIT.min} max={KOTOBA_TIME_LIMIT.max} step={1} value={text} aria-label="Batas waktu per kata dalam detik" aria-invalid={Boolean(error)}
+          className="h-10 w-18 border-2 border-neo-ink bg-white px-2 text-center text-base font-extrabold text-black dark:bg-white"
+          onFocus={() => { if (value === null) onChange(seconds(text)); }}
+          onChange={(event) => { setText(event.target.value); onChange(seconds(event.target.value)); }} onBlur={onBlur} />
+        detik
+      </label>
+    </div>
+    {error ? <p id="kotoba-timer-error" role="alert" className="mt-2 text-sm font-bold text-red-700">{error}</p> : <p id="kotoba-timer-help" className="mt-2 text-xs leading-5 text-slate-600">{KOTOBA_TIME_LIMIT.min}–{KOTOBA_TIME_LIMIT.max} detik. Bila waktu habis, kartu dibalik dan kata dicatat &ldquo;waktu habis&rdquo;.</p>}
+  </fieldset>;
+}
+
 function KotobaSetupForm({ defaults, ready, onStart }: { defaults: KotobaQuizSetup; ready: boolean; onStart: (setup: KotobaQuizSetup) => void }) {
   const { register, control, handleSubmit, formState: { errors } } = useForm<KotobaQuizSetup>({ resolver: zodResolver(KotobaQuizSetupSchema), defaultValues: defaults });
   const babs = useWatch({ control, name: "babs" });
@@ -66,7 +101,7 @@ function KotobaSetupForm({ defaults, ready, onStart }: { defaults: KotobaQuizSet
       <div className="flex items-center justify-between gap-4 border-b-[3px] border-neo-ink bg-neo-blue px-5 py-4 sm:px-7">
         <h2 id="kotoba-setup-title" className="text-2xl">Atur kartumu</h2><span lang="ja" className="font-japanese text-4xl" aria-hidden="true">語</span>
       </div>
-      <form className="space-y-6 p-5 sm:p-7" onSubmit={handleSubmit(onStart)}>
+      <form noValidate className="space-y-6 p-5 sm:p-7" onSubmit={handleSubmit(onStart)}>
         <div>
           <label htmlFor="kotoba-nickname" className="block text-sm font-extrabold">Nickname kamu</label>
           <Input id="kotoba-nickname" className="neo-input mt-2 h-12 bg-white text-black dark:bg-white md:text-base" placeholder="Nama yang akan tampil di hasil" autoComplete="nickname" maxLength={32} aria-invalid={Boolean(errors.nickname)} aria-describedby={errors.nickname ? "kotoba-nickname-error" : undefined} {...register("nickname")} />
@@ -95,11 +130,12 @@ function KotobaSetupForm({ defaults, ready, onStart }: { defaults: KotobaQuizSet
         <fieldset>
           <legend className="mb-3 text-sm font-extrabold">Jumlah soal</legend>
           <div className="grid grid-cols-3 gap-3">
-            {(["10", "20", "all"] as const).map((value) => <label key={value} className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-neo-ink bg-white px-2 py-3 text-sm font-extrabold has-checked:bg-neo-yellow has-checked:shadow-neo-sm focus-within:outline-3 focus-within:outline-offset-3">
+            {(["10", "20", "all"] as const).map((value) => <label key={value} className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg border-2 border-neo-ink bg-white px-1.5 py-3 text-xs font-extrabold sm:gap-2 sm:px-2 sm:text-sm has-checked:bg-neo-yellow has-checked:shadow-neo-sm focus-within:outline-3 focus-within:outline-offset-3">
               <input type="radio" value={value} className="size-4 accent-black" {...register("length")} />{value === "all" ? `Semua (${poolSize})` : LENGTH_LABELS[value]}
             </label>)}
           </div>
         </fieldset>
+        <Controller control={control} name="timeLimit" render={({ field }) => <TimerField value={field.value} onChange={field.onChange} onBlur={field.onBlur} error={errors.timeLimit?.message} />} />
         <Button type="submit" disabled={!ready} className="neo-button h-13 w-full border-[3px] border-neo-ink bg-neo-yellow text-base font-extrabold text-neo-ink">{ready ? "Mulai tebak kotoba" : "Menyiapkan kartu…"}<ArrowRight className="size-5" /></Button>
         <p className="text-[11px] leading-5 text-slate-500">Urutan kata dan pilihan diacak. Pengecoh diambil dari kata sejenis di bab yang dipilih, misalnya sesama nama hari atau tanggal.</p>
       </form>
@@ -121,7 +157,7 @@ function KotobaCard({ entry, front, flipped, outcome, title }: { entry: KotobaEn
         <p className="mt-4 text-xs font-semibold text-slate-500">Apa artinya?</p>
       </section>
       <section inert={!flipped} aria-hidden={!flipped} className={cn("kana-flip-face kana-flip-back flex flex-col items-center justify-center rounded-lg border-[3px] border-neo-ink px-6 py-6 text-neo-ink shadow-neo", OUTCOME_STYLES[outcome ?? "correct"].back)}>
-        <p className="absolute top-4 left-4 flex items-center gap-1 border-2 border-neo-ink bg-white px-2 py-0.5 text-xs font-black uppercase">{outcome === "skipped" ? <SkipForward className="size-3.5" /> : outcome === "wrong" ? <X className="size-3.5 text-red-700" /> : <Check className="size-3.5" />}{OUTCOME_STYLES[outcome ?? "correct"].label}</p>
+        <p className="absolute top-4 left-4 flex items-center gap-1 border-2 border-neo-ink bg-white px-2 py-0.5 text-xs font-black uppercase">{OUTCOME_ICONS[outcome ?? "correct"]}{OUTCOME_STYLES[outcome ?? "correct"].label}</p>
         <Button type="button" variant="ghost" className="absolute top-2.5 right-2.5 min-h-10 text-xs font-bold" onClick={() => { const result = speakJapanese(speakableKana(entry)); setSpeech(result.ok ? "" : result.message); }}><Volume2 className="size-4" />Dengar</Button>
         <p lang="ja" className={cn("font-japanese max-w-full text-center leading-tight break-words", backSize(shown))}>{shown}</p>
         {other && <p lang="ja" className="font-japanese mt-2 text-xl text-slate-700 sm:text-2xl">{other}</p>}
@@ -146,6 +182,10 @@ function KotobaRound({ session, onAnswer, onAdvance, onReset }: { session: Kotob
   const [now, setNow] = useState(() => Date.now());
   const [resetOpen, setResetOpen] = useState(false);
   const elapsedMs = pending ? (answer?.elapsedMs ?? 0) : Math.max(0, now - (session.questionStartedAt ?? now));
+  const limitMs = session.timeLimit === null ? null : session.timeLimit * 1000;
+  const leftMs = limitMs === null ? null : Math.max(0, limitMs - elapsedMs);
+  // Peringatan merah di 3 detik terakhir, atau 30% terakhir untuk timer yang sangat pendek.
+  const lowTime = leftMs !== null && limitMs !== null && !pending && leftMs <= Math.min(3000, limitMs * 0.3);
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(Date.now()), 200);
@@ -178,7 +218,9 @@ function KotobaRound({ session, onAnswer, onAdvance, onReset }: { session: Kotob
   }, [onAnswer, onAdvance, pending, question, resetOpen, revealing]);
 
   if (!entry) return null;
-  const outcome: Outcome | null = !answer ? null : answer.selectedKey === null ? "skipped" : answer.selectedKey === answer.key ? "correct" : "wrong";
+  const outcome: Outcome | null = !answer ? null
+    : answer.selectedKey === null ? (limitMs !== null && answer.elapsedMs >= limitMs ? "timeout" : "skipped")
+    : answer.selectedKey === answer.key ? "correct" : "wrong";
 
   return <div className="mx-auto max-w-2xl pb-8">
     <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
@@ -187,8 +229,11 @@ function KotobaRound({ session, onAnswer, onAdvance, onReset }: { session: Kotob
         <AlertDialogContent className="border-[3px] border-neo-ink"><AlertDialogHeader><AlertDialogTitle>Hentikan sesi ini?</AlertDialogTitle><AlertDialogDescription>Jawaban sesi ini akan dihapus. Kamu bisa memilih bab dan tampilan kartu lagi.</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Lanjutkan sesi</AlertDialogCancel><AlertDialogAction onClick={onReset}>Ubah pengaturan</AlertDialogAction></AlertDialogFooter></AlertDialogContent>
       </AlertDialog>
     </div>
-    <div className="mb-3 flex items-center justify-between font-mono text-xs font-bold"><span>KATA {String(index + 1).padStart(2, "0")} / {session.questions.length}</span><span className="flex items-center gap-1.5 tabular-nums" aria-label={`Waktu soal ${formatQuizDuration(elapsedMs)}`}><Clock3 className="size-3.5" />{formatQuizDuration(elapsedMs)}</span></div>
-    <div role="progressbar" aria-label="Progres tebak kotoba" aria-valuemin={0} aria-valuemax={session.questions.length} aria-valuenow={session.answers.length} className="mb-5 h-2.5 overflow-hidden rounded-full border-2 border-neo-ink bg-card"><div className="h-full bg-neo-blue" style={{ width: `${session.answers.length / session.questions.length * 100}%` }} /></div>
+    <div className="mb-3 flex items-center justify-between font-mono text-xs font-bold"><span>KATA {String(index + 1).padStart(2, "0")} / {session.questions.length}</span>{leftMs === null
+      ? <span className="flex items-center gap-1.5 tabular-nums" aria-label={`Waktu soal ${formatQuizDuration(elapsedMs)}`}><Clock3 className="size-3.5" />{formatQuizDuration(elapsedMs)}</span>
+      : <span className={cn("flex items-center gap-1.5 tabular-nums", lowTime && "text-red-700")} aria-label={`Sisa waktu ${Math.ceil(leftMs / 1000)} detik dari ${session.timeLimit}`}><Timer className="size-3.5" />{Math.ceil(leftMs / 1000)} / {session.timeLimit} dtk</span>}</div>
+    <div role="progressbar" aria-label="Progres tebak kotoba" aria-valuemin={0} aria-valuemax={session.questions.length} aria-valuenow={session.answers.length} className={cn("h-2.5 overflow-hidden rounded-full border-2 border-neo-ink bg-card", limitMs === null ? "mb-5" : "mb-2")}><div className="h-full bg-neo-blue" style={{ width: `${session.answers.length / session.questions.length * 100}%` }} /></div>
+    {leftMs !== null && limitMs !== null && <div aria-hidden="true" className="mb-5 h-1.5 overflow-hidden rounded-full bg-neo-ink/10"><div className={cn("h-full transition-[width] duration-200 ease-linear motion-reduce:transition-none", lowTime ? "bg-neo-coral" : "bg-neo-green")} style={{ width: `${leftMs / limitMs * 100}%` }} /></div>}
     <KotobaCard key={entry.key} entry={entry} front={session.front} flipped={revealing} outcome={outcome} title={title} />
     <div className="mt-6 grid gap-3 sm:grid-cols-2" role="group" aria-label="Pilihan arti">
       {question.options.map((optionKey, option) => {
@@ -206,17 +251,17 @@ function KotobaRound({ session, onAnswer, onAdvance, onReset }: { session: Kotob
     {!revealing && <Button variant="outline" disabled={pending} onClick={() => onAnswer(question.key, null)} className="mt-3 min-h-11 w-full border-2 border-dashed border-neo-ink bg-transparent font-bold"><SkipForward className="size-4" />Lewati, saya belum tahu<kbd className="ml-1 rounded-sm border border-neo-ink/40 px-1.5 font-mono text-[10px]">L</kbd></Button>}
     {revealing && <Button ref={next} onClick={onAdvance} className="neo-button mt-5 h-13 w-full border-[3px] border-neo-ink bg-neo-yellow text-base font-extrabold text-neo-ink">{isLast ? "Lihat hasil" : "Lanjut"}<ArrowRight className="size-5" /></Button>}
     <p role="status" aria-live="polite" className="mt-4 min-h-5 text-center text-xs text-muted-foreground">
-      {revealing ? `${{ correct: "Benar!", wrong: "Belum tepat.", skipped: "Dilewati." }[outcome ?? "correct"]} ${entry.kana} artinya “${entry.meaning}”. Tekan Enter untuk ${isLast ? "melihat hasil" : "lanjut"}.` : "Pilih arti yang tepat dengan tombol 1–4, atau tekan L untuk melewati."}
+      {revealing ? `${OUTCOME_STATUS[outcome ?? "correct"]} ${entry.kana} artinya “${entry.meaning}”. Tekan Enter untuk ${isLast ? "melihat hasil" : "lanjut"}.` : "Pilih arti yang tepat dengan tombol 1–4, atau tekan L untuk melewati."}
     </p>
   </div>;
 }
 
 export function KotobaQuiz({ initialBabs }: { initialBabs: number[] }) {
   const quiz = useKotobaQuiz();
-  const [defaults, setDefaults] = useState<KotobaQuizSetup>({ nickname: "", babs: initialBabs, front: "kana", length: "all" });
+  const [defaults, setDefaults] = useState<KotobaQuizSetup>({ nickname: "", babs: initialBabs, front: "kana", length: "all", timeLimit: null });
 
   function setupOf(session: KotobaQuizSession): KotobaQuizSetup {
-    return { nickname: session.nickname, babs: session.babs, front: session.front, length: session.length };
+    return { nickname: session.nickname, babs: session.babs, front: session.front, length: session.length, timeLimit: session.timeLimit };
   }
 
   function changeSettings() {

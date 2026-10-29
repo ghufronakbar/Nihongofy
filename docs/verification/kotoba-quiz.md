@@ -32,3 +32,8 @@
 - `npx vitest run src/features/kana/`: **27 lulus**, termasuk tes lewati: kunci dibuka tanpa pilihan, tidak bisa melewati kata yang bukan soal aktif atau dua kali, snapshot dengan `selectedKey: null` dipulihkan, serta hasil menghitung benar/dilewati dan memasukkan kata dilewati ke daftar ulang.
 - Chromium desktop, Bab 4, 10 soal: satu kata dilewati lewat tombol dan satu lewat keyboard `L`; kartu belakang berwarna kuning dengan label "Dilewati", hasil menampilkan Salah 5 dan Dilewati 2, dan "Ulangi 7 kata ini" mencakup keduanya. Tidak ada error konsol.
 
+## Tambahan: timer per kata (29 Oktober 2026)
+
+- `npx vitest run src/features/kana/`: **32 lulus**, termasuk tes timer: validasi 3–300 detik bulat atau tanpa batas, sisa waktu, waktu habis tepat di batas, jawaban terlambat dicatat waktu habis, pemisahan dilewati/waktu habis di hasil, snapshot dengan waktu melebihi batas ditolak, dan sesi lama tanpa field timer tetap dipulihkan.
+- Chromium desktop, Bab 5, 10 soal, timer 4 detik: input 2 dan kosong menampilkan "Minimal 3 detik." dan "Isi batas waktu dalam detik." (form memakai `noValidate` agar pesan aplikasi yang tampil, bukan tooltip browser). Hitung mundur tampil, kata pertama otomatis dibalik "Waktu habis", refresh di tengah soal tetap berakhir waktu habis setelah batas, dan hasil menampilkan kolom Waktu habis serta badge "Timer 4 dtk". Viewport 390 px tanpa scroll horizontal; tidak ada error konsol.
+

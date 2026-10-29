@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { advanceKotobaQuiz, answerKotoba, createKotobaQuiz, KOTOBA_QUIZ_STORAGE_KEY, restoreKotobaQuiz, type KotobaQuizSession, type KotobaQuizSetup } from "./engine";
+import { advanceKotobaQuiz, answerKotoba, createKotobaQuiz, expireKotoba, kotobaTimeLeft, KOTOBA_QUIZ_STORAGE_KEY, restoreKotobaQuiz, type KotobaQuizSession, type KotobaQuizSetup } from "./engine";
 
 export function useKotobaQuiz() {
   const [session, setSession] = useState<KotobaQuizSession | null>(null);
@@ -53,6 +53,25 @@ export function useKotobaQuiz() {
       if (latest && latest.answers.length === 0) commit(advanceKotobaQuiz(latest, Date.now()));
     });
     return () => cancelAnimationFrame(frame);
+  }, [session, commit]);
+
+  // Batas waktu dijaga di sini, bukan di komponen kartu, supaya tetap berlaku setelah refresh.
+  useEffect(() => {
+    if (!session) return;
+    const left = kotobaTimeLeft(session, Date.now());
+    if (left === null) return;
+    let timer = 0;
+    const check = () => {
+      const latest = current.current;
+      if (!latest) return;
+      const next = expireKotoba(latest, Date.now());
+      if (next !== latest) return commit(next);
+      // A timer may fire a few milliseconds early; check again instead of stalling.
+      const rest = kotobaTimeLeft(latest, Date.now());
+      if (rest !== null) timer = window.setTimeout(check, rest + 20);
+    };
+    timer = window.setTimeout(check, left + 20);
+    return () => window.clearTimeout(timer);
   }, [session, commit]);
 
   const start = useCallback((setup: KotobaQuizSetup, onlyKeys?: readonly string[]) => {

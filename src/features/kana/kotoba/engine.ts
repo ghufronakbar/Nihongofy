@@ -4,6 +4,14 @@ import { getKotoba, getKotobaByBabs, KOTOBA_BABS, KOTOBA_CONFLICTS, KOTOBA_FAMIL
 export const KOTOBA_QUIZ_STORAGE_KEY = "nihongofy:kotoba-quiz:v1";
 export const KOTOBA_OPTION_COUNT = 4;
 export const KOTOBA_LENGTHS = ["10", "20", "all"] as const;
+export const KOTOBA_TIME_LIMIT = { min: 3, max: 300, default: 15 } as const;
+
+// Batas waktu per kata dalam detik; null berarti tanpa batas.
+const TimeLimitSchema = z.number({ error: "Isi batas waktu dalam detik." })
+  .int("Gunakan bilangan bulat.")
+  .min(KOTOBA_TIME_LIMIT.min, `Minimal ${KOTOBA_TIME_LIMIT.min} detik.`)
+  .max(KOTOBA_TIME_LIMIT.max, `Maksimal ${KOTOBA_TIME_LIMIT.max} detik.`)
+  .nullable();
 
 export const KotobaQuizSetupSchema = z.object({
   nickname: z.string().trim().min(1, "Isi nickname kamu terlebih dahulu.").max(32, "Maksimal 32 karakter."),
@@ -12,12 +20,16 @@ export const KotobaQuizSetupSchema = z.object({
     .refine((babs) => new Set(babs).size === babs.length, "Bab tidak boleh ganda."),
   front: z.enum(["kana", "kanji"]),
   length: z.enum(KOTOBA_LENGTHS),
+  timeLimit: TimeLimitSchema,
 });
 
 export type KotobaQuizSetup = z.infer<typeof KotobaQuizSetupSchema>;
 export type KotobaFront = KotobaQuizSetup["front"];
 export type KotobaQuestion = { key: string; options: string[] };
-/** `selectedKey` null berarti kata dilewati: kunci tetap ditampilkan, tetapi tidak dihitung benar. */
+/**
+ * `selectedKey` null berarti kata dilewati atau waktunya habis: kunci tetap ditampilkan, tetapi
+ * tidak dihitung benar. Waktu habis dikenali dari `elapsedMs` yang mencapai batas waktu.
+ */
 export type KotobaAnswer = { key: string; selectedKey: string | null; elapsedMs: number };
 export type KotobaQuizSession = KotobaQuizSetup & {
   version: 1;
@@ -93,18 +105,39 @@ export function advanceKotobaQuiz(session: KotobaQuizSession, now: number): Koto
   return { ...session, questionStartedAt: latest };
 }
 
+function timeLimitMs(session: KotobaQuizSession): number | null {
+  return session.timeLimit === null ? null : session.timeLimit * 1000;
+}
+
+/** Sisa waktu kata yang sedang tampil dalam milidetik, atau null bila tanpa batas/tidak aktif. */
+export function kotobaTimeLeft(session: KotobaQuizSession, now: number): number | null {
+  const limit = timeLimitMs(session);
+  if (limit === null || session.questionStartedAt === null || session.finishedAt !== null) return null;
+  return Math.max(0, limit - Math.max(0, now - session.questionStartedAt));
+}
+
 export function answerKotoba(session: KotobaQuizSession, key: string, selectedKey: string | null, now: number): KotobaQuizSession {
   const question = session.questions[session.answers.length];
   if (session.finishedAt !== null || session.questionStartedAt === null || question?.key !== key
     || (selectedKey !== null && !question.options.includes(selectedKey))) return session;
-  const answeredAt = Math.max(now, session.questionStartedAt);
-  const answers = [...session.answers, { key, selectedKey, elapsedMs: answeredAt - session.questionStartedAt }];
-  return { ...session, answers, questionStartedAt: null };
+  const elapsedMs = Math.max(now, session.questionStartedAt) - session.questionStartedAt;
+  const limit = timeLimitMs(session);
+  // Jawaban yang tiba setelah batas waktu (tab di latar belakang, refresh) tetap dicatat waktu habis.
+  const answer = limit !== null && elapsedMs >= limit ? { key, selectedKey: null, elapsedMs: limit } : { key, selectedKey, elapsedMs };
+  return { ...session, answers: [...session.answers, answer], questionStartedAt: null };
+}
+
+/** Mencatat kata aktif sebagai waktu habis bila batas waktunya sudah lewat. */
+export function expireKotoba(session: KotobaQuizSession, now: number): KotobaQuizSession {
+  const question = session.questions[session.answers.length];
+  return kotobaTimeLeft(session, now) === 0 && question ? answerKotoba(session, question.key, null, now) : session;
 }
 
 const TimestampSchema = z.number().int().min(0).max(8_640_000_000_000_000);
 const KeySchema = z.string().max(20);
 const SessionSchema = KotobaQuizSetupSchema.extend({
+  // Sesi yang tersimpan sebelum ada pengaturan timer tetap bisa dipulihkan.
+  timeLimit: TimeLimitSchema.default(null),
   version: z.literal(1),
   questions: z.array(z.object({ key: KeySchema, options: z.array(KeySchema).length(KOTOBA_OPTION_COUNT) })).min(1).max(500),
   answers: z.array(z.object({ key: KeySchema, selectedKey: KeySchema.nullable(), elapsedMs: TimestampSchema })).max(500),
@@ -124,7 +157,9 @@ const SessionSchema = KotobaQuizSetupSchema.extend({
         && question.options.slice(index + 1).every((other) => !kotobaConflict(option, other))));
   const validAnswers = session.answers.length <= session.questions.length && session.answers.every((answer, index) => {
     const question = session.questions[index];
-    return answer.key === question.key && (answer.selectedKey === null || question.options.includes(answer.selectedKey));
+    return answer.key === question.key && (answer.selectedKey === null || question.options.includes(answer.selectedKey))
+      && (session.timeLimit === null || answer.elapsedMs < session.timeLimit * 1000
+        || (answer.selectedKey === null && answer.elapsedMs === session.timeLimit * 1000));
   });
   const complete = session.answers.length === session.questions.length;
   const end = session.finishedAt ?? session.questionStartedAt;
@@ -147,20 +182,27 @@ function entryOf(key: string): KotobaEntry {
   return entry;
 }
 
+function timedOut(session: KotobaQuizSession, answer: KotobaAnswer): boolean {
+  const limit = timeLimitMs(session);
+  return answer.selectedKey === null && limit !== null && answer.elapsedMs >= limit;
+}
+
 export function getKotobaResults(session: KotobaQuizSession) {
   const rows = session.answers.map((answer, index) => ({
     ...answer,
     number: index + 1,
     entry: entryOf(answer.key),
     selected: answer.selectedKey === null ? null : entryOf(answer.selectedKey),
-    skipped: answer.selectedKey === null,
+    skipped: answer.selectedKey === null && !timedOut(session, answer),
+    timedOut: timedOut(session, answer),
     correct: answer.selectedKey === answer.key,
   }));
   const correctCount = rows.filter((row) => row.correct).length;
   const skippedCount = rows.filter((row) => row.skipped).length;
+  const timedOutCount = rows.filter((row) => row.timedOut).length;
   const totalMs = rows.reduce((sum, row) => sum + row.elapsedMs, 0);
   return {
-    rows, correctCount, skippedCount, totalMs,
+    rows, correctCount, skippedCount, timedOutCount, totalMs,
     total: session.questions.length,
     accuracy: session.questions.length ? Math.round(correctCount / session.questions.length * 100) : 0,
     averageMs: rows.length ? totalMs / rows.length : 0,

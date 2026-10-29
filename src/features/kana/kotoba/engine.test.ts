@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { getKotoba, getKotobaByBabs, KOTOBA_BABS, KOTOBA_CONFLICTS, KOTOBA_ENTRIES, KOTOBA_FAMILIES } from "./data";
-import { advanceKotobaQuiz, answerKotoba, createKotobaQuiz, getKotobaResults, kotobaConflict, kotobaFront, restoreKotobaQuiz, type KotobaQuizSession, type KotobaQuizSetup } from "./engine";
+import { advanceKotobaQuiz, answerKotoba, createKotobaQuiz, expireKotoba, getKotobaResults, kotobaConflict, kotobaFront, KotobaQuizSetupSchema, kotobaTimeLeft, restoreKotobaQuiz, type KotobaQuizSession, type KotobaQuizSetup } from "./engine";
 
 const START = Date.parse("2026-10-29T09:00:00+07:00");
-const SETUP: KotobaQuizSetup = { nickname: "生徒 🌸", babs: [1], front: "kana", length: "all" };
+const SETUP: KotobaQuizSetup = { nickname: "生徒 🌸", babs: [1], front: "kana", length: "all", timeLimit: null };
 
 function play(session: KotobaQuizSession, wrong = false): KotobaQuizSession {
   let now = START;
@@ -166,4 +166,55 @@ it("menolak snapshot rusak, bab yang tidak dipilih, pilihan bertumpuk, dan hasil
   if (!sensei || !kyoushi) throw new Error("Missing fixture");
   const others = getKotobaByBabs([1]).filter((entry) => !kotobaConflict(entry.key, sensei.key)).slice(0, 2).map((entry) => entry.key);
   expect(restoreKotobaQuiz({ ...session, questions: [{ key: sensei.key, options: [sensei.key, kyoushi.key, ...others] }, ...session.questions.slice(1).filter((item) => item.key !== sensei.key)] })).toBeNull();
+});
+
+describe("timer per kata", () => {
+  it("menerima detik bulat 3-300 atau tanpa batas", () => {
+    for (const timeLimit of [null, 3, 15, 300]) expect(KotobaQuizSetupSchema.safeParse({ ...SETUP, timeLimit }).success).toBe(true);
+    for (const timeLimit of [0, 2, 301, 7.5, Number.NaN]) expect(KotobaQuizSetupSchema.safeParse({ ...SETUP, timeLimit }).success).toBe(false);
+  });
+
+  it("menghitung sisa waktu dan mencatat waktu habis tepat pada batasnya", () => {
+    const open = advanceKotobaQuiz(createKotobaQuiz({ ...SETUP, length: "10", timeLimit: 10 }, START), START);
+    const question = open.questions[0];
+    expect(kotobaTimeLeft(open, START + 4000)).toBe(6000);
+    expect(expireKotoba(open, START + 9999)).toBe(open);
+    const expired = expireKotoba(open, START + 10_000);
+    expect(expired.answers[0]).toEqual({ key: question.key, selectedKey: null, elapsedMs: 10_000 });
+    expect(kotobaTimeLeft(expired, START + 10_000)).toBeNull();
+    expect(restoreKotobaQuiz(JSON.parse(JSON.stringify(expired)) as unknown)).toEqual(expired);
+  });
+
+  it("mencatat jawaban yang terlambat sebagai waktu habis, bukan jawaban", () => {
+    const open = advanceKotobaQuiz(createKotobaQuiz({ ...SETUP, length: "10", timeLimit: 5 }, START), START);
+    const question = open.questions[0];
+    const late = answerKotoba(open, question.key, question.key, START + 30_000);
+    expect(late.answers[0]).toEqual({ key: question.key, selectedKey: null, elapsedMs: 5000 });
+    const onTime = answerKotoba(open, question.key, question.key, START + 4999);
+    expect(onTime.answers[0].selectedKey).toBe(question.key);
+  });
+
+  it("memisahkan waktu habis dari kata yang dilewati di hasil", () => {
+    let session = advanceKotobaQuiz(createKotobaQuiz({ ...SETUP, length: "10", timeLimit: 8 }, START), START);
+    const [first, second, third] = session.questions;
+    session = advanceKotobaQuiz(answerKotoba(session, first.key, null, START + 2000), START + 3000);
+    session = advanceKotobaQuiz(expireKotoba(session, START + 11_000), START + 12_000);
+    session = answerKotoba(session, third.key, third.key, START + 13_000);
+    const result = getKotobaResults(session);
+    expect(result.rows.map((row) => [row.key, row.skipped, row.timedOut, row.correct])).toEqual([
+      [first.key, true, false, false], [second.key, false, true, false], [third.key, false, false, true],
+    ]);
+    expect([result.correctCount, result.skippedCount, result.timedOutCount]).toEqual([1, 1, 1]);
+  });
+
+  it("menolak snapshot dengan waktu jawaban melebihi batas dan memulihkan sesi lama tanpa timer", () => {
+    const open = advanceKotobaQuiz(createKotobaQuiz({ ...SETUP, length: "10", timeLimit: 5 }, START), START);
+    const question = open.questions[0];
+    const answered = answerKotoba(open, question.key, question.key, START + 1000);
+    expect(restoreKotobaQuiz({ ...answered, answers: [{ ...answered.answers[0], elapsedMs: 5000 }] })).toBeNull();
+    expect(restoreKotobaQuiz({ ...answered, answers: [{ ...answered.answers[0], selectedKey: null, elapsedMs: 6000 }] })).toBeNull();
+    const legacy: Record<string, unknown> = { ...createKotobaQuiz({ ...SETUP, length: "10" }, START) };
+    delete legacy.timeLimit;
+    expect(restoreKotobaQuiz(legacy)?.timeLimit).toBeNull();
+  });
 });

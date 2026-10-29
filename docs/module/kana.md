@@ -38,13 +38,14 @@
 
 ### Tebak Kotoba (Minna no Nihongo)
 
-- 253 kosakata Minna no Nihongo I Bab 1–5 (44, 47, 44, 59, 59 kata). Pengaturan: nickname 1–32 karakter, satu atau beberapa bab, tampilan depan kartu (hiragana/katakana atau kanji), dan jumlah soal 10, 20, atau semua kata pada bab terpilih.
+- 253 kosakata Minna no Nihongo I Bab 1–5 (44, 47, 44, 59, 59 kata). Pengaturan: nickname 1–32 karakter, satu atau beberapa bab, tampilan depan kartu (hiragana/katakana atau kanji), jumlah soal 10, 20, atau semua kata pada bab terpilih, dan timer per kata (tanpa batas atau 3–300 detik).
 - Mode kanji memakai kolom kanji daftar sumber; kata tanpa kanji (kata ganti, katakana, ungkapan) tetap tampil dalam kana dan label kartu ikut menjadi "Kana".
 - Depan kartu menampilkan kata, siswa memilih satu dari empat arti. Setelah memilih, kartu dibalik: bagian belakang memuat kana, kanji, arti, catatan pemakaian, tombol dengar (TTS), serta penanda benar/salah. Kartu berikutnya dibuka dengan tombol "Lanjut" atau Enter; keyboard 1–4 untuk memilih.
 - Pengecoh diambil berurutan dari kelompok kata sejenis (`KOTOBA_FAMILIES`, mis. nama hari, tanggal, kosoado, alat transportasi), lalu dari bab yang sama, lalu dari bab lain yang dipilih. Kata yang artinya bertumpuk atau tulisannya sama (`KOTOBA_CONFLICTS`, mis. せんせい/きょうし, いいえ/ちがいます, そちら Bab 3/Bab 4) tidak pernah muncul bersama dalam satu soal.
 - Tombol "Lewati, saya belum tahu" (keyboard `L`) membalik kartu tanpa memilih arti. Kata dicatat sebagai dilewati (`selectedKey: null`): tidak dihitung benar, ditampilkan terpisah dari jawaban salah, dan ikut "Ulangi N kata ini".
 - Waktu dihitung sejak depan kartu tampil sampai arti dipilih atau kata dilewati; waktu membaca bagian belakang tidak dihitung.
-- Hasil menampilkan skor/akurasi, total dan rata-rata waktu, jumlah salah dan dilewati, rincian per bab bila memilih lebih dari satu bab, daftar kata yang perlu diulang, dan tabel semua jawaban. "Ulangi N kata ini" memulai sesi baru hanya dari kata yang salah; "Main lagi" mengacak ulang dengan pengaturan yang sama.
+- Dengan timer, kartu menampilkan hitung mundur dan bar sisa waktu (merah di 3 detik terakhir, atau 30% terakhir untuk timer pendek). Saat waktu habis kartu otomatis dibalik dan kata dicatat "waktu habis" (`selectedKey: null` dengan `elapsedMs` sama dengan batas). Batas dijaga di engine dan hook, sehingga jawaban yang terlambat atau refresh setelah batas tetap tercatat waktu habis.
+- Hasil menampilkan skor/akurasi, total dan rata-rata waktu, jumlah salah, dilewati, dan waktu habis, rincian per bab bila memilih lebih dari satu bab, daftar kata yang perlu diulang, dan tabel semua jawaban. "Ulangi N kata ini" memulai sesi baru hanya dari kata yang salah; "Main lagi" mengacak ulang dengan pengaturan yang sama.
 
 ## Data dan Persistence
 
