@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, ScanLine } from "lucide-react";
+import { ArrowLeft, ArrowRight, BookOpenText, ScanLine } from "lucide-react";
 import { getKanaProgress } from "../actions";
 import { getKanaByScript, type KanaScript } from "../data/kana";
 import { KanaStudyGrid } from "./kana-study-grid";
@@ -29,6 +29,9 @@ export async function KanaPage({ script }: { script: KanaScript }) {
           <div className="flex flex-wrap gap-3 lg:flex-col">
             <Link href={`/kana/quiz?script=${script}`} className="neo-button bg-neo-yellow">
               <ScanLine className="size-5" aria-hidden="true" />Quiz 46 Kana
+            </Link>
+            <Link href="/kana/kotoba" className="neo-button bg-neo-green">
+              <BookOpenText className="size-5" aria-hidden="true" />Tebak Kotoba
             </Link>
             <Link href={isHiragana ? "/kana/katakana" : "/kana/hiragana"} className="neo-button bg-white">
               {isHiragana ? "Lanjut Katakana" : "Kembali Hiragana"}
