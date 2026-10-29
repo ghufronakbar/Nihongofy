@@ -30,6 +30,12 @@ Rujukan:
 - [Public shell](public-shell.md), [aturan project](../project-rules.md), dan
   [project overview](../project-overview.md): integrasi dengan aplikasi existing.
 
+**Game ketiga (19 Oktober 2026):** [Onigiri Kitchen](onigiri-kitchen.md), game solo kafe
+2.5D tanpa login. Karakter bisa bergerak, menyiapkan tiga menu dan melayani pelanggan tanpa
+batas waktu. Quest di dalam scene, upgrade, ekspansi teras, pelayan, layar penuh dan progres
+perangkat tersedia lokal dengan aset SVG orisinal serta collision/pathfinding. `FEATURES_ONIGIRI_KITCHEN` default false serta mewajibkan hub;
+tidak memakai database, room atau WebSocket. [Verifikasi lokal](../verification/onigiri-kitchen.md).
+
 ## 1. Tujuan dan Penamaan
 
 **Mini Games** adalah nama halaman publik yang menampung permainan belajar bahasa Jepang.

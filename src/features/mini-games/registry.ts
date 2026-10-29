@@ -8,6 +8,10 @@ const MINI_GAMES = [{
   slug: "kana-word-race", name: "Kana Word Race", feature: "kanaWordRace" as const,
   description: "Tebak kata Jepang sendiri atau balapan bersama teman. Baca petunjuk posisi, ketik kana, dan temukan jawabannya dalam enam kesempatan.",
   href: "/mini-games/kana-word-race", players: "Solo / 2-20 pemain", levels: "3-7 kana",
+}, {
+  slug: "onigiri-kitchen", name: "Onigiri Kitchen", feature: "onigiriKitchen" as const,
+  description: "Bangun kedai Jepang kecil tanpa batas waktu. Masak, selesaikan quest, rekrut pelayan, dan perluas teras. Selingan santai dengan sedikit kosakata Jepang.",
+  href: "/mini-games/onigiri-kitchen", players: "Solo · Tanpa login", levels: "Quest & upgrade",
 }];
 
 export function availableMiniGames(features: FeatureFlags) {

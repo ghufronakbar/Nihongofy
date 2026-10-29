@@ -29,6 +29,12 @@ Default-off; belum ada migration/deployment/aktivasi production untuk game ini.
 [Plan](plan/mini-games-kana-word-race.md) dan [UAT](verification/kana-word-race-uat.md) mencatat
 gate hosting, review konten manusia, perangkat dan budget yang masih terbuka.
 
+**Implementasi 19 Oktober 2026:** [Onigiri Kitchen](module/onigiri-kitchen.md), game kafe
+2.5D solo tanpa login dengan chef bergerak, tiga menu, pelanggan dan combo. Mode tanpa
+batas waktu, quest dalam scene, upgrade, ekspansi teras, pelayan, layar penuh dan progres lokal. Artwork SVG orisinal; tidak menambah migration atau runtime server game.
+Playable dan aktif pada preview lokal, default-off di kode; belum deployment production.
+[Verifikasi](verification/onigiri-kitchen.md).
+
 ## Konsep Utama
 
 - **Mock test**: mengerjakan satu paket penuh, dibagi per sesi (1/2/3) mengikuti sesi ujian JLPT asli.

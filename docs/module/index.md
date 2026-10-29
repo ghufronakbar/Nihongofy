@@ -10,6 +10,7 @@ Folder ini mendokumentasikan kondisi aplikasi berdasarkan kode, fixture, dan dat
 | [Mini Games](mini-games.md) | Production aktif; UAT lanjutan | Katalog `/mini-games`, registry, landing, menu, metadata dan flag terintegrasi; visual desktop/mobile lulus lokal. User mengaktifkan production sebelum gate lengkap. |
 | [Kotoba Clash](kotoba-clash.md) | Production aktif; UAT awal lulus | N5/5 soal, 2 pemain dan late spectator lulus UAT awal user; ledger cocok. Rematch/reconnect >5 menit, 10/15/20 soal, 20 pemain dan budget tersisa. [Plan](../plan/mini-games-kotoba-clash.md), [UAT](../verification/mini-games-kotoba-clash-uat.md), [bukti C-E](../verification/kotoba-clash-phase-c-e.md). |
 | [Kana Word Race](kana-word-race.md) | Implementasi v1; default-off | Room 2-20 pemain, 3-7 kana, enam tebakan, papan privat, keyboard/romaji, kamus immutable dan lifecycle akun. Migration dan [verifikasi lokal](../verification/kana-word-race-uat.md) tersedia; UAT/deployment production terbuka. [Plan](../plan/mini-games-kana-word-race.md), 18 Oktober 2026. |
+| [Onigiri Kitchen](onigiri-kitchen.md) | Playable lokal; default-off | Game kafe 2.5D solo tanpa login dan tanpa batas waktu, quest dalam scene, upgrade, teras, pelayan, layar penuh dan progres perangkat. Artwork SVG orisinal; [verifikasi](../verification/onigiri-kitchen.md), 19 Oktober 2026. |
 | [Authentication](auth.md) | Selesai | Login, register, verifikasi email, reset password, Redis session registry, revoke perangkat, rate limit, dan Turnstile aktif. |
 | [Dashboard](dashboard.md) | Selesai sederhana | Menampilkan attempt selesai dan attempt terakhir; kartu modul lain masih berupa shortcut statis. |
 | [Kana](kana.md) | Selesai dengan scope terbatas | Fixture kana terkurasi dan progress akun aktif; audio memakai Web Speech API, bukan rekaman. Quiz 46 Kana dan Tebak Kotoba Minna no Nihongo Bab 1–5 (`/kana/kotoba`) berjalan di browser tanpa login. |
@@ -65,6 +66,7 @@ di-prerender saat build, jadi keduanya baru berubah setelah redeploy.
 | `FEATURES_COMMUNITY` | [Komunitas](community.md#feature-flag) | `/community/*`, `/post/*`, `/u/*/posts`; menu Komunitas, bagian Postingan di profil, dan action postingan/like/komentar postingan tidak dirender atau ditolak. Ikut mati bila `FEATURES_PUBLIC_PROFILE` mati |
 | `FEATURES_FOLLOW` | [Komunitas](community.md#feature-flag) | `/u/*/followers`, `/u/*/following`, `/profile/follow-requests`; tombol follow dan badge permintaan tidak dirender. Ikut mati bila `FEATURES_PUBLIC_PROFILE` mati |
 | `FEATURES_KANA_WORD_RACE` | [Kana Word Race](kana-word-race.md) | `/mini-games/kana-word-race/*`; default false, mewajibkan `FEATURES_MINI_GAMES`; action/socket ikut dijaga |
+| `FEATURES_ONIGIRI_KITCHEN` | [Onigiri Kitchen](onigiri-kitchen.md) | `/mini-games/onigiri-kitchen`; default false, mewajibkan `FEATURES_MINI_GAMES`; katalog dan metadata publik ikut flag |
 
 Aturan umum:
 

@@ -19,6 +19,7 @@ export default function robots(): MetadataRoute.Robots {
         ...(FEATURES.miniGames ? ["/mini-games$"] : []),
         ...(FEATURES.kotobaClash ? ["/mini-games/kotoba-clash$"] : []),
         ...(FEATURES.kanaWordRace ? ["/mini-games/kana-word-race$"] : []),
+        ...(FEATURES.onigiriKitchen ? ["/mini-games/onigiri-kitchen$"] : []),
         ...(FEATURES.kana ? ["/kana", "/kana/"] : []),
         ...(FEATURES.flashcard ? ["/flashcard", "/flashcard/try/"] : []),
         ...(FEATURES.bunpou ? ["/bunpou", "/bunpou/"] : []),

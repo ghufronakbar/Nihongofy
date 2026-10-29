@@ -86,6 +86,7 @@ const envSchema = z
     FEATURES_MINI_GAMES: disabledFeatureFlag,
     FEATURES_KOTOBA_CLASH: disabledFeatureFlag,
     FEATURES_KANA_WORD_RACE: disabledFeatureFlag,
+    FEATURES_ONIGIRI_KITCHEN: disabledFeatureFlag,
     FEATURES_DICTIONARY: disabledFeatureFlag,
     CONVERSATION_PROVIDER: z.enum(["mock", "openai"]).default("mock"),
     CONVERSATION_CHAT_MODEL: optionalEnvString,
@@ -231,6 +232,7 @@ export const FEATURES = {
   miniGames: env.FEATURES_MINI_GAMES,
   kotobaClash: env.FEATURES_KOTOBA_CLASH && env.FEATURES_MINI_GAMES,
   kanaWordRace: env.FEATURES_KANA_WORD_RACE && env.FEATURES_MINI_GAMES,
+  onigiriKitchen: env.FEATURES_ONIGIRI_KITCHEN && env.FEATURES_MINI_GAMES,
   kana: env.FEATURES_KANA,
   flashcard: env.FEATURES_FLASHCARD,
   // Catatan pribadi dan diskusi publik per kata flashcard. Berdiri sendiri dari
