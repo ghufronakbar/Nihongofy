@@ -26,3 +26,9 @@
 - Arti dan catatan perlu ditinjau pengajar, terutama kata yang dikoreksi dari PDF (きょうし, はじめまして, そちら Bab 4, びじゅつかん, ほんのきもちです).
 - TTS bergantung pada voice browser; belum diuji di perangkat nyata.
 - UAT lanjutan: selesaikan satu bab penuh di HP dan desktop, uji mode kanji untuk Bab 4–5, dan uji tombol Dengar di perangkat yang memiliki voice Jepang.
+
+## Tambahan: opsi lewati (29 Oktober 2026)
+
+- `npx vitest run src/features/kana/`: **27 lulus**, termasuk tes lewati: kunci dibuka tanpa pilihan, tidak bisa melewati kata yang bukan soal aktif atau dua kali, snapshot dengan `selectedKey: null` dipulihkan, serta hasil menghitung benar/dilewati dan memasukkan kata dilewati ke daftar ulang.
+- Chromium desktop, Bab 4, 10 soal: satu kata dilewati lewat tombol dan satu lewat keyboard `L`; kartu belakang berwarna kuning dengan label "Dilewati", hasil menampilkan Salah 5 dan Dilewati 2, dan "Ulangi 7 kata ini" mencakup keduanya. Tidak ada error konsol.
+

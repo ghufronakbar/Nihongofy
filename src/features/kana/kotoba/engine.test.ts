@@ -123,7 +123,26 @@ it("menyelesaikan quiz setelah kartu terakhir ditinjau dan menghitung hasil per 
   const wrong = getKotobaResults(play(createKotobaQuiz({ ...SETUP, length: "20" }, START), true));
   expect(wrong.accuracy).toBe(0);
   expect(wrong.mistakes).toHaveLength(20);
-  expect(wrong.mistakes.every((row) => row.selected.meaning !== row.entry.meaning)).toBe(true);
+  expect(wrong.mistakes.every((row) => row.selected !== null && row.selected.meaning !== row.entry.meaning)).toBe(true);
+  expect(wrong.skippedCount).toBe(0);
+});
+
+it("melewati kata: kunci tetap dibuka, tidak dihitung benar, dan ikut daftar ulang", () => {
+  let session = advanceKotobaQuiz(createKotobaQuiz({ ...SETUP, length: "10" }, START), START);
+  const [first, second] = session.questions;
+  session = answerKotoba(session, first.key, null, START + 3000);
+  expect(session.answers[0]).toEqual({ key: first.key, selectedKey: null, elapsedMs: 3000 });
+  expect(session.questionStartedAt).toBeNull();
+  expect(answerKotoba(session, first.key, null, START + 3100)).toBe(session);
+  expect(answerKotoba(session, second.key, null, START + 3100)).toBe(session);
+  expect(restoreKotobaQuiz(JSON.parse(JSON.stringify(session)) as unknown)).toEqual(session);
+  session = advanceKotobaQuiz(session, START + 5000);
+  session = answerKotoba(session, second.key, second.key, START + 6000);
+  const result = getKotobaResults(session);
+  expect(result.correctCount).toBe(1);
+  expect(result.skippedCount).toBe(1);
+  expect(result.mistakes.map((row) => row.key)).toEqual([first.key]);
+  expect(result.mistakes[0]).toMatchObject({ skipped: true, selected: null, correct: false });
 });
 
 it("memulihkan sesi saat kartu belakang sedang dibaca", () => {

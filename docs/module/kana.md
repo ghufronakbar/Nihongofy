@@ -42,8 +42,9 @@
 - Mode kanji memakai kolom kanji daftar sumber; kata tanpa kanji (kata ganti, katakana, ungkapan) tetap tampil dalam kana dan label kartu ikut menjadi "Kana".
 - Depan kartu menampilkan kata, siswa memilih satu dari empat arti. Setelah memilih, kartu dibalik: bagian belakang memuat kana, kanji, arti, catatan pemakaian, tombol dengar (TTS), serta penanda benar/salah. Kartu berikutnya dibuka dengan tombol "Lanjut" atau Enter; keyboard 1–4 untuk memilih.
 - Pengecoh diambil berurutan dari kelompok kata sejenis (`KOTOBA_FAMILIES`, mis. nama hari, tanggal, kosoado, alat transportasi), lalu dari bab yang sama, lalu dari bab lain yang dipilih. Kata yang artinya bertumpuk atau tulisannya sama (`KOTOBA_CONFLICTS`, mis. せんせい/きょうし, いいえ/ちがいます, そちら Bab 3/Bab 4) tidak pernah muncul bersama dalam satu soal.
-- Waktu dihitung sejak depan kartu tampil sampai arti dipilih; waktu membaca bagian belakang tidak dihitung.
-- Hasil menampilkan skor/akurasi, total dan rata-rata waktu, rincian per bab bila memilih lebih dari satu bab, daftar kata yang perlu diulang, dan tabel semua jawaban. "Ulangi N kata ini" memulai sesi baru hanya dari kata yang salah; "Main lagi" mengacak ulang dengan pengaturan yang sama.
+- Tombol "Lewati, saya belum tahu" (keyboard `L`) membalik kartu tanpa memilih arti. Kata dicatat sebagai dilewati (`selectedKey: null`): tidak dihitung benar, ditampilkan terpisah dari jawaban salah, dan ikut "Ulangi N kata ini".
+- Waktu dihitung sejak depan kartu tampil sampai arti dipilih atau kata dilewati; waktu membaca bagian belakang tidak dihitung.
+- Hasil menampilkan skor/akurasi, total dan rata-rata waktu, jumlah salah dan dilewati, rincian per bab bila memilih lebih dari satu bab, daftar kata yang perlu diulang, dan tabel semua jawaban. "Ulangi N kata ini" memulai sesi baru hanya dari kata yang salah; "Main lagi" mengacak ulang dengan pengaturan yang sama.
 
 ## Data dan Persistence
 

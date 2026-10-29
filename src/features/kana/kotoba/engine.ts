@@ -17,7 +17,8 @@ export const KotobaQuizSetupSchema = z.object({
 export type KotobaQuizSetup = z.infer<typeof KotobaQuizSetupSchema>;
 export type KotobaFront = KotobaQuizSetup["front"];
 export type KotobaQuestion = { key: string; options: string[] };
-export type KotobaAnswer = { key: string; selectedKey: string; elapsedMs: number };
+/** `selectedKey` null berarti kata dilewati: kunci tetap ditampilkan, tetapi tidak dihitung benar. */
+export type KotobaAnswer = { key: string; selectedKey: string | null; elapsedMs: number };
 export type KotobaQuizSession = KotobaQuizSetup & {
   version: 1;
   questions: KotobaQuestion[];
@@ -92,9 +93,10 @@ export function advanceKotobaQuiz(session: KotobaQuizSession, now: number): Koto
   return { ...session, questionStartedAt: latest };
 }
 
-export function answerKotoba(session: KotobaQuizSession, key: string, selectedKey: string, now: number): KotobaQuizSession {
+export function answerKotoba(session: KotobaQuizSession, key: string, selectedKey: string | null, now: number): KotobaQuizSession {
   const question = session.questions[session.answers.length];
-  if (session.finishedAt !== null || session.questionStartedAt === null || question?.key !== key || !question.options.includes(selectedKey)) return session;
+  if (session.finishedAt !== null || session.questionStartedAt === null || question?.key !== key
+    || (selectedKey !== null && !question.options.includes(selectedKey))) return session;
   const answeredAt = Math.max(now, session.questionStartedAt);
   const answers = [...session.answers, { key, selectedKey, elapsedMs: answeredAt - session.questionStartedAt }];
   return { ...session, answers, questionStartedAt: null };
@@ -105,7 +107,7 @@ const KeySchema = z.string().max(20);
 const SessionSchema = KotobaQuizSetupSchema.extend({
   version: z.literal(1),
   questions: z.array(z.object({ key: KeySchema, options: z.array(KeySchema).length(KOTOBA_OPTION_COUNT) })).min(1).max(500),
-  answers: z.array(z.object({ key: KeySchema, selectedKey: KeySchema, elapsedMs: TimestampSchema })).max(500),
+  answers: z.array(z.object({ key: KeySchema, selectedKey: KeySchema.nullable(), elapsedMs: TimestampSchema })).max(500),
   startedAt: TimestampSchema,
   questionStartedAt: TimestampSchema.nullable(),
   finishedAt: TimestampSchema.nullable(),
@@ -122,7 +124,7 @@ const SessionSchema = KotobaQuizSetupSchema.extend({
         && question.options.slice(index + 1).every((other) => !kotobaConflict(option, other))));
   const validAnswers = session.answers.length <= session.questions.length && session.answers.every((answer, index) => {
     const question = session.questions[index];
-    return answer.key === question.key && question.options.includes(answer.selectedKey);
+    return answer.key === question.key && (answer.selectedKey === null || question.options.includes(answer.selectedKey));
   });
   const complete = session.answers.length === session.questions.length;
   const end = session.finishedAt ?? session.questionStartedAt;
@@ -150,13 +152,15 @@ export function getKotobaResults(session: KotobaQuizSession) {
     ...answer,
     number: index + 1,
     entry: entryOf(answer.key),
-    selected: entryOf(answer.selectedKey),
+    selected: answer.selectedKey === null ? null : entryOf(answer.selectedKey),
+    skipped: answer.selectedKey === null,
     correct: answer.selectedKey === answer.key,
   }));
   const correctCount = rows.filter((row) => row.correct).length;
+  const skippedCount = rows.filter((row) => row.skipped).length;
   const totalMs = rows.reduce((sum, row) => sum + row.elapsedMs, 0);
   return {
-    rows, correctCount, totalMs,
+    rows, correctCount, skippedCount, totalMs,
     total: session.questions.length,
     accuracy: session.questions.length ? Math.round(correctCount / session.questions.length * 100) : 0,
     averageMs: rows.length ? totalMs / rows.length : 0,

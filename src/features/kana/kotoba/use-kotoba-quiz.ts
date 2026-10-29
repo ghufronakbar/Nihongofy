@@ -60,7 +60,8 @@ export function useKotobaQuiz() {
     commit(createKotobaQuiz(setup, Date.now(), Math.random, onlyKeys));
   }, [commit]);
 
-  const answer = useCallback((key: string, selectedKey: string) => {
+  // selectedKey null melewati kata dan langsung membuka bagian belakang kartu.
+  const answer = useCallback((key: string, selectedKey: string | null) => {
     const latest = current.current;
     if (!latest) return;
     const next = answerKotoba(latest, key, selectedKey, Date.now());

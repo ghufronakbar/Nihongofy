@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type Ref } from "react";
 import Link from "next/link";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, ArrowRight, Check, Clock3, RotateCcw, Volume2, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Clock3, RotateCcw, SkipForward, Volume2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
@@ -17,6 +17,14 @@ import { KotobaResults } from "./kotoba-results";
 import { useKotobaQuiz } from "./use-kotoba-quiz";
 
 const LENGTH_LABELS = { "10": "10 kata", "20": "20 kata", all: "Semua" } as const;
+
+type Outcome = "correct" | "wrong" | "skipped";
+
+const OUTCOME_STYLES: Record<Outcome, { back: string; label: string }> = {
+  correct: { back: "bg-emerald-100", label: "Benar" },
+  wrong: { back: "bg-red-100", label: "Belum tepat" },
+  skipped: { back: "bg-amber-100", label: "Dilewati" },
+};
 
 function frontSize(text: string): string {
   const length = Array.from(text).length;
@@ -99,7 +107,7 @@ function KotobaSetupForm({ defaults, ready, onStart }: { defaults: KotobaQuizSet
   </div>;
 }
 
-function KotobaCard({ entry, front, flipped, answerCorrect, title }: { entry: KotobaEntry; front: KotobaFront; flipped: boolean; answerCorrect: boolean | null; title: Ref<HTMLHeadingElement> }) {
+function KotobaCard({ entry, front, flipped, outcome, title }: { entry: KotobaEntry; front: KotobaFront; flipped: boolean; outcome: Outcome | null; title: Ref<HTMLHeadingElement> }) {
   const [speech, setSpeech] = useState("");
   const shown = kotobaFront(entry, front);
   const other = shown === entry.kana ? entry.kanji : entry.kana;
@@ -112,8 +120,8 @@ function KotobaCard({ entry, front, flipped, answerCorrect, title }: { entry: Ko
         <h1 ref={flipped ? undefined : title} tabIndex={-1} className={cn("font-japanese max-w-full text-center leading-tight font-normal break-words outline-none", frontSize(shown))}><span lang="ja">{shown}</span></h1>
         <p className="mt-4 text-xs font-semibold text-slate-500">Apa artinya?</p>
       </section>
-      <section inert={!flipped} aria-hidden={!flipped} className={cn("kana-flip-face kana-flip-back flex flex-col items-center justify-center rounded-lg border-[3px] border-neo-ink px-6 py-6 text-neo-ink shadow-neo", answerCorrect ? "bg-emerald-100" : "bg-red-100")}>
-        <p className="absolute top-4 left-4 flex items-center gap-1 border-2 border-neo-ink bg-white px-2 py-0.5 text-xs font-black uppercase">{answerCorrect ? <><Check className="size-3.5" />Benar</> : <><X className="size-3.5 text-red-700" />Belum tepat</>}</p>
+      <section inert={!flipped} aria-hidden={!flipped} className={cn("kana-flip-face kana-flip-back flex flex-col items-center justify-center rounded-lg border-[3px] border-neo-ink px-6 py-6 text-neo-ink shadow-neo", OUTCOME_STYLES[outcome ?? "correct"].back)}>
+        <p className="absolute top-4 left-4 flex items-center gap-1 border-2 border-neo-ink bg-white px-2 py-0.5 text-xs font-black uppercase">{outcome === "skipped" ? <SkipForward className="size-3.5" /> : outcome === "wrong" ? <X className="size-3.5 text-red-700" /> : <Check className="size-3.5" />}{OUTCOME_STYLES[outcome ?? "correct"].label}</p>
         <Button type="button" variant="ghost" className="absolute top-2.5 right-2.5 min-h-10 text-xs font-bold" onClick={() => { const result = speakJapanese(speakableKana(entry)); setSpeech(result.ok ? "" : result.message); }}><Volume2 className="size-4" />Dengar</Button>
         <p lang="ja" className={cn("font-japanese max-w-full text-center leading-tight break-words", backSize(shown))}>{shown}</p>
         {other && <p lang="ja" className="font-japanese mt-2 text-xl text-slate-700 sm:text-2xl">{other}</p>}
@@ -125,7 +133,7 @@ function KotobaCard({ entry, front, flipped, answerCorrect, title }: { entry: Ko
   </div>;
 }
 
-function KotobaRound({ session, onAnswer, onAdvance, onReset }: { session: KotobaQuizSession; onAnswer: (key: string, selectedKey: string) => void; onAdvance: () => void; onReset: () => void }) {
+function KotobaRound({ session, onAnswer, onAdvance, onReset }: { session: KotobaQuizSession; onAnswer: (key: string, selectedKey: string | null) => void; onAdvance: () => void; onReset: () => void }) {
   const pending = session.questionStartedAt === null;
   const revealing = pending && session.answers.length > 0;
   const index = revealing ? session.answers.length - 1 : session.answers.length;
@@ -156,6 +164,9 @@ function KotobaRound({ session, onAnswer, onAdvance, onReset }: { session: Kotob
       if (!pending && option >= 0) {
         event.preventDefault();
         onAnswer(question.key, question.options[option]);
+      } else if (!pending && event.key.toLowerCase() === "l") {
+        event.preventDefault();
+        onAnswer(question.key, null);
       } else if (revealing && event.key === "Enter" && !(event.target instanceof HTMLButtonElement)) {
         // A focused button already turns Enter into its own click.
         event.preventDefault();
@@ -167,7 +178,7 @@ function KotobaRound({ session, onAnswer, onAdvance, onReset }: { session: Kotob
   }, [onAnswer, onAdvance, pending, question, resetOpen, revealing]);
 
   if (!entry) return null;
-  const correct = answer ? answer.selectedKey === answer.key : null;
+  const outcome: Outcome | null = !answer ? null : answer.selectedKey === null ? "skipped" : answer.selectedKey === answer.key ? "correct" : "wrong";
 
   return <div className="mx-auto max-w-2xl pb-8">
     <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
@@ -178,7 +189,7 @@ function KotobaRound({ session, onAnswer, onAdvance, onReset }: { session: Kotob
     </div>
     <div className="mb-3 flex items-center justify-between font-mono text-xs font-bold"><span>KATA {String(index + 1).padStart(2, "0")} / {session.questions.length}</span><span className="flex items-center gap-1.5 tabular-nums" aria-label={`Waktu soal ${formatQuizDuration(elapsedMs)}`}><Clock3 className="size-3.5" />{formatQuizDuration(elapsedMs)}</span></div>
     <div role="progressbar" aria-label="Progres tebak kotoba" aria-valuemin={0} aria-valuemax={session.questions.length} aria-valuenow={session.answers.length} className="mb-5 h-2.5 overflow-hidden rounded-full border-2 border-neo-ink bg-card"><div className="h-full bg-neo-blue" style={{ width: `${session.answers.length / session.questions.length * 100}%` }} /></div>
-    <KotobaCard key={entry.key} entry={entry} front={session.front} flipped={revealing} answerCorrect={correct} title={title} />
+    <KotobaCard key={entry.key} entry={entry} front={session.front} flipped={revealing} outcome={outcome} title={title} />
     <div className="mt-6 grid gap-3 sm:grid-cols-2" role="group" aria-label="Pilihan arti">
       {question.options.map((optionKey, option) => {
         const meaning = getKotoba(optionKey)?.meaning ?? "";
@@ -192,9 +203,10 @@ function KotobaRound({ session, onAnswer, onAdvance, onReset }: { session: Kotob
         </Button>;
       })}
     </div>
+    {!revealing && <Button variant="outline" disabled={pending} onClick={() => onAnswer(question.key, null)} className="mt-3 min-h-11 w-full border-2 border-dashed border-neo-ink bg-transparent font-bold"><SkipForward className="size-4" />Lewati, saya belum tahu<kbd className="ml-1 rounded-sm border border-neo-ink/40 px-1.5 font-mono text-[10px]">L</kbd></Button>}
     {revealing && <Button ref={next} onClick={onAdvance} className="neo-button mt-5 h-13 w-full border-[3px] border-neo-ink bg-neo-yellow text-base font-extrabold text-neo-ink">{isLast ? "Lihat hasil" : "Lanjut"}<ArrowRight className="size-5" /></Button>}
     <p role="status" aria-live="polite" className="mt-4 min-h-5 text-center text-xs text-muted-foreground">
-      {revealing ? `${correct ? "Benar!" : "Belum tepat."} ${entry.kana} artinya “${entry.meaning}”. Tekan Enter untuk ${isLast ? "melihat hasil" : "lanjut"}.` : "Pilih arti yang tepat. Kamu juga bisa menekan tombol 1–4."}
+      {revealing ? `${{ correct: "Benar!", wrong: "Belum tepat.", skipped: "Dilewati." }[outcome ?? "correct"]} ${entry.kana} artinya “${entry.meaning}”. Tekan Enter untuk ${isLast ? "melihat hasil" : "lanjut"}.` : "Pilih arti yang tepat dengan tombol 1–4, atau tekan L untuk melewati."}
     </p>
   </div>;
 }
