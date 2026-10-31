@@ -37,3 +37,11 @@
 - `npx vitest run src/features/kana/`: **32 lulus**, termasuk tes timer: validasi 3–300 detik bulat atau tanpa batas, sisa waktu, waktu habis tepat di batas, jawaban terlambat dicatat waktu habis, pemisahan dilewati/waktu habis di hasil, snapshot dengan waktu melebihi batas ditolak, dan sesi lama tanpa field timer tetap dipulihkan.
 - Chromium desktop, Bab 5, 10 soal, timer 4 detik: input 2 dan kosong menampilkan "Minimal 3 detik." dan "Isi batas waktu dalam detik." (form memakai `noValidate` agar pesan aplikasi yang tampil, bukan tooltip browser). Hitung mundur tampil, kata pertama otomatis dibalik "Waktu habis", refresh di tengah soal tetap berakhir waktu habis setelah batas, dan hasil menampilkan kolom Waktu habis serta badge "Timer 4 dtk". Viewport 390 px tanpa scroll horizontal; tidak ada error konsol.
 
+## Tambahan: Bab 6–10 (31 Oktober 2026)
+
+- 256 kosakata baru (Bab 6: 54, Bab 7: 48, Bab 8: 57, Bab 9: 50, Bab 10: 47) ditranskripsi dari halaman 10–16 PDF yang sama; baris yang tumpang tindih di PDF diperiksa ulang pada render 300 dpi. Total 509 kata.
+- Koreksi PDF: おそがしい → いそがしい, スボーン → スポーツ, kanji やさしい 優しい → 易しい (arti "mudah"), ーだんめ → 〜だんめ, salah ketik arti ("dai", "sumah", "walfiat", "perempeuan").
+- Grup konflik ditambah untuk arti yang bertumpuk lintas bab, termasuk tulisan sama dengan arti berbeda (あります Bab 9/10, 〜から Bab 4/9, すみません Bab 3/9). Skrip pemeriksaan sinonim bersama menyisakan 11 pasangan yang memang kontras belajar (ちち/おとうさん, さむい/つめたい, います/あります, dan variasi "permisi" dengan konteks berbeda).
+- Batas jumlah soal pada skema sesi sebelumnya 500, sehingga "Semua" Bab 1–10 (509 kata) tidak akan bisa dipulihkan setelah refresh. Batas kini mengikuti jumlah kata di data; tes memulihkan sesi 509 soal.
+- `npx vitest run src/features/kana/`: **37 lulus**, termasuk cakupan per bab untuk Bab 6–10 (8 putaran acak per bab, empat pilihan tanpa konflik).
+

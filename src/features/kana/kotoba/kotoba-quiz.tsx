@@ -53,7 +53,7 @@ function backSize(text: string): string {
 }
 
 function speakableKana(entry: KotobaEntry): string {
-  return entry.kana.replace(/[〜（）「」？]/g, " ").trim();
+  return entry.kana.replace(/[〜（）「」？／…]/g, " ").trim();
 }
 
 const TIMER_OPTION = "relative flex min-h-16 cursor-pointer items-center gap-2 rounded-lg border-2 border-neo-ink bg-white px-3 py-2 text-sm font-extrabold has-checked:bg-neo-yellow has-checked:shadow-neo-sm focus-within:outline-3 focus-within:outline-offset-3";
@@ -160,7 +160,7 @@ function KotobaCard({ entry, front, flipped, outcome, title }: { entry: KotobaEn
         <p className="absolute top-4 left-4 flex items-center gap-1 border-2 border-neo-ink bg-white px-2 py-0.5 text-xs font-black uppercase">{OUTCOME_ICONS[outcome ?? "correct"]}{OUTCOME_STYLES[outcome ?? "correct"].label}</p>
         <Button type="button" variant="ghost" className="absolute top-2.5 right-2.5 min-h-10 text-xs font-bold" onClick={() => { const result = speakJapanese(speakableKana(entry)); setSpeech(result.ok ? "" : result.message); }}><Volume2 className="size-4" />Dengar</Button>
         <p lang="ja" className={cn("font-japanese max-w-full text-center leading-tight break-words", backSize(shown))}>{shown}</p>
-        {other && <p lang="ja" className="font-japanese mt-2 text-xl text-slate-700 sm:text-2xl">{other}</p>}
+        {other && <p lang="ja" className="font-japanese mt-2 max-w-full text-center text-xl break-words text-slate-700 sm:text-2xl">{other}</p>}
         <p className="mt-4 max-w-md text-center text-lg leading-snug font-extrabold sm:text-xl">{entry.meaning}</p>
         {entry.note && <p className="mt-2 max-w-md text-center text-xs leading-5 text-slate-700 sm:text-sm">{entry.note}</p>}
         {speech && <p role="status" className="absolute bottom-3 px-4 text-center text-[11px] text-slate-700">{speech}</p>}

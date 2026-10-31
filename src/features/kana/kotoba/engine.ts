@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { getKotoba, getKotobaByBabs, KOTOBA_BABS, KOTOBA_CONFLICTS, KOTOBA_FAMILIES, type KotobaEntry } from "./data";
+import { getKotoba, getKotobaByBabs, KOTOBA_BABS, KOTOBA_CONFLICTS, KOTOBA_ENTRIES, KOTOBA_FAMILIES, type KotobaEntry } from "./data";
 
 export const KOTOBA_QUIZ_STORAGE_KEY = "nihongofy:kotoba-quiz:v1";
 export const KOTOBA_OPTION_COUNT = 4;
@@ -139,8 +139,8 @@ const SessionSchema = KotobaQuizSetupSchema.extend({
   // Sesi yang tersimpan sebelum ada pengaturan timer tetap bisa dipulihkan.
   timeLimit: TimeLimitSchema.default(null),
   version: z.literal(1),
-  questions: z.array(z.object({ key: KeySchema, options: z.array(KeySchema).length(KOTOBA_OPTION_COUNT) })).min(1).max(500),
-  answers: z.array(z.object({ key: KeySchema, selectedKey: KeySchema.nullable(), elapsedMs: TimestampSchema })).max(500),
+  questions: z.array(z.object({ key: KeySchema, options: z.array(KeySchema).length(KOTOBA_OPTION_COUNT) })).min(1).max(KOTOBA_ENTRIES.length),
+  answers: z.array(z.object({ key: KeySchema, selectedKey: KeySchema.nullable(), elapsedMs: TimestampSchema })).max(KOTOBA_ENTRIES.length),
   startedAt: TimestampSchema,
   questionStartedAt: TimestampSchema.nullable(),
   finishedAt: TimestampSchema.nullable(),

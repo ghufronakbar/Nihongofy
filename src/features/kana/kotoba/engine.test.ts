@@ -20,9 +20,9 @@ function play(session: KotobaQuizSession, wrong = false): KotobaQuizSession {
 }
 
 describe("data kotoba", () => {
-  it("memuat Bab 1-5 dengan key unik dan jumlah kata sesuai daftar", () => {
-    expect(KOTOBA_BABS).toEqual([1, 2, 3, 4, 5]);
-    expect(KOTOBA_BABS.map((bab) => getKotobaByBabs([bab]).length)).toEqual([44, 47, 44, 59, 59]);
+  it("memuat Bab 1-10 dengan key unik dan jumlah kata sesuai daftar", () => {
+    expect(KOTOBA_BABS).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    expect(KOTOBA_BABS.map((bab) => getKotobaByBabs([bab]).length)).toEqual([44, 47, 44, 59, 59, 54, 48, 57, 50, 47]);
     expect(new Set(KOTOBA_ENTRIES.map((entry) => entry.key)).size).toBe(KOTOBA_ENTRIES.length);
     for (const entry of KOTOBA_ENTRIES) {
       expect(entry.kana.trim()).not.toBe("");
@@ -85,12 +85,14 @@ it("membatasi jumlah soal, menggabungkan beberapa bab, dan bisa mengulang kata t
   const short = createKotobaQuiz({ ...SETUP, babs: [5, 2], length: "10" }, START);
   expect(short.babs).toEqual([2, 5]);
   expect(short.questions).toHaveLength(10);
-  expect(createKotobaQuiz({ ...SETUP, babs: [1, 2, 3, 4, 5] }, START).questions).toHaveLength(KOTOBA_ENTRIES.length);
+  const everything = createKotobaQuiz({ ...SETUP, babs: [...KOTOBA_BABS] }, START);
+  expect(everything.questions).toHaveLength(KOTOBA_ENTRIES.length);
+  expect(restoreKotobaQuiz(JSON.parse(JSON.stringify(everything)) as unknown)).toEqual(everything);
   const keys = short.questions.slice(0, 3).map((question) => question.key);
   const retry = createKotobaQuiz({ ...SETUP, babs: [2, 5] }, START, Math.random, keys);
   expect(retry.questions.map((question) => question.key).sort()).toEqual([...keys].sort());
   expect(() => createKotobaQuiz({ ...SETUP, babs: [] }, START)).toThrow();
-  expect(() => createKotobaQuiz({ ...SETUP, babs: [6] }, START)).toThrow();
+  expect(() => createKotobaQuiz({ ...SETUP, babs: [11] }, START)).toThrow();
 });
 
 it("membuka kartu, mengunci jawaban, menampilkan bagian belakang, lalu lanjut tanpa menghitung waktu baca", () => {

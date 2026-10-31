@@ -4,7 +4,7 @@ import { KotobaQuiz } from "@/features/kana/kotoba/kotoba-quiz";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Tebak Kotoba Minna no Nihongo — Bab 1–5",
+  title: "Tebak Kotoba Minna no Nihongo — Bab 1–10",
   description: "Latihan kosakata Minna no Nihongo I per bab tanpa login. Tampilkan kana atau kanji di depan kartu, tebak artinya, lalu lihat tulisan lengkap di belakang.",
   path: "/kana/kotoba",
 });
