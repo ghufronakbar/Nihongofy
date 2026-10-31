@@ -45,3 +45,11 @@
 - Batas jumlah soal pada skema sesi sebelumnya 500, sehingga "Semua" Bab 1–10 (509 kata) tidak akan bisa dipulihkan setelah refresh. Batas kini mengikuti jumlah kata di data; tes memulihkan sesi 509 soal.
 - `npx vitest run src/features/kana/`: **37 lulus**, termasuk cakupan per bab untuk Bab 6–10 (8 putaran acak per bab, empat pilihan tanpa konflik).
 
+## Tambahan: Bab 11–15 (31 Oktober 2026)
+
+- 296 kosakata baru (Bab 11: 62, Bab 12: 50, Bab 13: 61, Bab 14: 73, Bab 15: 50) dari halaman 17–26 PDF. Total 805 kata.
+- Koreksi PDF: オフト → ソフト, みんなさん → みなさん, ーかい/ーだい dan sejenisnya → 〜, arti 〜ちゃく ("berangkat ke ~" → "tiba di ~"), こうむいん ("pegawai kantor" → "pegawai negeri"). Bab 11 No. 6 かいしゃを〜 (kolom arti kosong) digabung ke No. 5 menjadi やすみます（かいしゃを〜）.
+- Bab 13–15 memuat kosakata referensi yang sudah ada di bab lain (だいがく, スーパー, デパート, びじゅつかん, としょかん, でんき, きゅうこう, とっきゅう, ふつう, じこくひょう, しやくしょ, こうこう, すみません, みなさん, かいしゃいん, ぎんこういん, きょうし, けんきゅうしゃ, エンジニア). Semuanya ditandai konflik dengan pasangannya agar tidak muncul sebagai pengecoh satu sama lain; tes kesamaan tulisan/arti memastikannya.
+- Skrip sinonim bersama menyisakan pasangan kontras yang disengaja (〜さい/〜ねん, 〜がつ/〜かげつ, どれ/どちら, あに/おにいさん dan pasangan saudara lain, おてら/じんじゃ, あります/います).
+- `npx vitest run src/features/kana/`: **42 lulus**, termasuk cakupan per bab untuk Bab 11–15 dan pemulihan sesi "Semua" Bab 1–15 (805 soal).
+
