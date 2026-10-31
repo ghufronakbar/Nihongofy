@@ -2,7 +2,7 @@
 
 ## Status Aktual
 
-**Pengenalan, self-review, Quiz 46 Kana, dan Tebak Kotoba Minna no Nihongo Bab 1–15 tersedia.** Hiragana dan katakana berasal dari fixture terkurasi; kosakata Tebak Kotoba ditranskripsi dari daftar kosakata Minna no Nihongo I milik pengajar. Kedua quiz berjalan seluruhnya di browser tanpa login atau penyimpanan database; progress kartu belajar untuk akun tetap memakai counter per kartu.
+**Pengenalan, self-review, Quiz 46 Kana, dan Tebak Kotoba Minna no Nihongo Bab 1–20 tersedia.** Hiragana dan katakana berasal dari fixture terkurasi; kosakata Tebak Kotoba ditranskripsi dari daftar kosakata Minna no Nihongo I milik pengajar. Kedua quiz berjalan seluruhnya di browser tanpa login atau penyimpanan database; progress kartu belajar untuk akun tetap memakai counter per kartu.
 
 ## Feature Flag
 
@@ -38,7 +38,7 @@
 
 ### Tebak Kotoba (Minna no Nihongo)
 
-- 805 kosakata Minna no Nihongo I Bab 1–15 (Bab 1–5: 44, 47, 44, 59, 59; Bab 6–10: 54, 48, 57, 50, 47; Bab 11–15: 62, 50, 61, 73, 50 kata). Bab 13–15 memuat kosakata referensi yang sebagian sudah muncul di bab lain (mis. だいがく, デパート, きょうし); kata itu tetap dicantumkan per bab dan ditandai konflik dengan pasangannya. Pengaturan: nickname 1–32 karakter, satu atau beberapa bab, tampilan depan kartu (hiragana/katakana atau kanji), jumlah soal 10, 20, atau semua kata pada bab terpilih, dan timer per kata (tanpa batas atau 3–300 detik).
+- 1.035 kosakata Minna no Nihongo I Bab 1–20 (Bab 1–5: 44, 47, 44, 59, 59; Bab 6–10: 54, 48, 57, 50, 47; Bab 11–15: 62, 50, 61, 73, 50; Bab 16–20: 51, 83, 46, 34, 16 kata). Bab 13–20 memuat kosakata referensi yang sebagian sudah muncul di bab lain (mis. だいがく, デパート, きょうし); kata itu tetap dicantumkan per bab dan ditandai konflik dengan pasangannya. Pengaturan: nickname 1–32 karakter, satu atau beberapa bab, tampilan depan kartu (hiragana/katakana atau kanji), jumlah soal 10, 20, atau semua kata pada bab terpilih, dan timer per kata (tanpa batas atau 3–300 detik).
 - Mode kanji memakai kolom kanji daftar sumber; kata tanpa kanji (kata ganti, katakana, ungkapan) tetap tampil dalam kana dan label kartu ikut menjadi "Kana".
 - Depan kartu menampilkan kata, siswa memilih satu dari empat arti. Setelah memilih, kartu dibalik: bagian belakang memuat kana, kanji, arti, catatan pemakaian, tombol dengar (TTS), serta penanda benar/salah. Kartu berikutnya dibuka dengan tombol "Lanjut" atau Enter; keyboard 1–4 untuk memilih.
 - Pengecoh diambil berurutan dari kelompok kata sejenis (`KOTOBA_FAMILIES`, mis. nama hari, tanggal, kosoado, alat transportasi), lalu dari bab yang sama, lalu dari bab lain yang dipilih. Kata yang artinya bertumpuk atau tulisannya sama (`KOTOBA_CONFLICTS`, mis. せんせい/きょうし, いいえ/ちがいます, そちら Bab 3/Bab 4) tidak pernah muncul bersama dalam satu soal.
@@ -54,7 +54,7 @@
 - Untuk guest, UI tetap bisa dipakai tetapi data hanya hidup di state halaman dan hilang saat refresh.
 - Data progress divalidasi terhadap daftar stable `kanaKey` yang dikenal aplikasi.
 - Quiz memakai `sessionStorage` dengan key `nihongofy:kana-quiz:v1`, terpisah dari progress kartu belajar, termasuk untuk siswa yang sedang login. Tidak ada action atau query database untuk hasil quiz.
-- Kosakata Tebak Kotoba adalah fixture kode di `src/features/kana/kotoba/data.ts`, ditranskripsi dari "Kosakata minna no nihongo 1 Bab 1-25.pdf". Koreksi terhadap PDF dicatat di kepala file (mis. らいげつ 来週 → 来月, おそがしい → いそがしい, スボーン → スポーツ, やさしい 優しい → 易しい, オフト → ソフト, みんなさん → みなさん, penanda angka `ー` → `〜`, arti きょうし dan はつか). Key kata (`bab-<bab>-<no>`) mengikuti nomor baris PDF; jangan diubah karena dipakai snapshot sesi.
+- Kosakata Tebak Kotoba adalah fixture kode di `src/features/kana/kotoba/data.ts`, ditranskripsi dari "Kosakata minna no nihongo 1 Bab 1-25.pdf". Koreksi terhadap PDF dicatat di kepala file (mis. らいげつ 来週 → 来月, おそがしい → いそがしい, スボーン → スポーツ, やさしい 優しい → 易しい, オフト → ソフト, みんなさん → みなさん, げりがします → げりをします, penanda angka `ー` → `〜`, arti きょうし dan はつか). Key kata (`bab-<bab>-<no>`) mengikuti nomor baris PDF; jangan diubah karena dipakai snapshot sesi.
 - Sesi Tebak Kotoba memakai `sessionStorage` key `nihongofy:kotoba-quiz:v1` dan divalidasi Zod: bab terpilih, keunikan soal, empat pilihan tanpa konflik arti, urutan jawaban, dan timestamp. Refresh saat bagian belakang kartu terbuka tetap memulihkan kartu tersebut.
 - Snapshot quiz divalidasi dengan Zod: jumlah/keunikan kana, script, pilihan, urutan jawaban, dan konsistensi timestamp. Refresh mempertahankan timer soal, jawaban, serta hasil; tutup tab mengakhiri penyimpanan sementara.
 - Jika penyimpanan browser ditolak, quiz tetap berjalan di memori dan UI mengingatkan agar tidak refresh serta mengunduh hasil.
@@ -64,7 +64,7 @@
 
 - Bukan SRS: tidak ada due date, interval, random queue, atau jadwal review.
 - Tidak ada latihan menulis/drawing, digraph yoon seperti `きゃ`, atau kata contoh. Quiz hanya menguji 46 kana dasar, belum dakuten/handakuten.
-- Tebak Kotoba baru mencakup Bab 1–15 dan satu arah (kata → arti). Belum ada arah arti → kata, ekspor gambar hasil, atau progress akun. Arti dan catatan mengikuti daftar sumber yang sudah dirapikan, belum ditinjau ulang oleh pengajar.
+- Tebak Kotoba baru mencakup Bab 1–20 dan satu arah (kata → arti). Belum ada arah arti → kata, ekspor gambar hasil, atau progress akun. Arti dan catatan mengikuti daftar sumber yang sudah dirapikan, belum ditinjau ulang oleh pengajar.
 - Quiz merupakan evaluasi mandiri: hasil browser/gambar tidak memiliki verifikasi server atau tautan laporan permanen.
 - Audio bukan file rekaman; kualitas dan ketersediaan bergantung pada voice browser/device.
 - Variasi dakuten/handakuten bukan kartu mandiri, sehingga progress dan audio tidak dapat dinilai per variasi.

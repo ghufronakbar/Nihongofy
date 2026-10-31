@@ -20,9 +20,9 @@ function play(session: KotobaQuizSession, wrong = false): KotobaQuizSession {
 }
 
 describe("data kotoba", () => {
-  it("memuat Bab 1-15 dengan key unik dan jumlah kata sesuai daftar", () => {
-    expect(KOTOBA_BABS).toEqual(Array.from({ length: 15 }, (_, index) => index + 1));
-    expect(KOTOBA_BABS.map((bab) => getKotobaByBabs([bab]).length)).toEqual([44, 47, 44, 59, 59, 54, 48, 57, 50, 47, 62, 50, 61, 73, 50]);
+  it("memuat Bab 1-20 dengan key unik dan jumlah kata sesuai daftar", () => {
+    expect(KOTOBA_BABS).toEqual(Array.from({ length: 20 }, (_, index) => index + 1));
+    expect(KOTOBA_BABS.map((bab) => getKotobaByBabs([bab]).length)).toEqual([44, 47, 44, 59, 59, 54, 48, 57, 50, 47, 62, 50, 61, 73, 50, 51, 83, 46, 34, 16]);
     expect(new Set(KOTOBA_ENTRIES.map((entry) => entry.key)).size).toBe(KOTOBA_ENTRIES.length);
     for (const entry of KOTOBA_ENTRIES) {
       expect(entry.kana.trim()).not.toBe("");
@@ -92,7 +92,7 @@ it("membatasi jumlah soal, menggabungkan beberapa bab, dan bisa mengulang kata t
   const retry = createKotobaQuiz({ ...SETUP, babs: [2, 5] }, START, Math.random, keys);
   expect(retry.questions.map((question) => question.key).sort()).toEqual([...keys].sort());
   expect(() => createKotobaQuiz({ ...SETUP, babs: [] }, START)).toThrow();
-  expect(() => createKotobaQuiz({ ...SETUP, babs: [16] }, START)).toThrow();
+  expect(() => createKotobaQuiz({ ...SETUP, babs: [21] }, START)).toThrow();
 });
 
 it("membuka kartu, mengunci jawaban, menampilkan bagian belakang, lalu lanjut tanpa menghitung waktu baca", () => {

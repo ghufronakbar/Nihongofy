@@ -53,3 +53,11 @@
 - Skrip sinonim bersama menyisakan pasangan kontras yang disengaja (〜さい/〜ねん, 〜がつ/〜かげつ, どれ/どちら, あに/おにいさん dan pasangan saudara lain, おてら/じんじゃ, あります/います).
 - `npx vitest run src/features/kana/`: **42 lulus**, termasuk cakupan per bab untuk Bab 11–15 dan pemulihan sesi "Semua" Bab 1–15 (805 soal).
 
+## Tambahan: Bab 16–20 (31 Oktober 2026)
+
+- 230 kosakata baru (Bab 16: 51, Bab 17: 83, Bab 18: 46, Bab 19: 34, Bab 20: 16) dari halaman 27–35 PDF. Total 1.035 kata.
+- Koreksi PDF: げりがします → げりをします, かぜをひき → かぜをひきます, arti いちども ("sekali-sekali" → "belum pernah sekali pun", dengan bentuk negatif), このあいだ ("tempo akhir" → "tempo hari"), おちゃ Bab 19 ("the" → "teh, upacara minum teh").
+- Kana sama dengan arti berbeda ditandai konflik: はな 鼻/花, かみ 髪/紙, とぶ 飛ぶ/跳ぶ (dalam Bab 18), おちゃ Bab 6/19, それから Bab 6/11/17. Bagian tubuh Bab 17 yang mengulang Bab 16 (かお, め, みみ, あたま, dst.) ditandai konflik dengan pasangannya.
+- Bab 20 hanya 16 kata; pilihan "20 kata" menghasilkan 16 soal (seluruh bab), sesuai batas engine.
+- `npx vitest run src/features/kana/`: **47 lulus**, termasuk cakupan per bab untuk Bab 16–20.
+
