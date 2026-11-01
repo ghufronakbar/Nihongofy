@@ -9,6 +9,9 @@
 // salah ketik arti, baris (おいくつ) Bab 1 No. 26 yang digabung ke No. 25, dan baris かいしゃを〜
 // Bab 11 No. 6 (tanpa arti) yang digabung ke No. 5. Bab 13-25 memuat kosakata referensi yang
 // sebagian sudah ada di bab lain; kata itu tetap dicantumkan per bab dan ditandai konflik.
+// Acuan sekarang: kosakata/kosakata-bab-01-25.md di repo materi (PDF scan lama sudah dihapus).
+// Kanji, bacaan, dan arti disamakan dengan daftar itu; perbedaan yang tersisa hanya format
+// (konteks dalam kurung, dua baris yang digabung). 何曜日 dibaca なんようび.
 
 export type KotobaEntry = {
   key: string;
@@ -522,7 +525,7 @@ const BAB_ROWS: Record<number, readonly Row[]> = {
     [16, "れいぞうこ", "冷蔵庫", "kulkas, lemari es"],
     [17, "テーブル", null, "meja"],
     [18, "ベッド", null, "tempat tidur, ranjang"],
-    [19, "たな", "棚", "rak, lemari"],
+    [19, "たな", "棚", "rak"],
     [20, "ドア", null, "pintu"],
     [21, "まど", "窓", "jendela"],
     [22, "ポスト", null, "kotak pos"],
@@ -941,7 +944,7 @@ const BAB_ROWS: Record<number, readonly Row[]> = {
     [27, "ですから", null, "oleh karena itu"],
     [28, "どうしましたか", null, "kenapa? ada masalah apa?"],
     [29, "（〜が）いたいです", "（〜が）痛いです", "~ sakit"],
-    [30, "かぜ", null, "masuk angin"],
+    [30, "かぜ", null, "flu, pilek"],
     [31, "それから", null, "dan, kemudian"],
     [32, "おだいじに", "お大事に", "semoga lekas sembuh"],
     [33, "からだ", "体", "badan, tubuh"],
@@ -964,7 +967,7 @@ const BAB_ROWS: Record<number, readonly Row[]> = {
     [50, "かたがこります", "肩がこります", "bahu pegal"],
     [51, "からだがだるい", "体がだるい", "badan lemas"],
     [52, "かゆい", null, "gatal"],
-    [53, "かぜをひきます", "風邪をひきます", "terkena masuk angin, flu"],
+    [53, "かぜをひきます", "風邪をひきます", "terkena flu, pilek"],
     [54, "インフルエンザ", null, "influenza"],
     [55, "もうちょう", "盲腸", "usus buntu"],
     [56, "ぎっくりごし", "ぎっくり腰", "sakit pinggang (encok)"],
@@ -1030,7 +1033,7 @@ const BAB_ROWS: Record<number, readonly Row[]> = {
     [31, "およぐ", "泳ぐ", "berenang"],
     [32, "もぐる", "潜る", "menyelam"],
     [33, "とびこむ", "飛び込む", "terjun, melompat masuk"],
-    [34, "さかだちします", "逆立ちします", "berjungkir balik, bertumpu tangan"],
+    [34, "さかだちします", "逆立ちします", "berdiri dengan tangan (handstand)"],
     [35, "はう", null, "merayap"],
     [36, "ける", null, "menendang"],
     [37, "ふる", "振る", "melambaikan, mengayunkan"],
@@ -1125,7 +1128,7 @@ const BAB_ROWS: Record<number, readonly Row[]> = {
     [24, "しかたがありません", null, "apa boleh buat"],
     [25, "しばらく", null, "untuk sementara, beberapa waktu"],
     [26, "もちろん", null, "tentu saja"],
-    [27, "ほいくえん", "保育園", "tempat penitipan anak (playgroup)"],
+    [27, "ほいくえん", "保育園", "tempat penitipan anak (daycare)"],
     [28, "ようちえん", "幼稚園", "TK"],
     [29, "しょうがっこう", "小学校", "SD"],
     [30, "ちゅうがっこう", "中学校", "SMP"],
@@ -1138,7 +1141,7 @@ const BAB_ROWS: Record<number, readonly Row[]> = {
     [37, "かちょう", "課長", "kepala seksi"],
     [38, "ぶちょう", "部長", "kepala bagian"],
     [39, "しゃちょう", "社長", "direktur utama, kepala perusahaan"],
-    [40, "かいちょう", "会長", "ketua (perkumpulan, yayasan)"],
+    [40, "かいちょう", "会長", "ketua (dewan) perusahaan"],
   ],
   22: [
     [1, "きます", "着ます", "memakai (baju)"],
@@ -1230,14 +1233,14 @@ const BAB_ROWS: Record<number, readonly Row[]> = {
     [15, "せいねん", "青年", "pemuda"],
     [16, "ちゅうねん", "中年", "setengah baya"],
     [17, "ろうじん", "老人", "lansia, orang lanjut usia"],
-    [18, "ほいくえん", "保育園", "tempat penitipan anak (playgroup)"],
+    [18, "ほいくえん", "保育園", "tempat penitipan anak (daycare)"],
     [19, "ようちえん", "幼稚園", "TK"],
     [20, "しょうがっこう", "小学校", "SD"],
     [21, "ちゅうがっこう", "中学校", "SMP"],
     [22, "こうとうがっこう", "高等学校", "SMA"],
     [23, "だいがく", "大学", "universitas"],
     [24, "せんもんがっこう", "専門学校", "sekolah kejuruan"],
-    [25, "だいがくいん", "大学院", "pascasarjana (S2)"],
+    [25, "だいがくいん", "大学院", "pascasarjana (S2/S3)"],
     [26, "がくし", "学士", "sarjana (S1)"],
     [27, "しゅうしょく", "就職", "mendapat pekerjaan", "〜します: mulai bekerja."],
     [28, "けっこん", "結婚", "pernikahan"],
