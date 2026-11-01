@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { advanceKotobaQuiz, answerKotoba, createKotobaQuiz, expireKotoba, kotobaTimeLeft, KOTOBA_QUIZ_STORAGE_KEY, restoreKotobaQuiz, type KotobaQuizSession, type KotobaQuizSetup } from "./engine";
+import { advanceKotobaQuiz, answerKotoba, createKotobaQuiz, expireKotoba, judgeKotoba, kotobaTimeLeft, KOTOBA_QUIZ_STORAGE_KEY, restoreKotobaQuiz, revealKotoba, type KotobaQuizSession, type KotobaQuizSetup, type KotobaVerdict } from "./engine";
 
 export function useKotobaQuiz() {
   const [session, setSession] = useState<KotobaQuizSession | null>(null);
@@ -87,6 +87,21 @@ export function useKotobaQuiz() {
     if (next !== latest) commit(next);
   }, [commit]);
 
+  // Mode balik kartu: membalik kartu, lalu menilai sendiri benar/salah.
+  const reveal = useCallback((key: string) => {
+    const latest = current.current;
+    if (!latest) return;
+    const next = revealKotoba(latest, key, Date.now());
+    if (next !== latest) commit(next);
+  }, [commit]);
+
+  const judge = useCallback((key: string, verdict: KotobaVerdict) => {
+    const latest = current.current;
+    if (!latest) return;
+    const next = judgeKotoba(latest, key, verdict, Date.now());
+    if (next !== latest) commit(next);
+  }, [commit]);
+
   const advance = useCallback(() => {
     const latest = current.current;
     if (!latest) return;
@@ -96,5 +111,5 @@ export function useKotobaQuiz() {
 
   const reset = useCallback(() => { setRestored(false); commit(null); }, [commit]);
 
-  return { session, ready, restored, storageWarning, start, answer, advance, reset };
+  return { session, ready, restored, storageWarning, start, answer, reveal, judge, advance, reset };
 }

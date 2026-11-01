@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { getKotoba, getKotobaByBabs, KOTOBA_BABS, KOTOBA_CONFLICTS, KOTOBA_ENTRIES, KOTOBA_FAMILIES, type KotobaKind } from "./data";
-import { advanceKotobaQuiz, answerKotoba, createKotobaQuiz, expireKotoba, getKotobaResults, kotobaConflict, kotobaFront, KotobaQuizSetupSchema, kotobaTimeLeft, restoreKotobaQuiz, type KotobaQuizSession, type KotobaQuizSetup } from "./engine";
+import { advanceKotobaQuiz, answerKotoba, createKotobaQuiz, expireKotoba, getKotobaResults, judgeKotoba, kotobaConflict, kotobaFront, KotobaQuizSetupSchema, kotobaTimeLeft, restoreKotobaQuiz, revealKotoba, type KotobaQuizSession, type KotobaQuizSetup } from "./engine";
 
 const START = Date.parse("2026-10-29T09:00:00+07:00");
-const SETUP: KotobaQuizSetup = { nickname: "生徒 🌸", babs: [1], front: "kana", scope: "semua", length: "all", timeLimit: null };
+const SETUP: KotobaQuizSetup = { nickname: "生徒 🌸", babs: [1], front: "kana", scope: "semua", mode: "choice", length: "all", timeLimit: null };
 
 function play(session: KotobaQuizSession, wrong = false): KotobaQuizSession {
   let now = START;
@@ -273,5 +273,88 @@ describe("kata inti", () => {
     const tampered = { ...core, questions: [{ ...question, options: [question.key, "bab-13-48", ...question.options.filter((option) => option !== question.key).slice(1)] }, ...rest] };
     expect(restoreKotobaQuiz({ ...tampered, scope: "semua" })).not.toBeNull();
     expect(restoreKotobaQuiz(tampered)).toBeNull();
+  });
+});
+
+describe("mode balik kartu", () => {
+  const FLIP: KotobaQuizSetup = { ...SETUP, mode: "flip", length: "10" };
+  const roundTrip = (session: KotobaQuizSession) => restoreKotobaQuiz(JSON.parse(JSON.stringify(session)) as unknown);
+
+  it("menguji setiap kata sekali tanpa pilihan jawaban", () => {
+    const quiz = createKotobaQuiz({ ...FLIP, length: "all" }, START);
+    expect(new Set(quiz.questions.map((question) => question.key)).size).toBe(getKotobaByBabs([1]).length);
+    expect(quiz.questions.every((question) => question.options.length === 0)).toBe(true);
+    expect(roundTrip(quiz)).toEqual(quiz);
+  });
+
+  it("membalik kartu, menghentikan waktu tebak, lalu penilaian langsung membuka kata berikutnya", () => {
+    const open = advanceKotobaQuiz(createKotobaQuiz(FLIP, START), START);
+    const [first, second] = open.questions;
+    expect(answerKotoba(open, first.key, null, START + 100)).toBe(open);
+    expect(judgeKotoba(open, first.key, "correct", START + 100)).toBe(open);
+    expect(revealKotoba(open, second.key, START + 100)).toBe(open);
+    const revealed = revealKotoba(open, first.key, START + 2500);
+    expect(revealed.revealedMs).toBe(2500);
+    expect(revealed.answers).toHaveLength(0);
+    expect(revealKotoba(revealed, first.key, START + 3000)).toBe(revealed);
+    expect(roundTrip(revealed)).toEqual(revealed);
+    const judged = judgeKotoba(revealed, first.key, "wrong", START + 9000);
+    expect(judged.answers[0]).toEqual({ key: first.key, selectedKey: null, elapsedMs: 2500, verdict: "wrong" });
+    expect(judged.revealedMs).toBeNull();
+    expect(judged.questionStartedAt).toBe(START + 9000);
+    expect(judgeKotoba(judged, first.key, "correct", START + 9100)).toBe(judged);
+    expect(roundTrip(judged)).toEqual(judged);
+  });
+
+  it("menutup quiz setelah kata terakhir dinilai dan menghitung rapor dari penilaian diri", () => {
+    let now = START;
+    let session = advanceKotobaQuiz(createKotobaQuiz(FLIP, START), now);
+    for (const [index, question] of session.questions.entries()) {
+      now += 1000;
+      session = revealKotoba(session, question.key, now);
+      now += 3000;
+      session = judgeKotoba(session, question.key, index < 7 ? "correct" : "wrong", now);
+    }
+    expect(session.finishedAt).toBe(now);
+    const result = getKotobaResults(session);
+    expect([result.correctCount, result.wrongCount, result.skippedCount, result.timedOutCount]).toEqual([7, 3, 0, 0]);
+    expect(result.accuracy).toBe(70);
+    expect(result.averageMs).toBe(1000);
+    expect(result.mistakes.map((row) => row.key)).toEqual(session.questions.slice(7).map((question) => question.key));
+    expect(roundTrip(session)).toEqual(session);
+  });
+
+  it("timer langsung membalik kartu dan mencatat waktu habis tanpa penilaian", () => {
+    const open = advanceKotobaQuiz(createKotobaQuiz({ ...FLIP, timeLimit: 5 }, START), START);
+    const question = open.questions[0];
+    expect(kotobaTimeLeft(open, START + 1000)).toBe(4000);
+    const expired = expireKotoba(open, START + 5000);
+    expect(expired.answers[0]).toEqual({ key: question.key, selectedKey: null, elapsedMs: 5000 });
+    expect(expired.questionStartedAt).toBeNull();
+    expect(judgeKotoba(expired, question.key, "correct", START + 5100)).toBe(expired);
+    expect(roundTrip(expired)).toEqual(expired);
+    const late = revealKotoba(open, question.key, START + 60_000);
+    expect(late.answers[0]).toEqual({ key: question.key, selectedKey: null, elapsedMs: 5000 });
+    expect(getKotobaResults(advanceKotobaQuiz(expired, START + 6000)).rows[0]).toMatchObject({ timedOut: true, skipped: false, correct: false });
+
+    const revealed = revealKotoba(open, question.key, START + 4000);
+    expect(kotobaTimeLeft(revealed, START + 30_000)).toBeNull();
+    expect(expireKotoba(revealed, START + 30_000)).toBe(revealed);
+  });
+
+  it("menolak snapshot mode balik kartu yang tidak konsisten", () => {
+    const open = advanceKotobaQuiz(createKotobaQuiz({ ...FLIP, timeLimit: 5 }, START), START);
+    const question = open.questions[0];
+    const choice = createKotobaQuiz({ ...SETUP, length: "10" }, START);
+    expect(restoreKotobaQuiz({ ...choice, mode: "flip" })).toBeNull();
+    expect(restoreKotobaQuiz({ ...open, mode: "choice" })).toBeNull();
+    expect(restoreKotobaQuiz({ ...open, revealedMs: 5000 })).toBeNull();
+    expect(restoreKotobaQuiz({ ...choice, revealedMs: 0 })).toBeNull();
+    expect(restoreKotobaQuiz({ ...open, questionStartedAt: START + 10_000, answers: [{ key: question.key, selectedKey: question.key, elapsedMs: 100, verdict: "correct" }] })).toBeNull();
+    expect(restoreKotobaQuiz({ ...open, questionStartedAt: START + 10_000, answers: [{ key: question.key, selectedKey: null, elapsedMs: 100 }] })).toBeNull();
+    const legacy: Record<string, unknown> = { ...choice };
+    delete legacy.mode;
+    delete legacy.revealedMs;
+    expect(restoreKotobaQuiz(legacy)).toEqual(choice);
   });
 });
