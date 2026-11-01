@@ -13,10 +13,19 @@ export function KotobaResults({ session, onRetry, onRetryMistakes, onChangeSetti
   const [filter, setFilter] = useState<"all" | "wrong">("all");
   const title = useRef<HTMLHeadingElement>(null);
   const frontLabel = session.front === "kanji" ? "Depan kanji" : "Depan kana";
+  const flipMode = session.mode === "flip";
 
   useEffect(() => { title.current?.focus({ preventScroll: true }); window.scrollTo({ top: 0, behavior: "instant" }); }, []);
 
   const visibleRows = filter === "wrong" ? result.mistakes : result.rows;
+  const stats = [
+    ["Total waktu", formatQuizDuration(result.totalMs)],
+    ["Rata-rata", formatAnswerTime(result.averageMs)],
+    ["Salah", `${result.wrongCount} kata`],
+    ...(flipMode ? [] : [["Dilewati", `${result.skippedCount} kata`]]),
+    ...(session.timeLimit === null ? [] : [["Waktu habis", `${result.timedOutCount} kata`]]),
+  ];
+  const missLabel = (row: (typeof result.rows)[number]) => row.timedOut ? "Waktu habis" : flipMode ? "Kamu tandai salah" : row.selected ? `Jawabanmu: ${row.selected.meaning}` : "Dilewati";
 
   return (
     <div className="mx-auto max-w-4xl space-y-8 pb-10">
@@ -35,7 +44,7 @@ export function KotobaResults({ session, onRetry, onRetryMistakes, onChangeSetti
       <article className="overflow-hidden rounded-lg border-[3px] border-neo-ink bg-white text-neo-ink shadow-neo-lg" aria-label="Ringkasan hasil tebak kotoba yang bisa di-screenshot">
         <header className="flex flex-wrap items-center justify-between gap-3 border-b-[3px] border-neo-ink bg-neo-blue px-5 py-4 sm:px-8">
           <span className="font-mono text-xs font-extrabold tracking-wider uppercase">Nihongofy / Tebak kotoba</span>
-          <span className="flex flex-wrap gap-2"><span className="border-2 border-neo-ink bg-neo-yellow px-2 py-1 text-xs font-black uppercase">{formatBabs(session.babs)}</span><span className="border-2 border-neo-ink bg-white px-2 py-1 text-xs font-black uppercase">{frontLabel}</span>{session.scope === "inti" && <span className="border-2 border-neo-ink bg-white px-2 py-1 text-xs font-black uppercase">Kata inti</span>}{session.timeLimit !== null && <span className="border-2 border-neo-ink bg-white px-2 py-1 text-xs font-black uppercase">Timer {session.timeLimit} dtk</span>}</span>
+          <span className="flex flex-wrap gap-2"><span className="border-2 border-neo-ink bg-neo-yellow px-2 py-1 text-xs font-black uppercase">{formatBabs(session.babs)}</span><span className="border-2 border-neo-ink bg-white px-2 py-1 text-xs font-black uppercase">{frontLabel}</span><span className="border-2 border-neo-ink bg-white px-2 py-1 text-xs font-black uppercase">{flipMode ? "Balik kartu" : "4 pilihan"}</span>{session.scope === "inti" && <span className="border-2 border-neo-ink bg-white px-2 py-1 text-xs font-black uppercase">Kata inti</span>}{session.timeLimit !== null && <span className="border-2 border-neo-ink bg-white px-2 py-1 text-xs font-black uppercase">Timer {session.timeLimit} dtk</span>}</span>
         </header>
         <div className="p-5 sm:p-8">
           <p className="text-xs font-black tracking-widest uppercase">Laporan belajar · Minna no Nihongo I</p>
@@ -44,21 +53,15 @@ export function KotobaResults({ session, onRetry, onRetryMistakes, onChangeSetti
           <div className="mt-7 flex items-center justify-between gap-3 border-y-2 border-neo-ink py-6">
             <div>
               <p className="font-black leading-none"><span className="text-7xl tracking-tighter sm:text-8xl">{result.correctCount}</span><span className="ml-1 text-3xl text-slate-500 sm:text-4xl">/ {result.total}</span></p>
-              <p className="mt-3 font-mono text-[11px] font-bold tracking-wide uppercase">Jawaban benar</p>
+              <p className="mt-3 font-mono text-[11px] font-bold tracking-wide uppercase">{flipMode ? "Ditandai benar" : "Jawaban benar"}</p>
             </div>
             <div className="text-right">
               <p className="text-4xl font-black tracking-tighter sm:text-6xl">{result.accuracy}%</p>
               <p className="mt-2 font-mono text-[11px] font-bold uppercase">Akurasi</p>
             </div>
           </div>
-          <dl className={cn("grid grid-cols-2 gap-x-2 gap-y-4 border-b-2 border-neo-ink py-5 sm:gap-6", session.timeLimit === null ? "sm:grid-cols-4" : "sm:grid-cols-5")}>
-            {[
-              ["Total waktu", formatQuizDuration(result.totalMs)],
-              ["Rata-rata", formatAnswerTime(result.averageMs)],
-              ["Salah", `${result.mistakes.length - result.skippedCount - result.timedOutCount} kata`],
-              ["Dilewati", `${result.skippedCount} kata`],
-              ...(session.timeLimit === null ? [] : [["Waktu habis", `${result.timedOutCount} kata`]]),
-            ].map(([label, value]) => <div key={label}><dt className="text-[10px] font-bold uppercase text-slate-600 sm:text-xs">{label}</dt><dd className="mt-1 font-mono text-base font-black tabular-nums sm:text-2xl">{value}</dd></div>)}
+          <dl className={cn("grid grid-cols-2 gap-x-2 gap-y-4 border-b-2 border-neo-ink py-5 sm:gap-6", stats.length === 3 ? "sm:grid-cols-3" : stats.length === 4 ? "sm:grid-cols-4" : "sm:grid-cols-5")}>
+            {stats.map(([label, value]) => <div key={label}><dt className="text-[10px] font-bold uppercase text-slate-600 sm:text-xs">{label}</dt><dd className="mt-1 font-mono text-base font-black tabular-nums sm:text-2xl">{value}</dd></div>)}
           </dl>
           {result.byBab.length > 1 && <div className="mt-6">
             <h3 className="text-lg">Per bab</h3>
@@ -82,9 +85,9 @@ export function KotobaResults({ session, onRetry, onRetryMistakes, onChangeSetti
           {result.mistakes.map((row) => <li key={row.key} className="border-b border-neo-ink/15 pb-3">
             <p className="flex flex-wrap items-baseline gap-x-3"><span lang="ja" className="font-japanese text-3xl">{kotobaFront(row.entry, session.front)}</span>{row.entry.kanji && <span lang="ja" className="font-japanese text-base text-muted-foreground">{session.front === "kanji" ? row.entry.kana : row.entry.kanji}</span>}</p>
             <p className="mt-1 text-sm"><strong>{row.entry.meaning}</strong></p>
-            <p className="mt-1 text-xs text-muted-foreground">{row.selected ? `Jawabanmu: ${row.selected.meaning}` : row.timedOut ? "Waktu habis" : "Dilewati"}</p>
+            <p className="mt-1 text-xs text-muted-foreground">{missLabel(row)}</p>
           </li>)}
-        </ul> : <p className="mt-3 flex items-start gap-2 text-sm leading-6"><Check className="mt-0.5 size-5 shrink-0" />Semua kata terjawab benar. Coba tampilan depan {session.front === "kana" ? "kanji" : "kana"} atau tambah bab lain!</p>}
+        </ul> : <p className="mt-3 flex items-start gap-2 text-sm leading-6"><Check className="mt-0.5 size-5 shrink-0" />Semua kata {flipMode ? "ditandai" : "terjawab"} benar. Coba tampilan depan {session.front === "kana" ? "kanji" : "kana"} atau tambah bab lain!</p>}
       </section>
 
       <section aria-labelledby="kotoba-detail-title">
@@ -97,17 +100,17 @@ export function KotobaResults({ session, onRetry, onRetryMistakes, onChangeSetti
         </div>
         <div className="mt-4 overflow-x-auto rounded-lg border-2 border-neo-ink bg-card">
           <table className="w-full text-left text-xs sm:text-sm">
-            <caption className="sr-only">Kata yang diuji, jawaban siswa, arti yang benar, dan durasi dalam urutan soal.</caption>
-            <thead className="border-b-2 border-neo-ink bg-neo-blue text-neo-ink"><tr>{["Kata", "Jawabanmu", "Arti", "Waktu"].map((label) => <th scope="col" key={label} className="px-2 py-3 font-extrabold sm:px-4">{label}</th>)}</tr></thead>
+            <caption className="sr-only">{flipMode ? "Kata yang diuji, penilaian siswa sendiri, arti yang benar, dan durasi dalam urutan soal." : "Kata yang diuji, jawaban siswa, arti yang benar, dan durasi dalam urutan soal."}</caption>
+            <thead className="border-b-2 border-neo-ink bg-neo-blue text-neo-ink"><tr>{["Kata", flipMode ? "Penilaianmu" : "Jawabanmu", "Arti", "Waktu"].map((label) => <th scope="col" key={label} className="px-2 py-3 font-extrabold sm:px-4">{label}</th>)}</tr></thead>
             <tbody>{visibleRows.map((row) => <tr key={row.key} className={cn("border-b border-neo-ink/15 align-top last:border-0", !row.correct && "text-neo-ink", !row.correct && (row.timedOut ? "bg-orange-100" : row.skipped ? "bg-amber-100" : "bg-red-100"))}>
               <th scope="row" className="px-2 py-2 font-normal sm:px-4"><span className="mr-1.5 font-mono text-[10px] opacity-60">{String(row.number).padStart(2, "0")}</span><span lang="ja" className="font-japanese text-lg">{row.entry.kana}</span>{row.entry.kanji && <span lang="ja" className="font-japanese block text-xs opacity-70">{row.entry.kanji}</span>}</th>
-              <td className="px-2 py-2 font-bold sm:px-4">{row.selected ? <span className="inline-flex items-start gap-1">{row.correct ? <Check className="mt-0.5 size-3 shrink-0" aria-label="Benar" /> : <X className="mt-0.5 size-3 shrink-0" aria-label="Salah" />}{row.selected.meaning}</span> : <span className="inline-flex items-start gap-1 italic">{row.timedOut ? <TimerOff className="mt-0.5 size-3 shrink-0" aria-hidden="true" /> : <SkipForward className="mt-0.5 size-3 shrink-0" aria-hidden="true" />}{row.timedOut ? "Waktu habis" : "Dilewati"}</span>}</td>
+              <td className="px-2 py-2 font-bold sm:px-4">{flipMode && !row.timedOut ? <span className="inline-flex items-start gap-1">{row.correct ? <Check className="mt-0.5 size-3 shrink-0" aria-hidden="true" /> : <X className="mt-0.5 size-3 shrink-0" aria-hidden="true" />}{row.correct ? "Benar" : "Salah"}</span> : row.selected ? <span className="inline-flex items-start gap-1">{row.correct ? <Check className="mt-0.5 size-3 shrink-0" aria-label="Benar" /> : <X className="mt-0.5 size-3 shrink-0" aria-label="Salah" />}{row.selected.meaning}</span> : <span className="inline-flex items-start gap-1 italic">{row.timedOut ? <TimerOff className="mt-0.5 size-3 shrink-0" aria-hidden="true" /> : <SkipForward className="mt-0.5 size-3 shrink-0" aria-hidden="true" />}{row.timedOut ? "Waktu habis" : "Dilewati"}</span>}</td>
               <td className="px-2 py-2 font-bold sm:px-4">{row.entry.meaning}</td><td className="px-2 py-2 font-mono whitespace-nowrap tabular-nums sm:px-4">{formatAnswerTime(row.elapsedMs)}</td>
             </tr>)}</tbody>
           </table>
           {visibleRows.length === 0 && <p className="p-6 text-center text-sm">Tidak ada kata yang salah atau dilewati. Semua sudah benar!</p>}
         </div>
-        <p className="mt-3 text-xs leading-5 text-muted-foreground">Waktu dihitung sejak kartu tampil sampai arti dipilih atau kata dilewati. Waktu membaca bagian belakang kartu tidak ikut dihitung.</p>
+        <p className="mt-3 text-xs leading-5 text-muted-foreground">{flipMode ? "Waktu dihitung sejak kartu tampil sampai kartu dibalik. Waktu menilai benar/salah tidak ikut dihitung." : "Waktu dihitung sejak kartu tampil sampai arti dipilih atau kata dilewati. Waktu membaca bagian belakang kartu tidak ikut dihitung."}</p>
       </section>
       <Link className="inline-flex items-center gap-2 text-sm font-bold underline underline-offset-4" href="/kana/quiz">Uji hafalan kana juga<ArrowRight className="size-4" /></Link>
     </div>
