@@ -1,17 +1,12 @@
-// Kosakata Minna no Nihongo I Bab 1-25, ditranskripsi dari "Kosakata minna no nihongo 1 Bab
-// 1-25.pdf" (repo materi pengajar). Kolom kanji mengikuti PDF; kata tanpa kanji tetap null dan
-// ditampilkan dalam kana. Koreksi terhadap PDF: penanda angka "ー" menjadi "〜" agar tidak
-// terbaca sebagai tanda panjang katakana, kurung 「」 menjadi （）, らいげつ 来週 → 来月,
-// ほんのきもち 本の気持ち → ほんの気持ち, おそがしい → いそがしい, スボーン → スポーツ, やさしい
-// 優しい → 易しい (arti "mudah"), オフト → ソフト, みんなさん → みなさん, げりがします → げりをします,
-// かぜをひき → かぜをひきます, 駐車所 → 駐車場, arti きょうし/〜くん/はつか/いちども/このあいだ/
-// おしいれ ("kulkas" → lemari dinding)/おく 億 ("ratusan juta" → seratus juta),
-// salah ketik arti, baris (おいくつ) Bab 1 No. 26 yang digabung ke No. 25, dan baris かいしゃを〜
-// Bab 11 No. 6 (tanpa arti) yang digabung ke No. 5. Bab 13-25 memuat kosakata referensi yang
-// sebagian sudah ada di bab lain; kata itu tetap dicantumkan per bab dan ditandai konflik.
-// Acuan sekarang: kosakata/kosakata-bab-01-25.md di repo materi (PDF scan lama sudah dihapus).
-// Kanji, bacaan, dan arti disamakan dengan daftar itu; perbedaan yang tersisa hanya format
-// (konteks dalam kurung, dua baris yang digabung). 何曜日 dibaca なんようび.
+// Kosakata Minna no Nihongo I Bab 1-25, mengikuti daftar revisi `kosakata/kosakata-bab-01-25.md`
+// di repo materi pengajar (koreksinya dicatat di `kosakata/catatan-koreksi.md`). Nomor baris, kana,
+// dan kanji sama dengan daftar itu; kata tanpa kanji tetap null dan ditampilkan dalam kana. Arti
+// diringkas agar muat sebagai pilihan jawaban, keterangan pemakaian dipindah ke `note`, dan
+// ejaan disesuaikan KBBI (Prancis, bolpoin, menelepon). Perbedaan yang disengaja: tanda 〜
+// (bukan ～), kurung 「」 menjadi （）, kata kerja berkana sama diberi konteks (mis.
+// やすみます（かいしゃを〜）), dan baris かいしゃを〜 Bab 11 No. 6 yang tidak punya arti digabung ke
+// No. 5. Bab 13-25 memuat kosakata referensi yang sebagian sudah ada di bab lain; kata itu tetap
+// dicantumkan per bab dan ditandai konflik. 何曜日 dibaca なんようび (keputusan pengajar).
 
 export type KotobaEntry = {
   key: string;
@@ -51,7 +46,8 @@ const BAB_ROWS: Record<number, readonly Row[]> = {
     [22, "でんき", "電気", "listrik, lampu"],
     [23, "だれ（どなた）", null, "siapa", "どなた adalah bentuk sopan dari だれ."],
     [24, "〜さい", "〜歳", "~ tahun (umur)"],
-    [25, "なんさい（おいくつ）", "何歳（おいくつ）", "umur berapa", "おいくつ adalah bentuk sopan dari なんさい."],
+    [25, "なんさい", "何歳", "umur berapa"],
+    [26, "おいくつ", null, "umur berapa (sopan)", "Bentuk sopan dari なんさい."],
     [27, "はい", null, "ya"],
     [28, "いいえ", null, "tidak, bukan"],
     [29, "しつれいですが", "失礼ですが", "permisi (sebelum menanyakan hal pribadi)", "Misalnya saat menanyakan nama atau alamat."],
@@ -178,7 +174,7 @@ const BAB_ROWS: Record<number, readonly Row[]> = {
     [8, "ぎんこう", "銀行", "bank"],
     [9, "ゆうびんきょく", "郵便局", "kantor pos"],
     [10, "としょかん", "図書館", "perpustakaan"],
-    [11, "びじゅつかん", "美術館", "museum seni"],
+    [11, "びじゅつかん", "美術館", "museum seni, galeri seni"],
     [12, "いま", "今", "sekarang"],
     [13, "〜じ", "〜時", "pukul ~"],
     [14, "〜ふん（〜ぷん）", "〜分", "~ menit"],
@@ -448,7 +444,7 @@ const BAB_ROWS: Record<number, readonly Row[]> = {
     [50, "おげんきですか", "お元気ですか", "apa kabar?"],
     [51, "そうですね", null, "hmm, bagaimana ya (sambil berpikir)"],
     [52, "にほんのせいかつになれましたか", "日本の生活に慣れましたか", "sudah terbiasa dengan kehidupan di Jepang?"],
-    [53, "（〜、）もういっぱいいかがですか", "（〜）もう一杯いかがですか", "mau tambah satu gelas lagi?", "Menawarkan minuman."],
+    [53, "（〜、）もういっぱいいかがですか", "（〜、）もう一杯いかがですか", "mau tambah satu gelas lagi?", "Menawarkan minuman."],
     [54, "いいえ、けっこうです", null, "tidak, terima kasih (sudah cukup)"],
     [55, "もう〜です（ね）", null, "sudah ~ ya", "Contoh: もう 7じですね。"],
     [56, "そろそろしつれいします", "そろそろ失礼します", "sudah waktunya saya pamit", "Diucapkan tamu sebelum pulang."],
@@ -581,14 +577,14 @@ const BAB_ROWS: Record<number, readonly Row[]> = {
     [24, "りんご", null, "apel"],
     [25, "みかん", null, "jeruk"],
     [26, "サンドイッチ", null, "roti lapis, sandwich"],
-    [27, "カレー（ライス）", null, "nasi kari"],
+    [27, "カレーライス", null, "nasi kari"],
     [28, "アイスクリーム", null, "es krim"],
     [29, "きって", "切手", "perangko"],
     [30, "はがき", null, "kartu pos"],
     [31, "ふうとう", "封筒", "amplop"],
     [32, "そくたつ", "速達", "pos kilat"],
     [33, "かきとめ", "書留", "surat tercatat"],
-    [34, "エアメール（こうくうびん）", "航空便", "pos udara"],
+    [34, "エアメール／こうくうびん", "航空便", "pos udara"],
     [35, "ふなびん", "船便", "pos laut"],
     [36, "りょうしん", "両親", "orang tua"],
     [37, "きょうだい", "兄弟", "saudara kandung"],
@@ -781,7 +777,7 @@ const BAB_ROWS: Record<number, readonly Row[]> = {
     [44, "おつり", "お釣り", "uang kembalian"],
     [45, "きっぷうりば", "切符売り場", "loket penjualan karcis"],
     [46, "じどうけんばいき", "自動券売機", "mesin karcis otomatis"],
-    [47, "せいさんき", "精算機", "mesin penyesuaian ongkos"],
+    [47, "せいさんき", "精算機", "mesin penyesuaian tarif"],
     [48, "かいさつぐち", "改札口", "pintu pemeriksaan karcis"],
     [49, "でぐち", "出口", "pintu keluar"],
     [50, "いりぐち", "入口", "pintu masuk"],
@@ -892,7 +888,7 @@ const BAB_ROWS: Record<number, readonly Row[]> = {
     [28, "は", "歯", "gigi"],
     [29, "おなか", "お腹", "perut"],
     [30, "あし", "足", "kaki"],
-    [31, "せ", "背", "punggung, tinggi badan"],
+    [31, "せ", "背", "tinggi badan, punggung", "せが たかい: tinggi (badan)."],
     [32, "サービス", null, "layanan, servis"],
     [33, "ジョギング", null, "jogging", "〜をします: jogging."],
     [34, "シャワー", null, "pancuran (shower)"],
@@ -1078,7 +1074,7 @@ const BAB_ROWS: Record<number, readonly Row[]> = {
     [28, "じゅうどう", "柔道", "judo"],
     [29, "けんどう", "剣道", "kendo (seni pedang Jepang)"],
     [30, "からて", "空手", "karate"],
-    [31, "らくご", "落語", "rakugo (komedi cerita tradisional)"],
+    [31, "らくご", "落語", "rakugo (cerita lucu tradisional, dibawakan satu orang)"],
     [32, "しょうぎ", "将棋", "shogi (catur Jepang)"],
     [33, "パチンコ", null, "pachinko"],
     [34, "ぼんおどり", "盆踊り", "tari Bon"],
@@ -1136,7 +1132,7 @@ const BAB_ROWS: Record<number, readonly Row[]> = {
     [32, "だいがく", "大学", "universitas"],
     [33, "けいさつ", "警察", "polisi"],
     [34, "し", "市", "kota"],
-    [35, "まち", "町", "kota kecil, daerah"],
+    [35, "まち", "町", "kota kecil"],
     [36, "むら", "村", "desa"],
     [37, "かちょう", "課長", "kepala seksi"],
     [38, "ぶちょう", "部長", "kepala bagian"],
@@ -1159,7 +1155,7 @@ const BAB_ROWS: Record<number, readonly Row[]> = {
     [13, "やちん", "家賃", "sewa rumah"],
     [14, "わしつ", "和室", "kamar ala Jepang"],
     [15, "おしいれ", "押し入れ", "lemari dinding (tempat menyimpan futon)"],
-    [16, "ふとん", "布団", "kasur lipat Jepang (futon)"],
+    [16, "ふとん", "布団", "futon (kasur dan selimut ala Jepang)"],
     [17, "アパート", null, "apartemen"],
     [18, "みずぎ", "水着", "pakaian renang"],
     [19, "したぎ", "下着", "pakaian dalam"],
@@ -1181,7 +1177,7 @@ const BAB_ROWS: Record<number, readonly Row[]> = {
     [13, "おと", "音", "bunyi, suara"],
     [14, "きかい", "機械", "mesin"],
     [15, "つまみ", null, "kenop, tombol putar"],
-    [16, "こしょう", "故障", "kerusakan", "〜します: rusak."],
+    [16, "こしょう", "故障", "kerusakan", "こしょうしています: rusak."],
     [17, "みち", "道", "jalan"],
     [18, "こうさてん", "交差点", "perempatan"],
     [19, "しんごう", "信号", "lampu lalu lintas"],
@@ -1189,7 +1185,7 @@ const BAB_ROWS: Record<number, readonly Row[]> = {
     [21, "はし", "橋", "jembatan"],
     [22, "ちゅうしゃじょう", "駐車場", "tempat parkir"],
     [23, "〜め", "〜目", "ke-~ (urutan)"],
-    [24, "（お）しょうがつ", "（お）正月", "Tahun Baru"],
+    [24, "おしょうがつ", "お正月", "Tahun Baru"],
     [25, "ごちそうさまでした", null, "terima kasih atas makanannya", "Diucapkan setelah makan."],
     [26, "たてもの", "建物", "bangunan"],
     [27, "がいこくじんとうろくしょう", "外国人登録証", "kartu registrasi orang asing"],
@@ -1204,7 +1200,7 @@ const BAB_ROWS: Record<number, readonly Row[]> = {
     [5, "しょうかいします", "紹介します", "memperkenalkan"],
     [6, "あんないします", "案内します", "memandu, menunjukkan jalan"],
     [7, "せつめいします", "説明します", "menjelaskan, menerangkan"],
-    [8, "いれます（コーヒーを〜）", null, "membuat (kopi, teh)"],
+    [8, "いれます（コーヒーを〜）", null, "membuat, menyeduh (kopi, teh)"],
     [9, "おじいさん／おじいちゃん", null, "kakek"],
     [10, "おばあさん／おばあちゃん", null, "nenek"],
     [11, "じゅんび", "準備", "persiapan", "〜します: mempersiapkan."],
@@ -1241,7 +1237,7 @@ const BAB_ROWS: Record<number, readonly Row[]> = {
     [23, "だいがく", "大学", "universitas"],
     [24, "せんもんがっこう", "専門学校", "sekolah kejuruan"],
     [25, "だいがくいん", "大学院", "pascasarjana (S2/S3)"],
-    [26, "がくし", "学士", "sarjana (S1)"],
+    [26, "がくし", "学士", "gelar sarjana (S1)"],
     [27, "しゅうしょく", "就職", "mendapat pekerjaan", "〜します: mulai bekerja."],
     [28, "けっこん", "結婚", "pernikahan"],
     [29, "りこん", "離婚", "perceraian"],
@@ -1280,7 +1276,7 @@ export const KOTOBA_CONFLICTS: readonly (readonly string[])[] = [
   [k(1, 3), k(1, 6), k(15, 20)],
   [k(1, 4), k(1, 5), k(5, 16)], [k(1, 4), k(1, 5), k(5, 18)], [k(1, 4), k(1, 5), k(5, 19)], [k(1, 10), k(5, 16)],
   [k(1, 8), k(1, 9)], [k(1, 11), k(1, 12), k(15, 33)], [k(1, 14), k(1, 15), k(15, 24)],
-  [k(1, 23), k(1, 30)], [k(1, 28), k(2, 39)], [k(1, 29), k(3, 37), k(9, 44), k(15, 19)], [k(1, 34), k(4, 45)],
+  [k(1, 23), k(1, 30)], [k(1, 25), k(1, 26)], [k(1, 28), k(2, 39)], [k(1, 29), k(3, 37), k(9, 44), k(15, 19)], [k(1, 34), k(4, 45)],
   [k(2, 1), k(2, 4)], [k(2, 2), k(2, 5)], [k(2, 3), k(2, 6)],
   [k(2, 11), k(2, 12)], [k(2, 13), k(2, 14), k(2, 15)], [k(2, 16), k(2, 18)],
   [k(2, 34), k(2, 36)], [k(2, 35), k(2, 36)], [k(2, 38), k(2, 40)], [k(2, 41), k(4, 50)],
@@ -1346,7 +1342,7 @@ export const KOTOBA_CONFLICTS: readonly (readonly string[])[] = [
   [k(16, 10), k(18, 42)], [k(16, 51), k(10, 15)], [k(16, 46), k(5, 53)], [k(16, 47), k(2, 14)], [k(16, 48), k(4, 43)],
   [k(16, 49), k(7, 28)], [k(16, 42), k(6, 49)], [k(16, 42), k(7, 38)], [k(16, 43), k(1, 28)], [k(16, 43), k(8, 54)],
   [k(16, 12), k(20, 10)], [k(16, 39), k(8, 43)],
-  [k(17, 30), k(17, 53)], [k(17, 29), k(17, 34)], ...range(17, 35, 37).map((key) => [k(17, 29), key]), [k(17, 44), k(17, 35)],
+  [k(17, 30), k(17, 53), k(17, 54)], [k(17, 40), k(17, 30)], [k(17, 40), k(17, 53)], [k(17, 29), k(17, 34)], ...range(17, 35, 37).map((key) => [k(17, 29), key]), [k(17, 44), k(17, 35)],
   [k(17, 50), k(17, 71)], [k(17, 56), k(17, 79)], [k(17, 58), k(17, 83)], [k(17, 6), k(5, 1)], [k(17, 6), k(11, 58)],
   [k(17, 19), k(8, 7)], [k(17, 26), k(4, 46)], [k(17, 28), k(6, 51)], [k(17, 21), k(17, 13)], [k(17, 1), k(15, 21)],
   [k(17, 5), k(5, 3)], [k(17, 25), k(5, 46)],
@@ -1396,7 +1392,7 @@ export const KOTOBA_FAMILIES: readonly (readonly string[])[] = [
   range(2, 1, 3), range(2, 4, 6), range(2, 7, 18), range(2, 23, 28), range(2, 34, 36),
   range(3, 1, 4), range(3, 5, 8), range(3, 9, 19), range(3, 34, 36),
   range(4, 1, 6), [k(3, 21), k(3, 22), k(5, 4), k(5, 6), ...range(4, 7, 11)], range(4, 18, 22), range(4, 23, 29), range(4, 30, 34), range(4, 35, 42),
-  [k(1, 25), k(3, 31), k(3, 33), k(4, 16), k(4, 17), k(4, 42), k(4, 44), k(5, 32), k(5, 47), k(5, 48), k(6, 42), k(8, 43), k(8, 44), k(8, 45), k(9, 42), k(11, 17), k(11, 52), k(12, 40), k(16, 39), k(16, 40), k(16, 41)],
+  [k(1, 25), k(1, 26), k(3, 31), k(3, 33), k(4, 16), k(4, 17), k(4, 42), k(4, 44), k(5, 32), k(5, 47), k(5, 48), k(6, 42), k(8, 43), k(8, 44), k(8, 45), k(9, 42), k(11, 17), k(11, 52), k(12, 40), k(16, 39), k(16, 40), k(16, 41)],
   [range(4, 55, 59), k(3, 42), range(5, 56, 59)].flat(),
   range(5, 1, 3), range(5, 7, 15), range(5, 16, 21), range(5, 22, 30), range(5, 33, 45), [...range(5, 50, 52), ...range(14, 62, 66)],
   range(6, 1, 11), range(6, 12, 21), range(6, 22, 28), range(6, 29, 34), [k(6, 35), k(6, 36), k(6, 37), ...range(10, 24, 28)], range(6, 38, 41),

@@ -22,7 +22,7 @@ function play(session: KotobaQuizSession, wrong = false): KotobaQuizSession {
 describe("data kotoba", () => {
   it("memuat Bab 1-25 dengan key unik dan jumlah kata sesuai daftar", () => {
     expect(KOTOBA_BABS).toEqual(Array.from({ length: 25 }, (_, index) => index + 1));
-    expect(KOTOBA_BABS.map((bab) => getKotobaByBabs([bab]).length)).toEqual([44, 47, 44, 59, 59, 54, 48, 57, 50, 47, 62, 50, 61, 73, 50, 51, 83, 46, 34, 16, 40, 20, 29, 17, 30]);
+    expect(KOTOBA_BABS.map((bab) => getKotobaByBabs([bab]).length)).toEqual([45, 47, 44, 59, 59, 54, 48, 57, 50, 47, 62, 50, 61, 73, 50, 51, 83, 46, 34, 16, 40, 20, 29, 17, 30]);
     expect(new Set(KOTOBA_ENTRIES.map((entry) => entry.key)).size).toBe(KOTOBA_ENTRIES.length);
     for (const entry of KOTOBA_ENTRIES) {
       expect(entry.kana.trim()).not.toBe("");
@@ -116,10 +116,10 @@ it("menyelesaikan quiz setelah kartu terakhir ditinjau dan menghitung hasil per 
   const session = play(createKotobaQuiz({ ...SETUP, babs: [1, 3] }, START));
   expect(session.finishedAt).not.toBeNull();
   const result = getKotobaResults(session);
-  expect(result.correctCount).toBe(88);
+  expect(result.correctCount).toBe(89);
   expect(result.accuracy).toBe(100);
   expect(result.averageMs).toBe(1500);
-  expect(result.byBab).toEqual([{ bab: 1, total: 44, correct: 44 }, { bab: 3, total: 44, correct: 44 }]);
+  expect(result.byBab).toEqual([{ bab: 1, total: 45, correct: 45 }, { bab: 3, total: 44, correct: 44 }]);
   expect(restoreKotobaQuiz(JSON.parse(JSON.stringify(session)) as unknown)).toEqual(session);
 
   const wrong = getKotobaResults(play(createKotobaQuiz({ ...SETUP, length: "20" }, START), true));

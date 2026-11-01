@@ -68,3 +68,12 @@
 - Tulisan sama dengan arti berbeda ditandai konflik: きます 着ます/来ます, はし 橋/箸, ひきます 引きます/弾きます, かえます 変えます/換えます, おくります "mengantar"/"mengirim", おく 億/奥, よく Bab 9/22. Daftar sekolah Bab 21 dan 25 yang mengulang Bab 13 (ようちえん–だいがく) ditandai konflik dengan pasangannya.
 - `npx vitest run src/features/kana/`: **52 lulus**, termasuk cakupan per bab untuk Bab 21–25.
 
+## Penyelarasan dengan daftar kosakata revisi (1 November 2026)
+
+- Repo materi kini memakai `kosakata/kosakata-bab-01-25.md` (1.173 baris) sebagai satu-satunya sumber kosakata; PDF scan lama dihapus. Data dibandingkan baris per baris dengan skrip sekali pakai (kana, kanji, jumlah baris, dan arti).
+- Kana dan kanji: semua 43 koreksi kanji/bacaan di `catatan-koreksi.md` sudah sama dengan data. Sisa perbedaan hanya format yang disengaja (konteks partikel pada kata kerja berkana sama, tanpa kurung di depan kartu, どの〜, トイレ（お手洗い）, おいのり tanpa （〜をします） yang dipindah ke catatan).
+- Disamakan dengan daftar: Bab 1 No. 26 おいくつ menjadi entri sendiri (sebelumnya digabung ke なんさい); kanji Bab 8 No. 53 （〜、）もう一杯いかがですか; カレーライス; エアメール／こうくうびん; おしょうがつ／お正月 Bab 23.
+- Arti yang dikoreksi di daftar revisi dan kini disamakan: かぜ / かぜをひきます (flu, pilek), たな (rak), せいさんき (mesin penyesuaian tarif), せ (tinggi badan, punggung), さかだちします (berdiri dengan tangan), らくご, ほいくえん (daycare), まち 町 (kota kecil), かいちょう (ketua (dewan) perusahaan), こしょう (catatan こしょうしています), いれます (membuat, menyeduh), だいがくいん (S2/S3), がくし (gelar sarjana), びじゅつかん (galeri seni). かぜ kini ditandai konflik dengan インフルエンザ dan はなみずがでます.
+- Tetap berbeda dari daftar (dipertahankan): ろうじん "lansia" (daftar: "orang tua", tertukar dengan りょうしん), ふとん "futon (kasur dan selimut ala Jepang)" (daftar: "selimut berisi kapas"), dan ejaan KBBI. Bab 11 No. 6 tetap digabung karena kolom artinya kosong di daftar.
+- Total 1.172 kata (Bab 1: 45). `npx vitest run src/features/kana/`: **52 lulus**.
+
