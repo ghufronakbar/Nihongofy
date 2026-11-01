@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { getKotoba, getKotobaByBabs, KOTOBA_BABS, KOTOBA_CONFLICTS, KOTOBA_ENTRIES, KOTOBA_FAMILIES } from "./data";
+import { getKotoba, getKotobaByBabs, KOTOBA_BABS, KOTOBA_CONFLICTS, KOTOBA_ENTRIES, KOTOBA_FAMILIES, type KotobaKind } from "./data";
 import { advanceKotobaQuiz, answerKotoba, createKotobaQuiz, expireKotoba, getKotobaResults, kotobaConflict, kotobaFront, KotobaQuizSetupSchema, kotobaTimeLeft, restoreKotobaQuiz, type KotobaQuizSession, type KotobaQuizSetup } from "./engine";
 
 const START = Date.parse("2026-10-29T09:00:00+07:00");
-const SETUP: KotobaQuizSetup = { nickname: "生徒 🌸", babs: [1], front: "kana", length: "all", timeLimit: null };
+const SETUP: KotobaQuizSetup = { nickname: "生徒 🌸", babs: [1], front: "kana", scope: "semua", length: "all", timeLimit: null };
 
 function play(session: KotobaQuizSession, wrong = false): KotobaQuizSession {
   let now = START;
@@ -47,6 +47,24 @@ describe("data kotoba", () => {
     }
   });
 
+  it("memisahkan kata inti dari kosakata referensi dan nama diri", () => {
+    const count = (kind: KotobaKind) => KOTOBA_BABS.map((bab) => getKotobaByBabs([bab]).filter((entry) => entry.kind === kind).length);
+    expect(count("inti")).toEqual([45, 47, 41, 54, 55, 52, 46, 57, 50, 47, 61, 47, 29, 44, 22, 51, 32, 25, 21, 14, 26, 17, 28, 17, 14]);
+    expect(count("referensi")).toEqual([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32, 29, 28, 0, 51, 21, 13, 2, 14, 3, 0, 0, 16]);
+    expect(count("nama")).toEqual([0, 0, 3, 5, 4, 2, 2, 0, 0, 0, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]);
+    expect(getKotobaByBabs(KOTOBA_BABS, "inti")).toHaveLength(942);
+    for (const bab of KOTOBA_BABS) {
+      // Kosakata referensi selalu menjadi ekor daftar bab.
+      const kinds = getKotobaByBabs([bab]).map((entry) => entry.kind);
+      const first = kinds.indexOf("referensi");
+      if (first >= 0) expect(kinds.slice(first).every((kind) => kind === "referensi"), `Bab ${bab}`).toBe(true);
+    }
+    for (const entry of KOTOBA_ENTRIES) expect(entry.topic !== null, entry.key).toBe(entry.kind === "referensi");
+    expect(getKotobaByBabs([1], "inti").map((entry) => entry.kana)).toContain("インドネシア");
+    expect(getKotoba("bab-15-34")).toMatchObject({ kana: "べんごし", kind: "referensi", topic: "pekerjaan" });
+    expect(getKotoba("bab-4-56")).toMatchObject({ kana: "ペキン", kind: "nama" });
+  });
+
   it("menampilkan kanji bila diminta dan kembali ke kana bila kata tidak punya kanji", () => {
     const watashi = KOTOBA_ENTRIES.find((entry) => entry.kana === "わたし");
     const kore = KOTOBA_ENTRIES.find((entry) => entry.kana === "これ");
@@ -71,6 +89,22 @@ describe.each(KOTOBA_BABS)("Tebak kotoba Bab %i", (bab) => {
           for (const other of question.options.slice(index + 1)) expect(kotobaConflict(option, other)).toBe(false);
         }
       }
+    }
+  });
+
+  it("menguji kata inti saja dengan pengecoh yang juga kata inti", () => {
+    for (let run = 0; run < 8; run++) {
+      const quiz = createKotobaQuiz({ ...SETUP, babs: [bab], scope: "inti" }, START);
+      const pool = getKotobaByBabs([bab], "inti");
+      expect(new Set(quiz.questions.map((question) => question.key))).toEqual(new Set(pool.map((entry) => entry.key)));
+      for (const question of quiz.questions) {
+        expect(question.options).toHaveLength(4);
+        for (const [index, option] of question.options.entries()) {
+          expect(getKotoba(option)).toMatchObject({ bab, kind: "inti" });
+          for (const other of question.options.slice(index + 1)) expect(kotobaConflict(option, other)).toBe(false);
+        }
+      }
+      expect(restoreKotobaQuiz(JSON.parse(JSON.stringify(quiz)) as unknown)).toEqual(quiz);
     }
   });
 });
@@ -218,5 +252,26 @@ describe("timer per kata", () => {
     const legacy: Record<string, unknown> = { ...createKotobaQuiz({ ...SETUP, length: "10" }, START) };
     delete legacy.timeLimit;
     expect(restoreKotobaQuiz(legacy)?.timeLimit).toBeNull();
+  });
+});
+
+describe("kata inti", () => {
+  it("memulihkan sesi lama tanpa pilihan kata sebagai semua kata", () => {
+    const legacy: Record<string, unknown> = { ...createKotobaQuiz({ ...SETUP, length: "10" }, START) };
+    delete legacy.scope;
+    expect(restoreKotobaQuiz(legacy)?.scope).toBe("semua");
+  });
+
+  it("menolak snapshot kata inti yang memuat kata tambahan", () => {
+    const everything = createKotobaQuiz({ ...SETUP, babs: [13] }, START);
+    expect(everything.questions.some((question) => getKotoba(question.key)?.kind === "referensi")).toBe(true);
+    expect(restoreKotobaQuiz({ ...everything, scope: "inti" })).toBeNull();
+    const core = createKotobaQuiz({ ...SETUP, babs: [13], scope: "inti" }, START);
+    expect(core.questions).toHaveLength(29);
+    // Ganti satu pengecoh dengan モスク (kosakata referensi): sah untuk semua kata, tidak untuk inti.
+    const [question, ...rest] = core.questions;
+    const tampered = { ...core, questions: [{ ...question, options: [question.key, "bab-13-48", ...question.options.filter((option) => option !== question.key).slice(1)] }, ...rest] };
+    expect(restoreKotobaQuiz({ ...tampered, scope: "semua" })).not.toBeNull();
+    expect(restoreKotobaQuiz(tampered)).toBeNull();
   });
 });

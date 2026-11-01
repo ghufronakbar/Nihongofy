@@ -77,3 +77,10 @@
 - Tetap berbeda dari daftar (dipertahankan): ろうじん "lansia" (daftar: "orang tua", tertukar dengan りょうしん), ふとん "futon (kasur dan selimut ala Jepang)" (daftar: "selimut berisi kapas"), dan ejaan KBBI. Bab 11 No. 6 tetap digabung karena kolom artinya kosong di daftar.
 - Total 1.172 kata (Bab 1: 45). `npx vitest run src/features/kana/`: **52 lulus**.
 
+## Tambahan: pilihan kata inti (1 November 2026)
+
+- Setiap kata kini punya `kind`: `inti`, `referensi` (kosakata referensi bertema di ekor Bab 13–25), atau `nama` (nama diri dari latihan). Hasilnya 942 kata inti, 209 referensi, dan 21 nama diri. Rincian per bab ada di `docs/module/kana.md`, bagian "Kata inti dan kata tambahan".
+- Form punya pilihan "Kata yang diuji: Semua kata / Inti saja", dan `?cakupan=inti` bisa dipakai untuk memilihnya lewat URL. Setup dan sesi menyimpan `scope`; sesi lama tanpa `scope` dipulihkan sebagai semua kata.
+- `npx vitest run src/features/kana/kotoba`: **69 lulus**. Tesnya mencakup jumlah inti/referensi/nama per bab, referensi selalu di ekor daftar bab, dan sesi inti setiap bab (empat pilihan, semuanya kata inti dan tanpa konflik, bisa dipulihkan). Juga diuji: sesi lama tanpa `scope`, serta snapshot inti yang disisipi kata referensi ditolak. Seluruh suite: **866 lulus**; `tsc --noEmit` dan ESLint bersih.
+- Browser (Playwright, dev server): `?bab=13&cakupan=inti` membuka form dengan "Inti saja" terpilih, Bab 13 "29 kata", dan "Semua (29)". Pindah ke "Semua kata" mengubahnya menjadi 61. Sesi inti Bab 13 berjalan 29 kartu tanpa kata referensi (はくぶつかん, デパート, モスク, コンビニ tidak muncul), dan hasilnya memuat badge "Kata inti". Di sesi semua kata Bab 15, kartu はいゆう memuat label "Kata tambahan · referensi: pekerjaan". Lebar 375 px tanpa scroll horizontal; konsol tanpa error.
+- Bukti: `evidence/2026-11-01-kotoba-inti-setup.png` (form) dan `evidence/2026-11-01-kotoba-inti-back.png` (label kata tambahan di belakang kartu).

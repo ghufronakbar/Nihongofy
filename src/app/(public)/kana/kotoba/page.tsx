@@ -9,8 +9,13 @@ export const metadata: Metadata = pageMetadata({
   path: "/kana/kotoba",
 });
 
-export default async function KotobaQuizPage({ searchParams }: { searchParams: Promise<{ bab?: string | string[] }> }) {
-  const { bab } = await searchParams;
-  const initialBab = Number(Array.isArray(bab) ? bab[0] : bab);
-  return <KotobaQuiz initialBabs={[KOTOBA_BABS.includes(initialBab) ? initialBab : KOTOBA_BABS[0]]} />;
+type SearchParams = { bab?: string | string[]; cakupan?: string | string[] };
+
+const first = (value: string | string[] | undefined) => (Array.isArray(value) ? value[0] : value);
+
+/** `?bab=13&cakupan=inti` membuka form dengan Bab 13 dan pilihan kata inti. */
+export default async function KotobaQuizPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
+  const { bab, cakupan } = await searchParams;
+  const initialBab = Number(first(bab));
+  return <KotobaQuiz initialBabs={[KOTOBA_BABS.includes(initialBab) ? initialBab : KOTOBA_BABS[0]]} initialScope={first(cakupan) === "inti" ? "inti" : "semua"} />;
 }

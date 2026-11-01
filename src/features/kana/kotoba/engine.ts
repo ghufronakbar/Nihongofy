@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { getKotoba, getKotobaByBabs, KOTOBA_BABS, KOTOBA_CONFLICTS, KOTOBA_ENTRIES, KOTOBA_FAMILIES, type KotobaEntry } from "./data";
+import { getKotoba, getKotobaByBabs, inKotobaScope, KOTOBA_BABS, KOTOBA_CONFLICTS, KOTOBA_ENTRIES, KOTOBA_FAMILIES, KOTOBA_SCOPES, type KotobaEntry } from "./data";
 
 export const KOTOBA_QUIZ_STORAGE_KEY = "nihongofy:kotoba-quiz:v1";
 export const KOTOBA_OPTION_COUNT = 4;
@@ -19,6 +19,8 @@ export const KotobaQuizSetupSchema = z.object({
     .min(1, "Pilih minimal satu bab.")
     .refine((babs) => new Set(babs).size === babs.length, "Bab tidak boleh ganda."),
   front: z.enum(["kana", "kanji"]),
+  // "inti" hanya menguji kosakata utama bab; pengecohnya juga diambil dari kata inti.
+  scope: z.enum(KOTOBA_SCOPES),
   length: z.enum(KOTOBA_LENGTHS),
   timeLimit: TimeLimitSchema,
 });
@@ -89,7 +91,7 @@ function pickOptions(entry: KotobaEntry, pool: readonly KotobaEntry[], random: (
 export function createKotobaQuiz(setup: KotobaQuizSetup, now: number, random: () => number = Math.random, onlyKeys?: readonly string[]): KotobaQuizSession {
   const validated = KotobaQuizSetupSchema.parse(setup);
   const babs = [...validated.babs].sort((a, b) => a - b);
-  const pool = getKotobaByBabs(babs);
+  const pool = getKotobaByBabs(babs, validated.scope);
   const chosen = onlyKeys ? pool.filter((entry) => onlyKeys.includes(entry.key)) : pool;
   if (!chosen.length) throw new Error("Tidak ada kata untuk diuji.");
   const limit = validated.length === "all" ? chosen.length : Number(validated.length);
@@ -138,6 +140,8 @@ const KeySchema = z.string().max(20);
 const SessionSchema = KotobaQuizSetupSchema.extend({
   // Sesi yang tersimpan sebelum ada pengaturan timer tetap bisa dipulihkan.
   timeLimit: TimeLimitSchema.default(null),
+  // Sesi yang tersimpan sebelum ada pilihan kata inti selalu memakai semua kata.
+  scope: z.enum(KOTOBA_SCOPES).default("semua"),
   version: z.literal(1),
   questions: z.array(z.object({ key: KeySchema, options: z.array(KeySchema).length(KOTOBA_OPTION_COUNT) })).min(1).max(KOTOBA_ENTRIES.length),
   answers: z.array(z.object({ key: KeySchema, selectedKey: KeySchema.nullable(), elapsedMs: TimestampSchema })).max(KOTOBA_ENTRIES.length),
@@ -145,15 +149,15 @@ const SessionSchema = KotobaQuizSetupSchema.extend({
   questionStartedAt: TimestampSchema.nullable(),
   finishedAt: TimestampSchema.nullable(),
 }).superRefine((session, ctx) => {
-  const inBabs = (key: string) => {
+  const inPool = (key: string) => {
     const entry = getKotoba(key);
-    return entry !== undefined && session.babs.includes(entry.bab);
+    return entry !== undefined && session.babs.includes(entry.bab) && inKotobaScope(entry, session.scope);
   };
   const limit = session.length === "all" ? Infinity : Number(session.length);
   const validQuestions = session.questions.length <= limit
     && new Set(session.questions.map((question) => question.key)).size === session.questions.length
-    && session.questions.every((question) => inBabs(question.key) && question.options.includes(question.key)
-      && question.options.every((option, index) => inBabs(option)
+    && session.questions.every((question) => inPool(question.key) && question.options.includes(question.key)
+      && question.options.every((option, index) => inPool(option)
         && question.options.slice(index + 1).every((other) => !kotobaConflict(option, other))));
   const validAnswers = session.answers.length <= session.questions.length && session.answers.every((answer, index) => {
     const question = session.questions[index];

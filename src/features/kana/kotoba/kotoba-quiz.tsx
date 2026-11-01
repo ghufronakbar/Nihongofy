@@ -11,12 +11,20 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { speakJapanese } from "@/features/study/lib/tts";
 import { cn } from "@/lib/utils";
 import { formatQuizDuration } from "../quiz/engine";
-import { getKotoba, getKotobaByBabs, KOTOBA_BABS, KOTOBA_ENTRIES, type KotobaEntry } from "./data";
+import { getKotoba, getKotobaByBabs, KOTOBA_BABS, KOTOBA_ENTRIES, type KotobaEntry, type KotobaScope } from "./data";
 import { formatBabs, KOTOBA_TIME_LIMIT, kotobaFront, KotobaQuizSetupSchema, type KotobaFront, type KotobaQuizSession, type KotobaQuizSetup } from "./engine";
 import { KotobaResults } from "./kotoba-results";
 import { useKotobaQuiz } from "./use-kotoba-quiz";
 
 const LENGTH_LABELS = { "10": "10 kata", "20": "20 kata", all: "Semua" } as const;
+const SCOPE_OPTIONS = [
+  ["semua", "Semua kata", "Kosakata utama bab beserta kata tambahan."],
+  ["inti", "Inti saja", "Hanya kosakata utama bab, termasuk ungkapan percakapannya."],
+] as const;
+
+function extraLabel(entry: KotobaEntry): string {
+  return entry.kind === "referensi" ? `Kata tambahan · referensi: ${entry.topic}` : "Kata tambahan · nama diri";
+}
 
 type Outcome = "correct" | "wrong" | "skipped" | "timeout";
 
@@ -85,7 +93,8 @@ function TimerField({ value, onChange, onBlur, error }: { value: number | null; 
 function KotobaSetupForm({ defaults, ready, onStart }: { defaults: KotobaQuizSetup; ready: boolean; onStart: (setup: KotobaQuizSetup) => void }) {
   const { register, control, handleSubmit, formState: { errors } } = useForm<KotobaQuizSetup>({ resolver: zodResolver(KotobaQuizSetupSchema), defaultValues: defaults });
   const babs = useWatch({ control, name: "babs" });
-  const poolSize = getKotobaByBabs(babs).length;
+  const scope = useWatch({ control, name: "scope" });
+  const poolSize = getKotobaByBabs(babs, scope).length;
 
   return <div className="grid items-center gap-10 py-5 lg:grid-cols-[1.1fr_1fr] lg:gap-16 lg:py-12">
     <div>
@@ -113,11 +122,20 @@ function KotobaSetupForm({ defaults, ready, onStart }: { defaults: KotobaQuizSet
             {KOTOBA_BABS.map((bab) => <label key={bab} className="relative flex cursor-pointer flex-col items-center rounded-lg border-2 border-neo-ink bg-white px-1 py-3 has-checked:bg-neo-yellow has-checked:shadow-neo-sm focus-within:outline-3 focus-within:outline-offset-3">
               <input type="checkbox" className="sr-only" checked={field.value.includes(bab)} onBlur={field.onBlur} onChange={(event) => field.onChange(event.target.checked ? [...field.value, bab].sort((a, b) => a - b) : field.value.filter((item) => item !== bab))} />
               <span className="text-2xl font-black">{bab}</span>
-              <span className="mt-0.5 text-[10px] font-bold text-slate-600">{getKotobaByBabs([bab]).length} kata</span>
+              <span className="mt-0.5 text-[10px] font-bold text-slate-600">{getKotobaByBabs([bab], scope).length} kata</span>
             </label>)}
           </div>
           {errors.babs ? <p id="kotoba-babs-error" role="alert" className="mt-2 text-sm font-bold text-red-700">{errors.babs.message}</p> : <p className="mt-2 text-xs text-slate-600">Boleh pilih lebih dari satu bab.</p>}
         </fieldset>} />
+        <fieldset aria-describedby="kotoba-scope-help">
+          <legend className="mb-3 text-sm font-extrabold">Kata yang diuji</legend>
+          <div className="grid grid-cols-2 gap-3">
+            {SCOPE_OPTIONS.map(([value, label, hint]) => <label key={value} className="relative flex cursor-pointer items-start gap-2 rounded-lg border-2 border-neo-ink bg-white px-3 py-3 has-checked:bg-neo-yellow has-checked:shadow-neo-sm focus-within:outline-3 focus-within:outline-offset-3 sm:gap-3">
+              <input type="radio" value={value} className="mt-0.5 size-4 shrink-0 accent-black" {...register("scope")} /><span><span className="block text-sm font-extrabold">{label}</span><span className="mt-1 block text-[11px] leading-4 text-slate-600">{hint}</span></span>
+            </label>)}
+          </div>
+          <p id="kotoba-scope-help" className="mt-2 text-xs leading-5 text-slate-600">Kata tambahan adalah kosakata referensi bertema di akhir Bab 13–25 (tempat di kota, stasiun, pekerjaan, tubuh, dan lainnya) serta nama kota, negara, dan tempat yang hanya muncul di latihan.</p>
+        </fieldset>
         <fieldset>
           <legend className="mb-3 text-sm font-extrabold">Tampilan depan kartu</legend>
           <div className="grid grid-cols-2 gap-3">
@@ -163,6 +181,7 @@ function KotobaCard({ entry, front, flipped, outcome, title }: { entry: KotobaEn
         {other && <p lang="ja" className="font-japanese mt-2 max-w-full text-center text-xl break-words text-slate-700 sm:text-2xl">{other}</p>}
         <p className="mt-4 max-w-md text-center text-lg leading-snug font-extrabold sm:text-xl">{entry.meaning}</p>
         {entry.note && <p className="mt-2 max-w-md text-center text-xs leading-5 text-slate-700 sm:text-sm">{entry.note}</p>}
+        {entry.kind !== "inti" && <p className="mt-2 text-[10px] font-bold tracking-wider text-slate-600 uppercase">{extraLabel(entry)}</p>}
         {speech && <p role="status" className="absolute bottom-3 px-4 text-center text-[11px] text-slate-700">{speech}</p>}
       </section>
     </div>
@@ -224,7 +243,7 @@ function KotobaRound({ session, onAnswer, onAdvance, onReset }: { session: Kotob
 
   return <div className="mx-auto max-w-2xl pb-8">
     <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-      <div className="min-w-0"><p className="text-xs font-extrabold tracking-wider uppercase">Tebak kotoba · {formatBabs(session.babs)}</p><p className="mt-1 max-w-56 truncate text-sm text-muted-foreground" title={session.nickname}>{session.nickname}</p></div>
+      <div className="min-w-0"><p className="text-xs font-extrabold tracking-wider uppercase">Tebak kotoba · {formatBabs(session.babs)}{session.scope === "inti" && " · Inti"}</p><p className="mt-1 max-w-56 truncate text-sm text-muted-foreground" title={session.nickname}>{session.nickname}</p></div>
       <AlertDialog open={resetOpen} onOpenChange={setResetOpen}><AlertDialogTrigger render={<Button variant="ghost" className="min-h-10 text-xs font-bold" />}><RotateCcw className="size-3.5" />Ubah pengaturan</AlertDialogTrigger>
         <AlertDialogContent className="border-[3px] border-neo-ink"><AlertDialogHeader><AlertDialogTitle>Hentikan sesi ini?</AlertDialogTitle><AlertDialogDescription>Jawaban sesi ini akan dihapus. Kamu bisa memilih bab dan tampilan kartu lagi.</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Lanjutkan sesi</AlertDialogCancel><AlertDialogAction onClick={onReset}>Ubah pengaturan</AlertDialogAction></AlertDialogFooter></AlertDialogContent>
       </AlertDialog>
@@ -256,12 +275,12 @@ function KotobaRound({ session, onAnswer, onAdvance, onReset }: { session: Kotob
   </div>;
 }
 
-export function KotobaQuiz({ initialBabs }: { initialBabs: number[] }) {
+export function KotobaQuiz({ initialBabs, initialScope }: { initialBabs: number[]; initialScope: KotobaScope }) {
   const quiz = useKotobaQuiz();
-  const [defaults, setDefaults] = useState<KotobaQuizSetup>({ nickname: "", babs: initialBabs, front: "kana", length: "all", timeLimit: null });
+  const [defaults, setDefaults] = useState<KotobaQuizSetup>({ nickname: "", babs: initialBabs, front: "kana", scope: initialScope, length: "all", timeLimit: null });
 
   function setupOf(session: KotobaQuizSession): KotobaQuizSetup {
-    return { nickname: session.nickname, babs: session.babs, front: session.front, length: session.length, timeLimit: session.timeLimit };
+    return { nickname: session.nickname, babs: session.babs, front: session.front, scope: session.scope, length: session.length, timeLimit: session.timeLimit };
   }
 
   function changeSettings() {

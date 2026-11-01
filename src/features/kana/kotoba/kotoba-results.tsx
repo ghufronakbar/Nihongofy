@@ -35,7 +35,7 @@ export function KotobaResults({ session, onRetry, onRetryMistakes, onChangeSetti
       <article className="overflow-hidden rounded-lg border-[3px] border-neo-ink bg-white text-neo-ink shadow-neo-lg" aria-label="Ringkasan hasil tebak kotoba yang bisa di-screenshot">
         <header className="flex flex-wrap items-center justify-between gap-3 border-b-[3px] border-neo-ink bg-neo-blue px-5 py-4 sm:px-8">
           <span className="font-mono text-xs font-extrabold tracking-wider uppercase">Nihongofy / Tebak kotoba</span>
-          <span className="flex flex-wrap gap-2"><span className="border-2 border-neo-ink bg-neo-yellow px-2 py-1 text-xs font-black uppercase">{formatBabs(session.babs)}</span><span className="border-2 border-neo-ink bg-white px-2 py-1 text-xs font-black uppercase">{frontLabel}</span>{session.timeLimit !== null && <span className="border-2 border-neo-ink bg-white px-2 py-1 text-xs font-black uppercase">Timer {session.timeLimit} dtk</span>}</span>
+          <span className="flex flex-wrap gap-2"><span className="border-2 border-neo-ink bg-neo-yellow px-2 py-1 text-xs font-black uppercase">{formatBabs(session.babs)}</span><span className="border-2 border-neo-ink bg-white px-2 py-1 text-xs font-black uppercase">{frontLabel}</span>{session.scope === "inti" && <span className="border-2 border-neo-ink bg-white px-2 py-1 text-xs font-black uppercase">Kata inti</span>}{session.timeLimit !== null && <span className="border-2 border-neo-ink bg-white px-2 py-1 text-xs font-black uppercase">Timer {session.timeLimit} dtk</span>}</span>
         </header>
         <div className="p-5 sm:p-8">
           <p className="text-xs font-black tracking-widest uppercase">Laporan belajar · Minna no Nihongo I</p>

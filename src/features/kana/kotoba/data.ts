@@ -8,6 +8,17 @@
 // No. 5. Bab 13-25 memuat kosakata referensi yang sebagian sudah ada di bab lain; kata itu tetap
 // dicantumkan per bab dan ditandai konflik. 何曜日 dibaca なんようび (keputusan pengajar).
 
+/**
+ * Jenis kata. "inti" adalah kosakata utama bab di buku: kata baru serta ungkapan latihan dan
+ * percakapan. Sisanya kata tambahan yang ikut tercantum di daftar pengajar:
+ * - "referensi": kosakata referensi bertema (参考語彙) di ujung daftar Bab 13-25;
+ * - "nama": nama kota, stasiun, tempat, festival, dan negara yang hanya muncul di latihan atau
+ *   percakapan. Nama negara Bab 1 tetap inti karena menjadi bahan 〜じん dan 〜からきました.
+ */
+export type KotobaKind = "inti" | "referensi" | "nama";
+export const KOTOBA_SCOPES = ["semua", "inti"] as const;
+export type KotobaScope = (typeof KOTOBA_SCOPES)[number];
+
 export type KotobaEntry = {
   key: string;
   bab: number;
@@ -16,6 +27,9 @@ export type KotobaEntry = {
   kanji: string | null;
   meaning: string;
   note: string | null;
+  kind: KotobaKind;
+  /** Tema kosakata referensi; null untuk kata lain. */
+  topic: string | null;
 };
 
 type Row = readonly [number: number, kana: string, kanji: string | null, meaning: string, note?: string];
@@ -1251,9 +1265,34 @@ export function kotobaKey(bab: number, number: number): string {
 
 export const KOTOBA_BABS = Object.keys(BAB_ROWS).map(Number);
 
+// Kosakata referensi selalu berada di ujung daftar bab: dari nomor `from` sampai baris terakhir.
+const REFERENSI: Partial<Record<number, { from: number; topic: string }>> = {
+  13: { from: 30, topic: "tempat di kota" },
+  14: { from: 45, topic: "di stasiun" },
+  15: { from: 23, topic: "pekerjaan" },
+  17: { from: 33, topic: "tubuh dan penyakit" },
+  18: { from: 26, topic: "gerakan" },
+  19: { from: 22, topic: "budaya tradisional dan hiburan" },
+  20: { from: 15, topic: "panggilan dalam keluarga" },
+  21: { from: 27, topic: "sekolah, wilayah, dan jabatan" },
+  22: { from: 18, topic: "pakaian" },
+  25: { from: 15, topic: "tahapan hidup" },
+};
+
+// Nama diri dari latihan dan percakapan, per bab (nomor baris).
+const NAMA: Partial<Record<number, readonly number[]>> = {
+  3: [42, 43, 44], 4: [55, 56, 57, 58, 59], 5: [56, 57, 58, 59], 6: [53, 54], 7: [47, 48], 11: [63], 12: [48, 49, 50], 23: [28],
+};
+
+function kindOf(bab: number, number: number): Pick<KotobaEntry, "kind" | "topic"> {
+  const referensi = REFERENSI[bab];
+  if (referensi && number >= referensi.from) return { kind: "referensi", topic: referensi.topic };
+  return { kind: NAMA[bab]?.includes(number) ? "nama" : "inti", topic: null };
+}
+
 export const KOTOBA_ENTRIES: readonly KotobaEntry[] = KOTOBA_BABS.flatMap((bab) =>
   BAB_ROWS[bab].map(([number, kana, kanji, meaning, note]) => ({
-    key: kotobaKey(bab, number), bab, number, kana, kanji, meaning, note: note ?? null,
+    key: kotobaKey(bab, number), bab, number, kana, kanji, meaning, note: note ?? null, ...kindOf(bab, number),
   })),
 );
 
@@ -1263,8 +1302,12 @@ export function getKotoba(key: string): KotobaEntry | undefined {
   return ENTRY_BY_KEY.get(key);
 }
 
-export function getKotobaByBabs(babs: readonly number[]): KotobaEntry[] {
-  return KOTOBA_ENTRIES.filter((entry) => babs.includes(entry.bab));
+export function inKotobaScope(entry: KotobaEntry, scope: KotobaScope): boolean {
+  return scope === "semua" || entry.kind === "inti";
+}
+
+export function getKotobaByBabs(babs: readonly number[], scope: KotobaScope = "semua"): KotobaEntry[] {
+  return KOTOBA_ENTRIES.filter((entry) => babs.includes(entry.bab) && inKotobaScope(entry, scope));
 }
 
 const k = kotobaKey;
