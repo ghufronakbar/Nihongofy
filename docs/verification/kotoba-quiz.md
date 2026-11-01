@@ -61,3 +61,10 @@
 - Bab 20 hanya 16 kata; pilihan "20 kata" menghasilkan 16 soal (seluruh bab), sesuai batas engine.
 - `npx vitest run src/features/kana/`: **47 lulus**, termasuk cakupan per bab untuk Bab 16–20.
 
+## Tambahan: Bab 21–25 (1 November 2026)
+
+- 136 kosakata baru (Bab 21: 40, Bab 22: 20, Bab 23: 29, Bab 24: 17, Bab 25: 30) dari halaman 36–40 PDF. Total 1.171 kata; seluruh isi PDF Bab 1–25 kini tercakup.
+- Koreksi PDF: おしいれ 押し入れ ("kulkas" → lemari dinding tempat futon), おく 億 ("ratusan juta" → seratus juta), kanji ちゅうしゃじょう 駐車所 → 駐車場, かえます 変えます ("menukar" → mengubah), ろうじん ("orang tua" → lansia, agar tidak tertukar dengan りょうしん).
+- Tulisan sama dengan arti berbeda ditandai konflik: きます 着ます/来ます, はし 橋/箸, ひきます 引きます/弾きます, かえます 変えます/換えます, おくります "mengantar"/"mengirim", おく 億/奥, よく Bab 9/22. Daftar sekolah Bab 21 dan 25 yang mengulang Bab 13 (ようちえん–だいがく) ditandai konflik dengan pasangannya.
+- `npx vitest run src/features/kana/`: **52 lulus**, termasuk cakupan per bab untuk Bab 21–25.
+
