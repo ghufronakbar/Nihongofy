@@ -322,7 +322,7 @@ function KotobaRound({ session, onAnswer, onReveal, onJudge, onAdvance, onReset 
   </div>;
 }
 
-export function KotobaQuiz({ initialBabs, initialScope }: { initialBabs: number[]; initialScope: KotobaScope }) {
+export function KotobaQuiz({ initialBabs, initialScope, quizUrl }: { initialBabs: number[]; initialScope: KotobaScope; quizUrl: string }) {
   const quiz = useKotobaQuiz();
   const [defaults, setDefaults] = useState<KotobaQuizSetup>({ nickname: "", babs: initialBabs, front: "kana", scope: initialScope, mode: "choice", length: "all", timeLimit: null });
 
@@ -354,7 +354,7 @@ export function KotobaQuiz({ initialBabs, initialScope }: { initialBabs: number[
     {quiz.restored && active && <p role="status" className="mx-auto mb-5 max-w-2xl text-xs leading-5 text-muted-foreground">Sesi sebelumnya dipulihkan. Waktu soal tetap berjalan saat refresh.</p>}
     {quiz.session
       ? (quiz.session.finishedAt !== null
-        ? <KotobaResults session={quiz.session} onRetry={() => restart()} onRetryMistakes={(keys) => restart(keys)} onChangeSettings={changeSettings} />
+        ? <KotobaResults session={quiz.session} quizUrl={quizUrl} onRetry={() => restart()} onRetryMistakes={(keys) => restart(keys)} onChangeSettings={changeSettings} />
         : <KotobaRound session={quiz.session} onAnswer={quiz.answer} onReveal={quiz.reveal} onJudge={quiz.judge} onAdvance={quiz.advance} onReset={changeSettings} />)
       : <KotobaSetupForm key={JSON.stringify(defaults)} defaults={defaults} ready={quiz.ready} onStart={(setup) => { quiz.start(setup); window.scrollTo({ top: 0, behavior: "instant" }); }} />}
   </div>;

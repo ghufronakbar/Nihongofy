@@ -2,20 +2,67 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Check, RotateCcw, Settings2, SkipForward, TimerOff, X } from "lucide-react";
+import { ArrowRight, Check, Download, RotateCcw, Settings2, Share2, SkipForward, TimerOff, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { formatAnswerTime, formatQuizDate, formatQuizDuration } from "../quiz/engine";
 import { formatBabs, getKotobaResults, kotobaFront, type KotobaQuizSession } from "./engine";
+import type { KotobaImageKind } from "./image-export";
 
-export function KotobaResults({ session, onRetry, onRetryMistakes, onChangeSettings }: { session: KotobaQuizSession; onRetry: () => void; onRetryMistakes: (keys: string[]) => void; onChangeSettings: () => void }) {
+export function KotobaResults({ session, quizUrl, onRetry, onRetryMistakes, onChangeSettings }: { session: KotobaQuizSession; quizUrl: string; onRetry: () => void; onRetryMistakes: (keys: string[]) => void; onChangeSettings: () => void }) {
   const result = useMemo(() => getKotobaResults(session), [session]);
   const [filter, setFilter] = useState<"all" | "wrong">("all");
   const title = useRef<HTMLHeadingElement>(null);
   const frontLabel = session.front === "kanji" ? "Depan kanji" : "Depan kana";
   const flipMode = session.mode === "flip";
 
+  const [summary, setSummary] = useState<File | null>(null);
+  const [exporting, setExporting] = useState(false);
+  const [message, setMessage] = useState("");
+  const [exportError, setExportError] = useState("");
+
   useEffect(() => { title.current?.focus({ preventScroll: true }); window.scrollTo({ top: 0, behavior: "instant" }); }, []);
+
+  // Ringkasan disiapkan lebih dulu supaya "Bagikan" bisa memanggil navigator.share dalam gesture klik yang sama.
+  useEffect(() => {
+    let active = true;
+    void import("./image-export").then(({ createKotobaImage }) => createKotobaImage(session, "summary", quizUrl)).then((file) => {
+      if (active) setSummary(file);
+    }).catch(() => {
+      if (active) setExportError("Gambar belum berhasil disiapkan. Tekan unduh untuk mencoba lagi.");
+    });
+    return () => { active = false; };
+  }, [session, quizUrl]);
+
+  async function download(kind: KotobaImageKind) {
+    setExporting(true);
+    setExportError("");
+    setMessage("");
+    try {
+      const { createKotobaImage, downloadKotobaImage } = await import("./image-export");
+      const file = kind === "summary" && summary ? summary : await createKotobaImage(session, kind, quizUrl);
+      if (kind === "summary") setSummary(file);
+      downloadKotobaImage(file);
+      setMessage(kind === "full" ? "Laporan lengkap diunduh. Kirim gambarnya ke pengajarmu." : "Ringkasan diunduh. Gambarnya siap dibagikan.");
+    } catch {
+      setExportError("Gambar gagal diunduh. Coba lagi atau ambil screenshot hasil di bawah.");
+    } finally {
+      setExporting(false);
+    }
+  }
+
+  async function share() {
+    if (!summary) return;
+    setMessage("");
+    setExportError("");
+    if (!navigator.canShare?.({ files: [summary] })) { await download("summary"); return; }
+    try {
+      await navigator.share({ title: `Hasil Tebak Kotoba — ${session.nickname}`, files: [summary] });
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name === "AbortError") return;
+      await download("summary");
+    }
+  }
 
   const visibleRows = filter === "wrong" ? result.mistakes : result.rows;
   const stats = [
@@ -75,6 +122,17 @@ export function KotobaResults({ session, onRetry, onRetryMistakes, onChangeSetti
           <p className="mt-5 border-t border-neo-ink/15 pt-3 font-mono text-[10px] font-bold tracking-wide uppercase">Nihongofy · Tebak kotoba {formatBabs(session.babs)}</p>
         </div>
       </article>
+
+      <section aria-label="Simpan dan bagikan rapor">
+        <div className="grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
+          <Button className="neo-button h-auto border-[3px] border-neo-ink bg-neo-yellow font-extrabold whitespace-normal text-neo-ink" disabled={exporting} onClick={() => void download("full")}><Download className="size-4" />{exporting ? "Menyiapkan gambar…" : "Unduh laporan lengkap"}</Button>
+          <Button className="neo-button h-auto border-[3px] border-neo-ink bg-white font-extrabold text-neo-ink" disabled={exporting} onClick={() => void download("summary")}><Download className="size-4" />Unduh ringkasan</Button>
+          <Button className="neo-button h-auto border-[3px] border-neo-ink bg-neo-blue font-extrabold text-neo-ink" disabled={!summary || exporting} onClick={() => void share()}><Share2 className="size-4" />Bagikan</Button>
+        </div>
+        <p className="mt-3 text-xs leading-5 text-muted-foreground">Gambar PNG dibuat di perangkatmu. Laporan lengkap memuat setiap kata, {session.mode === "flip" ? "penilaianmu" : "jawabanmu"}, dan waktunya; bila kata terlalu banyak untuk satu gambar, hanya kata yang perlu diulang yang dimuat. Hasil tersimpan sementara di tab ini; unduh sebelum menutupnya.</p>
+        {message && <p role="status" className="mt-3 text-sm font-semibold">{message}</p>}
+        {exportError && <p role="alert" className="mt-3 text-sm font-semibold text-destructive">{exportError}</p>}
+      </section>
 
       <section className="border-y-2 border-neo-ink py-6" aria-labelledby="kotoba-notes-title">
         <div className="flex flex-wrap items-center justify-between gap-3">

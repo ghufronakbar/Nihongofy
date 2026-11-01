@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { KOTOBA_BABS } from "@/features/kana/kotoba/data";
 import { KotobaQuiz } from "@/features/kana/kotoba/kotoba-quiz";
-import { pageMetadata } from "@/lib/seo";
+import { absoluteUrl, pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
   title: "Tebak Kotoba Minna no Nihongo — Bab 1–25",
@@ -17,5 +17,5 @@ const first = (value: string | string[] | undefined) => (Array.isArray(value) ? 
 export default async function KotobaQuizPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
   const { bab, cakupan } = await searchParams;
   const initialBab = Number(first(bab));
-  return <KotobaQuiz initialBabs={[KOTOBA_BABS.includes(initialBab) ? initialBab : KOTOBA_BABS[0]]} initialScope={first(cakupan) === "inti" ? "inti" : "semua"} />;
+  return <KotobaQuiz initialBabs={[KOTOBA_BABS.includes(initialBab) ? initialBab : KOTOBA_BABS[0]]} initialScope={first(cakupan) === "inti" ? "inti" : "semua"} quizUrl={absoluteUrl("/kana/kotoba")} />;
 }

@@ -48,6 +48,7 @@
 - Dengan timer, kartu menampilkan hitung mundur dan bar sisa waktu (merah di 3 detik terakhir, atau 30% terakhir untuk timer pendek). Saat waktu habis kartu otomatis dibalik dan kata dicatat "waktu habis" (`selectedKey: null` dengan `elapsedMs` sama dengan batas). Batas dijaga di engine dan hook, sehingga jawaban yang terlambat atau refresh setelah batas tetap tercatat waktu habis.
 - Mode **Balik kartu** (`mode: "flip"`): soal tanpa pilihan (`options: []`). Pemain menebak arti dalam hati lalu membalik kartu (tombol "Balik kartu", Spasi/Enter/`F`, atau klik kartu); waktu tebak berhenti di sini dan disimpan sebagai `revealedMs`. Bagian belakang menampilkan tulisan lengkap, lalu pemain menilai sendiri **Benar** (`1`/`B`) atau **Salah** (`2`/`S`); penilaian disimpan di `verdict` dan kartu berikutnya langsung terbuka. Setiap kata muncul sekali, tanpa antrean ulang seperti flashcard, dan tidak ada tombol lewati. Timer membalik kartu otomatis saat waktu habis dan mencatat "waktu habis" tanpa penilaian; membalik kartu setelah batas (tab di latar belakang, refresh) juga dicatat waktu habis.
 - Hasil menampilkan skor/akurasi, total dan rata-rata waktu, jumlah salah, dilewati, dan waktu habis, rincian per bab bila memilih lebih dari satu bab, daftar kata yang perlu diulang, dan tabel semua jawaban. "Ulangi N kata ini" memulai sesi baru hanya dari kata yang salah; "Main lagi" mengacak ulang dengan pengaturan yang sama.
+- Rapor bisa diekspor sebagai PNG (`src/features/kana/kotoba/image-export.ts`, canvas di browser, tanpa upload): **Unduh ringkasan** (nama, bab, label pengaturan, skor/akurasi, waktu, salah/dilewati/waktu habis, skor per bab bila lebih dari satu bab, dan hingga 10 kata yang perlu diulang), **Unduh laporan lengkap** (ringkasan + tabel setiap kata: kana/kanji, arti, jawaban atau penilaian, waktu), dan **Bagikan** lewat Web Share API dengan fallback unduh. Karena Safari menolak canvas di atas ±16,7 juta piksel, laporan lengkap dibatasi `KOTOBA_REPORT_MAX_ROWS` (180) baris: bila kata lebih banyak, gambar hanya memuat kata yang perlu diulang dan menuliskan jumlah yang tidak muat.
 
 #### Kata inti dan kata tambahan
 
@@ -96,7 +97,7 @@ Daftar kosakata pengajar tidak memberi tanda inti, jadi pembagian di bawah mengi
 
 - Bukan SRS: tidak ada due date, interval, random queue, atau jadwal review.
 - Tidak ada latihan menulis/drawing, digraph yoon seperti `きゃ`, atau kata contoh. Quiz hanya menguji 46 kana dasar, belum dakuten/handakuten.
-- Tebak Kotoba mencakup Bab 1–25 (Minna no Nihongo I) dan baru satu arah (kata → arti). Belum ada arah arti → kata, ekspor gambar hasil, atau progress akun. Arti dan catatan mengikuti daftar sumber yang sudah dirapikan, belum ditinjau ulang oleh pengajar.
+- Tebak Kotoba mencakup Bab 1–25 (Minna no Nihongo I) dan baru satu arah (kata → arti). Belum ada arah arti → kata atau progress akun. Arti dan catatan mengikuti daftar sumber yang sudah dirapikan, belum ditinjau ulang oleh pengajar.
 - Quiz merupakan evaluasi mandiri: hasil browser/gambar tidak memiliki verifikasi server atau tautan laporan permanen.
 - Audio bukan file rekaman; kualitas dan ketersediaan bergantung pada voice browser/device.
 - Variasi dakuten/handakuten bukan kartu mandiri, sehingga progress dan audio tidak dapat dinilai per variasi.
@@ -119,4 +120,5 @@ Daftar kosakata pengajar tidak memberi tanda inti, jadi pembagian di bawah mengi
 - `src/features/kana/kotoba/use-kotoba-quiz.ts`
 - `src/features/kana/kotoba/kotoba-quiz.tsx`
 - `src/features/kana/kotoba/kotoba-results.tsx`
+- `src/features/kana/kotoba/image-export.ts`
 - `src/features/study/lib/tts.ts`
