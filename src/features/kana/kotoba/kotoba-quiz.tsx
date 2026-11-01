@@ -12,11 +12,11 @@ import { speakJapanese } from "@/features/study/lib/tts";
 import { cn } from "@/lib/utils";
 import { formatQuizDuration } from "../quiz/engine";
 import { getKotoba, getKotobaByBabs, KOTOBA_BABS, KOTOBA_ENTRIES, type KotobaEntry, type KotobaScope } from "./data";
-import { formatBabs, KOTOBA_TIME_LIMIT, kotobaFront, KotobaQuizSetupSchema, type KotobaFront, type KotobaQuizSession, type KotobaQuizSetup, type KotobaVerdict } from "./engine";
+import { countKotobaQuestions, formatBabs, formatKotobaLength, KOTOBA_TIME_LIMIT, kotobaFront, kotobaLengthLimit, KotobaQuizSetupSchema, type KotobaFront, type KotobaQuizSession, type KotobaQuizSetup, type KotobaVerdict } from "./engine";
 import { KotobaResults } from "./kotoba-results";
 import { useKotobaQuiz } from "./use-kotoba-quiz";
 
-const LENGTH_LABELS = { "10": "10 kata", "20": "20 kata", all: "Semua" } as const;
+const LENGTH_OPTION = "flex cursor-pointer items-center justify-center gap-1.5 rounded-lg border-2 border-neo-ink bg-white px-1.5 py-3 text-xs font-extrabold sm:gap-2 sm:px-2 sm:text-sm has-checked:bg-neo-yellow has-checked:shadow-neo-sm focus-within:outline-3 focus-within:outline-offset-3";
 const SCOPE_OPTIONS = [
   ["semua", "Semua kata", "Kosakata utama bab beserta kata tambahan."],
   ["inti", "Inti saja", "Hanya kosakata utama bab, termasuk ungkapan percakapannya."],
@@ -98,7 +98,11 @@ function KotobaSetupForm({ defaults, ready, onStart }: { defaults: KotobaQuizSet
   const babs = useWatch({ control, name: "babs" });
   const scope = useWatch({ control, name: "scope" });
   const mode = useWatch({ control, name: "mode" });
+  const length = useWatch({ control, name: "length" });
   const poolSize = getKotobaByBabs(babs, scope).length;
+  const perBabLimit = kotobaLengthLimit(length);
+  // Bab yang katanya kurang dari jumlah per bab memakai semua katanya; beri tahu sebelum mulai.
+  const shortBabs = perBabLimit?.perBab ? babs.filter((bab) => getKotobaByBabs([bab], scope).length < perBabLimit.count) : [];
 
   return <div className="grid items-center gap-10 py-5 lg:grid-cols-[1.1fr_1fr] lg:gap-16 lg:py-12">
     <div>
@@ -158,13 +162,22 @@ function KotobaSetupForm({ defaults, ready, onStart }: { defaults: KotobaQuizSet
           </div>
           <p className="mt-2 text-xs leading-5 text-slate-600">{mode === "flip" ? "Tebak artinya dalam hati, balik kartu, lalu tandai benar atau salah. Setiap kata muncul sekali saja, tanpa diulang." : "Setiap kata punya empat pilihan arti. Kata yang belum tahu boleh dilewati."}</p>
         </fieldset>
-        <fieldset>
+        <fieldset aria-describedby="kotoba-length-help">
           <legend className="mb-3 text-sm font-extrabold">Jumlah soal</legend>
           <div className="grid grid-cols-3 gap-3">
-            {(["10", "20", "all"] as const).map((value) => <label key={value} className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg border-2 border-neo-ink bg-white px-1.5 py-3 text-xs font-extrabold sm:gap-2 sm:px-2 sm:text-sm has-checked:bg-neo-yellow has-checked:shadow-neo-sm focus-within:outline-3 focus-within:outline-offset-3">
-              <input type="radio" value={value} className="size-4 accent-black" {...register("length")} />{value === "all" ? `Semua (${poolSize})` : LENGTH_LABELS[value]}
+            {(["10", "20", "all"] as const).map((value) => <label key={value} className={LENGTH_OPTION}>
+              <input type="radio" value={value} className="size-4 accent-black" {...register("length")} />{value === "all" ? `Semua (${poolSize})` : formatKotobaLength(value)}
             </label>)}
           </div>
+          <p className="mt-3 mb-2 text-xs font-bold text-slate-700">Atau ambil sama rata dari setiap bab</p>
+          <div className="grid grid-cols-2 gap-3">
+            {(["10-bab", "20-bab"] as const).map((value) => <label key={value} className={LENGTH_OPTION}>
+              <input type="radio" value={value} className="size-4 accent-black" {...register("length")} /><span>{formatKotobaLength(value)} <span className="font-semibold text-slate-600">({countKotobaQuestions(babs, scope, value)})</span></span>
+            </label>)}
+          </div>
+          <p id="kotoba-length-help" className="mt-2 text-xs leading-5 text-slate-600">{perBabLimit?.perBab
+            ? `${babs.length} bab × ${perBabLimit.count} kata = ${countKotobaQuestions(babs, scope, length)} soal, diacak lintas bab. Hasilnya dirinci per bab.${shortBabs.length ? ` ${formatBabs(shortBabs)} memakai semua katanya karena kurang dari ${perBabLimit.count}.` : ""}`
+            : "Pilihan per bab mengambil jumlah kata yang sama dari setiap bab, cocok untuk ulangan beberapa bab sekaligus."}</p>
         </fieldset>
         <Controller control={control} name="timeLimit" render={({ field }) => <TimerField value={field.value} onChange={field.onChange} onBlur={field.onBlur} error={errors.timeLimit?.message} />} />
         <Button type="submit" disabled={!ready} className="neo-button h-13 w-full border-[3px] border-neo-ink bg-neo-yellow text-base font-extrabold text-neo-ink">{ready ? "Mulai tebak kotoba" : "Menyiapkan kartu…"}<ArrowRight className="size-5" /></Button>

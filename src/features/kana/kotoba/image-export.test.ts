@@ -38,6 +38,19 @@ describe("ekspor rapor tebak kotoba", () => {
     expect(report.rows.length + report.hidden).toBe(everything.mistakes.length);
   });
 
+  it("mengurutkan laporan per bab dan memotong bab terakhir lebih dulu", () => {
+    const session = finish({ ...SETUP, babs: [3, 1, 2], length: "10-bab" }, (index) => index % 3 === 0);
+    const result = getKotobaResults(session);
+    const babsOf = (rows: readonly { entry: { bab: number } }[]) => rows.map((row) => row.entry.bab);
+    const full = selectKotobaReportRows(result);
+    expect(babsOf(full.rows)).toEqual([...babsOf(result.rows)].sort((a, b) => a - b));
+    const cut = selectKotobaReportRows(result, 5);
+    expect(cut.mistakesOnly).toBe(true);
+    expect(babsOf(cut.rows)).toEqual([...babsOf(cut.rows)].sort((a, b) => a - b));
+    expect(cut.rows[0].entry.bab).toBe(Math.min(...babsOf(result.mistakes)));
+    expect(kotobaReportLabels(session)).toEqual(["Bab 1, 2, 3", "Depan kana", "4 pilihan", "10 kata per bab"]);
+  });
+
   it("menuliskan label pengaturan dan penilaian per kata sesuai mode", () => {
     const flip = finish({ ...SETUP, mode: "flip", front: "kanji", scope: "inti", timeLimit: 4 }, (index) => index > 0);
     expect(kotobaReportLabels(flip)).toEqual(["Bab 1", "Depan kanji", "Balik kartu", "Kata inti", "Timer 4 dtk"]);

@@ -1,9 +1,15 @@
 import { z } from "zod";
-import { getKotoba, getKotobaByBabs, inKotobaScope, KOTOBA_BABS, KOTOBA_CONFLICTS, KOTOBA_ENTRIES, KOTOBA_FAMILIES, KOTOBA_SCOPES, type KotobaEntry } from "./data";
+import { getKotoba, getKotobaByBabs, inKotobaScope, KOTOBA_BABS, KOTOBA_CONFLICTS, KOTOBA_ENTRIES, KOTOBA_FAMILIES, KOTOBA_SCOPES, type KotobaEntry, type KotobaScope } from "./data";
 
 export const KOTOBA_QUIZ_STORAGE_KEY = "nihongofy:kotoba-quiz:v1";
 export const KOTOBA_OPTION_COUNT = 4;
-export const KOTOBA_LENGTHS = ["10", "20", "all"] as const;
+/**
+ * `10`/`20`: jumlah soal seluruh sesi. `10-bab`/`20-bab`: jumlah soal dari setiap bab terpilih
+ * (bab yang katanya lebih sedikit memakai semua katanya). `all`: semua kata pada bab terpilih.
+ */
+export const KOTOBA_LENGTHS = ["10", "20", "10-bab", "20-bab", "all"] as const;
+/** Bab dengan akurasi di bawah batas ini (persen) ditandai merah di hasil supaya bab yang lemah langsung terlihat. */
+export const KOTOBA_WEAK_BAB_ACCURACY = 60;
 export const KOTOBA_TIME_LIMIT = { min: 3, max: 300, default: 15 } as const;
 /**
  * `choice`: pilih satu dari empat arti. `flip`: balik kartu lalu nilai sendiri benar/salah; setiap kata
@@ -34,6 +40,7 @@ export const KotobaQuizSetupSchema = z.object({
 export type KotobaQuizSetup = z.infer<typeof KotobaQuizSetupSchema>;
 export type KotobaFront = KotobaQuizSetup["front"];
 export type KotobaMode = KotobaQuizSetup["mode"];
+export type KotobaLength = KotobaQuizSetup["length"];
 export type KotobaVerdict = "correct" | "wrong";
 /** Mode `flip` tidak memakai pilihan, jadi `options` kosong. */
 export type KotobaQuestion = { key: string; options: string[] };
@@ -101,14 +108,40 @@ function pickOptions(entry: KotobaEntry, pool: readonly KotobaEntry[], random: (
   return shuffled(picked.map((item) => item.key), random);
 }
 
+/** Batas jumlah soal untuk `length`, atau null bila semua kata diuji. */
+export function kotobaLengthLimit(length: KotobaLength): { count: number; perBab: boolean } | null {
+  if (length === "all") return null;
+  const perBab = length.endsWith("-bab");
+  return { count: Number(perBab ? length.slice(0, -4) : length), perBab };
+}
+
+/** Mengambil soal dari daftar yang sudah diacak sesuai batas jumlah soal, urutan acaknya tetap. */
+function takeKotoba(entries: readonly KotobaEntry[], length: KotobaLength): KotobaEntry[] {
+  const limit = kotobaLengthLimit(length);
+  if (!limit) return [...entries];
+  if (!limit.perBab) return entries.slice(0, limit.count);
+  const perBab = new Map<number, number>();
+  return entries.filter((entry) => {
+    const count = perBab.get(entry.bab) ?? 0;
+    if (count >= limit.count) return false;
+    perBab.set(entry.bab, count + 1);
+    return true;
+  });
+}
+
+/** Jumlah soal yang akan dibuat untuk pengaturan ini, untuk ditampilkan di form. */
+export function countKotobaQuestions(babs: readonly number[], scope: KotobaScope, length: KotobaLength): number {
+  return takeKotoba(getKotobaByBabs(babs, scope), length).length;
+}
+
 export function createKotobaQuiz(setup: KotobaQuizSetup, now: number, random: () => number = Math.random, onlyKeys?: readonly string[]): KotobaQuizSession {
   const validated = KotobaQuizSetupSchema.parse(setup);
   const babs = [...validated.babs].sort((a, b) => a - b);
   const pool = getKotobaByBabs(babs, validated.scope);
   const chosen = onlyKeys ? pool.filter((entry) => onlyKeys.includes(entry.key)) : pool;
   if (!chosen.length) throw new Error("Tidak ada kata untuk diuji.");
-  const limit = validated.length === "all" ? chosen.length : Number(validated.length);
-  const questions = shuffled(chosen, random).slice(0, limit)
+  // Pada mode per bab, kata diacak lintas bab lalu dibatasi per bab, jadi urutan bab tetap tercampur.
+  const questions = takeKotoba(shuffled(chosen, random), validated.length)
     .map((entry) => ({ key: entry.key, options: validated.mode === "flip" ? [] : pickOptions(entry, pool, random) }));
   return { ...validated, babs, version: 1, questions, answers: [], startedAt: now, questionStartedAt: null, revealedMs: null, finishedAt: null };
 }
@@ -201,10 +234,16 @@ const SessionSchema = KotobaQuizSetupSchema.extend({
     const entry = getKotoba(key);
     return entry !== undefined && session.babs.includes(entry.bab) && inKotobaScope(entry, session.scope);
   };
-  const limit = session.length === "all" ? Infinity : Number(session.length);
+  const limit = kotobaLengthLimit(session.length);
+  const perBab = new Map<number, number>();
+  for (const question of session.questions) {
+    const bab = getKotoba(question.key)?.bab;
+    if (bab !== undefined) perBab.set(bab, (perBab.get(bab) ?? 0) + 1);
+  }
+  const withinLimit = !limit || (limit.perBab ? [...perBab.values()].every((count) => count <= limit.count) : session.questions.length <= limit.count);
   const flip = session.mode === "flip";
   const limitMs = session.timeLimit === null ? null : session.timeLimit * 1000;
-  const validQuestions = session.questions.length <= limit
+  const validQuestions = withinLimit
     && new Set(session.questions.map((question) => question.key)).size === session.questions.length
     && session.questions.every((question) => inPool(question.key) && (flip ? question.options.length === 0
       : question.options.length === KOTOBA_OPTION_COUNT && question.options.includes(question.key)
@@ -271,11 +310,27 @@ export function getKotobaResults(session: KotobaQuizSession) {
     accuracy: session.questions.length ? Math.round(correctCount / session.questions.length * 100) : 0,
     averageMs: rows.length ? totalMs / rows.length : 0,
     mistakes: rows.filter((row) => !row.correct),
-    byBab: session.babs.map((bab) => {
-      const babRows = rows.filter((row) => row.entry.bab === bab);
-      return { bab, total: babRows.length, correct: babRows.filter((row) => row.correct).length };
-    }).filter((item) => item.total > 0),
+    byBab: groupKotobaRows(rows).map(({ bab, rows: babRows }) => {
+      const correct = babRows.filter((row) => row.correct).length;
+      return { bab, total: babRows.length, correct, accuracy: Math.round(correct / babRows.length * 100), mistakes: babRows.filter((row) => !row.correct) };
+    }),
   };
+}
+
+/**
+ * Mengelompokkan baris hasil per bab (bab naik), urutan soal di dalam bab tetap. Bab tanpa baris
+ * tidak ikut, jadi sesi ulang kata tertentu hanya menampilkan bab yang benar-benar diuji.
+ */
+export function groupKotobaRows<T extends { entry: KotobaEntry }>(rows: readonly T[]): { bab: number; rows: T[] }[] {
+  const groups = new Map<number, T[]>();
+  for (const row of rows) groups.set(row.entry.bab, [...(groups.get(row.entry.bab) ?? []), row]);
+  return [...groups.entries()].sort(([a], [b]) => a - b).map(([bab, babRows]) => ({ bab, rows: babRows }));
+}
+
+/** Label jumlah soal, mis. "10 kata", "10 kata per bab", atau "Semua kata". */
+export function formatKotobaLength(length: KotobaLength): string {
+  const limit = kotobaLengthLimit(length);
+  return !limit ? "Semua kata" : `${limit.count} kata${limit.perBab ? " per bab" : ""}`;
 }
 
 export function formatBabs(babs: readonly number[]): string {

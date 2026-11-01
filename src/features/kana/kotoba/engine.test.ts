@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { getKotoba, getKotobaByBabs, KOTOBA_BABS, KOTOBA_CONFLICTS, KOTOBA_ENTRIES, KOTOBA_FAMILIES, type KotobaKind } from "./data";
-import { advanceKotobaQuiz, answerKotoba, createKotobaQuiz, expireKotoba, getKotobaResults, judgeKotoba, kotobaConflict, kotobaFront, KotobaQuizSetupSchema, kotobaTimeLeft, restoreKotobaQuiz, revealKotoba, type KotobaQuizSession, type KotobaQuizSetup } from "./engine";
+import { advanceKotobaQuiz, answerKotoba, countKotobaQuestions, createKotobaQuiz, expireKotoba, formatKotobaLength, getKotobaResults, groupKotobaRows, judgeKotoba, kotobaConflict, kotobaFront, KotobaQuizSetupSchema, kotobaTimeLeft, restoreKotobaQuiz, revealKotoba, type KotobaQuizSession, type KotobaQuizSetup } from "./engine";
 
 const START = Date.parse("2026-10-29T09:00:00+07:00");
 const SETUP: KotobaQuizSetup = { nickname: "生徒 🌸", babs: [1], front: "kana", scope: "semua", mode: "choice", length: "all", timeLimit: null };
@@ -129,6 +129,76 @@ it("membatasi jumlah soal, menggabungkan beberapa bab, dan bisa mengulang kata t
   expect(() => createKotobaQuiz({ ...SETUP, babs: [26] }, START)).toThrow();
 });
 
+describe("jumlah soal per bab", () => {
+  const babCounts = (session: KotobaQuizSession) => {
+    const counts = new Map<number, number>();
+    for (const question of session.questions) {
+      const bab = getKotoba(question.key)?.bab ?? 0;
+      counts.set(bab, (counts.get(bab) ?? 0) + 1);
+    }
+    return Object.fromEntries(counts);
+  };
+
+  it("mengambil jumlah yang sama dari setiap bab, dan semua kata bila bab lebih sedikit", () => {
+    for (let run = 0; run < 5; run++) {
+      const ten = createKotobaQuiz({ ...SETUP, babs: [3, 1, 2], length: "10-bab" }, START);
+      expect(ten.questions).toHaveLength(30);
+      expect(babCounts(ten)).toEqual({ 1: 10, 2: 10, 3: 10 });
+      expect(new Set(ten.questions.map((question) => question.key)).size).toBe(30);
+    }
+    // Bab 20 hanya punya 14 kata inti.
+    const twenty = createKotobaQuiz({ ...SETUP, babs: [1, 20], scope: "inti", length: "20-bab" }, START);
+    expect(babCounts(twenty)).toEqual({ 1: 20, 20: 14 });
+    expect(countKotobaQuestions([1, 20], "inti", "20-bab")).toBe(34);
+    expect(countKotobaQuestions([1, 2, 3], "semua", "10-bab")).toBe(30);
+    expect(countKotobaQuestions([1, 2, 3], "semua", "10")).toBe(10);
+    expect(countKotobaQuestions([1], "semua", "all")).toBe(45);
+    expect(formatKotobaLength("20-bab")).toBe("20 kata per bab");
+    expect(formatKotobaLength("10")).toBe("10 kata");
+  });
+
+  it("mencampur urutan bab dan tetap bisa dipulihkan setelah refresh", () => {
+    let step = 0;
+    // Pengacak tetap: hasilnya tidak tersusun per bab.
+    const random = () => ((step++ * 7919) % 1000) / 1000;
+    const session = createKotobaQuiz({ ...SETUP, babs: [1, 2, 3], length: "10-bab" }, START, random);
+    const babs = session.questions.map((question) => getKotoba(question.key)?.bab ?? 0);
+    expect(babs).not.toEqual([...babs].sort((a, b) => a - b));
+    expect(restoreKotobaQuiz(JSON.parse(JSON.stringify(session)) as unknown)).toEqual(session);
+  });
+
+  it("menolak snapshot yang melebihi jatah per bab", () => {
+    const session = createKotobaQuiz({ ...SETUP, babs: [1, 2], length: "20-bab" }, START);
+    expect(restoreKotobaQuiz({ ...session, length: "10-bab" })).toBeNull();
+    // 40 soal dari dua bab sah sebagai "20 per bab" tetapi tidak sebagai "20" total.
+    expect(restoreKotobaQuiz({ ...session, length: "20" })).toBeNull();
+  });
+
+  it("merinci hasil per bab: akurasi, kata yang perlu diulang, dan urutan bab", () => {
+    let now = START;
+    let session = advanceKotobaQuiz(createKotobaQuiz({ ...SETUP, babs: [2, 1], length: "10-bab" }, START), now);
+    for (const question of session.questions) {
+      now += 1000;
+      // Semua kata Bab 1 benar, semua kata Bab 2 salah.
+      const selected = getKotoba(question.key)?.bab === 1 ? question.key : question.options.find((key) => key !== question.key) ?? null;
+      session = advanceKotobaQuiz(answerKotoba(session, question.key, selected, now), now + 500);
+      now += 500;
+    }
+    const result = getKotobaResults(session);
+    expect(result.byBab.map(({ bab, total, correct, accuracy }) => ({ bab, total, correct, accuracy }))).toEqual([
+      { bab: 1, total: 10, correct: 10, accuracy: 100 },
+      { bab: 2, total: 10, correct: 0, accuracy: 0 },
+    ]);
+    expect(result.byBab[1].mistakes.every((row) => row.entry.bab === 2)).toBe(true);
+    const groups = groupKotobaRows(result.rows);
+    expect(groups.map((group) => group.bab)).toEqual([1, 2]);
+    for (const group of groups) {
+      expect(group.rows.every((row) => row.entry.bab === group.bab)).toBe(true);
+      expect(group.rows.map((row) => row.number)).toEqual([...group.rows.map((row) => row.number)].sort((a, b) => a - b));
+    }
+  });
+});
+
 it("membuka kartu, mengunci jawaban, menampilkan bagian belakang, lalu lanjut tanpa menghitung waktu baca", () => {
   const original = createKotobaQuiz({ ...SETUP, length: "10" }, START);
   const question = original.questions[0];
@@ -153,7 +223,7 @@ it("menyelesaikan quiz setelah kartu terakhir ditinjau dan menghitung hasil per 
   expect(result.correctCount).toBe(89);
   expect(result.accuracy).toBe(100);
   expect(result.averageMs).toBe(1500);
-  expect(result.byBab).toEqual([{ bab: 1, total: 45, correct: 45 }, { bab: 3, total: 44, correct: 44 }]);
+  expect(result.byBab).toEqual([{ bab: 1, total: 45, correct: 45, accuracy: 100, mistakes: [] }, { bab: 3, total: 44, correct: 44, accuracy: 100, mistakes: [] }]);
   expect(restoreKotobaQuiz(JSON.parse(JSON.stringify(session)) as unknown)).toEqual(session);
 
   const wrong = getKotobaResults(play(createKotobaQuiz({ ...SETUP, length: "20" }, START), true));
