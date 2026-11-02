@@ -1,5 +1,5 @@
 import { formatAnswerTime, formatQuizDate, formatQuizDuration } from "../quiz/engine";
-import { formatBabs, getKotobaResults, type KotobaQuizSession } from "./engine";
+import { formatBabs, formatKotobaLength, getKotobaResults, groupKotobaRows, KOTOBA_WEAK_BAB_ACCURACY, kotobaLengthLimit, type KotobaQuizSession } from "./engine";
 
 const INK = "#111111";
 const BLUE = "#5294ff";
@@ -16,12 +16,14 @@ const WIDTH = 1080;
 const LEFT = 64;
 const INNER = WIDTH - LEFT * 2;
 const ROW_HEIGHT = 76;
+const GROUP_HEIGHT = 44;
 const PREVIEW_MISTAKES = 10;
 /**
  * Safari menolak canvas di atas ±16,7 juta piksel (1080 × ~15.500). Laporan lengkap dibatasi
- * sejumlah baris ini; selebihnya dipersingkat menjadi kata yang perlu diulang saja.
+ * sejumlah baris ini (sudah termasuk ruang judul untuk 25 bab); selebihnya dipersingkat menjadi
+ * kata yang perlu diulang saja.
  */
-export const KOTOBA_REPORT_MAX_ROWS = 180;
+export const KOTOBA_REPORT_MAX_ROWS = 160;
 
 export type KotobaImageKind = "summary" | "full";
 type KotobaResult = ReturnType<typeof getKotobaResults>;
@@ -32,8 +34,10 @@ type KotobaRow = KotobaResult["rows"][number];
  * diulang (dipotong di batas) supaya informasi untuk pengajar tetap utuh sebisa mungkin.
  */
 export function selectKotobaReportRows(result: KotobaResult, maxRows = KOTOBA_REPORT_MAX_ROWS) {
-  if (result.rows.length <= maxRows) return { rows: result.rows, mistakesOnly: false, hidden: 0 };
-  const rows = result.mistakes.slice(0, maxRows);
+  // Diurutkan per bab lebih dulu supaya bila dipotong, yang hilang adalah bab terakhir secara utuh.
+  const byBab = (rows: readonly KotobaRow[]) => groupKotobaRows(rows).flatMap((group) => group.rows);
+  if (result.rows.length <= maxRows) return { rows: byBab(result.rows), mistakesOnly: false, hidden: 0 };
+  const rows = byBab(result.mistakes).slice(0, maxRows);
   return { rows, mistakesOnly: true, hidden: result.mistakes.length - rows.length };
 }
 
@@ -42,6 +46,7 @@ export function kotobaReportLabels(session: KotobaQuizSession): string[] {
     formatBabs(session.babs),
     session.front === "kanji" ? "Depan kanji" : "Depan kana",
     session.mode === "flip" ? "Balik kartu" : "4 pilihan",
+    ...(kotobaLengthLimit(session.length)?.perBab ? [formatKotobaLength(session.length)] : []),
     ...(session.scope === "inti" ? ["Kata inti"] : []),
     ...(session.timeLimit === null ? [] : [`Timer ${session.timeLimit} dtk`]),
   ];
@@ -133,9 +138,12 @@ export async function createKotobaImage(session: KotobaQuizSession, kind: Kotoba
     ...(flip ? [] : [["DILEWATI", `${result.skippedCount} kata`] as [string, string]]),
     ...(session.timeLimit === null ? [] : [["WAKTU HABIS", `${result.timedOutCount} kata`] as [string, string]]),
   ];
-  const babRows = result.byBab.length > 1 ? Math.ceil(result.byBab.length / 5) : 0;
-  const preview = result.mistakes.slice(0, PREVIEW_MISTAKES);
+  const grouped = result.byBab.length > 1;
+  const babStats = new Map(result.byBab.map((item) => [item.bab, item]));
+  const babRows = grouped ? Math.ceil(result.byBab.length / 5) : 0;
+  const preview = groupKotobaRows(result.mistakes).flatMap((group) => group.rows).slice(0, PREVIEW_MISTAKES);
   const report = selectKotobaReportRows(result);
+  const reportGroups = grouped ? groupKotobaRows(report.rows) : [{ bab: null, rows: report.rows }];
 
   const nameY = 282;
   const labelsY = nameY + (nicknameLines.length - 1) * 54 + 52;
@@ -146,7 +154,8 @@ export async function createKotobaImage(session: KotobaQuizSession, kind: Kotoba
   const babHeight = babRows ? 52 + babRows * 96 : 0;
   const footerHeight = 96;
   const summaryBody = babHeight + 60 + (preview.length ? Math.ceil(preview.length / 2) * 92 + (result.mistakes.length > preview.length ? 40 : 0) : 50);
-  const fullBody = (report.mistakesOnly ? 44 : 0) + 52 + Math.max(1, report.rows.length) * ROW_HEIGHT + (report.hidden ? 44 : 0);
+  const groupHeaders = reportGroups.filter((group) => group.bab !== null).length * GROUP_HEIGHT;
+  const fullBody = (report.mistakesOnly ? 44 : 0) + 52 + groupHeaders + Math.max(1, report.rows.length) * ROW_HEIGHT + (report.hidden ? 44 : 0);
   canvas.width = WIDTH;
   canvas.height = bodyY + (kind === "summary" ? summaryBody : fullBody) + footerHeight;
 
@@ -192,8 +201,11 @@ export async function createKotobaImage(session: KotobaQuizSession, kind: Kotoba
       result.byBab.forEach((item, index) => {
         const x = LEFT + (index % 5) * 192;
         const top = y + 44 + Math.floor(index / 5) * 96;
-        panel(x, top, 184, 84, item.correct === item.total ? GREEN : "#ffffff");
+        panel(x, top, 184, 84, item.correct === item.total ? GREEN : item.accuracy < KOTOBA_WEAK_BAB_ACCURACY ? CORAL : "#ffffff");
         text(`BAB ${item.bab}`, x + 16, top + 30, 18, 800);
+        ctx.textAlign = "right";
+        text(`${item.accuracy}%`, x + 168, top + 30, 18, 800, MUTED);
+        ctx.textAlign = "left";
         text(`${item.correct} / ${item.total}`, x + 16, top + 68, 30, 900);
       });
       y += babHeight;
@@ -206,7 +218,12 @@ export async function createKotobaImage(session: KotobaQuizSession, kind: Kotoba
       const top = y + Math.floor(index / 2) * 92;
       const width = INNER / 2 - 8;
       panel(x, top, width, 82, row.timedOut ? ORANGE : row.skipped ? AMBER : CORAL);
-      const word = fitted(row.entry.kanji ? `${row.entry.kana}  ${row.entry.kanji}` : row.entry.kana, width - 32, 30, 18, 700);
+      if (grouped) {
+        ctx.textAlign = "right";
+        text(`BAB ${row.entry.bab}`, x + width - 14, top + 26, 15, 800, MUTED);
+        ctx.textAlign = "left";
+      }
+      const word = fitted(row.entry.kanji ? `${row.entry.kana}  ${row.entry.kanji}` : row.entry.kana, width - (grouped ? 112 : 32), 30, 18, 700);
       text(word.value, x + 16, top + 38, word.size, 700);
       text(lines(row.entry.meaning, width - 32, 20, 700, 1)[0] ?? "", x + 16, top + 68, 20, 700, MUTED);
     });
@@ -230,24 +247,42 @@ export async function createKotobaImage(session: KotobaQuizSession, kind: Kotoba
     ctx.textAlign = "left";
     y += 52;
     if (!report.rows.length) text("Semua kata benar.", columns.word, y + 46, 26, 700);
-    report.rows.forEach((row, index) => {
-      const top = y + index * ROW_HEIGHT;
-      ctx.fillStyle = row.correct ? (index % 2 ? "#f5fbff" : "#ffffff") : row.timedOut ? ORANGE : row.skipped ? AMBER : CORAL;
-      ctx.fillRect(LEFT, top, INNER, ROW_HEIGHT);
-      ctx.strokeStyle = "#c9d4e1";
-      ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.moveTo(LEFT, top + ROW_HEIGHT); ctx.lineTo(LEFT + INNER, top + ROW_HEIGHT); ctx.stroke();
-      text(String(row.number).padStart(2, "0"), columns.number, top + 36, 21, 500, MUTED);
-      const kana = fitted(row.entry.kana, 280, 28, 16, 700);
-      text(kana.value, columns.word, row.entry.kanji ? top + 34 : top + 46, kana.size, 700);
-      if (row.entry.kanji) text(fitted(row.entry.kanji, 280, 19, 14, 500).value, columns.word, top + 62, 19, 500, MUTED);
-      lines(row.entry.meaning, 250, 20, 700, 2).forEach((line, lineIndex) => text(line, columns.meaning, top + 32 + lineIndex * 26, 20, 700));
-      lines(kotobaRowVerdict(session, row), 200, 20, 800, 2).forEach((line, lineIndex) => text(line, columns.verdict, top + 32 + lineIndex * 26, 20, 800));
-      ctx.textAlign = "right";
-      text(formatAnswerTime(row.elapsedMs), columns.time, top + 36, 21, 500);
-      ctx.textAlign = "left";
-    });
-    y += Math.max(1, report.rows.length) * ROW_HEIGHT;
+    let index = 0;
+    for (const group of reportGroups) {
+      const stats = group.bab === null ? undefined : babStats.get(group.bab);
+      if (stats) {
+        ctx.fillStyle = stats.correct === stats.total ? GREEN : stats.accuracy < KOTOBA_WEAK_BAB_ACCURACY ? CORAL : YELLOW;
+        ctx.fillRect(LEFT, y, INNER, GROUP_HEIGHT);
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(LEFT, y + GROUP_HEIGHT); ctx.lineTo(LEFT + INNER, y + GROUP_HEIGHT); ctx.stroke();
+        text(`BAB ${stats.bab}`, columns.number, y + 30, 22, 900);
+        ctx.textAlign = "right";
+        text(`${stats.correct} / ${stats.total} benar · ${stats.accuracy}% · ${stats.mistakes.length ? `${stats.mistakes.length} perlu diulang` : "semua benar"}`, columns.time, y + 30, 19, 800);
+        ctx.textAlign = "left";
+        y += GROUP_HEIGHT;
+      }
+      for (const row of group.rows) {
+        const top = y;
+        y += ROW_HEIGHT;
+        ctx.fillStyle = row.correct ? (index % 2 ? "#f5fbff" : "#ffffff") : row.timedOut ? ORANGE : row.skipped ? AMBER : CORAL;
+        ctx.fillRect(LEFT, top, INNER, ROW_HEIGHT);
+        ctx.strokeStyle = "#c9d4e1";
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(LEFT, top + ROW_HEIGHT); ctx.lineTo(LEFT + INNER, top + ROW_HEIGHT); ctx.stroke();
+        text(String(row.number).padStart(2, "0"), columns.number, top + 36, 21, 500, MUTED);
+        const kana = fitted(row.entry.kana, 280, 28, 16, 700);
+        text(kana.value, columns.word, row.entry.kanji ? top + 34 : top + 46, kana.size, 700);
+        if (row.entry.kanji) text(fitted(row.entry.kanji, 280, 19, 14, 500).value, columns.word, top + 62, 19, 500, MUTED);
+        lines(row.entry.meaning, 250, 20, 700, 2).forEach((line, lineIndex) => text(line, columns.meaning, top + 32 + lineIndex * 26, 20, 700));
+        lines(kotobaRowVerdict(session, row), 200, 20, 800, 2).forEach((line, lineIndex) => text(line, columns.verdict, top + 32 + lineIndex * 26, 20, 800));
+        ctx.textAlign = "right";
+        text(formatAnswerTime(row.elapsedMs), columns.time, top + 36, 21, 500);
+        ctx.textAlign = "left";
+        index++;
+      }
+    }
+    if (!report.rows.length) y += ROW_HEIGHT;
     if (report.hidden) text(`+${report.hidden} kata lain yang perlu diulang tidak muat di gambar ini.`, LEFT, y + 30, 20, 600, MUTED);
   }
 
