@@ -6,8 +6,10 @@ import { z } from "zod";
 import { CACHE_KEYS, CACHE_TAGS } from "@/constants/cache-key";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { renderableDiscussionRootWhere } from "@/features/question-comment/queries";
 import {
   ArticleBodySchema,
+  ArticleGlossarySchema,
   ArticleSearchInputSchema,
   ArticleSortSchema,
   type ArticleSearchInput,
@@ -15,12 +17,17 @@ import {
 } from "./schemas";
 
 const ARTICLE_PAGE_SIZE = 8;
+export const ARTICLE_COMMENT_PAGE_SIZE = 20;
 
 const articleCardSelect = {
   id: true,
   slug: true,
   title: true,
   excerpt: true,
+  titleJa: true,
+  excerptJa: true,
+  readingLevel: true,
+  hasJapanese: true,
   coverImage: true,
   coverAlt: true,
   authorName: true,
@@ -40,16 +47,21 @@ const articleCardSelect = {
   },
 } satisfies Prisma.ArticleSelect;
 
-type ArticleCardRow = Prisma.ArticleGetPayload<{ select: typeof articleCardSelect }>;
+type ArticleCardRow = Prisma.ArticleGetPayload<{
+  select: typeof articleCardSelect;
+}>;
 
 export type ArticleCardData = Omit<ArticleCardRow, "tagLinks"> & {
   tags: Array<{ slug: string; label: string }>;
 };
 
 function normalizeArticleCard(row: ArticleCardRow): ArticleCardData {
+  const { tagLinks, ...data } = row;
   return {
-    ...row,
-    tags: row.tagLinks.map((link) => link.tag).sort((left, right) => left.label.localeCompare(right.label)),
+    ...data,
+    tags: tagLinks
+      .map((link) => link.tag)
+      .sort((left, right) => left.label.localeCompare(right.label)),
   };
 }
 
@@ -168,20 +180,18 @@ function encodeCursor(article: ArticleCardData, sort: ArticleSort) {
 
   if (value === undefined) return null;
 
-  return Buffer.from(JSON.stringify({ sort, value, id: article.id }), "utf8").toString(
-    "base64url",
-  );
+  return Buffer.from(JSON.stringify({ sort, value, id: article.id }), "utf8").toString("base64url");
 }
 
-function cursorWhere(cursor: ArticleCursor | null, sort: ArticleSort): Prisma.ArticleWhereInput | null {
+function cursorWhere(
+  cursor: ArticleCursor | null,
+  sort: ArticleSort,
+): Prisma.ArticleWhereInput | null {
   if (!cursor || cursor.sort !== sort) return null;
 
   if (sort === "popular" && typeof cursor.value === "number") {
     return {
-      OR: [
-        { viewCount: { lt: cursor.value } },
-        { viewCount: cursor.value, id: { lt: cursor.id } },
-      ],
+      OR: [{ viewCount: { lt: cursor.value } }, { viewCount: cursor.value, id: { lt: cursor.id } }],
     };
   }
 
@@ -200,18 +210,12 @@ function cursorWhere(cursor: ArticleCursor | null, sort: ArticleSort): Prisma.Ar
 
   if (sort === "oldest") {
     return {
-      OR: [
-        { publishedAt: { gt: publishedAt } },
-        { publishedAt, id: { gt: cursor.id } },
-      ],
+      OR: [{ publishedAt: { gt: publishedAt } }, { publishedAt, id: { gt: cursor.id } }],
     };
   }
 
   return {
-    OR: [
-      { publishedAt: { lt: publishedAt } },
-      { publishedAt, id: { lt: cursor.id } },
-    ],
+    OR: [{ publishedAt: { lt: publishedAt } }, { publishedAt, id: { lt: cursor.id } }],
   };
 }
 
@@ -226,6 +230,8 @@ function articleSearchWhere(
       OR: [
         { title: { contains: input.query, mode: "insensitive" } },
         { excerpt: { contains: input.query, mode: "insensitive" } },
+        { titleJa: { contains: input.query, mode: "insensitive" } },
+        { excerptJa: { contains: input.query, mode: "insensitive" } },
         { bodyText: { contains: input.query, mode: "insensitive" } },
         { authorName: { contains: input.query, mode: "insensitive" } },
       ],
@@ -236,6 +242,9 @@ function articleSearchWhere(
     and.push({ tagLinks: { some: { tag: { slug: tag } } } });
   }
 
+  if (input.level) and.push({ readingLevel: input.level === "general" ? null : input.level });
+  if (input.language === "id") and.push({ hasJapanese: false });
+  if (input.language === "ja" || input.language === "bilingual") and.push({ hasJapanese: true });
   if (includeCursor) {
     const condition = cursorWhere(decodeCursor(input.cursor), input.sort);
     if (condition) and.push(condition);
@@ -318,13 +327,20 @@ export function parseArticleSearchParams(params: Record<string, string | string[
     category: firstSearchParam(params.category) ?? "",
     tags: allSearchParams(params.tags),
     sort: firstSearchParam(params.sort) ?? "newest",
+    level: firstSearchParam(params.level) ?? "",
+    language: firstSearchParam(params.language) ?? "",
     cursor: firstSearchParam(params.cursor),
   };
   const parsed = ArticleSearchInputSchema.safeParse(candidate);
 
   return parsed.success
     ? parsed.data
-    : ArticleSearchInputSchema.parse({ query: "", category: "", tags: [], sort: "newest" });
+    : ArticleSearchInputSchema.parse({
+        query: "",
+        category: "",
+        tags: [],
+        sort: "newest",
+      });
 }
 
 export function buildArticleSearchHref(
@@ -335,6 +351,8 @@ export function buildArticleSearchHref(
   const params = new URLSearchParams();
 
   if (nextInput.query) params.set("q", nextInput.query);
+  if (nextInput.level) params.set("level", nextInput.level);
+  if (nextInput.language) params.set("language", nextInput.language);
   if (nextInput.category) params.set("category", nextInput.category);
   for (const tag of nextInput.tags) params.append("tags", tag);
   if (nextInput.sort !== "newest") params.set("sort", nextInput.sort);
@@ -353,6 +371,10 @@ const getCachedArticleDetail = (slug: string) =>
           ...articleCardSelect,
           body: true,
           bodyText: true,
+          glossary: true,
+          coverCredit: true,
+          coverCreditUrl: true,
+          discussionEnabled: true,
         },
       });
       if (!article) return null;
@@ -386,8 +408,11 @@ const getCachedArticleDetail = (slug: string) =>
       const { tagLinks, ...articleData } = article;
       return {
         ...articleData,
-        tags: tagLinks.map((link) => link.tag).sort((left, right) => left.label.localeCompare(right.label)),
+        tags: tagLinks
+          .map((link) => link.tag)
+          .sort((left, right) => left.label.localeCompare(right.label)),
         body: body.success ? body.data : null,
+        glossary: ArticleGlossarySchema.safeParse(article.glossary).data ?? [],
         related: [...relatedPrimary, ...relatedFallback].map(normalizeArticleCard),
       };
     },
@@ -465,5 +490,63 @@ const getCachedArticleSitemapEntries = unstable_cache(
 
 export async function getArticleSitemapEntries() {
   const entries = await getCachedArticleSitemapEntries();
-  return entries.map((entry) => ({ ...entry, updatedAt: new Date(entry.updatedAt) }));
+  return entries.map((entry) => ({
+    ...entry,
+    updatedAt: new Date(entry.updatedAt),
+  }));
+}
+
+/** Private collection: never put this result in a shared cache. */
+export async function getSavedArticles(userId: number, cursor?: number) {
+  const rows = await prisma.article.findMany({
+    where: {
+      ...publishedArticleWhere(),
+      interactions: { some: { userId, saved: true } },
+      ...(cursor ? { id: { lt: cursor } } : {}),
+    },
+    orderBy: { id: "desc" },
+    take: 13,
+    select: articleCardSelect,
+  });
+  const articles = rows.slice(0, 12).map(normalizeArticleCard);
+  return {
+    articles,
+    nextCursor: rows.length > 12 ? articles.at(-1)?.id : undefined,
+  };
+}
+
+/** Resolve the comment's page so moderation/report permalinks survive pagination. */
+export async function getArticleCommentLocation(articleId: number, commentId: number) {
+  const comment = await prisma.questionComment.findFirst({
+    where: { id: commentId, articleId, sharedAt: { not: null } },
+    select: { id: true, parentId: true, deletedAt: true },
+  });
+  if (!comment) return null;
+  const root = await prisma.questionComment.findFirst({
+    where: {
+      id: comment.parentId ?? comment.id,
+      articleId,
+      ...renderableDiscussionRootWhere,
+    },
+    select: { id: true, isPinned: true },
+  });
+  if (!root) return null;
+  const preceding = await prisma.questionComment.count({
+    where: {
+      articleId,
+      ...renderableDiscussionRootWhere,
+      AND: [
+        {
+          OR: [
+            ...(!root.isPinned ? [{ isPinned: true }] : []),
+            { isPinned: root.isPinned, id: { gt: root.id } },
+          ],
+        },
+      ],
+    },
+  });
+  return {
+    page: Math.floor(preceding / ARTICLE_COMMENT_PAGE_SIZE) + 1,
+    commentId: comment.deletedAt ? root.id : comment.id,
+  };
 }

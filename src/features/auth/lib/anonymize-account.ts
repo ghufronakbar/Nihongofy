@@ -82,19 +82,45 @@ export async function anonymizeAccount(userId: number, database: PrismaClient = 
     await tx.kotobaClashRoomMember.updateMany({
       where: { userId },
       data: {
-        userId: null, guestHash: null, guestExpiresAt: null,
-        nickname: ANONYMIZED_DISPLAY_NAME, nicknameKey: null,
-        readyRevision: null, kickedAt: null, anonymizedAt,
+        userId: null,
+        guestHash: null,
+        guestExpiresAt: null,
+        nickname: ANONYMIZED_DISPLAY_NAME,
+        nicknameKey: null,
+        readyRevision: null,
+        kickedAt: null,
+        anonymizedAt,
       },
     });
 
-    const raceMembers = await tx.kanaRaceMember.findMany({ where: { userId }, select: { id: true, roomId: true } });
-    const raceHosted = await tx.kanaRaceRoom.findMany({ where: { hostId: userId }, select: { id: true } });
-    await redactRaceGuesses(tx, raceMembers.map((member) => member.id), [...raceMembers.map((member) => member.roomId), ...raceHosted.map((room) => room.id)]);
-    await tx.kanaRaceRoom.updateMany({ where: { hostId: userId }, data: { hostId: null, closedAt: anonymizedAt } });
+    const raceMembers = await tx.kanaRaceMember.findMany({
+      where: { userId },
+      select: { id: true, roomId: true },
+    });
+    const raceHosted = await tx.kanaRaceRoom.findMany({
+      where: { hostId: userId },
+      select: { id: true },
+    });
+    await redactRaceGuesses(
+      tx,
+      raceMembers.map((member) => member.id),
+      [...raceMembers.map((member) => member.roomId), ...raceHosted.map((room) => room.id)],
+    );
+    await tx.kanaRaceRoom.updateMany({
+      where: { hostId: userId },
+      data: { hostId: null, closedAt: anonymizedAt },
+    });
     await tx.kanaRaceMember.updateMany({
       where: { userId },
-      data: { userId: null, guestHash: null, guestExpiresAt: null, nickname: ANONYMIZED_DISPLAY_NAME, nicknameKey: null, readyRevision: null, anonymizedAt },
+      data: {
+        userId: null,
+        guestHash: null,
+        guestExpiresAt: null,
+        nickname: ANONYMIZED_DISPLAY_NAME,
+        nicknameKey: null,
+        readyRevision: null,
+        anonymizedAt,
+      },
     });
 
     // Anak dihapus lebih dulu agar tidak bergantung pada urutan cascade.
@@ -106,6 +132,16 @@ export async function anonymizeAccount(userId: number, database: PrismaClient = 
     await tx.practiceSession.deleteMany({ where: { userId } });
     await tx.attempt.deleteMany({ where: { userId } });
     await tx.kanaProgress.deleteMany({ where: { userId } });
+    const articleLikes = await tx.articleInteraction.findMany({
+      where: { userId, favorited: true },
+      orderBy: { articleId: "asc" },
+      select: { articleId: true },
+    });
+    for (const like of articleLikes)
+      await tx.article.updateMany({
+        where: { id: like.articleId, favoriteCount: { gt: 0 } },
+        data: { favoriteCount: { decrement: 1 } },
+      });
     await tx.articleInteraction.deleteMany({ where: { userId } });
 
     await tx.conversationSession.deleteMany({ where: { userId } });

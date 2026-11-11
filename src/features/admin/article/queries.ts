@@ -2,7 +2,8 @@ import "server-only";
 
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { ArticleBodySchema } from "@/features/article/schemas";
+import { ArticleBodySchema, ArticleGlossarySchema } from "@/features/article/schemas";
+import { CreateArticleSchema, type CreateArticleInput } from "./schemas";
 import type { AdminArticleStatus } from "./schemas";
 
 // Tidak di-cache: layar admin dibuka justru untuk melihat kondisi terkini,
@@ -28,10 +29,7 @@ export type AdminArticleListItem = Omit<
   "tagLinks"
 > & { tags: string[] };
 
-export async function listAdminArticles(filter: {
-  status?: AdminArticleStatus;
-  query?: string;
-}) {
+export async function listAdminArticles(filter: { status?: AdminArticleStatus; query?: string }) {
   const where: Prisma.ArticleWhereInput = {};
   if (filter.status) where.status = filter.status;
   if (filter.query) {
@@ -74,24 +72,13 @@ export async function listAdminArticles(filter: {
 
 export type AdminArticleDetail = {
   id: number;
-  slug: string;
-  title: string;
-  excerpt: string;
-  bodyJson: string;
-  coverImage: string;
-  coverAlt: string;
-  authorName: string;
-  authorRole: string;
-  category: string;
-  tags: string[];
-  readTime: number;
-  isFeatured: boolean;
-  status: AdminArticleStatus;
+  values: CreateArticleInput;
+  liveStatus: AdminArticleStatus;
+  hasDraft: boolean;
   publishedAt: Date | null;
   viewCount: number;
   favoriteCount: number;
 };
-
 export async function getAdminArticle(id: number): Promise<AdminArticleDetail | null> {
   const row = await prisma.article.findUnique({
     where: { id },
@@ -100,9 +87,17 @@ export async function getAdminArticle(id: number): Promise<AdminArticleDetail | 
       slug: true,
       title: true,
       excerpt: true,
+      titleJa: true,
+      excerptJa: true,
+      readingLevel: true,
       body: true,
+      glossary: true,
+      draft: true,
+      discussionEnabled: true,
       coverImage: true,
       coverAlt: true,
+      coverCredit: true,
+      coverCreditUrl: true,
       authorName: true,
       authorRole: true,
       category: true,
@@ -115,30 +110,38 @@ export async function getAdminArticle(id: number): Promise<AdminArticleDetail | 
       tagLinks: { select: { tag: { select: { label: true } } } },
     },
   });
-
   if (!row) return null;
-
-  // Body lama berasal dari fixture dan belum tentu lolos schema saat ini.
-  // Editor tetap harus bisa membukanya untuk diperbaiki, jadi isi mentahnya
-  // ditampilkan apa adanya ketika parse gagal alih-alih menolak membuka halaman.
-  const parsed = ArticleBodySchema.safeParse(row.body);
-  const bodyJson = JSON.stringify(parsed.success ? parsed.data : row.body, null, 2);
-
+  const draft = CreateArticleSchema.safeParse(row.draft);
+  const body = ArticleBodySchema.safeParse(row.body);
+  const values: CreateArticleInput = draft.success
+    ? draft.data
+    : {
+        slug: row.slug,
+        title: row.title,
+        excerpt: row.excerpt,
+        titleJa: row.titleJa ?? "",
+        excerptJa: row.excerptJa ?? "",
+        readingLevel: row.readingLevel ?? "",
+        bodyJson: JSON.stringify(body.success ? body.data : row.body, null, 2),
+        glossary: ArticleGlossarySchema.safeParse(row.glossary).data ?? [],
+        discussionEnabled: row.discussionEnabled,
+        coverImage: row.coverImage,
+        coverAlt: row.coverAlt,
+        coverCredit: row.coverCredit ?? "",
+        coverCreditUrl: row.coverCreditUrl ?? "",
+        authorName: row.authorName,
+        authorRole: row.authorRole ?? "",
+        category: row.category,
+        tags: row.tagLinks.map((link) => link.tag.label),
+        readTime: row.readTime,
+        isFeatured: row.isFeatured,
+        status: row.status,
+      };
   return {
     id: row.id,
-    slug: row.slug,
-    title: row.title,
-    excerpt: row.excerpt,
-    bodyJson,
-    coverImage: row.coverImage,
-    coverAlt: row.coverAlt,
-    authorName: row.authorName,
-    authorRole: row.authorRole ?? "",
-    category: row.category,
-    tags: row.tagLinks.map((link) => link.tag.label),
-    readTime: row.readTime,
-    isFeatured: row.isFeatured,
-    status: row.status,
+    values,
+    liveStatus: row.status,
+    hasDraft: draft.success,
     publishedAt: row.publishedAt,
     viewCount: row.viewCount,
     favoriteCount: row.favoriteCount,

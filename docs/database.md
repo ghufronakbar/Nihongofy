@@ -82,10 +82,11 @@ Stack: Next.js + Prisma + PostgreSQL (Supabase).
 
 ## Komentar dan Diskusi
 
-- `QuestionComment` melayani empat target: soal (`questionId`, `Cascade`), kata flashcard
+- `QuestionComment` melayani lima target: soal (`questionId`, `Cascade`), kata flashcard
   (`vocabId` ke `FlashcardVocab`, `Restrict` seperti `FlashcardCard.vocabId`), pola bunpou
-  (`bunpouPointId`, `Restrict`), dan postingan komunitas (`postId`, `Restrict`; komentarnya selalu
-  `PUBLIC`). Definisi CHECK yang berlaku ada di migration `20261003180100_post`. Tepat satu terisi —
+  (`bunpouPointId`, `Restrict`), postingan komunitas (`postId`, `Restrict`), dan artikel
+  (`articleId`, `Restrict`). Komentar artikel/postingan selalu `PUBLIC` di action aplikasi.
+  Definisi CHECK yang berlaku ada di migration `20261108124838_article_bilingual_reader`. Tepat satu terisi —
   CHECK `QuestionComment_target_check` hanya ada di SQL migration
   `20261002090000_comment_flashcard_vocab_target`, karena Prisma tidak dapat mengekspresikannya.
   Karena tidak ada FK yang SET NULL, CHECK ini tidak dapat menggagalkan penghapusan targetnya.
@@ -241,10 +242,25 @@ User
 - Artikel hanya tampil publik bila `status = PUBLISHED` dan `publishedAt <= now()`.
 - `Article.body` menyimpan array blok JSON terstruktur; HTML mentah tidak boleh disimpan atau dirender.
 - `Article.bodyText` adalah teks pencarian yang diturunkan dari body, bukan content source kedua.
+- Isi Indonesia wajib; pasangan Jepang opsional per blok saat draf dan wajib lengkap saat
+  menerbitkan versi bilingual. `hasJapanese` hanya aktif bila judul, ringkasan, level, dan seluruh
+  pasangan blok lengkap. Furigana memakai markup `{漢字|かんじ}`, bukan HTML.
+- `readingLevel` adalah perkiraan kesulitan bacaan Jepang N5–N1, terpisah dari kategori/topik.
+  `glossary` menyimpan kata, arti Indonesia, dan catatan opsional.
+- `draft` menyimpan snapshot revisi privat pada artikel terbit. Query publik memakai explicit
+  select yang tidak membawa snapshot ini. Simpan draf tidak mengganti konten publik.
+- Slug yang pernah terbit tidak dapat diubah. Artikel yang pernah terbit atau punya komentar
+  hanya dapat diarsipkan; hard delete terbatas pada draf baru tanpa diskusi.
 - `ArticleTagLink` unique pada `(articleId, tagId)` dan seluruh foreign key memiliki index.
 - `ArticleInteraction` unique pada `(userId, articleId)` serta selalu diakses dengan `session.userId`.
 - `viewCount` bertambah sekali pada first-view user login. `favoriteCount` berubah atomik saat
   favorite ditambah/dihapus dan tidak boleh bernilai negatif.
+- Like/bookmark mengirim keadaan tujuan, bukan flip. Lock user lalu artikel menjaga retry,
+  klik bersamaan, dan anonimisasi tidak menggandakan hitungan atau menyisakan interaksi personal.
+  Anonimisasi mengurangi hitungan suka sebelum menghapus `ArticleInteraction`.
+- Komentar artikel memakai `QuestionComment.articleId`; `sharedAt` wajib terisi.
+  `isPinned` hanya valid pada root artikel. Penutupan `discussionEnabled` melarang tulisan baru
+  tetapi mempertahankan pembacaan diskusi lama. Moderasi dan laporan memakai alur bersama.
 - Search publik hanya memakai field content published. State save/favorite user tidak boleh masuk
   cache list/detail global.
 - Seed artikel dijalankan melalui `npm run seed:articles` dan wajib tetap idempotent berdasarkan slug.
@@ -325,6 +341,8 @@ Aturan tambahan:
 - `QuestionChoice.codeAnswer` = 1–4. `Question.questionAnswer` dan `AttemptAnswer.selectedAnswer` merujuk ke nilai ini, BUKAN ke `QuestionChoice.id`.
 - Soal `BUNPOU_SENTENCE_COMPOSITION` (★): `questionAnswer` = codeAnswer pilihan yang jatuh di posisi ★ (sesuai format JLPT asli). Tidak perlu skema khusus.
 - `AttemptAnswer.isCorrect` adalah field denormalized: dihitung sekali saat submit (`selectedAnswer == questionAnswer`), disimpan agar query analitik tidak perlu join kunci jawaban. Jika kunci jawaban dikoreksi setelah ada attempt, `isCorrect` attempt lama HARUS dihitung ulang.
+- Row `AttemptAnswer` sesi yang sedang berjalan ditulis oleh simpan otomatis dengan `isCorrect = false`; nilainya baru benar setelah sesi disubmit. Karena itu semua pembaca `isCorrect` wajib memfilter `Attempt.status = COMPLETED`.
+- `Attempt.currentSession` adalah satu-satunya sesi full mock yang boleh dibuka, disimpan otomatis, dan disubmit; submit menaikkannya (atau menyelesaikan attempt) lewat `update` bersyarat dalam transaksi yang sama dengan penilaian. Latihan section selalu 1.
 - `selectedAnswer = null` berarti soal dilewati/tidak dijawab (dihitung salah dalam skor, tapi bisa dibedakan di analitik).
 - Jawaban per soal di-UPDATE (upsert), bukan insert baru — ditegakkan oleh `@@unique([attemptId, questionId])`.
 - `Attempt.sectionScope = null` berarti full test; jika terisi, hanya soal dari section tersebut yang dinilai.

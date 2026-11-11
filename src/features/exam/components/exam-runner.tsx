@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useState, useTransition } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import type { JlptLevel, JlptSection, MondaiType } from "@prisma/client";
-import { useExam } from "./exam-provider";
+import { useExam, type ExamSaveStatus } from "./exam-provider";
 import { submitExamSessionAction } from "../actions";
 import { JapaneseText } from "@/components/japanese-text";
 import { JapanesePassage } from "@/components/japanese-passage";
@@ -19,8 +19,11 @@ import {
   AlertTriangle,
   ArrowLeft,
   ArrowRight,
+  CloudCheck,
+  CloudOff,
   Flag,
   Headphones,
+  LoaderCircle,
   Send,
 } from "lucide-react";
 import {
@@ -81,9 +84,9 @@ export function ExamRunner({
   questions,
   reportEnabled,
 }: ExamRunnerProps) {
-  const router = useRouter();
   const searchParams = useSearchParams();
-  const { hydrated, getAnswer, setAnswer, toggleFlag } = useExam();
+  const { hydrated, saveStatus, getAnswer, setAnswer, toggleFlag, retrySave, stopAutosave } =
+    useExam();
   const [isSubmitting, startTransition] = useTransition();
 
   const totalQuestions = questions.length;
@@ -127,9 +130,8 @@ export function ExamRunner({
     if (!hydrated) return;
     const validNumber = currentIndex + 1;
     if (rawQuestionNumber !== validNumber) {
-      router.replace(`?questionNumber=${validNumber}`);
+      replaceQuestionNumber(validNumber);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hydrated, currentIndex, rawQuestionNumber]);
 
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -142,7 +144,7 @@ export function ExamRunner({
 
   function goToQuestion(index: number) {
     const clamped = Math.min(Math.max(index, 0), totalQuestions - 1);
-    router.replace(`?questionNumber=${clamped + 1}`);
+    replaceQuestionNumber(clamped + 1);
   }
 
   // Keyboard navigation & shortcuts
@@ -181,6 +183,9 @@ export function ExamRunner({
 
   function handleSubmit() {
     startTransition(async () => {
+      // Payload submit sudah membawa seluruh lembar; simpan otomatis yang masih
+      // tertunda tidak perlu dikirim lagi dan tidak boleh menyusul setelahnya.
+      stopAutosave();
       const payload = questions.map((q) => {
         const state = getAnswer(q.id);
         return {
@@ -336,6 +341,7 @@ export function ExamRunner({
               </span>
             )}
             <span className="text-foreground/50">{unansweredCount} Tersisa</span>
+            {saveStatus && <SaveStatusBadge status={saveStatus} onRetry={retrySave} />}
           </div>
         </div>
 
@@ -650,5 +656,67 @@ export function ExamRunner({
         </aside>
       </div>
     </div>
+  );
+}
+
+// History API bawaan, bukan router.replace: mengganti query lewat router
+// meminta render ulang halaman exam ke server setiap kali pindah soal.
+// useSearchParams tetap ikut ter-update (lihat docs Next "Native History API").
+function replaceQuestionNumber(questionNumber: number) {
+  const url = new URL(window.location.href);
+  url.searchParams.set("questionNumber", String(questionNumber));
+  window.history.replaceState(null, "", url);
+}
+
+function SaveStatusBadge({
+  status,
+  onRetry,
+}: {
+  status: ExamSaveStatus;
+  onRetry: () => void;
+}) {
+  if (status === "saved") {
+    return (
+      <span className="flex items-center gap-1.5 text-neo-blue" role="status">
+        <CloudCheck className="size-3.5" />
+        <span className="font-bold">Tersimpan</span>
+      </span>
+    );
+  }
+
+  if (status === "pending" || status === "saving") {
+    return (
+      <span className="flex items-center gap-1.5 text-foreground/60" role="status">
+        <LoaderCircle className="size-3.5 animate-spin" />
+        <span className="font-bold">Menyimpan...</span>
+      </span>
+    );
+  }
+
+  if (status === "closed") {
+    return (
+      <span className="flex items-center gap-1.5 text-foreground/70" role="status">
+        <LoaderCircle className="size-3.5 animate-spin" />
+        <span className="font-bold">Sesi ini sudah disubmit, mengalihkan...</span>
+      </span>
+    );
+  }
+
+  return (
+    <span className="flex items-center gap-1.5 text-neo-coral" role="alert">
+      <CloudOff className="size-3.5" />
+      <span className="font-bold">
+        {status === "unauthorized"
+          ? "Login berakhir, jawaban hanya di tab ini"
+          : "Gagal menyimpan"}
+      </span>
+      <button
+        type="button"
+        onClick={onRetry}
+        className="underline underline-offset-2 font-black text-neo-ink"
+      >
+        Coba lagi
+      </button>
+    </span>
   );
 }

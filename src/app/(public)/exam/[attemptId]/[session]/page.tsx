@@ -25,7 +25,7 @@ export default async function ExamPage({
     notFound();
   }
 
-  const { attempt, testPackageItems } = await getExamQuestions(attemptIdNum, sessionNum);
+  const { attempt, testPackageItems, savedAnswers } = await getExamQuestions(attemptIdNum, sessionNum);
 
   const questions = testPackageItems.flatMap((item) =>
     item.questions.map((question) => ({
@@ -36,7 +36,12 @@ export default async function ExamPage({
   );
 
   return (
-    <ExamProvider attemptId={attemptIdNum} session={sessionNum}>
+    <ExamProvider
+      key={`${attemptIdNum}-${sessionNum}`}
+      attemptId={attemptIdNum}
+      session={sessionNum}
+      savedAnswers={savedAnswers}
+    >
       <ExamRunner
         attemptId={attemptIdNum}
         session={sessionNum}

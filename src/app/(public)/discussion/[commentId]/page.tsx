@@ -55,13 +55,24 @@ export default async function DiscussionPermalinkPage({
   const resolved = await resolveDiscussionRootId(commentIdNum);
   if (!resolved) notFound();
 
+  if (resolved.articleId != null) {
+    if (!FEATURES.article) notFound();
+    redirect(`/article/read/${resolved.articleId}?comment=${commentIdNum}`);
+  }
+
   // Thread kata flashcard dibaca di halaman katanya. Tautan yang dibuat aplikasi
   // sudah langsung ke sana; ini untuk permalink yang dibentuk dari id saja.
   if (resolved.vocabId !== null) {
     if (!FEATURES.flashcardDiscussion) notFound();
     redirect(
       discussionThreadHref(
-        { id: resolved.rootId, questionId: null, vocabId: resolved.vocabId, bunpouPointId: null, postId: null },
+        {
+          id: resolved.rootId,
+          questionId: null,
+          vocabId: resolved.vocabId,
+          bunpouPointId: null,
+          postId: null,
+        },
         commentIdNum,
       ),
     );
@@ -90,7 +101,13 @@ export default async function DiscussionPermalinkPage({
     if (!FEATURES.community) notFound();
     redirect(
       discussionThreadHref(
-        { id: resolved.rootId, questionId: null, vocabId: null, bunpouPointId: null, postId: resolved.postId },
+        {
+          id: resolved.rootId,
+          questionId: null,
+          vocabId: null,
+          bunpouPointId: null,
+          postId: resolved.postId,
+        },
         commentIdNum,
       ),
     );
@@ -138,26 +155,29 @@ export default async function DiscussionPermalinkPage({
             <ArrowLeft className="size-4" />
             Semua Diskusi Soal Ini
           </Link>
-          <Link href={questionsHref} className="neo-button bg-white text-black font-extrabold text-xs">
+          <Link
+            href={questionsHref}
+            className="neo-button bg-white text-black font-extrabold text-xs"
+          >
             Buka Mode Baca
           </Link>
         </div>
       </div>
 
       <DictionaryBoundary contextKey={`question-thread:${root.id}`} className="space-y-6">
-      <DiscussionQuestionCard question={question} />
+        <DiscussionQuestionCard question={question} />
 
-      <div className="neo-surface bg-white p-6 border-[3px] border-neo-ink shadow-neo flex flex-col gap-4">
-        <h2 className="font-mono text-xs font-black uppercase text-foreground/70">
-          Catatan Pengguna ({root.replies.length + (root.state === "VISIBLE" ? 1 : 0)})
-        </h2>
-        <DiscussionPermalinkThread
-          root={root}
-          currentUserId={currentUserId}
-          postingSuspended={postingSuspended}
-          reportEnabled={FEATURES.report}
-        />
-      </div>
+        <div className="neo-surface bg-white p-6 border-[3px] border-neo-ink shadow-neo flex flex-col gap-4">
+          <h2 className="font-mono text-xs font-black uppercase text-foreground/70">
+            Catatan Pengguna ({root.replies.length + (root.state === "VISIBLE" ? 1 : 0)})
+          </h2>
+          <DiscussionPermalinkThread
+            root={root}
+            currentUserId={currentUserId}
+            postingSuspended={postingSuspended}
+            reportEnabled={FEATURES.report}
+          />
+        </div>
       </DictionaryBoundary>
     </div>
   );

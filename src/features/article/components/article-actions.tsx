@@ -3,10 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState, useTransition } from "react";
 import { Bookmark, Heart, Share2 } from "lucide-react";
-import {
-  recordArticleViewAction,
-  toggleArticleInteractionAction,
-} from "../actions";
+import { recordArticleViewAction, toggleArticleInteractionAction } from "../actions";
 import { formatArticleCount } from "../lib/format";
 
 async function copyUrl(url: string) {
@@ -54,7 +51,7 @@ export function ArticleActions({
 
   useEffect(() => {
     if (!isAuthenticated) return;
-    void recordArticleViewAction({ slug });
+    void recordArticleViewAction({ slug }).catch(() => undefined);
   }, [isAuthenticated, slug]);
 
   function toggle(kind: "saved" | "favorited") {
@@ -62,26 +59,36 @@ export function ArticleActions({
     setRequiresAuth(false);
 
     startTransition(async () => {
-      const result = await toggleArticleInteractionAction({ slug, kind });
-      if (!result.ok) {
-        setNotice(result.message);
-        setRequiresAuth("requiresAuth" in result && result.requiresAuth === true);
-        return;
-      }
+      try {
+        const result = await toggleArticleInteractionAction({
+          slug,
+          kind,
+          value: kind === "saved" ? !saved : !favorited,
+        });
+        if (!result.ok) {
+          setNotice(result.message);
+          setRequiresAuth("requiresAuth" in result && result.requiresAuth === true);
+          return;
+        }
 
-      if (kind === "saved") {
-        setSaved(result.value);
-        setNotice(result.value ? "Artikel disimpan ke akunmu." : "Artikel dihapus dari simpanan.");
-      } else {
-        setFavorited(result.value);
-        setFavoriteCount(result.favoriteCount);
-        setNotice(result.value ? "Artikel ditambahkan ke favorit." : "Artikel dihapus dari favorit.");
+        if (kind === "saved") {
+          setSaved(result.value);
+          setNotice(
+            result.value ? "Artikel disimpan ke akunmu." : "Artikel dihapus dari simpanan.",
+          );
+        } else {
+          setFavorited(result.value);
+          setFavoriteCount(result.favoriteCount);
+          setNotice(result.value ? "Artikel disukai." : "Artikel tidak lagi disukai.");
+        }
+      } catch {
+        setNotice("Perubahan belum tersimpan. Periksa koneksi dan coba lagi.");
       }
     });
   }
 
   async function shareArticle() {
-    const url = window.location.href;
+    const url = new URL(`/article/${slug}`, window.location.origin).href;
     setNotice("");
     setRequiresAuth(false);
 
@@ -105,34 +112,38 @@ export function ArticleActions({
 
   return (
     <div>
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap gap-2 sm:gap-3">
         <button
           type="button"
           onClick={() => toggle("favorited")}
           disabled={isPending}
           aria-pressed={favorited}
-          className={`neo-button ${favorited ? "bg-neo-coral" : "bg-white"}`}
+          className={`inline-flex min-h-11 items-center gap-2 rounded-lg border px-3 py-2 text-xs sm:px-4 sm:text-sm font-semibold transition-colors disabled:opacity-50 ${favorited ? "border-rose-200 bg-rose-50 text-rose-800" : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"}`}
         >
           <Heart className={`size-5 ${favorited ? "fill-current" : ""}`} aria-hidden="true" />
-          Favorit {formatArticleCount(favoriteCount)}
+          {favorited ? "Disukai" : "Sukai"} {formatArticleCount(favoriteCount)}
         </button>
         <button
           type="button"
           onClick={() => toggle("saved")}
           disabled={isPending}
           aria-pressed={saved}
-          className={`neo-button ${saved ? "bg-neo-yellow" : "bg-white"}`}
+          className={`inline-flex min-h-11 items-center gap-2 rounded-lg border px-3 py-2 text-xs sm:px-4 sm:text-sm font-semibold transition-colors disabled:opacity-50 ${saved ? "border-blue-200 bg-blue-50 text-blue-800" : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"}`}
         >
           <Bookmark className={`size-5 ${saved ? "fill-current" : ""}`} aria-hidden="true" />
           {saved ? "Tersimpan" : "Simpan"}
         </button>
-        <button type="button" onClick={shareArticle} className="neo-button bg-neo-blue">
+        <button
+          type="button"
+          onClick={shareArticle}
+          className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs sm:px-4 sm:text-sm font-semibold text-slate-700 hover:bg-slate-50"
+        >
           <Share2 className="size-5" aria-hidden="true" />
           Bagikan
         </button>
       </div>
 
-      <div className="mt-3 min-h-7 text-sm font-bold" aria-live="polite">
+      <div className="mt-2 min-h-5 text-xs text-slate-600" aria-live="polite">
         {notice}
         {requiresAuth ? (
           <>

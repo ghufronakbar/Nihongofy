@@ -76,6 +76,8 @@ function notesEnabled(target: CommentTarget) {
     case "bunpou":
       return FEATURES.bunpouDiscussion;
     // Postingan tidak punya catatan privat; flag ini hanya menjaga komentar publiknya.
+    case "article":
+      return FEATURES.article;
     case "post":
       return FEATURES.community;
   }
@@ -89,6 +91,8 @@ function discussionEnabled(target: CommentTarget) {
       return FEATURES.flashcardDiscussion;
     case "bunpou":
       return FEATURES.bunpouDiscussion;
+    case "article":
+      return FEATURES.article;
     case "post":
       return FEATURES.community;
   }
@@ -120,6 +124,20 @@ async function requirePostAccess(
   viewerId: number | null,
   { allowDeleted = false }: { allowDeleted?: boolean } = {},
 ) {
+  if (target.type === "article") {
+    const article = FEATURES.article
+      ? await prisma.article.findFirst({
+          where: {
+            id: target.articleId,
+            status: "PUBLISHED",
+            publishedAt: { lte: new Date() },
+          },
+          select: { discussionEnabled: true },
+        })
+      : null;
+    if (!article || (!allowDeleted && !article.discussionEnabled)) notFound();
+    return;
+  }
   if (target.type !== "post") return;
   const access = await getPostAccess(target.postId, viewerId);
   if (!access || !access.canView || (access.deletedAt && !allowDeleted)) notFound();
@@ -153,13 +171,20 @@ async function ensureTargetExists(target: CommentTarget, viewerId: number) {
       if (!point || point.retiredAt) notFound();
       return;
     }
+    case "article":
     case "post":
       await requirePostAccess(target, viewerId);
       return;
   }
 }
 
-const commentTargetSelect = { questionId: true, vocabId: true, bunpouPointId: true, postId: true } as const;
+const commentTargetSelect = {
+  questionId: true,
+  vocabId: true,
+  bunpouPointId: true,
+  postId: true,
+  articleId: true,
+} as const;
 
 // Comment yang sudah di-soft delete diperlakukan seperti tidak ada: hanya
 // tombstone-nya yang dirender, dan tidak boleh diedit, dibagikan, atau dibalas.
@@ -223,7 +248,7 @@ export async function addQuestionCommentAction(
   if (!notesEnabled(target)) notFound();
   if (visibility === "PUBLIC" && !discussionEnabled(target)) notFound();
   // Komentar postingan selalu publik: tidak ada catatan pribadi pada postingan.
-  if (target.type === "post" && visibility !== "PUBLIC") notFound();
+  if ((target.type === "post" || target.type === "article") && visibility !== "PUBLIC") notFound();
 
   const authSession = await getSession();
   if (!authSession) redirect("/login");
@@ -351,7 +376,7 @@ export async function setQuestionCommentVisibilityAction(
   const comment = await requireOwnLiveComment(commentId, authSession.userId);
   if (!discussionEnabled(comment.target)) notFound();
   // Komentar postingan tidak punya versi privat.
-  if (comment.target.type === "post") notFound();
+  if (comment.target.type === "post" || comment.target.type === "article") notFound();
 
   // Balasan mewarisi visibility root-nya dan tidak punya toggle sendiri.
   if (comment.parentId) notFound();
@@ -445,10 +470,7 @@ export async function replyToQuestionCommentAction(
   await prisma.questionComment.create({
     data: {
       // Balasan mewarisi target root, sehingga thread tidak pernah bercampur.
-      questionId: root.questionId,
-      vocabId: root.vocabId,
-      bunpouPointId: root.bunpouPointId,
-      postId: root.postId,
+      ...targetColumns(target),
       userId: authSession.userId,
       parentId: root.id,
       repliedToId: mentionId,
@@ -474,7 +496,9 @@ export async function getDiscussionAction(
   // Diskusi publik terbuka untuk guest; login hanya dibutuhkan untuk menulis.
   const authSession = await getSession();
   const viewerId = authSession?.userId ?? null;
-  await requirePostAccess(validated.data.target, viewerId, { allowDeleted: true });
+  await requirePostAccess(validated.data.target, viewerId, {
+    allowDeleted: true,
+  });
   const [roots, postingSuspended] = await Promise.all([
     getDiscussion(validated.data.target),
     isPostingSuspended(viewerId),
@@ -532,12 +556,19 @@ export async function voteQuestionCommentAction(
     // tombstone; postingan akun private hanya untuk yang boleh melihatnya.
     await requirePostAccess(target, userId);
     const rejection = voteRejection(
-      { authorId: comment.userId, deletedAt: comment.deletedAt, root: comment.parent ?? comment },
+      {
+        authorId: comment.userId,
+        deletedAt: comment.deletedAt,
+        root: comment.parent ?? comment,
+      },
       userId,
     );
     if (rejection === "unavailable") notFound();
     if (rejection === "own") {
-      return { ok: false, message: "Tidak bisa memberi suara pada catatan sendiri." };
+      return {
+        ok: false,
+        message: "Tidak bisa memberi suara pada catatan sendiri.",
+      };
     }
   }
 
@@ -556,7 +587,9 @@ export async function voteQuestionCommentAction(
       skipDuplicates: true,
     });
   } else {
-    await prisma.questionCommentVote.deleteMany({ where: { commentId, userId } });
+    await prisma.questionCommentVote.deleteMany({
+      where: { commentId, userId },
+    });
   }
 
   const counts = await countVotes([commentId]);
@@ -579,7 +612,13 @@ export async function createCommentImageUploadAction(
   input: CreateCommentImageUploadInput,
 ): Promise<CommentImageUploadResult> {
   // Postingan memakai uploader dan prefix object yang sama dengan komentar.
-  if (!FEATURES.questionComment && !FEATURES.flashcardDiscussion && !FEATURES.community) notFound();
+  if (
+    !FEATURES.article &&
+    !FEATURES.questionComment &&
+    !FEATURES.flashcardDiscussion &&
+    !FEATURES.community
+  )
+    notFound();
 
   const authSession = await getSession();
   if (!authSession) redirect("/login");

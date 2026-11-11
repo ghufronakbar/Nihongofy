@@ -26,10 +26,12 @@ const mocks = vi.hoisted(() => {
     count: vi.fn(),
     update: vi.fn(),
     updateMany: vi.fn(),
+    upsert: vi.fn(),
   });
   return {
     delegates: {
       attempt: delegate(),
+      attemptAnswer: delegate(),
       testPackage: delegate(),
       testPackageItem: delegate(),
       question: delegate(),
@@ -77,7 +79,7 @@ vi.mock("@/features/result/lib/guest-attempt-stash", () => ({
   consumeGuestAttemptStash: vi.fn(),
 }));
 
-import { getExamQuestions } from "@/features/exam/actions";
+import { getExamQuestions, saveExamAnswersAction } from "@/features/exam/actions";
 import { getPracticeSession, submitPracticeAnswerAction } from "@/features/practice/actions";
 import {
   getAttemptDetail,
@@ -350,16 +352,41 @@ describe("exam runner", () => {
     testPackageId: 1,
     sectionScope: null,
     status: "IN_PROGRESS",
+    currentSession: 1,
     testPackage: { id: 1, name: "Paket", jlptLevel: "N2" },
   };
 
   it("user login: tidak ada query yang membaca kunci, pembahasan, atau catatan", async () => {
     mocks.delegates.attempt.findUnique.mockResolvedValue(inProgress);
+    mocks.delegates.attemptAnswer.findMany.mockResolvedValue([
+      { questionId: 100, selectedAnswer: 2, flagged: false },
+    ]);
     mockExamItems();
 
-    await getExamQuestions(10, 1);
+    const { savedAnswers } = await getExamQuestions(10, 1);
 
     expectNoAnswerKeyReads();
+    // Lembar yang tersimpan otomatis tidak membawa `isCorrect`.
+    expect(mocks.delegates.attemptAnswer.findMany).toHaveBeenCalledOnce();
+    expect(keysDeep(savedAnswers)).not.toContain("isCorrect");
+  });
+
+  it("simpan otomatis tidak membaca kunci dan tidak mengembalikan data soal", async () => {
+    mocks.delegates.attempt.findUnique.mockResolvedValue(inProgress);
+    mocks.delegates.question.findMany.mockResolvedValue([{ id: 100 }]);
+    mocks.transaction.mockResolvedValue([]);
+
+    const result = await saveExamAnswersAction({
+      attemptId: 10,
+      session: 1,
+      answers: [{ questionId: 100, selectedAnswer: 2, flagged: false }],
+    });
+
+    expectNoAnswerKeyReads();
+    expect(result).toEqual({ status: "saved" });
+    for (const [args] of mocks.delegates.attemptAnswer.upsert.mock.calls) {
+      expect(keysDeep(args)).not.toContain("isCorrect");
+    }
   });
 
   it("guest: jalur cookie juga tidak membaca kunci", async () => {

@@ -1,69 +1,140 @@
 # Modul Article
 
-## Status Aktual
+## Status
 
-**Selesai sebagai modul artikel publik berbasis seed.** Index, search, detail, related content, structured body, generated cover, SEO, save/favorite, dan view tracking tersedia.
+Modul editorial dengan bacaan Indonesia/Jepang, reader bilingual, interaksi akun,
+diskusi publik, serta editor visual khusus admin. Migration dan seed diuji pada
+PostgreSQL lokal terpisah; deployment production belum dilakukan pada sesi ini.
 
-## Feature Flag
+## Pengalaman pembaca
 
-`FEATURES_ARTICLE` (default `true`). Saat `false`:
+- Katalog menampilkan pilihan redaksi, bacaan terbaru, kategori, dan pintasan level.
+- Search mencari judul/ringkasan kedua bahasa, isi, serta penulis. Filter kategori,
+  bahasa, level N5–N1, dan beberapa tag topik; semua tag terpilih harus cocok.
+- Satu identitas artikel untuk mode Indonesia, Jepang, dan bilingual. Dalam mode
+  bilingual, bahasa Jepang menjadi teks utama dan arti Indonesia dapat dibuka per
+  blok atau sekaligus. Tampilan sejajar tersedia pada layar lebar.
+- Furigana menggunakan markup `{漢字|かんじ}` yang dirender menjadi ruby semantik.
+  Bukan HTML mentah dan bukan hasil tebak otomatis saat membaca.
+- Kontrol ukuran teks 17–25 px, latar terang/kertas/gelap, daftar isi, dan kosakata
+  pilihan. Pada mobile, furigana ada di menu Pengaturan.
+- Preferensi reader disimpan di localStorage perangkat, tidak masuk akun atau cache
+  server. Pilihan yang rusak diabaikan; browser tanpa storage tetap dapat membaca.
+- Like, simpan untuk nanti, dan share URL kanonis. Masuk diperlukan untuk like,
+  bookmark, komentar, balasan, dan suara membantu; membaca tetap terbuka bagi tamu.
+- Halaman `/article/saved` adalah koleksi privat masing-masing akun.
+- Font Jepang di-host lokal. Sampul seed berupa foto berlisensi dengan atribusi.
 
-- `/article`, `/article/search`, dan `/article/[slug]` mengembalikan 404 lewat guard `src/app/(public)/article/layout.tsx`.
-- Menu Artikel di header dan footer, serta section artikel di home, tidak dirender. Query artikel di home dan sitemap juga dilewati.
-- Seluruh URL artikel keluar dari `sitemap.xml` dan `robots.txt`.
-- `article/actions.ts` (save/favorite dan view) tidak mengecek flag.
+## Editorial dan publikasi
 
-## Route
+Semua action admin memanggil `requireAdmin()`; role dibaca dari database.
+Hanya admin dapat membuat, mengubah, menerbitkan, memilih featured, atau mengarsipkan.
 
-- `/article`
-- `/article/search`
-- `/article/[slug]`
-- `/article/[slug]/cover`
+Editor memakai react-hook-form dan Zod yang sama dengan Server Action. Isi dibuat
+lewat blok visual: heading, paragraf, daftar, kutipan, contoh dialog, catatan, dan
+gambar. Blok dapat ditambah, dipindahkan, dan dihapus; pasangan bahasa tetap di blok
+yang sama. Kosakata, catatan kosakata, sampul/alt/kredit, kategori, tag, dan level
+juga dapat disunting. Tab Pratinjau memakai komponen reader publik.
 
-## Fitur Aktif
+Indonesia wajib. Artikel Indonesia dapat berisi contoh kalimat Jepang tanpa harus
+memiliki versi Jepang lengkap. Begitu terjemahan Jepang mulai diisi pada judul,
+ringkasan, atau blok narasi, publikasi mewajibkan seluruh pasangan, judul/ringkasan
+Jepang, dan perkiraan level bacaan. Draf boleh menyimpan terjemahan parsial.
 
-- Satu featured article dan hingga enam artikel terbaru selain featured.
-- Search pada title, excerpt, body text, dan author.
-- Filter kategori dan multi-tag.
-- Sort newest, oldest, popular, dan most liked.
-- Cursor pagination delapan artikel per halaman.
-- Structured body untuk heading, paragraph, list, quote, example, dan callout.
-- Related article dari kategori yang sama dengan fallback global.
-- Share via Web Share API atau copy URL.
-- User login dapat save dan favorite.
-- View count bertambah sekali pada first view tiap akun.
-- Canonical, Open Graph, Twitter card, sitemap, robots, dan generated cover tersedia.
+- **Draf baru:** belum tampil publik.
+- **Terbit:** status PUBLISHED dan publishedAt tidak di masa depan.
+- **Revisi privat:** tombol Simpan draf pada artikel terbit hanya menyimpan snapshot
+  `Article.draft`; judul, isi, kategori, tag, dan pengaturan publik tetap versi lama.
+  Terbitkan mengganti versi publik dan mengosongkan snapshot.
+- **Arsip:** tidak tampil di katalog, pencarian, koleksi tersimpan, atau detail publik.
+  Diskusi dan interaksi tetap tersimpan.
+- Slug yang pernah terbit tidak dapat diubah. Nama `saved`, `search`, dan `read`
+  dicadangkan untuk route.
+- Hapus permanen hanya untuk draf yang belum pernah terbit dan tanpa komentar.
+  Artikel terbit harus diarsipkan. Keputusan ini diverifikasi di dalam transaksi.
+- Seluruh mutasi editorial dan sematan komentar dicatat pada audit admin.
 
-## Data Aktual
+Belum ada autosave, riwayat banyak revisi, jadwal terbit, atau generator terjemahan/
+furigana otomatis. Penyimpanan draf tetap membutuhkan identitas, sampul, dan isi
+Indonesia yang valid.
 
-- 6 artikel published.
-- 16 tag.
-- 1 artikel featured.
-- Dengan isi database saat audit, index aktual menampilkan 1 featured dan 5 artikel lain pada bagian terbaru.
-- Content dikelola melalui JSON fixture dan `npm run seed:articles`, bukan CMS.
+## Diskusi dan moderasi
 
-## Caching
+Komentar menggunakan `QuestionComment.articleId`, target kelima pada sistem
+diskusi bersama. Komentar artikel selalu publik dan harus memiliki sharedAt;
+balasan mewarisi target root. Aturan ownership, kuota Redis, suspend akun, gambar,
+laporan COMMENT, suara Membantu, serta takedown/pemulihan memakai alur yang sama
+dengan diskusi soal/kata/pola.
 
-- Index/detail/facet/sitemap dicache global sekitar satu jam.
-- Search dicache sekitar 30 menit.
-- State saved/favorited dibaca per session dan tidak masuk cache global.
-- Favorite/view pertama menginvalidasi list dan detail terkait.
+Pembaca dapat menyunting dan menghapus tulisan sendiri. Penghapusan adalah soft
+delete: root dengan balasan menjadi tombstone tanpa isi/identitas dan balasan orang
+lain tetap terbaca. Admin dapat menyematkan root atau menutup diskusi per artikel.
+Penutupan melarang menulis/membalas/menyunting serta menambah suara, tetapi diskusi
+lama tetap dapat dibaca dan pemilik tetap bisa menghapus tulisannya.
 
-## Keterbatasan Aktual
+Diskusi mengambil 20 root per halaman, sematan lebih dahulu lalu terbaru. Urutan
+Paling membantu hanya berlaku pada halaman yang sedang dibaca. Balasan tetap
+kronologis. Permalink menghitung halaman root agar laporan dan moderasi dapat
+membuka komentar yang tepat. Belum ada notifikasi balasan.
 
-- CMS ada di `/admin/article` (CRUD, editor body JSON, tag, featured, dan transisi DRAFT/PUBLISHED/ARCHIVED). Yang belum: preview draft, revision history, dan scheduled publishing.
-- Fitur save tersedia, tetapi belum ada halaman "artikel tersimpan/favorit saya".
-- View count hanya menghitung user login, bukan seluruh visitor unik.
-- Seed selalu menerbitkan keenam fixture; enum `DRAFT`/`ARCHIVED` belum memiliki workflow UI.
-- Search memakai `contains` database, belum memakai full-text search/ranking.
-- Generated cover memakai font Arial pada image route dan bukan asset editorial yang diunggah.
+## Data, privasi, dan cache
 
-## File Utama
+- Body JSON tervalidasi; bodyText diturunkan dari kedua bahasa tanpa sintaks ruby.
+- Level menunjukkan kesulitan bacaan Jepang, terpisah dari kategori dan tag topik.
+- Query publik memakai explicit select tanpa snapshot draf.
+- Like/bookmark mengirim keadaan tujuan. Transaksi mengunci user lalu artikel agar
+  retry tidak menggandakan angka dan tidak beradu dengan anonimisasi akun.
+- View dihitung sekali per akun login; bukan jumlah seluruh visitor.
+- Anonimisasi menghapus bookmark/like dan mengurangi agregat suka. Komentar sendiri
+  ditarik tanpa menghapus balasan pembaca lain.
+- Cache global untuk katalog/detail/facet/sitemap sekitar satu jam; search 30 menit.
+  Mutasi editorial/like/first-view menginvalidasi tag terkait.
+- State viewer, koleksi tersimpan, dan diskusi dibaca per request, tanpa cache bersama.
+- RLS dan penolakan grant Supabase Data API tetap berlaku; seluruh akses via Prisma.
+- Search masih memakai contains, belum full-text ranking. Balasan pada root yang
+  tampil dimuat bersama; pagination balasan belum disediakan.
 
-- `src/features/article/queries.ts`
-- `src/features/article/actions.ts`
-- `src/features/article/schemas.ts`
-- `src/features/article/components/article-body.tsx`
-- `src/features/article/components/article-actions.tsx`
-- `src/app/(public)/article/`
-- `prisma/seed-articles.mjs`
+## Route dan feature flag
+
+`FEATURES_ARTICLE` default true, berlaku pada seluruh route di bawah /article
+dan action interaksi/diskusinya. Admin tetap dapat menyiapkan konten ketika flag
+publik mati. Flag diskusi soal tidak mematikan diskusi artikel.
+
+| Route | Fungsi |
+|---|---|
+| /article | Katalog |
+| /article/search | Search/filter dengan cursor delapan bacaan per halaman |
+| /article/[slug] | Reader dan diskusi |
+| /article/saved | Koleksi akun, login wajib, noindex |
+| /article/read/[id]?comment=[id] | Pengalih ke slug serta halaman/anchor komentar |
+| /article/[slug]/cover | Fallback cover metadata |
+| /admin/article | Daftar dan aksi editorial |
+| /admin/article/new | Buat artikel |
+| /admin/article/[id] | Editor dan pratinjau |
+
+Link header/footer/home/sitemap mengikuti flag. Konfigurasi lokal workspace masih
+mematikan artikel; server QA port 3047 memakai override FEATURES_ARTICLE=true.
+
+## Seed dan deployment
+
+`src/features/article/data/article-seed.json` memuat tepat satu fixture:
+**Singgah di konbini, pulang dengan kata baru**, slug `singgah-di-konbini`,
+perkiraan N4, 18 blok berpasangan dan 12 kosakata. Sampul serta lisensinya ada di
+`public/articles/README.md`. Tidak ada akun/like/komentar palsu dalam seed.
+
+```sh
+npm run seed:articles:check
+npx prisma migrate deploy
+npm run seed:articles
+```
+
+Pastikan kedua URL database menunjuk target yang dimaksud. Migration baru
+`20261108124838_article_bilingual_reader` wajib diterapkan sebelum kode ini.
+Seed idempoten berdasarkan slug, hanya memperbarui fixture tersebut, mempertahankan
+interaksi/snapshot draf dan artikel lain. Seed bukan pengganti audit editorial.
+Jalankan sebelum server pertama kali dibuka, atau invalidasi cache artikel setelah
+reseed melalui admin ops/redeploy. Aktifkan FEATURES_ARTICLE=true saat siap dibuka.
+
+## Verifikasi
+
+Lihat [verifikasi artikel](../verification/article-bilingual-reader.md).

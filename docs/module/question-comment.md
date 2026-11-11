@@ -4,7 +4,11 @@
 
 **Catatan belajar pribadi selesai; berbagi catatan ke diskusi publik dan balasan satu tingkat sudah aktif.** User login dapat menambah, mengedit, menghapus, dan melampirkan gambar pada soal di mode baca dan result detail, lalu membagikan catatan itu ke diskusi yang dapat dibaca semua orang termasuk guest.
 
-**Sejak 3 Oktober 2026 modul ini melayani empat target: soal JLPT, kata flashcard, pola bunpou, dan postingan komunitas** ([Komunitas](community.md#komentar-dan-balasan); komentar postingan selalu publik dan mengikuti akses postingannya). Tabel, action, query, komponen, moderasi, dan laporannya sama; permukaan flashcard-nya dijelaskan di [flashcard.md](flashcard.md#catatan-dan-diskusi-kata) dan permukaan bunpou di [bunpou.md](bunpou.md#catatan-dan-diskusi-pola). Semua tulisan dibatasi rate limit Redis.
+**Sejak 8 November 2026 modul ini melayani lima target: soal JLPT, kata flashcard,
+pola bunpou, postingan komunitas, dan artikel.** Tabel, action, query, komponen,
+moderasi, laporan, suspend dan kuota Redis digunakan bersama.
+Komentar postingan mengikuti [akses komunitas](community.md#komentar-dan-balasan);
+komentar [artikel](article.md) selalu publik dan hanya tersedia pada artikel terbit.
 
 **Diskusi diindeks mesin pencari sejak 2 Oktober 2026** — lihat [Indexing](#indexing).
 
@@ -40,6 +44,15 @@ atau `FEATURES_FLASHCARD_DISCUSSION` hidup.
 
 ## Scope
 
+- Artikel memakai FEATURES_ARTICLE dan discussionEnabled per artikel, independen
+  dari flag diskusi soal. Tidak ada catatan privat artikel. sharedAt wajib terisi,
+  balasan mewarisi articleId, dan isPinned hanya untuk root artikel.
+- Reader artikel memuat 20 root per halaman (sematan lalu terbaru), dengan suara
+  Membantu yang bisa diurutkan pada halaman itu saja. Permalink
+  /article/read/[articleId]?comment=[id] menentukan slug dan halaman komentarnya.
+- Mengarsipkan artikel menutup seluruh akses publik ke diskusi. Menutup diskusi
+  saja mempertahankan pembacaan tetapi melarang tulisan baru dan penambahan suara.
+
 - Catatan default privat. Publik hanya terjadi karena tindakan eksplisit pemiliknya.
 - `Question.explanation` adalah pembahasan resmi/terkurasi; `QuestionComment` adalah catatan user, dan keduanya tetap dipisahkan.
 - Diskusi dapat dibaca guest; menulis dan membalas butuh login.
@@ -50,7 +63,7 @@ atau `FEATURES_FLASHCARD_DISCUSSION` hidup.
 Satu tabel `QuestionComment` untuk catatan pribadi dan thread publik — yang dibagikan adalah record yang sama, bukan salinannya, sehingga edit tidak perlu disinkronkan antar tabel.
 
 - **Target:** tepat satu dari `questionId` (soal), `vocabId` (kata flashcard di katalog, bukan
-  kartu milik user), atau `bunpouPointId` (pola bunpou, per entri katalog) terisi. CHECK
+  kartu milik user), `bunpouPointId`, `postId`, atau `articleId` terisi. CHECK
   `QuestionComment_target_check` (`num_nonnulls(...) = 1`) hanya ada di SQL migration dan dijaga
   `target.test.ts`. Balasan selalu mewarisi target root-nya, jadi satu thread tidak pernah bercampur.
   Di kode, target diwakili `CommentTarget` (`target.ts`), yang juga membentuk tautan:
@@ -171,12 +184,15 @@ rate limit tulis sudah aktif sebagai penahannya.
 
 ## Keterbatasan dan Bug Aktual
 
-- **Belum ada laporan dari user.** Moderasi admin sudah ada (`/admin/moderation`: antrean, sembunyikan root, takedown, pulihkan takedown admin, filter per user), tetapi penyalahgunaan hanya ketahuan bila admin memeriksa antrean secara aktif. Rem darurat `FEATURES_QUESTION_DISCUSSION=false` tetap tersedia.
+- Laporan user bertipe `COMMENT` masuk ke antrean laporan admin. Moderasi tersedia
+  di `/admin/moderation`: sembunyikan root, takedown, pulihkan takedown admin, serta
+  filter per user. Kill switch mengikuti flag masing-masing target.
 - **Tidak ada notifikasi** saat catatan dibalas — aplikasi belum punya sistem notifikasi sama sekali.
 - **Lampiran di object storage tidak pernah terhapus**, termasuk saat takedown admin. Ini keputusan eksplisit: takedown bekerja di level record database saja, dan pembersihan asset fisik berada di luar scope modul admin.
 - Rate limit per user saja, tidak per IP; satu orang dengan banyak akun tetap bisa menulis lebih banyak.
   Batas isi tetap 2.000 karakter dan 4 gambar.
-- Tidak ada pencarian, tag, pin, export, atau halaman agregat semua catatan.
+- Tidak ada pencarian/tag atau halaman agregat semua catatan. Pin tersedia untuk
+  root artikel oleh admin. Data komentar ikut export akun yang sudah tersedia.
 - Guest melihat form catatan pribadi, tetapi submit diarahkan ke login.
 
 ## Upvote

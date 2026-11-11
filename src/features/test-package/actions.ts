@@ -74,6 +74,7 @@ export async function getTestPackageDetail(testPackageId: number) {
           id: true,
           status: true,
           sectionScope: true,
+          currentSession: true,
           startedAt: true,
           finishedAt: true,
         },

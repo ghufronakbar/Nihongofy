@@ -1,32 +1,27 @@
-import type { ArticleBodyBlock } from "@/features/article/schemas";
+import { markupToPlainText } from "@/lib/japanese-plain-text";
+import type { ArticleBodyBlock } from "../schemas";
 
-// `Article.bodyText` adalah turunan datar dari `Article.body`, dipakai untuk
-// search server-side (`contains`) karena JSONB tidak dapat dicari dengan cara
-// yang sama. Tidak pernah diisi manual: selalu dihasilkan ulang setiap body
-// berubah, baik lewat seed maupun lewat editor admin.
-//
-// PENTING: `prisma/seed-articles.mjs` memiliki salinan fungsi ini karena script
-// seed berjalan sebagai .mjs dan tidak dapat mengimpor TypeScript. Kedua versi
-// harus menghasilkan output yang sama — ubah keduanya bersamaan.
 export function articleBodyToPlainText(blocks: ArticleBodyBlock[]): string {
   return blocks
     .flatMap((block) => {
       switch (block.type) {
         case "heading":
         case "paragraph":
-          return [block.text];
+          return [block.text, block.japanese];
         case "quote":
-          return [block.text, block.attribution].filter(Boolean);
+          return [block.text, block.japanese, block.attribution];
         case "list":
-          return block.items;
+          return [...block.items, ...(block.japaneseItems ?? [])];
         case "example":
-          return [block.japanese, block.reading, block.translation, block.note].filter(Boolean);
+          return [block.japanese, block.reading, block.translation, block.note];
         case "callout":
-          return [block.title, block.text];
-        default:
-          return [];
+          return [block.title, block.text, block.japaneseTitle, block.japanese];
+        case "image":
+          return [block.alt, block.caption, block.japaneseCaption];
       }
     })
+    .filter((text): text is string => Boolean(text))
+    .map(markupToPlainText)
     .join("\n");
 }
 

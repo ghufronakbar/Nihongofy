@@ -10,7 +10,14 @@ export const ExamAnswerSchema = z.object({
 export const SubmitExamSessionSchema = z.object({
   attemptId: z.number().int().min(0),
   session: z.number().int().positive(),
-  answers: z.array(ExamAnswerSchema),
+  answers: z.array(ExamAnswerSchema).max(500),
+});
+
+// Simpan otomatis hanya mengirim soal yang berubah sejak simpanan terakhir.
+export const SaveExamAnswersSchema = z.object({
+  attemptId: z.number().int().positive(),
+  session: z.number().int().positive(),
+  answers: z.array(ExamAnswerSchema).min(1).max(500),
 });
 
 export const GuestExamCookieSchema = z.object({
@@ -23,3 +30,4 @@ export const GuestExamCookieSchema = z.object({
 
 export type ExamAnswerInput = z.infer<typeof ExamAnswerSchema>;
 export type SubmitExamSessionInput = z.infer<typeof SubmitExamSessionSchema>;
+export type SaveExamAnswersInput = z.infer<typeof SaveExamAnswersSchema>;

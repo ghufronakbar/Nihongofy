@@ -2,19 +2,31 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Clock3, Eye, Tag } from "lucide-react";
-import { PageContainer } from "@/components/marketing/page-container";
+import { ArrowLeft, ArrowRight, Bookmark, Clock3, MessageCircle } from "lucide-react";
 import { FEATURES } from "@/constants";
+import { getSessionUser } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { JapaneseText } from "@/components/japanese-text";
 import { ArticleActions } from "@/features/article/components/article-actions";
-import { ArticleBody } from "@/features/article/components/article-body";
+import { ArticleReader } from "@/features/article/components/article-reader";
+import { ArticleDiscussion } from "@/features/article/components/article-discussion";
 import { ArticleCard } from "@/features/article/components/article-card";
-import { formatArticleCount, formatArticleDate } from "@/features/article/lib/format";
-import { getArticleDetail, getArticleViewerState } from "@/features/article/queries";
+import { formatArticleDate } from "@/features/article/lib/format";
+import {
+  ARTICLE_COMMENT_PAGE_SIZE,
+  getArticleDetail,
+  getArticleViewerState,
+} from "@/features/article/queries";
+import {
+  getDiscussion,
+  isPostingSuspended,
+  withViewerVotes,
+} from "@/features/question-comment/queries";
 import { ReportButton } from "@/features/report/components/report-button";
+import { DictionaryBoundary } from "@/features/dictionary/components/dictionary-boundary";
 import { JsonLd } from "@/components/seo/json-ld";
 import { articleJsonLd, breadcrumbJsonLd } from "@/lib/json-ld";
 import { pageMetadata, privateMetadata } from "@/lib/seo";
-import { DictionaryBoundary } from "@/features/dictionary/components/dictionary-boundary";
 
 export async function generateMetadata({
   params,
@@ -23,18 +35,12 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const article = await getArticleDetail(slug);
-  if (!article) {
-    return privateMetadata(
-      "Artikel tidak ditemukan",
-      "Artikel yang kamu cari sudah tidak tersedia.",
-    );
-  }
-
+  if (!article)
+    return privateMetadata("Artikel tidak ditemukan", "Bacaan ini sudah tidak tersedia.");
   return pageMetadata({
     title: article.title,
     description: article.excerpt,
     path: `/article/${article.slug}`,
-    ogTitle: article.title,
     images: [
       {
         url: article.coverImage,
@@ -52,26 +58,36 @@ export async function generateMetadata({
     },
   });
 }
-
 export default async function ArticleDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const { slug } = await params;
+  const [{ slug }, search, session] = await Promise.all([params, searchParams, getSessionUser()]);
   const article = await getArticleDetail(slug);
   if (!article) notFound();
-
-  const viewerState = await getArticleViewerState(article.id);
-  const authorInitials = article.authorName
-    .split(" ")
-    .map((part) => part[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-
+  const currentUserId = session?.userId ?? null;
+  const rawPage = Number(search.comments ?? 1);
+  const page = Number.isInteger(rawPage) && rawPage > 0 && rawPage <= 1000 ? rawPage : 1;
+  const [viewer, roots, postingSuspended, commentCount] = await Promise.all([
+    getArticleViewerState(article.id),
+    getDiscussion(
+      { type: "article", articleId: article.id },
+      {
+        take: ARTICLE_COMMENT_PAGE_SIZE + 1,
+        skip: (page - 1) * ARTICLE_COMMENT_PAGE_SIZE,
+      },
+    ),
+    isPostingSuspended(currentUserId),
+    prisma.questionComment.count({
+      where: { articleId: article.id, deletedAt: null, visibility: "PUBLIC" },
+    }),
+  ]);
+  const threads = await withViewerVotes(roots.slice(0, ARTICLE_COMMENT_PAGE_SIZE), currentUserId);
   return (
-    <>
+    <div className="bg-[#f5f7fb] pb-16 text-slate-900">
       <JsonLd
         data={[
           articleJsonLd({
@@ -85,6 +101,7 @@ export default async function ArticleDetailPage({
             category: article.category,
             tags: article.tags.map((tag) => tag.label),
             readTime: article.readTime,
+            hasJapanese: article.hasJapanese,
           }),
           breadcrumbJsonLd([
             { name: "Beranda", path: "/" },
@@ -93,148 +110,202 @@ export default async function ArticleDetailPage({
           ]),
         ]}
       />
-
-      <article>
-        <header className="border-b-[3px] border-neo-ink bg-white py-10 md:py-14">
-          <PageContainer>
-            <Link
-              href="/article"
-              className="inline-flex items-center gap-2 font-bold underline decoration-2 underline-offset-4"
-            >
-              <ArrowLeft className="size-5" aria-hidden="true" />
-              Semua artikel
-            </Link>
-
-            <div className="mt-8 grid gap-10 lg:grid-cols-[1.03fr_0.97fr] lg:items-center">
-              <div className="order-2 lg:order-1">
-                <div className="flex flex-wrap items-center gap-3 font-mono text-sm font-bold">
-                  <span className="border-2 border-neo-ink bg-neo-yellow px-3 py-1.5 text-black">
-                    {article.category}
-                  </span>
-                  <span>{formatArticleDate(article.publishedAt ?? article.updatedAt)}</span>
-                </div>
-                <h1 className="mt-6 max-w-4xl text-4xl leading-[0.94] font-black tracking-[-0.055em] sm:text-6xl">
-                  {article.title}
-                </h1>
-                <p className="mt-6 max-w-[60ch] text-lg leading-8 font-semibold text-foreground/70">
-                  {article.excerpt}
-                </p>
-                <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm font-bold text-foreground/65">
-                  <span>{article.authorName}</span>
-                  <span className="inline-flex items-center gap-1.5">
-                    <Clock3 className="size-4" aria-hidden="true" />
-                    {article.readTime} menit baca
-                  </span>
-                  <span className="inline-flex items-center gap-1.5">
-                    <Eye className="size-4" aria-hidden="true" />
-                    {formatArticleCount(article.viewCount)} pembaca akun
-                  </span>
-                </div>
-              </div>
-
-              <div className="neo-surface relative order-1 aspect-[16/10] overflow-hidden bg-neo-blue lg:order-2 lg:rotate-1">
-                <Image
-                  src={article.coverImage}
-                  alt={article.coverAlt}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 48vw"
-                  preload
-                  className="object-cover"
-                />
-              </div>
+      <div className="mx-auto max-w-6xl px-4 pt-7 sm:px-6 lg:px-8">
+        <nav
+          aria-label="Navigasi artikel"
+          className="flex flex-wrap items-center justify-between gap-4 text-xs font-semibold text-slate-600"
+        >
+          <Link
+            href="/article"
+            className="inline-flex min-h-10 items-center gap-2 hover:text-slate-900"
+          >
+            <ArrowLeft className="size-4" />
+            Semua bacaan
+          </Link>
+          <Link
+            href="/article/saved"
+            className="inline-flex min-h-10 items-center gap-2 hover:text-slate-900"
+          >
+            <Bookmark className="size-4" />
+            Artikel tersimpan
+          </Link>
+        </nav>
+        <article>
+          <header className="mx-auto max-w-4xl py-7 sm:py-10">
+            <div className="flex flex-wrap items-center gap-3 text-xs font-semibold">
+              <Link
+                href={`/article/search?category=${article.categorySlug}`}
+                className="rounded border border-blue-200 bg-blue-50 px-2.5 py-1.5 text-blue-800"
+              >
+                {article.category}
+              </Link>
+              {article.readingLevel && (
+                <span
+                  className="rounded border border-slate-300 bg-white px-2.5 py-1.5"
+                  title="Perkiraan tingkat kesulitan bacaan Jepang"
+                >
+                  Bacaan {article.readingLevel}
+                </span>
+              )}
+              <span className="text-slate-500">
+                {article.hasJapanese ? "Indonesia & 日本語" : "Bahasa Indonesia"}
+              </span>
             </div>
-          </PageContainer>
-        </header>
-
-        <section className="border-b-[3px] border-neo-ink bg-background py-6">
-          <PageContainer>
+            <h1 className="mt-5 max-w-[25ch] text-4xl leading-[1.15] font-extrabold tracking-[-0.04em] sm:text-5xl">
+              {article.title}
+            </h1>
+            {article.titleJa && (
+              <p
+                lang="ja"
+                className="mt-4 font-[family-name:var(--font-article-japanese)] text-lg leading-10 text-slate-600 [&_rt]:hidden"
+              >
+                <JapaneseText text={article.titleJa} />
+              </p>
+            )}
+            <p className="mt-5 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg">
+              {article.excerpt}
+            </p>
+            <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-slate-500">
+              <span className="font-semibold text-slate-800">{article.authorName}</span>
+              <span>{formatArticleDate(article.publishedAt ?? article.updatedAt)}</span>
+              <span className="inline-flex items-center gap-1.5">
+                <Clock3 className="size-3.5" />
+                {article.readTime} menit baca
+              </span>
+              <a href="#diskusi" className="inline-flex items-center gap-1.5 hover:text-slate-900">
+                <MessageCircle className="size-3.5" />
+                {commentCount} komentar
+              </a>
+            </div>
+          </header>
+          <figure className="mb-8">
+            <div className="relative aspect-[16/8] overflow-hidden rounded-xl border border-slate-200 sm:aspect-[16/6.5]">
+              <Image
+                src={article.coverImage}
+                alt={article.coverAlt}
+                fill
+                sizes="(max-width: 1152px) 100vw, 1088px"
+                preload
+                unoptimized={article.coverImage.startsWith("https://")}
+                className="object-cover object-[center_58%]"
+              />
+            </div>
+            {article.coverCredit && (
+              <figcaption className="mt-2 text-right text-[11px] leading-5 text-slate-500">
+                {article.coverCreditUrl ? (
+                  <a
+                    href={article.coverCreditUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline underline-offset-2"
+                  >
+                    {article.coverCredit}
+                  </a>
+                ) : (
+                  article.coverCredit
+                )}
+              </figcaption>
+            )}
+          </figure>
+          <div className="mx-auto mb-5 max-w-5xl">
             <ArticleActions
+              key={article.slug}
               slug={article.slug}
               title={article.title}
               excerpt={article.excerpt}
-              initialSaved={viewerState.saved}
-              initialFavorited={viewerState.favorited}
+              initialSaved={viewer.saved}
+              initialFavorited={viewer.favorited}
               initialFavoriteCount={article.favoriteCount}
-              isAuthenticated={viewerState.isAuthenticated}
+              isAuthenticated={viewer.isAuthenticated}
             />
-          </PageContainer>
-        </section>
-
-        <section className="bg-background py-12 md:py-18">
-          <PageContainer className="grid gap-10 lg:grid-cols-[minmax(0,46rem)_17rem] lg:justify-center">
-            <div className="neo-surface bg-white p-6 sm:p-9 md:p-12">
-              {article.body ? (
-                <DictionaryBoundary contextKey={`article:${article.slug}`}>
-                  <ArticleBody blocks={article.body} />
-                </DictionaryBoundary>
-              ) : (
-                <div className="border-[3px] border-neo-ink bg-neo-yellow p-6">
-                  <h2 className="text-2xl">Isi artikel sedang diperbaiki</h2>
-                  <p className="mt-2">Metadata artikel tetap tersedia. Silakan kembali beberapa saat lagi.</p>
-                </div>
-              )}
-
-              <div className="mt-12 border-t-[3px] border-neo-ink pt-7">
-                <div className="flex flex-wrap items-center gap-2">
-                  <Tag className="size-5" aria-hidden="true" />
-                  {article.tags.map((tag) => (
-                    <Link
-                      key={tag.slug}
-                      href={`/article/search?tags=${encodeURIComponent(tag.slug)}`}
-                      className="border-2 border-neo-ink bg-background px-3 py-1.5 text-sm font-bold transition-colors hover:bg-neo-yellow"
-                    >
-                      #{tag.label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <aside className="lg:sticky lg:top-28 lg:self-start">
-              <div className="neo-surface bg-neo-blue p-5 text-neo-ink">
-                <div className="grid size-16 place-items-center border-[3px] border-neo-ink bg-white text-xl font-black shadow-neo-sm">
-                  {authorInitials}
-                </div>
-                <p className="mt-5 font-mono text-xs font-bold uppercase">Ditulis oleh</p>
-                <h2 className="mt-2 text-2xl">{article.authorName}</h2>
-                {article.authorRole ? <p className="mt-2 leading-7">{article.authorRole}</p> : null}
-              </div>
-
-              {FEATURES.report ? (
-                <div className="mt-5 border-[3px] border-neo-ink bg-white p-4 shadow-neo-sm">
-                  <p className="text-sm font-bold">Menemukan kekeliruan di artikel ini?</p>
-                  <p className="mt-1 text-xs font-semibold text-foreground/65">
-                    Laporan Anda ikut membawa identitas artikel ini, jadi tidak perlu menyebut
-                    judulnya.
-                  </p>
-                  <div className="mt-3">
-                    <ReportButton
-                      target={{ targetType: "ARTICLE", articleId: article.id }}
-                      variant="outline"
-                      label="Laporkan artikel"
-                    />
-                  </div>
-                </div>
-              ) : null}
-            </aside>
-          </PageContainer>
-        </section>
-      </article>
-
-      {article.related.length > 0 ? (
-        <section className="border-t-[3px] border-neo-ink bg-white py-16 md:py-22">
-          <PageContainer>
-            <h2 className="text-4xl leading-none font-black sm:text-5xl">Lanjutkan membaca</h2>
-            <div className="mt-9 grid gap-6 md:grid-cols-12">
-              {article.related.map((related, index) => (
-                <div key={related.id} className={index === 0 ? "md:col-span-7 md:row-span-2" : "md:col-span-5"}>
-                  <ArticleCard article={related} variant="compact" />
-                </div>
+          </div>
+          {article.body ? (
+            <DictionaryBoundary scope={false} contextKey={`article:${article.slug}`}>
+              <ArticleReader
+                key={article.slug}
+                blocks={article.body}
+                hasJapanese={article.hasJapanese}
+                glossary={article.glossary}
+                contextKey={article.slug}
+              />
+            </DictionaryBoundary>
+          ) : (
+            <p className="rounded-xl border border-slate-200 bg-white p-8">
+              Isi bacaan sedang diperbaiki. Silakan kembali beberapa saat lagi.
+            </p>
+          )}
+          <footer className="mx-auto mt-7 flex max-w-5xl flex-wrap items-center justify-between gap-5 text-xs">
+            <div className="flex flex-wrap gap-2">
+              {article.tags.map((tag) => (
+                <Link
+                  key={tag.slug}
+                  href={`/article/search?tags=${encodeURIComponent(tag.slug)}`}
+                  className="rounded-md border border-slate-200 bg-white px-3 py-2 text-slate-600 hover:border-slate-400"
+                >
+                  #{tag.label}
+                </Link>
               ))}
             </div>
-          </PageContainer>
-        </section>
-      ) : null}
-    </>
+            {FEATURES.report && (
+              <ReportButton
+                target={{ targetType: "ARTICLE", articleId: article.id }}
+                variant="link"
+                label="Laporkan kekeliruan"
+              />
+            )}
+          </footer>
+        </article>
+        <div className="mx-auto mt-12 max-w-5xl">
+          <ArticleDiscussion
+            key={article.id}
+            articleId={article.id}
+            slug={article.slug}
+            roots={threads}
+            currentUserId={currentUserId}
+            isAdmin={session?.user.role === "ADMIN"}
+            postingSuspended={postingSuspended}
+            enabled={article.discussionEnabled}
+            reportEnabled={FEATURES.report}
+            total={commentCount}
+          />
+          <nav
+            aria-label="Halaman komentar"
+            className="mt-5 flex justify-between gap-4 text-sm font-semibold"
+          >
+            {page > 1 ? (
+              <Link href={`/article/${slug}?comments=${page - 1}#diskusi`}>
+                Komentar sebelumnya
+              </Link>
+            ) : (
+              <span />
+            )}
+            {roots.length > ARTICLE_COMMENT_PAGE_SIZE && (
+              <Link href={`/article/${slug}?comments=${page + 1}#diskusi`}>
+                Komentar berikutnya →
+              </Link>
+            )}
+          </nav>
+        </div>
+        {article.related.length > 0 && (
+          <section className="mt-16">
+            <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+              <h2 className="text-2xl">Masih ingin membaca?</h2>
+              <Link
+                href="/article"
+                className="inline-flex items-center gap-2 text-xs font-semibold"
+              >
+                Jelajahi bacaan
+                <ArrowRight className="size-4" />
+              </Link>
+            </div>
+            <div className="grid gap-5 md:grid-cols-3">
+              {article.related.map((related) => (
+                <ArticleCard key={related.id} article={related} variant="compact" />
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
+    </div>
   );
 }

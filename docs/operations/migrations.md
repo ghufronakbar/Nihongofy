@@ -33,6 +33,59 @@ contract wajib memiliki migration dan catatan ringkas di dokumen/PR perubahan. J
 
 ## Ledger
 
+### 11 November 2026 - Simpan otomatis jawaban mock exam
+
+- Status: required; diterapkan ke database production 11 November 2026 (migrate status
+  up to date, 48 migration). Backfill dicek: 1 attempt full mock berjalan, nilainya sama
+  dengan aturan resume lama.
+- Migration: `prisma/migrations/20261111090000_attempt_current_session/migration.sql`.
+- Alasan: jawaban mock exam kini disimpan per soal sebelum submit, sehingga adanya row
+  AttemptAnswer tidak lagi menandai sesi yang sudah disubmit.
+- Object: kolom `Attempt.currentSession INTEGER NOT NULL DEFAULT 1`. Tidak ada index,
+  constraint, grant/RLS, atau penghapusan data.
+- Data existing: attempt full mock `IN_PROGRESS` di-backfill dengan aturan resume lama
+  (sesi paling awal tanpa jawaban, atau sesi terakhir); attempt lain tetap 1.
+- Risiko operasi: ALTER dengan default konstan tidak menulis ulang tabel; UPDATE
+  backfill hanya menyentuh attempt yang sedang berjalan. Aditif, jadi aman diterapkan
+  sebelum deploy kode; kode baru wajib menunggu kolom ini ada.
+- Pembuatan: draft `prisma migrate diff` dibaca manual, lalu ditulis tangan dengan
+  backfill (shadow DB tidak tersedia lewat pooler Supabase).
+- Validasi: prisma validate, typecheck, lint, vitest (termasuk `src/features/exam/actions.test.ts`
+  dan guard kunci jawaban).
+- Refresh: `migrate deploy` melalui DIRECT_URL; berurutan setelah migration artikel
+  8 November bila yang itu belum diterapkan.
+
+### 8 November 2026 - Artikel bilingual dan diskusi pembaca
+
+- Status: required; 47 migration direplay dan seed diuji pada PostgreSQL 17 lokal
+  terpisah. Belum diterapkan ke production pada sesi ini.
+- Migration: `prisma/migrations/20261108124838_article_bilingual_reader/migration.sql`.
+- Alasan: bacaan Indonesia/Jepang berpasangan, level Jepang, glossary, draf privat,
+  atribusi sampul, penutupan diskusi, dan komentar artikel pada sistem bersama.
+- Object: penambahan kolom Article dan QuestionComment.articleId/isPinned, FK Restrict,
+  index level dan thread artikel; CHECK target diperluas ke lima FK, pin hanya
+  root artikel, sharedAt artikel wajib, metadata Jepang dan counter nonnegatif.
+  Tidak ada tabel/relasi user baru, perubahan grant/RLS, atau penghapusan data.
+- Data existing: seluruh artikel lama tetap Indonesia saja dengan glossary kosong;
+  draft NULL, diskusi terbuka. Favorite counter direkonsiliasi dari interaction
+  sebelum CHECK. Seed baru hanya upsert satu slug dan tidak menghapus artikel lain.
+- Risiko operasi: ALTER TABLE/CHECK membutuhkan lock dan scan singkat; rekonsiliasi
+  counter membaca ArticleInteraction. Jalankan pada trafik rendah. Migration wajib
+  sebelum kode karena query reader/account lifecycle memakai kolom baru; aplikasi
+  lama tetap dapat membaca data setelah migration.
+- Pembuatan: Prisma migrate dev --create-only di salinan generator lokal. Shadow
+  replay sejarah gagal karena ALTER _prisma_migrations di migration lama; hanya
+  salinan sementara diberi IF EXISTS. Seluruh file sejarah repository tetap utuh.
+  Drift lama Report.updatedAt DEFAULT now() tidak dimasukkan ke migration baru.
+- Validasi: prisma validate, replay dari nol, seed validation/reseed, CHECK/RLS/grant,
+  transaksi like/retry, draf privat, akses diskusi dan anonimisasi diuji lokal.
+  Gate dan bukti browser tercatat di [verifikasi](../verification/article-bilingual-reader.md).
+- Refresh: migrate deploy melalui DIRECT_URL, generate client/deploy, seed satu
+  artikel, lalu invalidasi cache artikel atau restart/redeploy. FEATURES_ARTICLE=true
+  untuk membuka modul publik; tidak ada env/flush Redis global baru.
+- Owner: Engineering Owner untuk kode dan bukti lokal; Release Owner untuk target
+  migration, seed, deployment dan acceptance production.
+
 ### 18 Oktober 2026 - Kamus seleksi JMdict
 
 - Status: not required.

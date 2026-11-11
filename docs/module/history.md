@@ -2,7 +2,7 @@
 
 ## Status Aktual
 
-**Selesai untuk riwayat mock/section attempt.** Halaman membaca seluruh attempt milik user lintas paket dan menghitung session resume untuk attempt yang belum selesai.
+**Selesai untuk riwayat mock/section attempt.** Halaman membaca seluruh attempt milik user lintas paket; attempt yang belum selesai dilanjutkan ke `Attempt.currentSession`.
 
 ## Feature Flag
 
@@ -25,7 +25,7 @@ Flag ini tidak bergantung pada `FEATURES_TEST_PACKAGE`. Bila test package mati, 
 ## Resume Logic
 
 - Section practice selalu kembali ke virtual session 1.
-- Full mock mencari session paling awal yang belum memiliki row `AttemptAnswer`.
+- Full mock kembali ke `Attempt.currentSession`, yang dinaikkan submit sesi. Adanya row `AttemptAnswer` bukan lagi penanda sesi selesai karena jawaban disimpan otomatis sebelum submit — lihat [Exam](exam.md#simpan-otomatis-dan-lanjut-di-device-lain).
 - Query tidak dicache agar attempt baru/selesai langsung terlihat.
 
 ## Keterbatasan Aktual
@@ -33,7 +33,6 @@ Flag ini tidak bergantung pada `FEATURES_TEST_PACKAGE`. Bila test package mati, 
 - Hanya mencakup `Attempt`; `PracticeSession` latihan cepat tidak tampil.
 - Tidak ada pagination, filter level/status/mode, search, delete, atau abandon.
 - Status `ABANDONED` tidak memiliki treatment khusus: badge non-completed tampak seperti sedang dikerjakan, tetapi tombol resume hanya dirender untuk `IN_PROGRESS`.
-- Resume mengasumsikan submit session selalu lengkap dan atomik. Payload parsial dapat membuat satu session dianggap sudah selesai karena sudah memiliki sebagian row jawaban.
 - Tidak ada ringkasan score langsung pada card history.
 
 ## File Utama

@@ -63,7 +63,12 @@ export async function GET() {
         },
       },
       flashcardCollection: {
-        select: { rolloverHour: true, display: true, createdAt: true, updatedAt: true },
+        select: {
+          rolloverHour: true,
+          display: true,
+          createdAt: true,
+          updatedAt: true,
+        },
       },
       flashcardSubscriptions: {
         orderBy: { createdAt: "asc" },
@@ -181,11 +186,12 @@ export async function GET() {
           vocabId: true,
           bunpouPointId: true,
           postId: true,
+          articleId: true,
           commentText: true,
           commentImages: true,
           createdAt: true,
           updatedAt: true,
-          // Tepat satu target terisi: `question`/`vocab`/`bunpouPoint`, atau `postId`.
+          // Tepat satu target terisi, termasuk artikel dan postingan komunitas.
           vocab: { select: { key: true, wordPlain: true, reading: true } },
           bunpouPoint: { select: { key: true, level: true, titlePlain: true } },
           question: {
@@ -196,7 +202,9 @@ export async function GET() {
                   mondaiType: true,
                   section: true,
                   session: true,
-                  testPackage: { select: { id: true, name: true, jlptLevel: true } },
+                  testPackage: {
+                    select: { id: true, name: true, jlptLevel: true },
+                  },
                 },
               },
             },

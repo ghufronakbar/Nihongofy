@@ -15,10 +15,7 @@ import {
   getRequestIpAddress,
   type AuthRateLimitBucket,
 } from "@/features/auth/lib/rate-limit";
-import {
-  REPORT_TARGET_LABEL_MAX_LENGTH,
-  REPORT_USER_AGENT_MAX_LENGTH,
-} from "./constants";
+import { REPORT_TARGET_LABEL_MAX_LENGTH, REPORT_USER_AGENT_MAX_LENGTH } from "./constants";
 import { bunpouComparisonReportLabel, bunpouPointReportLabel } from "./lib/bunpou-target";
 import { flashcardReportLabel } from "./lib/flashcard-target";
 import { getPostAccess } from "@/features/community/queries";
@@ -40,8 +37,7 @@ const SUCCESS_MESSAGE =
 const GENERIC_FAILURE_MESSAGE = "Laporan gagal dikirim. Coba lagi beberapa saat.";
 const TURNSTILE_FAILED_MESSAGE =
   "Verifikasi keamanan gagal. Coba ulangi verifikasinya, lalu kirim lagi.";
-const DUPLICATE_MESSAGE =
-  "Anda sudah mengirim laporan untuk hal yang sama dan masih kami tinjau.";
+const DUPLICATE_MESSAGE = "Anda sudah mengirim laporan untuk hal yang sama dan masih kami tinjau.";
 const VOCAB_NOT_FOUND_MESSAGE = "Kartu yang dilaporkan tidak ditemukan.";
 const BUNPOU_NOT_FOUND_MESSAGE = "Pola yang dilaporkan tidak ditemukan.";
 
@@ -58,7 +54,11 @@ export async function getReportFormContextAction() {
 
   const session = await getSession();
   if (!session) {
-    return { requiresCaptcha: true, siteKey: env.CLOUDFLARE_TURNSTILE_SITEKEY, canBeContacted: false };
+    return {
+      requiresCaptcha: true,
+      siteKey: env.CLOUDFLARE_TURNSTILE_SITEKEY,
+      canBeContacted: false,
+    };
   }
 
   const user = await prisma.user.findUnique({
@@ -111,7 +111,13 @@ function createReportRateLimitBuckets(
 /** Hanya kolom FK target; sisa baris disusun oleh `submitReportAction`. */
 type TargetColumns = Pick<
   Prisma.ReportUncheckedCreateInput,
-  "questionId" | "articleId" | "commentId" | "vocabId" | "bunpouPointId" | "bunpouComparisonId" | "postId"
+  | "questionId"
+  | "articleId"
+  | "commentId"
+  | "vocabId"
+  | "bunpouPointId"
+  | "bunpouComparisonId"
+  | "postId"
 >;
 
 type ResolvedTarget =
@@ -174,21 +180,42 @@ async function resolveTarget(
         vocab: { select: { level: true, wordPlain: true } },
         bunpouPoint: { select: { level: true, key: true } },
         postId: true,
+        article: {
+          select: { id: true, title: true, status: true, publishedAt: true },
+        },
       },
     });
 
     // Catatan privat hanya terlihat pemiliknya, jadi tidak ada yang dapat
     // melaporkannya; entri yang sudah hilang dari diskusi juga tidak perlu.
     if (!comment || comment.deletedAt || !comment.sharedAt || comment.visibility !== "PUBLIC") {
-      return { ok: false, message: "Entri diskusi yang dilaporkan sudah tidak tampil." };
+      return {
+        ok: false,
+        message: "Entri diskusi yang dilaporkan sudah tidak tampil.",
+      };
     }
     // Komentar di postingan akun private hanya terlihat pemilik dan follower
     // yang disetujui; selain itu entri ini memang tidak tampil bagi pelapor.
     if (comment.postId !== null) {
       const access = await getPostAccess(comment.postId, viewerId);
       if (!FEATURES.community || !access || !access.canView) {
-        return { ok: false, message: "Entri diskusi yang dilaporkan sudah tidak tampil." };
+        return {
+          ok: false,
+          message: "Entri diskusi yang dilaporkan sudah tidak tampil.",
+        };
       }
+    }
+    if (
+      comment.article &&
+      (!FEATURES.article ||
+        comment.article.status !== "PUBLISHED" ||
+        !comment.article.publishedAt ||
+        comment.article.publishedAt > new Date())
+    ) {
+      return {
+        ok: false,
+        message: "Entri diskusi yang dilaporkan sudah tidak tampil.",
+      };
     }
     if (viewerId !== null && comment.userId === viewerId) {
       return {
@@ -206,7 +233,9 @@ async function resolveTarget(
           ? `pola ${comment.bunpouPoint.level} ${comment.bunpouPoint.key}`
           : comment.postId !== null
             ? `postingan #${comment.postId}`
-            : "target tidak dikenal";
+            : comment.article
+              ? `artikel ${comment.article.title}`
+              : "target tidak dikenal";
     return {
       ok: true,
       targetLabel: truncate(
@@ -222,17 +251,26 @@ async function resolveTarget(
     // tanpa follow yang disetujui tidak tampil baginya, jadi tidak dapat dilaporkan.
     const access = FEATURES.community ? await getPostAccess(values.postId, viewerId) : null;
     if (!access || access.deletedAt || !access.canView) {
-      return { ok: false, message: "Postingan yang dilaporkan sudah tidak tampil." };
+      return {
+        ok: false,
+        message: "Postingan yang dilaporkan sudah tidak tampil.",
+      };
     }
     if (viewerId !== null && access.authorId === viewerId) {
-      return { ok: false, message: "Ini postingan Anda sendiri. Pakai tombol hapus." };
+      return {
+        ok: false,
+        message: "Ini postingan Anda sendiri. Pakai tombol hapus.",
+      };
     }
 
     return {
       ok: true,
       // Label tanpa isi postingan: isinya dibaca admin dari barisnya langsung,
       // dan snapshot teks bebas tidak perlu ikut tersimpan di laporan.
-      targetLabel: truncate(`Postingan #${access.id} · @${access.authorUsername}`, REPORT_TARGET_LABEL_MAX_LENGTH),
+      targetLabel: truncate(
+        `Postingan #${access.id} · @${access.authorUsername}`,
+        REPORT_TARGET_LABEL_MAX_LENGTH,
+      ),
       data: { postId: access.id },
     };
   }
@@ -246,7 +284,10 @@ async function resolveTarget(
     // Kata yang dipensiunkan sudah keluar dari semua deck. Laporannya hanya
     // mungkin datang dari tab lama, dan tidak ada lagi yang perlu diperbaiki.
     if (vocab.retiredAt) {
-      return { ok: false, message: "Kartu ini sudah tidak dipakai lagi, jadi tidak perlu dilaporkan." };
+      return {
+        ok: false,
+        message: "Kartu ini sudah tidak dipakai lagi, jadi tidak perlu dilaporkan.",
+      };
     }
 
     return {
@@ -265,7 +306,10 @@ async function resolveTarget(
     // Pola yang dipensiunkan sudah 404 di /bunpou; laporannya hanya mungkin
     // datang dari tab lama.
     if (point.retiredAt) {
-      return { ok: false, message: "Pola ini sudah tidak diterbitkan, jadi tidak perlu dilaporkan." };
+      return {
+        ok: false,
+        message: "Pola ini sudah tidak diterbitkan, jadi tidak perlu dilaporkan.",
+      };
     }
 
     return {
@@ -281,12 +325,18 @@ async function resolveTarget(
       select: { id: true, key: true, retiredAt: true },
     });
     if (!comparison || comparison.retiredAt) {
-      return { ok: false, message: "Perbandingan yang dilaporkan sudah tidak diterbitkan." };
+      return {
+        ok: false,
+        message: "Perbandingan yang dilaporkan sudah tidak diterbitkan.",
+      };
     }
 
     return {
       ok: true,
-      targetLabel: truncate(bunpouComparisonReportLabel(comparison), REPORT_TARGET_LABEL_MAX_LENGTH),
+      targetLabel: truncate(
+        bunpouComparisonReportLabel(comparison),
+        REPORT_TARGET_LABEL_MAX_LENGTH,
+      ),
       data: { bunpouComparisonId: comparison.id },
     };
   }
@@ -308,7 +358,10 @@ async function resolveTarget(
   if (!question) return { ok: false, message: "Soal yang dilaporkan tidak ditemukan." };
 
   if (values.targetType === "QUESTION_EXPLANATION" && !question.explanation) {
-    return { ok: false, message: "Soal ini belum punya pembahasan untuk dilaporkan." };
+    return {
+      ok: false,
+      message: "Soal ini belum punya pembahasan untuk dilaporkan.",
+    };
   }
 
   const { testPackageItem } = question;
@@ -324,9 +377,7 @@ async function resolveTarget(
   };
 }
 
-export async function submitReportAction(
-  input: SubmitReportInput,
-): Promise<ReportSubmitResult> {
+export async function submitReportAction(input: SubmitReportInput): Promise<ReportSubmitResult> {
   if (!FEATURES.report) notFound();
 
   const validated = SubmitReportSchema.safeParse(input);
@@ -355,7 +406,10 @@ export async function submitReportAction(
   }
   // Dan untuk tombol laporan postingan di bawah /community, /post, dan profil.
   if (values.targetType === "POST" && !FEATURES.community) {
-    return { ok: false, message: "Postingan yang dilaporkan sudah tidak tampil." };
+    return {
+      ok: false,
+      message: "Postingan yang dilaporkan sudah tidak tampil.",
+    };
   }
 
   const session = await getSession();
@@ -442,7 +496,9 @@ export async function submitReportAction(
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
       return { ok: false, message: DUPLICATE_MESSAGE };
     }
-    reportServerError("report.submit_failed", error, { targetType: values.targetType });
+    reportServerError("report.submit_failed", error, {
+      targetType: values.targetType,
+    });
     return { ok: false, message: GENERIC_FAILURE_MESSAGE };
   }
 

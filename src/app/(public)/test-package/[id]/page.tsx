@@ -303,7 +303,7 @@ export default async function TestPackageDetailPage({
                     </>
                   ) : (
                     <Link
-                      href={`/exam/${attempt.id}/1`}
+                      href={`/exam/${attempt.id}/${attempt.currentSession}`}
                       className="neo-button !min-h-9 !px-4 !py-1.5 bg-neo-yellow text-black text-xs font-black"
                     >
                       Lanjutkan <ArrowRight className="size-3.5" />

@@ -14,8 +14,7 @@ export function organizationJsonLd(): JsonLdObject {
     name: SITE_NAME,
     url: absoluteUrl("/"),
     logo: absoluteUrl("/icon.svg"),
-    description:
-      "Platform belajar bahasa Jepang dan simulasi JLPT (N5 - N1) berbahasa Indonesia.",
+    description: "Platform belajar bahasa Jepang dan simulasi JLPT (N5 - N1) berbahasa Indonesia.",
     inLanguage: "id-ID",
   };
 }
@@ -74,6 +73,7 @@ type ArticleJsonLdInput = {
   category: string;
   tags: string[];
   readTime: number;
+  hasJapanese?: boolean;
 };
 
 export function articleJsonLd(article: ArticleJsonLdInput): JsonLdObject {
@@ -88,16 +88,14 @@ export function articleJsonLd(article: ArticleJsonLdInput): JsonLdObject {
     headline: article.title,
     description: article.excerpt,
     image: absoluteUrl(article.coverImage),
-    inLanguage: "id-ID",
+    inLanguage: article.hasJapanese ? ["id-ID", "ja-JP"] : "id-ID",
     articleSection: article.category,
     keywords: article.tags,
     timeRequired: `PT${article.readTime}M`,
     author: { "@type": "Person", name: article.authorName },
     publisher: { "@id": ORGANIZATION_ID },
     isPartOf: { "@id": WEBSITE_ID },
-    ...(article.publishedAt
-      ? { datePublished: article.publishedAt.toISOString() }
-      : {}),
+    ...(article.publishedAt ? { datePublished: article.publishedAt.toISOString() } : {}),
     dateModified: article.updatedAt.toISOString(),
   };
 }

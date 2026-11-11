@@ -60,6 +60,8 @@ export type DiscussionRoot = DiscussionVotes & {
   vocabId: number | null;
   bunpouPointId: number | null;
   postId: number | null;
+  articleId?: number | null;
+  isPinned?: boolean;
   state: DiscussionRootState;
   createdAt: Date;
   // Empat field di bawah — dan suaranya — hanya terisi saat state === "VISIBLE".
@@ -86,6 +88,8 @@ const discussionRootSelect = {
   vocabId: true,
   bunpouPointId: true,
   postId: true,
+  articleId: true,
+  isPinned: true,
   commentText: true,
   commentImages: true,
   visibility: true,
@@ -104,7 +108,11 @@ const discussionRootSelect = {
       updatedAt: true,
       user: { select: discussionAuthorSelect },
       repliedTo: {
-        select: { id: true, deletedAt: true, user: { select: { username: true } } },
+        select: {
+          id: true,
+          deletedAt: true,
+          user: { select: { username: true } },
+        },
       },
     },
   },
@@ -117,7 +125,10 @@ type RawDiscussionRoot = Prisma.QuestionCommentGetPayload<{
 function toDiscussionAuthor(
   user: Prisma.UserGetPayload<{ select: typeof discussionAuthorSelect }>,
 ): DiscussionAuthor {
-  return { ...user, profilePath: profilePath(user.username, FEATURES.publicProfile) };
+  return {
+    ...user,
+    profilePath: profilePath(user.username, FEATURES.publicProfile),
+  };
 }
 
 // Keanggotaan thread publik ditentukan oleh `sharedAt`, bukan `visibility`:
@@ -126,6 +137,11 @@ function toDiscussionAuthor(
 const publicRootWhere = {
   parentId: null,
   sharedAt: { not: null },
+} satisfies Prisma.QuestionCommentWhereInput;
+
+export const renderableDiscussionRootWhere = {
+  ...publicRootWhere,
+  OR: [{ deletedAt: null, visibility: "PUBLIC" }, { replies: { some: { deletedAt: null } } }],
 } satisfies Prisma.QuestionCommentWhereInput;
 
 function toDiscussionRoot(row: RawDiscussionRoot): DiscussionRoot {
@@ -159,6 +175,8 @@ function toDiscussionRoot(row: RawDiscussionRoot): DiscussionRoot {
       vocabId: row.vocabId,
       bunpouPointId: row.bunpouPointId,
       postId: row.postId,
+      articleId: row.articleId,
+      isPinned: false,
       state,
       createdAt: row.createdAt,
       commentText: null,
@@ -177,6 +195,8 @@ function toDiscussionRoot(row: RawDiscussionRoot): DiscussionRoot {
     vocabId: row.vocabId,
     bunpouPointId: row.bunpouPointId,
     postId: row.postId,
+    articleId: row.articleId,
+    isPinned: row.isPinned,
     state,
     createdAt: row.createdAt,
     commentText: row.commentText,
@@ -229,7 +249,10 @@ export async function countVotes(commentIds: number[]): Promise<Map<number, numb
 async function withVoteCounts(roots: DiscussionRoot[]): Promise<DiscussionRoot[]> {
   const counts = await countVotes(votableIds(roots));
   if (counts.size === 0) return roots;
-  return mapEntries(roots, (entry) => ({ ...entry, voteCount: counts.get(entry.id) ?? 0 }));
+  return mapEntries(roots, (entry) => ({
+    ...entry,
+    voteCount: counts.get(entry.id) ?? 0,
+  }));
 }
 
 /**
@@ -250,7 +273,10 @@ export async function withViewerVotes(
   });
   if (votes.length === 0) return roots;
   const voted = new Set(votes.map((vote) => vote.commentId));
-  return mapEntries(roots, (entry) => ({ ...entry, viewerVoted: voted.has(entry.id) }));
+  return mapEntries(roots, (entry) => ({
+    ...entry,
+    viewerVoted: voted.has(entry.id),
+  }));
 }
 
 // Tombstone tanpa balasan tidak berguna untuk siapa pun: yang tersisa hanya
@@ -263,10 +289,18 @@ function isWorthRendering(root: DiscussionRoot) {
 // THREAD PER TARGET (SOAL ATAU KATA)
 // ============================================================
 
-export async function getDiscussion(target: CommentTarget): Promise<DiscussionRoot[]> {
+export async function getDiscussion(
+  target: CommentTarget,
+  page?: { take: number; skip: number },
+): Promise<DiscussionRoot[]> {
   const rows = await prisma.questionComment.findMany({
-    where: { ...targetWhere(target), ...publicRootWhere },
-    orderBy: { createdAt: "desc" },
+    where: {
+      ...targetWhere(target),
+      ...(page ? renderableDiscussionRootWhere : publicRootWhere),
+    },
+    orderBy:
+      target.type === "article" ? [{ isPinned: "desc" }, { id: "desc" }] : { createdAt: "desc" },
+    ...(page ? { take: page.take, skip: page.skip } : {}),
     select: discussionRootSelect,
   });
 
@@ -377,7 +411,9 @@ export const ownNoteSelect = {
   user: { select: { displayName: true } },
 } satisfies Prisma.QuestionCommentSelect;
 
-export type OwnNote = Prisma.QuestionCommentGetPayload<{ select: typeof ownNoteSelect }>;
+export type OwnNote = Prisma.QuestionCommentGetPayload<{
+  select: typeof ownNoteSelect;
+}>;
 
 /**
  * Catatan milik user pada sekumpulan kata, termasuk yang sudah dibagikan.
@@ -392,7 +428,12 @@ export async function getOwnVocabNotes(
   if (vocabIds.length === 0) return notes;
 
   const rows = await prisma.questionComment.findMany({
-    where: { userId, vocabId: { in: vocabIds }, parentId: null, deletedAt: null },
+    where: {
+      userId,
+      vocabId: { in: vocabIds },
+      parentId: null,
+      deletedAt: null,
+    },
     orderBy: { createdAt: "desc" },
     select: ownNoteSelect,
   });
@@ -476,6 +517,8 @@ export async function resolveDiscussionRootId(commentId: number) {
       vocabId: true,
       bunpouPointId: true,
       postId: true,
+      articleId: true,
+      isPinned: true,
     },
   });
 
@@ -485,19 +528,21 @@ export async function resolveDiscussionRootId(commentId: number) {
     vocabId: comment.vocabId,
     bunpouPointId: comment.bunpouPointId,
     postId: comment.postId,
+    articleId: comment.articleId,
   };
   if (comment.parentId) return { rootId: comment.parentId, isReply: true as const, ...target };
   if (!comment.sharedAt) return null; // catatan pribadi tidak punya permalink
   return { rootId: comment.id, isReply: false as const, ...target };
 }
 
-export async function getDiscussionPermalink(
-  rootId: number,
-): Promise<DiscussionPermalink | null> {
+export async function getDiscussionPermalink(rootId: number): Promise<DiscussionPermalink | null> {
   // Permalink ini khusus thread soal; thread kata dibaca di halaman katanya.
   const row = await prisma.questionComment.findFirst({
     where: { id: rootId, questionId: { not: null }, ...publicRootWhere },
-    select: { ...discussionRootSelect, question: { select: permalinkQuestionSelect } },
+    select: {
+      ...discussionRootSelect,
+      question: { select: permalinkQuestionSelect },
+    },
   });
 
   if (!row?.question) return null;
@@ -527,7 +572,10 @@ export async function getQuestionDiscussionPage(
   });
   if (!question) return null;
 
-  return { question, roots: await getDiscussion({ type: "question", questionId }) };
+  return {
+    question,
+    roots: await getDiscussion({ type: "question", questionId }),
+  };
 }
 
 // ============================================================
@@ -652,7 +700,13 @@ export async function getVocabDiscussionIndex(page: number): Promise<{
 
   const words = await prisma.flashcardVocab.findMany({
     where: { id: { in: vocabIds } },
-    select: { id: true, level: true, wordPlain: true, reading: true, meaningsId: true },
+    select: {
+      id: true,
+      level: true,
+      wordPlain: true,
+      reading: true,
+      meaningsId: true,
+    },
   });
   const wordById = new Map(words.map((word) => [word.id, word]));
 

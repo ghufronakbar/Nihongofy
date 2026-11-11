@@ -18,6 +18,7 @@ const moderationSelect = {
   vocabId: true,
   bunpouPointId: true,
   postId: true,
+  articleId: true,
   parentId: true,
   commentText: true,
   commentImages: true,
@@ -26,7 +27,14 @@ const moderationSelect = {
   deletedAt: true,
   deletedById: true,
   createdAt: true,
-  user: { select: { id: true, displayName: true, email: true, postingSuspendedAt: true } },
+  user: {
+    select: {
+      id: true,
+      displayName: true,
+      email: true,
+      postingSuspendedAt: true,
+    },
+  },
   deletedBy: { select: { id: true, displayName: true } },
   question: {
     select: {
@@ -43,11 +51,16 @@ const moderationSelect = {
   },
   // Tepat satu dari `question`/`vocab`/`bunpouPoint`/`post` terisi.
   vocab: { select: { id: true, level: true, wordPlain: true, reading: true } },
-  bunpouPoint: { select: { id: true, key: true, level: true, titlePlain: true } },
+  bunpouPoint: {
+    select: { id: true, key: true, level: true, titlePlain: true },
+  },
+  article: { select: { id: true, slug: true, title: true } },
   post: { select: { id: true, user: { select: { username: true } } } },
 } satisfies Prisma.QuestionCommentSelect;
 
-type ModerationRow = Prisma.QuestionCommentGetPayload<{ select: typeof moderationSelect }>;
+type ModerationRow = Prisma.QuestionCommentGetPayload<{
+  select: typeof moderationSelect;
+}>;
 
 export type ModerationEntryState = "VISIBLE" | "HIDDEN" | "REMOVED_BY_OWNER" | "TAKEN_DOWN";
 
@@ -64,7 +77,8 @@ export type ModerationEntry = Omit<ModerationRow, "deletedById"> & {
 
 function toEntry(row: ModerationRow, voteCount: number): ModerationEntry {
   const { deletedById, ...rest } = row;
-  const removedByAdmin = Boolean(row.deletedAt) && deletedById !== null && deletedById !== row.user.id;
+  const removedByAdmin =
+    Boolean(row.deletedAt) && deletedById !== null && deletedById !== row.user.id;
 
   const state: ModerationEntryState = row.deletedAt
     ? removedByAdmin
@@ -96,7 +110,9 @@ export async function listModerationQueue(filter: ModerationQueryInput) {
   if (filter.query) {
     where.OR = [
       { commentText: { contains: filter.query, mode: "insensitive" } },
-      { user: { displayName: { contains: filter.query, mode: "insensitive" } } },
+      {
+        user: { displayName: { contains: filter.query, mode: "insensitive" } },
+      },
     ];
   }
 
@@ -148,7 +164,9 @@ export async function getModerationUserSummary(userId: number) {
     prisma.questionComment.count({
       where: { userId, parentId: null, sharedAt: { not: null } },
     }),
-    prisma.questionComment.count({ where: { userId, parentId: { not: null } } }),
+    prisma.questionComment.count({
+      where: { userId, parentId: { not: null } },
+    }),
     prisma.questionComment.count({
       where: { userId, deletedAt: { not: null }, deletedById: { not: userId } },
     }),
@@ -187,7 +205,9 @@ const postModerationSelect = {
   _count: { select: { likes: true, comments: true } },
 } satisfies Prisma.PostSelect;
 
-type PostModerationRow = Prisma.PostGetPayload<{ select: typeof postModerationSelect }>;
+type PostModerationRow = Prisma.PostGetPayload<{
+  select: typeof postModerationSelect;
+}>;
 
 export type PostModerationState = "VISIBLE" | "REMOVED_BY_OWNER" | "TAKEN_DOWN";
 
@@ -223,13 +243,20 @@ export async function listPostModerationQueue(filter: ModerationQueryInput) {
   if (filter.query) {
     where.OR = [
       { text: { contains: filter.query, mode: "insensitive" } },
-      { user: { displayName: { contains: filter.query, mode: "insensitive" } } },
+      {
+        user: { displayName: { contains: filter.query, mode: "insensitive" } },
+      },
       { user: { username: { contains: filter.query.toLowerCase() } } },
     ];
   }
 
   const [rows, live, removed] = await Promise.all([
-    prisma.post.findMany({ where, orderBy: { id: "desc" }, take: 100, select: postModerationSelect }),
+    prisma.post.findMany({
+      where,
+      orderBy: { id: "desc" },
+      take: 100,
+      select: postModerationSelect,
+    }),
     prisma.post.count({ where: { deletedAt: null } }),
     prisma.post.count({ where: { deletedAt: { not: null } } }),
   ]);

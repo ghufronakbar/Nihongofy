@@ -36,7 +36,12 @@ const STATE_BADGE: Record<string, { label: string; className: string }> = {
 export default async function AdminModerationPage({
   searchParams,
 }: {
-  searchParams: Promise<{ state?: string; q?: string; user?: string; kind?: string }>;
+  searchParams: Promise<{
+    state?: string;
+    q?: string;
+    user?: string;
+    kind?: string;
+  }>;
 }) {
   await requireAdmin();
 
@@ -58,7 +63,11 @@ export default async function AdminModerationPage({
     filter.userId ? getModerationUserSummary(filter.userId) : Promise.resolve(null),
   ]);
   const entries = commentQueue?.entries ?? [];
-  const counts = (commentQueue ?? postQueue)?.counts ?? { all: 0, live: 0, removed: 0 };
+  const counts = (commentQueue ?? postQueue)?.counts ?? {
+    all: 0,
+    live: 0,
+    removed: 0,
+  };
   const truncated = (commentQueue ?? postQueue)?.truncated ?? false;
 
   function hrefFor(state: string, targetKind: string = kind) {
@@ -104,7 +113,11 @@ export default async function AdminModerationPage({
       ) : null}
 
       {[
-        { off: !FEATURES.questionDiscussion, label: "Diskusi soal", env: "FEATURES_QUESTION_DISCUSSION" },
+        {
+          off: !FEATURES.questionDiscussion,
+          label: "Diskusi soal",
+          env: "FEATURES_QUESTION_DISCUSSION",
+        },
         {
           off: !FEATURES.flashcardDiscussion,
           label: "Diskusi kata flashcard",
@@ -225,9 +238,7 @@ export default async function AdminModerationPage({
                   >
                     {entry.user.displayName}
                   </Link>
-                  <span className="font-mono text-[11px] text-foreground/50">
-                    #{entry.user.id}
-                  </span>
+                  <span className="font-mono text-[11px] text-foreground/50">#{entry.user.id}</span>
                   {/* Pintasan ke suspend posting di detail user. */}
                   <Link
                     href={`/admin/user/${entry.user.id}#posting`}
@@ -237,7 +248,9 @@ export default async function AdminModerationPage({
                         : "Batasi posting user ini"
                     }
                     className={`inline-flex items-center gap-1 border-2 border-neo-ink px-1.5 py-0 font-mono text-[10px] font-black ${
-                      entry.user.postingSuspendedAt ? "bg-neo-yellow" : "bg-white text-foreground/70"
+                      entry.user.postingSuspendedAt
+                        ? "bg-neo-yellow"
+                        : "bg-white text-foreground/70"
                     }`}
                   >
                     <Ban className="size-3" />
@@ -294,6 +307,8 @@ export default async function AdminModerationPage({
                         </span>{" "}
                         · {entry.bunpouPoint.key}
                       </>
+                    ) : entry.article ? (
+                      <>Artikel · {entry.article.title}</>
                     ) : entry.post ? (
                       <>
                         Postingan #{entry.post.id} · @{entry.post.user.username}
@@ -308,6 +323,7 @@ export default async function AdminModerationPage({
                         vocabId: entry.vocabId,
                         bunpouPointId: entry.bunpouPointId,
                         postId: entry.postId,
+                        articleId: entry.articleId,
                       },
                       entry.id,
                     )}

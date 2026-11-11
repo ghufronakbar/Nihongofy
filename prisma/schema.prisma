@@ -1251,6 +1251,10 @@ model QuestionComment {
   post   Post? @relation(fields: [postId], references: [id], onDelete: Restrict)
   postId Int?
 
+  article   Article? @relation(fields: [articleId], references: [id], onDelete: Restrict)
+  articleId Int?
+  isPinned  Boolean  @default(false)
+
   // Restrict, bukan Cascade: menghapus baris user akan ikut menghancurkan
   // balasan orang lain pada thread miliknya. Penghapusan akun menganonimkan
   // user dan men-soft-delete comment-nya — lihat `anonymizeAccount`.
@@ -1319,6 +1323,7 @@ model QuestionComment {
   // Thread komentar satu postingan dan hitungannya di feed.
   @@index([postId])
   @@index([postId, parentId, sharedAt])
+  @@index([articleId, parentId, sharedAt])
   @@index([deletedById])
   @@index([repliedToId])
 }
@@ -1442,9 +1447,14 @@ model Attempt {
   // (mis. hanya CHOUKAI). Soal yang dinilai difilter berdasarkan ini.
   sectionScope JlptSection?
 
-  status     AttemptStatus @default(IN_PROGRESS)
-  startedAt  DateTime      @default(now())
-  finishedAt DateTime? // diisi saat submit; durasi total = finishedAt - startedAt
+  status         AttemptStatus @default(IN_PROGRESS)
+  // Sesi yang sedang boleh dikerjakan. Naik satu per satu saat sesi disubmit;
+  // sesi sebelumnya terkunci. Jawaban disimpan otomatis per soal, jadi adanya
+  // baris AttemptAnswer bukan lagi penanda sesi sudah disubmit. Latihan per
+  // seksi (sectionScope terisi) selalu 1.
+  currentSession Int           @default(1)
+  startedAt      DateTime      @default(now())
+  finishedAt     DateTime? // diisi saat submit; durasi total = finishedAt - startedAt
 
   answers AttemptAnswer[]
 
@@ -1546,13 +1556,23 @@ model PracticeAnswer {
 model Article {
   id Int @id @default(autoincrement())
 
-  slug       String @unique
-  title      String
-  excerpt    String @db.Text
-  body       Json   @db.JsonB
-  bodyText   String @db.Text
-  coverImage String @db.Text
-  coverAlt   String
+  slug              String     @unique
+  title             String
+  excerpt           String     @db.Text
+  titleJa           String?
+  excerptJa         String?    @db.Text
+  readingLevel      JlptLevel?
+  hasJapanese       Boolean    @default(false)
+  body              Json       @db.JsonB
+  bodyText          String     @db.Text
+  glossary          Json       @default("[]") @db.JsonB
+  // A published article keeps its public content until an admin publishes this draft.
+  draft             Json?      @db.JsonB
+  discussionEnabled Boolean    @default(true)
+  coverImage        String     @db.Text
+  coverCredit       String?
+  coverCreditUrl    String?
+  coverAlt          String
 
   authorName String
   authorRole String?
@@ -1569,6 +1589,7 @@ model Article {
   tagLinks     ArticleTagLink[]
   interactions ArticleInteraction[]
   reports      Report[]
+  comments     QuestionComment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1576,6 +1597,7 @@ model Article {
   @@index([status, publishedAt, id])
   @@index([status, isFeatured, publishedAt])
   @@index([status, categorySlug, publishedAt])
+  @@index([status, readingLevel, publishedAt])
 }
 
 model ArticleTag {

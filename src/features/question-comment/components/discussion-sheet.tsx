@@ -28,7 +28,10 @@ import { discussionPageHref, type CommentTarget } from "../target";
 import { CommentImageUploader } from "./comment-image-uploader";
 import { DiscussionThread } from "./discussion-thread";
 import { PostingSuspendedNotice } from "./posting-suspended-notice";
-import { DictionaryScope, useDismissDictionary } from "@/features/dictionary/components/dictionary-scope";
+import {
+  DictionaryScope,
+  useDismissDictionary,
+} from "@/features/dictionary/components/dictionary-scope";
 
 const COPY: Record<
   CommentTarget["type"],
@@ -53,6 +56,12 @@ const COPY: Record<
       "Contoh lain, nuansa, dan pertanyaan pengguna lain tentang pola ini. Isi pola keliru? Pakai tombol Laporkan pola ini.",
     placeholder: "Bagikan contoh kalimat, tips mengingat, atau pertanyaan tentang pola ini...",
     empty: "Belum ada diskusi untuk pola ini.",
+  },
+  article: {
+    title: "Diskusi Artikel",
+    description: "Pertanyaan dan pengalaman pembaca dalam bahasa Indonesia atau Jepang.",
+    placeholder: "Bagikan pendapat atau pertanyaanmu...",
+    empty: "Belum ada komentar. Mulai percakapan pertama.",
   },
   post: {
     title: "Komentar",
@@ -95,7 +104,10 @@ export function NewPublicNoteForm({
 
   function onSubmit(values: AddQuestionCommentInput) {
     startTransition(async () => {
-      const result = await addQuestionCommentAction({ ...values, visibility: "PUBLIC" });
+      const result = await addQuestionCommentAction({
+        ...values,
+        visibility: "PUBLIC",
+      });
       if (!result.ok) {
         toast.error(result.message);
         return;
@@ -108,11 +120,7 @@ export function NewPublicNoteForm({
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2" noValidate>
       <Field>
-        <Textarea
-          placeholder={placeholder}
-          rows={3}
-          {...register("commentText")}
-        />
+        <Textarea placeholder={placeholder} rows={3} {...register("commentText")} />
         <FieldError errors={[errors.commentText]} />
       </Field>
       <CommentImageUploader
@@ -187,7 +195,10 @@ export function DiscussionSheet({
           triggerClassName ? (
             <button type="button" className={triggerClassName} />
           ) : (
-            <button type="button" className="neo-button min-h-10 gap-1.5 bg-neo-blue px-3 py-2 text-xs text-black" />
+            <button
+              type="button"
+              className="neo-button min-h-10 gap-1.5 bg-neo-blue px-3 py-2 text-xs text-black"
+            />
           )
         }
       >
@@ -209,21 +220,25 @@ export function DiscussionSheet({
         </SheetHeader>
 
         <div className="flex-1 overflow-y-auto px-4 pb-4">
-          <DictionaryScope enabled={open && target.type !== "post"} contextKey={discussionPageHref(target)} showControl={false}>
-          {isLoading && thread === null ? (
-            <div className="flex justify-center py-8">
-              <Spinner />
-            </div>
-          ) : (
-            <DiscussionThread
-              roots={thread?.roots ?? []}
-              currentUserId={currentUserId}
-              postingSuspended={thread?.postingSuspended ?? false}
-              onChanged={() => void load()}
-              reportEnabled={reportEnabled}
-              emptyText={copy.empty}
-            />
-          )}
+          <DictionaryScope
+            enabled={open && target.type !== "post"}
+            contextKey={discussionPageHref(target)}
+            showControl={false}
+          >
+            {isLoading && thread === null ? (
+              <div className="flex justify-center py-8">
+                <Spinner />
+              </div>
+            ) : (
+              <DiscussionThread
+                roots={thread?.roots ?? []}
+                currentUserId={currentUserId}
+                postingSuspended={thread?.postingSuspended ?? false}
+                onChanged={() => void load()}
+                reportEnabled={reportEnabled}
+                emptyText={copy.empty}
+              />
+            )}
           </DictionaryScope>
         </div>
 

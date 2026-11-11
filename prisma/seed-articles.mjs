@@ -1,117 +1,96 @@
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { PrismaClient } from "@prisma/client";
+import { z } from "zod";
+import { CreateArticleSchema } from "../src/features/admin/article/schemas.ts";
+import { ArticleBodySchema } from "../src/features/article/schemas.ts";
+import {
+  articleBodyToPlainText,
+  slugifyArticleValue,
+} from "../src/features/article/lib/body-text.ts";
 
-const prisma = new PrismaClient();
-const articleFile = fileURLToPath(
+const file = fileURLToPath(
   new URL("../src/features/article/data/article-seed.json", import.meta.url),
 );
-
-function slugify(value) {
-  return value
-    .normalize("NFKD")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
-}
-
-function bodyToPlainText(blocks) {
-  return blocks
-    .flatMap((block) => {
-      switch (block.type) {
-        case "heading":
-        case "paragraph":
-        case "quote":
-          return [block.text, block.attribution].filter(Boolean);
-        case "list":
-          return block.items;
-        case "example":
-          return [block.japanese, block.reading, block.translation, block.note].filter(Boolean);
-        case "callout":
-          return [block.title, block.text];
-        default:
-          return [];
-      }
-    })
-    .join("\n");
-}
-
+const fixtureSchema = z
+  .array(
+    z
+      .object({ body: ArticleBodySchema, publishedAt: z.iso.datetime() })
+      .passthrough(),
+  )
+  .length(1);
 async function main() {
-  const articles = JSON.parse(await readFile(articleFile, "utf8"));
-  const tagLabels = [...new Set(articles.flatMap((article) => article.tags))];
-
-  for (const label of tagLabels) {
-    await prisma.articleTag.upsert({
-      where: { slug: slugify(label) },
-      update: { label },
-      create: { slug: slugify(label), label },
-    });
+  const raw = fixtureSchema.parse(JSON.parse(await readFile(file, "utf8")));
+  const articles = raw.map(({ body, publishedAt, ...fields }) => ({
+    ...CreateArticleSchema.parse({ ...fields, bodyJson: JSON.stringify(body) }),
+    body,
+    publishedAt: new Date(publishedAt),
+  }));
+  if (process.argv.includes("--validate-only")) {
+    console.info(
+      `[seed:articles] Valid: ${articles.length} artikel bilingual lengkap, ${articles[0].body.length} blok, ${articles[0].glossary.length} kosakata.`,
+    );
+    return;
   }
-
-  const storedTags = await prisma.articleTag.findMany({
-    where: { slug: { in: tagLabels.map(slugify) } },
-    select: { id: true, slug: true },
-  });
-  const tagIdBySlug = new Map(storedTags.map((tag) => [tag.slug, tag.id]));
-
-  for (const article of articles) {
-    const storedArticle = await prisma.article.upsert({
-      where: { slug: article.slug },
-      update: {
-        title: article.title,
-        excerpt: article.excerpt,
-        body: article.body,
-        bodyText: bodyToPlainText(article.body),
-        coverImage: article.coverImage,
-        coverAlt: article.coverAlt,
-        authorName: article.authorName,
-        authorRole: article.authorRole,
-        category: article.category,
-        categorySlug: article.categorySlug,
-        status: "PUBLISHED",
-        isFeatured: article.isFeatured,
-        publishedAt: new Date(article.publishedAt),
-        readTime: article.readTime,
-      },
-      create: {
-        slug: article.slug,
-        title: article.title,
-        excerpt: article.excerpt,
-        body: article.body,
-        bodyText: bodyToPlainText(article.body),
-        coverImage: article.coverImage,
-        coverAlt: article.coverAlt,
-        authorName: article.authorName,
-        authorRole: article.authorRole,
-        category: article.category,
-        categorySlug: article.categorySlug,
-        status: "PUBLISHED",
-        isFeatured: article.isFeatured,
-        publishedAt: new Date(article.publishedAt),
-        readTime: article.readTime,
-      },
-      select: { id: true },
-    });
-
-    await prisma.articleTagLink.deleteMany({ where: { articleId: storedArticle.id } });
-    await prisma.articleTagLink.createMany({
-      data: article.tags.map((label) => ({
-        articleId: storedArticle.id,
-        tagId: tagIdBySlug.get(slugify(label)),
-      })),
-    });
-  }
-
-  console.info(
-    `[seed:articles] ${articles.length} artikel dan ${tagLabels.length} tag siap.`,
-  );
-}
-
-main()
-  .catch((error) => {
-    console.error("[seed:articles] gagal", error);
-    process.exitCode = 1;
-  })
-  .finally(async () => {
+  const prisma = new PrismaClient();
+  try {
+    for (const article of articles)
+      await prisma.$transaction(async (tx) => {
+        const data = {
+          title: article.title,
+          excerpt: article.excerpt,
+          titleJa: article.titleJa || null,
+          excerptJa: article.excerptJa || null,
+          readingLevel: article.readingLevel || null,
+          hasJapanese: Boolean(article.titleJa),
+          body: article.body,
+          bodyText: articleBodyToPlainText(article.body),
+          glossary: article.glossary,
+          coverImage: article.coverImage,
+          coverAlt: article.coverAlt,
+          coverCredit: article.coverCredit || null,
+          coverCreditUrl: article.coverCreditUrl || null,
+          authorName: article.authorName,
+          authorRole: article.authorRole || null,
+          category: article.category,
+          categorySlug: slugifyArticleValue(article.category),
+          status: article.status,
+          isFeatured: article.isFeatured,
+          discussionEnabled: article.discussionEnabled,
+          publishedAt: article.publishedAt,
+          readTime: article.readTime,
+        };
+        const stored = await tx.article.upsert({
+          where: { slug: article.slug },
+          create: { slug: article.slug, ...data },
+          update: data,
+          select: { id: true },
+        });
+        await tx.articleTagLink.deleteMany({ where: { articleId: stored.id } });
+        for (const label of new Set(article.tags)) {
+          const slug = slugifyArticleValue(label);
+          const tag = await tx.articleTag.upsert({
+            where: { slug },
+            update: { label },
+            create: { slug, label },
+            select: { id: true },
+          });
+          await tx.articleTagLink.create({
+            data: { articleId: stored.id, tagId: tag.id },
+          });
+        }
+      });
+    console.info(
+      `[seed:articles] ${articles.length} artikel lengkap siap. Interaksi dan artikel lain dipertahankan.`,
+    );
+  } finally {
     await prisma.$disconnect();
-  });
+  }
+}
+main().catch((error) => {
+  console.error(
+    "[seed:articles] gagal:",
+    error instanceof Error ? error.message : "Kesalahan tidak dikenal.",
+  );
+  process.exitCode = 1;
+});

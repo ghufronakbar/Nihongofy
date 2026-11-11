@@ -2,7 +2,7 @@
 
 ## Status Aktual
 
-**Fungsional, tetapi masih membutuhkan hardening submit/session.** Exam runner mendukung full mock dan latihan per section, menyembunyikan answer key, menyimpan state browser per session, serta mempersist jawaban akun saat submit.
+**Fungsional.** Exam runner mendukung full mock dan latihan per section, menyembunyikan answer key, menyimpan jawaban akun otomatis per soal (bisa dilanjutkan dari device lain sebelum submit), dan mengunci sesi yang sudah disubmit lewat `Attempt.currentSession`.
 
 ## Feature Flag
 
@@ -18,10 +18,21 @@ Tidak punya flag sendiri; ikut `FEATURES_TEST_PACKAGE` (lihat [Paket tes](test-p
 - `Attempt.sectionScope = null` berarti full mock berdasarkan session asli paket.
 - `sectionScope` terisi berarti latihan section dan URL session selalu `1` sebagai virtual session.
 - Query exam hanya memilih stem, stimulus, choice, dan media; `questionAnswer` serta `explanation` tidak dikirim ke client.
-- Jawaban dan flag disimpan di React Context dan `sessionStorage` dengan key per attempt/session.
-- Query `?questionNumber=` divalidasi di client; nilai invalid diarahkan ke soal pertama yang belum dijawab atau soal pertama.
-- Submit menghitung `isCorrect` di server dan meng-upsert `AttemptAnswer` dalam transaksi.
+- Hanya `Attempt.currentSession` yang boleh dibuka; URL sesi lain (sudah disubmit atau belum gilirannya) dialihkan ke sesi itu. Latihan section selalu sesi 1.
+- Halaman memuat jawaban yang sudah tersimpan untuk sesi itu (`selectedAnswer` + `flagged`, tanpa `isCorrect`) sebagai isi awal lembar jawaban — lihat [Simpan otomatis](#simpan-otomatis-dan-lanjut-di-device-lain).
+- Query `?questionNumber=` divalidasi di client; nilai invalid diarahkan ke soal pertama yang belum dijawab atau soal pertama. Pindah soal memakai `window.history.replaceState`, bukan `router.replace`, sehingga tidak memicu render ulang halaman di server.
+- Submit menilai **seluruh** soal sesi (soal yang tidak ada di payload dihitung kosong), meng-upsert `AttemptAnswer`, dan menaikkan `currentSession` dalam satu transaksi.
 - Attempt menjadi `COMPLETED` setelah session terakhir, lalu cache dashboard/analytics/profile diinvalidasi.
+
+## Simpan Otomatis dan Lanjut di Device Lain
+
+- Setiap pilih jawaban/tanda ragu masuk antrean; setelah jeda ±0,8 detik antrean dikirim lewat `saveExamAnswersAction` dalam satu request (hanya soal yang berubah). Antrean juga dikirim saat tab disembunyikan/ditutup dan saat koneksi kembali. Hanya satu request berjalan pada satu waktu, jadi urutan simpanan dari satu tab terjaga.
+- Action ini tidak menilai dan tidak mengembalikan data soal: `isCorrect` baris yang tersimpan otomatis tetap `false` sampai submit. Tidak ada revalidate/cookie di dalamnya, jadi halaman tidak dirender ulang.
+- Antrean yang belum diterima server disimpan di `sessionStorage` (key yang sama dengan guest, tetapi isinya hanya perubahan tertunda), lalu digabung di atas data server saat halaman dimuat ulang. Lembar lama dari sebelum fitur ini ikut terkirim apa adanya.
+- Gagal kirim dicoba ulang dengan jeda 2–30 detik; runner menampilkan status Tersimpan / Menyimpan / Gagal + "Coba lagi". Sesi login yang berakhir menghentikan kiriman sampai user login lagi lalu menekan "Coba lagi". Selama masih ada antrean, browser memperingatkan sebelum tab ditutup.
+- Dua device yang terbuka bersamaan: simpanan terakhir per soal yang berlaku. Submit mengirim lembar yang terlihat di device yang men-submit.
+- Simpan otomatis dan submit sama-sama diawali `update` bersyarat pada baris `Attempt` (`status = IN_PROGRESS` dan `currentSession` = sesi itu). Update ini mengunci baris sehingga keduanya berurutan: simpanan yang tiba setelah submit gagal P2025, dikembalikan sebagai `closed`, dan client diarahkan ke sesi/hasil terbaru. Submit ganda dari dua device hanya diterima sekali.
+- Beban: satu mock ±100 request kecil (1 GET Redis untuk sesi login + ±4 query berindeks), tersebar selama pengerjaan.
 
 ## Guest Mode
 
@@ -40,13 +51,11 @@ Tidak punya flag sendiri; ikut `FEATURES_TEST_PACKAGE` (lihat [Paket tes](test-p
 
 ## Keterbatasan dan Risiko
 
-- Tidak ada marker `submittedSession`. Selama attempt belum completed, session lama masih bisa dibuka langsung dan disubmit ulang sehingga jawaban dapat tertimpa.
-- Server menerima subset `answers` yang valid tetapi belum mewajibkan satu row untuk setiap soal session. Payload buatan dapat menghilangkan soal dari denominator result.
-- Tombol "submit tidak bisa diulang" baru dijaga oleh alur UI, belum menjadi invariant database/server per session.
 - Requirement project menyebut furigana harus disembunyikan penuh selama exam, tetapi runner saat ini masih merender furigana umum. Yang benar-benar disembunyikan baru reading dalam underline untuk tipe cara-baca kanji.
 - `AttemptAnswer.timeSpentSec` belum diisi.
 - `AttemptStatus.ABANDONED` belum mempunyai action/UI pada mock exam.
-- State yang belum disubmit terikat pada satu tab/sessionStorage dan tidak sinkron antar-device.
+- Perubahan yang belum sempat terkirim (offline lalu tab ditutup) hilang; jeda kirim dibuat pendek dan browser memperingatkan sebelum tab ditutup untuk mengecilkan peluangnya.
+- Guest tetap hanya memakai `sessionStorage` (tidak ada akun untuk menyimpan).
 - Payload jawaban guest yang dikirim ke `/result/guest` tidak diverifikasi keasliannya; hasilnya tidak dipersist sehingga hanya memengaruhi tampilan milik guest itu sendiri.
 - Audit answer-key leakage sudah dilakukan (lihat di bawah). Test end-to-end masih manual di `docs/plan.md`.
 
@@ -61,6 +70,7 @@ Server Component ke Client Component (RSC payload) dan data cache yang dapat dip
 |---|---|---|---|
 | Exam `/exam/[attemptId]/[session]` (`getExamQuestions` → `ExamRunner`) | Stem, stimulus, pilihan, media. Tanpa kunci, pembahasan, atau catatan | Selama attempt; pemilik attempt atau guest pemegang cookie | Aman. Cara baca 漢字読み di underline ikut terkirim — **bocor, diperbaiki** |
 | Submit sesi (`submitExamSessionAction`) | Hanya redirect. Kunci dibaca untuk menilai, tidak dikembalikan | Per sesi | Aman |
+| Simpan otomatis (`saveExamAnswersAction`) | Hanya status `saved`/`closed`/`unauthorized`. Tidak membaca kunci; tidak menulis `isCorrect` | Per perubahan jawaban, pemilik attempt | Aman (ditambahkan 11 November 2026) |
 | Guest exam | Jawaban hanya di `sessionStorage`; client tidak menilai apa pun | Guest | Aman |
 | `/result/guest` (`getGuestAttemptSummary`) | Agregat: benar/salah/kosong/ragu dan proyeksi skor | Setelah sesi terakhir, pemegang cookie guest | Disengaja. Dapat dipakai sebagai oracle skor, setara mode baca yang publik |
 | Latihan login (`getPracticeSession`, `submitPracticeAnswerAction`) | Kunci dan pembahasan hanya untuk soal yang sudah dijawab; dinilai server | Pemilik sesi | Aman. Cara baca 漢字読み — **bocor, diperbaiki** |
@@ -89,6 +99,7 @@ Penjaganya `src/lib/answer-key-guard.test.ts`:
 ## File Utama
 
 - `src/features/exam/actions.ts`
+- `src/features/exam/actions.test.ts`
 - `src/features/exam/guest-cookie.ts`
 - `src/features/exam/schemas.ts`
 - `src/features/exam/storage.ts`

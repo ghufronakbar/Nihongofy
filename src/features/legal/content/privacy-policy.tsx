@@ -15,8 +15,8 @@ import type { LegalDocument } from "../types";
 // Setiap klaim di dokumen ini harus dapat ditunjuk dasar kodenya. Saat alur data
 // berubah (cookie baru, pemroses baru, retensi baru), perbarui bagian yang
 // relevan, naikkan VERSION, dan ganti LAST_UPDATED. Riwayatnya cukup lewat git.
-export const VERSION = "1.6";
-export const LAST_UPDATED = "2026-10-18";
+export const VERSION = "1.7";
+export const LAST_UPDATED = "2026-11-08";
 export const EFFECTIVE_DATE = "2026-10-10";
 
 const operator = <LegalValue value={LEGAL_FACTS.operatorName} />;
@@ -169,8 +169,9 @@ export const PRIVACY_POLICY: LegalDocument = {
                 tampilan.
               </>,
               <>
-                <strong>Artikel:</strong> artikel yang Anda simpan atau favoritkan dan kapan terakhir
-                dibaca.
+                <strong>Artikel:</strong> artikel yang Anda simpan atau sukai dan kapan terakhir
+                dibaca. Koleksi artikel tersimpan hanya ditampilkan kepada pemilik akun; pembaca
+                lain hanya melihat jumlah suka, tanpa daftar pemberinya.
               </>,
             ]}
           />
@@ -203,6 +204,13 @@ export const PRIVACY_POLICY: LegalDocument = {
           <LegalP>
             Pada soal, kata flashcard, dan pola bunpou, Anda dapat menulis catatan, membalas entri
             orang lain, menyebut (mention) entri tertentu, dan melampirkan gambar.
+          </LegalP>
+          <LegalP>
+            Komentar dan balasan pada artikel selalu masuk ke diskusi publik dan dapat dibaca tanpa
+            login serta diindeks mesin pencari. Nama tampilan, username, dan avatar penulis ikut
+            ditampilkan, termasuk bila profilnya private. Anda dapat menyunting atau menghapus
+            komentar sendiri. Admin dapat menyematkan komentar atau menutup diskusi; percakapan
+            sebelumnya tetap dapat dibaca.
           </LegalP>
           <LegalList
             items={[
@@ -612,6 +620,12 @@ export const PRIVACY_POLICY: LegalDocument = {
             Selain cookie, lembar jawaban ujian yang sedang dikerjakan disimpan di{" "}
             <Code>sessionStorage</Code> tab browser supaya tidak hilang saat halaman dimuat ulang.
             Isinya hilang saat tab ditutup.
+          </LegalP>
+          <LegalP>
+            Pilihan bahasa bacaan artikel, tampilan furigana, ukuran teks, latar bacaan, dan
+            tampilan sejajar disimpan di <Code>localStorage</Code> perangkat Anda. Pilihan ini tidak
+            dikirim ke akun atau dipakai untuk pelacakan, dan bertahan sampai Anda menghapus data
+            situs pada browser.
           </LegalP>
           <LegalP>
             Halaman masuk, daftar, lupa password, verifikasi email, dan form laporan untuk tamu

@@ -3,22 +3,21 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Link2, MessageSquareReply } from "lucide-react";
+import { PublicCommentManage } from "./public-comment-manage";
 import { Button } from "@/components/ui/button";
 import type { DiscussionReply, DiscussionRoot } from "../queries";
 import { discussionThreadHref } from "../target";
 import { DISCUSSION_SORT_LABELS, sortDiscussionRoots, type DiscussionSort } from "../votes";
 import { cn } from "@/lib/utils";
-import {
-  CommentAuthorLine,
-  CommentAvatar,
-  CommentImages,
-  CommentTombstone,
-} from "./comment-body";
+import { CommentAuthorLine, CommentAvatar, CommentImages, CommentTombstone } from "./comment-body";
 import { ReportButton } from "@/features/report/components/report-button";
 import { ReplyForm } from "./reply-form";
 import { VoteButton, type VoteButtonMode } from "./vote-button";
 
-type ReplyTarget = { parentId: number; repliedTo: { id: number; username: string } | null } | null;
+type ReplyTarget = {
+  parentId: number;
+  repliedTo: { id: number; username: string } | null;
+} | null;
 
 function voteMode(
   authorId: number,
@@ -37,8 +36,14 @@ function ReplyRow({
   threadLive,
   onReply,
   reportEnabled,
+  manageOwn = false,
+  canEdit = true,
+  onChanged,
 }: {
   reply: DiscussionReply;
+  manageOwn?: boolean;
+  canEdit?: boolean;
+  onChanged?: () => void;
   currentUserId: number | null;
   /** Root thread masih VISIBLE. */
   threadLive: boolean;
@@ -65,13 +70,25 @@ function ReplyRow({
         {reply.repliedTo && (
           <p className="mt-0.5 text-xs font-semibold text-muted-foreground">
             Membalas{" "}
-            <a href={`#comment-${reply.repliedTo.id}`} className="font-mono font-black hover:underline">
+            <a
+              href={`#comment-${reply.repliedTo.id}`}
+              className="font-mono font-black hover:underline"
+            >
               @{reply.repliedTo.username}
             </a>
           </p>
         )}
         <p className="mt-1 text-sm break-words whitespace-pre-wrap">{reply.commentText}</p>
         <CommentImages images={reply.commentImages} />
+        {manageOwn && currentUserId === reply.author.id && onChanged && (
+          <PublicCommentManage
+            id={reply.id}
+            text={reply.commentText}
+            images={reply.commentImages}
+            canEdit={canEdit && threadLive}
+            onChanged={onChanged}
+          />
+        )}
         <div className="mt-1 flex flex-wrap items-center gap-3">
           <VoteButton
             key={`${reply.id}-${reply.voteCount}-${reply.viewerVoted}`}
@@ -90,10 +107,7 @@ function ReplyRow({
             </button>
           )}
           {canReport && (
-            <ReportButton
-              target={{ targetType: "COMMENT", commentId: reply.id }}
-              variant="link"
-            />
+            <ReportButton target={{ targetType: "COMMENT", commentId: reply.id }} variant="link" />
           )}
         </div>
       </div>
@@ -109,8 +123,10 @@ export function DiscussionRootCard({
   showPermalink = true,
   reportEnabled,
   archived = false,
+  manageOwn = false,
 }: {
   root: DiscussionRoot;
+  manageOwn?: boolean;
   currentUserId: number | null;
   /** Viewer di-suspend admin: tombol balas diganti keterangan, server pun menolak. */
   postingSuspended?: boolean;
@@ -167,6 +183,15 @@ export function DiscussionRootCard({
             </div>
             <p className="mt-1 text-sm break-words whitespace-pre-wrap">{root.commentText}</p>
             <CommentImages images={root.commentImages} />
+            {manageOwn && currentUserId === root.author.id && (
+              <PublicCommentManage
+                id={root.id}
+                text={root.commentText ?? ""}
+                images={root.commentImages}
+                canEdit={!postingSuspended && !archived}
+                onChanged={onChanged}
+              />
+            )}
           </div>
         </div>
       ) : (
@@ -179,11 +204,18 @@ export function DiscussionRootCard({
             <ReplyRow
               key={reply.id}
               reply={reply}
+              manageOwn={manageOwn}
+              canEdit={!postingSuspended && !archived}
+              onChanged={onChanged}
               currentUserId={currentUserId}
               threadLive={threadLive}
               onReply={
                 canReply
-                  ? () => openReply({ id: reply.id, username: reply.author.username })
+                  ? () =>
+                      openReply({
+                        id: reply.id,
+                        username: reply.author.username,
+                      })
                   : undefined
               }
               reportEnabled={reportEnabled}
@@ -240,10 +272,7 @@ export function DiscussionRootCard({
             </Button>
           )}
           {canReportRoot && (
-            <ReportButton
-              target={{ targetType: "COMMENT", commentId: root.id }}
-              variant="link"
-            />
+            <ReportButton target={{ targetType: "COMMENT", commentId: root.id }} variant="link" />
           )}
         </div>
       ) : null}
@@ -277,9 +306,7 @@ export function DiscussionThread({
 
   if (roots.length === 0) {
     return (
-      <p className="py-6 text-center text-sm font-semibold text-muted-foreground">
-        {emptyText}
-      </p>
+      <p className="py-6 text-center text-sm font-semibold text-muted-foreground">{emptyText}</p>
     );
   }
 

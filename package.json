@@ -28,7 +28,7 @@
     "bunpou:links-report": "node prisma/report-bunpou-links.mjs",
     "seed:bunpou": "node --env-file-if-exists=.env prisma/seed-bunpou.mjs",
     "seed:bunpou:check": "node --env-file-if-exists=.env prisma/seed-bunpou.mjs --validate-only",
-    "seed:articles": "node --env-file-if-exists=.env prisma/seed-articles.mjs",
+    "seed:articles": "node --env-file-if-exists=.env --import tsx prisma/seed-articles.mjs",
     "seed:test-package": "node --env-file-if-exists=.env prisma/seed-test-package.mjs",
     "seed:test-package:check": "node --env-file-if-exists=.env prisma/seed-test-package.mjs --validate-only",
     "seed:question-content": "node --env-file-if-exists=.env prisma/seed-question-content.mjs",
@@ -68,7 +68,8 @@
     "check:kana-race": "node --conditions=react-server --env-file-if-exists=.env --env-file-if-exists=.env.local --import tsx scripts/kana-race-check.ts",
     "dictionary:import": "tsx scripts/dictionary-import.ts --download",
     "dictionary:build": "tsx scripts/dictionary-import.ts",
-    "dictionary:check": "node --conditions=react-server --import tsx scripts/dictionary-check.ts"
+    "dictionary:check": "node --conditions=react-server --import tsx scripts/dictionary-check.ts",
+    "seed:articles:check": "npm run seed:articles -- --validate-only"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1140.0",

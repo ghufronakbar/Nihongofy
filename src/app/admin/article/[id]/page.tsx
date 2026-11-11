@@ -25,10 +25,6 @@ export default async function AdminArticleEditPage({
   ]);
   if (!article) notFound();
 
-  // `id` dikirim terpisah sebagai prop, bukan sebagai field form — lihat
-  // catatan di ArticleForm soal resolver tunggal.
-  const { id: currentId, viewCount, favoriteCount, publishedAt, ...formValues } = article;
-
   return (
     <div className="flex flex-col gap-6">
       <div>
@@ -40,16 +36,18 @@ export default async function AdminArticleEditPage({
           Kembali ke daftar
         </Link>
         <h1 className="mt-2 text-2xl font-black uppercase text-neo-ink sm:text-3xl">
-          {article.title}
+          {article.values.title}
         </h1>
         <p className="mt-1 text-xs font-semibold text-foreground/60">
-          {viewCount} dilihat · {favoriteCount} favorit ·{" "}
-          {publishedAt ? `terbit ${publishedAt.toISOString().slice(0, 10)}` : "belum pernah terbit"}
-          {article.status === "PUBLISHED" && (
+          {article.viewCount} dilihat · {article.favoriteCount} suka ·{" "}
+          {article.publishedAt
+            ? `terbit ${article.publishedAt.toISOString().slice(0, 10)}`
+            : "belum pernah terbit"}
+          {article.liveStatus === "PUBLISHED" && (
             <>
               {" · "}
               <Link
-                href={`/article/${article.slug}`}
+                href={`/article/${article.values.slug}`}
                 target="_blank"
                 className="inline-flex items-center gap-1 hover:text-neo-blue"
               >
@@ -60,7 +58,14 @@ export default async function AdminArticleEditPage({
           )}
         </p>
       </div>
-      <ArticleForm articleId={currentId} defaultValues={formValues} knownTags={knownTags} />
+      <ArticleForm
+        articleId={article.id}
+        defaultValues={article.values}
+        knownTags={knownTags}
+        liveStatus={article.liveStatus}
+        slugLocked={Boolean(article.publishedAt)}
+        hasDraft={article.hasDraft}
+      />
     </div>
   );
 }
