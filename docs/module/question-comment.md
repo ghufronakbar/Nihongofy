@@ -4,6 +4,11 @@
 
 **Catatan belajar pribadi selesai; berbagi catatan ke diskusi publik dan balasan satu tingkat sudah aktif.** User login dapat menambah, mengedit, menghapus, dan melampirkan gambar pada soal di mode baca dan result detail, lalu membagikan catatan itu ke diskusi yang dapat dibaca semua orang termasuk guest.
 
+Sejak 12 November 2026 catatan juga bisa ditulis **selama mengerjakan mock exam**. Selama ujian
+isinya hanya draft di `AttemptAnswer.note`; saat sesi disubmit draft dipindahkan menjadi catatan
+privat di tabel ini, sehingga langsung muncul di result detail. Lihat
+[Exam](exam.md#catatan-selama-mengerjakan).
+
 **Sejak 8 November 2026 modul ini melayani lima target: soal JLPT, kata flashcard,
 pola bunpou, postingan komunitas, dan artikel.** Tabel, action, query, komponen,
 moderasi, laporan, suspend dan kuota Redis digunakan bersama.
@@ -19,6 +24,7 @@ Dua flag terpisah.
 `FEATURES_QUESTION_COMMENT` (default `true`). Saat `false`:
 
 - Daftar "Catatan Belajar" dan form tambah catatan tidak dirender di `/test-package/[id]/questions` maupun `/result/[attemptId]/detail`.
+- Panel catatan di runner exam tidak dirender; simpan otomatis mengabaikan catatan dan submit tidak memindahkan draft `AttemptAnswer.note` (draft lama tetap tersimpan).
 - Server Action `add`, `update`, `delete`, dan signature upload gambar memanggil `notFound()` sebelum memeriksa session.
 - Catatan yang sudah tersimpan tidak dihapus.
 

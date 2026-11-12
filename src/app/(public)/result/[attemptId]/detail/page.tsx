@@ -4,6 +4,7 @@ import {
   ArrowLeft,
   ArrowRight,
   Flag,
+  NotebookPen,
 } from "lucide-react";
 import { getAttemptDetail } from "@/features/result/actions";
 import { FEATURES } from "@/constants";
@@ -90,6 +91,9 @@ export default async function ResultDetailPage({
       isUnanswered: !answer || answer.selectedAnswer === null,
       isWrong: answer ? !answer.isCorrect && answer.selectedAnswer !== null : false,
       flagged: answer?.flagged ?? false,
+      // Termasuk catatan yang ditulis selama ujian: saat submit isinya sudah
+      // dipindahkan menjadi Catatan Belajar.
+      hasNote: FEATURES.questionComment && question.questionComments.length > 0,
     };
   });
 
@@ -98,6 +102,7 @@ export default async function ResultDetailPage({
   const totalWrong = selectedQuestions.filter((question) => question.isWrong).length;
   const totalUnanswered = selectedQuestions.filter((question) => question.isUnanswered).length;
   const totalFlagged = selectedQuestions.filter((question) => question.flagged).length;
+  const totalNoted = selectedQuestions.filter((question) => question.hasNote).length;
 
   // Precomputed (not mutated during render) so a shared QuestionContext only
   // shows once for a contiguous run of questions that reference it.
@@ -141,7 +146,7 @@ export default async function ResultDetailPage({
               <Link
                 key={q.id}
                 href={`#q-${q.order}`}
-                title={`Soal ${q.order}: ${q.isCorrect ? "Benar" : q.isUnanswered ? "Kosong" : "Salah"}${q.flagged ? " (Ragu-ragu)" : ""}`}
+                title={`Soal ${q.order}: ${q.isCorrect ? "Benar" : q.isUnanswered ? "Kosong" : "Salah"}${q.flagged ? " (Ragu-ragu)" : ""}${q.hasNote ? " (Ada catatan)" : ""}`}
                 className={cn(
                   "relative flex aspect-square items-center justify-center border-2 border-neo-ink font-mono text-xs font-black transition-all hover:-translate-y-0.5",
                   q.isCorrect && "bg-neo-green text-black",
@@ -153,6 +158,11 @@ export default async function ResultDetailPage({
                 {q.flagged && (
                   <span className="absolute -top-1.5 -right-1.5 z-20 grid size-3.5 place-items-center rounded-full border border-neo-ink bg-neo-coral shadow-sm">
                     <Flag className="size-2 fill-white text-white" />
+                  </span>
+                )}
+                {q.hasNote && (
+                  <span className="absolute -bottom-1.5 -right-1.5 z-20 grid size-3.5 place-items-center rounded-full border border-neo-ink bg-white shadow-sm">
+                    <NotebookPen className="size-2 text-black" />
                   </span>
                 )}
               </Link>
@@ -181,6 +191,14 @@ export default async function ResultDetailPage({
               <Flag className="size-1.5 fill-white text-white" />
             </span>
             <span>Ragu-ragu ({totalFlagged})</span>
+          </div>
+        )}
+        {totalNoted > 0 && (
+          <div className="flex items-center gap-2">
+            <span className="size-3 border-2 border-neo-ink bg-white flex items-center justify-center">
+              <NotebookPen className="size-1.5 text-black" />
+            </span>
+            <span>Ada catatan ({totalNoted})</span>
           </div>
         )}
       </div>

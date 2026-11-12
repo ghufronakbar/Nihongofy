@@ -2,7 +2,7 @@
 
 ## Status Aktual
 
-**Fungsional.** Exam runner mendukung full mock dan latihan per section, menyembunyikan answer key, menyimpan jawaban akun otomatis per soal (bisa dilanjutkan dari device lain sebelum submit), dan mengunci sesi yang sudah disubmit lewat `Attempt.currentSession`.
+**Fungsional.** Exam runner mendukung full mock dan latihan per section, menyembunyikan answer key, menyimpan jawaban akun otomatis per soal (bisa dilanjutkan dari device lain sebelum submit), mengunci sesi yang sudah disubmit lewat `Attempt.currentSession`, dan menerima catatan per soal selama mengerjakan yang langsung menjadi Catatan Belajar di pembahasan (sejak 12 November 2026).
 
 ## Feature Flag
 
@@ -34,6 +34,33 @@ Tidak punya flag sendiri; ikut `FEATURES_TEST_PACKAGE` (lihat [Paket tes](test-p
 - Simpan otomatis dan submit sama-sama diawali `update` bersyarat pada baris `Attempt` (`status = IN_PROGRESS` dan `currentSession` = sesi itu). Update ini mengunci baris sehingga keduanya berurutan: simpanan yang tiba setelah submit gagal P2025, dikembalikan sebagai `closed`, dan client diarahkan ke sesi/hasil terbaru. Submit ganda dari dua device hanya diterima sekali.
 - Beban: satu mock ±100 request kecil (1 GET Redis untuk sesi login + ±4 query berindeks), tersebar selama pengerjaan.
 
+## Catatan Selama Mengerjakan
+
+User login dapat menulis catatan per soal selagi ujian berjalan (mis. "ragu antara 2 dan 3",
+"belum hafal pola ini"), lalu membahasnya di `/result/[attemptId]/detail` begitu ujian selesai.
+
+- Panel "Tulis catatan untuk soal ini" di bawah kartu soal; shortcut `N` membuka dan memfokuskan
+  textarea, `Esc` mengembalikan fokus ke halaman. Teks polos, maksimal 2.000 karakter
+  (`EXAM_NOTE_MAX_LENGTH`, sama dengan batas Catatan Belajar). Lampiran gambar ditambahkan dari
+  pembahasan.
+- Lembar jawaban menandai soal yang punya catatan; dialog submit menyebut jumlah catatan yang akan
+  dipindahkan.
+- **Draft di `AttemptAnswer.note`.** Catatan ikut antrean simpan otomatis yang sama dengan jawaban
+  (sessionStorage, retry, lanjut di device lain), jadi tidak kena kuota tulis komentar per menit.
+  Isi yang hanya spasi disimpan sebagai `null`.
+- **Submit memindahkan draft menjadi `QuestionComment` privat** (`createMany`) dalam transaksi yang
+  sama dengan klaim sesi dan penilaian, lalu mengosongkan `note`. Submit ganda yang kalah klaim
+  tidak menggandakan catatan. Catatan itu kemudian tampil sebagai Catatan Belajar biasa: bisa
+  disunting, diberi gambar, dihapus, atau dibagikan ke diskusi. Pemindahan sengaja tanpa
+  `COMMENT_WRITE_RATE_LIMITS`: privat, paling banyak satu per soal sesi.
+- Seperti jawaban, yang dipindahkan adalah lembar di device yang men-submit. Payload dari tab lama
+  tanpa field `note` tidak menyentuh draft tersimpan.
+- Mengikuti `FEATURES_QUESTION_COMMENT`. Saat mati, panel tidak dirender, simpan otomatis
+  mengabaikan `note`, dan submit tidak memindahkan maupun menghapus draft yang sudah ada.
+- Guest tidak mendapat panel ini karena tidak punya akun untuk menyimpan Catatan Belajar.
+- Draft sesi yang belum disubmit ikut `/api/account/export`; penghapusan akun menghapus attempt
+  beserta draft-nya.
+
 ## Guest Mode
 
 - Pilihan paket/section disimpan dalam cookie `jlpt_guest_exam` (dibaca lewat `readGuestExamCookie`).
@@ -47,7 +74,7 @@ Tidak punya flag sendiri; ikut `FEATURES_TEST_PACKAGE` (lihat [Paket tes](test-p
 
 - Tidak ada timer internal. Detail paket hanya memberikan durasi resmi sebagai acuan timer mandiri.
 - Furigana tidak tampil selama pengerjaan, termasuk yang tercetak di soal asli. Semua furigana (instruksi, soal, bacaan, pilihan) dibuang dari payload di server (`withoutFurigana`/`withoutQuestionFurigana` di `getExamQuestions`), bukan hanya tidak dirender: props Client Component ikut terkirim utuh di RSC payload, dan pada `MOJI_GOI_READ_KANJI` furigana di dalam underline adalah jawabannya.
-- Comment tidak tampil selama pengerjaan.
+- Catatan Belajar lama dan diskusi tidak tampil selama pengerjaan karena dapat menyebut jawabannya. Runner hanya membaca draft catatan milik attempt ini (`AttemptAnswer.note`), tidak pernah menyentuh `QuestionComment`.
 
 ## Keterbatasan dan Risiko
 
@@ -71,6 +98,7 @@ Server Component ke Client Component (RSC payload) dan data cache yang dapat dip
 | Exam `/exam/[attemptId]/[session]` (`getExamQuestions` → `ExamRunner`) | Stem, stimulus, pilihan, media. Tanpa kunci, pembahasan, atau catatan | Selama attempt; pemilik attempt atau guest pemegang cookie | Aman. Cara baca 漢字読み di underline ikut terkirim — **bocor, diperbaiki** |
 | Submit sesi (`submitExamSessionAction`) | Hanya redirect. Kunci dibaca untuk menilai, tidak dikembalikan | Per sesi | Aman |
 | Simpan otomatis (`saveExamAnswersAction`) | Hanya status `saved`/`closed`/`unauthorized`. Tidak membaca kunci; tidak menulis `isCorrect` | Per perubahan jawaban, pemilik attempt | Aman (ditambahkan 11 November 2026) |
+| Catatan selama mengerjakan (`AttemptAnswer.note`) | Hanya draft yang ditulis user di attempt ini; Catatan Belajar lama dan diskusi tidak dibaca | Selama attempt, pemilik attempt | Aman (ditambahkan 12 November 2026). Dipindahkan ke `QuestionComment` saat submit |
 | Guest exam | Jawaban hanya di `sessionStorage`; client tidak menilai apa pun | Guest | Aman |
 | `/result/guest` (`getGuestAttemptSummary`) | Agregat: benar/salah/kosong/ragu dan proyeksi skor | Setelah sesi terakhir, pemegang cookie guest | Disengaja. Dapat dipakai sebagai oracle skor, setara mode baca yang publik |
 | Latihan login (`getPracticeSession`, `submitPracticeAnswerAction`) | Kunci dan pembahasan hanya untuk soal yang sudah dijawab; dinilai server | Pemilik sesi | Aman. Cara baca 漢字読み — **bocor, diperbaiki** |
@@ -105,4 +133,6 @@ Penjaganya `src/lib/answer-key-guard.test.ts`:
 - `src/features/exam/storage.ts`
 - `src/features/exam/components/exam-provider.tsx`
 - `src/features/exam/components/exam-runner.tsx`
+- `src/features/exam/components/exam-note-panel.tsx`
+- `src/features/exam/note.ts`
 - `src/app/(public)/exam/[attemptId]/[session]/page.tsx`

@@ -6,11 +6,14 @@ import { Prisma, type AttemptStatus, type JlptSection } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { withoutFurigana, withoutQuestionFurigana } from "@/lib/japanese-markup";
+import { FEATURES } from "@/constants";
 import { CACHE_TAGS } from "@/constants/cache-key";
 import { readGuestExamCookie } from "./guest-cookie";
+import { examNoteText } from "./note";
 import {
   SaveExamAnswersSchema,
   SubmitExamSessionSchema,
+  type ExamSheetEntryInput,
   type SaveExamAnswersInput,
   type SubmitExamSessionInput,
 } from "./schemas";
@@ -67,6 +70,16 @@ function claimActiveSession(
     data,
     select: { id: true },
   });
+}
+
+/**
+ * Catatan selama mengerjakan ikut `FEATURES_QUESTION_COMMENT`, karena isinya
+ * berakhir sebagai Catatan Belajar. `undefined` berarti draft tersimpan tidak
+ * disentuh: flag mati, atau tab lama yang belum mengenal catatan.
+ */
+function sheetNote(answer: ExamSheetEntryInput | undefined) {
+  if (!FEATURES.questionComment || answer?.note === undefined) return undefined;
+  return answer.note;
 }
 
 // Mode kerja tanpa furigana: furigana hanya tampil saat review atau mode baca.
@@ -200,9 +213,11 @@ export async function getExamQuestions(attemptId: number, urlSession: number) {
 
   // Lembar jawaban yang sudah tersimpan otomatis, dari device mana pun.
   // `isCorrect` sengaja tidak dipilih: untuk sesi berjalan nilainya belum dihitung.
+  // `note` hanya draft yang ditulis user di attempt ini, bukan Catatan Belajar
+  // lama yang dapat menyebut jawabannya.
   const savedAnswersQuery = prisma.attemptAnswer.findMany({
     where: { attemptId, question: { testPackageItem: itemWhere } },
-    select: { questionId: true, selectedAnswer: true, flagged: true },
+    select: { questionId: true, selectedAnswer: true, flagged: true, note: true },
   });
 
   const [testPackageItems, savedAnswers] = await Promise.all([
@@ -221,8 +236,9 @@ export type SaveExamAnswersResult =
   | { status: "closed"; redirectTo: string };
 
 /**
- * Simpan otomatis jawaban yang berubah pada sesi yang sedang berjalan, supaya
- * ujian bisa dilanjutkan dari device lain sebelum sesi disubmit. Tidak menilai
+ * Simpan otomatis jawaban (beserta draft catatan) yang berubah pada sesi yang
+ * sedang berjalan, supaya ujian bisa dilanjutkan dari device lain sebelum sesi
+ * disubmit. Tidak menilai
  * apa pun: `isCorrect` baru dihitung saat submit, dan action ini tidak pernah
  * mengembalikan data soal. Sengaja tanpa revalidate/cookie agar halaman tidak
  * dirender ulang setiap kali menyimpan.
@@ -277,19 +293,24 @@ export async function saveExamAnswersAction(
   const saved = await prisma
     .$transaction([
       claimActiveSession(attemptId, attempt, { updatedAt: new Date() }),
-      ...[...latestByQuestion.values()].map((answer) =>
-        prisma.attemptAnswer.upsert({
+      ...[...latestByQuestion.values()].map((answer) => {
+        const note = sheetNote(answer);
+        // Disimpan apa adanya supaya device lain memulihkan teks yang sama;
+        // isi yang hanya spasi dianggap tidak ada catatan.
+        const noteData = note === undefined ? {} : { note: examNoteText(note) === null ? null : note };
+        return prisma.attemptAnswer.upsert({
           where: { attemptId_questionId: { attemptId, questionId: answer.questionId } },
           create: {
             attemptId,
             questionId: answer.questionId,
             selectedAnswer: answer.selectedAnswer,
             flagged: answer.flagged,
+            ...noteData,
           },
-          update: { selectedAnswer: answer.selectedAnswer, flagged: answer.flagged },
+          update: { selectedAnswer: answer.selectedAnswer, flagged: answer.flagged, ...noteData },
           select: { id: true },
-        }),
-      ),
+        });
+      }),
     ])
     .then(
       () => true,
@@ -406,6 +427,31 @@ export async function submitExamSessionAction(input: SubmitExamSessionInput) {
     };
   });
 
+  // Catatan selama mengerjakan dipindahkan menjadi Catatan Belajar privat,
+  // supaya langsung tampil di pembahasan dan bisa disunting, diberi gambar, atau
+  // dibagikan ke diskusi dari sana. Draft-nya dikosongkan di transaksi yang
+  // sama, jadi isinya tidak tersimpan dua kali. Seperti jawaban, yang berlaku
+  // lembar yang terlihat di device yang men-submit.
+  //
+  // Sengaja tanpa kuota COMMENT_WRITE_RATE_LIMITS: catatannya privat, paling
+  // banyak satu per soal sesi, dan sudah dibatasi panjangnya oleh schema.
+  const consumedNotes = new Set<number>();
+  const noteComments: Prisma.QuestionCommentCreateManyInput[] = [];
+  for (const questionId of answerKey.keys()) {
+    const note = sheetNote(submitted.get(questionId));
+    if (note === undefined) continue;
+    consumedNotes.add(questionId);
+    const commentText = examNoteText(note);
+    if (commentText === null) continue;
+    noteComments.push({
+      questionId,
+      userId: authSession.userId,
+      commentText,
+      commentImages: [],
+      visibility: "PRIVATE",
+    });
+  }
+
   const nextSession = attempt.sectionScope
     ? undefined
     : sessionNumbers[sessionNumbers.indexOf(urlSession) + 1];
@@ -429,10 +475,14 @@ export async function submitExamSessionAction(input: SubmitExamSessionInput) {
             selectedAnswer: row.selectedAnswer,
             isCorrect: row.isCorrect,
             flagged: row.flagged,
+            ...(consumedNotes.has(row.questionId) ? { note: null } : {}),
           },
           select: { id: true },
         }),
       ),
+      ...(noteComments.length > 0
+        ? [prisma.questionComment.createMany({ data: noteComments })]
+        : []),
     ])
     .then(
       () => true,

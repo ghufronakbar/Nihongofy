@@ -50,6 +50,9 @@ export default async function ExamPage({
         sectionScope={attempt.sectionScope}
         questions={questions}
         reportEnabled={FEATURES.report}
+        // `savedAnswers` null = jalur guest (juga user yang sesinya habis):
+        // tidak ada akun untuk menyimpan catatannya.
+        notesEnabled={FEATURES.questionComment && savedAnswers !== null}
       />
     </ExamProvider>
   );

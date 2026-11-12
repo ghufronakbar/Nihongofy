@@ -18,11 +18,18 @@ import { examStorageKey } from "../storage";
 type AnswerState = {
   selectedAnswer: number | null;
   flagged: boolean;
+  /** Catatan selama mengerjakan; string kosong = belum ada catatan. */
+  note: string;
 };
 
 type AnswerMap = Record<number, AnswerState>;
 
-export type SavedExamAnswer = AnswerState & { questionId: number };
+export type SavedExamAnswer = {
+  questionId: number;
+  selectedAnswer: number | null;
+  flagged: boolean;
+  note: string | null;
+};
 
 /**
  * Status simpan otomatis untuk user login. `null` pada guest, yang lembar
@@ -42,6 +49,7 @@ type ExamContextValue = {
   getAnswer: (questionId: number) => AnswerState;
   setAnswer: (questionId: number, selectedAnswer: number | null) => void;
   toggleFlag: (questionId: number) => void;
+  setNote: (questionId: number, note: string) => void;
   /** Coba kirim ulang sekarang, mis. dari tombol "Coba lagi". */
   retrySave: () => void;
   /** Dipanggil tepat sebelum submit: payload submit sudah membawa seluruh lembar. */
@@ -50,7 +58,7 @@ type ExamContextValue = {
 
 const ExamContext = createContext<ExamContextValue | null>(null);
 
-const EMPTY_ANSWER: AnswerState = { selectedAnswer: null, flagged: false };
+const EMPTY_ANSWER: AnswerState = { selectedAnswer: null, flagged: false, note: "" };
 
 // Jeda setelah perubahan terakhir sebelum dikirim, supaya ganti pilihan atau
 // tanda ragu beruntun terkirim dalam satu request.
@@ -59,13 +67,29 @@ const RETRY_MIN_MS = 2_000;
 const RETRY_MAX_MS = 30_000;
 
 function readStoredAnswers(key: string): AnswerMap {
+  let parsed: unknown;
   try {
     const raw = sessionStorage.getItem(key);
-    return raw ? (JSON.parse(raw) as AnswerMap) : {};
+    parsed = raw ? JSON.parse(raw) : {};
   } catch {
     // storage diblokir atau isinya rusak — mulai dari yang ada saja
     return {};
   }
+  if (typeof parsed !== "object" || parsed === null) return {};
+
+  // Lembar dari versi sebelum ada catatan tidak punya `note`.
+  const answers: AnswerMap = {};
+  for (const [questionId, state] of Object.entries(parsed)) {
+    const id = Number(questionId);
+    if (!Number.isInteger(id) || id <= 0 || typeof state !== "object" || state === null) continue;
+    const { selectedAnswer, flagged, note } = state as Record<string, unknown>;
+    answers[id] = {
+      selectedAnswer: typeof selectedAnswer === "number" ? selectedAnswer : null,
+      flagged: flagged === true,
+      note: typeof note === "string" ? note : "",
+    };
+  }
+  return answers;
 }
 
 function writeStoredAnswers(key: string, answers: AnswerMap) {
@@ -78,7 +102,9 @@ function writeStoredAnswers(key: string, answers: AnswerMap) {
 }
 
 function sameAnswer(a: AnswerState | undefined, b: AnswerState | undefined) {
-  return a?.selectedAnswer === b?.selectedAnswer && a?.flagged === b?.flagged;
+  return (
+    a?.selectedAnswer === b?.selectedAnswer && a?.flagged === b?.flagged && a?.note === b?.note
+  );
 }
 
 /**
@@ -156,6 +182,7 @@ export function ExamProvider({
           questionId: Number(questionId),
           selectedAnswer: state.selectedAnswer,
           flagged: state.flagged,
+          note: state.note,
         })),
       });
       if (stoppedRef.current) return;
@@ -216,8 +243,8 @@ export function ExamProvider({
 
     if (autosave) {
       const fromServer: AnswerMap = {};
-      for (const { questionId, selectedAnswer, flagged } of savedAnswers) {
-        fromServer[questionId] = { selectedAnswer, flagged };
+      for (const { questionId, selectedAnswer, flagged, note } of savedAnswers) {
+        fromServer[questionId] = { selectedAnswer, flagged, note: note ?? "" };
       }
       restored = { ...fromServer, ...stored };
       pendingRef.current = stored;
@@ -323,6 +350,7 @@ export function ExamProvider({
         updateAnswer(questionId, (previous) => ({ ...previous, selectedAnswer })),
       toggleFlag: (questionId) =>
         updateAnswer(questionId, (previous) => ({ ...previous, flagged: !previous.flagged })),
+      setNote: (questionId, note) => updateAnswer(questionId, (previous) => ({ ...previous, note })),
       retrySave,
       stopAutosave,
     }),
