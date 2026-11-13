@@ -342,6 +342,7 @@ Aturan tambahan:
 - Soal `BUNPOU_SENTENCE_COMPOSITION` (★): `questionAnswer` = codeAnswer pilihan yang jatuh di posisi ★ (sesuai format JLPT asli). Tidak perlu skema khusus.
 - `AttemptAnswer.isCorrect` adalah field denormalized: dihitung sekali saat submit (`selectedAnswer == questionAnswer`), disimpan agar query analitik tidak perlu join kunci jawaban. Jika kunci jawaban dikoreksi setelah ada attempt, `isCorrect` attempt lama HARUS dihitung ulang.
 - Row `AttemptAnswer` sesi yang sedang berjalan ditulis oleh simpan otomatis dengan `isCorrect = false`; nilainya baru benar setelah sesi disubmit. Karena itu semua pembaca `isCorrect` wajib memfilter `Attempt.status = COMPLETED`.
+- `AttemptAnswer.note` hanya draft catatan selama sesi berjalan (ditulis simpan otomatis). Submit memindahkannya menjadi `QuestionComment` privat di transaksi yang sama lalu mengosongkannya; jangan membacanya sebagai Catatan Belajar. Runner exam hanya boleh membaca kolom ini, bukan `QuestionComment`.
 - `Attempt.currentSession` adalah satu-satunya sesi full mock yang boleh dibuka, disimpan otomatis, dan disubmit; submit menaikkannya (atau menyelesaikan attempt) lewat `update` bersyarat dalam transaksi yang sama dengan penilaian. Latihan section selalu 1.
 - `selectedAnswer = null` berarti soal dilewati/tidak dijawab (dihitung salah dalam skor, tapi bisa dibedakan di analitik).
 - Jawaban per soal di-UPDATE (upsert), bukan insert baru — ditegakkan oleh `@@unique([attemptId, questionId])`.

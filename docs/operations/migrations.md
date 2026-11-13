@@ -33,6 +33,24 @@ contract wajib memiliki migration dan catatan ringkas di dokumen/PR perubahan. J
 
 ## Ledger
 
+### 12 November 2026 - Catatan selama mengerjakan mock exam
+
+- Status: required; belum diterapkan.
+- Migration: `prisma/migrations/20261112090000_attempt_answer_note/migration.sql`.
+- Alasan: user dapat menulis catatan per soal selama ujian. Draft ikut simpan otomatis jawaban,
+  lalu dipindahkan menjadi `QuestionComment` privat saat sesi disubmit.
+- Object: kolom `AttemptAnswer.note TEXT NULL`. Tidak ada index, constraint, grant/RLS, atau
+  penghapusan data.
+- Data existing: tidak ada backfill; seluruh row lama `NULL`.
+- Risiko operasi: ALTER kolom nullable tanpa default tidak menulis ulang tabel. Aditif, jadi aman
+  diterapkan sebelum deploy kode; kode baru wajib menunggu kolom ini ada (runner membaca `note`).
+  Tab exam lama yang tidak mengirim `note` tetap diterima.
+- Validasi: prisma validate; seluruh migration direplay ke PostgreSQL 16 lokal, lalu `migrate diff`
+  database hasil replay terhadap schema hanya menyisakan selisih lama `Report.updatedAt` yang tidak
+  terkait. Typecheck, lint, vitest (termasuk `src/features/exam/actions.test.ts` dan guard kunci
+  jawaban).
+- Refresh: `migrate deploy` melalui DIRECT_URL; tidak ada cache yang perlu diinvalidasi.
+
 ### 11 November 2026 - Simpan otomatis jawaban mock exam
 
 - Status: required; diterapkan ke database production 11 November 2026 (migrate status

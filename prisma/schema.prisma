@@ -1483,6 +1483,14 @@ model AttemptAnswer {
   flagged      Boolean @default(false) // ditandai ragu-ragu saat mengerjakan; flagged+salah = sinyal analitik bagus
   timeSpentSec Int? // waktu yang dihabiskan di soal ini (opsional)
 
+  // Catatan yang ditulis user selama sesi berjalan, ikut tersimpan otomatis
+  // bersama jawaban. Hanya draft: saat sesi disubmit isinya dipindahkan menjadi
+  // `QuestionComment` privat (Catatan Belajar) lalu kolom ini dikosongkan, jadi
+  // pembahasan dan diskusi tetap satu tempat. Sengaja tidak memakai
+  // QuestionComment langsung: runner exam hanya boleh membaca tulisan dari
+  // attempt ini, bukan catatan lama yang bisa menyebut jawabannya.
+  note String? @db.Text
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

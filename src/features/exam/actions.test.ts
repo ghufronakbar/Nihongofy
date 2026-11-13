@@ -10,9 +10,11 @@ const mocks = vi.hoisted(() => ({
   attemptAnswer: { findMany: vi.fn(), upsert: vi.fn() },
   testPackageItem: { findMany: vi.fn() },
   question: { findMany: vi.fn() },
+  questionComment: { createMany: vi.fn() },
   transaction: vi.fn(),
   getSession: vi.fn(),
   updateTag: vi.fn(),
+  features: { questionComment: true },
 }));
 
 vi.mock("@/lib/prisma", () => ({
@@ -21,9 +23,11 @@ vi.mock("@/lib/prisma", () => ({
     attemptAnswer: mocks.attemptAnswer,
     testPackageItem: mocks.testPackageItem,
     question: mocks.question,
+    questionComment: mocks.questionComment,
     $transaction: mocks.transaction,
   },
 }));
+vi.mock("@/constants", () => ({ FEATURES: mocks.features }));
 vi.mock("@/lib/auth", () => ({ getSession: mocks.getSession }));
 vi.mock("next/navigation", () => ({
   notFound: () => {
@@ -66,7 +70,12 @@ beforeEach(() => {
   mocks.getSession.mockResolvedValue({ userId: USER_ID, sessionId: "sesi" });
   mocks.attempt.update.mockImplementation((args: unknown) => ({ op: "claim", args }));
   mocks.attemptAnswer.upsert.mockImplementation((args: unknown) => ({ op: "upsert", args }));
+  mocks.questionComment.createMany.mockImplementation((args: unknown) => ({
+    op: "createNotes",
+    args,
+  }));
   mocks.transaction.mockResolvedValue([]);
+  mocks.features.questionComment = true;
 });
 
 afterEach(() => {
@@ -91,14 +100,18 @@ describe("getExamQuestions", () => {
     mocks.attempt.findUnique.mockResolvedValue(attemptRow({ currentSession: 2 }));
     mocks.testPackageItem.findMany.mockResolvedValue([]);
     mocks.attemptAnswer.findMany.mockResolvedValue([
-      { questionId: 201, selectedAnswer: 3, flagged: true },
+      { questionId: 201, selectedAnswer: 3, flagged: true, note: "ragu 2 atau 3" },
     ]);
 
     const { savedAnswers } = await getExamQuestions(10, 2);
 
-    expect(savedAnswers).toEqual([{ questionId: 201, selectedAnswer: 3, flagged: true }]);
+    expect(savedAnswers).toEqual([
+      { questionId: 201, selectedAnswer: 3, flagged: true, note: "ragu 2 atau 3" },
+    ]);
     expect(mocks.attemptAnswer.findMany.mock.calls[0]![0]).toMatchObject({
       where: { attemptId: 10, question: { testPackageItem: { testPackageId: 1, session: 2 } } },
+      // Hanya draft attempt ini; catatan belajar lama tidak pernah dibaca runner.
+      select: { questionId: true, selectedAnswer: true, flagged: true, note: true },
     });
   });
 });
@@ -136,6 +149,45 @@ describe("saveExamAnswersAction", () => {
         select: { id: true },
       },
     });
+  });
+
+  it("catatan disimpan apa adanya; isi yang hanya spasi dikosongkan", async () => {
+    mocks.attempt.findUnique.mockResolvedValue(attemptRow());
+    mocks.question.findMany.mockResolvedValue([{ id: 100 }, { id: 101 }]);
+
+    await saveExamAnswersAction({
+      attemptId: 10,
+      session: 1,
+      answers: [
+        { questionId: 100, selectedAnswer: null, flagged: false, note: " ragu 2 atau 3 " },
+        { questionId: 101, selectedAnswer: 1, flagged: false, note: "   " },
+      ],
+    });
+
+    const [batch] = mocks.transaction.mock.calls[0]!;
+    expect(batch[1].args.create).toMatchObject({ questionId: 100, note: " ragu 2 atau 3 " });
+    expect(batch[1].args.update).toEqual({
+      selectedAnswer: null,
+      flagged: false,
+      note: " ragu 2 atau 3 ",
+    });
+    expect(batch[2].args.update).toEqual({ selectedAnswer: 1, flagged: false, note: null });
+  });
+
+  it("catatan tidak ditulis saat FEATURES_QUESTION_COMMENT mati", async () => {
+    mocks.features.questionComment = false;
+    mocks.attempt.findUnique.mockResolvedValue(attemptRow());
+    mocks.question.findMany.mockResolvedValue([{ id: 100 }]);
+
+    await saveExamAnswersAction({
+      attemptId: 10,
+      session: 1,
+      answers: [{ questionId: 100, selectedAnswer: 2, flagged: false, note: "rahasia" }],
+    });
+
+    const [batch] = mocks.transaction.mock.calls[0]!;
+    expect(batch[1].args.update).toEqual({ selectedAnswer: 2, flagged: false });
+    expect(batch[1].args.create).not.toHaveProperty("note");
   });
 
   it("sesi yang sudah disubmit ditolak tanpa menulis apa pun", async () => {
@@ -227,6 +279,82 @@ describe("submitExamSessionAction", () => {
       { attemptId: 10, questionId: 101, selectedAnswer: null, isCorrect: false, flagged: false },
     ]);
     expect(mocks.updateTag).not.toHaveBeenCalled();
+  });
+
+  it("catatan selama mengerjakan menjadi Catatan Belajar privat dan draft-nya dikosongkan", async () => {
+    mocks.attempt.findUnique.mockResolvedValue(attemptRow());
+    mockPackage();
+
+    await expect(
+      submitExamSessionAction({
+        attemptId: 10,
+        session: 1,
+        answers: [
+          { questionId: 100, selectedAnswer: 2, flagged: false, note: "  belum hafal 〜わけにはいかない " },
+          { questionId: 101, selectedAnswer: null, flagged: true, note: " " },
+          // Soal di luar sesi tidak boleh menitipkan catatan ke soal lain.
+          { questionId: 555, selectedAnswer: 1, flagged: false, note: "titipan" },
+        ],
+      }),
+    ).rejects.toThrow("NEXT_REDIRECT /exam/10/2");
+
+    const [batch] = mocks.transaction.mock.calls[0]!;
+    // Dalam transaksi yang sama dengan klaim sesi: submit ganda tidak menggandakan catatan.
+    expect(batch[0].op).toBe("claim");
+    expect(batch.at(-1)).toEqual({
+      op: "createNotes",
+      args: {
+        data: [
+          {
+            questionId: 100,
+            userId: USER_ID,
+            commentText: "belum hafal 〜わけにはいかない",
+            commentImages: [],
+            visibility: "PRIVATE",
+          },
+        ],
+      },
+    });
+    const upserts = batch.filter((query: { op: string }) => query.op === "upsert");
+    expect(upserts.map((query: { args: { update: unknown } }) => query.args.update)).toEqual([
+      { selectedAnswer: 2, isCorrect: true, flagged: false, note: null },
+      { selectedAnswer: null, isCorrect: false, flagged: true, note: null },
+    ]);
+  });
+
+  it("lembar tanpa catatan (tab lama) tidak menyentuh draft tersimpan", async () => {
+    mocks.attempt.findUnique.mockResolvedValue(attemptRow());
+    mockPackage();
+
+    await expect(
+      submitExamSessionAction({
+        attemptId: 10,
+        session: 1,
+        answers: [{ questionId: 100, selectedAnswer: 2, flagged: false }],
+      }),
+    ).rejects.toThrow("NEXT_REDIRECT /exam/10/2");
+
+    const [batch] = mocks.transaction.mock.calls[0]!;
+    expect(mocks.questionComment.createMany).not.toHaveBeenCalled();
+    for (const query of batch.slice(1)) expect(query.args.update).not.toHaveProperty("note");
+  });
+
+  it("FEATURES_QUESTION_COMMENT mati: catatan tidak dipindahkan maupun dihapus", async () => {
+    mocks.features.questionComment = false;
+    mocks.attempt.findUnique.mockResolvedValue(attemptRow());
+    mockPackage();
+
+    await expect(
+      submitExamSessionAction({
+        attemptId: 10,
+        session: 1,
+        answers: [{ questionId: 100, selectedAnswer: 2, flagged: false, note: "catatan" }],
+      }),
+    ).rejects.toThrow("NEXT_REDIRECT /exam/10/2");
+
+    const [batch] = mocks.transaction.mock.calls[0]!;
+    expect(mocks.questionComment.createMany).not.toHaveBeenCalled();
+    for (const query of batch.slice(1)) expect(query.args.update).not.toHaveProperty("note");
   });
 
   it("sesi terakhir menyelesaikan attempt", async () => {

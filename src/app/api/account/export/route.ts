@@ -143,6 +143,9 @@ export async function GET() {
               selectedAnswer: true,
               isCorrect: true,
               flagged: true,
+              // Draft catatan sesi yang belum disubmit; setelah submit isinya
+              // ada di questionComments.
+              note: true,
               timeSpentSec: true,
               createdAt: true,
               updatedAt: true,

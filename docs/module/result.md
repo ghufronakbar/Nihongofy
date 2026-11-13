@@ -28,7 +28,9 @@ Tidak punya flag sendiri; ikut `FEATURES_TEST_PACKAGE` (lihat [Paket tes](test-p
   tanpa teks atau gambar. Audio context tetap tersedia jika audio per soal belum ada.
 - Furigana dapat ditampilkan/disembunyikan.
 - Navigasi per mondai tersedia pada desktop dan mobile.
-- User dapat copy soal ke clipboard serta mengelola catatan pribadi.
+- User dapat copy soal ke clipboard serta mengelola catatan pribadi, termasuk catatan yang ditulis
+  selama ujian (dipindahkan menjadi Catatan Belajar saat sesi disubmit). Lembar jawaban menandai
+  soal yang punya catatan.
 - Detail tidak dicache karena comment harus langsung terlihat setelah mutation.
 - Attempt yang belum `COMPLETED` dialihkan, dan attempt milik orang lain berakhir 404, sebelum
   query yang membaca kunci dijalankan (dijaga `src/lib/answer-key-guard.test.ts`).

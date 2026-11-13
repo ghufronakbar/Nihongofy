@@ -4,7 +4,9 @@ import { useEffect, useMemo, useState, useTransition } from "react";
 import { useSearchParams } from "next/navigation";
 import type { JlptLevel, JlptSection, MondaiType } from "@prisma/client";
 import { useExam, type ExamSaveStatus } from "./exam-provider";
+import { ExamNotePanel } from "./exam-note-panel";
 import { submitExamSessionAction } from "../actions";
+import { examNoteText } from "../note";
 import { JapaneseText } from "@/components/japanese-text";
 import { JapanesePassage } from "@/components/japanese-passage";
 import { ImageWithLightbox } from "@/components/image-with-lightbox";
@@ -24,6 +26,7 @@ import {
   Flag,
   Headphones,
   LoaderCircle,
+  NotebookPen,
   Send,
 } from "lucide-react";
 import {
@@ -73,6 +76,11 @@ type ExamRunnerProps = {
    * client tidak boleh menarik `@/constants` ke bundle browser.
    */
   reportEnabled: boolean;
+  /**
+   * Catatan selama mengerjakan: `FEATURES.questionComment` dan hanya untuk user
+   * login, karena catatannya berakhir sebagai Catatan Belajar di akun.
+   */
+  notesEnabled: boolean;
 };
 
 export function ExamRunner({
@@ -83,10 +91,19 @@ export function ExamRunner({
   sectionScope,
   questions,
   reportEnabled,
+  notesEnabled,
 }: ExamRunnerProps) {
   const searchParams = useSearchParams();
-  const { hydrated, saveStatus, getAnswer, setAnswer, toggleFlag, retrySave, stopAutosave } =
-    useExam();
+  const {
+    hydrated,
+    saveStatus,
+    getAnswer,
+    setAnswer,
+    toggleFlag,
+    setNote,
+    retrySave,
+    stopAutosave,
+  } = useExam();
   const [isSubmitting, startTransition] = useTransition();
 
   const totalQuestions = questions.length;
@@ -105,6 +122,13 @@ export function ExamRunner({
   const flaggedCount = useMemo(
     () => questions.filter((q) => answeredMap[q.id]?.flagged).length,
     [questions, answeredMap],
+  );
+  const notedCount = useMemo(
+    () =>
+      notesEnabled
+        ? questions.filter((q) => examNoteText(answeredMap[q.id]?.note) !== null).length
+        : 0,
+    [notesEnabled, questions, answeredMap],
   );
   const progressPercentage = totalQuestions > 0 ? Math.round((answeredCount / totalQuestions) * 100) : 0;
 
@@ -135,9 +159,15 @@ export function ExamRunner({
   }, [hydrated, currentIndex, rawQuestionNumber]);
 
   const [confirmOpen, setConfirmOpen] = useState(false);
+  // Soal yang panel catatannya dibuka user walau masih kosong; soal yang sudah
+  // punya catatan selalu menampilkannya.
+  const [noteOpenFor, setNoteOpenFor] = useState<number | null>(null);
+  const [noteFocusSignal, setNoteFocusSignal] = useState(0);
 
   const currentQuestion = questions[currentIndex];
-  const answerState = currentQuestion ? getAnswer(currentQuestion.id) : { selectedAnswer: null, flagged: false };
+  const answerState = currentQuestion
+    ? getAnswer(currentQuestion.id)
+    : { selectedAnswer: null, flagged: false, note: "" };
   const questionPromptFallback = currentQuestion
     ? questionPromptFallbackLabel(currentQuestion)
     : null;
@@ -145,6 +175,11 @@ export function ExamRunner({
   function goToQuestion(index: number) {
     const clamped = Math.min(Math.max(index, 0), totalQuestions - 1);
     replaceQuestionNumber(clamped + 1);
+  }
+
+  function writeNote(questionId: number) {
+    setNoteOpenFor(questionId);
+    setNoteFocusSignal((signal) => signal + 1);
   }
 
   // Keyboard navigation & shortcuts
@@ -169,6 +204,16 @@ export function ExamRunner({
         }
       } else if (e.key === "f" || e.key === "F") {
         toggleFlag(currentQuestion.id);
+      } else if (
+        notesEnabled &&
+        (e.key === "n" || e.key === "N") &&
+        !e.ctrlKey &&
+        !e.metaKey &&
+        !e.altKey
+      ) {
+        // Tanpa ini huruf "n" ikut terketik ke textarea yang baru difokuskan.
+        e.preventDefault();
+        writeNote(currentQuestion.id);
       } else if (e.key === "ArrowLeft" || e.key === "j" || e.key === "J") {
         if (currentIndex > 0) goToQuestion(currentIndex - 1);
       } else if (e.key === "ArrowRight" || e.key === "k" || e.key === "K") {
@@ -179,7 +224,7 @@ export function ExamRunner({
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hydrated, confirmOpen, currentIndex, currentQuestion, totalQuestions]);
+  }, [hydrated, confirmOpen, currentIndex, currentQuestion, totalQuestions, notesEnabled]);
 
   function handleSubmit() {
     startTransition(async () => {
@@ -192,6 +237,7 @@ export function ExamRunner({
           questionId: q.id,
           selectedAnswer: state.selectedAnswer,
           flagged: state.flagged,
+          note: state.note,
         };
       });
       await submitExamSessionAction({ attemptId, session, answers: payload });
@@ -297,6 +343,16 @@ export function ExamRunner({
                   <div className="flex items-start gap-2 border-2 border-neo-ink bg-neo-coral/15 p-3 text-xs font-bold text-neo-ink">
                     <AlertTriangle className="size-4 shrink-0 text-neo-coral mt-0.5" />
                     <span>Ada {unansweredCount} soal yang belum dijawab dan akan dihitung salah jika disubmit sekarang.</span>
+                  </div>
+                )}
+
+                {notedCount > 0 && (
+                  <div className="flex items-start gap-2 border-2 border-neo-ink bg-neo-yellow/25 p-3 text-xs font-bold text-neo-ink">
+                    <NotebookPen className="size-4 shrink-0 mt-0.5" />
+                    <span>
+                      {notedCount} catatan dari sesi ini akan disimpan sebagai Catatan Belajar pribadi
+                      dan tampil di pembahasan soalnya setelah ujian selesai.
+                    </span>
                   </div>
                 )}
 
@@ -530,6 +586,18 @@ export function ExamRunner({
             </div>
           </section>
 
+          {notesEnabled && (
+            <ExamNotePanel
+              questionOrder={currentQuestion.order}
+              note={answerState.note}
+              open={noteOpenFor === currentQuestion.id || answerState.note !== ""}
+              focusSignal={noteFocusSignal}
+              onOpen={() => writeNote(currentQuestion.id)}
+              onClose={() => setNoteOpenFor(null)}
+              onChange={(note) => setNote(currentQuestion.id, note)}
+            />
+          )}
+
           {/* Navigation Controls */}
           <nav className="flex items-center justify-between gap-3 pt-2" aria-label="Navigasi soal">
             <button
@@ -543,7 +611,9 @@ export function ExamRunner({
             </button>
 
             <div className="hidden sm:flex items-center gap-2 font-mono text-xs font-bold text-foreground/60">
-              <span>Shortcut: [1-4] Pilih · [F] Ragu · [←/→] Nav</span>
+              <span>
+                Shortcut: [1-4] Pilih · [F] Ragu{notesEnabled && " · [N] Catatan"} · [←/→] Nav
+              </span>
             </div>
 
             {currentIndex < totalQuestions - 1 ? (
@@ -593,13 +663,14 @@ export function ExamRunner({
                   const isCurrent = index === currentIndex;
                   const isAnswered = state.selectedAnswer != null;
                   const isFlagged = state.flagged;
+                  const hasNote = notesEnabled && examNoteText(state.note) !== null;
 
                   return (
                     <button
                       key={q.id}
                       type="button"
                       onClick={() => goToQuestion(index)}
-                      aria-label={`Buka soal ${q.order}`}
+                      aria-label={`Buka soal ${q.order}${hasNote ? " (ada catatan)" : ""}`}
                       aria-current={isCurrent ? "step" : undefined}
                       className={cn(
                         "relative flex aspect-square items-center justify-center border-2 sm:border-[3px] border-neo-ink font-mono text-xs sm:text-sm font-black transition-all",
@@ -614,6 +685,11 @@ export function ExamRunner({
                       {isFlagged && (
                         <span className="absolute -top-1.5 -right-1.5 z-20 grid size-4 place-items-center rounded-full border-[1.5px] border-neo-ink bg-neo-coral shadow-neo-sm">
                           <Flag className="size-2.5 fill-white text-white" />
+                        </span>
+                      )}
+                      {hasNote && (
+                        <span className="absolute -bottom-1.5 -right-1.5 z-20 grid size-4 place-items-center rounded-full border-[1.5px] border-neo-ink bg-white shadow-neo-sm">
+                          <NotebookPen className="size-2.5 text-black" />
                         </span>
                       )}
                     </button>
@@ -638,6 +714,14 @@ export function ExamRunner({
                 </span>
                 <span>Ragu-ragu ({flaggedCount})</span>
               </div>
+              {notesEnabled && (
+                <div className="flex items-center gap-2">
+                  <span className="size-3.5 border-2 border-neo-ink bg-white flex items-center justify-center">
+                    <NotebookPen className="size-2 text-black" />
+                  </span>
+                  <span>Ada catatan ({notedCount})</span>
+                </div>
+              )}
             </div>
 
             {/* Quick Submit Shortcut in Palette */}
