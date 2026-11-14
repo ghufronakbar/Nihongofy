@@ -598,6 +598,17 @@ tahap lain, dan tahap 2–3 menutup gap konten yang paling menyakitkan bila scop
   punya attempt (aturan yang sama dengan `npm run test-package:delete`)
 - [x] Setiap mutasi memanggil `testPackageList`, `practiceCatalog`, `testPackageDetail(id)`, dan
   `testPackageQuestions(id)`
+- [x] Export PDF lembar soal + lembar jawab (13 November 2026) — panel di
+  `/admin/test-package/[id]` dengan checkbox branding, membuka route handler
+  `/admin/test-package/[id]/print` yang memanggil dialog cetak browser. Renderer murni di
+  `src/features/admin/test-package/print/` (aturan cetak 聴解, furigana, penomoran, branding;
+  rincian di `docs/module/admin.md`), dites `print/render.test.ts`. Hasil N5 2024-07 identik
+  dengan contoh PDF yang direview; N1/N2 dicek visual (統合理解, lembar jawab dua kolom per sesi)
+- [x] Export kunci jawaban (14 November 2026) — tombol kedua di panel yang sama,
+  `?document=answer-key`: 正答表 satu halaman berupa lembar jawab dengan jawaban benar dihitamkan,
+  query terpisah `getAnswerKeyTestPackage`. Ke-91 kunci N5 2024-07 dicocokkan dengan DB
+- [ ] Uji manual export PDF di browser oleh admin (Chrome: dialog cetak, "Simpan sebagai PDF",
+  lembar soal dan kunci jawaban, dengan dan tanpa branding)
 
 ### Tahap 3 — Pembahasan Soal
 

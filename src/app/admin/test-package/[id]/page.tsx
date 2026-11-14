@@ -12,7 +12,9 @@ import {
 import { requireAdmin } from "@/lib/auth";
 import { getAdminTestPackage } from "@/features/admin/test-package/queries";
 import { DeletePackageButton } from "@/features/admin/test-package/components/delete-package-button";
+import { ExportPdfPanel } from "@/features/admin/test-package/components/export-pdf-panel";
 import { JLPT_SECTION_LABELS, mondaiTypeFullLabel } from "@/constants/jlpt";
+import { SITE_NAME } from "@/lib/seo";
 
 export const metadata: Metadata = { title: "Detail Paket - Admin" };
 
@@ -67,6 +69,8 @@ export default async function AdminTestPackageDetailPage({
           Buka mode baca publik
         </Link>
       </div>
+
+      <ExportPdfPanel packageId={testPackage.id} siteName={SITE_NAME} />
 
       {doubted > 0 && (
         <p className="flex items-center gap-2 border-[3px] border-neo-ink bg-neo-coral px-4 py-2.5 text-sm font-bold text-white shadow-neo-sm">

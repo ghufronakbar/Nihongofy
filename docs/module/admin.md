@@ -135,6 +135,7 @@ area user.
 | `/admin/test-package` | Daftar paket tes | selesai |
 | `/admin/test-package/[id]` | Detail paket: mondai, soal, context | selesai |
 | `/admin/test-package/import` | Import fixture JSON | selesai |
+| `/admin/test-package/[id]/print` | Lembar soal + lembar jawab, atau kunci jawaban (`?document=answer-key`), siap cetak (export PDF), route handler | selesai |
 | `/admin/question/[id]` | Editor satu soal | selesai |
 | `/admin/context/[id]` | Editor wacana bersama | selesai |
 | `/admin/explanation` | Antrean pembahasan: belum ada, belum direview, `answerKeyDoubt` | selesai |
@@ -197,6 +198,29 @@ Prioritas tertinggi karena inilah satu-satunya jalur konten yang sekarang sepenu
   presigned URL; operator tidak lagi menempel URL secara manual.
 - **Hapus paket** — porting `npm run test-package:delete` dengan konfirmasi dan pengecekan
   attempt.
+- **Export PDF** — panel di detail paket membuka `/admin/test-package/[id]/print` di tab baru:
+  dokumen HTML mandiri (bukan page, jadi tidak dibungkus layout admin dan memanggil
+  `requireAdmin()` sendiri) yang langsung membuka dialog cetak browser untuk disimpan sebagai
+  PDF. Bukan `@react-pdf` karena furigana `<ruby>` dan pemenggalan teks Jepang hanya benar di
+  mesin layout browser. Isi: lembar soal per sesi (tiap sesi mulai halaman baru) dan satu
+  halaman lembar jawab gaya LJK dengan penomoran yang sama. Tombol **Kunci jawaban**
+  (`?document=answer-key`) menghasilkan dokumen terpisah satu halaman (正答表): lembar jawab yang
+  sama persis dengan bulatan jawaban benar dihitamkan, jadi bisa dicocokkan langsung dengan LJK
+  peserta. Checkbox "Sertakan branding" (`?branding=1`) berlaku untuk keduanya: menambah nama dan
+  domain situs di judul, kepala, dan kaki halaman; tanpa checkbox tidak ada identitas situs sama
+  sekali. Aturan cetak di `src/features/admin/test-package/print/`:
+  - 聴解 hanya mencetak yang ada di kertas asli: gambar/teks pilihan 課題理解 dan ポイント理解,
+    gambar 発話表現, serta pilihan 質問1/質問2 統合理解. Pertanyaan, 概要理解, 即時応答, dan teks
+    wacana choukai (sering transkrip 「【音声】…」) tidak pernah dicetak walau datanya ada.
+  - Furigana dibuang di 文字・語彙 (cara baca 漢字読み = jawaban) dan di seluruh N1–N3; N4/N5
+    menampilkannya di 文法・読解 dan 聴解 seperti kertas aslinya.
+  - Nomor 文章の文法 diambil dari penanda di bacaan (`(22)`, `（41）`, `__48__`, `＿50＿`, `[18]`)
+    supaya kotak di bacaan cocok dengan nomor soal.
+  - `@page` selalu punya margin box atas dan bawah; selama ada, Chrome tidak mencetak
+    header/footer bawaannya (tanggal, judul, URL halaman admin).
+  - Lembar soal tidak membaca `questionAnswer` maupun pembahasan. Kunci jawaban punya query
+    sendiri (`getAnswerKeyTestPackage`: penomoran + `questionAnswer` saja), jadi kunci tidak
+    pernah ikut terambil saat mencetak lembar soal.
 
 ### 3. Pembahasan Soal
 

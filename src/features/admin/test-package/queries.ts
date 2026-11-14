@@ -125,6 +125,70 @@ export async function getAdminTestPackage(id: number) {
   });
 }
 
+// Lembar soal cetak (export PDF). Bentuknya = `PrintPackage` di
+// `print/types.ts`. Sengaja tanpa `questionAnswer` dan pembahasan: lembar ini
+// untuk dibagikan ke peserta, jadi kunci tidak perlu ikut dibaca.
+export async function getPrintableTestPackage(id: number) {
+  return prisma.testPackage.findUnique({
+    where: { id },
+    select: {
+      name: true,
+      jlptLevel: true,
+      testPackageItems: {
+        orderBy: [{ session: "asc" }, { order: "asc" }],
+        select: {
+          id: true,
+          session: true,
+          order: true,
+          section: true,
+          mondaiType: true,
+          instruction: true,
+          questions: {
+            orderBy: { order: "asc" },
+            select: {
+              id: true,
+              order: true,
+              questionText: true,
+              questionImage: true,
+              questionContext: { select: { id: true, storyText: true, storyImage: true } },
+              questionChoices: {
+                orderBy: { codeAnswer: "asc" },
+                select: { codeAnswer: true, answerText: true, answerImage: true },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
+// Kunci jawaban cetak: hanya yang perlu untuk penomoran (sama dengan lembar soal)
+// plus jawaban benar. Query terpisah supaya getPrintableTestPackage tetap tanpa kunci.
+export async function getAnswerKeyTestPackage(id: number) {
+  return prisma.testPackage.findUnique({
+    where: { id },
+    select: {
+      name: true,
+      jlptLevel: true,
+      testPackageItems: {
+        orderBy: [{ session: "asc" }, { order: "asc" }],
+        select: {
+          id: true,
+          session: true,
+          order: true,
+          section: true,
+          mondaiType: true,
+          questions: {
+            orderBy: { order: "asc" },
+            select: { id: true, order: true, questionText: true, questionAnswer: true },
+          },
+        },
+      },
+    },
+  });
+}
+
 // Editor wacana bersama. Menyertakan daftar soal yang memakainya, karena
 // perubahan di sini terasa di semua soal itu sekaligus.
 export async function getAdminQuestionContext(id: number) {
