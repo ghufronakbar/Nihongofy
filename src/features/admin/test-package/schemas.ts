@@ -19,6 +19,20 @@ export const ImportTestPackageSchema = z.object({
   replaceExisting: z.boolean(),
 });
 
+// Query string GET /admin/test-package/[id]/print. Tanpa parameter = lembar soal
+// + lembar jawab tanpa identitas situs; `document=answer-key` = kunci jawaban;
+// `branding=1` menambahkan nama dan domain situs.
+export const PRINT_DOCUMENTS = ["questions", "answer-key"] as const;
+export type PrintDocument = (typeof PRINT_DOCUMENTS)[number];
+
+export const PrintTestPackageQuerySchema = z.object({
+  document: z.enum(PRINT_DOCUMENTS).default("questions"),
+  branding: z
+    .enum(["0", "1"])
+    .default("0")
+    .transform((value) => value === "1"),
+});
+
 export const DeleteTestPackageSchema = z.object({
   id: z.number().int().positive(),
   // Nama paket diketik ulang oleh operator sebagai konfirmasi. Penghapusan
