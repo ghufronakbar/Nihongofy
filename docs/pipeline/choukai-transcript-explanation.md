@@ -17,6 +17,10 @@ sebelum dipakai massal.
   Transkripnya disalin dari PDF 听力原文 lalu dicek silang dengan audio; OCR lama di
   `docs/pipeline/n2-2013-12/ocr/` tidak dipakai karena ada kalimat 聴解 yang tidak sesuai PDF
   maupun audio.
+- N2 2014-07 memakai alur yang sama. File audio sumbernya langsung dibuka dengan 「1番」 sehingga
+  klip pertama mulai 00:00. Kunci 即時応答 di fixture/DB sebelumnya salah 11 dari 12 dan sudah
+  dikoreksi ke kunci resmi PDF sebelum pembahasan dibuat; paket N2 lain yang di-seed dari sumber
+  yang sama perlu dicek kuncinya sebelum pembahasan.
 - Selama transisi, `questionAudio` adalah sumber utama; `storyAudio` hanya fallback bila soal
   belum memiliki klip individual.
 - Audio context lama tidak dihapus sampai seluruh soal dalam paket lolos pemeriksaan durasi,

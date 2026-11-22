@@ -493,6 +493,12 @@ Batch permintaan user lanjutan dari Fase 8.5.
 - [x] Pembahasan N2 2013-12 (32 soal CHOUKAI): generate `ag/gemini-3.8-flash`, diaudit dan
   dikoreksi manual (32/32 kunci terkonfirmasi), di-apply ke fixture lokal;
   `seed:question-explanation` sudah dijalankan (2026-11-22)
+- [x] N2 2014-07 (32 soal CHOUKAI): kunci 即時応答 11/12 dikoreksi ke kunci resmi PDF dan urutan
+  pilihan 3/4 概要理解 2番 diperbaiki (`seed:question-content`, 0 jawaban dinilai ulang); audio per soal
+  (manifest `docs/pipeline/n2-question-audio-timestamps.json`), transkrip PDF dicek silang audio, dan
+  pembahasan diaudit manual; media, transkrip, dan pembahasan sudah di-seed (2026-11-22)
+- [ ] N2 2014-07 課題理解 4番: pilihan berupa gambar tata letak ruangan tetapi fixture tidak punya gambar
+  (teks pilihan hanya 1-4); teks pilihan 2 問題2 3番 typo 「持ち運びしやすパソコン」
 - [x] Schema `QuestionAudioTranscript`, kontrak fixture reviewed, dan importer idempotent
   `seed:question-transcript` yang tidak mengubah ID/data pengerjaan soal
 - [x] Script OCR PDF/PNG → staging ignored dan script apply reviewed → fixture; default
