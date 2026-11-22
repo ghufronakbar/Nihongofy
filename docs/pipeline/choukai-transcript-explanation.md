@@ -11,6 +11,12 @@ sebelum dipakai massal.
   `QuestionContext.storyAudio` per mondai. Paket N3 2021-07 dan N3 2022-07 sudah
   memiliki `Question.questionAudio` per soal, tetapi transkrip dan pembahasannya
   sengaja belum dijalankan.
+- N2 2013-12 sudah memiliki `Question.questionAudio` per soal (manifest
+  `docs/pipeline/n2-question-audio-timestamps.json`). Pada 統合理解 3番, 質問1 dan 質問2 sama-sama
+  memakai klip 3番 utuh (cerita + kedua 質問) karena keduanya berbagi satu cerita.
+  Transkripnya disalin dari PDF 听力原文 lalu dicek silang dengan audio; OCR lama di
+  `docs/pipeline/n2-2013-12/ocr/` tidak dipakai karena ada kalimat 聴解 yang tidak sesuai PDF
+  maupun audio.
 - Selama transisi, `questionAudio` adalah sumber utama; `storyAudio` hanya fallback bila soal
   belum memiliki klip individual.
 - Audio context lama tidak dihapus sampai seluruh soal dalam paket lolos pemeriksaan durasi,

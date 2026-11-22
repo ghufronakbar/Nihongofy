@@ -23,6 +23,7 @@ const EXPECTED_MONDAI_TYPES = new Set([
   "CHOUKAI_OUTLINE",
   "CHOUKAI_EXPRESSION",
   "CHOUKAI_QUICK_RESPONSE",
+  "CHOUKAI_INTEGRATED",
 ]);
 
 function log(message) {

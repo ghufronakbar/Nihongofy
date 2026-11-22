@@ -1,0 +1,177 @@
+{
+  "schemaVersion": 1,
+  "status": "asr_silence_verified",
+  "notes": [
+    "Timestamp relatif terhadap audio per-mondai di sourceUrl (storyAudio fixture).",
+    "Batas soal diletakkan di jeda hening ±1 detik sebelum chime yang mendahului 「N番」; chime ikut klip soal berikutnya.",
+    "Soal terakhir 問題1/3/4 memakai end eksplisit karena ekor file per-mondai berisi chime 問題 berikutnya.",
+    "問題2 soal 6 berhenti sebelum pengumuman istirahat 「ここで、ちょっと休みましょう」.",
+    "問題5 3番: 質問1 dan 質問2 berbagi satu cerita, sehingga keduanya memakai klip 3番 utuh (cerita + 質問1 + 質問2); overlap disengaja.",
+    "Verifikasi: tiap klip dipotong lokal lalu awal/akhirnya ditranskrip ulang (whisper large-v3-turbo); semua diawali 「N番」 sendiri dan tidak memuat pengumuman soal berikutnya."
+  ],
+  "packages": [
+    {
+      "fixture": "n2-2013-12.json",
+      "mondai": [
+        {
+          "mondaiType": "CHOUKAI_TASK_BASED",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n2-2013-12/audio/ae1eff441a91-n2-2013-12-01.mp3",
+          "clips": [
+            [
+              "00:29",
+              "01:46"
+            ],
+            [
+              "01:46",
+              "03:14"
+            ],
+            [
+              "03:14",
+              "04:52"
+            ],
+            [
+              "04:52",
+              "06:37"
+            ],
+            [
+              "06:37",
+              "08:05"
+            ]
+          ]
+        },
+        {
+          "mondaiType": "CHOUKAI_MAIN_POINT",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n2-2013-12/audio/5ff7d4ed4e9b-n2-2013-12-02.mp3",
+          "clips": [
+            [
+              "00:36",
+              "02:14"
+            ],
+            [
+              "02:14",
+              "03:48"
+            ],
+            [
+              "03:48",
+              "05:41"
+            ],
+            [
+              "05:41",
+              "07:24"
+            ],
+            [
+              "07:24",
+              "09:02"
+            ],
+            [
+              "09:02",
+              "10:46"
+            ]
+          ]
+        },
+        {
+          "mondaiType": "CHOUKAI_OUTLINE",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n2-2013-12/audio/ff3082c1d5d8-n2-2013-12-03.mp3",
+          "clips": [
+            [
+              "00:45",
+              "02:16"
+            ],
+            [
+              "02:16",
+              "03:51"
+            ],
+            [
+              "03:51",
+              "05:16"
+            ],
+            [
+              "05:16",
+              "06:48"
+            ],
+            [
+              "06:48",
+              "08:28"
+            ]
+          ]
+        },
+        {
+          "mondaiType": "CHOUKAI_QUICK_RESPONSE",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n2-2013-12/audio/26285638e347-n2-2013-12-04.mp3",
+          "clips": [
+            [
+              "00:42",
+              "01:14"
+            ],
+            [
+              "01:14",
+              "01:45"
+            ],
+            [
+              "01:45",
+              "02:14"
+            ],
+            [
+              "02:14",
+              "02:48"
+            ],
+            [
+              "02:48",
+              "03:17"
+            ],
+            [
+              "03:17",
+              "03:51"
+            ],
+            [
+              "03:51",
+              "04:23"
+            ],
+            [
+              "04:23",
+              "04:56"
+            ],
+            [
+              "04:56",
+              "05:27"
+            ],
+            [
+              "05:27",
+              "06:00"
+            ],
+            [
+              "06:00",
+              "06:30"
+            ],
+            [
+              "06:30",
+              "07:04"
+            ]
+          ]
+        },
+        {
+          "mondaiType": "CHOUKAI_INTEGRATED",
+          "sourceUrl": "https://cdn-nihongofy.lans.my.id/jlpt-exam/test-packages/n2-2013-12/audio/6c0ba5ff9e31-n2-2013-12-05.mp3",
+          "clips": [
+            [
+              "00:44",
+              "03:16"
+            ],
+            [
+              "03:16",
+              "05:19"
+            ],
+            [
+              "05:19",
+              "08:57"
+            ],
+            [
+              "05:19",
+              "SOURCE_END"
+            ]
+          ]
+        }
+      ]
+    }
+  ]
+}

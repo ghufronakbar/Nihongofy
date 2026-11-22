@@ -485,6 +485,14 @@ Batch permintaan user lanjutan dari Fase 8.5.
   `npm run seed:question-explanation`
 - [x] Audio per soal CHOUKAI untuk seluruh paket N5 dan N4; level N3-N1 tetap dimigrasikan
   bertahap dan masih dapat memakai audio context per mondai sebagai fallback
+- [x] Audio per soal N2 2013-12 (32 klip, termasuk 統合理解): timestamp di
+  `docs/pipeline/n2-question-audio-timestamps.json`, `segment-question-audio-r2.mjs` kini
+  menerima `CHOUKAI_INTEGRATED`; `seed:question-media` sudah dijalankan (2026-11-22)
+- [x] Transkrip N2 2013-12 (32 soal) diterapkan ke fixture lokal dari PDF 听力原文 yang dicek
+  silang dengan audio; `seed:question-transcript` sudah dijalankan (2026-11-22)
+- [x] Pembahasan N2 2013-12 (32 soal CHOUKAI): generate `ag/gemini-3.8-flash`, diaudit dan
+  dikoreksi manual (32/32 kunci terkonfirmasi), di-apply ke fixture lokal;
+  `seed:question-explanation` sudah dijalankan (2026-11-22)
 - [x] Schema `QuestionAudioTranscript`, kontrak fixture reviewed, dan importer idempotent
   `seed:question-transcript` yang tidak mengubah ID/data pengerjaan soal
 - [x] Script OCR PDF/PNG → staging ignored dan script apply reviewed → fixture; default
